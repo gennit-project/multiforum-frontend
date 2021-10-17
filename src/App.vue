@@ -1,26 +1,32 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
-</template>
+<script lang="ts">
+import { defineComponent } from "vue";
+import Topnav from './components/Topnav.vue'
+import SiteSidenav from './components/SiteSidenav.vue'
 
-<script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'App',
+export default defineComponent({
+  setup() {
+   
+  },
+  name: "App",
   components: {
-    HelloWorld
+    Topnav,
+    SiteSidenav
   }
-}
+});
 </script>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<template>
+  <div className="App">
+    <div class="relative min-h-screen lg:flex">
+      <Topnav />
+      <SiteSidenav />
+      <router-view></router-view>
+    </div>
+  </div>
+</template>
+
+<style lang="scss">
+body {
+  color: gray;
 }
 </style>
