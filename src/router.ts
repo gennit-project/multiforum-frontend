@@ -9,6 +9,7 @@ import Discussion from "./components/discussion/Discussion.vue";
 import AllDiscussions from "./components/discussion/AllDiscussions.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import Overview from "./components/channel/Overview.vue";
+import SiteSettings from "./components/SiteSettings.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -38,6 +39,7 @@ export const router = createRouter({
         { path: "/c/:channelId/events/:eventId", component: Event }
       ],
     },
+    { path: "/settings", component: SiteSettings }
   ],
 });
 

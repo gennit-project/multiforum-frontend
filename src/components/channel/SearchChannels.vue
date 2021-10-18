@@ -28,9 +28,6 @@ export default defineComponent({
 <template>
 <div class="flex-1 px-10 text-xl font-bold">
     <Breadcrumbs :links="links"/>
-    <h2 class="inline text-3xl mt-6 mb-2 font-extrabold tracking-tight text-gray-900 sm:block sm:text-4xl">
-      Channels
-    </h2>
     <ChannelList/>
   </div>
 </template>

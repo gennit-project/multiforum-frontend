@@ -17,11 +17,14 @@ export default defineComponent({
 
 <template>
   <div className="App">
-    <div class="relative min-h-screen lg:flex">
-      <Topnav />
-      <SiteSidenav />
-      <router-view></router-view>
-    </div>
+    <nav class="bg-gray-800">
+
+<Topnav/>
+  
+  <SiteSidenav/>
+</nav>
+<router-view></router-view>
+
   </div>
 </template>
 
