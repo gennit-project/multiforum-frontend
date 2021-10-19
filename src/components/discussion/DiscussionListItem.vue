@@ -9,10 +9,6 @@ export default defineComponent({
       type: Object as PropType<DiscussionData>,
       required: true,
     },
-    channelId: {
-      type: String,
-      required: true
-    }
   },
   data() {
     return {
@@ -63,7 +59,7 @@ export default defineComponent({
     </div>
     <div class="mt-3 text-sm">
       <router-link
-        :to="`/c/${channelId}/discussions/${discussion.id}`" class=" font-medium text-indigo-600 hover:text-indigo-500 "
+        :to="`/c/${discussion.channelId}/discussions/${discussion.id}`" class=" font-medium text-indigo-600 hover:text-indigo-500 "
       >
         View Comments
         <span aria-hidden="true">&rarr;</span>
