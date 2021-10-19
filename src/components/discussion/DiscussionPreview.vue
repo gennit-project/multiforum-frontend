@@ -20,10 +20,6 @@ export default defineComponent({
       type: Object as PropType<DiscussionData>,
       required: true,
     },
-    channelId: {
-      type: String,
-      required: true,
-    },
   },
   setup() {},
   components: {
@@ -41,7 +37,7 @@ export default defineComponent({
   <TransitionRoot as="template" :show="isOpen">
     <Dialog
       as="div"
-      class="fixed inset-0 overflow-hidden"
+      class="fixed inset-0 overflow-hidden z-20"
       @close="$emit('closePreview')"
     >
       <div class="absolute inset-0 overflow-hidden">
@@ -98,7 +94,7 @@ export default defineComponent({
                     {{ discussion.body }}
                     <div class="mt-3 text-sm">
                       <router-link
-                        :to="`/c/${channelId}/discussions/${discussion.id}`"
+                        :to="`/c/${discussion.channelId}/discussions/${discussion.id}`"
                         class="
                           font-medium
                           text-indigo-600

@@ -57,7 +57,7 @@ export default {
       leave-to-class="opacity-0 translate-y-1"
     >
       <PopoverPanel
-        class="absolute mt-12 z-10 transform mt-3 w-screen max-w-md sm:px-0"
+        class="absolute mt-12 z-20 transform mt-3 w-screen max-w-md sm:px-0"
       >
         <div
           class="

@@ -6,4 +6,5 @@ export type DiscussionData = {
     dateTime: string;
     body: string;
     preview: string;
+    channelId: string;
 }

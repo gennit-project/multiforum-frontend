@@ -37,7 +37,7 @@ export default defineComponent({
             @click="$emit('openEventPreview', event)"
             class="text-sm font-medium text-indigo-600 truncate cursor-pointer"
           >
-            {{ event.title }}
+            {{ event.name }}
           </p>
         </div>
         <div class="mt-2 sm:flex sm:justify-between">
@@ -47,7 +47,7 @@ export default defineComponent({
                 class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
-              {{ event.description }}
+              {{ event.name }}
             </p>
             <p
               class="
@@ -63,7 +63,7 @@ export default defineComponent({
                 class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
-              {{ event.location }}
+              {{ event.name }}
             </p>
             <p
               class="
@@ -79,7 +79,7 @@ export default defineComponent({
                 class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                 aria-hidden="true"
               />
-              <time :datetime="event.date">{{ event.dateFull }}</time>
+              <time :datetime="event.date">{{ event.date }}</time>
             </p>
           </div>
 

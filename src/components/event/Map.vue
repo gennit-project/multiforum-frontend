@@ -1,14 +1,24 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import places from "../../testData/places";
+import { defineComponent, PropType } from "vue";
+import { EventData } from "../../types/eventTypes";
 
 export default defineComponent({
   setup() {
     return {
       center: { lat: 33.4255, lng: -111.94 },
-      places,
     };
   },
+  props: {
+    events: {
+      type: Array as PropType<EventData[]>,
+      required: true
+    }
+  },
+  methods: {
+    openPreview() {
+      this.$emit('openPreview');
+    }
+  }
 });
 </script>
 
@@ -56,15 +66,18 @@ export default defineComponent({
         ]"
       >
         <GMapMarker
-          v-for="place in places"
-          :key="place.Name"
-          :position="{ lat: place.Latitude, lng: place.Longitude }"
+          v-for="event in events"
+          :key="event.name"
+          :position="{ lat: event.latitude, lng: event.longitude }"
           :clickable="true"
           :draggable="true"
-          @click="center = { lat: place.Latitude, lng: place.Longitude }"
+          @click="() => {
+            center = { lat: event.latitude, lng: event.longitude }
+            $emit('openPreview', event);
+          }"
         >
           <GMapInfoWindow>
-            {{ place.Name }}
+            {{ event.name }}
           </GMapInfoWindow>
         </GMapMarker>
       </GMapCluster>

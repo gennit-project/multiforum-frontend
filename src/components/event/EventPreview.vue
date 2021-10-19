@@ -37,7 +37,7 @@ export default defineComponent({
   <TransitionRoot as="template" :show="isOpen">
     <Dialog
       as="div"
-      class="fixed inset-0 overflow-hidden"
+      class="fixed inset-0 overflow-hidden z-20"
       @close="$emit('closePreview')"
     >
       <div class="absolute inset-0 overflow-hidden">
@@ -69,7 +69,7 @@ export default defineComponent({
                   <div class="px-4 sm:px-6">
                     <div class="flex items-start justify-between">
                       <DialogTitle class="text-lg font-medium text-gray-900">
-                        {{ event.title }}
+                        {{ event.name }}
                       </DialogTitle>
                       <div class="ml-3 h-7 flex items-center">
                         <button
@@ -92,7 +92,7 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="mt-6 relative flex-1 px-4 sm:px-6">
-                    {{ event.description }}
+                    {{ event.name }}
                      <div class="mt-3 text-sm">
             <router-link
               :to="`/c/${event.channelId}/events/${event.id}`"

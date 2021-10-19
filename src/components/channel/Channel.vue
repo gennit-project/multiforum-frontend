@@ -85,21 +85,6 @@ export default defineComponent({
 <template>
   <div class="flex-1 px-10 font-bold">
     <Breadcrumbs :links="links" />
-    <h2 
-      class="
-        inline
-        text-3xl
-        mt-6
-        mb-3
-        font-extrabold
-        tracking-tight
-        text-gray-900
-        sm:block
-        sm:text-4xl
-      "
-    >
-      {{ channelId }}
-    </h2>
     <div class="grid grid-cols-12 lg:space-x-4">
       <div v-if="!discussionId && !eventId" class="col-span-12 lg:col-span-2">
         <ChannelSidenav />

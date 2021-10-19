@@ -7,6 +7,9 @@ import FlyoverMenu from "../buttons/FlyoverMenu.vue";
 import ActiveFilters from "../ActiveFilters.vue";
 import ToggleMap from "../buttons/ToggleMap.vue";
 import Map from "./Map.vue";
+import EventPreview from "./EventPreview.vue";
+import { EventData } from "../../types/eventTypes";
+import events from "../../testData/events";
 
 export default defineComponent({
   setup() {
@@ -18,21 +21,35 @@ export default defineComponent({
 
     return {
       channelId,
+      events
     };
+
   },
   data() {
     return {
       showMap: true,
+      previewIsOpen: false,
+      selectedEvent: events[0]
     };
   },
   components: {
     EventList,
+    EventPreview,
     AddToFeed,
     FlyoverMenu,
     ActiveFilters,
     ToggleMap,
     Map,
   },
+  methods: {
+    closePreview() {
+      this.previewIsOpen = false
+    },
+    openPreview(data: EventData) {
+      this.previewIsOpen = true
+      this.selectedEvent = data
+    },
+  }
 });
 </script>
 
@@ -56,7 +73,20 @@ export default defineComponent({
           @showList="showMap = false"
         />
       </div>
-    <Map v-if="showMap" />
-    <EventList v-if="!showMap" />
+    <Map 
+      v-if="showMap"
+      :events="events"
+      @open-preview="openPreview"
+    />
+    <EventList
+      v-if="!showMap"
+      :events="events"
+      @open-preview="openPreview"
+    />
+    <EventPreview
+        :isOpen="previewIsOpen"
+        :event="selectedEvent"
+        @closePreview="closePreview"
+      />
   </div>
 </template>

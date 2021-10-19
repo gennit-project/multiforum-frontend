@@ -1,12 +1,15 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
 import { DiscussionData } from "../../types/discussionTypes";
+import { useRoute } from "vue-router";
+
 
 const discussions = [
   {
     id: 1,
+    channelId: "cats",
     author: "Velit placeat sit ducimus non sed",
     title: "Discussion title 1",
     time: "1d ago",
@@ -17,6 +20,7 @@ const discussions = [
   },
   {
     id: 2,
+    channelId: "cats",
     author: "Velit placeat sit ducimus non sed",
     title: "Discussion title 2",
     time: "1d ago",
@@ -29,8 +33,14 @@ const discussions = [
 
 export default defineComponent({
   setup() {
+    const route = useRoute();
+
+    const channelId = computed(() => {
+      return route.params.channelId || "";
+    });
     return {
       discussions,
+      channelId,
       selectedDiscussion: discussions[0],
     };
   },
@@ -38,12 +48,6 @@ export default defineComponent({
     return {
       previewIsOpen: false,
     };
-  },
-  props: {
-    channelId: {
-      type: String,
-      required: true,
-    },
   },
   components: {
     DiscussionPreview,
@@ -60,20 +64,18 @@ export default defineComponent({
   },
 });
 </script>
-
 <template>
   <ul role="list" class="divide-y divide-gray-200">
     <DiscussionListItem
       v-for="discussion in discussions"
       :key="discussion.id"
+      :channel-id="discussion.channelId"
       :discussion="discussion"
-      :channelId="channelId"
       @openDiscussionPreview="openPreview"
     />
     <DiscussionPreview
       :isOpen="previewIsOpen"
       :discussion="selectedDiscussion"
-      :channelId="channelId"
       @closePreview="closePreview"
     />
   </ul>
