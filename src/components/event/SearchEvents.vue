@@ -29,7 +29,7 @@ export default defineComponent({
     return {
       showMap: true,
       previewIsOpen: false,
-      selectedEvent: events[0]
+      selectedEvent: events[0],
     };
   },
   components: {
@@ -76,6 +76,7 @@ export default defineComponent({
     <Map 
       v-if="showMap"
       :events="events"
+      :color-locked="colorLocked"
       @open-preview="openPreview"
     />
     <EventList
