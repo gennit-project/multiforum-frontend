@@ -1,4 +1,22 @@
-<script setup lang="ts"></script>
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  setup() {
+    
+  },
+  data() {
+    return {
+      showUserProfileDropdown: false
+    }
+  },
+  methods: {
+    toggleUserProfileDropdown() {
+      this.showUserProfileDropdown = !this.showUserProfileDropdown
+    }
+  }
+})
+</script>
 
 <template>
   <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
@@ -248,9 +266,10 @@
           </button>
 
           <!-- Profile dropdown -->
-          <div class="ml-4 relative flex-shrink-0">
-            <div>
+          <div class="ml-4 relative flex-shrink-0" >
+            <div @click="toggleUserProfileDropdown">
               <button
+                
                 type="button"
                 class="
                   bg-gray-800
@@ -287,6 +306,7 @@
                 To: "transform opacity-0 scale-95"
             -->
             <div
+              v-if="showUserProfileDropdown"
               class="
                 origin-top-right
                 absolute
@@ -307,29 +327,29 @@
               tabindex="-1"
             >
               <!-- Active: "bg-gray-100", Not Active: "" -->
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700"
+              <router-link
+                to="/u/1"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-0"
-                >Your Profile</a
+                >Your Profile</router-link
               >
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700"
+              <router-link
+                to="settings"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-1"
-                >Settings</a
+                >Settings</router-link
               >
-              <a
-                href="#"
-                class="block px-4 py-2 text-sm text-gray-700"
+              <router-link
+                to="signout"
+                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                 role="menuitem"
                 tabindex="-1"
                 id="user-menu-item-2"
-                >Sign out</a
+                >Sign out</router-link
               >
             </div>
           </div>

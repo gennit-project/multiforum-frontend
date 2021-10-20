@@ -76,7 +76,6 @@ export default defineComponent({
     <Map 
       v-if="showMap"
       :events="events"
-      :color-locked="colorLocked"
       @open-preview="openPreview"
     />
     <EventList
