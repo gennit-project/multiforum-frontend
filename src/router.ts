@@ -10,12 +10,11 @@ import AllDiscussions from "./components/discussion/AllDiscussions.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import Overview from "./components/channel/Overview.vue";
 import SiteSettings from "./components/SiteSettings.vue";
-import SearchOptions from "./components/event/SearchOptions.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", component: SearchOptions },
+    { path: "/", component: SearchEvents },
     { path: "/events", component: AllEvents },
     { path: "/discussions", component: AllDiscussions },
     { path: "/channels", component: SearchChannels },

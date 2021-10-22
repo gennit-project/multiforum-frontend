@@ -1,8 +1,8 @@
-<script lang="ts">
+<script setup lang="ts">
 </script>
 <template>
-<div class="max-w-lg w-full lg:max-w-xs">
-  <label for="search" class="sr-only">Search</label>
+<div class="max-w-lg w-full lg:max-w-xs m-1">
+  <label for="search" class="sr-only">Search by location</label>
   <div class="relative">
     <div
       class="
@@ -51,7 +51,7 @@
         focus:border-indigo-500
         sm:text-sm
       "
-      placeholder="Search"
+      placeholder="Search by location"
       type="search"
     />
   </div>

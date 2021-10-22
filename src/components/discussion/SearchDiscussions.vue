@@ -2,7 +2,7 @@
 import { defineComponent, computed } from "vue";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
-import AddToFeed from '../buttons/AddToFeed.vue'
+import AddToFeed from "../buttons/AddToFeed.vue";
 
 export default defineComponent({
   setup() {
@@ -13,19 +13,21 @@ export default defineComponent({
     });
 
     return {
-      channelId
-    }
+      channelId,
+    };
   },
   components: {
     DiscussionList,
-    AddToFeed
+    AddToFeed,
   },
 });
 </script>
 
 <template>
   <div>
-    <AddToFeed v-if="channelId"/>
-    <DiscussionList :channel-id="channelId"/>
+    <AddToFeed v-if="channelId" />
+    <div class="relative h-full text-lg max-w-prose mx-auto">
+      <DiscussionList :channel-id="channelId" />
+    </div>
   </div>
 </template>
