@@ -1,20 +1,19 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import SearchDiscussions from "./SearchDiscussions.vue";
+import FeedList from "./FeedList.vue";
 
 export default defineComponent({
-  setup() {
-  },
+
   components: {
-    SearchDiscussions,
+    FeedList,
   },
 });
 </script>
 
 <template>
   <div>
-    <div class="flex-1 px-10">
-      <SearchDiscussions />
+    <div class="relative h-full text-lg max-w-prose mx-auto">
+      <FeedList/>
     </div>
   </div>
 </template>

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import FilterIcon from "../../../components/icons/FilterIcon.vue";
 
 export default defineComponent({
   setup() {},
@@ -8,7 +9,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    isLarge: {
+      type: Boolean,
+      default: false
+    }
   },
+  components: {
+    FilterIcon
+  }
 });
 </script>
 
@@ -50,6 +58,7 @@ export default defineComponent({
 
       <!-- This element is to trick the browser into centering the modal contents. -->
       <span
+        v-if="!isLarge"
         class="hidden sm:inline-block sm:align-middle sm:h-screen"
         aria-hidden="true"
         >&#8203;</span
@@ -79,8 +88,9 @@ export default defineComponent({
           shadow-xl
           transform
           transition-all
-          sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6
+          sm:my-8 sm:align-middle sm:w-full sm:p-6
         "
+        :class="[!isLarge ? 'sm:max-w-lg' : '']"
       >
         <div>
           <div
@@ -95,7 +105,6 @@ export default defineComponent({
               bg-green-100
             "
           >
-            <!-- Heroicon name: outline/check -->
             <svg
               class="h-6 w-6 text-green-600"
               xmlns="http://www.w3.org/2000/svg"
@@ -104,12 +113,7 @@ export default defineComponent({
               stroke="currentColor"
               aria-hidden="true"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M5 13l4 4L19 7"
-              />
+              <FilterIcon/>
             </svg>
           </div>
           <div class="mt-3 text-center sm:mt-5">
@@ -118,7 +122,7 @@ export default defineComponent({
                 class="text-lg leading-6 font-medium text-gray-900"
                 id="modal-title"
               >
-                Placeholder title
+                Placeholder Title
               </h3>
               <div class="mt-2">
                 <p class="text-sm text-gray-500">
@@ -160,7 +164,7 @@ export default defineComponent({
               sm:col-start-2 sm:text-sm
             "
           >
-            Deactivate
+            Save
           </button>
           <button
             @click="$emit('closeModal')"

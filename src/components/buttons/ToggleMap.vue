@@ -10,7 +10,7 @@ export default {
 };
 </script>
 <template>
-  <span class="relative z-0 inline-block shadow-sm rounded-md">
+  <span class="relative z-0 float-right inline-block shadow-sm rounded-md">
     <button
       @click="$emit('showMap')"
       type="button"
@@ -56,7 +56,7 @@ export default {
         focus:outline-none
       "
     >
-      List
+      List Only
     </button>
   </span>
 </template>

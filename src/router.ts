@@ -3,10 +3,10 @@ import Channel from "./components/channel/Channel.vue";
 import UserProfile from "./components/UserProfile.vue";
 import SearchChannels from "./components/channel/SearchChannels.vue";
 import Event from "./components/event/Event.vue";
-import AllEvents from "./components/event/AllEvents.vue";
 import SearchEvents from "./components/event/SearchEvents.vue";
+import Feed from "./components/feed/Feed.vue";
+import SearchFeeds from "./components/feed/SearchFeeds.vue";
 import Discussion from "./components/discussion/Discussion.vue";
-import AllDiscussions from "./components/discussion/AllDiscussions.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import Overview from "./components/channel/Overview.vue";
 import SiteSettings from "./components/SiteSettings.vue";
@@ -15,9 +15,11 @@ export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: "/", component: SearchEvents },
-    { path: "/events", component: AllEvents },
-    { path: "/discussions", component: AllDiscussions },
+    { path: "/events", component: SearchEvents },
+    { path: "/discussions", component: SearchDiscussions },
     { path: "/channels", component: SearchChannels },
+    { path: "/feeds", component: SearchFeeds },
+    { path: "/feeds/:feedId", component: Feed },
     { path: "/u/:username", component: UserProfile },
     {
       path: "/c/:channelId/",

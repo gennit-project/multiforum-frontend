@@ -7,6 +7,10 @@ export default defineComponent({
   setup() {
   },
   props: {
+    highlightedEventId: {
+      type: Number,
+      required: true
+    },
     events: {
       type: Array as PropType<EventData[]>
     }
@@ -29,6 +33,17 @@ export default defineComponent({
         v-for="event in events"
         :key="event.id"
         :event="event"
+        :class="[highlightedEventId === event.id ? 'bg-gray-100' : '']"
+        @mouseover="
+          () => {
+            $emit('highlightEvent', event.id);
+          }
+        "
+        @mouseleave="
+          () => {
+            $emit('highlightEvent', 0)
+          }
+        "
         @openEventPreview="$emit('openPreview', event)"
       />
     </ul>

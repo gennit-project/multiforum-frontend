@@ -29,12 +29,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <li>
-    <div class="block">
+  <li @click="$emit('openEventPreview', event)">
+    <div class="block cursor-pointer">
       <div class="px-4 py-4 sm:px-6">
         <div class="flex items-center justify-between">
           <p
-            @click="$emit('openEventPreview', event)"
             class="text-sm font-medium text-indigo-600 truncate cursor-pointer"
           >
             {{ event.name }}
@@ -55,8 +54,7 @@ export default defineComponent({
                 flex
                 items-center
                 text-sm text-gray-500
-                sm:mt-0
-                sm:ml-6
+                sm:mt-0 sm:ml-6
               "
             >
               <LocationMarkerIcon
@@ -71,8 +69,7 @@ export default defineComponent({
                 flex
                 items-center
                 text-sm text-gray-500
-                sm:mt-0
-                sm:ml-6
+                sm:mt-0 sm:ml-6
               "
             >
               <CalendarIcon
@@ -81,16 +78,6 @@ export default defineComponent({
               />
               <time :datetime="event.date">{{ event.date }}</time>
             </p>
-          </div>
-
-          <div class="mt-3 text-sm">
-            <router-link
-              :to="`/c/${event.channelId}/events/${event.id}`"
-              class="font-medium text-indigo-600 hover:text-indigo-500"
-            >
-              View Comments
-              <span aria-hidden="true">&rarr;</span>
-            </router-link>
           </div>
         </div>
       </div>

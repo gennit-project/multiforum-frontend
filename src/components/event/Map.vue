@@ -8,13 +8,11 @@ export default defineComponent({
       center: { lat: 33.4255, lng: -111.94 },
     };
   },
-  data() {
-    return {
-      openedEventId: null as number | null,
-      highlightedEventId: null as number | null,
-    };
-  },
   props: {
+    highlightedEventId: {
+      type: Number,
+      required: true,
+    },
     events: {
       type: Array as PropType<EventData[]>,
       required: true,
@@ -44,14 +42,12 @@ export default defineComponent({
         :draggable="true"
         @mouseover="
           () => {
-            highlightedEventId = event.id;
-            openedEventId = event.id;
+            $emit('highlightEvent', event.id);
           }
         "
         @mouseleave="
           () => {
-            highlightedEventId = null;
-            openedEventId = null;
+            $emit('highlightEvent', 0);
           }
         "
         :icon="{
@@ -64,13 +60,12 @@ export default defineComponent({
         @click="
           () => {
             center = { lat: event.latitude, lng: event.longitude };
-            openedEventId = event.id;
-            highlightedEventId = event.id;
+            $emit('highlightEvent', event.id);
             $emit('openPreview', event);
           }
         "
       >
-        <GMapInfoWindow :opened="openedEventId === event.id">
+        <GMapInfoWindow :opened="highlightedEventId === event.id">
           {{ event.name }}
         </GMapInfoWindow>
       </GMapMarker>

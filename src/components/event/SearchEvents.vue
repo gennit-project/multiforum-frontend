@@ -5,12 +5,12 @@ import ToggleMap from "../buttons/ToggleMap.vue";
 import SortDropdown from "./SortDropdown.vue";
 import EventList from "./EventList.vue";
 import events from "../../testData/events";
-import Modal from "../Modal.vue";
+import FilterModal from "./forms/FilterModal.vue";
 import ChannelPicker from "./forms/ChannelPicker.vue";
 import DatePicker from "./forms/DatePicker.vue";
 import OtherPicker from "./forms/OtherPicker.vue";
 import TagPicker from "./forms/TagPicker.vue";
-import TypePicker from "./forms/TypePicker.vue";
+import LocationPicker from "./forms/LocationPicker.vue";
 import WeeklyTimePicker from "./forms/WeeklyTimePicker.vue";
 
 import { useRoute } from "vue-router";
@@ -39,6 +39,7 @@ export default defineComponent({
       selectedEvent: events[0],
       showModal: false,
       selectedFilterOptions: "",
+      highlightedEventId: 0,
     };
   },
   components: {
@@ -46,10 +47,10 @@ export default defineComponent({
     ToggleMap,
     SortDropdown,
     EventList,
-    Modal,
+    FilterModal,
     ChannelPicker,
     DatePicker,
-    TypePicker,
+    LocationPicker,
     WeeklyTimePicker,
     TagPicker,
     OtherPicker,
@@ -73,6 +74,9 @@ export default defineComponent({
       this.previewIsOpen = true;
       this.selectedEvent = data;
     },
+    highlightEvent(eventId: number) {
+      this.highlightedEventId = eventId
+    }
   },
 });
 </script>
@@ -86,18 +90,37 @@ export default defineComponent({
           v-if="!showMap"
           class="relative h-full text-lg max-w-prose mx-auto"
         >
-          <EventList :events="events" @open-preview="openPreview" />
+          <EventList 
+            :events="events"
+            :highlighted-event-id="highlightedEventId"
+            @highlightEvent="highlightEvent"
+            @open-preview="openPreview"
+          />
         </div>
-        <Map v-if="showMap" :events="events" @open-preview="openPreview" />
+        <Map
+          v-if="showMap"
+          :events="events"
+          :highlighted-event-id="highlightedEventId"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+        />
       </div>
-      <div class="col-span-12 lg:col-span-4">
-            <ToggleMap
-              :show-map="showMap"
-              @showMap="showMap = true"
-              @showList="showMap = false"
-            />
-            <SortDropdown/>
-            <AddToFeed v-if="channelId" />
+      <div class="col-span-12 lg:col-span-4 p-4">
+        <SortDropdown />
+        <ToggleMap
+          :show-map="showMap"
+          @showMap="showMap = true"
+          @showList="showMap = false"
+        />
+
+        <AddToFeed v-if="channelId" />
+        <EventList
+          v-if="showMap"
+          :events="events"
+          :highlighted-event-id="highlightedEventId"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+        />
       </div>
     </div>
 
@@ -108,13 +131,20 @@ export default defineComponent({
       :event="selectedEvent"
       @closePreview="closePreview"
     />
-    <Modal :show="showModal" @closeModal="closeModal">
+    <FilterModal :show="showModal" @closeModal="closeModal">
       <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
-      <TypePicker v-if="selectedFilterOptions === 'typePicker'" />
-      <WeeklyTimePicker v-if="selectedFilterOptions === 'weeklyTimePicker'" />
+      <LocationPicker v-if="selectedFilterOptions === 'typePicker'" />
       <ChannelPicker v-if="selectedFilterOptions === 'channelPicker'" />
       <TagPicker v-if="selectedFilterOptions === 'tagPicker'" />
       <OtherPicker v-if="selectedFilterOptions === 'otherPicker'" />
-    </Modal>
+    </FilterModal>
+    <FilterModal
+      v-if="selectedFilterOptions === 'weeklyTimePicker'"
+      :show="showModal"
+      :is-large="true"
+      @closeModal="closeModal"
+    >
+      <WeeklyTimePicker />
+    </FilterModal>
   </div>
 </template>
