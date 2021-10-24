@@ -1,29 +1,23 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
+import { ChannelData } from '@/types/channelTypes';
 
 export default defineComponent({
   setup() {
-    const people = [
-      {
-        name: "Leslie Alexander",
-        email: "lesliealexander@example.com",
-        role: "Co-Founder / CEO",
-        imageUrl:
-          "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-      },
-    ];
-    return {
-      people,
-    };
   },
+  props: {
+    channels: {
+      type: Array as PropType<Array<ChannelData>>
+    }
+  }
 });
 </script>
 
 <template>
   <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
     <div
-      v-for="person in people"
-      :key="person.email"
+      v-for="channel in channels"
+      :key="channel.url"
       class="
         relative
         rounded-lg
@@ -42,18 +36,24 @@ export default defineComponent({
       "
     >
       <div class="flex-shrink-0">
-        <img class="h-10 w-10 rounded-full" :src="person.imageUrl" alt="" />
+        <img class="h-10 w-10 rounded-full"  alt="" />
       </div>
       <div class="flex-1 min-w-0">
-        <a href="#" class="focus:outline-none">
+        <router-link :to="`/c/${channel.url}`" class="focus:outline-none">
           <span class="absolute inset-0" aria-hidden="true" />
-          <p class="text-sm font-medium text-gray-900">
-            {{ person.name }}
+          <p class="font-large text-gray-900">
+            c/{{ channel.url }}
           </p>
           <p class="text-sm text-gray-500 truncate">
-            {{ person.role }}
+            {{ channel.name }}
           </p>
-        </a>
+          <p class="text-sm text-gray-500 truncate">
+            {{ channel.description }}
+          </p>
+          <p class="text-sm text-gray-500 truncate">
+            {{ channel.DiscussionsAggregate.count }} Discussions, {{ channel.EventsAggregate.count }} Events
+          </p>
+        </router-link>
       </div>
     </div>
   </div>

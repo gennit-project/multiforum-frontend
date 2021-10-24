@@ -47,13 +47,7 @@ export const router = createRouter({
 
 
 // sort and filter events
-// - map pins trigger preview on mouseover
-// - map pins trigger event preview on click
 // - event list uses sticky dates
-// - fix popover component
-
-// buttons
-// - channel detail and list page - pin to site navbar
 
 // site navbar
 // - pinned channels section
@@ -69,7 +63,6 @@ export const router = createRouter({
 // - create/edit event
 
 // feeds
-// - list - breadcrumbs
 // - detail - show sources, author, breadcrumbs
 // - feed item preview - overlay
 // - sidebar - feeds
