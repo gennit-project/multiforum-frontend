@@ -3,6 +3,7 @@ import { defineComponent, computed } from "vue";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
 import AddToFeed from "../buttons/AddToFeed.vue";
+import { GET_DISCUSSIONS } from "@/graphQLData/community/queries";
 
 export default defineComponent({
   setup() {
@@ -16,10 +17,18 @@ export default defineComponent({
       channelId,
     };
   },
+  data() {
+    return {
+      queryDiscussion: []
+    }
+  },
   components: {
     DiscussionList,
     AddToFeed,
   },
+  apollo: {
+    queryDiscussion: GET_DISCUSSIONS
+  }
 });
 </script>
 
@@ -27,7 +36,10 @@ export default defineComponent({
   <div>
     <AddToFeed v-if="channelId" />
     <div class="relative h-full text-lg max-w-prose mx-auto">
-      <DiscussionList :channel-id="channelId" />
+      <DiscussionList 
+        :discussions="queryDiscussion"
+        :channel-id="channelId"
+      />
     </div>
   </div>
 </template>

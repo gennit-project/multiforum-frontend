@@ -7,7 +7,8 @@ export default defineComponent({
   },
   props: {
     channels: {
-      type: Array as PropType<Array<ChannelData>>
+      type: Array as PropType<Array<ChannelData>>,
+      default: () => { return [] }
     }
   }
 });

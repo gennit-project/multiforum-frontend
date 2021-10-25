@@ -18,7 +18,7 @@ export default defineComponent({
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
+      required: false,
     },
   },
   setup() {},

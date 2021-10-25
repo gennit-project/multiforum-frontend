@@ -16,6 +16,15 @@ export default defineComponent({
     };
   },
 });
+
+    // id: number;
+    // title: string;
+    // body: string;
+    // Communities: [];
+    // Author: UserData;
+    // Tags: [TagData];
+    // CommentSections: [CommentSectionData];
+    // createdDate: string;
 </script>
 
 <template>
@@ -37,29 +46,29 @@ export default defineComponent({
           <span>{{ discussion.title }}</span>
         </p>
         <p class="text-sm font-medium text-gray-500 truncate">
-          {{ discussion.author }}
+          {{ discussion.Author.username }}
         </p>
       </div>
 
       <time
-        :datetime="discussion.dateTime"
+        :datetime="discussion.createdDate"
         class="
           flex-shrink-0
           whitespace-nowrap
           font-medium
           text-sm text-gray-500
         "
-        >{{ discussion.time }}</time
+        >{{ discussion.createdDate }}</time
       >
     </div>
     <div class="mt-1">
       <p class="line-clamp-2 text-sm font-medium text-gray-600">
-        {{ discussion.preview }}
+        {{ discussion.body }}
       </p>
     </div>
     <div class="mt-3 text-sm">
       <router-link
-        :to="`/c/${discussion.channelId}/discussions/${discussion.id}`" class=" font-medium text-indigo-600 hover:text-indigo-500 "
+        :to="`/c/${discussion.CommentSections[0]}/discussions/${discussion.id}`" class=" font-medium text-indigo-600 hover:text-indigo-500 "
       >
         View Comments
         <span aria-hidden="true">&rarr;</span>

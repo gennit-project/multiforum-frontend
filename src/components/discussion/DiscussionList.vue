@@ -1,35 +1,11 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, PropType } from "vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute } from "vue-router";
 
 
-const discussions = [
-  {
-    id: 1,
-    channelId: "cats",
-    author: "Velit placeat sit ducimus non sed",
-    title: "Discussion title 1",
-    time: "1d ago",
-    dateTime: "2021-01-27T16:35",
-    body: "Doloremque dolorem maiores assumenda dolorem facilis. Velit vel in a rerum natus facere. Enim rerum eaque qui facilis. Numquam laudantium sed id dolores omnis in. Eos reiciendis deserunt maiores et accusamus quod dolor.",
-    preview:
-      "Doloremque dolorem maiores assumenda dolorem facilis. Velit vel in a rerum natus facere. Enim rerum eaque qui facilis. Numquam laudantium sed id dolores omnis in. Eos reiciendis deserunt maiores et accusamus quod dolor.",
-  },
-  {
-    id: 2,
-    channelId: "cats",
-    author: "Velit placeat sit ducimus non sed",
-    title: "Discussion title 2",
-    time: "1d ago",
-    dateTime: "2021-01-27T16:35",
-    body: "Doloremque dolorem maiores assumenda dolorem facilis. Velit vel in a rerum natus facere. Enim rerum eaque qui facilis. Numquam laudantium sed id dolores omnis in. Eos reiciendis deserunt maiores et accusamus quod dolor.",
-    preview:
-      "Doloremque dolorem maiores assumenda dolorem facilis. Velit vel in a rerum natus facere. Enim rerum eaque qui facilis. Numquam laudantium sed id dolores omnis in. Eos reiciendis deserunt maiores et accusamus quod dolor.",
-  },
-];
 
 export default defineComponent({
   setup() {
@@ -39,10 +15,15 @@ export default defineComponent({
       return route.params.channelId || "";
     });
     return {
-      discussions,
       channelId,
-      selectedDiscussion: discussions[0],
+      selectedDiscussion: {},
     };
+  },
+  props: {
+    discussions: {
+      type: Array as PropType<Array<DiscussionData>>,
+      default: () => { return [] }
+    }
   },
   data() {
     return {
@@ -63,6 +44,8 @@ export default defineComponent({
     },
   },
 });
+
+
 </script>
 <template>
   <ul role="list" class="divide-y divide-gray-200">

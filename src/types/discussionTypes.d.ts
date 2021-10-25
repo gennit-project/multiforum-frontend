@@ -1,10 +1,14 @@
+import UserData from './userTypes';
+import TagData from './tagTypes';
+import CommentSectionData from './commentTypes';
+
 export type DiscussionData = {
     id: number;
-    author: string;
     title: string;
-    time: string;
-    dateTime: string;
     body: string;
-    preview: string;
-    channelId: string;
+    Communities: [];
+    Author: UserData;
+    Tags: [TagData];
+    CommentSections: [CommentSectionData];
+    createdDate: string;
 }

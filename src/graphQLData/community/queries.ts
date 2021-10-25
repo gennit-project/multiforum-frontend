@@ -19,7 +19,7 @@ export const GET_COMMUNITY = gql`
   }
 `;
 export const GET_DISCUSSIONS = gql`
-  query {
+  query queryDiscussion{
     queryDiscussion {
       id
       title
