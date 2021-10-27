@@ -1,8 +1,19 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  setup(){},
+  props: {
+    showMobileDropdown: {
+      type:     Boolean,
+      required: true
+    }
+  }
+})
 </script>
 
 <template>
-  <div class="lg:hidden" id="mobile-menu">
+  <div v-if="showMobileDropdown" class="lg:hidden" id="mobile-menu">
     <div class="px-2 pt-2 pb-3 space-y-1">
       <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
       <router-link

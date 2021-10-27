@@ -35,7 +35,7 @@ export default defineComponent({
 <template>
   <div>
     <AddToFeed v-if="channelId" />
-    <div class="relative h-full text-lg max-w-prose mx-auto">
+    <div class="relative px-4 sm:px-6 lg:px-8 text-lg max-w-5xl mx-auto">
       <DiscussionList 
         :discussions="queryDiscussion"
         :channel-id="channelId"

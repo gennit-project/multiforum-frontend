@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import Breadcrumbs from '../Breadcrumbs.vue';
+import Breadcrumbs from '../nav/Breadcrumbs.vue';
 import ChannelList from './ChannelList.vue';
 import { GET_COMMUNITIES } from '@/graphQLData/community/queries';
 

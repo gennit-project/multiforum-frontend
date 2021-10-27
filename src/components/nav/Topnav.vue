@@ -7,13 +7,14 @@ export default defineComponent({
   },
   data() {
     return {
-      showUserProfileDropdown: false
+      showUserProfileDropdown: false,
+      showMobileDropdown: false
     }
   },
   methods: {
     toggleUserProfileDropdown() {
       this.showUserProfileDropdown = !this.showUserProfileDropdown
-    }
+    },
   }
 })
 </script>
@@ -189,6 +190,7 @@ export default defineComponent({
       <div class="flex lg:hidden">
         <!-- Mobile menu button -->
         <button
+          @click="$emit('toggleMobileDropdown')"
           type="button"
           class="
             inline-flex

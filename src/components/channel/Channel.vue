@@ -1,6 +1,6 @@
 <script lang="ts">
 import ChannelSidenav from "./ChannelSidenav.vue";
-import Breadcrumbs from "../Breadcrumbs.vue";
+import Breadcrumbs from "../nav/Breadcrumbs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 

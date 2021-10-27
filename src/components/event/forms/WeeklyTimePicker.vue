@@ -23,7 +23,7 @@ export default defineComponent({
             class="
               shadow
               overflow-hidden
-              border-b border-gray-200
+              border-b border-gray-400
               sm:rounded-lg
             "
           >
@@ -69,7 +69,7 @@ export default defineComponent({
                           h-4
                           w-4
                           text-indigo-600
-                          border-gray-300
+                          border-gray-400
                           rounded
                         "
                       />
@@ -102,7 +102,7 @@ export default defineComponent({
                           h-4
                           w-4
                           text-indigo-600
-                          border-gray-300
+                          border-gray-400
                           rounded
                         "
                       />
@@ -128,7 +128,7 @@ export default defineComponent({
                           h-4
                           w-4
                           text-indigo-600
-                          border-gray-300
+                          border-gray-400
                           rounded
                         "
                       />
