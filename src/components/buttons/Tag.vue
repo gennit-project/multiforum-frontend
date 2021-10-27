@@ -13,7 +13,7 @@ export default defineComponent({
 </script>
 <template>
   <span
-    class="rounded-full bg-gray-200 px-2 py-1 mr-1 text-xs text-gray-900 cursor-pointer"
+    class="rounded-full bg-gray-200 px-2 py-1 mr-1 text-xs font-medium text-gray-900 cursor-pointer"
     >{{ tag }}</span
   >
 </template>

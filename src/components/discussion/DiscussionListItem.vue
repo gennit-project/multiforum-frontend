@@ -52,7 +52,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative bg-white py-5 px-4">
+  <li class="relative bg-white py-2 px-4">
     <div class="grid grid-cols-4">
       <div class="col-span-3">
         <div
@@ -62,13 +62,11 @@ export default defineComponent({
             <span>{{ title }}</span>
           </p>
 
-          <p class="line-clamp-2 text-sm font-medium text-gray-800">
+          <p class="line-clamp-2 text-sm font-medium text-gray-500 ">
             {{ body }}
           </p>
-          
-          <Tag :key="tag" v-for="tag in tags" :tag="tag" />
 
-          <div class="mt-3 text-sm">
+          <div class="text-sm">
 
             <router-link
               v-if="isWithinCommunity"
@@ -97,12 +95,8 @@ export default defineComponent({
 
           </div>
 
-          <p class="text-sm font-medium text-gray-500 truncate">
-          Posted by
-            <router-link class="text-gray-800" :to="`/u/${authorUsername}`">
-              {{ `u/${authorUsername}` }}
-            </router-link>
-          </p>
+          <Tag :key="tag" v-for="tag in tags" :tag="tag" />
+          
         </div>
       </div>
       <div class="col-span-1">
@@ -117,7 +111,13 @@ export default defineComponent({
           "
           >{{ relativeTime }}</time
         >
-        
+        <br/>
+        <p class="float-right text-sm font-medium text-gray-500 truncate">
+          Posted by
+            <router-link class="text-gray-800" :to="`/u/${authorUsername}`">
+              {{ `u/${authorUsername}` }}
+            </router-link>
+          </p>
       </div>
     </div>
   </li>
