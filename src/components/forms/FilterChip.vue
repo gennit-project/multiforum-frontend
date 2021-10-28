@@ -21,9 +21,8 @@ export default defineComponent({
   <button
     type="button"
     class="
-      inline-flex
       m-1
-      items-center
+      max-height-4
       px-2.5
       py-1.5
       border border-transparent

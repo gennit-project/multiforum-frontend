@@ -1,17 +1,17 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import ActiveFilters from "./ActiveFilters.vue";
+import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import ToggleMap from "../buttons/ToggleMap.vue";
-import SortDropdown from "./SortDropdown.vue";
+import SortDropdown from "@/components/forms/SortDropdown.vue";
 import EventList from "./EventList.vue";
 import events from "../../testData/events";
-import FilterModal from "./forms/FilterModal.vue";
-import ChannelPicker from "./forms/ChannelPicker.vue";
-import DatePicker from "./forms/DatePicker.vue";
-import OtherPicker from "./forms/OtherPicker.vue";
-import TagPicker from "./forms/TagPicker.vue";
-import LocationPicker from "./forms/LocationPicker.vue";
-import WeeklyTimePicker from "./forms/WeeklyTimePicker.vue";
+import FilterModal from "@/components/forms/FilterModal.vue";
+import ChannelPicker from "@/components/forms/ChannelPicker.vue";
+import DatePicker from "@/components/forms/DatePicker.vue";
+import OtherPicker from "@/components/forms/OtherPicker.vue";
+import TagPicker from "@/components/forms/TagPicker.vue";
+import LocationPicker from "@/components/forms/LocationPicker.vue";
+import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
 
 import { useRoute } from "vue-router";
 import AddToFeed from "../buttons/AddToFeed.vue";
@@ -79,10 +79,15 @@ export default defineComponent({
     }
   },
 });
+
 </script>
 <template>
   <div class="bg-white">
-    <ActiveFilters @openModal="openModal" />
+    <ActiveFilters
+      :search-placeholder="'Search by location'"
+      :applicable-filters="['dateRange', 'location', 'weeklyTimes', 'channels', 'tags', 'other']"
+      @openModal="openModal"
+    />
 
     <div class="grid grid-cols-12 lg:space-x-4">
       <div class="col-span-12 lg:col-span-8">

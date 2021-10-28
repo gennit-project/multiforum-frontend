@@ -2,7 +2,7 @@
 </script>
 <template>
 <div class="max-w-lg w-full lg:max-w-xs m-1">
-  <label for="search" class="sr-only">Search by location</label>
+  <label for="search" class="sr-only">Search</label>
   <div class="relative">
     <div
       class="

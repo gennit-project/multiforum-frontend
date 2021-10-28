@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import FilterIcon from "../../../components/icons/FilterIcon.vue";
+import FilterIcon from "@/components/icons/FilterIcon.vue";
 
 export default defineComponent({
   setup() {},
