@@ -75,33 +75,49 @@ export default defineComponent({
       this.selectedEvent = data;
     },
     highlightEvent(eventId: number) {
-      this.highlightedEventId = eventId
-    }
+      this.highlightedEventId = eventId;
+    },
   },
 });
-
 </script>
 <template>
-  <div class="bg-white">
+  <div>
     <ActiveFilters
+      :class="['mx-auto', 'max-w-6xl']"
       :search-placeholder="'Search by location'"
-      :applicable-filters="['dateRange', 'location', 'weeklyTimes', 'channels', 'tags', 'other']"
+      :applicable-filters="[
+        'dateRange',
+        'location',
+        'weeklyTimes',
+        'channels',
+        'tags',
+        'other',
+      ]"
       @openModal="openModal"
     />
 
+    <div v-if="!showMap" class="relative h-full text-lg mx-auto max-w-6xl">
+      <SortDropdown 
+        :class="['float-right']"
+      />
+      <AddToFeed
+       :class="['float-right']"
+        v-if="channelId" 
+      />
+      <ToggleMap
+          :show-map="showMap"
+          @showMap="showMap = true"
+          @showList="showMap = false"
+        />
+      <EventList
+        :events="events"
+        :highlighted-event-id="highlightedEventId"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+      />
+    </div>
     <div class="grid grid-cols-12 lg:space-x-4">
       <div class="col-span-12 lg:col-span-8">
-        <div
-          v-if="!showMap"
-          class="relative h-full text-lg max-w-prose mx-auto"
-        >
-          <EventList 
-            :events="events"
-            :highlighted-event-id="highlightedEventId"
-            @highlightEvent="highlightEvent"
-            @open-preview="openPreview"
-          />
-        </div>
         <Map
           v-if="showMap"
           :events="events"
@@ -110,7 +126,7 @@ export default defineComponent({
           @open-preview="openPreview"
         />
       </div>
-      <div class="col-span-12 lg:col-span-4 p-4">
+      <div v-if="showMap" class="col-span-12 lg:col-span-4 p-4">
         <SortDropdown />
         <ToggleMap
           :show-map="showMap"

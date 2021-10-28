@@ -52,22 +52,22 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative bg-white py-2 px-4">
+  <li class="relative bg-white py-2">
     <div class="grid grid-cols-4">
       <div class="col-span-3">
-        <div
-          class="block"
-        >
-          <p  @click="$emit('openDiscussionPreview', discussion)" class="cursor-pointer text-md font-medium text-indigo-600 truncate">
+        <div class="block">
+          <p
+            @click="$emit('openDiscussionPreview', discussion)"
+            class="cursor-pointer text-md font-medium text-indigo-600 truncate"
+          >
             <span>{{ title }}</span>
           </p>
 
-          <p class="line-clamp-2 text-sm font-medium text-gray-500 ">
+          <p class="line-clamp-2 text-sm font-medium text-gray-500">
             {{ body }}
           </p>
 
           <div class="text-sm">
-
             <router-link
               v-if="isWithinCommunity"
               :to="`/c/${defaultUrl}/discussions/${discussion.id}`"
@@ -92,11 +92,9 @@ export default defineComponent({
               >
               {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
             </router-link>
-
           </div>
 
           <Tag :key="tag" v-for="tag in tags" :tag="tag" />
-          
         </div>
       </div>
       <div class="col-span-1">
@@ -111,13 +109,13 @@ export default defineComponent({
           "
           >{{ relativeTime }}</time
         >
-        <br/>
+        <br />
         <p class="float-right text-sm font-medium text-gray-500 truncate">
           Posted by
-            <router-link class="text-gray-800" :to="`/u/${authorUsername}`">
-              {{ `u/${authorUsername}` }}
-            </router-link>
-          </p>
+          <router-link class="text-gray-800" :to="`/u/${authorUsername}`">
+            {{ `u/${authorUsername}` }}
+          </router-link>
+        </p>
       </div>
     </div>
   </li>

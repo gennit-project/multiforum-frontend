@@ -51,13 +51,15 @@ export default defineComponent({
       this.previewIsOpen = false;
     },
   },
+  inheritAttrs: false
 });
 
 
 </script>
 <template>
-  <p class="pageTitle">{{ resultsAggregate }}</p>
-  <ul role="list" class="divide-y divide-gray-200">
+<div class="divide-y divide-gray-200 mx-auto max-w-5xl">
+  <p class="px-8">{{ resultsAggregate }}</p>
+  <ul role="list" class="px-8 divide-y divide-gray-200 relative">
     <DiscussionListItem
       v-for="discussion in discussions"
       :key="discussion.id"
@@ -71,15 +73,5 @@ export default defineComponent({
       @closePreview="closePreview"
     />
   </ul>
+</div>
 </template>
-
-<style scoped>
-.pageTitle {
-  color: rgb(63, 60, 60);
-  text-transform: uppercase;
-  font-size: 12px;
-  margin: 10px;
-  width: 100%;
-  border-bottom: 1px solid rgb(182, 180, 180);
-}
-</style>

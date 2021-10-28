@@ -2,6 +2,7 @@
 import { defineComponent, PropType } from "vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import SearchBar from "@/components/forms/SearchBar.vue";
+import AddToFeed from "@/components/buttons/AddToFeed.vue"
 
 const filterOptions: any = {
   dateRange: {
@@ -38,35 +39,33 @@ export default defineComponent({
   },
   props: {
     applicableFilters: {
-      type: Array as PropType<string[]>,
+      type:     Array as PropType<string[]>,
       required: true
+    },
+    channelId: {
+      type:    String,
+      default: ''
+    },
+    searchPlaceholder: {
+      type:    String,
+      default: ""
     }
   },
   components: {
     FilterChip,
     SearchBar,
+    AddToFeed
   },
 });
 </script>
 
 <template>
-  <div class="bg-gray-100">
-    <div class="max-w-7xl mx-auto py-3 px-4 sm:flex items-center lg:px-8">
-      <h3 class="text-xs font-semibold uppercase text-gray-500">
-        <SearchBar />
+  <div>
+    <div class="grid grid-cols-12 items-center text-lg flex py-3 px-8 ">
+      <h3 class="md:col-span-3 col-span-12 text-xs font-semibold uppercase text-gray-500">
+        <SearchBar :searchPlaceholder="searchPlaceholder" />
       </h3>
-
-      <div
-        aria-hidden="true"
-        class="hidden w-px h-5 bg-gray-300 sm:block sm:ml-4"
-      ></div>
-
-      <h3
-        class="text-xs mx-3 font-semibold uppercase text-gray-500"
-      >
-        Filters
-      </h3>
-
+     <div class="md:col-span-9 col-span-12">
       <FilterChip
         :key="filter"
         v-for="filter in applicableFilters"
@@ -74,6 +73,8 @@ export default defineComponent({
         @click="$emit('openModal', filterOptions[filter].modalType)"
       >
       </FilterChip>
+      <AddToFeed v-if="channelId" />
+    </div>
     </div>
   </div>
 </template>

@@ -29,9 +29,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <li @click="$emit('openEventPreview', event)">
+  <li class="px-4" @click="$emit('openEventPreview', event)">
     <div class="block cursor-pointer">
-      <div class="px-4 py-4 sm:px-6">
+      <div class="py-4 sm:px-6">
         <div class="flex items-center justify-between">
           <p
             class="text-sm font-medium text-indigo-600 truncate cursor-pointer"

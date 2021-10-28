@@ -2,8 +2,7 @@
 import { defineComponent, computed } from "vue";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
-import AddToFeed from "../buttons/AddToFeed.vue";
-import ActiveFilters from "@/components/forms/ActiveFilters.vue"
+import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
@@ -31,14 +30,13 @@ export default defineComponent({
   },
   components: {
     DiscussionList,
-    AddToFeed,
     ActiveFilters,
     FilterModal,
     ChannelPicker,
-    TagPicker
+    TagPicker,
   },
   apollo: {
-    queryDiscussion: GET_DISCUSSIONS
+    queryDiscussion: GET_DISCUSSIONS,
   },
   methods: {
     openModal(selectedFilterOptions: string) {
@@ -49,24 +47,20 @@ export default defineComponent({
       this.showModal = false;
       this.selectedFilterOptions = "";
     },
-  }
+  },
 });
 </script>
 
 <template>
   <div>
-    <AddToFeed v-if="channelId" />
     <ActiveFilters
+      :class="['mx-auto', 'max-w-5xl']"
       :search-placeholder="'Search discussions'"
       :applicable-filters="['channels', 'tags']"
+      :channel-id="channelId"
       @openModal="openModal"
     />
-    <div class="relative px-4 sm:px-6 lg:px-8 text-lg max-w-5xl mx-auto">
-      <DiscussionList 
-        :discussions="queryDiscussion"
-        :channel-id="channelId"
-      />
-    </div>
+    <DiscussionList :discussions="queryDiscussion" :channel-id="channelId" />
     <FilterModal :show="showModal" @closeModal="closeModal">
       <ChannelPicker v-if="selectedFilterOptions === 'channelPicker'" />
       <TagPicker v-if="selectedFilterOptions === 'tagPicker'" />

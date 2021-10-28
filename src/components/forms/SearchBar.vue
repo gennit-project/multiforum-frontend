@@ -1,7 +1,18 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue';
+
+export default defineComponent({
+  setup () {},
+  props: {
+    searchPlaceholder: {
+      type:    String,
+      default: ''
+    }
+  }
+})
 </script>
 <template>
-<div class="max-w-lg w-full lg:max-w-xs m-1">
+<div class="max-w-lg w-full lg:max-w-xs">
   <label for="search" class="sr-only">Search</label>
   <div class="relative">
     <div
@@ -51,7 +62,7 @@
         focus:border-indigo-500
         sm:text-sm
       "
-      placeholder="Search by location"
+      :placeholder="searchPlaceholder"
       type="search"
     />
   </div>

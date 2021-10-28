@@ -1,5 +1,5 @@
 <script lang="ts">
-import ChannelSidenav from "./ChannelSidenav.vue";
+import ChannelTabs from "./ChannelTabs.vue";
 import Breadcrumbs from "../nav/Breadcrumbs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
@@ -14,18 +14,14 @@ export default defineComponent({
 
     const discussionId = computed(() => {
       return route.params.discussionId;
-    })
+    });
 
     const eventId = computed(() => {
       return route.params.eventId;
-    })
+    });
 
     const links = computed(() => {
-      const { 
-        channelId,
-        discussionId,
-        eventId
-      } = route.params;
+      const { channelId, discussionId, eventId } = route.params;
 
       let channelBreadcrumbs = [
         {
@@ -52,18 +48,18 @@ export default defineComponent({
         });
       }
 
-      if (discussionId){
+      if (discussionId) {
         channelBreadcrumbs.push({
           label: "Discussion",
           path: `c/${channelId}/discussions/${discussionId}`,
-        })
+        });
       }
 
-      if (eventId){
+      if (eventId) {
         channelBreadcrumbs.push({
           label: "Event",
           path: `c/${channelId}/events/${discussionId}`,
-        })
+        });
       }
       return channelBreadcrumbs;
     });
@@ -76,22 +72,23 @@ export default defineComponent({
     };
   },
   components: {
-    ChannelSidenav,
+    ChannelTabs,
     Breadcrumbs,
   },
 });
 </script>
 
 <template>
-  <div class="flex-1 px-10 font-bold">
-    <Breadcrumbs :links="links" />
-    <div class="grid grid-cols-12 lg:space-x-4">
-      <div v-if="!discussionId && !eventId" class="col-span-12 lg:col-span-2">
-        <ChannelSidenav />
-      </div>
-      <div class="col-span-12 lg:col-span-10">
-        <router-view></router-view>
-      </div>
+  <div class="flex-1 font-bold">
+    <Breadcrumbs class="px-10" :links="links" />
+
+    <div
+      v-if="!discussionId && !eventId"
+      
+    >
+      <ChannelTabs />
     </div>
+    
+    <router-view></router-view>
   </div>
 </template>
