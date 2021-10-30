@@ -1,11 +1,11 @@
-import { createApp } from 'vue'
+import { createApp, provide, h } from 'vue'
 import App from "./App.vue";
 import { router } from './router';
 import VueGoogleMaps from '@fawmi/vue-google-maps'
 import config from './config';
 import "./index.css";
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-import { createApolloProvider } from "@vue/apollo-option";
+import { DefaultApolloClient } from '@vue/apollo-composable';
 
 // Cache implementation
 const cache = new InMemoryCache()
@@ -16,19 +16,22 @@ const apolloClient = new ApolloClient({
   cache,
 })
 
-const apolloProvider = createApolloProvider({
-  defaultClient: apolloClient,
-});
 
-const app = createApp(App)
-    .use(router)
-    .use(apolloProvider)
-    .use(VueGoogleMaps, {
-        load: {
-            key: config.googleMapsApiKey
-        }
-    })
-    .mount("#app");
+const app = createApp({
+  setup () {
+    provide(DefaultApolloClient, apolloClient)
+  },
+
+  render: () => h(App)
+})
+
+app.use(router)
+   .use(VueGoogleMaps, {
+       load: {
+           key: config.googleMapsApiKey
+       }
+   })
+   .mount("#app");
 
 
     

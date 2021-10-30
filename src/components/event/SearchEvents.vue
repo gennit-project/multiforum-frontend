@@ -85,7 +85,12 @@ export default defineComponent({
     <ActiveFilters
       :class="['mx-auto', 'max-w-6xl']"
       :search-placeholder="'Search by location'"
-      :applicable-filters="[
+      :applicable-filters="channelId ? [
+        'dateRange',
+        'location',
+        'weeklyTimes',
+        'tags',
+      ] : [
         'dateRange',
         'location',
         'weeklyTimes',

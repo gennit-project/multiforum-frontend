@@ -22,7 +22,7 @@ export default defineComponent({
         overview: `/c/${channelId.value}/`,
         discussions: `/c/${channelId.value}/discussions`,
         events: `/c/${channelId.value}/events`,
-      },
+      } as any,
     };
   },
   components: {
@@ -36,7 +36,7 @@ export default defineComponent({
     };
   },
   methods: {
-    redirect(e: any) {
+    redirect(e: any): void {
       const selectedTab = e.target.value;
       this.$router.push(this.tabRoutes[selectedTab]);
     },
