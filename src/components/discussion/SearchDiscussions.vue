@@ -74,6 +74,9 @@ export default defineComponent({
     const setTagFilters = (tags: Array<string>) => {
       selectedTags.value = tags;
     }
+    const setChannelFilters = (channels: Array<string>) => {
+      selectedChannels.value = channels;
+    }
 
     let discussionQuery = computed(() => {
       return gql`
@@ -149,7 +152,8 @@ export default defineComponent({
       closeModal,
       pickChannel,
       pickTag,
-      setTagFilters
+      setTagFilters,
+      setChannelFilters
     };
   },
   components: {
@@ -168,6 +172,8 @@ export default defineComponent({
       :class="['mx-auto', 'max-w-5xl']"
       :search-placeholder="'Search discussions'"
       :applicable-filters="channelId ? ['tags'] : ['channels', 'tags']"
+      :selected-tags="selectedTags"
+      :selected-channels="selectedChannels"
       :channel-id="channelId"
       @openModal="openModal"
     />
@@ -180,8 +186,9 @@ export default defineComponent({
       <ChannelPicker 
         v-if="selectedFilterOptions === 'channelPicker'"
         :community-options="communityOptions"
-        :selected-communities="selectedChannels"
+        :selected-channels="selectedChannels"
         @pickChannel="pickChannel"
+        @setChannelFilters="setChannelFilters"
       />
       <TagPicker
         v-if="selectedFilterOptions === 'tagPicker'"

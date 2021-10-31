@@ -25,9 +25,18 @@ export default defineComponent({
   <div>
     <h1>Filter by Channels</h1>
     <Multiselect
-      v-model="value" 
-      searchable 
-      :options="options"
+      v-model="value"
+      mode="tags"
+      @select="$emit('setChannelFilters', value)"
+      @deselect="$emit('setChannelFilters', value)"
+      :closeOnSelect="false"
+      :searchable="true"
+      :createTag="true"
+      :options="[
+        { value: 'batman', label: 'Batman' },
+        { value: 'robin', label: 'Robin' },
+        { value: 'joker', label: 'Joker' },
+      ]"
     />
   </div>
 </template>
