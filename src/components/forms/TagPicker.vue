@@ -1,6 +1,6 @@
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import Multiselect from "@vueform/multiselect";
 
 export default defineComponent({
@@ -8,12 +8,18 @@ export default defineComponent({
   components: {
     Multiselect,
   },
-  data() {
+  data(props) {
     return {
-      value: null,
+      value: props.selectedTags,
       options: ["Batman", "Robin", "Joker"],
     };
   },
+  props: {
+    selectedTags: {
+      type: Array as PropType<string[]>,
+      default: () => { return [] }
+    }
+  }
 });
 </script>
 <template>

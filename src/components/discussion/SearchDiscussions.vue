@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, ref, PropType } from "vue";
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
@@ -10,13 +10,14 @@ import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { CommunityData } from "@/types/communityTypes";
 import { TagData } from "@/types/tagTypes";
+import { router } from '@/router';
 
 interface Ref<T> {
   value: T
 }
 
 export default defineComponent({
-  setup() {
+  setup(props) {
     const route = useRoute();
 
     const channelId = computed(() => {
@@ -71,11 +72,19 @@ export default defineComponent({
     let tagFilter = computed(() => {
       return `(filter: { text: { anyofterms: "${selectedTags.value.join(" ")}" }})`;
     });
-    const setTagFilters = (tags: Array<string>) => {
-      selectedTags.value = tags;
+    const setTagFilters = (tag: Array<string>) => {
+      selectedTags.value = tag;
+      router.push({ path: '/discussions', query: { 
+        tag,
+        channel: props.routerChannels
+      }})
     }
-    const setChannelFilters = (channels: Array<string>) => {
-      selectedChannels.value = channels;
+    const setChannelFilters = (channel: Array<string>) => {
+      selectedChannels.value = channel;
+      router.push({ path: '/discussions', query: { 
+        tag: props.routerTags,
+        channel 
+      }})
     }
 
     let discussionQuery = computed(() => {
@@ -162,8 +171,18 @@ export default defineComponent({
     FilterModal,
     ChannelPicker,
     TagPicker,
+  },
+  props: {
+    routerTags: {
+      type: Array as PropType<string[]>,
+      default: () => {return []}
+    },
+    routerChannels: {
+      type: Array as PropType<string[]>,
+      default: () => {return []}
+    }
   }
-});
+})
 </script>
 
 <template>
@@ -178,12 +197,14 @@ export default defineComponent({
       @openModal="openModal"
     />
     <div v-if="loading">Loading...</div>
-    <DiscussionList 
+    <DiscussionList
       v-else-if="result && result.queryDiscussion"
-      :discussions="result.queryDiscussion" 
-      :channel-id="channelId" />
+      :discussions="result.queryDiscussion"
+      :channel-id="channelId"
+    />
     <FilterModal :show="showModal" @closeModal="closeModal">
-      <ChannelPicker 
+      <ChannelPicker
+        v-model="selectedChannels"
         v-if="selectedFilterOptions === 'channelPicker'"
         :community-options="communityOptions"
         :selected-channels="selectedChannels"

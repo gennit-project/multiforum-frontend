@@ -16,7 +16,16 @@ export const router = createRouter({
   routes: [
     { path: "/", component: SearchEvents },
     { path: "/events", component: SearchEvents },
-    { path: "/discussions", component: SearchDiscussions },
+    { 
+      path: "/discussions",
+      component: SearchDiscussions,
+      props(route) {
+        return {
+          routerTags: route.query.tag || [],
+          routerChannels: route.query.channel || []
+        }
+      }
+    },
     { path: "/channels", component: SearchChannels },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },

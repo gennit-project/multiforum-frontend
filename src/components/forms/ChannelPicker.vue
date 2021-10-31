@@ -5,7 +5,7 @@
 //         :selected-communities="selectedCommunities"
 //         @pickChannel="pickChannel"
 //       />
-import { defineComponent } from "vue";
+import { defineComponent, PropType } from "vue";
 import Multiselect from "@vueform/multiselect";
 
 export default defineComponent({
@@ -13,12 +13,17 @@ export default defineComponent({
   components: {
     Multiselect,
   },
-  data() {
+  data(props) {
     return {
-      value: null,
-      options: ["Batman", "Robin", "Joker"],
+      value: props.selectedChannels
     };
   },
+  props: {
+    selectedChannels: {
+      type: Array as PropType<string[]>,
+      default: () => { return [] }
+    }
+  }
 });
 </script>
 <template>
