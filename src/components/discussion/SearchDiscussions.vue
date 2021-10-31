@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
@@ -11,6 +11,10 @@ import TagPicker from "@/components/forms/TagPicker.vue";
 import { CommunityData } from "@/types/communityTypes";
 import { TagData } from "@/types/tagTypes";
 
+interface Ref<T> {
+  value: T
+}
+
 export default defineComponent({
   setup() {
     const route = useRoute();
@@ -19,13 +23,13 @@ export default defineComponent({
       return route.params.channelId;
     });
 
-    const showModal: Boolean = false;
-    const selectedFilterOptions: String = "";
-    const selectedTags: Array<TagData> = [];
-    const selectedCommunities: Array<CommunityData> = [];
+    const showModal: Ref<boolean | undefined> = ref(false);
+    const selectedFilterOptions: Ref<string> = ref("");
+    const selectedTags: Ref<Array<string>> = ref([]);
+    const selectedChannels: Ref<Array<string>> = ref([]);
     const searchInput: String = "";
-    // const communityOptions: Array<CommunityData> = [];
-    // const tagOptions: Array<TagData> = [];
+    const communityOptions: Array<CommunityData> = [];
+    const tagOptions: Array<TagData> = [];
 
     let textFilters = computed((): string => {
       if (!searchInput) {
@@ -38,7 +42,7 @@ export default defineComponent({
     });
 
     let needsCascade = computed(() => {
-      return selectedCommunities.length > 0 || selectedTags.length > 0;
+      return selectedChannels.value.length > 0 || selectedTags.value.length > 0;
     });
 
     let cascadeText = computed(() => {
@@ -55,18 +59,21 @@ export default defineComponent({
       // selected community wouldn't be
       // shown just because they don't have tags.
       return `@cascade(fields: [${
-        selectedTags.length > 0 ? `"Tags",` : ""
+        selectedTags.value.length > 0 ? `"Tags",` : ""
       } "Communities"])`;
     });
 
     let communityFilter = computed(() => {
-      return `(filter: { url: { anyofterms: "${selectedCommunities.join(
+      return `(filter: { url: { anyofterms: "${selectedChannels.value.join(
         " "
       )}"}})`;
     });
     let tagFilter = computed(() => {
-      return `(filter: { text: { anyofterms: "${selectedTags.join(" ")}" }})`;
+      return `(filter: { text: { anyofterms: "${selectedTags.value.join(" ")}" }})`;
     });
+    const setTagFilters = (tags: Array<string>) => {
+      selectedTags.value = tags;
+    }
 
     let discussionQuery = computed(() => {
       return gql`
@@ -74,7 +81,7 @@ export default defineComponent({
           queryDiscussion ${textFilters.value} ${needsCascade.value ? cascadeText.value : ""}{
             id
             Communities ${
-              selectedCommunities.length > 0 ? communityFilter.value : ""
+              selectedChannels.value.length > 0 ? communityFilter.value : ""
             }{
               url
             }
@@ -84,7 +91,7 @@ export default defineComponent({
             Author {
               username
             }
-            Tags ${selectedTags.length > 0 ? tagFilter.value : ""}{
+            Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
               text
             }
             CommunitiesAggregate {
@@ -112,12 +119,37 @@ export default defineComponent({
 
     const { result, loading } = useQuery(discussionQuery.value)
 
+    const openModal = (selectedFilter: string) => {
+      showModal.value = true;
+      selectedFilterOptions.value = selectedFilter;
+    }
+    const closeModal = () => {
+      showModal.value = false;
+      selectedFilterOptions.value = "";
+    }
+    
+    const pickChannel = (channels: Array<string>) => {
+      selectedChannels.value = channels;
+    }
+    const pickTag = (tags: Array<string>) =>{
+      selectedTags.value = tags;
+    }
+
     return {
       channelId,
       showModal,
       selectedFilterOptions,
       result,
-      loading
+      loading,
+      selectedChannels,
+      selectedTags,
+      communityOptions,
+      tagOptions,
+      openModal,
+      closeModal,
+      pickChannel,
+      pickTag,
+      setTagFilters
     };
   },
   components: {
@@ -126,17 +158,7 @@ export default defineComponent({
     FilterModal,
     ChannelPicker,
     TagPicker,
-  },
-  methods: {
-    openModal(selectedFilterOptions: string) {
-      this.showModal = true;
-      this.selectedFilterOptions = selectedFilterOptions;
-    },
-    closeModal() {
-      this.showModal = false;
-      this.selectedFilterOptions = "";
-    },
-  },
+  }
 });
 </script>
 
@@ -155,8 +177,19 @@ export default defineComponent({
       :discussions="result.queryDiscussion" 
       :channel-id="channelId" />
     <FilterModal :show="showModal" @closeModal="closeModal">
-      <ChannelPicker v-if="selectedFilterOptions === 'channelPicker'" />
-      <TagPicker v-if="selectedFilterOptions === 'tagPicker'" />
+      <ChannelPicker 
+        v-if="selectedFilterOptions === 'channelPicker'"
+        :community-options="communityOptions"
+        :selected-communities="selectedChannels"
+        @pickChannel="pickChannel"
+      />
+      <TagPicker
+        v-if="selectedFilterOptions === 'tagPicker'"
+        :tag-options="tagOptions"
+        :selected-tags="selectedTags"
+        @pickTag="pickTag"
+        @setTagFilters="setTagFilters"
+      />
     </FilterModal>
   </div>
 </template>
