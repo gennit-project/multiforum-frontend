@@ -23,7 +23,7 @@ export default defineComponent({
 <template>
   <div
     v-if="show"
-    class="fixed z-10 inset-0 overflow-y-auto"
+    class="fixed inset-0 overflow-visible z-20"
     aria-labelledby="modal-title"
     role="dialog"
     aria-modal="true"
@@ -89,6 +89,7 @@ export default defineComponent({
           transform
           transition-all
           sm:my-8 sm:align-middle sm:w-full sm:p-6
+          overflow-visible
         "
         :class="[!isLarge ? 'sm:max-w-lg' : '']"
       >
@@ -198,3 +199,5 @@ export default defineComponent({
     </div>
   </div>
 </template>
+<style>
+</style>

@@ -16,13 +16,15 @@ export const router = createRouter({
   routes: [
     { path: "/", component: SearchEvents },
     { path: "/events", component: SearchEvents },
-    { 
+    {
       path: "/discussions",
       component: SearchDiscussions,
       props(route) {
+        const tagStringArray = route.query.tag?.toString().split(',')
+        const channelStringArray = route.query.channel?.toString().split(',')
         return {
-          routerTags: route.query.tag || [],
-          routerChannels: route.query.channel || []
+          routerTags: route.query.tag ? tagStringArray : [],
+          routerChannels: route.query.channel ? channelStringArray : []
         }
       }
     },

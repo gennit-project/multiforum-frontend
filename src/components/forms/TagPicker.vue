@@ -9,13 +9,23 @@ export default defineComponent({
     Multiselect,
   },
   data(props) {
+    const formattedTagOptions = props.tagOptions.map(tag => {
+        return {
+          value: tag,
+          label: tag
+        }
+      })
     return {
       value: props.selectedTags,
-      options: ["Batman", "Robin", "Joker"],
+      formattedTagOptions
     };
   },
   props: {
     selectedTags: {
+      type: Array as PropType<string[]>,
+      default: () => { return [] }
+    },
+    tagOptions: {
       type: Array as PropType<string[]>,
       default: () => { return [] }
     }
@@ -28,19 +38,18 @@ export default defineComponent({
     <Multiselect
       v-model="value"
       mode="tags"
+      
       @select="$emit('setTagFilters', value)"
       @deselect="$emit('setTagFilters', value)"
+      :placeholder="'Enter tags here'"
       :closeOnSelect="false"
       :searchable="true"
       :createTag="true"
-      :options="[
-        { value: 'batman', label: 'Batman' },
-        { value: 'robin', label: 'Robin' },
-        { value: 'joker', label: 'Joker' },
-      ]"
+      :options="formattedTagOptions"
     />
   </div>
 </template>
 
 
-<style src="@vueform/multiselect/themes/default.css"></style>
+<style src="@vueform/multiselect/themes/default.css">
+</style>

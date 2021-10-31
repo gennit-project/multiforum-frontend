@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client/core";
 
-const GET_TAGS = gql`
+export const GET_TAGS = gql`
   query getTags {
     queryTag {
       text
@@ -8,7 +8,7 @@ const GET_TAGS = gql`
   }
 `;
 
-const GET_EVENTS_AND_DISCUSSIONS_BY_TAG = gql`
+export const GET_EVENTS_AND_DISCUSSIONS_BY_TAG = gql`
 query getEventsByTag($tag: String!) {
   queryTag ( filter: {
     text: { 
@@ -67,6 +67,3 @@ query getEventsByTag($tag: String!) {
   }
 }
 `
-
-
-export { GET_TAGS, GET_EVENTS_AND_DISCUSSIONS_BY_TAG };

@@ -8,7 +8,26 @@ import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 
 // Cache implementation
-const cache = new InMemoryCache()
+const cache = new InMemoryCache({
+  typePolicies: {
+    Tag: {
+      keyFields: ["text"]
+    },
+    Community: {
+      keyFields: ["url"]
+    },
+    Discussion: {
+      keyFields: ["id"]
+    },
+    Query: {
+      fields: {
+        queryDiscussion: {
+          merge: false
+        }
+      }
+    }
+  }
+})
 
 // Create the apollo client
 const apolloClient = new ApolloClient({

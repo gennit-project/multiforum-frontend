@@ -22,6 +22,10 @@ export default defineComponent({
     selectedChannels: {
       type: Array as PropType<string[]>,
       default: () => { return [] }
+    },
+    channelOptions: {
+      type: Array as PropType<string[]>,
+      default: () => { return [] }
     }
   }
 });
@@ -34,14 +38,11 @@ export default defineComponent({
       mode="tags"
       @select="$emit('setChannelFilters', value)"
       @deselect="$emit('setChannelFilters', value)"
+      :placeholder="'Enter channels here'"
       :closeOnSelect="false"
       :searchable="true"
       :createTag="true"
-      :options="[
-        { value: 'batman', label: 'Batman' },
-        { value: 'robin', label: 'Robin' },
-        { value: 'joker', label: 'Joker' },
-      ]"
+      :options="channelOptions"
     />
   </div>
 </template>

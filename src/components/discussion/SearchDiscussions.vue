@@ -8,12 +8,14 @@ import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
-import { CommunityData } from "@/types/communityTypes";
-import { TagData } from "@/types/tagTypes";
-import { router } from '@/router';
+import { GET_COMMUNITY_NAMES } from "@/graphQLData/community/queries";
+import { GET_TAGS } from "@/graphQLData/tag/queries";
+import { router } from "@/router";
+import { TagData } from "@/types/tagTypes.d";
+import { ChannelData } from "@/types/channelTypes.d";
 
 interface Ref<T> {
-  value: T
+  value: T;
 }
 
 export default defineComponent({
@@ -26,11 +28,9 @@ export default defineComponent({
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
-    const selectedTags: Ref<Array<string>> = ref([]);
-    const selectedChannels: Ref<Array<string>> = ref([]);
+    const selectedTags: Ref<Array<string>> = ref(props.routerTags);
+    const selectedChannels: Ref<Array<string>> = ref(props.routerChannels);
     const searchInput: String = "";
-    const communityOptions: Array<CommunityData> = [];
-    const tagOptions: Array<TagData> = [];
 
     let textFilters = computed((): string => {
       if (!searchInput) {
@@ -57,8 +57,7 @@ export default defineComponent({
       // If we are filtering by community but not by tag,
       // we include only the community field in the cascade parameters.
       // If the tags parameter was included, discussions in the
-      // selected community wouldn't be
-      // shown just because they don't have tags.
+      // selected community would be excluded for not having tags.
       return `@cascade(fields: [${
         selectedTags.value.length > 0 ? `"Tags",` : ""
       } "Communities"])`;
@@ -70,27 +69,39 @@ export default defineComponent({
       )}"}})`;
     });
     let tagFilter = computed(() => {
-      return `(filter: { text: { anyofterms: "${selectedTags.value.join(" ")}" }})`;
+      return `(filter: { text: { anyofterms: "${selectedTags.value.join(
+        " "
+      )}" }})`;
     });
     const setTagFilters = (tag: Array<string>) => {
       selectedTags.value = tag;
-      router.push({ path: '/discussions', query: { 
-        tag,
-        channel: props.routerChannels
-      }})
-    }
+      router.push({
+        path: "/discussions",
+        query: {
+          channel: selectedChannels.value,
+          tag: selectedTags.value
+        },
+      });
+      refetchDiscussions()
+    };
     const setChannelFilters = (channel: Array<string>) => {
       selectedChannels.value = channel;
-      router.push({ path: '/discussions', query: { 
-        tag: props.routerTags,
-        channel 
-      }})
-    }
+      router.push({
+        path: "/discussions",
+        query: {
+          tag: selectedTags.value,
+          channel: selectedChannels.value
+        },
+      });
+      refetchDiscussions()
+    };
 
-    let discussionQuery = computed(() => {
-      return gql`
+    let discussionQueryString = computed(() => {
+      return `
         query getDiscussions {
-          queryDiscussion ${textFilters.value} ${needsCascade.value ? cascadeText.value : ""}{
+          queryDiscussion ${textFilters.value} ${
+        needsCascade.value ? cascadeText.value : ""
+      }{
             id
             Communities ${
               selectedChannels.value.length > 0 ? communityFilter.value : ""
@@ -129,40 +140,45 @@ export default defineComponent({
         `;
     });
 
-    const { result, loading } = useQuery(discussionQuery.value)
+    let discussionQuery = computed(() => {
+      return gql`${discussionQueryString.value}`
+    })
+
+    const {
+      result: discussionResult,
+      loading: discussionLoading,
+      refetch: refetchDiscussions
+    } = useQuery(
+      discussionQuery
+    );
+    const { result: tagOptions } = useQuery(GET_TAGS);
+    const { result: channelOptions } = useQuery(GET_COMMUNITY_NAMES);
 
     const openModal = (selectedFilter: string) => {
       showModal.value = true;
       selectedFilterOptions.value = selectedFilter;
-    }
+    };
     const closeModal = () => {
       showModal.value = false;
       selectedFilterOptions.value = "";
-    }
-    
-    const pickChannel = (channels: Array<string>) => {
-      selectedChannels.value = channels;
-    }
-    const pickTag = (tags: Array<string>) =>{
-      selectedTags.value = tags;
-    }
+    };
 
     return {
       channelId,
       showModal,
       selectedFilterOptions,
-      result,
-      loading,
+      discussionResult,
+      discussionLoading,
       selectedChannels,
       selectedTags,
-      communityOptions,
+      channelOptions,
       tagOptions,
       openModal,
       closeModal,
-      pickChannel,
-      pickTag,
       setTagFilters,
-      setChannelFilters
+      setChannelFilters,
+      discussionQuery,
+      discussionQueryString
     };
   },
   components: {
@@ -174,15 +190,23 @@ export default defineComponent({
   },
   props: {
     routerTags: {
-      type: Array as PropType<string[]>,
-      default: () => {return []}
+      type: Array as PropType<Array<string>>,
+      default: () => { return []}
     },
     routerChannels: {
-      type: Array as PropType<string[]>,
-      default: () => {return []}
-    }
-  }
-})
+      type: Array as PropType<Array<string>>,
+      default: () => { return []}
+    },
+  },
+  methods: {
+    getTagOptionLabels(options: Array<TagData>) {
+      return options.map((tag) => tag.text);
+    },
+    getChannelOptionLabels(options: Array<ChannelData>) {
+      return options.map((channel) => channel.url);
+    },
+  },
+});
 </script>
 
 <template>
@@ -196,26 +220,32 @@ export default defineComponent({
       :channel-id="channelId"
       @openModal="openModal"
     />
-    <div v-if="loading">Loading...</div>
+    <div v-if="discussionLoading">Loading...</div>
     <DiscussionList
-      v-else-if="result && result.queryDiscussion"
-      :discussions="result.queryDiscussion"
+      v-else-if="discussionResult && discussionResult.queryDiscussion"
+      :discussions="discussionResult.queryDiscussion"
       :channel-id="channelId"
     />
     <FilterModal :show="showModal" @closeModal="closeModal">
       <ChannelPicker
         v-model="selectedChannels"
-        v-if="selectedFilterOptions === 'channelPicker'"
-        :community-options="communityOptions"
+        v-if="
+          selectedFilterOptions === 'channelPicker' &&
+          tagOptions &&
+          tagOptions.queryTag
+        "
+        :channel-options="getChannelOptionLabels(channelOptions.queryCommunity)"
         :selected-channels="selectedChannels"
-        @pickChannel="pickChannel"
         @setChannelFilters="setChannelFilters"
       />
       <TagPicker
-        v-if="selectedFilterOptions === 'tagPicker'"
-        :tag-options="tagOptions"
+        v-if="
+          selectedFilterOptions === 'tagPicker' &&
+          channelOptions &&
+          channelOptions.queryCommunity
+        "
+        :tag-options="getTagOptionLabels(tagOptions.queryTag)"
         :selected-tags="selectedTags"
-        @pickTag="pickTag"
         @setTagFilters="setTagFilters"
       />
     </FilterModal>
