@@ -44,7 +44,6 @@ export default defineComponent({
       :placeholder="'Enter tags here'"
       :closeOnSelect="false"
       :searchable="true"
-      :createTag="true"
       :options="formattedTagOptions"
     />
   </div>
