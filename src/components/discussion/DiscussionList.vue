@@ -50,6 +50,9 @@ export default defineComponent({
     closePreview() {
       this.previewIsOpen = false;
     },
+    filterByTag(tag: string) {
+      this.$emit('filterByTag', tag)
+    }
   },
   inheritAttrs: false
 });
@@ -67,6 +70,7 @@ export default defineComponent({
       :discussion="discussion"
       :current-channel-id="channelId"
       @openDiscussionPreview="openPreview"
+      @filterByTag="filterByTag"
     />
     <DiscussionPreview
       :isOpen="previewIsOpen"

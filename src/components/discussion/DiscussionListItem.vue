@@ -94,7 +94,12 @@ export default defineComponent({
             </router-link>
           </div>
 
-          <Tag :key="tag" v-for="tag in tags" :tag="tag" />
+          <Tag
+            :key="tag"
+            v-for="tag in tags"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
         </div>
       </div>
       <div class="col-span-1">

@@ -219,6 +219,9 @@ export default defineComponent({
     updateSearchResult(input: string) {
       this.setSearchInput(input);
     },
+    filterByTag(tag: string) {
+      this.setTagFilters([tag])
+    }
   },
 });
 </script>
@@ -241,6 +244,7 @@ export default defineComponent({
       v-else-if="discussionResult && discussionResult.queryDiscussion"
       :discussions="discussionResult.queryDiscussion"
       :channel-id="channelId"
+      @filterByTag="filterByTag"
     />
     <FilterModal :show="showModal" @closeModal="closeModal">
       <ChannelPicker
