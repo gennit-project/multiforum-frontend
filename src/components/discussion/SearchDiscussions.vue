@@ -30,15 +30,13 @@ export default defineComponent({
     const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(props.routerTags);
     const selectedChannels: Ref<Array<string>> = ref(props.routerChannels);
-    const searchInput: String = "";
+    const searchInput: Ref<string> = ref(props.routerSearchTerms);
 
     let textFilters = computed((): string => {
-      if (!searchInput) {
+      if (!searchInput.value) {
         return "";
       }
-      // These filters allow the
-      // GET_DISCUSSIONS GraphQL query to be parameterized.
-      let textFilterString = `(filter: { title: { alloftext: "${searchInput}"}, or: { body: { alloftext: "${searchInput}"}}})`;
+      let textFilterString = `(filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}})`;
       return textFilterString;
     });
 
@@ -73,27 +71,28 @@ export default defineComponent({
         " "
       )}" }})`;
     });
-    const setTagFilters = (tag: Array<string>) => {
-      selectedTags.value = tag;
+    const updateRouterQueryParams = () => {
       router.push({
         path: "/discussions",
         query: {
+          search: searchInput.value,
           channel: selectedChannels.value,
-          tag: selectedTags.value
+          tag: selectedTags.value,
         },
       });
-      refetchDiscussions()
+    };
+
+    const setSearchInput = (input: string) => {
+      searchInput.value = input;
+      updateRouterQueryParams();
+    };
+    const setTagFilters = (tag: Array<string>) => {
+      selectedTags.value = tag;
+      updateRouterQueryParams();
     };
     const setChannelFilters = (channel: Array<string>) => {
       selectedChannels.value = channel;
-      router.push({
-        path: "/discussions",
-        query: {
-          tag: selectedTags.value,
-          channel: selectedChannels.value
-        },
-      });
-      refetchDiscussions()
+      updateRouterQueryParams();
     };
 
     let discussionQueryString = computed(() => {
@@ -141,16 +140,16 @@ export default defineComponent({
     });
 
     let discussionQuery = computed(() => {
-      return gql`${discussionQueryString.value}`
-    })
+      return gql`
+        ${discussionQueryString.value}
+      `;
+    });
 
     const {
       result: discussionResult,
       loading: discussionLoading,
-      refetch: refetchDiscussions
-    } = useQuery(
-      discussionQuery
-    );
+      refetch: refetchDiscussions,
+    } = useQuery(discussionQuery);
     const { result: tagOptions } = useQuery(GET_TAGS);
     const { result: channelOptions } = useQuery(GET_COMMUNITY_NAMES);
 
@@ -165,20 +164,24 @@ export default defineComponent({
 
     return {
       channelId,
-      showModal,
-      selectedFilterOptions,
-      discussionResult,
-      discussionLoading,
-      selectedChannels,
-      selectedTags,
       channelOptions,
-      tagOptions,
-      openModal,
       closeModal,
-      setTagFilters,
-      setChannelFilters,
+      discussionLoading,
       discussionQuery,
-      discussionQueryString
+      discussionQueryString,
+      discussionResult,
+      openModal,
+      refetchDiscussions,
+      searchInput,
+      setSearchInput,
+      setChannelFilters,
+      setTagFilters,
+      showModal,
+      selectedChannels,
+      selectedFilterOptions,
+      selectedTags,
+      tagOptions,
+      textFilters,
     };
   },
   components: {
@@ -191,12 +194,20 @@ export default defineComponent({
   props: {
     routerTags: {
       type: Array as PropType<Array<string>>,
-      default: () => { return []}
+      default: () => {
+        return [];
+      },
     },
     routerChannels: {
       type: Array as PropType<Array<string>>,
-      default: () => { return []}
+      default: () => {
+        return [];
+      },
     },
+    routerSearchTerms: {
+      type: String,
+      default: ""
+    }
   },
   methods: {
     getTagOptionLabels(options: Array<TagData>) {
@@ -204,6 +215,9 @@ export default defineComponent({
     },
     getChannelOptionLabels(options: Array<ChannelData>) {
       return options.map((channel) => channel.url);
+    },
+    updateSearchResult(input: string) {
+      this.setSearchInput(input);
     },
   },
 });
@@ -218,7 +232,9 @@ export default defineComponent({
       :selected-tags="selectedTags"
       :selected-channels="selectedChannels"
       :channel-id="channelId"
+      :router-search-terms="routerSearchTerms"
       @openModal="openModal"
+      @updateSearchInput="updateSearchResult"
     />
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList

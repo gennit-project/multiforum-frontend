@@ -22,7 +22,9 @@ export const router = createRouter({
       props(route) {
         const tagStringArray = route.query.tag?.toString().split(',')
         const channelStringArray = route.query.channel?.toString().split(',')
+
         return {
+          routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
           routerChannels: route.query.channel ? channelStringArray : []
         }

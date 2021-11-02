@@ -78,12 +78,21 @@ export default defineComponent({
         return [];
       },
     },
+    routerSearchTerms: {
+      type: String,
+      default: ""
+    }
   },
   components: {
     FilterChip,
     SearchBar,
     AddToFeed,
   },
+  methods: {
+    updateSearchInput(input: string) {
+      this.$emit('updateSearchInput', input)
+    }
+  }
 });
 </script>
 
@@ -100,7 +109,11 @@ export default defineComponent({
           text-gray-500
         "
       >
-        <SearchBar :searchPlaceholder="searchPlaceholder" />
+        <SearchBar
+          :router-search-terms="routerSearchTerms"
+          :search-placeholder="searchPlaceholder"
+          @updateSearchInput="updateSearchInput"
+        />
       </h3>
       <div class="md:col-span-9 col-span-12">
         <FilterChip
