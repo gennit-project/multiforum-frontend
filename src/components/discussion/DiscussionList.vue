@@ -3,35 +3,40 @@ import { defineComponent, PropType, computed } from "vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
 import { DiscussionData } from "../../types/discussionTypes";
-import { useRoute } from 'vue-router';
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   setup(props) {
-    const route = useRoute()
+    const route = useRoute();
     const channelId = computed(() => {
-      return route.params.channelId || ""
-    })
+      return route.params.channelId || "";
+    });
     const resultsAggregate = computed(() => {
-
       if (props.discussions.length === 1) {
-        return '1 Result'
+        return "1 Result";
       }
       if (props.discussions.length > 1) {
-        return `${props.discussions.length} Results`
+        return `${props.discussions.length} Results`;
       }
-      return '0 Results'
-    })
+      return "0 Results";
+    });
     return {
       selectedDiscussion: {},
       resultsAggregate,
-      channelId
+      channelId,
     };
   },
   props: {
     discussions: {
       type: Array as PropType<Array<DiscussionData>>,
-      default: () => { return [] }
-    }
+      default: () => {
+        return [];
+      },
+    },
+    searchInput: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -51,32 +56,31 @@ export default defineComponent({
       this.previewIsOpen = false;
     },
     filterByTag(tag: string) {
-      this.$emit('filterByTag', tag)
-    }
+      this.$emit("filterByTag", tag);
+    },
   },
-  inheritAttrs: false
+  inheritAttrs: false,
 });
-
-
 </script>
 <template>
-<div class="divide-y divide-gray-200 mx-auto max-w-5xl">
-  <p class="px-8">{{ resultsAggregate }}</p>
-  <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
-  <ul v-else role="list" class="px-8 divide-y divide-gray-200 relative">
-    <DiscussionListItem
-      v-for="discussion in discussions"
-      :key="discussion.id"
-      :discussion="discussion"
-      :current-channel-id="channelId"
-      @openDiscussionPreview="openPreview"
-      @filterByTag="filterByTag"
-    />
-    <DiscussionPreview
-      :isOpen="previewIsOpen"
-      :discussion="selectedDiscussion"
-      @closePreview="closePreview"
-    />
-  </ul>
-</div>
+  <div class="divide-y divide-gray-200 mx-auto max-w-5xl">
+    <p class="px-8">{{ resultsAggregate }}</p>
+    <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
+    <ul v-else role="list" class="px-8 divide-y divide-gray-200 relative">
+      <DiscussionListItem
+        v-for="discussion in discussions"
+        :key="discussion.id"
+        :discussion="discussion"
+        :current-channel-id="channelId"
+        :search-input="searchInput"
+        @openDiscussionPreview="openPreview"
+        @filterByTag="filterByTag"
+      />
+      <DiscussionPreview
+        :isOpen="previewIsOpen"
+        :discussion="selectedDiscussion"
+        @closePreview="closePreview"
+      />
+    </ul>
+  </div>
 </template>

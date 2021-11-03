@@ -244,6 +244,7 @@ export default defineComponent({
       v-else-if="discussionResult && discussionResult.queryDiscussion"
       :discussions="discussionResult.queryDiscussion"
       :channel-id="channelId"
+      :search-input="searchInput"
       @filterByTag="filterByTag"
     />
     <FilterModal :show="showModal" @closeModal="closeModal">

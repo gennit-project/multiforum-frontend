@@ -74,6 +74,7 @@ export const router = createRouter({
 // - create/edit community
 // - create/edit discussion
 // - create/edit event
+// - create/edit feed
 
 // feeds
 // - detail - show sources, author, breadcrumbs

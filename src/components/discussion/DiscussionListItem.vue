@@ -4,6 +4,7 @@ import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
 import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "../buttons/Tag.vue";
+import HighlightedSearchTerms from "@/components/forms/HighlightedSearchTerms.vue";
 
 export default defineComponent({
   setup() {},
@@ -16,9 +17,14 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    searchInput: {
+      type: String,
+      default: ""
+    }
   },
   components: {
     Tag,
+    HighlightedSearchTerms
   },
   data(props) {
     return {
@@ -60,11 +66,11 @@ export default defineComponent({
             @click="$emit('openDiscussionPreview', discussion)"
             class="cursor-pointer text-md font-medium text-indigo-600 truncate"
           >
-            <span>{{ title }}</span>
+            <HighlightedSearchTerms :text="title" :search-input="searchInput"/>
           </p>
 
           <p class="line-clamp-2 text-sm font-medium text-gray-500">
-            {{ body }}
+            <HighlightedSearchTerms :text="body" :search-input="searchInput"/>
           </p>
 
           <div class="text-sm">
