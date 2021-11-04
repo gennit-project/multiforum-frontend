@@ -6,23 +6,13 @@ import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
-  setup(props) {
+  setup() {
     const route = useRoute();
     const channelId = computed(() => {
       return JSON.stringify(route.params.channelId) || "";
     });
-    const resultsAggregate = computed(() => {
-      if (props.discussions.length === 1) {
-        return "1 Result";
-      }
-      if (props.discussions.length > 1) {
-        return `${props.discussions.length} Results`;
-      }
-      return "0 Results";
-    });
     return {
       selectedDiscussion: {} as DiscussionData,
-      resultsAggregate,
       channelId,
     };
   },
@@ -64,7 +54,6 @@ export default defineComponent({
 </script>
 <template>
   <div class="divide-y divide-gray-200 mx-auto max-w-5xl">
-    <p class="px-8">{{ resultsAggregate }}</p>
     <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
     <ul v-else role="list" class="px-8 divide-y divide-gray-200 relative">
       <DiscussionListItem

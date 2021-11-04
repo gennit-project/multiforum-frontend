@@ -36,7 +36,7 @@ export default defineComponent({
       if (!searchInput.value) {
         return "";
       }
-      let textFilterString = `(filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}})`;
+      let textFilterString = `, filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}}`;
       return textFilterString;
     });
 
@@ -97,10 +97,10 @@ export default defineComponent({
 
     let discussionQueryString = computed(() => {
       return `
-        query getDiscussions {
-          queryDiscussion ${textFilters.value} ${
-        needsCascade.value ? cascadeText.value : ""
-      }{
+        query getDiscussions ($first: Int, $offset: Int){
+          queryDiscussion (order: { desc: createdDate }, offset: $offset, first: $first${
+            textFilters.value
+          }) ${needsCascade.value ? cascadeText.value : ""}{
             id
             Communities ${
               selectedChannels.value.length > 0 ? communityFilter.value : ""
@@ -149,7 +149,33 @@ export default defineComponent({
       result: discussionResult,
       loading: discussionLoading,
       refetch: refetchDiscussions,
-    } = useQuery(discussionQuery);
+      fetchMore,
+    } = useQuery(discussionQuery, { first: 20, offset: 0 });
+
+    const reachedEndOfResults = ref(false);
+
+    const loadMore = () => {
+      fetchMore({
+        variables: {
+          offset: discussionResult.value.queryDiscussion.length,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (fetchMoreResult.queryDiscussion.length === 0) {
+            
+            reachedEndOfResults.value = true;
+            return prev;
+          }
+          return {
+            ...prev,
+            queryDiscussion: [
+              ...prev.queryDiscussion,
+              ...fetchMoreResult.queryDiscussion,
+            ],
+          };
+        },
+      });
+    };
+
     const { result: tagOptions } = useQuery(GET_TAGS);
     const { result: channelOptions } = useQuery(GET_COMMUNITY_NAMES);
 
@@ -170,7 +196,9 @@ export default defineComponent({
       discussionQuery,
       discussionQueryString,
       discussionResult,
+      loadMore,
       openModal,
+      reachedEndOfResults,
       refetchDiscussions,
       searchInput,
       setSearchInput,
@@ -206,8 +234,8 @@ export default defineComponent({
     },
     routerSearchTerms: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   methods: {
     getTagOptionLabels(options: Array<TagData>) {
@@ -220,8 +248,8 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     filterByTag(tag: string) {
-      this.setTagFilters([tag])
-    }
+      this.setTagFilters([tag]);
+    },
   },
 });
 </script>
@@ -247,6 +275,12 @@ export default defineComponent({
       :search-input="searchInput"
       @filterByTag="filterByTag"
     />
+    <div class="grid justify-items-stretch">
+      <button class="justify-self-center" @click="loadMore">
+        {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
+      </button>
+    </div>
+
     <FilterModal :show="showModal" @closeModal="closeModal">
       <ChannelPicker
         v-model="selectedChannels"
