@@ -9,7 +9,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const channelId = computed(() => {
-      return route.params.channelId || "";
+      return JSON.stringify(route.params.channelId) || "";
     });
     const resultsAggregate = computed(() => {
       if (props.discussions.length === 1) {
@@ -21,7 +21,7 @@ export default defineComponent({
       return "0 Results";
     });
     return {
-      selectedDiscussion: {},
+      selectedDiscussion: {} as DiscussionData,
       resultsAggregate,
       channelId,
     };

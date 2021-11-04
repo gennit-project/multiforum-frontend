@@ -3,8 +3,12 @@ export type ChannelData = {
     name: string;
     description: string?;
     Organizers: [object];
-    DiscussionsAggregate: object;
-    EventsAggregate: object;
+    DiscussionsAggregate: {
+        count: string;
+    };
+    EventsAggregate: {
+        count: string;
+    };
     tags: [object];
     
 }
