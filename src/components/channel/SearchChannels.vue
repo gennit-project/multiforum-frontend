@@ -124,7 +124,7 @@ export default defineComponent({
       loading: channelLoading,
       refetch: refetchChannels,
       fetchMore,
-    } = useQuery(channelQuery, { first: 20, offset: 0 });
+    } = useQuery(channelQuery, { first: 5, offset: 0 });
 
     const reachedEndOfResults = ref(false);
 
@@ -134,15 +134,15 @@ export default defineComponent({
           offset: channelResult.value.queryCommunity.length,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.queryChannel.length === 0) {
+          if (fetchMoreResult.queryCommunity.length === 0) {
             reachedEndOfResults.value = true;
             return prev;
           }
           return {
             ...prev,
-            queryChannel: [
-              ...prev.queryChannel,
-              ...fetchMoreResult.queryChannel,
+            queryCommunity: [
+              ...prev.queryCommunity,
+              ...fetchMoreResult.queryCommunity,
             ],
           };
         },
