@@ -124,7 +124,7 @@ export default defineComponent({
       loading: channelLoading,
       refetch: refetchChannels,
       fetchMore,
-    } = useQuery(channelQuery, { first: 5, offset: 0 });
+    } = useQuery(channelQuery, { first: 20, offset: 0 });
 
     const reachedEndOfResults = ref(false);
 

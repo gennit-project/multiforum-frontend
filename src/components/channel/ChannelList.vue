@@ -12,6 +12,10 @@ export default defineComponent({
         return [];
       },
     },
+    searchInput: {
+      type: String,
+      default: ""
+    }
   },
   components: {
     ChannelListItem
@@ -25,6 +29,7 @@ export default defineComponent({
       v-for="channel in channels"
       :key="channel.url"
       :channel="channel"
+      :search-input="searchInput"
     />
   </div>
 </template>

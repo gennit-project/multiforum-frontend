@@ -2,7 +2,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
-import Tag from "../buttons/Tag.vue"
+import HighlightedSearchTerms from "../forms/HighlightedSearchTerms.vue";
+import Tag from "../buttons/Tag.vue";
 
 export default defineComponent({
   setup() {},
@@ -11,17 +12,22 @@ export default defineComponent({
       type: Object as PropType<ChannelData>,
       required: true,
     },
+    searchInput: {
+      type: String,
+      default: "",
+    },
   },
   data(props) {
-      return {
-          tags: props.channel.Tags.map((tag) => {
-            return tag.text;
-          })
-      }
+    return {
+      tags: props.channel.Tags.map((tag) => {
+        return tag.text;
+      }),
+    };
   },
   components: {
-      Tag
-  }
+    Tag,
+    HighlightedSearchTerms,
+  },
 });
 </script>
 
@@ -50,23 +56,34 @@ export default defineComponent({
     <div class="flex-1 min-w-0">
       <router-link :to="`/c/${channel.url}`" class="focus:outline-none">
         <span class="absolute inset-0" aria-hidden="true" />
-        <p class="font-large text-gray-900">c/{{ channel.url }}</p>
-        <p class="text-sm text-gray-500 truncate">
-          {{ channel.name }}
+        <p class="font-large text-gray-900">
+          c/<HighlightedSearchTerms
+            :text="channel.url"
+            :search-input="searchInput"
+          />
         </p>
         <p class="text-sm text-gray-500 truncate">
-          {{ channel.description }}
+          <HighlightedSearchTerms
+            :text="channel.name"
+            :search-input="searchInput"
+          />
+        </p>
+        <p class="text-sm text-gray-500 truncate">
+          <HighlightedSearchTerms
+            :text="channel.description"
+            :search-input="searchInput"
+          />
         </p>
         <p class="text-sm text-gray-500 truncate">
           {{ channel.DiscussionsAggregate.count }} Discussions,
           {{ channel.EventsAggregate.count }} Events
         </p>
         <Tag
-            :key="tag"
-            v-for="tag in tags"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
-          />
+          :key="tag"
+          v-for="tag in tags"
+          :tag="tag"
+          @click="$emit('filterByTag', tag)"
+        />
       </router-link>
     </div>
   </div>
