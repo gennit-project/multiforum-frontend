@@ -35,7 +35,15 @@ export default defineComponent({
       if (!searchInput.value) {
         return "";
       }
-      let textFilterString = `, filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}}`;
+      let textFilterString = `, filter: { 
+        name: { 
+          alloftext: "${searchInput.value}"
+        }, 
+        or: { 
+          url: { 
+            alloftext: "${searchInput.value}"
+          }
+        }, }`;
       return textFilterString;
     });
 
@@ -53,9 +61,7 @@ export default defineComponent({
       // we include only the community field in the cascade parameters.
       // If the tags parameter was included, channels in the
       // selected community would be excluded for not having tags.
-      return `@cascade(fields: [${
-        selectedTags.value.length > 0 ? "Tags" : ""
-      }])`;
+      return selectedTags.value.length > 0 ? `@cascade(fields: ["Tags"])` : "";
     });
 
     let tagFilter = computed(() => {

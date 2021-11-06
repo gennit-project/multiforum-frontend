@@ -23,6 +23,9 @@ const cache = new InMemoryCache({
       fields: {
         queryDiscussion: {
           merge: false
+        },
+        queryCommunity: {
+          merge: false
         }
       }
     }
