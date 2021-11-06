@@ -224,7 +224,6 @@ export default defineComponent({
 <template>
   <div>
     <ActiveFilters
-      :class="['mx-auto', 'max-w-5xl']"
       :search-placeholder="'Search channels'"
       :selected-tags="selectedTags"
       :router-search-terms="routerSearchTerms"
@@ -234,7 +233,7 @@ export default defineComponent({
     />
     <div v-if="channelLoading">Loading...</div>
     <ChannelList
-      class="px-10 flex-1 text-xl font-bold"
+      class="px-8 flex-1 text-xl font-bold"
       v-else-if="channelResult && channelResult.queryCommunity"
       :channels="channelResult.queryCommunity"
       :search-input="searchInput"

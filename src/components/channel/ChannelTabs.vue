@@ -45,7 +45,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div >
+  <div class="bg-gray-100">
     <div class="sm:hidden px-8">
       <label for="tabs" class="sr-only">Select a tab</label>
       <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
@@ -81,7 +81,7 @@ export default defineComponent({
               group
               inline-flex
               items-center
-              py-4
+              py-2
               px-1
               border-b-2
               font-medium
@@ -120,7 +120,7 @@ export default defineComponent({
               group
               inline-flex
               items-center
-              py-4
+              py-2
               px-1
               border-b-2
               font-medium
@@ -155,7 +155,7 @@ export default defineComponent({
               group
               inline-flex
               items-center
-              py-4
+              py-2
               px-1
               border-b-2
               font-medium

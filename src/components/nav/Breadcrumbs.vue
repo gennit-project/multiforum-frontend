@@ -19,7 +19,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <nav class="flex mt-4 mb-4" aria-label="Breadcrumb">
+  <nav class="flex mt-3 mb-2" aria-label="Breadcrumb">
     <ol role="list" class="flex items-center space-x-4">
       <li v-for="link, i in links" :key="link.path">
         <div class="flex items-center">

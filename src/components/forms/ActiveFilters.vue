@@ -98,15 +98,14 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="grid grid-cols-12 items-center text-lg flex py-3 px-8">
+    <div class="text-lg py-3 px-8">
       <h3
         class="
-          md:col-span-3
-          col-span-12
           text-xs
           font-semibold
           uppercase
           text-gray-500
+          inline-block
         "
       >
         <SearchBar
@@ -115,7 +114,7 @@ export default defineComponent({
           @updateSearchInput="updateSearchInput"
         />
       </h3>
-      <div class="md:col-span-9 col-span-12">
+      <div class="inline-block">
         <FilterChip
           :key="filter"
           v-for="filter in applicableFilters"
