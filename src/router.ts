@@ -30,7 +30,18 @@ export const router = createRouter({
         }
       }
     },
-    { path: "/channels", component: SearchChannels },
+    { 
+      path: "/channels", 
+      component: SearchChannels,
+      props(route) {
+        const tagStringArray = route.query.tag?.toString().split(',')
+
+        return {
+          routerSearchTerms: route.query.search,
+          routerTags: route.query.tag ? tagStringArray : [],
+        }
+      }
+    },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
     { path: "/u/:username", component: UserProfile },

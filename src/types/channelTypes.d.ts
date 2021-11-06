@@ -1,3 +1,5 @@
+import TagData from './tagTypes';
+
 export type ChannelData = {
     url: number;
     name: string;
@@ -9,6 +11,5 @@ export type ChannelData = {
     EventsAggregate: {
         count: string;
     };
-    tags: [object];
-    
+    Tags: [TagData];
 }
