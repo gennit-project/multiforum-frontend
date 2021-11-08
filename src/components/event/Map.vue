@@ -43,6 +43,7 @@ export default defineComponent({
         @mouseover="
           () => {
             $emit('highlightEvent', event.id);
+            $router.push(`#${event.id}`)
           }
         "
         @mouseleave="

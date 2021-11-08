@@ -311,6 +311,7 @@ export default defineComponent({
       @openModal="openModal"
       @updateSearchInput="updateSearchResult"
     />
+    
     <div v-if="!showMap" class="relative text-lg mx-auto max-w-6xl">
       <SortDropdown :class="['float-right']" />
       <AddToFeed :class="['float-right']" v-if="channelId" />
@@ -356,6 +357,7 @@ export default defineComponent({
         <div v-if="eventLoading">Loading...</div>
 
         <EventList
+          class="overscroll-auto overflow-auto mapHeight"
           v-if="showMap && eventResult && eventResult.queryEvent"
           :events="eventResult.queryEvent"
           :channel-id="channelId"
@@ -423,7 +425,7 @@ export default defineComponent({
 </template>
 
 <style>
-.limited {
-  max-height: 20px;
+.mapHeight {
+  height: 42em;
 }
 </style>
