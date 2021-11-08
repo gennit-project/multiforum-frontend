@@ -14,8 +14,34 @@ import SiteSettings from "./components/SiteSettings.vue";
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", component: SearchEvents },
-    { path: "/events", component: SearchEvents },
+    { 
+      path: "/", 
+      component: SearchEvents,
+      props(route) {
+        const tagStringArray = route.query.tag?.toString().split(',')
+        const channelStringArray = route.query.channel?.toString().split(',')
+
+        return {
+          routerSearchTerms: route.query.search,
+          routerTags: route.query.tag ? tagStringArray : [],
+          routerChannels: route.query.channel ? channelStringArray : []
+        }
+      }
+    },
+    { 
+      path: "/events", 
+      component: SearchEvents,
+      props(route) {
+        const tagStringArray = route.query.tag?.toString().split(',')
+        const channelStringArray = route.query.channel?.toString().split(',')
+
+        return {
+          routerSearchTerms: route.query.search,
+          routerTags: route.query.tag ? tagStringArray : [],
+          routerChannels: route.query.channel ? channelStringArray : []
+        }
+      }
+    },
     {
       path: "/discussions",
       component: SearchDiscussions,

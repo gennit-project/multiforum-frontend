@@ -90,9 +90,9 @@ export default defineComponent({
     let channelQueryString = computed(() => {
       return `
         query queryCommunity ($first: Int, $offset: Int){
-          queryCommunity (offset: $offset, first: $first${
-            textFilters.value
-          }) ${needsCascade.value ? cascadeText.value : ""}{
+          queryCommunity (offset: $offset, first: $first${textFilters.value}) ${
+        needsCascade.value ? cascadeText.value : ""
+      }{
             name
             url
             description
@@ -105,7 +105,7 @@ export default defineComponent({
             EventsAggregate {
               count
             }
-            Tags ${selectedTags.value.length > 0 ? tagFilter.value : ''}{
+            Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
               text
             }
           }
@@ -237,6 +237,7 @@ export default defineComponent({
       v-else-if="channelResult && channelResult.queryCommunity"
       :channels="channelResult.queryCommunity"
       :search-input="searchInput"
+      :selected-tags="selectedTags"
       @filterByTag="filterByTag"
     />
     <div class="grid justify-items-stretch">
@@ -247,9 +248,7 @@ export default defineComponent({
 
     <FilterModal :show="showModal" @closeModal="closeModal">
       <TagPicker
-        v-if="
-          selectedFilterOptions === 'tagPicker'
-        "
+        v-if="selectedFilterOptions === 'tagPicker'"
         :tag-options="getTagOptionLabels(tagOptions.queryTag)"
         :selected-tags="selectedTags"
         @setTagFilters="setTagFilters"

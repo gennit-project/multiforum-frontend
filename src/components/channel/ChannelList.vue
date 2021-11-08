@@ -14,11 +14,22 @@ export default defineComponent({
     },
     searchInput: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
+    selectedTags: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    },
   },
   components: {
-    ChannelListItem
+    ChannelListItem,
+  },
+  methods: {
+    filterByTag(tag: string) {
+      this.$emit("filterByTag", tag);
+    },
   }
 });
 </script>
@@ -30,6 +41,8 @@ export default defineComponent({
       :key="channel.url"
       :channel="channel"
       :search-input="searchInput"
+      :selected-tags="selectedTags"
+      @filterByTag="filterByTag"
     />
   </div>
 </template>

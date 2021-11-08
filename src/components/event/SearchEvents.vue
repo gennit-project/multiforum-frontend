@@ -12,7 +12,7 @@ import EventList from "./EventList.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import DatePicker from "@/components/forms/DatePicker.vue";
-import OtherPicker from "@/components/forms/OtherPicker.vue";
+import CostPicker from "@/components/forms/CostPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import LocationPicker from "@/components/forms/LocationPicker.vue";
 import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
@@ -50,7 +50,7 @@ export default defineComponent({
       if (!searchInput.value) {
         return "";
       }
-      let textFilterString = `, filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}}`;
+      let textFilterString = `, filter: { title: { alloftext: "${searchInput.value}"}}`;
       return textFilterString;
     });
 
@@ -112,9 +112,9 @@ export default defineComponent({
     let eventQueryString = computed(() => {
       return `
         query getEvents ($first: Int, $offset: Int){
-          queryEvent (offset: $offset, first: $first${
-            textFilters.value
-          }) ${needsCascade.value ? cascadeText.value : ""}{
+          queryEvent (offset: $offset, first: $first${textFilters.value}) ${
+        needsCascade.value ? cascadeText.value : ""
+      }{
             id
             Communities ${
               selectedChannels.value.length > 0 ? communityFilter.value : ""
@@ -136,6 +136,21 @@ export default defineComponent({
             }
             Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
               text
+            }
+            CommentSections {
+              id
+              CommentsAggregate {
+                count
+              }
+              Discussion {
+                id
+              }
+              Event {
+                id
+              }
+              Community {
+                url
+              }
             }
           }
         }
@@ -216,7 +231,7 @@ export default defineComponent({
       showMap: false,
       previewIsOpen: false,
       selectedEvent: {},
-      highlightedEventId: 0,
+      highlightedEventId: "",
     };
   },
   props: {
@@ -248,7 +263,7 @@ export default defineComponent({
     LocationPicker,
     WeeklyTimePicker,
     TagPicker,
-    OtherPicker,
+    CostPicker,
     EventPreview,
     AddToFeed,
     Map,
@@ -283,23 +298,20 @@ export default defineComponent({
   <div>
     <ActiveFilters
       :class="['mx-auto', 'max-w-6xl']"
-      :search-placeholder="'Search by location'"
+      :channel-id="channelId"
+      :search-placeholder="'Search events'"
       :applicable-filters="
         channelId
-          ? ['dateRange', 'location', 'weeklyTimes', 'tags']
-          : [
-              'dateRange',
-              'location',
-              'weeklyTimes',
-              'channels',
-              'tags',
-              'other',
-            ]
+          ? ['dateRange', 'location', 'weeklyTimes', 'tags', 'cost']
+          : ['dateRange', 'location', 'weeklyTimes', 'channels', 'tags', 'cost']
       "
+      :selected-tags="selectedTags"
+      :selected-channels="selectedChannels"
+      :router-search-terms="routerSearchTerms"
       @openModal="openModal"
+      @updateSearchInput="updateSearchResult"
     />
-
-    <div v-if="!showMap" class="relative h-full text-lg mx-auto max-w-6xl">
+    <div v-if="!showMap" class="relative text-lg mx-auto max-w-6xl">
       <SortDropdown :class="['float-right']" />
       <AddToFeed :class="['float-right']" v-if="channelId" />
       <ToggleMap
@@ -312,7 +324,10 @@ export default defineComponent({
         :events="eventResult.queryEvent"
         :channel-id="channelId"
         :search-input="searchInput"
+        :selected-tags="selectedTags"
+        :selected-channels="selectedChannels"
         :highlighted-event-id="highlightedEventId"
+        :show-map="showMap"
         @filterByTag="filterByTag"
         @highlightEvent="highlightEvent"
         @open-preview="openPreview"
@@ -339,12 +354,16 @@ export default defineComponent({
         <AddToFeed v-if="channelId" />
 
         <div v-if="eventLoading">Loading...</div>
+
         <EventList
           v-if="showMap && eventResult && eventResult.queryEvent"
           :events="eventResult.queryEvent"
           :channel-id="channelId"
           :search-input="searchInput"
           :highlighted-event-id="highlightedEventId"
+          :selected-tags="selectedTags"
+          :selected-channels="selectedChannels"
+          :show-map="showMap"
           @filterByTag="filterByTag"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
@@ -369,9 +388,28 @@ export default defineComponent({
     <FilterModal :show="showModal" @closeModal="closeModal">
       <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
       <LocationPicker v-if="selectedFilterOptions === 'typePicker'" />
-      <ChannelPicker v-if="selectedFilterOptions === 'channelPicker'" />
-      <TagPicker v-if="selectedFilterOptions === 'tagPicker'" />
-      <OtherPicker v-if="selectedFilterOptions === 'otherPicker'" />
+      <ChannelPicker
+        v-model="selectedChannels"
+        v-if="
+          selectedFilterOptions === 'channelPicker' &&
+          channelOptions &&
+          channelOptions.queryCommunity
+        "
+        :channel-options="getChannelOptionLabels(channelOptions.queryCommunity)"
+        :selected-channels="selectedChannels"
+        @setChannelFilters="setChannelFilters"
+      />
+      <TagPicker
+        v-if="
+          selectedFilterOptions === 'tagPicker' &&
+          tagOptions &&
+          tagOptions.queryTag
+        "
+        :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+        :selected-tags="selectedTags"
+        @setTagFilters="setTagFilters"
+      />
+      <CostPicker v-if="selectedFilterOptions === 'costPicker'" />
     </FilterModal>
     <FilterModal
       v-if="selectedFilterOptions === 'weeklyTimePicker'"
@@ -383,3 +421,9 @@ export default defineComponent({
     </FilterModal>
   </div>
 </template>
+
+<style>
+.limited {
+  max-height: 20px;
+}
+</style>

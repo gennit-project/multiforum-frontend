@@ -91,6 +91,27 @@
             Show events within a radius from an address
           </label>
         </div>
+        <div class="flex items-center">
+          <input
+            id="push-nothing"
+            name="push-notifications"
+            type="radio"
+            class="
+              focus:ring-indigo-500
+              h-4
+              w-4
+              text-indigo-600
+              border
+              border-gray-300
+            "
+          />
+          <label
+            for="push-nothing"
+            class="ml-3 block text-sm font-medium text-gray-700"
+          >
+            Show events within a city or area
+          </label>
+        </div>
       </div>
     </fieldset>
   </form>

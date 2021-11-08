@@ -1,0 +1,352 @@
+type User {
+  username: String! @id @search(by: [hash])
+  name: String @search(by: [exact])
+  pronouns: String
+  location: String
+  bio: String
+  isAdmin: Boolean
+  Comments: [Comment!] @hasInverse(field: UserAuthor)
+  OrganizerOfCommunities: [Community!] @hasInverse(field: Organizers)
+  ModeratorOfCommunities: [Community!] @hasInverse(field: Moderators)
+  Discussions: [Discussion!] @hasInverse(field: Author)
+  Events: [Event!] @hasInverse(field: Organizer)
+  SentMessages: [Message!] @hasInverse(field: Author)
+  ReceivedMessages: [Message!] @hasInverse(field: Recipient)
+  Feeds: [Feed!] @hasInverse(field: Owner)
+  DefaultFeed: Feed
+  createdDate: DateTime @search
+  Tags: [Tag] @hasInverse(field: Users)
+  AuthoredWikiPages: [WikiPage] @hasInverse(field: Authors)
+  WikiChangeProposals: [WikiChangeProposal] @hasInverse(field: Author)
+  Notifications: [Notification] @hasInverse(field: User)
+  Blocked: User @hasInverse(field: IsBlockedBy)
+  IsBlockedBy: User @hasInverse(field: Blocked)
+  SubscribesToFeeds: [Feed]
+  CreatedPublicFeeds: [Feed]
+  FavoriteCommunities: [Community]
+  RecentlyVisitedCommunities: [Community]
+  UpvotedComments: [Comment] @hasInverse(field: UpvotedByUsers)
+  UpvotedDiscussions: [Discussion] @hasInverse(field: UpvotedByUsers)
+  ModerationProfile: ModerationProfile @hasInverse(field: User)
+  DefaultEmojiSkintone: String
+  NotificationBundleInterval: String
+  PreferredTimeZone: String
+  Issues: [Issue] @hasInverse(field: UserAuthor)
+  IssueComments: [IssueComment] @hasInverse(field: UserAuthor)
+  SuspendedFromCommunities: [Community] @hasInverse(field: SuspendedUsers)
+  suspendedFromServer: Boolean @search
+}
+
+type Community {
+  description: String @search(by: [fulltext])
+  name: String! @search(by: [fulltext])
+  url: String! @id @search(by: [term, fulltext])
+  Organizers: [User] @hasInverse(field: OrganizerOfCommunities)
+  Moderators: [User] @hasInverse(field: ModeratorOfCommunities)
+  Discussions: [Discussion!] @hasInverse(field: Communities)
+  RelatedCommunities: [Community!] @hasInverse(field: RelatedCommunities)
+  Events: [Event] @hasInverse(field: Communities)
+  createdDate: DateTime @search
+  Flairs: [Flair] @hasInverse(field: Community)
+  Tags: [Tag] @hasInverse(field: Communities)
+  WikiPages: [WikiPage] @hasInverse(field: Community)
+  ModerationDashboard: ModerationDashboard @hasInverse(field: Community)
+  Rules: [Rule] @hasInverse(field: Community)
+  locked: Boolean @search
+  SuspendedUsers: [User] @hasInverse(field: SuspendedFromCommunities)
+  Comments: [Comment!] @hasInverse(field: Community)
+  CommentSections: [CommentSection!] @hasInverse(field: Community)
+}
+
+type Discussion {
+  id: ID! 
+  Author: User!
+  body: String @search(by: [fulltext])
+  Communities: [Community!] @hasInverse(field: Discussions)
+  title: String! @search(by: [fulltext])
+  createdDate: DateTime! @search
+  editedDate: DateTime
+  Flairs: [Flair] @hasInverse(field: Discussions)
+  Tags: [Tag] @hasInverse(field: Discussions)
+  UpvotedByUsers: [User] @hasInverse(field: UpvotedDiscussions)
+  DownvotedByModerators: [ModerationProfile] @hasInverse(field: DownvotedDiscussions)
+  PastVersions: [DiscussionVersion] @hasInverse(field: Discussion)
+  CommentSections: [CommentSection!]
+}
+
+type CommentSection {
+  id: String! @id 
+  Comments: [Comment] @hasInverse(field: CommentSection)
+  Discussion: Discussion @hasInverse(field: CommentSections)
+  Event: Event @hasInverse(field: CommentSections)
+  Community: Community @hasInverse(field: CommentSections)
+}
+
+type DiscussionVersion {
+  id: ID!
+  title: String!
+  body: String
+  createdDate: DateTime! @search
+  Discussion: Discussion @hasInverse(field: PastVersions)
+}
+
+type Comment {
+  id: ID!
+  UserAuthor: User @hasInverse(field: Comments)
+  ModeratorAuthor: ModerationProfile @hasInverse(field: DiscussionComments)
+  CommentSection: CommentSection @hasInverse(field: Comments)
+  Community: Community @hasInverse(field: Comments)
+  ParentComment: Comment @hasInverse(field: ChildComments)
+  text: String @search(by: [term])
+  isRootComment: Boolean! @search
+  ChildComments: [Comment] @hasInverse(field: ParentComment)
+  authorIsAdmin: Boolean
+  authorIsModerator: Boolean
+  authorIsOrganizer: Boolean
+  authorIsOriginalPoster: Boolean
+  deleted: Boolean
+  editedDate: DateTime
+  createdDate: DateTime @search
+  Emoji: [Emoji] 
+  Tags: [Tag] @hasInverse(field: Comments)
+  ReplyUpvotes: Int
+  UpvotedByUsers: [User] @hasInverse(field: UpvotedComments)
+  DownvotedByModerators: [ModerationProfile] @hasInverse(field: DownvotedComments)
+  PastVersions: [CommentVersion] @hasInverse(field: Comment)
+}
+
+type CommentVersion {
+  id: ID!
+  text: String
+  Comment: Comment @hasInverse(field: PastVersions)
+  createdDate: DateTime! @search
+}
+
+type Message {
+  id: ID!
+  Author: User!
+  Recipient: User!
+  text: String! @search(by: [hash])
+  createdDate: DateTime @search
+}
+
+interface addEventInput {
+  title: String!
+  description: String
+  startTime: DateTime!
+  startTimeYear: String!
+  startTimeMonth: String!
+  startTimeDayOfMonth: String!
+  startTimeDayOfWeek: String!
+  startTimeHourOfDay: Int!
+  endTime: DateTime!
+  Community: Community!
+  locationName: String
+  address: String
+  howToFindLocation: String
+  virtualEventUrl: String
+  Organizer: User!
+  createdDate: DateTime
+  placeId: String
+  isInPrivateResidence: Boolean
+  cost: String
+  location: Point
+  hostType: String
+  hostName: String
+  Tags: [Tag]
+  CommentSections: [CommentSection!]!
+}
+
+type Event {
+  id: ID!
+  title: String! @search(by: [fulltext])
+  description: String
+  startTime: DateTime! @search
+  startTimeYear: String! @search(by: [term])
+  startTimeMonth: String! @search(by: [term])
+  startTimeDayOfMonth: String! @search(by: [term])
+  startTimeDayOfWeek: String! @search(by: [term])
+  startTimeHourOfDay: Int! @search
+  endTime: DateTime! @search
+  Communities: [Community!] @hasInverse(field: Events)
+  CommentSections: [CommentSection!]
+  locationName: String
+  address: String
+  howToFindLocation: String
+  virtualEventUrl: String @search(by: [hash])
+  Organizer: User! @hasInverse(field: Events)
+  editedDate: DateTime
+  createdDate: DateTime
+  placeId: String @search(by:[exact])
+  isInPrivateResidence: Boolean
+  cost: String @search(by: [hash])
+  location: Point @search
+  hostType: String @search(by: [exact])
+  hostName: String
+  canceled: Boolean! @search
+  Tags: [Tag] @hasInverse(field: Events)
+  PastVersions: [EventVersion] @hasInverse(field: Event)
+}
+
+type EventVersion {
+  id: ID!
+  title: String
+  description: String
+  startTime: DateTime
+  endTime: DateTime
+  locationName: String
+  address: String
+  howToFindLocation: String
+  virtualEventUrl: String
+  placeId: String
+  isInPrivateResidence: Boolean
+  cost: String
+  location: Point
+  hostType: String
+  hostName: String
+  canceled: Boolean
+  createdDate: Boolean! @search
+  Event: Event @hasInverse(field: PastVersions)
+}
+
+type Flair {
+  id: ID!
+  Community: Community @hasInverse(field: Flairs)
+  Discussions: [Discussion] @hasInverse(field: Flairs)
+  text: String @search(by: [exact])
+}
+
+type WikiPage {
+  id: ID!
+  Authors: [User] @hasInverse(field: AuthoredWikiPages)
+  text: String
+  Community: Community @hasInverse(field: WikiPages)
+  PastVersions: [WikiPageVersion] @hasInverse(field: WikiPage)
+  createdDate: DateTime @search
+  Tags: [Tag] @hasInverse(field: WikiPages)
+  WikiChangeProposals:[WikiChangeProposal] @hasInverse(field:WikiPage)
+}
+
+type WikiPageVersion {
+  id: ID!
+  text: String
+  Authors: [User]
+  WikiPage: WikiPage @hasInverse(field: PastVersions)
+  createdDate: DateTime! @search
+}
+
+type WikiChangeProposal {
+  id: ID!
+  text: String
+  Author: User @hasInverse(field: WikiChangeProposals)
+  WikiPage: WikiPage @hasInverse(field: WikiChangeProposals)
+  createdDate: DateTime! @search
+  status: String
+}
+
+type Tag {
+  text: String! @id @search
+  Communities: [Community] @hasInverse(field: Tags)
+  Discussions: [Discussion] @hasInverse(field: Tags)
+  Events: [Event] @hasInverse(field: Tags)
+  Users: [User] @hasInverse(field: Tags)
+  Comments: [Comment] @hasInverse(field: Tags)
+  WikiPages: [WikiPage] @hasInverse(field: Tags)
+  Feeds: [Feed] @hasInverse(field: Tags)
+}
+
+type Notification {
+  id: ID!
+  User: User @hasInverse(field:Notifications)
+  text: String
+  read: Boolean
+}
+
+type Feed {
+  id: ID!
+  title: String @search(by: [hash])
+  description: String @search(by: [hash])
+  Owner: User
+  Sources: [Source]
+  Tags: [Tag] @hasInverse(field:Feeds)
+}
+
+enum SourceTypes {
+  rss,
+  activityPub,
+  channelEvents,
+  channelDiscussions
+}
+
+type Source {
+  id: ID!
+  type: SourceTypes
+  websiteUrl: String
+  channel: [Community]
+}
+
+type Emoji {
+  id: ID!
+  identifier: String!
+  colons: String!
+  name: String!
+  native: String!
+  addedBy: User!
+}
+
+type ModerationProfile {
+  id: ID!
+  User: User @hasInverse(field: ModerationProfile)
+  DownvotedComments: [Comment] @hasInverse(field: DownvotedByModerators)
+  DownvotedDiscussions: [Discussion] @hasInverse(field: DownvotedByModerators)
+  CreatedReports: [Report] @hasInverse(field: Author)
+  Issues: [Issue] @hasInverse(field: ModeratorAuthor)
+  DiscussionComments: [Comment] @hasInverse(field: ModeratorAuthor)
+  IssueComments: [IssueComment] @hasInverse(field: ModeratorAuthor)
+}
+
+type ModerationDashboard {
+  id: ID!
+  issueTemplate: String
+  Community: Community @hasInverse(field: ModerationDashboard)
+  Issues: [Issue] @hasInverse(field: ModerationDashboard)
+}
+
+type Rule {
+  id: ID!
+  Community: Community @hasInverse(field: Rules)
+  orderInList: Int
+  summary: String
+  description: String
+}
+
+type Report {
+  id: ID!
+  Author: ModerationProfile @hasInverse(field: CreatedReports)
+  text: String
+  RuleViolations: [Rule]
+  Issues: [Issue] @hasInverse(field: Reports)
+  createdDate: DateTime! @search
+  editedDate: DateTime
+}
+
+type Issue {
+  id: ID!
+  ModeratorAuthor: ModerationProfile @hasInverse(field: Issues)
+  UserAuthor: User @hasInverse(field: Issues)
+  title: String @search(by: [hash])
+  body: String @search(by: [hash])
+  ModerationDashboard: ModerationDashboard @hasInverse(field: Issues)
+  isOpen: Boolean! @search
+  Reports: [Report] @hasInverse(field: Issues)
+  createdDate: DateTime! @search
+  editedDate: DateTime
+}
+
+type IssueComment {
+  id: ID!
+  UserAuthor: User @hasInverse(field: IssueComments)
+  ModeratorAuthor: ModerationProfile @hasInverse(field: IssueComments)
+  createdDate: DateTime! @search
+  editedDate: DateTime
+}

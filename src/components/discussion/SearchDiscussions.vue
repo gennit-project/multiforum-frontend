@@ -47,8 +47,8 @@ export default defineComponent({
     let cascadeText = computed(() => {
       // Adding parameters to @cascade makes it so that
       // even when we are filtering by
-      // communities or tags, we can still see the discussions that
-      // don't have all the fields that we want. Normally,
+      // communities, we can still see the discussions that
+      // don't have tags and vice versa. Normally,
       // @cascade would filter
       // out all items that don't have all of the described
       // output fields.
@@ -273,6 +273,7 @@ export default defineComponent({
       :discussions="discussionResult.queryDiscussion"
       :channel-id="channelId"
       :search-input="searchInput"
+      :selected-tags="selectedTags"
       @filterByTag="filterByTag"
     />
     <div class="grid justify-items-stretch">
@@ -286,8 +287,8 @@ export default defineComponent({
         v-model="selectedChannels"
         v-if="
           selectedFilterOptions === 'channelPicker' &&
-          tagOptions &&
-          tagOptions.queryTag
+          channelOptions &&
+          channelOptions.queryCommunity
         "
         :channel-options="getChannelOptionLabels(channelOptions.queryCommunity)"
         :selected-channels="selectedChannels"
@@ -296,8 +297,8 @@ export default defineComponent({
       <TagPicker
         v-if="
           selectedFilterOptions === 'tagPicker' &&
-          channelOptions &&
-          channelOptions.queryCommunity
+          tagOptions &&
+          tagOptions.queryTag
         "
         :tag-options="getTagOptionLabels(tagOptions.queryTag)"
         :selected-tags="selectedTags"

@@ -8,12 +8,23 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    highlighted: {
+      type: Boolean,
+      default: false
+    }
   },
 });
 </script>
 <template>
   <span
-    class="rounded-full bg-gray-200 px-2 py-1 mr-1 text-xs font-medium text-gray-900 cursor-pointer"
+    :class="[highlighted ? 'highlighted' : 'bg-gray-200 ']"
+    class="rounded-full px-2 py-1 mr-1 text-xs font-medium text-gray-900 cursor-pointer"
     >{{ tag }}</span
   >
 </template>
+
+<style>
+.highlighted {
+  background-color: #feff00;
+}
+</style>

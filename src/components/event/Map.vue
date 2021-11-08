@@ -10,12 +10,12 @@ export default defineComponent({
   },
   props: {
     highlightedEventId: {
-      type: Number,
+      type: String,
       required: true,
     },
     events: {
       type: Array as PropType<EventData[]>,
-      required: true,
+      default: () => {return []},
     },
   },
   methods: {
@@ -36,8 +36,8 @@ export default defineComponent({
     >
       <GMapMarker
         v-for="event in events"
-        :key="event.name"
-        :position="{ lat: event.latitude, lng: event.longitude }"
+        :key="event.title"
+        :position="{ lat: event.location.latitude, lng: event.location.longitude }"
         :clickable="true"
         :draggable="true"
         @mouseover="
@@ -59,14 +59,14 @@ export default defineComponent({
         }"
         @click="
           () => {
-            center = { lat: event.latitude, lng: event.longitude };
+            center = { lat: event.location.latitude, lng: event.location.longitude };
             $emit('highlightEvent', event.id);
             $emit('openPreview', event);
           }
         "
       >
         <GMapInfoWindow :opened="highlightedEventId === event.id">
-          {{ event.name }}
+          {{ event.title }}
         </GMapInfoWindow>
       </GMapMarker>
     </GMapMap>

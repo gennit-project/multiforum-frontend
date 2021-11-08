@@ -19,12 +19,18 @@ export default defineComponent({
     },
     searchInput: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
+    selectedTags: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    },
   },
   components: {
     Tag,
-    HighlightedSearchTerms
+    HighlightedSearchTerms,
   },
   data(props) {
     return {
@@ -36,7 +42,7 @@ export default defineComponent({
       relativeTime: relativeTime(props.discussion.createdDate),
       authorUsername: props.discussion.Author.username,
       // If we are already within the community, don't show
-      // links to other communities and don't specify which
+      // links to cost communities and don't specify which
       // community the comments are in.
       isWithinCommunity: props.currentChannelId ? true : false,
       tags: props.discussion.Tags.map((tag) => {
@@ -66,11 +72,11 @@ export default defineComponent({
             @click="$emit('openDiscussionPreview', discussion)"
             class="cursor-pointer text-md font-medium text-indigo-600 truncate"
           >
-            <HighlightedSearchTerms :text="title" :search-input="searchInput"/>
+            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
           </p>
 
           <p class="line-clamp-2 text-sm font-medium text-gray-500">
-            <HighlightedSearchTerms :text="body" :search-input="searchInput"/>
+            <HighlightedSearchTerms :text="body" :search-input="searchInput" />
           </p>
 
           <div class="text-sm">
@@ -99,8 +105,8 @@ export default defineComponent({
               {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
             </router-link>
           </div>
-
           <Tag
+            :highlighted="selectedTags.indexOf(tag) !== -1 ? true : false"
             :key="tag"
             v-for="tag in tags"
             :tag="tag"

@@ -16,6 +16,12 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    selectedTags: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    },
   },
   data(props) {
     return {
@@ -25,8 +31,8 @@ export default defineComponent({
     };
   },
   components: {
-    Tag,
     HighlightedSearchTerms,
+    Tag,
   },
 });
 </script>
@@ -44,47 +50,48 @@ export default defineComponent({
       flex
       items-center
       space-x-3
-      hover:border-gray-400
-      focus-within:ring-2
-      focus-within:ring-offset-2
-      focus-within:ring-indigo-500
     "
   >
     <div class="flex-shrink-0">
       <img class="h-10 w-10 rounded-full" alt="" />
     </div>
     <div class="flex-1 min-w-0">
-      <router-link :to="`/c/${channel.url}`" class="focus:outline-none">
-        <span class="absolute inset-0" aria-hidden="true" />
+     
         <p class="font-large text-gray-900">
+         <router-link :to="`/c/${channel.url}`" class="focus:outline-none cursor-pointer">
           c/<HighlightedSearchTerms
             :text="channel.url"
             :search-input="searchInput"
           />
+          </router-link>
         </p>
-        <p class="text-sm text-gray-500 truncate">
-          <HighlightedSearchTerms
-            :text="channel.name"
-            :search-input="searchInput"
-          />
-        </p>
-        <p class="text-sm text-gray-500 truncate">
-          <HighlightedSearchTerms
-            :text="channel.description"
-            :search-input="searchInput"
-          />
-        </p>
-        <p class="text-sm text-gray-500 truncate">
-          {{ channel.DiscussionsAggregate.count }} Discussions,
-          {{ channel.EventsAggregate.count }} Events
-        </p>
-        <Tag
-          :key="tag"
-          v-for="tag in tags"
-          :tag="tag"
-          @click="$emit('filterByTag', tag)"
+      
+      <p class="text-sm text-gray-500 truncate">
+        <HighlightedSearchTerms
+          :text="channel.name"
+          :search-input="searchInput"
         />
-      </router-link>
+      </p>
+      <p class="text-sm text-gray-500 truncate">
+        <HighlightedSearchTerms
+          :text="channel.description"
+          :search-input="searchInput"
+        />
+      </p>
+      <p class="text-sm text-gray-500 truncate">
+        {{ channel.DiscussionsAggregate.count }} Discussions,
+        {{ channel.EventsAggregate.count }} Events
+      </p>
+      <Tag
+        :highlighted="selectedTags.indexOf(tag) !== -1 ? true : false"
+        :key="tag"
+        v-for="tag in tags"
+        :tag="tag"
+        @click="$emit('filterByTag', tag)"
+      />
     </div>
   </div>
 </template>
+
+<style>
+</style>

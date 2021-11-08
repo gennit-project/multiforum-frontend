@@ -28,7 +28,7 @@ export default defineComponent({
         modalType: "datePicker",
       },
       location: {
-        label: "In-person or remote",
+        label: "Any location",
         modalType: "typePicker",
       },
       weeklyTimes: {
@@ -43,9 +43,9 @@ export default defineComponent({
         label: tagLabel,
         modalType: "tagPicker",
       },
-      other: {
-        label: "Other filters",
-        modalType: "otherPicker",
+      cost: {
+        label: "Any cost",
+        modalType: "costPicker",
       },
     });
 

@@ -69,7 +69,7 @@ export default defineComponent({
                   <div class="px-4 sm:px-6">
                     <div class="flex items-start justify-between">
                       <DialogTitle class="text-lg font-medium text-gray-900">
-                        {{ event.name }}
+                        {{ event.title }}
                       </DialogTitle>
                       <div class="ml-3 h-7 flex items-center">
                         <button
@@ -92,7 +92,7 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="mt-6 relative flex-1 px-4 sm:px-6">
-                    {{ event.name }}
+                    {{ event.title }}
                      <div class="mt-3 text-sm">
             <router-link
               :to="`/c/${event.channelId}/events/${event.id}`"

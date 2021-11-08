@@ -27,6 +27,12 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    selectedTags: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    },
   },
   data() {
     return {
@@ -62,6 +68,7 @@ export default defineComponent({
         :discussion="discussion"
         :current-channel-id="channelId"
         :search-input="searchInput"
+        :selected-tags="selectedTags"
         @openDiscussionPreview="openPreview"
         @filterByTag="filterByTag"
       />
