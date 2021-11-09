@@ -50,14 +50,32 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
+    scrollToElement(eventId: string) {
+      const el = this.$refs[eventId]
+      const childEl = el.$refs[eventId];
+     
+
+      if (childEl) {
+        childEl.scrollIntoView({behavior: 'smooth'});
+      }
+    }
+  },
+  watch: {
+    $route(to) {
+      const hash = to.hash;
+      this.scrollToElement(hash)
+    }
   }
 });
 </script>
 
 <template>
-  <div class="bg-white shadow sm:rounded-md">
+  <div 
+    class="bg-white shadow sm:rounded-md"
+  >
     <ul role="list" class="divide-y divide-gray-200">
       <EventListItem 
+        :ref="`#${event.id}`"
         v-for="event in events"
         :key="event.id"
         :event="event"

@@ -278,6 +278,7 @@ export default defineComponent({
     },
     highlightEvent(eventId: number) {
       this.highlightedEventId = eventId;
+      this.$route.hash = eventId;
     },
     getTagOptionLabels(options: Array<TagData>) {
       return options.map((tag) => tag.text);
@@ -291,6 +292,7 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.setTagFilters([tag]);
     },
+    
   },
 });
 </script>

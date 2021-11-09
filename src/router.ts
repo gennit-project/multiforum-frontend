@@ -10,14 +10,23 @@ import Discussion from "./components/discussion/Discussion.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import Overview from "./components/channel/Overview.vue";
 import SiteSettings from "./components/SiteSettings.vue";
-import Overscroll from "./components/overscroll.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
     { 
       path: "/", 
-      component: Overscroll,
+      component: SearchEvents,
+      props(route) {
+        const tagStringArray = route.query.tag?.toString().split(',')
+        const channelStringArray = route.query.channel?.toString().split(',')
+
+        return {
+          routerSearchTerms: route.query.search,
+          routerTags: route.query.tag ? tagStringArray : [],
+          routerChannels: route.query.channel ? channelStringArray : []
+        }
+      }
     },
     { 
       path: "/events", 
