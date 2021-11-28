@@ -1,16 +1,19 @@
 <script lang="js">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { Loader } from '@googlemaps/js-api-loader'
 import config from "@/config";
 
 export default defineComponent({
   setup(props) {
     const loader = new Loader({ apiKey: config.googleMapsApiKey })
+    const mapDiv = ref(null)
+    let map = ref(null)
 
     onMounted(async () => {
       await loader.load()
+      debugger;
       // eslint-disable-next-line
-      const map = new google.maps.Map(document.getElementById("mapDiv"), {
+      map = new google.maps.Map(mapDiv.value, {
         center: { lat: 33.4255, lng: -111.94 },
         zoom: 7,
         mapTypeId: "terrain"
@@ -68,6 +71,7 @@ export default defineComponent({
 
     return {
       center: { lat: 33.4255, lng: -111.94 },
+      mapDiv
     };
   },
   props: {
@@ -89,7 +93,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div id="mapDiv" style="width: 100%; height: 50rem" />
+  <div ref="mapDiv" style="width: 100%; height: 50rem" />
 </template>
 <style>
 .gm-style-iw > button {
