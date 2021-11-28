@@ -2,10 +2,10 @@ import { createApp, provide, h } from 'vue'
 import App from "./App.vue";
 import { router } from './router';
 import VueGoogleMaps from '@fawmi/vue-google-maps'
-import config from './config';
 import "./index.css";
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
+import config from './config';
 
 // Cache implementation
 const cache = new InMemoryCache({
@@ -34,7 +34,7 @@ const cache = new InMemoryCache({
 
 // Create the apollo client
 const apolloClient = new ApolloClient({
-  uri: "https://twilight-moon.us-west-2.aws.cloud.dgraph.io/graphql",
+  uri: config.graphqlUrl,
   cache,
 })
 

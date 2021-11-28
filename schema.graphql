@@ -62,7 +62,7 @@ type Discussion {
   id: ID! 
   Author: User!
   body: String @search(by: [fulltext])
-  Communities: [Community!] @hasInverse(field: Discussions)
+  Communities: [Community!]! @hasInverse(field: Discussions)
   title: String! @search(by: [fulltext])
   createdDate: DateTime! @search
   editedDate: DateTime
@@ -75,7 +75,7 @@ type Discussion {
 }
 
 type CommentSection {
-  id: String! @id 
+  id: ID!
   Comments: [Comment] @hasInverse(field: CommentSection)
   Discussion: Discussion @hasInverse(field: CommentSections)
   Event: Event @hasInverse(field: CommentSections)
@@ -168,7 +168,7 @@ type Event {
   startTimeDayOfWeek: String! @search(by: [term])
   startTimeHourOfDay: Int! @search
   endTime: DateTime! @search
-  Communities: [Community!] @hasInverse(field: Events)
+  Communities: [Community!]! @hasInverse(field: Events)
   CommentSections: [CommentSection!]
   locationName: String
   address: String
