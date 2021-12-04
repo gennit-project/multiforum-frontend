@@ -22,6 +22,7 @@
     "core-js": "^3.6.5",
     "graphql": "^15.6.1",
     "luxon": "^2.0.2",
+    "mitt": "^3.0.0",
     "vue": "^3.0.0",
     "vue-apollo": "^3.0.8",
     "vue-class-component": "^8.0.0-0",
