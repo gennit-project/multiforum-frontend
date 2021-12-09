@@ -17,8 +17,8 @@ export default defineComponent({
       required: true,
     },
     event: {
-      type: Object as PropType<EventData>,
-      required: true,
+      type: Object as PropType<EventData | null>,
+      required: false,
     },
   },
   setup() {},
@@ -154,7 +154,7 @@ export default defineComponent({
                       focus:ring-offset-2
                       focus:ring-indigo-500
                     "
-                    @click="$emit('closePreview')"
+                    @click="$emit('closePreview', event.id)"
                   >
                     Cancel
                   </button>

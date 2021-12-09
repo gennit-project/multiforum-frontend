@@ -17,64 +17,69 @@ export default defineComponent({
   props: {
     highlightedEventId: {
       type: String,
-      required: true
+      required: true,
     },
     events: {
       type: Array as PropType<EventData[]>,
-      default: () => { return []}
+      default: () => {
+        return [];
+      },
     },
     selectedTags: {
       type: Array as PropType<String[]>,
-      default: () => { return []}
+      default: () => {
+        return [];
+      },
     },
     selectedChannels: {
       type: Array as PropType<String[]>,
-      default: () => { return []}
+      default: () => {
+        return [];
+      },
     },
     showMap: {
       type: Boolean,
-      default: false
+      default: false,
     },
     searchInput: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   components: {
-    EventListItem
+    EventListItem,
   },
   methods: {
-    openPreview() {
-      this.$emit('openPreview');
+    openPreview(event: EventData) {
+      this.$emit("highlightEvent", event.id);
+      this.$emit("openPreview", event);
+      this.$emit("lockColors");
     },
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
-    scrollToElement(eventId: string) {
-      const el = this.$refs[eventId]
-      const childEl = el.$refs[eventId];
-     
+    // scrollToElement(eventId: string) {
+    //   const el = this.$refs[eventId]
+    //   const childEl = el.$refs[eventId];
 
-      if (childEl) {
-        childEl.scrollIntoView({behavior: 'smooth'});
-      }
-    }
+    //   if (childEl) {
+    //     childEl.scrollIntoView({behavior: 'smooth'});
+    //   }
+    // }
   },
-  watch: {
-    $route(to) {
-      const hash = to.hash;
-      this.scrollToElement(hash)
-    }
-  }
+  // watch: {
+  //   $route(to) {
+  //     const hash = to.hash;
+  //     this.scrollToElement(hash)
+  //   }
+  // }
 });
 </script>
 
 <template>
-  <div 
-    class="bg-white shadow sm:rounded-md"
-  >
+  <div class="bg-white shadow sm:rounded-md">
     <ul role="list" class="divide-y divide-gray-200">
-      <EventListItem 
+      <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"
         :key="event.id"
@@ -83,7 +88,9 @@ export default defineComponent({
         :selected-channels="selectedChannels"
         :search-input="searchInput"
         :current-channel-id="channelId"
-        :class="[highlightedEventId === event.id && showMap ? 'bg-gray-100' : '']"
+        :class="[
+          highlightedEventId === event.id && showMap ? 'bg-gray-100' : '',
+        ]"
         @mouseover="
           () => {
             $emit('highlightEvent', event.id);
@@ -91,10 +98,10 @@ export default defineComponent({
         "
         @mouseleave="
           () => {
-            $emit('highlightEvent', '')
+            $emit('highlightEvent', '0');
           }
         "
-        @openEventPreview="$emit('openPreview', event)"
+        @openEventPreview="openPreview"
         @filterByTag="filterByTag"
       />
     </ul>

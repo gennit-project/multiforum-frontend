@@ -1,17 +1,17 @@
 <script lang="js">
 import { defineComponent, onMounted, ref } from "vue";
 import { Loader } from '@googlemaps/js-api-loader';
-import useEmitter from '@/composables/useEmitter';
 import { useRouter } from 'vue-router'
 import config from "@/config";
 
 export default defineComponent({
   setup(props, { emit }) {
-    const emitter = useEmitter()
     const router = useRouter()
     const loader = new Loader({ apiKey: config.googleMapsApiKey })
     const mapDiv = ref(null)
     let map = ref(null)
+      let markerMap = {};
+
 
     onMounted(async () => {
       await loader.load()
@@ -22,13 +22,6 @@ export default defineComponent({
         mapTypeId: "terrain"
       })
 
-      emitter.on("highlightEvent", eventId => {
-        emit('highlightEvent', eventId);
-      });
-
-      emitter.on("openPreview", eventId => {
-        emit('openPreview', eventId);
-      });
 
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i]
@@ -45,53 +38,72 @@ export default defineComponent({
             clickable: true,
             draggable: true,
             icon: {
-              url: event.id === props.highlightedEventId
-              ? require('@/assets/images/highlighted-place-icon.svg').default
-              : require('@/assets/images/place-icon.svg').default,
+              url: require('@/assets/images/place-icon.svg').default,
               scaledSize: { width: 20, height: 20 },
             },
           });
-
-          marker.addListener("click", () => {
-            map.value.setZoom(8);
-            map.value.setCenter(marker.getPosition());
-            emit("highlightEvent", event.id)
-            emit("openPreview", event.id)
-          })
-
-          marker.addListener("mouseover", () => {
-            emit('highlightEvent', event.id);
-            router.push({
-              name: `#${event.id}`
-            })
-          })
-
-          marker.addListener("mouseout", () => {
-            emit('highlightEvent', 0);
-          })
 
           // eslint-disable-next-line
           const infowindow = new google.maps.InfoWindow({
             content: event.title
           })
 
-          if (props.highlightedEventId === event.id) {
-            infowindow.open({
-              anchor: marker,
-              map,
-              shouldFocus: false
-            })
+          marker.addListener("click", () => {
+            emit("highlightEvent", event.id)
+            emit("openPreview", event)
+            emit("lockColors")
+          })
+
+
+          marker.addListener("mouseover", () => {
+            if (!props.colorLocked) {
+              emit('highlightEvent', event.id);
+              router.push(`#${event.id}`)
+            }
+          })
+
+          marker.addListener("mouseout", () => {
+
+            const unHighlight = (eventId, marker) => {
+              if (!props.colorLocked) {
+                if (router.currentRoute.value.fullPath.includes(eventId)) {
+                  emit('highlightEvent', '0');
+                }
+              
+                marker.setIcon({
+                  url: require('@/assets/images/place-icon.svg').default,
+                  scaledSize: { width: 20, height: 20 },
+                })
+                infowindow.close();
+              }
+            }
+            unHighlight(event.id, marker)
+          })
+
+          markerMap[event.id] = {
+            marker,
+            infowindow
           }
         }
-      }
+      } // end of loop over events
+      emit('setMarkerData', {
+        markerMap,
+        map: map.value
+      });
     })
+    
 
     return {
       center: { lat: 33.4255, lng: -111.94 },
-      mapDiv
+      mapDiv,
+      router
     };
   },
   props: {
+    colorLocked: {
+      type: Boolean,
+      required: true
+    },
     highlightedEventId: {
       type: String,
       required: true,
@@ -100,6 +112,10 @@ export default defineComponent({
       type: Array,
       default: () => {return []},
     },
+    previewIsOpen: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     openPreview() {

@@ -214,6 +214,7 @@ export default defineComponent({
       openModal,
       reachedEndOfResults,
       refetchEvents,
+      router,
       searchInput,
       setSearchInput,
       setChannelFilters,
@@ -228,10 +229,15 @@ export default defineComponent({
   },
   data() {
     return {
-      showMap: false,
+      showMap: true,
       previewIsOpen: false,
-      selectedEvent: {},
+      selectedEvent: null as EventData | null,
       highlightedEventId: "",
+      highlightedMarker: null,
+      highlightedInfowindow: null,
+      colorLocked: false,
+      markerMap: {} as any,
+      map: {} as any,
     };
   },
   props: {
@@ -271,14 +277,37 @@ export default defineComponent({
   methods: {
     closePreview() {
       this.previewIsOpen = false;
+      this.colorLocked = false;
+      this.unHighlight();
     },
     openPreview(data: EventData) {
       this.previewIsOpen = true;
       this.selectedEvent = data;
+      this.highlightEvent(data.id);
     },
-    highlightEvent(eventId: number) {
+    highlightEvent(eventId: string) {
+      router.push(`#${eventId}`);
+
+      if (eventId === "0") {
+        this.markerMap[this.highlightedEventId].marker.setIcon({
+          url: require("@/assets/images/place-icon.svg").default,
+          scaledSize: { width: 20, height: 20 },
+        });
+        this.markerMap[this.highlightedEventId].infowindow.close();
+        this.highlightedEventId = eventId;
+        return;
+      }
+
+      this.markerMap[eventId].marker.setIcon({
+        url: require("@/assets/images/highlighted-place-icon.svg").default,
+        scaledSize: { width: 20, height: 20 },
+      });
+      this.markerMap[eventId].infowindow.open({
+        anchor: this.markerMap[eventId].marker,
+        map: this.map,
+        shouldFocus: false,
+      });
       this.highlightedEventId = eventId;
-      this.$route.hash = eventId;
     },
     getTagOptionLabels(options: Array<TagData>) {
       return options.map((tag) => tag.text);
@@ -292,7 +321,22 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.setTagFilters([tag]);
     },
-    
+    setMarkerData(data: any) {
+      this.markerMap = data.markerMap;
+      this.map = data.map;
+    },
+    unHighlight() {
+      if (!this.colorLocked) {
+        this.markerMap[this.highlightedEventId].marker.setIcon({
+          url: require("@/assets/images/place-icon.svg").default,
+          scaledSize: { width: 20, height: 20 },
+        });
+
+        this.markerMap[this.highlightedEventId].infowindow.close();
+
+        this.$emit("highlightEvent", "0");
+      }
+    },
   },
 });
 </script>
@@ -313,7 +357,7 @@ export default defineComponent({
       @openModal="openModal"
       @updateSearchInput="updateSearchResult"
     />
-    
+
     <div v-if="!showMap" class="relative text-lg mx-auto max-w-6xl">
       <SortDropdown :class="['float-right']" />
       <AddToFeed :class="['float-right']" v-if="channelId" />
@@ -342,8 +386,12 @@ export default defineComponent({
           v-if="showMap && eventResult && eventResult.queryEvent"
           :events="eventResult.queryEvent"
           :highlighted-event-id="highlightedEventId"
+          :preview-is-open="previewIsOpen"
+          :color-locked="colorLocked"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
+          @lockColors="colorLocked = true"
+          @setMarkerData="setMarkerData"
         />
       </div>
       <div v-if="showMap" class="col-span-12 lg:col-span-4 p-4">
