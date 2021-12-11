@@ -282,13 +282,14 @@ export default defineComponent({
     },
     openPreview(data: EventData) {
       this.previewIsOpen = true;
+      this.colorLocked = true;
       this.selectedEvent = data;
       this.highlightEvent(data.id);
     },
     highlightEvent(eventId: string) {
       router.push(`#${eventId}`);
 
-      if (eventId === "0") {
+      if (eventId === "0" && !this.colorLocked) {
         this.markerMap[this.highlightedEventId].marker.setIcon({
           url: require("@/assets/images/place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
