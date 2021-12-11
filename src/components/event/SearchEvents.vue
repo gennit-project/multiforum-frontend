@@ -227,9 +227,14 @@ export default defineComponent({
       textFilters,
     };
   },
-  data() {
+  data(props) {
+
+    let showMap = false;
+    if (props.routerView === "map") {
+      showMap = true;
+    }
     return {
-      showMap: true,
+      showMap,
       previewIsOpen: false,
       selectedEvent: null as EventData | null,
       highlightedEventId: "",
@@ -257,6 +262,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    routerView: {
+      type: String,
+      default: ""
+    }
   },
   components: {
     ActiveFilters,
@@ -338,6 +347,30 @@ export default defineComponent({
         this.$emit("highlightEvent", "0");
       }
     },
+    setShowMap() {
+      this.showMap = true
+      router.push({
+        path: "/events",
+        query: {
+          search: this.searchInput.value,
+          channel: this.selectedChannels.value,
+          tag: this.selectedTags.value,
+          view: "map"
+        },
+      });
+    },
+    setShowList() {
+      this.showMap = false
+      router.push({
+        path: "/events",
+        query: {
+          search: this.searchInput.value,
+          channel: this.selectedChannels.value,
+          tag: this.selectedTags.value,
+          view: "list"
+        },
+      });
+    }
   },
 });
 </script>
@@ -363,9 +396,9 @@ export default defineComponent({
       <SortDropdown :class="['float-right']" />
       <AddToFeed :class="['float-right']" v-if="channelId" />
       <ToggleMap
-        :show-map="showMap"
-        @showMap="showMap = true"
-        @showList="showMap = false"
+        :show-map="setShowMap"
+        @showMap="setShowMap"
+        @showList="setShowList"
       />
       <EventList
         v-if="eventResult && eventResult.queryEvent"
@@ -399,8 +432,8 @@ export default defineComponent({
         <SortDropdown />
         <ToggleMap
           :show-map="showMap"
-          @showMap="showMap = true"
-          @showList="showMap = false"
+          @showMap="setShowMap"
+          @showList="setShowList"
         />
 
         <AddToFeed v-if="channelId" />

@@ -24,7 +24,8 @@ export const router = createRouter({
         return {
           routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
-          routerChannels: route.query.channel ? channelStringArray : []
+          routerChannels: route.query.channel ? channelStringArray : [],
+          routerView: route.query.view
         }
       }
     },
@@ -38,7 +39,8 @@ export const router = createRouter({
         return {
           routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
-          routerChannels: route.query.channel ? channelStringArray : []
+          routerChannels: route.query.channel ? channelStringArray : [],
+          routerView: route.query.view
         }
       }
     },
