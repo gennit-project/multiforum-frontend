@@ -22,9 +22,12 @@ export default defineComponent({
         mapTypeId: "terrain"
       })
 
+      // eslint-disable-next-line
+      let bounds = new google.maps.LatLngBounds();
+
 
       for (let i = 0; i < props.events.length; i++) {
-        const event = props.events[i]
+        const event = props.events[i];
 
         if (event.location) {
           // eslint-disable-next-line
@@ -42,6 +45,10 @@ export default defineComponent({
               scaledSize: { width: 20, height: 20 },
             },
           });
+
+          // Extend the map bounds to include each marker's position
+          // as shown in this Stack Overflow answer https://stackoverflow.com/questions/15719951/auto-center-map-with-multiple-markers-in-google-maps-api-v3
+          bounds.extend(marker.position);
 
           // eslint-disable-next-line
           const infowindow = new google.maps.InfoWindow({
@@ -86,6 +93,9 @@ export default defineComponent({
           }
         }
       } // end of loop over events
+
+      map.value.fitBounds(bounds);
+
       emit('setMarkerData', {
         markerMap,
         map: map.value
