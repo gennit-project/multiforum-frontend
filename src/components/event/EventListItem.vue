@@ -89,7 +89,7 @@ export default defineComponent({
     return {
       previewIsOpen: false,
       isWithinCommunity: props.currentChannelId ? true : false,
-      defaultUrl: props.event.CommentSections[0].Community.url,
+      defaultUrl: props.event.Communities[0].url,
     };
   },
   components: {
