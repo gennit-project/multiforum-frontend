@@ -136,7 +136,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div ref="mapDiv" style="width: 100%; height: 50rem" />
+  <div ref="mapDiv" style="position: fixed; width: 66vw; height: calc(100vh - 130px)" />
 </template>
 <style>
 .gm-style-iw > button {

@@ -308,7 +308,7 @@ export default defineComponent({
           return;
         }
       }
-      if (this.markerMap[eventId]){
+      if (this.markerMap[eventId]) {
         this.markerMap[eventId].marker.setIcon({
           url: require("@/assets/images/highlighted-place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
@@ -405,6 +405,7 @@ export default defineComponent({
         @showMap="setShowMap"
         @showList="setShowList"
       />
+      
       <EventList
         v-if="eventResult && eventResult.queryEvent"
         :events="eventResult.queryEvent"
@@ -418,6 +419,7 @@ export default defineComponent({
         @highlightEvent="highlightEvent"
         @open-preview="openPreview"
       />
+     
     </div>
     <div class="grid grid-cols-12 lg:space-x-4">
       <div class="col-span-12 lg:col-span-8">
@@ -434,6 +436,10 @@ export default defineComponent({
         />
       </div>
       <div v-if="showMap" class="col-span-12 lg:col-span-4 p-4">
+        
+
+        <div v-if="eventLoading">Loading...</div>
+        <div class="overflow-y-scroll" style="position: fixed; bottom: 0px;">
         <SortDropdown />
         <ToggleMap
           :show-map="showMap"
@@ -442,29 +448,27 @@ export default defineComponent({
         />
 
         <AddToFeed v-if="channelId" />
-
-        <div v-if="eventLoading">Loading...</div>
-
-        <EventList
-          class="overscroll-auto overflow-auto mapHeight"
-          v-if="showMap && eventResult && eventResult.queryEvent"
-          :events="eventResult.queryEvent"
-          :channel-id="channelId"
-          :search-input="searchInput"
-          :highlighted-event-id="highlightedEventId"
-          :selected-tags="selectedTags"
-          :selected-channels="selectedChannels"
-          :show-map="showMap"
-          @filterByTag="filterByTag"
-          @highlightEvent="highlightEvent"
-          @open-preview="openPreview"
-        />
-        <div class="grid justify-items-stretch">
-          <button class="justify-self-center" @click="loadMore">
-            {{
-              reachedEndOfResults ? "There are no more results." : "Load more"
-            }}
-          </button>
+          <EventList
+            class="overscroll-auto overflow-auto mapHeight"
+            v-if="showMap && eventResult && eventResult.queryEvent"
+            :events="eventResult.queryEvent"
+            :channel-id="channelId"
+            :search-input="searchInput"
+            :highlighted-event-id="highlightedEventId"
+            :selected-tags="selectedTags"
+            :selected-channels="selectedChannels"
+            :show-map="showMap"
+            @filterByTag="filterByTag"
+            @highlightEvent="highlightEvent"
+            @open-preview="openPreview"
+          />
+          <div class="grid justify-items-stretch">
+            <button class="justify-self-center" @click="loadMore">
+              {{
+                reachedEndOfResults ? "There are no more results." : "Load more"
+              }}
+            </button>
+          </div>
         </div>
       </div>
     </div>

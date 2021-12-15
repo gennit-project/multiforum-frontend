@@ -59,20 +59,20 @@ export default defineComponent({
       this.$emit("filterByTag", tag);
     },
     // scrollToElement(eventId: string) {
-    //   const el = this.$refs[eventId]
+    //   const el = this.$refs[eventId];
     //   const childEl = el.$refs[eventId];
 
     //   if (childEl) {
-    //     childEl.scrollIntoView({behavior: 'smooth'});
+    //     childEl.scrollIntoView({ behavior: "smooth" });
     //   }
-    // }
+    // },
   },
   // watch: {
   //   $route(to) {
   //     const hash = to.hash;
-  //     this.scrollToElement(hash)
-  //   }
-  // }
+  //     this.scrollToElement(hash);
+  //   },
+  // },
 });
 </script>
 
