@@ -10,7 +10,9 @@ export default defineComponent({
     const loader = new Loader({ apiKey: config.googleMapsApiKey })
     const mapDiv = ref(null)
     let map = ref(null)
-      let markerMap = {};
+
+    // Only have one marker per location
+    let markerMap = {};
 
 
     onMounted(async () => {
@@ -25,10 +27,13 @@ export default defineComponent({
       // eslint-disable-next-line
       let bounds = new google.maps.LatLngBounds();
 
+      // eslint-disable-next-line
+      const infowindow = new google.maps.InfoWindow()
+
 
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i];
-
+        
         if (event.location) {
           // eslint-disable-next-line
           const marker = new google.maps.Marker({
@@ -37,7 +42,6 @@ export default defineComponent({
               lng: event.location.longitude
             },
             map: map.value,
-            title: event.title,
             clickable: true,
             draggable: true,
             icon: {
@@ -50,13 +54,10 @@ export default defineComponent({
           // as shown in this Stack Overflow answer https://stackoverflow.com/questions/15719951/auto-center-map-with-multiple-markers-in-google-maps-api-v3
           bounds.extend(marker.position);
 
-          // eslint-disable-next-line
-          const infowindow = new google.maps.InfoWindow({
-            content: event.title
-          })
-
+          const eventLocationId = event.location.latitude.toString() + event.location.longitude.toString();
+          
           marker.addListener("click", () => {
-            emit("highlightEvent", event.id)
+            emit('highlightEvent', eventLocationId, event.id, event.title);
             emit("openPreview", event)
             emit("lockColors")
           })
@@ -64,17 +65,17 @@ export default defineComponent({
 
           marker.addListener("mouseover", () => {
             if (!props.colorLocked) {
-              emit('highlightEvent', event.id);
-              router.push(`#${event.id}`)
+              emit('highlightEvent', eventLocationId, event.id, event.title);
+              router.push(`#${eventLocationId}`)
             }
           })
 
           marker.addListener("mouseout", () => {
 
-            const unHighlight = (eventId, marker) => {
+            const unhighlight = (eventId, marker) => {
               if (!props.colorLocked) {
-                if (router.currentRoute.value.fullPath.includes(eventId)) {
-                  emit('highlightEvent', '0');
+                if (router.currentRoute.value.fullPath.includes(eventLocationId)) {
+                  emit('unHighlight');
                 }
               
                 marker.setIcon({
@@ -84,15 +85,32 @@ export default defineComponent({
                 infowindow.close();
               }
             }
-            unHighlight(event.id, marker)
+            unhighlight(eventLocationId, marker)
           })
 
-          markerMap[event.id] = {
-            marker,
-            infowindow
+
+          const updateMarkerMap = () => {
+
+            if (markerMap[eventLocationId]) {
+              const numberOfEvents = markerMap[eventLocationId].numberOfEvents;
+
+              markerMap[eventLocationId][event.id] = true;
+              markerMap[eventLocationId].numberOfEvents = numberOfEvents + 1;
+              markerMap[eventLocationId].marker = marker;
+            } else {
+              markerMap[eventLocationId] = {
+                marker,
+                [event.id]: true,
+                numberOfEvents: 1
+              }
+            }
           }
+
+          updateMarkerMap();
         }
       } // end of loop over events
+
+      markerMap.infowindow = infowindow;
 
       map.value.fitBounds(bounds);
 
@@ -114,10 +132,6 @@ export default defineComponent({
       type: Boolean,
       required: true
     },
-    highlightedEventId: {
-      type: String,
-      required: true,
-    },
     events: {
       type: Array,
       default: () => {return []},
@@ -136,7 +150,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div ref="mapDiv" style="position: fixed; width: 66vw; height: calc(100vh - 130px)" />
+  <div
+    ref="mapDiv"
+    style="position: fixed; width: 66vw; height: calc(100vh - 130px)"
+  />
 </template>
 <style>
 .gm-style-iw > button {

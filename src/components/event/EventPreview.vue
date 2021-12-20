@@ -154,7 +154,7 @@ export default defineComponent({
                       focus:ring-offset-2
                       focus:ring-indigo-500
                     "
-                    @click="$emit('closePreview', event.id)"
+                    @click="$emit('closePreview')"
                   >
                     Cancel
                   </button>

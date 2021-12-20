@@ -15,7 +15,7 @@ export default defineComponent({
     };
   },
   props: {
-    highlightedEventId: {
+    highlightedEventLocationId: {
       type: String,
       required: true,
     },
@@ -51,33 +51,22 @@ export default defineComponent({
   },
   methods: {
     openPreview(event: EventData) {
-      this.$emit("highlightEvent", event.id);
+      this.$emit("highlightEvent", this.getEventLocationId(event), event.id, event.title);
       this.$emit("openPreview", event);
       this.$emit("lockColors");
     },
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
-    // scrollToElement(eventId: string) {
-    //   const el = this.$refs[eventId];
-    //   const childEl = el.$refs[eventId];
-
-    //   if (childEl) {
-    //     childEl.scrollIntoView({ behavior: "smooth" });
-    //   }
-    // },
-  },
-  // watch: {
-  //   $route(to) {
-  //     const hash = to.hash;
-  //     this.scrollToElement(hash);
-  //   },
-  // },
+    getEventLocationId(event: EventData) {
+      return (event.location?.latitude.toString() || '') + (event.location?.longitude.toString() || '')
+    }
+  }
 });
 </script>
 
 <template>
-  <div class="bg-white shadow sm:rounded-md">
+  <div :class="['bg-white', 'shadow', 'sm:rounded-md', showMap ? 'constrain-height' : '']">
     <ul role="list" class="divide-y divide-gray-200">
       <EventListItem
         :ref="`#${event.id}`"
@@ -89,16 +78,16 @@ export default defineComponent({
         :search-input="searchInput"
         :current-channel-id="channelId"
         :class="[
-          highlightedEventId === event.id && showMap ? 'bg-gray-100' : '',
+          highlightedEventLocationId === getEventLocationId(event) && showMap ? 'bg-gray-100' : ''
         ]"
         @mouseover="
           () => {
-            $emit('highlightEvent', event.id);
+            $emit('highlightEvent', getEventLocationId(event), event.id, event.title);
           }
         "
         @mouseleave="
           () => {
-            $emit('highlightEvent', '0');
+            $emit('unhighlight');
           }
         "
         @openEventPreview="openPreview"
@@ -107,3 +96,9 @@ export default defineComponent({
     </ul>
   </div>
 </template>
+
+<style>
+.constrain-height {
+height: calc(100vh - 150px)
+}
+</style>

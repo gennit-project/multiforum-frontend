@@ -102,12 +102,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :ref="`#${event.id}`" class="px-4">
+  <li :ref="`#${event.id}`" class="sm:px-4">
     <div class="block">
-      <div class="py-4 sm:px-6">
+      <div class="py-4">
         <div class="flex items-center justify-between">
           <p
-            
             @click="$emit('openEventPreview', event)"
             class="text-sm font-medium text-indigo-600 truncate cursor-pointer"
           >

@@ -236,9 +236,9 @@ export default defineComponent({
       showMap,
       previewIsOpen: false,
       selectedEvent: null as EventData | null,
+      highlightedEventLocationId: "",
       highlightedEventId: "",
       highlightedMarker: null,
-      highlightedInfowindow: null,
       colorLocked: false,
       markerMap: {} as any,
       map: {} as any,
@@ -286,41 +286,57 @@ export default defineComponent({
     closePreview() {
       this.previewIsOpen = false;
       this.colorLocked = false;
-      this.unHighlight();
+      this.unhighlight();
     },
     openPreview(data: EventData) {
       this.previewIsOpen = true;
       this.colorLocked = true;
       this.selectedEvent = data;
-      this.highlightEvent(data.id);
     },
-    highlightEvent(eventId: string) {
-      router.push(`#${eventId}`);
+    highlightEvent(eventLocationId: string, eventId: string, eventTitle: string) {
+      router.push(`#${eventLocationId}`);
 
-      if (this.markerMap[this.highlightedEventId]) {
-        if (eventId === "0" && !this.colorLocked) {
-          this.markerMap[this.highlightedEventId].marker.setIcon({
-            url: require("@/assets/images/place-icon.svg").default,
-            scaledSize: { width: 20, height: 20 },
-          });
-          this.markerMap[this.highlightedEventId].infowindow.close();
-          this.highlightedEventId = eventId;
-          return;
-        }
-      }
-      if (this.markerMap[eventId]) {
-        this.markerMap[eventId].marker.setIcon({
+      if (this.markerMap[eventLocationId]) {
+
+        this.markerMap[eventLocationId].marker.setIcon({
           url: require("@/assets/images/highlighted-place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
         });
-        this.markerMap[eventId].infowindow.open({
-          anchor: this.markerMap[eventId].marker,
-          map: this.map,
-          shouldFocus: false,
-        });
+
+        const numberOfEvents = this.markerMap[eventLocationId].numberOfEvents;
+
+        const openSpecificInfowindow = () => {
+          this.markerMap.infowindow.setContent(eventTitle)
+          this.markerMap.infowindow.open({
+            anchor: this.markerMap[eventLocationId].marker,
+            map: this.map,
+            shouldFocus: false,
+          });
+        }
+
+        const openGenericInfowindow = () => {
+          
+          this.markerMap.infowindow.setContent(`${numberOfEvents} events`);
+          this.markerMap.infowindow.open({
+            anchor: this.markerMap[eventLocationId].marker,
+            map: this.map,
+            shouldFocus: false,
+          });
+        }
+
+        if (numberOfEvents === 1) {
+          openSpecificInfowindow()
+        } else {
+          // If no event ID is given, say there are multiple events
+          openGenericInfowindow()
+        }
       }
 
-      this.highlightedEventId = eventId;
+      this.highlightedEventLocationId = eventLocationId;
+
+      if (eventId) {
+        this.highlightedEventId = eventId;
+      }
     },
     getTagOptionLabels(options: Array<TagData>) {
       return options.map((tag) => tag.text);
@@ -338,18 +354,18 @@ export default defineComponent({
       this.markerMap = data.markerMap;
       this.map = data.map;
     },
-    unHighlight() {
+    unhighlight() {
       if (!this.colorLocked) {
-        if (this.markerMap[this.highlightedEventId]) {
-          this.markerMap[this.highlightedEventId].marker.setIcon({
+        this.markerMap.infowindow.close();
+
+        if (this.markerMap[this.highlightedEventLocationId]) {
+          this.markerMap[this.highlightedEventLocationId].marker.setIcon({
             url: require("@/assets/images/place-icon.svg").default,
             scaledSize: { width: 20, height: 20 },
           });
-
-          this.markerMap[this.highlightedEventId].infowindow.close();
         }
-
-        this.$emit("highlightEvent", "0");
+        this.highlightedEventId = "";
+        this.highlightedEventLocationId = "";
       }
     },
     setShowMap() {
@@ -382,7 +398,7 @@ export default defineComponent({
 <template>
   <div>
     <ActiveFilters
-      :class="['mx-auto', 'max-w-6xl']"
+      :class="['mx-auto', 'max-w-6xl', 'inline-block']"
       :channel-id="channelId"
       :search-placeholder="'Search events'"
       :applicable-filters="
@@ -396,16 +412,14 @@ export default defineComponent({
       @openModal="openModal"
       @updateSearchInput="updateSearchResult"
     />
-
+    <SortDropdown />
+    <ToggleMap
+      :show-map="showMap"
+      @showMap="setShowMap"
+      @showList="setShowList"
+    />
     <div v-if="!showMap" class="relative text-lg mx-auto max-w-6xl">
-      <SortDropdown :class="['float-right']" />
       <AddToFeed :class="['float-right']" v-if="channelId" />
-      <ToggleMap
-        :show-map="showMap"
-        @showMap="setShowMap"
-        @showList="setShowList"
-      />
-      
       <EventList
         v-if="eventResult && eventResult.queryEvent"
         :events="eventResult.queryEvent"
@@ -413,20 +427,19 @@ export default defineComponent({
         :search-input="searchInput"
         :selected-tags="selectedTags"
         :selected-channels="selectedChannels"
-        :highlighted-event-id="highlightedEventId"
+        :highlighted-event-location-id="highlightedEventLocationId"
         :show-map="showMap"
         @filterByTag="filterByTag"
         @highlightEvent="highlightEvent"
         @open-preview="openPreview"
+        @unhighlight="unhighlight"
       />
-     
     </div>
     <div class="grid grid-cols-12 lg:space-x-4">
       <div class="col-span-12 lg:col-span-8">
         <Map
           v-if="showMap && eventResult && eventResult.queryEvent"
           :events="eventResult.queryEvent"
-          :highlighted-event-id="highlightedEventId"
           :preview-is-open="previewIsOpen"
           :color-locked="colorLocked"
           @highlightEvent="highlightEvent"
@@ -435,32 +448,24 @@ export default defineComponent({
           @setMarkerData="setMarkerData"
         />
       </div>
-      <div v-if="showMap" class="col-span-12 lg:col-span-4 p-4">
-        
-
+      <div v-if="showMap" class="col-span-12 lg:col-span-4">
         <div v-if="eventLoading">Loading...</div>
-        <div class="overflow-y-scroll" style="position: fixed; bottom: 0px;">
-        <SortDropdown />
-        <ToggleMap
-          :show-map="showMap"
-          @showMap="setShowMap"
-          @showList="setShowList"
-        />
-
-        <AddToFeed v-if="channelId" />
+        <div class="overflow-y-scroll" style="position: fixed; bottom: 0px">
+          <AddToFeed v-if="channelId" />
           <EventList
-            class="overscroll-auto overflow-auto mapHeight"
+            class="overscroll-auto overflow-auto"
             v-if="showMap && eventResult && eventResult.queryEvent"
             :events="eventResult.queryEvent"
             :channel-id="channelId"
             :search-input="searchInput"
-            :highlighted-event-id="highlightedEventId"
+            :highlighted-event-location-id="highlightedEventLocationId"
             :selected-tags="selectedTags"
             :selected-channels="selectedChannels"
             :show-map="showMap"
             @filterByTag="filterByTag"
             @highlightEvent="highlightEvent"
             @open-preview="openPreview"
+            @unhighlight="unhighlight"
           />
           <div class="grid justify-items-stretch">
             <button class="justify-self-center" @click="loadMore">
