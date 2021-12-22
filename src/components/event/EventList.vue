@@ -56,7 +56,7 @@ export default defineComponent({
   methods: {
     openPreview(event: EventData) {
       this.$emit("highlightEvent", this.getEventLocationId(event), event.id, event);
-      this.$emit("openPreview", event);
+      this.$emit("openPreview");
       this.$emit("lockColors");
     },
     filterByTag(tag: string) {
@@ -70,7 +70,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="['bg-white', 'shadow', 'sm:rounded-md', showMap ? 'constrain-height' : '']">
+  <div :class="['bg-white', 'sm:rounded-md', showMap ? 'constrain-height' : '']">
     <ul role="list" class="divide-y divide-gray-200">
       <EventListItem
         :ref="`#${event.id}`"
@@ -94,7 +94,7 @@ export default defineComponent({
             $emit('unhighlight');
           }
         "
-        @openEventPreview="() => openPreview(event)"
+        @openEventPreview="() => { openPreview(event) }"
         @filterByTag="filterByTag"
       />
     </ul>

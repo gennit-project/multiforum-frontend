@@ -57,15 +57,14 @@ export default defineComponent({
           const eventLocationId = event.location.latitude.toString() + event.location.longitude.toString();
           
           marker.addListener("click", () => {
-            emit('highlightEvent', eventLocationId, event.id, event.title);
-            emit("openPreview")
+            emit("openPreview", true)
             emit("lockColors")
           })
 
 
           marker.addListener("mouseover", () => {
             if (!props.colorLocked) {
-              emit('highlightEvent', eventLocationId);
+              emit('highlightEvent', eventLocationId, event.id, event, true);
               router.push(`#${eventLocationId}`)
             }
           })
@@ -145,7 +144,7 @@ export default defineComponent({
   },
   methods: {
     openPreview() {
-      this.$emit("openPreview");
+      this.$emit("openPreview", true);
     },
   },
 });

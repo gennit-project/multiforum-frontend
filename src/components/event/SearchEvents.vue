@@ -236,6 +236,7 @@ export default defineComponent({
     return {
       showMap,
       previewIsOpen: false,
+      previewMultipleEvents: false,
       selectedEvent: null as EventData | null,
       selectedEvents: [],
       highlightedEventLocationId: "",
@@ -289,16 +290,27 @@ export default defineComponent({
     closePreview() {
       this.previewIsOpen = false;
       this.colorLocked = false;
+      this.previewMultipleEvents = false;
       this.unhighlight();
     },
-    openPreview() {
+    openPreview(openedFromMap: boolean |  false) {
       this.previewIsOpen = true;
+
+      if (openedFromMap) {
+        const eventsAtClickedLocation = this.markerMap[this.highlightedEventLocationId].numberOfEvents;
+
+        if (eventsAtClickedLocation > 1) {
+          this.previewMultipleEvents = true;
+        }
+      }
+      
       this.colorLocked = true;
     },
     highlightEvent(
       eventLocationId: string,
       eventId: string,
-      eventData: EventData
+      eventData: EventData,
+      clickedMapMarker: boolean | false
     ) {
       router.push(`#${eventLocationId}`);
       this.highlightedEventLocationId = eventLocationId;
@@ -342,15 +354,15 @@ export default defineComponent({
 
         const numberOfEvents = this.markerMap[eventLocationId].numberOfEvents;
 
-        // If the user mouses over a location with multiple events,
+        // If the user mouses over a map marker with multiple events,
         // open a generic infowindow.
-        if (!eventId && numberOfEvents > 1) {
+        if (clickedMapMarker && numberOfEvents > 1) {
           openGenericInfowindow();
         }
 
-        // If the user mouses over a location with a single event,
+        // If the user mouses over a map marker with a single event,
         // open a specific infowindow.
-        if (!eventId && numberOfEvents === 1){
+        else if (clickedMapMarker && numberOfEvents === 1){
           const defaultEventId = Object.keys(this.markerMap[eventLocationId].events)[0]
           this.highlightedEventId = defaultEventId;
           openSpecificInfowindow();
@@ -358,7 +370,7 @@ export default defineComponent({
 
         // If the user mouses over an event list item in the event list,
         // always open a specific infowindow.
-        if (eventId) {
+        else if (eventId) {
           openSpecificInfowindow();
         }
 
@@ -529,16 +541,16 @@ export default defineComponent({
 
     <PreviewContainer 
       :isOpen="previewIsOpen" 
-      :header="selectedEvent ? selectedEvent.title : 'Events at this location'"
+      :header="selectedEvent && !previewMultipleEvents ? selectedEvent.title : 'Events at this Location'"
       @closePreview="closePreview"
     >
       <EventPreview 
-        v-if="selectedEvent"
+        v-if="selectedEvent && !previewMultipleEvents"
         :event="selectedEvent"
         @closePreview="closePreview"
       />
       <EventList
-        v-if="selectedEvents"
+        v-if="selectedEvents && previewMultipleEvents"
         class="overscroll-auto overflow-auto"
         :events="selectedEvents"
         :channel-id="channelId"
