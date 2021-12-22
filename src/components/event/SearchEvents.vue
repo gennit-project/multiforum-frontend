@@ -235,8 +235,8 @@ export default defineComponent({
     }
     return {
       showMap,
-      previewIsOpen: false,
-      previewMultipleEvents: false,
+      eventPreviewIsOpen: false,
+      multipleEventPreviewIsOpen: false,
       selectedEvent: null as EventData | null,
       selectedEvents: [],
       highlightedEventLocationId: "",
@@ -287,25 +287,6 @@ export default defineComponent({
     Map,
   },
   methods: {
-    closePreview() {
-      this.previewIsOpen = false;
-      this.colorLocked = false;
-      this.previewMultipleEvents = false;
-      this.unhighlight();
-    },
-    openPreview(openedFromMap: boolean |  false) {
-      this.previewIsOpen = true;
-
-      if (openedFromMap) {
-        const eventsAtClickedLocation = this.markerMap[this.highlightedEventLocationId].numberOfEvents;
-
-        if (eventsAtClickedLocation > 1) {
-          this.previewMultipleEvents = true;
-        }
-      }
-      
-      this.colorLocked = true;
-    },
     highlightEvent(
       eventLocationId: string,
       eventId: string,
@@ -316,14 +297,16 @@ export default defineComponent({
       this.highlightedEventLocationId = eventLocationId;
 
       if (eventId) {
-        this.highlightedEventId = eventId;
 
-        if (this.markerMap[eventLocationId] && this.markerMap[eventLocationId].events[eventId]) {
-          this.selectedEvent = this.markerMap[eventLocationId].events[eventId]
-        } else if (eventData){
-          this.selectedEvent = eventData
+        if (
+          this.markerMap[eventLocationId] &&
+          this.markerMap[eventLocationId].events[eventId]
+        ) {
+          this.selectedEvent = this.markerMap[eventLocationId].events[eventId];
+        } else if (eventData) {
+          this.selectedEvent = eventData;
         } else {
-          throw new Error("Could not find the event data.")
+          throw new Error("Could not find the event data.");
         }
       }
 
@@ -334,7 +317,9 @@ export default defineComponent({
         });
 
         const openSpecificInfowindow = () => {
-          const eventTitle = this.markerMap[eventLocationId].events[this.highlightedEventId].title;
+          const eventTitle =
+            this.markerMap[eventLocationId].events[this.highlightedEventId]
+              .title;
           this.markerMap.infowindow.setContent(eventTitle);
           this.markerMap.infowindow.open({
             anchor: this.markerMap[eventLocationId].marker,
@@ -362,8 +347,10 @@ export default defineComponent({
 
         // If the user mouses over a map marker with a single event,
         // open a specific infowindow.
-        else if (clickedMapMarker && numberOfEvents === 1){
-          const defaultEventId = Object.keys(this.markerMap[eventLocationId].events)[0]
+        else if (clickedMapMarker && numberOfEvents === 1) {
+          const defaultEventId = Object.keys(
+            this.markerMap[eventLocationId].events
+          )[0];
           this.highlightedEventId = defaultEventId;
           openSpecificInfowindow();
         }
@@ -371,20 +358,21 @@ export default defineComponent({
         // If the user mouses over an event list item in the event list,
         // always open a specific infowindow.
         else if (eventId) {
+          this.highlightedEventId = eventId;
           openSpecificInfowindow();
         }
 
         if (numberOfEvents > 1) {
           const selectedEventsObject = this.markerMap[eventLocationId].events;
           const getArrayFromObject = (obj: any) => {
-            const ary = []
+            const ary = [];
 
             for (let key in obj) {
-              ary.push(obj[key])
+              ary.push(obj[key]);
             }
 
             return ary;
-          }
+          };
           const selectedEventsArray = getArrayFromObject(selectedEventsObject);
 
           this.selectedEvents = selectedEventsArray;
@@ -393,11 +381,10 @@ export default defineComponent({
     },
     unhighlight() {
       if (!this.colorLocked) {
-
         if (this.markerMap.infowindow) {
           this.markerMap.infowindow.close();
         }
-        
+
         if (this.markerMap[this.highlightedEventLocationId]) {
           this.markerMap[this.highlightedEventLocationId].marker.setIcon({
             url: require("@/assets/images/place-icon.svg").default,
@@ -407,6 +394,38 @@ export default defineComponent({
         this.highlightedEventId = "";
         this.highlightedEventLocationId = "";
       }
+    },
+    closeEventPreview() {
+      this.eventPreviewIsOpen = false;
+
+      if (!this.multipleEventPreviewIsOpen) {
+        this.colorLocked = false;
+      }
+      
+      this.unhighlight();
+    },
+    closeMultipleEventPreview() {
+      this.multipleEventPreviewIsOpen = false;
+      this.colorLocked = false;
+      this.unhighlight();
+    },
+    openPreview(openedFromMap: boolean | false) {
+      if (openedFromMap) {
+        const eventsAtClickedLocation =
+          this.markerMap[this.highlightedEventLocationId].numberOfEvents;
+
+        if (eventsAtClickedLocation > 1) {
+          this.multipleEventPreviewIsOpen = true;
+        } else {
+          this.eventPreviewIsOpen = true;
+        }
+      } else {
+        // If opened from a list,
+        // always preview a specific event.
+        this.eventPreviewIsOpen = true;
+      }
+
+      this.colorLocked = true;
     },
     getTagOptionLabels(options: Array<TagData>) {
       return options.map((tag) => tag.text);
@@ -483,7 +502,6 @@ export default defineComponent({
         :search-input="searchInput"
         :selected-tags="selectedTags"
         :selected-channels="selectedChannels"
-        :highlighted-event-location-id="highlightedEventLocationId"
         :highlighted-event-id="highlightedEventId"
         :show-map="showMap"
         @filterByTag="filterByTag"
@@ -497,7 +515,7 @@ export default defineComponent({
         <Map
           v-if="showMap && eventResult && eventResult.queryEvent"
           :events="eventResult.queryEvent"
-          :preview-is-open="previewIsOpen"
+          :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
           :color-locked="colorLocked"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
@@ -539,28 +557,72 @@ export default defineComponent({
 
     <div class="col-start-1 row-start-1 py-4"></div>
 
-    <PreviewContainer 
-      :isOpen="previewIsOpen" 
-      :header="selectedEvent && !previewMultipleEvents ? selectedEvent.title : 'Events at this Location'"
-      @closePreview="closePreview"
+    <PreviewContainer
+      :isOpen="eventPreviewIsOpen  && !multipleEventPreviewIsOpen"
+      :header="selectedEvent ? selectedEvent.title : 'Untitled'"
+      :top-layer="true"
+      @closePreview="closeEventPreview"
     >
-      <EventPreview 
-        v-if="selectedEvent && !previewMultipleEvents"
+      <EventPreview
+        v-if="selectedEvent"
         :event="selectedEvent"
-        @closePreview="closePreview"
+        @closePreview="closeEventPreview"
       />
+    </PreviewContainer>
+
+    <PreviewContainer
+      :isOpen="multipleEventPreviewIsOpen"
+      :header="'Events at this Location'"
+      @closePreview="closeMultipleEventPreview"
+    >
       <EventList
-        v-if="selectedEvents && previewMultipleEvents"
+        v-if="selectedEvents"
         class="overscroll-auto overflow-auto"
         :events="selectedEvents"
         :channel-id="channelId"
-        :highlighted-event-location-id="highlightedEventLocationId"
         :highlighted-event-id="highlightedEventId"
         :show-map="showMap"
         @highlightEvent="highlightEvent"
         @open-preview="openPreview"
       />
+      <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+        <button
+          type="button"
+          class="
+            bg-white
+            py-2
+            px-4
+            border border-gray-300
+            rounded-md
+            shadow-sm
+            text-sm
+            font-medium
+            text-gray-700
+            hover:bg-gray-50
+            focus:outline-none
+            focus:ring-2
+            focus:ring-offset-2
+            focus:ring-indigo-500
+          "
+          @click="closeMultipleEventPreview"
+        >
+          Close
+        </button>
+      </div>
+      <PreviewContainer
+        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
+        :header="selectedEvent ? selectedEvent.title : 'Untitled'"
+        :top-layer="true"
+        @closePreview="closeEventPreview"
+      >
+        <EventPreview
+          v-if="selectedEvent"
+          :event="selectedEvent"
+          @closePreview="closeEventPreview"
+        />
+      </PreviewContainer>
     </PreviewContainer>
+
     <FilterModal :show="showModal" @closeModal="closeModal">
       <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
       <LocationPicker v-if="selectedFilterOptions === 'typePicker'" />

@@ -21,6 +21,10 @@ export default defineComponent({
     header: {
       type: String,
       default: ""
+    },
+    topLayer: {
+      type: Boolean,
+      default: false
     }
   },
   setup() {},
@@ -39,7 +43,8 @@ export default defineComponent({
   <TransitionRoot as="template" :show="isOpen">
     <Dialog
       as="div"
-      class="fixed inset-0 overflow-hidden z-20"
+      class="fixed inset-0 overflow-hidden"
+      :class="[topLayer ? 'z-30' : 'z-20']"
       @close="$emit('closePreview')"
     >
       <div class="absolute inset-0 overflow-hidden">

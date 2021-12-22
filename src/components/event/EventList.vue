@@ -54,11 +54,6 @@ export default defineComponent({
     EventListItem,
   },
   methods: {
-    openPreview(event: EventData) {
-      this.$emit("highlightEvent", this.getEventLocationId(event), event.id, event);
-      this.$emit("openPreview");
-      this.$emit("lockColors");
-    },
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
@@ -94,7 +89,7 @@ export default defineComponent({
             $emit('unhighlight');
           }
         "
-        @openEventPreview="() => { openPreview(event) }"
+        @openEventPreview="() => { $emit('openPreview') }"
         @filterByTag="filterByTag"
       />
     </ul>
