@@ -58,14 +58,14 @@ export default defineComponent({
           
           marker.addListener("click", () => {
             emit('highlightEvent', eventLocationId, event.id, event.title);
-            emit("openPreview", event)
+            emit("openPreview")
             emit("lockColors")
           })
 
 
           marker.addListener("mouseover", () => {
             if (!props.colorLocked) {
-              emit('highlightEvent', eventLocationId, event.id, event.title);
+              emit('highlightEvent', eventLocationId);
               router.push(`#${eventLocationId}`)
             }
           })
@@ -94,13 +94,15 @@ export default defineComponent({
             if (markerMap[eventLocationId]) {
               const numberOfEvents = markerMap[eventLocationId].numberOfEvents;
 
-              markerMap[eventLocationId][event.id] = true;
+              markerMap[eventLocationId].events[event.id] = event;
               markerMap[eventLocationId].numberOfEvents = numberOfEvents + 1;
               markerMap[eventLocationId].marker = marker;
             } else {
               markerMap[eventLocationId] = {
                 marker,
-                [event.id]: true,
+                events: {
+                  [event.id]: event
+                },
                 numberOfEvents: 1
               }
             }

@@ -19,6 +19,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    highlightedEventId: {
+      type: String,
+      default: ""
+    },
     events: {
       type: Array as PropType<EventData[]>,
       default: () => {
@@ -51,7 +55,7 @@ export default defineComponent({
   },
   methods: {
     openPreview(event: EventData) {
-      this.$emit("highlightEvent", this.getEventLocationId(event), event.id, event.title);
+      this.$emit("highlightEvent", this.getEventLocationId(event), event.id, event);
       this.$emit("openPreview", event);
       this.$emit("lockColors");
     },
@@ -78,11 +82,11 @@ export default defineComponent({
         :search-input="searchInput"
         :current-channel-id="channelId"
         :class="[
-          highlightedEventLocationId === getEventLocationId(event) && showMap ? 'bg-gray-100' : ''
+          ( event.id === highlightedEventId ) || (!highlightedEventId && highlightedEventLocationId === getEventLocationId(event)) ? 'bg-gray-100' : ''
         ]"
         @mouseover="
           () => {
-            $emit('highlightEvent', getEventLocationId(event), event.id, event.title);
+            $emit('highlightEvent', getEventLocationId(event), event.id, event);
           }
         "
         @mouseleave="
@@ -90,7 +94,7 @@ export default defineComponent({
             $emit('unhighlight');
           }
         "
-        @openEventPreview="openPreview"
+        @openEventPreview="() => openPreview(event)"
         @filterByTag="filterByTag"
       />
     </ul>

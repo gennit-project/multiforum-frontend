@@ -107,7 +107,7 @@ export default defineComponent({
       <div class="py-4">
         <div class="flex items-center justify-between">
           <p
-            @click="$emit('openEventPreview', event)"
+            @click="$emit('openEventPreview')"
             class="text-sm font-medium text-indigo-600 truncate cursor-pointer"
           >
             <HighlightedSearchTerms :text="event.title" :search-input="searchInput" />

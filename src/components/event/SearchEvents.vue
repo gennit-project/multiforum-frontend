@@ -19,6 +19,7 @@ import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
 import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import AddToFeed from "../buttons/AddToFeed.vue";
 import Map from "./Map.vue";
+import PreviewContainer from "./PreviewContainer.vue";
 import EventPreview from "./EventPreview.vue";
 
 import { router } from "@/router";
@@ -236,6 +237,7 @@ export default defineComponent({
       showMap,
       previewIsOpen: false,
       selectedEvent: null as EventData | null,
+      selectedEvents: [],
       highlightedEventLocationId: "",
       highlightedEventId: "",
       highlightedMarker: null,
@@ -279,6 +281,7 @@ export default defineComponent({
     TagPicker,
     CostPicker,
     EventPreview,
+    PreviewContainer,
     AddToFeed,
     Map,
   },
@@ -288,54 +291,109 @@ export default defineComponent({
       this.colorLocked = false;
       this.unhighlight();
     },
-    openPreview(data: EventData) {
+    openPreview() {
       this.previewIsOpen = true;
       this.colorLocked = true;
-      this.selectedEvent = data;
     },
-    highlightEvent(eventLocationId: string, eventId: string, eventTitle: string) {
+    highlightEvent(
+      eventLocationId: string,
+      eventId: string,
+      eventData: EventData
+    ) {
       router.push(`#${eventLocationId}`);
+      this.highlightedEventLocationId = eventLocationId;
+
+      if (eventId) {
+        this.highlightedEventId = eventId;
+
+        if (this.markerMap[eventLocationId] && this.markerMap[eventLocationId].events[eventId]) {
+          this.selectedEvent = this.markerMap[eventLocationId].events[eventId]
+        } else if (eventData){
+          this.selectedEvent = eventData
+        } else {
+          throw new Error("Could not find the event data.")
+        }
+      }
 
       if (this.markerMap[eventLocationId]) {
-
         this.markerMap[eventLocationId].marker.setIcon({
           url: require("@/assets/images/highlighted-place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
         });
 
-        const numberOfEvents = this.markerMap[eventLocationId].numberOfEvents;
-
         const openSpecificInfowindow = () => {
-          this.markerMap.infowindow.setContent(eventTitle)
+          const eventTitle = this.markerMap[eventLocationId].events[this.highlightedEventId].title;
+          this.markerMap.infowindow.setContent(eventTitle);
           this.markerMap.infowindow.open({
             anchor: this.markerMap[eventLocationId].marker,
             map: this.map,
             shouldFocus: false,
           });
-        }
+        };
 
         const openGenericInfowindow = () => {
-          
           this.markerMap.infowindow.setContent(`${numberOfEvents} events`);
           this.markerMap.infowindow.open({
             anchor: this.markerMap[eventLocationId].marker,
             map: this.map,
             shouldFocus: false,
           });
+        };
+
+        const numberOfEvents = this.markerMap[eventLocationId].numberOfEvents;
+
+        // If the user mouses over a location with multiple events,
+        // open a generic infowindow.
+        if (!eventId && numberOfEvents > 1) {
+          openGenericInfowindow();
         }
 
-        if (numberOfEvents === 1) {
-          openSpecificInfowindow()
-        } else {
-          // If no event ID is given, say there are multiple events
-          openGenericInfowindow()
+        // If the user mouses over a location with a single event,
+        // open a specific infowindow.
+        if (!eventId && numberOfEvents === 1){
+          const defaultEventId = Object.keys(this.markerMap[eventLocationId].events)[0]
+          this.highlightedEventId = defaultEventId;
+          openSpecificInfowindow();
+        }
+
+        // If the user mouses over an event list item in the event list,
+        // always open a specific infowindow.
+        if (eventId) {
+          openSpecificInfowindow();
+        }
+
+        if (numberOfEvents > 1) {
+          const selectedEventsObject = this.markerMap[eventLocationId].events;
+          const getArrayFromObject = (obj: any) => {
+            const ary = []
+
+            for (let key in obj) {
+              ary.push(obj[key])
+            }
+
+            return ary;
+          }
+          const selectedEventsArray = getArrayFromObject(selectedEventsObject);
+
+          this.selectedEvents = selectedEventsArray;
         }
       }
+    },
+    unhighlight() {
+      if (!this.colorLocked) {
 
-      this.highlightedEventLocationId = eventLocationId;
-
-      if (eventId) {
-        this.highlightedEventId = eventId;
+        if (this.markerMap.infowindow) {
+          this.markerMap.infowindow.close();
+        }
+        
+        if (this.markerMap[this.highlightedEventLocationId]) {
+          this.markerMap[this.highlightedEventLocationId].marker.setIcon({
+            url: require("@/assets/images/place-icon.svg").default,
+            scaledSize: { width: 20, height: 20 },
+          });
+        }
+        this.highlightedEventId = "";
+        this.highlightedEventLocationId = "";
       }
     },
     getTagOptionLabels(options: Array<TagData>) {
@@ -353,20 +411,6 @@ export default defineComponent({
     setMarkerData(data: any) {
       this.markerMap = data.markerMap;
       this.map = data.map;
-    },
-    unhighlight() {
-      if (!this.colorLocked) {
-        this.markerMap.infowindow.close();
-
-        if (this.markerMap[this.highlightedEventLocationId]) {
-          this.markerMap[this.highlightedEventLocationId].marker.setIcon({
-            url: require("@/assets/images/place-icon.svg").default,
-            scaledSize: { width: 20, height: 20 },
-          });
-        }
-        this.highlightedEventId = "";
-        this.highlightedEventLocationId = "";
-      }
     },
     setShowMap() {
       this.showMap = true;
@@ -428,6 +472,7 @@ export default defineComponent({
         :selected-tags="selectedTags"
         :selected-channels="selectedChannels"
         :highlighted-event-location-id="highlightedEventLocationId"
+        :highlighted-event-id="highlightedEventId"
         :show-map="showMap"
         @filterByTag="filterByTag"
         @highlightEvent="highlightEvent"
@@ -454,11 +499,13 @@ export default defineComponent({
           <AddToFeed v-if="channelId" />
           <EventList
             class="overscroll-auto overflow-auto"
+            key="highlightedEventId"
             v-if="showMap && eventResult && eventResult.queryEvent"
             :events="eventResult.queryEvent"
             :channel-id="channelId"
             :search-input="searchInput"
             :highlighted-event-location-id="highlightedEventLocationId"
+            :highlighted-event-id="highlightedEventId"
             :selected-tags="selectedTags"
             :selected-channels="selectedChannels"
             :show-map="showMap"
@@ -480,11 +527,28 @@ export default defineComponent({
 
     <div class="col-start-1 row-start-1 py-4"></div>
 
-    <EventPreview
-      :isOpen="previewIsOpen"
-      :event="selectedEvent"
+    <PreviewContainer 
+      :isOpen="previewIsOpen" 
+      :header="selectedEvent ? selectedEvent.title : 'Events at this location'"
       @closePreview="closePreview"
-    />
+    >
+      <EventPreview 
+        v-if="selectedEvent"
+        :event="selectedEvent"
+        @closePreview="closePreview"
+      />
+      <EventList
+        v-if="selectedEvents"
+        class="overscroll-auto overflow-auto"
+        :events="selectedEvents"
+        :channel-id="channelId"
+        :highlighted-event-location-id="highlightedEventLocationId"
+        :highlighted-event-id="highlightedEventId"
+        :show-map="showMap"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+      />
+    </PreviewContainer>
     <FilterModal :show="showModal" @closeModal="closeModal">
       <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
       <LocationPicker v-if="selectedFilterOptions === 'typePicker'" />
