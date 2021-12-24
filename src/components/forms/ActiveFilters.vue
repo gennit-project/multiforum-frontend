@@ -1,8 +1,9 @@
 <script lang="ts">
 import { defineComponent, PropType, reactive, computed } from "vue";
-import FilterChip from "@/components/forms/FilterChip.vue";
-import SearchBar from "@/components/forms/SearchBar.vue";
 import AddToFeed from "@/components/buttons/AddToFeed.vue";
+import LocationMenu from "@/components/event/LocationMenu.vue";
+import DateMenu from "@/components/event/DateMenu.vue";
+import FilterChip from "@/components/forms/FilterChip.vue";
 
 export default defineComponent({
   setup(props) {
@@ -11,7 +12,7 @@ export default defineComponent({
         const channelString = props.selectedChannels.join(", ");
         return `Channels: ${channelString}`;
       }
-      return "Any channels";
+      return "Channels";
     });
 
     const tagLabel = computed(() => {
@@ -19,20 +20,12 @@ export default defineComponent({
         const tagString = props.selectedTags.join(", ");
         return `Tags: ${tagString}`;
       }
-      return "Any tags";
+      return "Tags";
     });
 
     const filterOptions = reactive({
-      dateRange: {
-        label: "In the next month",
-        modalType: "datePicker",
-      },
-      location: {
-        label: "Any location",
-        modalType: "typePicker",
-      },
       weeklyTimes: {
-        label: "Any time on any weekday",
+        label: "Weekday & Time",
         modalType: "weeklyTimePicker",
       },
       channels: {
@@ -44,7 +37,7 @@ export default defineComponent({
         modalType: "tagPicker",
       },
       cost: {
-        label: "Any cost",
+        label: "Cost",
         modalType: "costPicker",
       },
     });
@@ -62,10 +55,6 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    searchPlaceholder: {
-      type: String,
-      default: "",
-    },
     selectedTags: {
       type: Array as PropType<string[]>,
       default: () => {
@@ -78,52 +67,36 @@ export default defineComponent({
         return [];
       },
     },
-    routerSearchTerms: {
-      type: String,
-      default: ""
-    }
+    tagOptions: {
+      type: Array as PropType<string[]>,
+      default: () => {
+        return [];
+      },
+    },
   },
   components: {
-    FilterChip,
-    SearchBar,
+    LocationMenu,
     AddToFeed,
+    DateMenu,
+    FilterChip,
   },
-  methods: {
-    updateSearchInput(input: string) {
-      this.$emit('updateSearchInput', input)
-    }
-  }
 });
 </script>
 
 <template>
-  <div>
-    <div class="text-lg py-3 px-8">
-      <h3
-        class="
-          text-xs
-          font-semibold
-          uppercase
-          text-gray-500
-          inline-block
-        "
+  <div class="py-3 px-3">
+    <div class="inline-block">
+      <slot />
+      <DateMenu />
+      <LocationMenu />
+      <FilterChip
+        :key="filter"
+        v-for="filter in applicableFilters"
+        :name="filterOptions[filter].label"
+        @click="$emit('openModal', filterOptions[filter].modalType)"
       >
-        <SearchBar
-          :router-search-terms="routerSearchTerms"
-          :search-placeholder="searchPlaceholder"
-          @updateSearchInput="updateSearchInput"
-        />
-      </h3>
-      <div class="inline-block">
-        <FilterChip
-          :key="filter"
-          v-for="filter in applicableFilters"
-          :name="filterOptions[filter].label"
-          @click="$emit('openModal', filterOptions[filter].modalType)"
-        >
-        </FilterChip>
-        <AddToFeed v-if="channelId" />
-      </div>
+      </FilterChip>
+      <AddToFeed v-if="channelId" />
     </div>
   </div>
 </template>

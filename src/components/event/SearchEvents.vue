@@ -7,20 +7,19 @@ import { GET_COMMUNITY_NAMES } from "@/graphQLData/community/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 
 import ToggleMap from "../buttons/ToggleMap.vue";
-import SortDropdown from "@/components/forms/SortDropdown.vue";
 import EventList from "./EventList.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import DatePicker from "@/components/forms/DatePicker.vue";
 import CostPicker from "@/components/forms/CostPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
-import LocationPicker from "@/components/forms/LocationPicker.vue";
 import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
 import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import AddToFeed from "../buttons/AddToFeed.vue";
 import Map from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import EventPreview from "./EventPreview.vue";
+import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -272,12 +271,10 @@ export default defineComponent({
   components: {
     ActiveFilters,
     ToggleMap,
-    SortDropdown,
     EventList,
     FilterModal,
     ChannelPicker,
     DatePicker,
-    LocationPicker,
     WeeklyTimePicker,
     TagPicker,
     CostPicker,
@@ -285,6 +282,7 @@ export default defineComponent({
     PreviewContainer,
     AddToFeed,
     Map,
+    LocationSearchBar,
   },
   methods: {
     highlightEvent(
@@ -297,7 +295,6 @@ export default defineComponent({
       this.highlightedEventLocationId = eventLocationId;
 
       if (eventId) {
-
         if (
           this.markerMap[eventLocationId] &&
           this.markerMap[eventLocationId].events[eventId]
@@ -401,7 +398,7 @@ export default defineComponent({
       if (!this.multipleEventPreviewIsOpen) {
         this.colorLocked = false;
       }
-      
+
       this.unhighlight();
     },
     closeMultipleEventPreview() {
@@ -473,21 +470,25 @@ export default defineComponent({
 <template>
   <div>
     <ActiveFilters
-      :class="['mx-auto', 'max-w-6xl', 'inline-block']"
+      :class="['inline-block']"
       :channel-id="channelId"
-      :search-placeholder="'Search events'"
       :applicable-filters="
         channelId
-          ? ['dateRange', 'location', 'weeklyTimes', 'tags', 'cost']
-          : ['dateRange', 'location', 'weeklyTimes', 'channels', 'tags', 'cost']
+          ? ['weeklyTimes', 'tags', 'cost']
+          : ['weeklyTimes', 'channels', 'tags', 'cost']
       "
-      :selected-tags="selectedTags"
       :selected-channels="selectedChannels"
-      :router-search-terms="routerSearchTerms"
+      :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+      :selected-tags="selectedTags"
+      @setTagFilters="setTagFilters"
       @openModal="openModal"
-      @updateSearchInput="updateSearchResult"
-    />
-    <SortDropdown />
+    >
+      <LocationSearchBar
+        :router-search-terms="routerSearchTerms"
+        :search-placeholder="'Search events'"
+        @updateSearchInput="updateSearchResult"
+      />
+    </ActiveFilters>
     <ToggleMap
       :show-map="showMap"
       @showMap="setShowMap"
@@ -558,7 +559,7 @@ export default defineComponent({
     <div class="col-start-1 row-start-1 py-4"></div>
 
     <PreviewContainer
-      :isOpen="eventPreviewIsOpen  && !multipleEventPreviewIsOpen"
+      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
       :header="selectedEvent ? selectedEvent.title : 'Untitled'"
       :top-layer="true"
       @closePreview="closeEventPreview"
@@ -625,7 +626,6 @@ export default defineComponent({
 
     <FilterModal :show="showModal" @closeModal="closeModal">
       <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
-      <LocationPicker v-if="selectedFilterOptions === 'typePicker'" />
       <ChannelPicker
         v-model="selectedChannels"
         v-if="

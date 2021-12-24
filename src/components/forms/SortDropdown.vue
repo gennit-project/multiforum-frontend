@@ -74,6 +74,7 @@ export default defineComponent({
         right-0
         mt-2
         w-40
+        z-20
         rounded-md
         shadow-2xl
         bg-white
