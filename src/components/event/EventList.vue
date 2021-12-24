@@ -17,7 +17,7 @@ export default defineComponent({
   props: {
     highlightedEventLocationId: {
       type: String,
-      required: true,
+      default: "",
     },
     highlightedEventId: {
       type: String,
