@@ -84,8 +84,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="py-3 px-3">
-    <div class="inline-block">
+    <div class="py-3 px-3 inline-block">
       <slot />
       <DateMenu />
       <LocationMenu />
@@ -98,5 +97,4 @@ export default defineComponent({
       </FilterChip>
       <AddToFeed v-if="channelId" />
     </div>
-  </div>
 </template>

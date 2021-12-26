@@ -468,9 +468,9 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div :class="['inline-block']">
     <ActiveFilters
-      :class="['inline-block']"
+      :class="['inline-block, align-middle']"
       :channel-id="channelId"
       :applicable-filters="
         channelId

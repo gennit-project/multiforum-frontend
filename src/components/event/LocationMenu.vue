@@ -20,7 +20,7 @@ const people = [
 export default defineComponent({
   name: "LocationMenu",
   setup() {
-    const selected = ref(people[3]);
+    const selected = ref(people[0]);
 
     return {
       people,
@@ -35,6 +35,13 @@ export default defineComponent({
     CheckIcon,
     SelectorIcon,
   },
+  methods: {
+    openModal() {
+      if (this.selected.id === 5){
+        alert('hi')
+      }
+    }
+  }
 });
 </script>
 
@@ -106,6 +113,7 @@ export default defineComponent({
             :key="person.id"
             :value="person"
             v-slot="{ active, selected }"
+            @click="openModal"
           >
             <li
               :class="[
