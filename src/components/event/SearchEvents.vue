@@ -496,7 +496,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="py-3 px-3 inline-block align-middle">
+    <div class="py-3 px-3 inline-flex items-center">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
@@ -507,6 +507,8 @@ export default defineComponent({
         <VDropdown>
           <button
             class="
+              inline-flex
+              items-center
               m-1
               max-height-4
               px-2.5
@@ -517,9 +519,13 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              hover:bg-indigo-200
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
             Date
           </button>
           <template #popper>
@@ -537,6 +543,8 @@ export default defineComponent({
         <VDropdown>
           <button
             class="
+              inline-flex
+              items-center
               m-1
               max-height-4
               px-2.5
@@ -547,9 +555,14 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              hover:bg-indigo-200
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
             Location
           </button>
           <template #popper>
@@ -568,6 +581,8 @@ export default defineComponent({
         <VDropdown>
           <button
             class="
+              inline-flex
+              items-center
               m-1
               max-height-4
               px-2.5
@@ -578,9 +593,13 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              hover:bg-indigo-200
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             Weekday & Time
           </button>
           <template #popper>
@@ -593,6 +612,8 @@ export default defineComponent({
         <VDropdown>
           <button
             class="
+              inline-flex
+              items-center
               m-1
               max-height-4
               px-2.5
@@ -603,9 +624,13 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              hover:bg-indigo-200
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
             {{ channelLabel }}
           </button>
           <template #popper>
@@ -625,6 +650,8 @@ export default defineComponent({
         <VDropdown>
           <button
             class="
+              inline-flex
+              items-center
               m-1
               max-height-4
               px-2.5
@@ -635,9 +662,13 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              hover:bg-indigo-200
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            </svg>
             {{ tagLabel }}
           </button>
           <template #popper>
@@ -654,6 +685,8 @@ export default defineComponent({
         <VDropdown>
           <button
             class="
+              inline-flex
+              items-center
               m-1
               max-height-4
               px-2.5
@@ -664,9 +697,13 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              hover:bg-indigo-200
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
+            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            </svg>
             Other Filters
           </button>
           <template #popper>

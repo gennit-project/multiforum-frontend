@@ -1,22 +1,20 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-    
-  },
+  setup() {},
   data() {
     return {
       showUserProfileDropdown: false,
-      showMobileDropdown: false
-    }
+      showMobileDropdown: false,
+    };
   },
   methods: {
     toggleUserProfileDropdown() {
-      this.showUserProfileDropdown = !this.showUserProfileDropdown
+      this.showUserProfileDropdown = !this.showUserProfileDropdown;
     },
-  }
-})
+  },
+});
 </script>
 
 <template>
@@ -41,6 +39,8 @@ export default defineComponent({
             <router-link
               to="/"
               class="
+                inline-flex
+                items-center
                 text-gray-300
                 hover:bg-gray-700 hover:text-white
                 px-3
@@ -50,6 +50,8 @@ export default defineComponent({
                 font-medium
               "
               active-class="
+                inline-flex
+                items-center
                 bg-gray-900
                 text-white
                 px-3
@@ -58,11 +60,26 @@ export default defineComponent({
                 text-sm
                 font-medium
               "
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="-ml-0.5 mr-2 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                /></svg
               >Events</router-link
             >
             <router-link
               to="/discussions"
               class="
+                inline-flex
+                items-center
                 text-gray-300
                 hover:bg-gray-700 hover:text-white
                 px-3
@@ -72,6 +89,8 @@ export default defineComponent({
                 font-medium
               "
               active-class="
+                inline-flex
+                items-center
                 bg-gray-900
                 text-white
                 px-3
@@ -80,11 +99,17 @@ export default defineComponent({
                 text-sm
                 font-medium
               "
-              >Discussions</router-link
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+              </svg>
+              Discussions</router-link
             >
             <router-link
               to="/channels"
               class="
+                inline-flex
+                items-center
                 text-gray-300
                 hover:bg-gray-700 hover:text-white
                 px-3
@@ -94,6 +119,8 @@ export default defineComponent({
                 font-medium
               "
               active-class="
+                inline-flex
+                items-center
                 bg-gray-900
                 text-white
                 px-3
@@ -102,11 +129,28 @@ export default defineComponent({
                 text-sm
                 font-medium
               "
-              >Channels</router-link
             >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="-ml-0.5 mr-2 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+              Channels
+            </router-link>
             <router-link
               to="/feeds"
               class="
+                inline-flex
+                items-center
                 text-gray-300
                 hover:bg-gray-700 hover:text-white
                 px-3
@@ -116,6 +160,8 @@ export default defineComponent({
                 font-medium
               "
               active-class="
+                inline-flex
+                items-center
                 bg-gray-900
                 text-white
                 px-3
@@ -124,7 +170,22 @@ export default defineComponent({
                 text-sm
                 font-medium
               "
-              >Feeds</router-link
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="-ml-0.5 mr-2 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 5c7.18 0 13 5.82 13 13M6 11a7 7 0 017 7m-6 0a1 1 0 11-2 0 1 1 0 012 0z"
+                />
+              </svg>
+              Feeds</router-link
             >
           </div>
         </div>
@@ -290,10 +351,9 @@ export default defineComponent({
           </button>
 
           <!-- Profile dropdown -->
-          <div class="ml-4 relative flex-shrink-0" >
+          <div class="ml-4 relative flex-shrink-0">
             <div @click="toggleUserProfileDropdown">
               <button
-                
                 type="button"
                 class="
                   bg-gray-800
