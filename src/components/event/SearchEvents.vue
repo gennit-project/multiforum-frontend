@@ -9,18 +9,16 @@ import { GET_TAGS } from "@/graphQLData/tag/queries";
 import AddToFeed from "../buttons/AddToFeed.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import CostPicker from "@/components/forms/CostPicker.vue";
-import DateMenu from "@/components/event/DateMenu.vue";
 import DatePicker from "@/components/forms/DatePicker.vue";
 import EventList from "./EventList.vue";
 import EventPreview from "./EventPreview.vue";
-import FilterChip from "../forms/FilterChip.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-import LocationMenu from "@/components/event/LocationMenu.vue";
 import Map from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import ToggleMap from "../buttons/ToggleMap.vue";
+import SearchBar from "../forms/SearchBar.vue";
 import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
 
 import { router } from "@/router";
@@ -40,18 +38,16 @@ export default defineComponent({
     AddToFeed,
     ChannelPicker,
     CostPicker,
-    DateMenu,
     DatePicker,
     EventList,
     EventPreview,
-    FilterChip,
     FilterModal,
-    LocationMenu,
     LocationSearchBar,
     Map,
     PreviewContainer,
     TagPicker,
     ToggleMap,
+    SearchBar,
     WeeklyTimePicker,
   },
   setup(props) {
@@ -498,8 +494,67 @@ export default defineComponent({
         :search-placeholder="'Location'"
         @updateSearchInput="updateSearchResult"
       />
-      <DateMenu />
-      <LocationMenu />
+
+      <div class="inline-block">
+        <VDropdown>
+          <button
+            class="
+              m-1
+              max-height-4
+              px-2.5
+              py-1.5
+              border border-transparent
+              text-xs
+              font-medium
+              rounded
+              text-indigo-700
+              bg-indigo-100
+              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+            "
+          >
+            Date
+          </button>
+          <template #popper>
+            <ul>
+              <li>Events in the next month</li>
+              <li>Events on the weekend</li>
+              <li>Past events</li>
+              <li>From _ to _</li>
+            </ul>
+          </template>
+        </VDropdown>
+      </div>
+
+      <div class="inline-block">
+        <VDropdown>
+          <button
+            class="
+              m-1
+              max-height-4
+              px-2.5
+              py-1.5
+              border border-transparent
+              text-xs
+              font-medium
+              rounded
+              text-indigo-700
+              bg-indigo-100
+              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+            "
+          >
+            Location
+          </button>
+          <template #popper>
+            <ul>
+              <li>Both virtual and in-person events</li>
+              <li>In-person only</li>
+              <li>Virtual only</li>
+              <li>Within a radius from an address</li>
+            </ul>
+          </template>
+        </VDropdown>
+      </div>
+
 
       <div class="inline-block">
         <VDropdown>
@@ -572,6 +627,7 @@ export default defineComponent({
               rounded
               text-indigo-700
               bg-indigo-100
+              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
             {{ tagLabel }}
@@ -586,25 +642,41 @@ export default defineComponent({
         </VDropdown>
       </div>
 
-      <FilterChip
-        @click="
-          () => {
-            openModal('costPicker');
-          }
-        "
-      >
-        Cost
-      </FilterChip>
+      <div class="inline-block">
+        <VDropdown>
+          <button
+            class="
+              m-1
+              max-height-4
+              px-2.5
+              py-1.5
+              border border-transparent
+              text-xs
+              font-medium
+              rounded
+              text-indigo-700
+              bg-indigo-100
+              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+            "
+          >
+            Other Filters
+          </button>
+          <template #popper>
+            <div>
+              <label for="location" class="block text-sm font-medium">Search Event Titles and Descriptions</label>
 
-      <FilterChip
-        @click="
-          () => {
-            openModal('costPicker');
-          }
-        "
-      >
-        Text
-      </FilterChip>
+              <SearchBar
+                :router-search-terms="routerSearchTerms"
+                :search-placeholder="'Search'"
+                @updateSearchInput="updateSearchResult"
+              />
+
+              <label for="free-events" class="block text-sm font-medium mt-3">Show Only Free Events</label>
+            </div>
+          </template>
+        </VDropdown>
+      </div>
+
       <AddToFeed v-if="channelId" />
     </div>
     <ToggleMap
@@ -752,5 +824,9 @@ export default defineComponent({
 <style>
 .mapHeight {
   height: 42em;
+}
+
+.gray {
+  color: gray;
 }
 </style>

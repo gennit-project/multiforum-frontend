@@ -26,6 +26,7 @@
     "vue": "^3.0.0",
     "vue-apollo": "^3.0.8",
     "vue-class-component": "^8.0.0-0",
+    "vue-multiselect": "^2.1.6",
     "vue-router": "^4.0.11"
   },
   "devDependencies": {

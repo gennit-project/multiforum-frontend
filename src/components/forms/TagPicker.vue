@@ -51,9 +51,9 @@ export default defineComponent({
   </div>
 </template>
 
-
-<style src="@vueform/multiselect/themes/default.css">
+<style src="@vueform/multiselect/themes/default.css"></style>
+<style >
 .wide {
-  width: 15em;
+  min-width: 250px;
 }
 </style>

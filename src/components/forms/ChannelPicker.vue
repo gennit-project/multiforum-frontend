@@ -1,10 +1,4 @@
 <script lang="ts">
-// <ChannelPicker
-//         v-if="selectedFilterOptions === 'channelPicker'"
-//         :community-options="communityOptions"
-//         :selected-communities="selectedCommunities"
-//         @pickChannel="pickChannel"
-//       />
 import { defineComponent, PropType } from "vue";
 import Multiselect from "@vueform/multiselect";
 
@@ -48,9 +42,9 @@ export default defineComponent({
   :options="channelOptions"
 />
 </template>
-
+<style src="@vueform/multiselect/themes/default.css"></style>
 <style>
 .wide {
-  min-width: 100px;
+  min-width: 250px;
 }
 </style>
