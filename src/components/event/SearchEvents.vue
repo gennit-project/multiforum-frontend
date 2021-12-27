@@ -495,7 +495,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div :class="['inline-block']">
+  <div>
     <div class="py-3 px-3 inline-block align-middle">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
