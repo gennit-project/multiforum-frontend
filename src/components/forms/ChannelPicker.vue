@@ -29,20 +29,25 @@ export default defineComponent({
 });
 </script>
 <template>
-<Multiselect
-  class="wide"
-  v-model="value"
-  mode="tags"
-  @select="$emit('setChannelFilters', value)"
-  @deselect="$emit('setChannelFilters', [])"
-  @clear="$emit('setChannelFilters', [])"
-  :placeholder="'Enter channels here'"
-  :closeOnSelect="false"
-  :searchable="true"
-  :options="channelOptions"
-/>
+  <Multiselect
+    class="wide"
+    :classes="{
+      containerActive: 'ring-0',
+      tagsSearch:
+        'absolute inset-0 border-0 outline-none focus:ring-0 appearance-none p-0 text-base font-sans box-border w-full',
+    }"
+    v-model="value"
+    mode="tags"
+    @select="$emit('setChannelFilters', value)"
+    @deselect="$emit('setChannelFilters', [])"
+    @clear="$emit('setChannelFilters', [])"
+    :placeholder="'Enter channels here'"
+    :closeOnSelect="false"
+    :searchable="true"
+    :options="channelOptions"
+  />
 </template>
-<style src="@vueform/multiselect/themes/default.css"></style>
+
 <style>
 .wide {
   min-width: 250px;

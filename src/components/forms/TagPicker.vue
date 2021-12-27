@@ -39,7 +39,11 @@ export default defineComponent({
 <template>
     <Multiselect
       v-model="value"
-      class="wide"
+      class="wide "
+      :classes="{
+        containerActive: 'ring-0',
+        tagsSearch: 'absolute inset-0 border-0 outline-none focus:ring-0 appearance-none p-0 text-base font-sans box-border w-full'
+      }"
       mode="tags"
       @select="$emit('setTagFilters', value)"
       @deselect="$emit('setTagFilters', [])"
@@ -51,8 +55,10 @@ export default defineComponent({
     />
 </template>
 
-<style src="@vueform/multiselect/themes/default.css"></style>
-<style >
+<style lang="scss">
+  @import '@vueform/multiselect/themes/tailwind.scss'
+</style>
+<style>
 .wide {
   min-width: 250px;
 }
