@@ -15,34 +15,42 @@ export default defineComponent({
   },
   data(props) {
     return {
-      value: props.selectedChannels
+      value: props.selectedChannels,
     };
   },
   props: {
     selectedChannels: {
       type: Array as PropType<string[]>,
-      default: () => { return [] }
+      default: () => {
+        return [];
+      },
     },
     channelOptions: {
       type: Array as PropType<string[]>,
-      default: () => { return [] }
-    }
-  }
+      default: () => {
+        return [];
+      },
+    },
+  },
 });
 </script>
 <template>
-  <div>
-    <h1>Filter by Channels</h1>
-    <Multiselect
-      v-model="value"
-      mode="tags"
-      @select="$emit('setChannelFilters', value)"
-      @deselect="$emit('setChannelFilters', value)"
-      :placeholder="'Enter channels here'"
-      :closeOnSelect="false"
-      :searchable="true"
-      :createTag="true"
-      :options="channelOptions"
-    />
-  </div>
+<Multiselect
+  class="wide"
+  v-model="value"
+  mode="tags"
+  @select="$emit('setChannelFilters', value)"
+  @deselect="$emit('setChannelFilters', value)"
+  :placeholder="'Enter channels here'"
+  :closeOnSelect="false"
+  :searchable="true"
+  :createTag="true"
+  :options="channelOptions"
+/>
 </template>
+
+<style>
+.wide {
+  min-width: 100px;
+}
+</style>

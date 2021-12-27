@@ -43,7 +43,7 @@ export default defineComponent({
       mode="tags"
       @select="$emit('setTagFilters', value)"
       @deselect="$emit('setTagFilters', value)"
-      :placeholder="'Tags'"
+      :placeholder="'Enter tags here'"
       :closeOnSelect="false"
       :searchable="true"
       :options="formattedTagOptions"

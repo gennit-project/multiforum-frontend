@@ -16,7 +16,7 @@ import EventPreview from "./EventPreview.vue";
 import FilterChip from "../forms/FilterChip.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-import LocationMenu from "@/components/event/LocationMenu.vue"
+import LocationMenu from "@/components/event/LocationMenu.vue";
 import Map from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
@@ -500,22 +500,111 @@ export default defineComponent({
       />
       <DateMenu />
       <LocationMenu />
+
+      <div class="inline-block">
+        <VDropdown>
+          <button
+            class="
+              m-1
+              max-height-4
+              px-2.5
+              py-1.5
+              border border-transparent
+              text-xs
+              font-medium
+              rounded
+              text-indigo-700
+              bg-indigo-100
+              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+            "
+          >
+            Weekday & Time
+          </button>
+          <template #popper>
+            <WeeklyTimePicker />
+          </template>
+        </VDropdown>
+      </div>
+
+      <div class="inline-block">
+        <VDropdown>
+          <button
+            class="
+              m-1
+              max-height-4
+              px-2.5
+              py-1.5
+              border border-transparent
+              text-xs
+              font-medium
+              rounded
+              text-indigo-700
+              bg-indigo-100
+              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+            "
+          >
+            {{ channelLabel }}
+          </button>
+          <template #popper>
+            <ChannelPicker
+              v-model="selectedChannels"
+              :channel-options="
+                getChannelOptionLabels(channelOptions.queryCommunity)
+              "
+              :selected-channels="selectedChannels"
+              @setChannelFilters="setChannelFilters"
+            />
+          </template>
+        </VDropdown>
+      </div>
+
+      <div class="inline-block">
+        <VDropdown>
+          <button
+            class="
+              m-1
+              max-height-4
+              px-2.5
+              py-1.5
+              border border-transparent
+              text-xs
+              font-medium
+              rounded
+              text-indigo-700
+              bg-indigo-100
+            "
+          >
+            {{ tagLabel }}
+          </button>
+          <template #popper>
+            <TagPicker
+              :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+              :selected-tags="selectedTags"
+              @setTagFilters="setTagFilters"
+            />
+          </template>
+        </VDropdown>
+      </div>
+
       <FilterChip
-        :name="'Weekday & Time'"
-        @click="() => { openModal('weeklyTimePicker')}"
-      />
+        @click="
+          () => {
+            openModal('costPicker');
+          }
+        "
+      >
+        Cost
+      </FilterChip>
+
       <FilterChip
-        :name="channelLabel"
-        @click="() => { openModal('channelPicker')}"
-      />
-      <FilterChip
-        :name="tagLabel"
-        @click="() => { openModal('tagPicker')}"
-      />
-      <FilterChip
-        :name="'Cost'"
-        @click="() => { openModal('costPicker')}"
-      />
+        @click="
+          () => {
+            openModal('costPicker');
+          }
+        "
+      >
+        Text
+      </FilterChip>
       <AddToFeed v-if="channelId" />
     </div>
     <ToggleMap
@@ -655,36 +744,7 @@ export default defineComponent({
 
     <FilterModal :show="showModal" @closeModal="closeModal">
       <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
-      <ChannelPicker
-        v-model="selectedChannels"
-        v-if="
-          selectedFilterOptions === 'channelPicker' &&
-          channelOptions &&
-          channelOptions.queryCommunity
-        "
-        :channel-options="getChannelOptionLabels(channelOptions.queryCommunity)"
-        :selected-channels="selectedChannels"
-        @setChannelFilters="setChannelFilters"
-      />
-      <TagPicker
-        v-if="
-          selectedFilterOptions === 'tagPicker' &&
-          tagOptions &&
-          tagOptions.queryTag
-        "
-        :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-        :selected-tags="selectedTags"
-        @setTagFilters="setTagFilters"
-      />
       <CostPicker v-if="selectedFilterOptions === 'costPicker'" />
-    </FilterModal>
-    <FilterModal
-      v-if="selectedFilterOptions === 'weeklyTimePicker'"
-      :show="showModal"
-      :is-large="true"
-      @closeModal="closeModal"
-    >
-      <WeeklyTimePicker />
     </FilterModal>
   </div>
 </template>

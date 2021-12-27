@@ -2,9 +2,11 @@ import { createApp, provide, h } from 'vue'
 import App from "./App.vue";
 import { router } from './router';
 import "./index.css";
+import 'v-tooltip/dist/v-tooltip.css'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import config from './config';
+const VTooltipPlugin = require('v-tooltip');
 
 // Cache implementation
 const cache = new InMemoryCache({
@@ -47,6 +49,7 @@ const app = createApp({
 })
 
 app.use(router)
+   .use(VTooltipPlugin)
    .mount("#app");
 
 

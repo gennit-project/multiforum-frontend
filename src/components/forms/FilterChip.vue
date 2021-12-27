@@ -3,16 +3,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   setup() {},
-  props: {
-    name: {
-      type: String,
-      required: true,
-    },
-    canDelete: {
-      type: Boolean,
-      default: false,
-    },
-  },
 });
 </script>
 
@@ -35,7 +25,6 @@ export default defineComponent({
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
     "
   >
-    
-    <span>{{ name }}</span>
+    <slot/>
   </button>
 </template>
