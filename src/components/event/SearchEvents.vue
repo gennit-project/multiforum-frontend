@@ -336,7 +336,15 @@ export default defineComponent({
           const eventTitle =
             this.markerMap[eventLocationId].events[this.highlightedEventId]
               .title;
-          this.markerMap.infowindow.setContent(eventTitle);
+          const eventLocation = this.markerMap[eventLocationId].events[this.highlightedEventId]
+            .locationName;
+          
+          let infowindowContent = `<b>${eventTitle}</b>`;
+
+          if (eventLocation) {
+            infowindowContent = `<div style="text-align:center"><b>${eventTitle}</b></div></div><div style="text-align:center">at ${eventLocation}</div>`
+          }
+          this.markerMap.infowindow.setContent(infowindowContent);
           this.markerMap.infowindow.open({
             anchor: this.markerMap[eventLocationId].marker,
             map: this.map,
