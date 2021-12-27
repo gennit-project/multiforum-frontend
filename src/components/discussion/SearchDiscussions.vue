@@ -4,7 +4,6 @@ import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
-import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
@@ -214,7 +213,7 @@ export default defineComponent({
   },
   components: {
     DiscussionList,
-    ActiveFilters,
+    // ActiveFilters,
     FilterModal,
     ChannelPicker,
     TagPicker,
@@ -256,7 +255,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <ActiveFilters
+    <!-- <ActiveFilters
       :class="['mx-auto', 'max-w-5xl']"
       :search-placeholder="'Search discussions'"
       :applicable-filters="channelId ? ['tags'] : ['channels', 'tags']"
@@ -266,7 +265,7 @@ export default defineComponent({
       :router-search-terms="routerSearchTerms"
       @openModal="openModal"
       @updateSearchInput="updateSearchResult"
-    />
+    /> -->
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList
       v-else-if="discussionResult && discussionResult.queryDiscussion"

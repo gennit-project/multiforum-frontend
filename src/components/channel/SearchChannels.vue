@@ -2,7 +2,6 @@
 import { defineComponent, computed, ref, PropType } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import ChannelList from "./ChannelList.vue";
-import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { gql } from "@apollo/client/core";
@@ -188,7 +187,7 @@ export default defineComponent({
   },
   components: {
     ChannelList,
-    ActiveFilters,
+    // ActiveFilters,
     FilterModal,
     TagPicker,
   },
@@ -223,14 +222,14 @@ export default defineComponent({
 
 <template>
   <div>
-    <ActiveFilters
+    <!-- <ActiveFilters
       :search-placeholder="'Search channels'"
       :selected-tags="selectedTags"
       :router-search-terms="routerSearchTerms"
       :applicable-filters="['tags']"
       @openModal="openModal"
       @updateSearchInput="updateSearchResult"
-    />
+    /> -->
     <div v-if="channelLoading">Loading...</div>
     <ChannelList
       class="px-8 flex-1 text-xl font-bold"

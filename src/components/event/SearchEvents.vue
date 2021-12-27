@@ -6,20 +6,22 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_COMMUNITY_NAMES } from "@/graphQLData/community/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 
-import ToggleMap from "../buttons/ToggleMap.vue";
-import EventList from "./EventList.vue";
-import FilterModal from "@/components/forms/FilterModal.vue";
-import ChannelPicker from "@/components/forms/ChannelPicker.vue";
-import DatePicker from "@/components/forms/DatePicker.vue";
-import CostPicker from "@/components/forms/CostPicker.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
-import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
-import ActiveFilters from "@/components/forms/ActiveFilters.vue";
 import AddToFeed from "../buttons/AddToFeed.vue";
+import ChannelPicker from "@/components/forms/ChannelPicker.vue";
+import CostPicker from "@/components/forms/CostPicker.vue";
+import DateMenu from "@/components/event/DateMenu.vue";
+import DatePicker from "@/components/forms/DatePicker.vue";
+import EventList from "./EventList.vue";
+import EventPreview from "./EventPreview.vue";
+import FilterChip from "../forms/FilterChip.vue";
+import FilterModal from "@/components/forms/FilterModal.vue";
+import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
+import LocationMenu from "@/components/event/LocationMenu.vue"
 import Map from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
-import EventPreview from "./EventPreview.vue";
-import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
+import TagPicker from "@/components/forms/TagPicker.vue";
+import ToggleMap from "../buttons/ToggleMap.vue";
+import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
 
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -33,6 +35,25 @@ interface Ref<T> {
 }
 
 export default defineComponent({
+  name: "SearchEvents",
+  components: {
+    AddToFeed,
+    ChannelPicker,
+    CostPicker,
+    DateMenu,
+    DatePicker,
+    EventList,
+    EventPreview,
+    FilterChip,
+    FilterModal,
+    LocationMenu,
+    LocationSearchBar,
+    Map,
+    PreviewContainer,
+    TagPicker,
+    ToggleMap,
+    WeeklyTimePicker,
+  },
   setup(props) {
     const route = useRoute();
 
@@ -202,8 +223,25 @@ export default defineComponent({
       selectedFilterOptions.value = "";
     };
 
+    const channelLabel = computed(() => {
+      if (selectedChannels.value.length > 0) {
+        const channelString = selectedChannels.value.join(", ");
+        return `Channels: ${channelString}`;
+      }
+      return "Channels";
+    });
+
+    const tagLabel = computed(() => {
+      if (selectedTags.value.length > 0) {
+        const tagString = selectedTags.value.join(", ");
+        return `Tags: ${tagString}`;
+      }
+      return "Tags";
+    });
+
     return {
       channelId,
+      channelLabel,
       channelOptions,
       closeModal,
       eventLoading,
@@ -223,6 +261,7 @@ export default defineComponent({
       selectedChannels,
       selectedFilterOptions,
       selectedTags,
+      tagLabel,
       tagOptions,
       textFilters,
     };
@@ -267,22 +306,6 @@ export default defineComponent({
       type: String,
       default: "",
     },
-  },
-  components: {
-    ActiveFilters,
-    ToggleMap,
-    EventList,
-    FilterModal,
-    ChannelPicker,
-    DatePicker,
-    WeeklyTimePicker,
-    TagPicker,
-    CostPicker,
-    EventPreview,
-    PreviewContainer,
-    AddToFeed,
-    Map,
-    LocationSearchBar,
   },
   methods: {
     highlightEvent(
@@ -469,26 +492,32 @@ export default defineComponent({
 </script>
 <template>
   <div :class="['inline-block']">
-    <ActiveFilters
-      :class="['inline-block, align-middle']"
-      :channel-id="channelId"
-      :applicable-filters="
-        channelId
-          ? ['weeklyTimes', 'tags', 'cost']
-          : ['weeklyTimes', 'channels', 'tags', 'cost']
-      "
-      :selected-channels="selectedChannels"
-      :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-      :selected-tags="selectedTags"
-      @setTagFilters="setTagFilters"
-      @openModal="openModal"
-    >
+    <div class="py-3 px-3 inline-block align-middle">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
-        :search-placeholder="'Search events'"
+        :search-placeholder="'Location'"
         @updateSearchInput="updateSearchResult"
       />
-    </ActiveFilters>
+      <DateMenu />
+      <LocationMenu />
+      <FilterChip
+        :name="'Weekday & Time'"
+        @click="() => { openModal('weeklyTimePicker')}"
+      />
+      <FilterChip
+        :name="channelLabel"
+        @click="() => { openModal('channelPicker')}"
+      />
+      <FilterChip
+        :name="tagLabel"
+        @click="() => { openModal('tagPicker')}"
+      />
+      <FilterChip
+        :name="'Cost'"
+        @click="() => { openModal('costPicker')}"
+      />
+      <AddToFeed v-if="channelId" />
+    </div>
     <ToggleMap
       :show-map="showMap"
       @showMap="setShowMap"

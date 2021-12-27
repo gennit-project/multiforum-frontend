@@ -88,7 +88,8 @@ export default defineComponent({
           shadow-xl
           transform
           transition-all
-          sm:my-8 sm:align-middle sm:w-full sm:p-6
+          sm:my-8 sm:align-middle sm:p-6
+          min-w-fit
           overflow-visible
         "
         :class="[!isLarge ? 'sm:max-w-lg' : '']"
