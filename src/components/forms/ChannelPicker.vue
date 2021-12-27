@@ -34,11 +34,11 @@ export default defineComponent({
   v-model="value"
   mode="tags"
   @select="$emit('setChannelFilters', value)"
-  @deselect="$emit('setChannelFilters', value)"
+  @deselect="$emit('setChannelFilters', [])"
+  @clear="$emit('setChannelFilters', [])"
   :placeholder="'Enter channels here'"
   :closeOnSelect="false"
   :searchable="true"
-  :createTag="true"
   :options="channelOptions"
 />
 </template>

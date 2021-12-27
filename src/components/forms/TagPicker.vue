@@ -37,18 +37,18 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="inline-block wide ml-2">
     <Multiselect
       v-model="value"
+      class="wide"
       mode="tags"
       @select="$emit('setTagFilters', value)"
-      @deselect="$emit('setTagFilters', value)"
+      @deselect="$emit('setTagFilters', [])"
+      @clear="$emit('setTagFilters', [])"
       :placeholder="'Enter tags here'"
       :closeOnSelect="false"
       :searchable="true"
       :options="formattedTagOptions"
     />
-  </div>
 </template>
 
 <style src="@vueform/multiselect/themes/default.css"></style>
