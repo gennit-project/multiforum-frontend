@@ -73,8 +73,8 @@ export default defineComponent({
     },
     searchInput: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   methods: {
     getCommentCount(commentSection: CommentSectionData) {
@@ -110,7 +110,20 @@ export default defineComponent({
             @click="$emit('openEventPreview')"
             class="text-sm font-medium text-indigo-600 truncate cursor-pointer"
           >
-            <HighlightedSearchTerms :text="event.title" :search-input="searchInput" />
+            <HighlightedSearchTerms
+              :text="event.title"
+              :search-input="searchInput"
+            />
+          </p>
+        </div>
+        <div v-if="event.description" class="flex items-center justify-between">
+          <p
+            class="text-sm font-medium text-gray-600 truncate"
+          >
+            <HighlightedSearchTerms
+              :text="event.description"
+              :search-input="searchInput"
+            />
           </p>
         </div>
         <div class="mt-2 sm:flex sm:justify-between">
@@ -148,7 +161,6 @@ export default defineComponent({
                 >{{ timeOfDay }} for {{ abbreviatedDuration }}</time
               >
             </p>
-            
           </div>
         </div>
         <div class="text-sm">
@@ -178,14 +190,12 @@ export default defineComponent({
           </router-link>
         </div>
         <Tag
-              :highlighted="
-                selectedTags.indexOf(tag.text) !== -1 ? true : false
-              "
-              :key="tag"
-              v-for="tag in event.Tags"
-              :tag="tag.text"
-              @click="$emit('filterByTag', tag.text)"
-            />
+          :highlighted="selectedTags.indexOf(tag.text) !== -1 ? true : false"
+          :key="tag"
+          v-for="tag in event.Tags"
+          :tag="tag.text"
+          @click="$emit('filterByTag', tag.text)"
+        />
       </div>
     </div>
   </li>

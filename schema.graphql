@@ -160,7 +160,7 @@ interface addEventInput {
 type Event {
   id: ID!
   title: String! @search(by: [fulltext])
-  description: String
+  description: String @search(by: [fulltext])
   startTime: DateTime! @search
   startTimeYear: String! @search(by: [term])
   startTimeMonth: String! @search(by: [term])

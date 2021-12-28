@@ -11,6 +11,7 @@ export type Point = {
 export type EventData = {
   id: string;
   title: string;
+  description: string;
   address?: string;
   location?: Point;
   locationName?: string;

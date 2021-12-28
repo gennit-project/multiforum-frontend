@@ -13,11 +13,11 @@ export default defineComponent({
   props: {
     text: {
       type: String,
-      required: true,
+      default: '',
     },
     searchInput: {
       type: String,
-      required: true,
+      default: '',
     },
   },
   methods: {

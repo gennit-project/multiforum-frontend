@@ -67,7 +67,7 @@ export default defineComponent({
       if (!searchInput.value) {
         return "";
       }
-      let textFilterString = `, filter: { title: { alloftext: "${searchInput.value}"}}`;
+      let textFilterString = `, filter: { or: [ { title: { alloftext: "${searchInput.value}"} },{ description: { alloftext: "${searchInput.value}"} }]}`;
       return textFilterString;
     });
 
@@ -149,6 +149,7 @@ export default defineComponent({
               url
             }
             title
+            description
             startTime
             endTime
             locationName
