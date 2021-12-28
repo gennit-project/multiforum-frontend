@@ -8,11 +8,9 @@ import { GET_TAGS } from "@/graphQLData/tag/queries";
 
 import AddToFeed from "../buttons/AddToFeed.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
-import CostPicker from "@/components/forms/CostPicker.vue";
-import DatePicker from "@/components/forms/DatePicker.vue";
 import EventList from "./EventList.vue";
 import EventPreview from "./EventPreview.vue";
-import FilterModal from "@/components/forms/FilterModal.vue";
+import LocationIcon from "../icons/LocationIcon.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import Map from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
@@ -20,6 +18,13 @@ import TagPicker from "@/components/forms/TagPicker.vue";
 import ToggleMap from "../buttons/ToggleMap.vue";
 import SearchBar from "../forms/SearchBar.vue";
 import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
+import FilterChip from "@/components/forms/FilterChip.vue";
+import FilterIcon from "../icons/FilterIcon.vue";
+import CalendarIcon from "../icons/CalendarIcon.vue";
+import ChannelIcon from "../icons/ChannelIcon.vue";
+import TagIcon from "../icons/TagIcon.vue";
+import TimeIcon from "../icons/TimeIcon.vue";
+import CloseButton from "@/components/buttons/CloseButton.vue";
 
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -36,16 +41,21 @@ export default defineComponent({
   name: "SearchEvents",
   components: {
     AddToFeed,
+    CalendarIcon,
+    ChannelIcon,
     ChannelPicker,
-    CostPicker,
-    DatePicker,
+    CloseButton,
     EventList,
     EventPreview,
-    FilterModal,
+    FilterChip,
+    FilterIcon,
+    LocationIcon,
     LocationSearchBar,
     Map,
     PreviewContainer,
+    TagIcon,
     TagPicker,
+    TimeIcon,
     ToggleMap,
     SearchBar,
     WeeklyTimePicker,
@@ -528,298 +538,94 @@ export default defineComponent({
         @updateLocationInput="updateMapCenter"
       />
 
-      <div class="inline-block">
-        <VDropdown>
-          <button
-            class="
-              inline-flex
-              items-center
-              m-1
-              max-height-4
-              px-2.5
-              py-1.5
-              border border-transparent
-              text-xs
-              font-medium
-              rounded
-              text-indigo-700
-              bg-indigo-100
-              hover:bg-indigo-200
-              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="-ml-0.5 mr-2 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            Date
-          </button>
-          <template #popper>
-            <ul>
-              <li>Events in the next month</li>
-              <li>Events on the weekend</li>
-              <li>Past events</li>
-              <li>From _ to _</li>
-            </ul>
-          </template>
-        </VDropdown>
-      </div>
+      <FilterChip :label="'Date'">
+        <template v-slot:icon>
+          <CalendarIcon />
+        </template>
+        <template v-slot:content>
+          <ul>
+            <li>Events in the next month</li>
+            <li>Events on the weekend</li>
+            <li>Past events</li>
+            <li>From _ to _</li>
+          </ul>
+        </template>
+      </FilterChip>
 
-      <div class="inline-block">
-        <VDropdown>
-          <button
-            class="
-              inline-flex
-              items-center
-              m-1
-              max-height-4
-              px-2.5
-              py-1.5
-              border border-transparent
-              text-xs
-              font-medium
-              rounded
-              text-indigo-700
-              bg-indigo-100
-              hover:bg-indigo-200
-              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="-ml-0.5 mr-2 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            Location
-          </button>
-          <template #popper>
-            <ul>
-              <li>Both virtual and in-person events</li>
-              <li>In-person only</li>
-              <li>Virtual only</li>
-              <li>Within a radius from an address</li>
-            </ul>
-          </template>
-        </VDropdown>
-      </div>
+      <FilterChip :label="'Location'">
+        <template v-slot:icon>
+          <LocationIcon />
+        </template>
+        <template v-slot:content>
+          <ul>
+            <li>Both virtual and in-person events</li>
+            <li>In-person only</li>
+            <li>Virtual only</li>
+            <li>Within a radius from an address</li>
+          </ul>
+        </template>
+      </FilterChip>
 
-      <div class="inline-block">
-        <VDropdown>
-          <button
-            class="
-              inline-flex
-              items-center
-              m-1
-              max-height-4
-              px-2.5
-              py-1.5
-              border border-transparent
-              text-xs
-              font-medium
-              rounded
-              text-indigo-700
-              bg-indigo-100
-              hover:bg-indigo-200
-              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="-ml-0.5 mr-2 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            Weekday & Time
-          </button>
-          <template #popper>
-            <WeeklyTimePicker />
-          </template>
-        </VDropdown>
-      </div>
+      <FilterChip :label="'Weekday & Time'">
+        <template v-slot:icon>
+          <TimeIcon />
+        </template>
+        <template v-slot:content>
+          <WeeklyTimePicker />
+        </template>
+      </FilterChip>
 
-      <div class="inline-block">
-        <VDropdown>
-          <button
-            class="
-              inline-flex
-              items-center
-              m-1
-              max-height-4
-              px-2.5
-              py-1.5
-              border border-transparent
-              text-xs
-              font-medium
-              rounded
-              text-indigo-700
-              bg-indigo-100
-              hover:bg-indigo-200
-              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+      <FilterChip :label="channelLabel">
+        <template v-slot:icon>
+          <ChannelIcon />
+        </template>
+        <template v-slot:content>
+          <ChannelPicker
+            v-model="selectedChannels"
+            :channel-options="
+              getChannelOptionLabels(channelOptions.queryCommunity)
             "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="-ml-0.5 mr-2 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            :selected-channels="selectedChannels"
+            @setChannelFilters="setChannelFilters"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip :label="tagLabel">
+        <template v-slot:icon>
+          <TagIcon />
+        </template>
+        <template v-slot:content>
+          <TagPicker
+            :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+            :selected-tags="selectedTags"
+            @setTagFilters="setTagFilters"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip :label="'Other Filters'">
+        <template v-slot:icon>
+          <FilterIcon />
+        </template>
+        <template v-slot:content>
+          <div>
+            <label for="location" class="block text-sm font-medium"
+              >Search Event Titles and Descriptions</label
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
-            {{ channelLabel }}
-          </button>
-          <template #popper>
-            <ChannelPicker
-              v-model="selectedChannels"
-              :channel-options="
-                getChannelOptionLabels(channelOptions.queryCommunity)
-              "
-              :selected-channels="selectedChannels"
-              @setChannelFilters="setChannelFilters"
+
+            <SearchBar
+              :router-search-terms="routerSearchTerms"
+              :search-placeholder="'Search'"
+              @updateSearchInput="updateSearchResult"
             />
-          </template>
-        </VDropdown>
-      </div>
 
-      <div class="inline-block">
-        <VDropdown>
-          <button
-            class="
-              inline-flex
-              items-center
-              m-1
-              max-height-4
-              px-2.5
-              py-1.5
-              border border-transparent
-              text-xs
-              font-medium
-              rounded
-              text-indigo-700
-              bg-indigo-100
-              hover:bg-indigo-200
-              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="-ml-0.5 mr-2 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <label for="free-events" class="block text-sm font-medium mt-3"
+              >Show Only Free Events</label
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
-              />
-            </svg>
-            {{ tagLabel }}
-          </button>
-          <template #popper>
-            <TagPicker
-              :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-              :selected-tags="selectedTags"
-              @setTagFilters="setTagFilters"
-            />
-          </template>
-        </VDropdown>
-      </div>
-
-      <div class="inline-block">
-        <VDropdown>
-          <button
-            class="
-              inline-flex
-              items-center
-              m-1
-              max-height-4
-              px-2.5
-              py-1.5
-              border border-transparent
-              text-xs
-              font-medium
-              rounded
-              text-indigo-700
-              bg-indigo-100
-              hover:bg-indigo-200
-              focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
-            "
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="-ml-0.5 mr-2 w-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-              />
-            </svg>
-            Other Filters
-          </button>
-          <template #popper>
-            <div>
-              <label for="location" class="block text-sm font-medium"
-                >Search Event Titles and Descriptions</label
-              >
-
-              <SearchBar
-                :router-search-terms="routerSearchTerms"
-                :search-placeholder="'Search'"
-                @updateSearchInput="updateSearchResult"
-              />
-
-              <label for="free-events" class="block text-sm font-medium mt-3"
-                >Show Only Free Events</label
-              >
-            </div>
-          </template>
-        </VDropdown>
-      </div>
+          </div>
+        </template>
+      </FilterChip>
 
       <AddToFeed v-if="channelId" />
     </div>
@@ -861,7 +667,10 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
       <div v-if="eventLoading">Loading...</div>
-      <div class="overflow-y-scroll" style="position: fixed; right: 0; width: 34vw; bottom: 0px">
+      <div
+        class="overflow-y-scroll"
+        style="position: fixed; right: 0; width: 34vw; bottom: 0px"
+      >
         <AddToFeed v-if="channelId" />
         <EventList
           class="overscroll-auto overflow-auto"
@@ -921,28 +730,7 @@ export default defineComponent({
         @open-preview="openPreview"
       />
       <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-        <button
-          type="button"
-          class="
-            bg-white
-            py-2
-            px-4
-            border border-gray-300
-            rounded-md
-            shadow-sm
-            text-sm
-            font-medium
-            text-gray-700
-            hover:bg-gray-50
-            focus:outline-none
-            focus:ring-2
-            focus:ring-offset-2
-            focus:ring-indigo-500
-          "
-          @click="closeMultipleEventPreview"
-        >
-          Close
-        </button>
+        <CloseButton @click="closeMultipleEventPreview"/>
       </div>
       <PreviewContainer
         :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
@@ -957,11 +745,6 @@ export default defineComponent({
         />
       </PreviewContainer>
     </PreviewContainer>
-
-    <FilterModal :show="showModal" @closeModal="closeModal">
-      <DatePicker v-if="selectedFilterOptions === 'datePicker'" />
-      <CostPicker v-if="selectedFilterOptions === 'costPicker'" />
-    </FilterModal>
   </div>
 </template>
 
