@@ -63,6 +63,24 @@ const formatDuration = (eventDurationObj: Duration) => {
   }
 };
 
+const getDatePieces = (startTimeObj: any) => {
+  const timeOfDay = startTimeObj.toLocaleString(DateTime.TIME_SIMPLE);
+  const zone = startTimeObj.zoneName;
+  const weekday = startTimeObj.weekdayLong;
+  const month = startTimeObj.monthLong;
+  const day = startTimeObj.day;
+  const year = startTimeObj.year;
+
+  return {
+    timeOfDay,
+    zone,
+    weekday,
+    month,
+    day,
+    year,
+  };
+};
+
 const formatAbbreviatedDuration = (eventDurationObj: Duration) => {
   const { hours, minutes } = eventDurationObj;
 
@@ -114,4 +132,5 @@ export {
   durationHoursAndMinutes,
   getDurationObj,
   compareDate,
+  getDatePieces
 };
