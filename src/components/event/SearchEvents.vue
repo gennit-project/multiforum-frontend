@@ -634,26 +634,30 @@ export default defineComponent({
       @showMap="setShowMap"
       @showList="setShowList"
     />
-    <div
+
+    <EventList
       id="listView"
-      v-if="!showMap"
+      v-if="!showMap && eventResult && eventResult.queryEvent"
       class="relative text-lg mx-auto max-w-6xl"
+      :events="eventResult.queryEvent"
+      :channel-id="channelId"
+      :search-input="searchInput"
+      :selected-tags="selectedTags"
+      :selected-channels="selectedChannels"
+      :highlighted-event-id="highlightedEventId"
+      :show-map="showMap"
+      @filterByTag="filterByTag"
+      @highlightEvent="highlightEvent"
+      @open-preview="openPreview"
+      @unhighlight="unhighlight"
+    />
+    <div
+      v-if="!showMap && eventResult && eventResult.queryEvent"
+      class="grid justify-items-stretch"
     >
-      <AddToFeed :class="['float-right']" v-if="channelId" />
-      <EventList
-        v-if="eventResult && eventResult.queryEvent"
-        :events="eventResult.queryEvent"
-        :channel-id="channelId"
-        :search-input="searchInput"
-        :selected-tags="selectedTags"
-        :selected-channels="selectedChannels"
-        :highlighted-event-id="highlightedEventId"
-        :show-map="showMap"
-        @filterByTag="filterByTag"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-        @unhighlight="unhighlight"
-      />
+      <button class="justify-self-center" @click="loadMore">
+        {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
+      </button>
     </div>
     <div v-if="showMap" id="mapView">
       <Map
@@ -671,7 +675,6 @@ export default defineComponent({
         class="overflow-y-scroll"
         style="position: fixed; right: 0; width: 34vw; bottom: 0px"
       >
-        <AddToFeed v-if="channelId" />
         <EventList
           class="overscroll-auto overflow-auto"
           key="highlightedEventId"
@@ -698,8 +701,6 @@ export default defineComponent({
         </div>
       </div>
     </div>
-
-    <div class="col-start-1 row-start-1 py-4"></div>
 
     <PreviewContainer
       :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
@@ -730,7 +731,7 @@ export default defineComponent({
         @open-preview="openPreview"
       />
       <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-        <CloseButton @click="closeMultipleEventPreview"/>
+        <CloseButton @click="closeMultipleEventPreview" />
       </div>
       <PreviewContainer
         :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
