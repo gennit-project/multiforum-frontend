@@ -61,7 +61,7 @@ export default defineComponent({
     const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(props.routerTags);
     const selectedChannels: Ref<Array<string>> = ref(props.routerChannels);
-    const searchInput: Ref<string> = ref(props.routerSearchTerms);
+    const searchInput: Ref<string> = ref("");
 
     let textFilters = computed((): string => {
       if (!searchInput.value) {
@@ -119,14 +119,14 @@ export default defineComponent({
     };
     const setLocationInput = (placeData: any) => {
       if (placeData) {
-        const latitude = placeData.geometry.location.lat()
-        const longitude = placeData.geometry.location.lng()
-        console.log('place ', {
+        const latitude = placeData.geometry.location.lat();
+        const longitude = placeData.geometry.location.lng();
+        console.log("place ", {
           latitude,
-          longitude
-        })
+          longitude,
+        });
       }
-    }
+    };
     const setTagFilters = (tag: Array<string>) => {
       selectedTags.value = tag;
       updateRouterQueryParams();
@@ -348,13 +348,14 @@ export default defineComponent({
           const eventTitle =
             this.markerMap[eventLocationId].events[this.highlightedEventId]
               .title;
-          const eventLocation = this.markerMap[eventLocationId].events[this.highlightedEventId]
-            .locationName;
-          
+          const eventLocation =
+            this.markerMap[eventLocationId].events[this.highlightedEventId]
+              .locationName;
+
           let infowindowContent = `<b>${eventTitle}</b>`;
 
           if (eventLocation) {
-            infowindowContent = `<div style="text-align:center"><b>${eventTitle}</b></div></div><div style="text-align:center">at ${eventLocation}</div>`
+            infowindowContent = `<div style="text-align:center"><b>${eventTitle}</b></div></div><div style="text-align:center">at ${eventLocation}</div>`;
           }
           this.markerMap.infowindow.setContent(infowindowContent);
           this.markerMap.infowindow.open({
@@ -473,15 +474,15 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     updateMapCenter(placeData: any) {
-      this.setLocationInput(placeData)
+      this.setLocationInput(placeData);
 
       if (this.showMap) {
-        const lat = placeData.geometry.location.lat()
-        const lng = placeData.geometry.location.lng()
+        const lat = placeData.geometry.location.lat();
+        const lng = placeData.geometry.location.lng();
         this.map.setCenter({
           lng,
-          lat
-        })
+          lat,
+        });
       }
     },
     filterByTag(tag: string) {
@@ -547,8 +548,19 @@ export default defineComponent({
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="-ml-0.5 mr-2 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
             Date
           </button>
@@ -583,9 +595,25 @@ export default defineComponent({
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="-ml-0.5 mr-2 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+              />
             </svg>
             Location
           </button>
@@ -599,7 +627,6 @@ export default defineComponent({
           </template>
         </VDropdown>
       </div>
-
 
       <div class="inline-block">
         <VDropdown>
@@ -621,8 +648,19 @@ export default defineComponent({
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="-ml-0.5 mr-2 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
             </svg>
             Weekday & Time
           </button>
@@ -652,8 +690,19 @@ export default defineComponent({
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="-ml-0.5 mr-2 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              />
             </svg>
             {{ channelLabel }}
           </button>
@@ -690,8 +739,19 @@ export default defineComponent({
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="-ml-0.5 mr-2 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+              />
             </svg>
             {{ tagLabel }}
           </button>
@@ -725,14 +785,27 @@ export default defineComponent({
               focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
             "
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-0.5 mr-2 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="-ml-0.5 mr-2 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+              />
             </svg>
             Other Filters
           </button>
           <template #popper>
             <div>
-              <label for="location" class="block text-sm font-medium">Search Event Titles and Descriptions</label>
+              <label for="location" class="block text-sm font-medium"
+                >Search Event Titles and Descriptions</label
+              >
 
               <SearchBar
                 :router-search-terms="routerSearchTerms"
@@ -740,7 +813,9 @@ export default defineComponent({
                 @updateSearchInput="updateSearchResult"
               />
 
-              <label for="free-events" class="block text-sm font-medium mt-3">Show Only Free Events</label>
+              <label for="free-events" class="block text-sm font-medium mt-3"
+                >Show Only Free Events</label
+              >
             </div>
           </template>
         </VDropdown>
@@ -753,7 +828,11 @@ export default defineComponent({
       @showMap="setShowMap"
       @showList="setShowList"
     />
-    <div v-if="!showMap" class="relative text-lg mx-auto max-w-6xl">
+    <div
+      id="listView"
+      v-if="!showMap"
+      class="relative text-lg mx-auto max-w-6xl"
+    >
       <AddToFeed :class="['float-right']" v-if="channelId" />
       <EventList
         v-if="eventResult && eventResult.queryEvent"
@@ -770,47 +849,43 @@ export default defineComponent({
         @unhighlight="unhighlight"
       />
     </div>
-    <div class="grid grid-cols-12 lg:space-x-4">
-      <div class="col-span-12 lg:col-span-8">
-        <Map
+    <div v-if="showMap" id="mapView">
+      <Map
+        v-if="showMap && eventResult && eventResult.queryEvent"
+        :events="eventResult.queryEvent"
+        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+        :color-locked="colorLocked"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+        @lockColors="colorLocked = true"
+        @setMarkerData="setMarkerData"
+      />
+      <div v-if="eventLoading">Loading...</div>
+      <div class="overflow-y-scroll" style="position: fixed; right: 0; width: 34vw; bottom: 0px">
+        <AddToFeed v-if="channelId" />
+        <EventList
+          class="overscroll-auto overflow-auto"
+          key="highlightedEventId"
           v-if="showMap && eventResult && eventResult.queryEvent"
           :events="eventResult.queryEvent"
-          :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-          :color-locked="colorLocked"
+          :channel-id="channelId"
+          :search-input="searchInput"
+          :highlighted-event-location-id="highlightedEventLocationId"
+          :highlighted-event-id="highlightedEventId"
+          :selected-tags="selectedTags"
+          :selected-channels="selectedChannels"
+          :show-map="showMap"
+          @filterByTag="filterByTag"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
-          @lockColors="colorLocked = true"
-          @setMarkerData="setMarkerData"
+          @unhighlight="unhighlight"
         />
-      </div>
-      <div v-if="showMap" class="col-span-12 lg:col-span-4">
-        <div v-if="eventLoading">Loading...</div>
-        <div class="overflow-y-scroll" style="position: fixed; bottom: 0px">
-          <AddToFeed v-if="channelId" />
-          <EventList
-            class="overscroll-auto overflow-auto"
-            key="highlightedEventId"
-            v-if="showMap && eventResult && eventResult.queryEvent"
-            :events="eventResult.queryEvent"
-            :channel-id="channelId"
-            :search-input="searchInput"
-            :highlighted-event-location-id="highlightedEventLocationId"
-            :highlighted-event-id="highlightedEventId"
-            :selected-tags="selectedTags"
-            :selected-channels="selectedChannels"
-            :show-map="showMap"
-            @filterByTag="filterByTag"
-            @highlightEvent="highlightEvent"
-            @open-preview="openPreview"
-            @unhighlight="unhighlight"
-          />
-          <div class="grid justify-items-stretch">
-            <button class="justify-self-center" @click="loadMore">
-              {{
-                reachedEndOfResults ? "There are no more results." : "Load more"
-              }}
-            </button>
-          </div>
+        <div class="grid justify-items-stretch">
+          <button class="justify-self-center" @click="loadMore">
+            {{
+              reachedEndOfResults ? "There are no more results." : "Load more"
+            }}
+          </button>
         </div>
       </div>
     </div>

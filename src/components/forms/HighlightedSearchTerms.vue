@@ -5,7 +5,11 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   setup(props) {
-    const parts = props.text.split(new RegExp(`(${props.searchInput})`, "gi"));
+    let parts = [props.text];
+    if (props.searchInput) {
+      parts = props.text.split(new RegExp(`(${props.searchInput})`, "gi"));
+    }
+   
     return {
       parts,
     };

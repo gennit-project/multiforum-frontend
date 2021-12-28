@@ -82,7 +82,14 @@ export default defineComponent({
         <div class="flex items-center">
           <p
             @click="$emit('openEventPreview')"
-            class="text-sm font-medium text-indigo-600 truncate cursor-pointer"
+            class="
+              text-lg
+              font-medium
+              text-indigo-600
+              truncate
+              cursor-pointer
+              underline
+            "
           >
             <HighlightedSearchTerms
               :text="event.title"
@@ -98,45 +105,25 @@ export default defineComponent({
             />
           </p>
         </div>
-        <div class="mt-2">
-          <div >
+        <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
+          {{ `Posted in: ` }}
+          <router-link
+            :class="[
+              selectedChannels.indexOf(channel.url) !== -1 ? 'highlighted' : '',
+            ]"
+            class="ml-1 text-indigo-600 underline"
+            :key="channel.url"
+            v-for="channel in event?.Communities"
+            :to="`/c/${channel.url}/event/${event?.id}`"
+          >
+            {{ channel.url }}
+          </router-link>
+        </p>
+        <div class="grid auto-cols-auto">
             <p
               class="
                 mt-2
                 flex
-                items-center
-                text-sm text-gray-500
-                sm:mt-1 sm:mr-6
-              "
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                ></path>
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                ></path>
-              </svg>
-              {{ event.locationName ? event.locationName : "" }}
-              {{ event.virtualEventUrl ? event.virtualEventUrl : "" }}
-            </p>
-            <p
-              class="
-                mt-2
-                flex
-                items-center
                 text-sm text-gray-500
                 sm:mt-1 sm:mr-6
               "
@@ -180,6 +167,39 @@ export default defineComponent({
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+              {{ event.locationName ? event.locationName : "" }}
+              {{ event.virtualEventUrl ? event.virtualEventUrl : "" }}
+            </p>
+
+            <p
+              class="
+                mt-2
+                flex
+                items-center
+                text-sm text-gray-500
+                sm:mt-1 sm:mr-6
+              "
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                 ></path>
               </svg>
@@ -187,8 +207,8 @@ export default defineComponent({
                 {{ timeOfDay }}
               </time>
             </p>
-          </div>
         </div>
+
         <div class="text-sm">
           <router-link
             v-if="isWithinCommunity"
@@ -222,18 +242,6 @@ export default defineComponent({
           :tag="tag.text"
           @click="$emit('filterByTag', tag.text)"
         />
-        <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
-        {{ `Posted in: ` }}
-        <router-link
-          :class="[selectedChannels.indexOf(channel.url) !== -1 ? 'highlighted' : '']"
-          class="ml-1 text-indigo-600 underline"
-          :key="channel.url"
-          v-for="channel in event?.Communities"
-          :to="`/c/${channel.url}/event/${event?.id}`"
-        >
-          {{ channel.url }}
-        </router-link>
-      </p>
       </div>
     </div>
   </li>
