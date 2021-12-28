@@ -8,8 +8,8 @@ interface Ref<T> {
 export default defineComponent({
   name: "LocationSearchBar",
   setup(props) {
-    const input: Ref<string> = ref(props.routerSearchTerms)
-    return { input }
+    const input: Ref<string> = ref(props.routerSearchTerms);
+    return { input };
   },
   props: {
     searchPlaceholder: {
@@ -18,12 +18,12 @@ export default defineComponent({
     },
     routerSearchTerms: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   methods: {
-    updateSearchInput(e: any) {
-      this.$emit("updateSearchInput", e.target.value);
+    updateLocationInput(placeData: any) {
+      this.$emit("updateLocationInput", placeData);
     },
   },
 });
@@ -58,10 +58,7 @@ export default defineComponent({
           />
         </svg>
       </div>
-      <input
-        v-model="input"
-        id="search"
-        name="search"
+      <GMapAutocomplete
         class="
           pl-10
           pr-3
@@ -78,10 +75,10 @@ export default defineComponent({
           focus:border-indigo-500
           sm:text-sm
         "
-        :placeholder="searchPlaceholder"
-        @keyup="updateSearchInput"
-        type="text"
-      />
+        placeholder="Enter a location"
+        @place_changed="updateLocationInput"
+      >
+      </GMapAutocomplete>
     </div>
   </div>
 </template>

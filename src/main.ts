@@ -6,6 +6,7 @@ import 'v-tooltip/dist/v-tooltip.css'
 import { ApolloClient, InMemoryCache } from '@apollo/client/core';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 import config from './config';
+import VueGoogleMaps from '@fawmi/vue-google-maps'
 const VTooltipPlugin = require('v-tooltip');
 
 // Cache implementation
@@ -50,6 +51,12 @@ const app = createApp({
 
 app.use(router)
    .use(VTooltipPlugin)
+   .use(VueGoogleMaps, {
+      load: {
+        key: config.googleMapsApiKey,
+        libraries: "places"
+      },
+   })
    .mount("#app");
 
 

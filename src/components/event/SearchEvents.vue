@@ -117,6 +117,16 @@ export default defineComponent({
       searchInput.value = input;
       updateRouterQueryParams();
     };
+    const setLocationInput = (placeData: any) => {
+      if (placeData) {
+        const latitude = placeData.geometry.location.lat()
+        const longitude = placeData.geometry.location.lng()
+        console.log('place ', {
+          latitude,
+          longitude
+        })
+      }
+    }
     const setTagFilters = (tag: Array<string>) => {
       selectedTags.value = tag;
       updateRouterQueryParams();
@@ -250,6 +260,7 @@ export default defineComponent({
       refetchEvents,
       router,
       searchInput,
+      setLocationInput,
       setSearchInput,
       setChannelFilters,
       setTagFilters,
@@ -460,6 +471,18 @@ export default defineComponent({
     updateSearchResult(input: string) {
       this.setSearchInput(input);
     },
+    updateMapCenter(placeData: any) {
+      this.setLocationInput(placeData)
+
+      if (this.showMap) {
+        const lat = placeData.geometry.location.lat()
+        const lng = placeData.geometry.location.lng()
+        this.map.setCenter({
+          lng,
+          lat
+        })
+      }
+    },
     filterByTag(tag: string) {
       this.setTagFilters([tag]);
     },
@@ -500,7 +523,7 @@ export default defineComponent({
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
-        @updateSearchInput="updateSearchResult"
+        @updateLocationInput="updateMapCenter"
       />
 
       <div class="inline-block">
