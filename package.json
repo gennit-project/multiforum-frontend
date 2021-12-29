@@ -23,6 +23,7 @@
     "core-js": "^3.6.5",
     "graphql": "^15.6.1",
     "luxon": "^2.0.2",
+    "v-calendar": "^3.0.0-alpha.6",
     "v-tooltip": "^4.0.0-beta.2",
     "vue": "^3.0.0",
     "vue-apollo": "^3.0.8",

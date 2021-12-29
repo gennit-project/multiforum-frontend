@@ -87,7 +87,7 @@ export default defineComponent({
     const defaultStartDateISO = defaultStartDateObj.toISO();
     // const defaultEndOfStartDayObj = defaultStartDateObj.endOf("day");
     // const defaultEndOfStartDayISO = defaultEndOfStartDayObj.toISO();
-    const defaultEndDateRangeObj = defaultStartDateObj.plus({ days: 30 });
+    const defaultEndDateRangeObj = defaultStartDateObj.plus({ days: 14 });
     const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
 
     const dateRange = ref(dateRangeTypes.FUTURE);
@@ -99,7 +99,9 @@ export default defineComponent({
     const resultsOrder = ref(chronologicalOrder);
     const beginningOfDateRange = ref(defaultStartDateISO);
     const endOfDateRange = ref(defaultEndDateRangeISO);
-    const betweenDateTimesFilter = `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
+    const betweenDateTimesFilter = computed(() => {
+      return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
+    })
     // const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
     // const onlyWithAddressFilter = "has: location";
 
@@ -305,13 +307,15 @@ export default defineComponent({
 
     const dateLabel = computed(() => {
       if (dateRange.value === dateRangeTypes.FUTURE) {
-        return `Date: All future events`;
+        return `Future Events`;
       } else if (dateRange.value === dateRangeTypes.PAST) {
-        return `Date: All past events`;
+        return `Past Events`;
       } else if (dateRange.value === dateRangeTypes.BETWEEN_TWO_DATES) {
-        const formattedStartDate = defaultStartDateObj.toLocaleString(DateTime.DATE_MED);
-        const formattedEndDate = defaultEndDateRangeObj.toLocaleString(DateTime.DATE_MED);
-        return `Date: From ${formattedStartDate} to ${formattedEndDate}`
+        const startDateObject = new DateTime.fromISO(beginningOfDateRange.value)
+        const endDateObject = new DateTime.fromISO(endOfDateRange.value)
+        const formattedStartDate = startDateObject.toLocaleString(DateTime.DATE_MED);
+        const formattedEndDate = endDateObject.toLocaleString(DateTime.DATE_MED);
+        return `From ${formattedStartDate} to ${formattedEndDate}`
       } else {
         return ""
       }
@@ -319,12 +323,16 @@ export default defineComponent({
 
     return {
       channelId,
+      beginningOfDateRange,
       betweenDateTimesFilter,
       channelLabel,
       channelOptions,
       chronologicalOrder,
       dateLabel,
       dateRange,
+      defaultEndDateRangeISO,
+      defaultStartDateISO,
+      endOfDateRange,
       eventLoading,
       eventQuery,
       eventQueryString,
@@ -591,7 +599,7 @@ export default defineComponent({
         },
       });
     },
-    updateDateFilter(selectedDateRange: string) {
+    updateDateFilter(selectedDateRange: string, range: any) {
       this.dateRange = selectedDateRange;
 
       if (selectedDateRange === dateRangeTypes.FUTURE) {
@@ -605,6 +613,13 @@ export default defineComponent({
       if (selectedDateRange === dateRangeTypes.BETWEEN_TWO_DATES) {
         this.resultsOrder = this.chronologicalOrder;
         this.startTimeFilter = this.betweenDateTimesFilter;
+        if (range) {
+          const start = new Date(range.start).toISOString()
+          this.beginningOfDateRange = start;
+
+          const end = new Date(range.end).toISOString()
+          this.endOfDateRange = end;
+        }
       }
     },
   },
@@ -625,6 +640,8 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <DatePicker
+            :end-iso="endOfDateRange"
+            :start-iso="beginningOfDateRange"
             :date-range="dateRange"
             @updateDateFilter="updateDateFilter"
           />

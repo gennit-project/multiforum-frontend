@@ -37,7 +37,7 @@ export default defineComponent({
 
         {{ label }}
       </button>
-      <template #popper>
+      <template #popper >
         <slot name="content"></slot>
       </template>
     </VDropdown>

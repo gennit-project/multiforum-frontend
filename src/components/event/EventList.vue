@@ -66,6 +66,9 @@ export default defineComponent({
 
 <template>
   <div :class="['bg-white', 'sm:rounded-md', showMap ? 'constrain-height' : '']">
+    <p v-if="events.length === 0">
+      Could not find any events.
+    </p>
     <ul role="list" class="divide-y divide-gray-200">
       <EventListItem
         :ref="`#${event.id}`"

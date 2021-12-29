@@ -30,8 +30,8 @@ export default defineComponent({
                   <th
                     scope="col"
                     class="
-                      px-6
-                      py-3
+                      px-3
+                      py-2
                       text-left text-xs
                       font-medium
                       text-gray-500
@@ -46,8 +46,8 @@ export default defineComponent({
                     :key="weekday.shortName"
                     scope="col"
                     class="
-                      px-6
-                      py-3
+                      px-3
+                      py-2
                       text-left text-xs
                       font-medium
                       text-gray-500
@@ -83,8 +83,8 @@ export default defineComponent({
                 >
                   <td
                     class="
-                      px-6
-                      py-4
+                      px-3
+                      py-3
                       whitespace-nowrap
                       text-left text-sm
                       font-medium
@@ -110,7 +110,7 @@ export default defineComponent({
                     :key="weekday.number"
                     v-for="weekday in weekdays"
                     class="
-                      px-6
+                      px-3
                       py-4
                       text-left
                       whitespace-nowrap
