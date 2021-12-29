@@ -105,26 +105,32 @@ export default defineComponent({
     // const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
     // const onlyWithAddressFilter = "has: location";
 
+    let showOnlyFreeEvents = ref(false)
+
+    let freeEventFilter = computed(() => {
+      if (!showOnlyFreeEvents.value) {
+        return '';
+      }
+      return `,
+        cost: {
+          eq: "0"
+        }
+      `
+    })
+
     let textFilter = computed(() => {
       if (!searchInput.value) {
         return "";
       }
       return `,
-      and: {
-        { 
+      and: [{ 
           or: [ 
-            { 
-              title: { 
-                alloftext: "${searchInput.value}"
-              }
-            },{
-              description: {
-                alloftext: "${searchInput.value}"
-              }
-            }
+            { title: { alloftext: "${searchInput.value}" } },
+            { description: { alloftext: "${searchInput.value}" } }
           ]
         }
-      }`;
+      ]
+      `;
     });
 
     let needsCascade = computed(() => {
@@ -148,18 +154,7 @@ export default defineComponent({
       } "Communities"])`;
     });
 
-    let showOnlyFreeEvents = ref(false)
-
-    let freeEventFilter = computed(() => {
-      if (!showOnlyFreeEvents.value) {
-        return '';
-      }
-      return `, and: {
-        cost: {
-          eq: "0"
-        }
-      }`
-    })
+    
 
     let filterString = computed(() => {
       return `(
@@ -170,8 +165,8 @@ export default defineComponent({
             startTime: {
               ${startTimeFilter.value}
             }
-            ${textFilter.value}
             ${freeEventFilter.value}
+            ${textFilter.value}
           }
       ) ${needsCascade.value ? cascadeText.value : ""}`;
     });
@@ -268,9 +263,14 @@ export default defineComponent({
     });
 
     let eventQuery = computed(() => {
-      return gql`
-        ${eventQueryString.value}
-      `;
+
+      try {
+        return gql`
+          ${eventQueryString.value}
+        `;
+      } catch(err) {
+        throw new Error(err)
+      }
     });
 
     const {
