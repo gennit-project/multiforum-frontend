@@ -8,6 +8,7 @@ import { GET_TAGS } from "@/graphQLData/tag/queries";
 
 import AddToFeed from "../buttons/AddToFeed.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
+import DatePicker from "@/components/forms/DatePicker.vue";
 import EventList from "./EventList.vue";
 import EventPreview from "./EventPreview.vue";
 import LocationIcon from "../icons/LocationIcon.vue";
@@ -25,6 +26,8 @@ import ChannelIcon from "../icons/ChannelIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
 import TimeIcon from "../icons/TimeIcon.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
+import dateRangeTypes from "@/components/event/dateRangeTypes";
+// import locationFilterTypes from "@/components/event/locationFilterTypes";
 
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -32,6 +35,8 @@ import { useRoute } from "vue-router";
 import { EventData } from "../../types/eventTypes";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
+
+const { DateTime } = require("luxon");
 
 interface Ref<T> {
   value: T;
@@ -45,6 +50,7 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     CloseButton,
+    DatePicker,
     EventList,
     EventPreview,
     FilterChip,
@@ -67,18 +73,56 @@ export default defineComponent({
       return route.params.channelId;
     });
 
-    const showModal: Ref<boolean | undefined> = ref(false);
-    const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(props.routerTags);
     const selectedChannels: Ref<Array<string>> = ref(props.routerChannels);
     const searchInput: Ref<string> = ref("");
 
-    let textFilters = computed((): string => {
+    // Variables for the order of the results
+    const chronologicalOrder = "{ asc: startTime }";
+    const reverseChronologicalOrder = "{ desc: startTime }";
+
+    const now = DateTime.now();
+    const nowISO = now.toISO();
+    const defaultStartDateObj = now.startOf("day");
+    const defaultStartDateISO = defaultStartDateObj.toISO();
+    // const defaultEndOfStartDayObj = defaultStartDateObj.endOf("day");
+    // const defaultEndOfStartDayISO = defaultEndOfStartDayObj.toISO();
+    const defaultEndDateRangeObj = defaultStartDateObj.plus({ days: 30 });
+    const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
+
+    const dateRange = ref(dateRangeTypes.FUTURE);
+
+    const futureEventsFilter = `gt: "${nowISO}"`;
+    const pastEventsFilter = `lt: "${nowISO}"`;
+
+    const startTimeFilter = ref(futureEventsFilter);
+    const resultsOrder = ref(chronologicalOrder);
+    const beginningOfDateRange = ref(defaultStartDateISO);
+    const endOfDateRange = ref(defaultEndDateRangeISO);
+    const betweenDateTimesFilter = `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
+    // const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
+    // const onlyWithAddressFilter = "has: location";
+
+    let textFilter = computed(() => {
       if (!searchInput.value) {
         return "";
       }
-      let textFilterString = `, filter: { or: [ { title: { alloftext: "${searchInput.value}"} },{ description: { alloftext: "${searchInput.value}"} }]}`;
-      return textFilterString;
+      return `,
+      and: {
+        { 
+          or: [ 
+            { 
+              title: { 
+                alloftext: "${searchInput.value}"
+              }
+            },{
+              description: {
+                alloftext: "${searchInput.value}"
+              }
+            }
+          ]
+        }
+      }`;
     });
 
     let needsCascade = computed(() => {
@@ -100,6 +144,20 @@ export default defineComponent({
       return `@cascade(fields: [${
         selectedTags.value.length > 0 ? `"Tags",` : ""
       } "Communities"])`;
+    });
+
+    let filterString = computed(() => {
+      return `(
+          order: ${resultsOrder.value},
+          offset: $offset, 
+          first: $first, 
+          filter: {
+            startTime: {
+              ${startTimeFilter.value}
+            }
+            ${textFilter.value}
+          }
+      ) ${needsCascade.value ? cascadeText.value : ""}`;
     });
 
     let communityFilter = computed(() => {
@@ -149,9 +207,7 @@ export default defineComponent({
     let eventQueryString = computed(() => {
       return `
         query getEvents ($first: Int, $offset: Int){
-          queryEvent (offset: $offset, first: $first${textFilters.value}) ${
-        needsCascade.value ? cascadeText.value : ""
-      }{
+          queryEvent ${filterString.value}{
             id
             Communities ${
               selectedChannels.value.length > 0 ? communityFilter.value : ""
@@ -194,6 +250,7 @@ export default defineComponent({
         }
         `;
     });
+    debugger;
 
     let eventQuery = computed(() => {
       return gql`
@@ -231,15 +288,6 @@ export default defineComponent({
     const { result: tagOptions } = useQuery(GET_TAGS);
     const { result: channelOptions } = useQuery(GET_COMMUNITY_NAMES);
 
-    const openModal = (selectedFilter: string) => {
-      showModal.value = true;
-      selectedFilterOptions.value = selectedFilter;
-    };
-    const closeModal = () => {
-      showModal.value = false;
-      selectedFilterOptions.value = "";
-    };
-
     const channelLabel = computed(() => {
       if (selectedChannels.value.length > 0) {
         const channelString = selectedChannels.value.join(", ");
@@ -258,30 +306,33 @@ export default defineComponent({
 
     return {
       channelId,
+      betweenDateTimesFilter,
       channelLabel,
       channelOptions,
-      closeModal,
+      chronologicalOrder,
+      dateRange,
       eventLoading,
       eventQuery,
       eventQueryString,
       eventResult,
+      futureEventsFilter,
       loadMore,
-      openModal,
       reachedEndOfResults,
       refetchEvents,
+      resultsOrder,
+      reverseChronologicalOrder,
       router,
+      pastEventsFilter,
       searchInput,
       setLocationInput,
       setSearchInput,
       setChannelFilters,
       setTagFilters,
-      showModal,
       selectedChannels,
-      selectedFilterOptions,
       selectedTags,
+      startTimeFilter,
       tagLabel,
       tagOptions,
-      textFilters,
     };
   },
   data(props) {
@@ -526,6 +577,22 @@ export default defineComponent({
         },
       });
     },
+    updateDateFilter(selectedDateRange: string) {
+      this.dateRange = selectedDateRange;
+
+      if (selectedDateRange === dateRangeTypes.FUTURE) {
+        this.resultsOrder = this.chronologicalOrder;
+        this.startTimeFilter = this.futureEventsFilter;
+      }
+      if (selectedDateRange === dateRangeTypes.PAST) {
+        this.resultsOrder = this.reverseChronologicalOrder;
+        this.startTimeFilter = this.pastEventsFilter;
+      }
+      if (selectedDateRange === dateRangeTypes.BETWEEN_TWO_DATES) {
+        this.resultsOrder = this.chronologicalOrder;
+        this.startTimeFilter = this.betweenDateTimesFilter;
+      }
+    },
   },
 });
 </script>
@@ -543,12 +610,10 @@ export default defineComponent({
           <CalendarIcon />
         </template>
         <template v-slot:content>
-          <ul>
-            <li>Events in the next month</li>
-            <li>Events on the weekend</li>
-            <li>Past events</li>
-            <li>From _ to _</li>
-          </ul>
+          <DatePicker
+            :date-range="dateRange"
+            @updateDateFilter="updateDateFilter"
+          />
         </template>
       </FilterChip>
 
@@ -647,7 +712,6 @@ export default defineComponent({
       :highlighted-event-id="highlightedEventId"
       :show-map="showMap"
       @filterByTag="filterByTag"
-      @highlightEvent="highlightEvent"
       @open-preview="openPreview"
       @unhighlight="unhighlight"
     />

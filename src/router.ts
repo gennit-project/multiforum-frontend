@@ -90,7 +90,7 @@ export const router = createRouter({
           path: "/c/:channelId/discussions/:discussionId",
           component: Discussion,
         },
-        { path: "/c/:channelId/events/:eventId", component: Event }
+        { path: "/c/:channelId/event/:eventId", component: Event }
       ],
     },
     { path: "/settings", component: SiteSettings }

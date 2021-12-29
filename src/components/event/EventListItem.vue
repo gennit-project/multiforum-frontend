@@ -212,7 +212,7 @@ export default defineComponent({
         <div class="text-sm">
           <router-link
             v-if="isWithinCommunity"
-            :to="`/c/${defaultUrl}/events/${event.id}`"
+            :to="`/c/${defaultUrl}/event/${event.id}`"
             class="font-medium text-gray-500"
           >
             {{ getCommentCount(event.CommentSections[0]) }}
@@ -223,7 +223,7 @@ export default defineComponent({
             v-else
             :key="getChannel(commentSection)"
             v-for="(commentSection, i) in event.CommentSections"
-            :to="`/c/${getChannel(commentSection)}/events/${event.id}`"
+            :to="`/c/${getChannel(commentSection)}/event/${event.id}`"
             class="font-medium"
           >
             {{ getCommentCount(commentSection) }} in

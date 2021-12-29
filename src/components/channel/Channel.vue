@@ -58,7 +58,7 @@ export default defineComponent({
       if (eventId) {
         channelBreadcrumbs.push({
           label: "Event",
-          path: `c/${channelId}/events/${discussionId}`,
+          path: `c/${channelId}/event/${eventId}`,
         });
       }
       return channelBreadcrumbs;

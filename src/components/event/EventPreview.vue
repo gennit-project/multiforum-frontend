@@ -158,7 +158,7 @@ export default defineComponent({
       <hr class="mb-6 mt-3" />
       <div v-if="event" class="mt-3 text-sm">
         <router-link
-          :to="`/c/${event.Communities[0].url}/events/${event.id}`"
+          :to="`/c/${event.Communities[0].url}/event/${event.id}`"
           class="font-medium text-indigo-600 hover:text-indigo-500"
         >
           View Comments
