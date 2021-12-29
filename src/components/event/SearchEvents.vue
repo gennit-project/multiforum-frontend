@@ -250,7 +250,6 @@ export default defineComponent({
         }
         `;
     });
-    debugger;
 
     let eventQuery = computed(() => {
       return gql`
@@ -304,12 +303,27 @@ export default defineComponent({
       return "Tags";
     });
 
+    const dateLabel = computed(() => {
+      if (dateRange.value === dateRangeTypes.FUTURE) {
+        return `Date: All future events`;
+      } else if (dateRange.value === dateRangeTypes.PAST) {
+        return `Date: All past events`;
+      } else if (dateRange.value === dateRangeTypes.BETWEEN_TWO_DATES) {
+        const formattedStartDate = defaultStartDateObj.toLocaleString(DateTime.DATE_MED);
+        const formattedEndDate = defaultEndDateRangeObj.toLocaleString(DateTime.DATE_MED);
+        return `Date: From ${formattedStartDate} to ${formattedEndDate}`
+      } else {
+        return ""
+      }
+    })
+
     return {
       channelId,
       betweenDateTimesFilter,
       channelLabel,
       channelOptions,
       chronologicalOrder,
+      dateLabel,
       dateRange,
       eventLoading,
       eventQuery,
@@ -605,7 +619,7 @@ export default defineComponent({
         @updateLocationInput="updateMapCenter"
       />
 
-      <FilterChip :label="'Date'">
+      <FilterChip :label="dateLabel">
         <template v-slot:icon>
           <CalendarIcon />
         </template>
