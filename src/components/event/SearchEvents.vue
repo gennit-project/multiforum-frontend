@@ -148,6 +148,19 @@ export default defineComponent({
       } "Communities"])`;
     });
 
+    let showOnlyFreeEvents = ref(false)
+
+    let freeEventFilter = computed(() => {
+      if (!showOnlyFreeEvents.value) {
+        return '';
+      }
+      return `, and: {
+        cost: {
+          eq: "0"
+        }
+      }`
+    })
+
     let filterString = computed(() => {
       return `(
           order: ${resultsOrder.value},
@@ -158,6 +171,7 @@ export default defineComponent({
               ${startTimeFilter.value}
             }
             ${textFilter.value}
+            ${freeEventFilter.value}
           }
       ) ${needsCascade.value ? cascadeText.value : ""}`;
     });
@@ -345,6 +359,7 @@ export default defineComponent({
       reverseChronologicalOrder,
       router,
       pastEventsFilter,
+      showOnlyFreeEvents,
       searchInput,
       setLocationInput,
       setSearchInput,
@@ -706,7 +721,7 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <div>
-            <label for="location" class="block text-sm font-medium"
+            <label for="location" class="block text-sm font-medium text-gray-700"
               >Search Event Titles and Descriptions</label
             >
 
@@ -716,9 +731,15 @@ export default defineComponent({
               @updateSearchInput="updateSearchResult"
             />
 
-            <label for="free-events" class="block text-sm font-medium mt-3"
-              >Show Only Free Events</label
-            >
+            <div class="relative flex items-start mt-4">
+              <div class="flex items-center h-5">
+                  <input class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" type="checkbox" id="onlyFreeEvents" v-model="showOnlyFreeEvents">
+              </div>
+              <div class="ml-3 text-sm">
+                <label for="comments" class="font-medium text-gray-700">Show Only Free Events</label>
+              </div>
+            </div>
+           
           </div>
         </template>
       </FilterChip>
