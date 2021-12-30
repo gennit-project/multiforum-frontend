@@ -1,4 +1,4 @@
-import { SelectedHourRanges } from "@/types/eventTypes";
+import { SelectedHourRanges, SelectedWeekdays, SelectedWeeklyHourRanges } from "@/types/eventTypes";
 
 export const weekdays = [
   { number: "0", name: "Sunday", shortName: "Sun" },
@@ -61,21 +61,41 @@ export const hourRangesData = [
   },
 ];
 
-export const defaultSelectedWeekdays = {
-  0: false,
-  1: false,
-  2: false,
-  3: false,
-  4: false,
-  5: false,
-  6: false,
-};
 
-const ranges = {} as SelectedHourRanges;
+const createDefaultSelectedWeekdays = () => {
+  const weekdaysObj = {} as SelectedWeekdays;
 
-for (let i = 0; i < hourRangesData.length; i++ ) {
-  const label = hourRangesData[i]["12-hour-label"];
-  ranges[label] = false;
+  for (let i = 0; i < weekdays.length; i++) {
+    const weekday = weekdays[i];
+    weekdaysObj[weekday.number] = false;
+  }
+  return weekdaysObj;
 }
 
-export const defaultSelectedHourRanges = ranges;
+export const defaultSelectedWeekdays = createDefaultSelectedWeekdays();
+
+
+const createDefaultSelectedHourRanges = () => {
+  const ranges = {} as SelectedHourRanges;
+
+  for (let i = 0; i < hourRangesData.length; i++ ) {
+    const label = hourRangesData[i]["12-hour-label"];
+    ranges[label] = false;
+  }
+  debugger;
+  return ranges;
+}
+
+export const defaultSelectedHourRanges = createDefaultSelectedHourRanges();
+
+const createDefaultSelectedWeeklyHourRanges = () => {
+  const weeklyTimeSlots = {} as SelectedWeeklyHourRanges;
+
+  for (let i = 0; i < weekdays.length; i++ ){
+    const weekday = weekdays[i];
+    weeklyTimeSlots[weekday.number] = {...defaultSelectedHourRanges};
+  }
+  return weeklyTimeSlots;
+}
+
+export const defaultSelectedWeeklyHourRanges = createDefaultSelectedWeeklyHourRanges();

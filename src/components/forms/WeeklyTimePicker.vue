@@ -4,7 +4,7 @@ import { weekdays, hourRangesData } from "./eventSearchOptions";
 import {
   SelectedWeekdays,
   SelectedHourRanges,
-  WeeklyHourRangeData,
+  SelectedWeeklyHourRanges,
   WeekdayData,
   HourRangeData,
 } from "../../types/eventTypes";
@@ -20,7 +20,7 @@ export default defineComponent({
       required: true,
     },
     selectedWeeklyHourRanges: {
-      type: Object as PropType<WeeklyHourRangeData>,
+      type: Object as PropType<SelectedWeeklyHourRanges>,
       required: true,
     },
   },
@@ -44,74 +44,12 @@ export default defineComponent({
   methods: {
     toggleSelectWeekday(weekday: WeekdayData) {
       this.$emit("toggleSelectWeekday", weekday);
-      this.selectedWeekdaysRef[weekday.number] =
-        !this.selectedWeekdaysRef[weekday.number];
     },
     toggleSelectTimeRange(range: HourRangeData) {
       this.$emit("toggleSelectTimeRange", range);
-      this.selectedHourRangesRef[range["12-hour-label"]] =
-        !this.selectedHourRangesRef[range["12-hour-label"]];
-    },
-    addTimeWindowToWeeklyTimeRange(
-      weekdayNumber: string,
-      label: string,
-      range: HourRangeData
-    ) {
-      // If there are no selected times for that day, create an entry for that weekday
-      // and add it to the time list for that weekday
-      if (!this.selectedWeeklyHourRangesRef[weekdayNumber]) {
-        this.selectedWeeklyHourRangesRef[weekdayNumber] = {
-          [label]: { ...range },
-        };
-        return;
-      }
-
-      // If there are selected times for that day, but the time range
-      // does not exist, add the time range to the existing day entry.
-      this.selectedWeeklyHourRangesRef[weekdayNumber][label] = { ...range };
-    },
-    removeTimeWindowFromWeeklyTimeRange(weekdayNumber: string, label: string) {
-      const onlyOneSelectedWindowInWeekday =
-        Object.keys(this.selectedWeeklyHourRangesRef[weekdayNumber]).length ===
-        1;
-
-      if (
-        this.selectedWeeklyHourRangesRef[weekdayNumber] &&
-        this.selectedWeeklyHourRangesRef[weekdayNumber][label] &&
-        onlyOneSelectedWindowInWeekday
-      ) {
-        delete this.selectedWeeklyHourRangesRef[weekdayNumber][label];
-      } else {
-        delete this.selectedWeeklyHourRangesRef[weekdayNumber];
-      }
     },
     toggleSelectWeeklyTimeRange(weekdayNumber: string, range: HourRangeData) {
       this.$emit("toggleWeeklyTimeRange", weekdayNumber, range);
-      const label = range["12-hour-label"];
-
-      // If it already exists, delete it.
-      if (
-        this.selectedWeeklyHourRangesRef[weekdayNumber] &&
-        this.selectedWeeklyHourRangesRef[weekdayNumber][label]
-      ) {
-        this.removeTimeWindowFromWeeklyTimeRange(weekdayNumber, label);
-      } else {
-        // Otherwise, create it.
-        this.addTimeWindowToWeeklyTimeRange(weekdayNumber, label, range);
-      }
-    },
-    shouldBeChecked(weekdayNumber: string, label: string) {
-
-      try {
-        let checked = this.selectedWeeklyHourRangesRef[weekdayNumber] &&
-        this.selectedWeeklyHourRangesRef[weekdayNumber][label]
-        return checked;
-      }
-      catch(err: any) {
-
-        // eslint-disable-next-line 
-        throw new Error(err)
-      }
     },
   },
 });
@@ -165,8 +103,8 @@ export default defineComponent({
                         aria-describedby="weekday-name"
                         name="weekday-name"
                         type="checkbox"
-                        :checked="selectedWeekdaysRef[weekday.number]"
-                        @change="() => toggleSelectWeekday(weekday)"
+                        :checked="selectedWeekdaysRef[weekday.number] === true"
+                        @input="() => toggleSelectWeekday(weekday)"
                         class="
                           focus:ring-indigo-500
                           h-4
@@ -201,11 +139,7 @@ export default defineComponent({
                       <input
                         type="checkbox"
                         :checked="selectedHourRangesRef[range['12-hour-label']]"
-                        @change="
-                          () => {
-                            toggleSelectTimeRange(range);
-                          }
-                        "
+                        @input="() => toggleSelectTimeRange(range)"
                         class="
                           focus:ring-indigo-500
                           h-4
@@ -240,21 +174,12 @@ export default defineComponent({
                           border-gray-400
                           rounded
                         "
+                        :checked="selectedWeeklyHourRangesRef[weekday.number][range['12-hour-label']] === true"
                         :disabled="
-                          selectedHourRangesRef[range['12-hour-label']] ||
-                          selectedWeekdaysRef[weekday.number]
+                          selectedHourRangesRef[range['12-hour-label']] === false ||
+                          selectedWeekdaysRef[weekday.number] === false
                         "
-                        :checked="
-                          shouldBeChecked(
-                            weekday.number,
-                            range['12-hour-label']
-                          )
-                        "
-                        @change="
-                          () => {
-                            toggleSelectWeeklyTimeRange(weekday.number, range);
-                          }
-                        "
+                        @input="() => {toggleSelectWeeklyTimeRange(weekday.number, range)}"
                       />
                     </div>
                   </td>

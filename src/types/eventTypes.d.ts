@@ -37,14 +37,14 @@ export type HourRangeData = {
   "24-hour-label": string;
 }
 
-export type WeeklyHourRangeData = {
-  [index: string]: Array[HourRangeData];
-}
-
 export type SelectedWeekdays = {
   [index: string]: boolean;
 }
 
 export type SelectedHourRanges = {
   [index: string]: boolean;
+}
+
+export type SelectedWeeklyHourRanges = {
+  [index: string]: SelectedHourRanges;
 }
