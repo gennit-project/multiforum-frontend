@@ -1,13 +1,118 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, PropType } from "vue";
 import { weekdays, hourRangesData } from "./eventSearchOptions";
+import {
+  SelectedWeekdays,
+  SelectedHourRanges,
+  WeeklyHourRangeData,
+  WeekdayData,
+  HourRangeData,
+} from "../../types/eventTypes";
 
 export default defineComponent({
-  setup() {
+  props: {
+    selectedWeekdays: {
+      type: Object as PropType<SelectedWeekdays>,
+      required: true,
+    },
+    selectedHourRanges: {
+      type: Object as PropType<SelectedHourRanges>,
+      required: true,
+    },
+    selectedWeeklyHourRanges: {
+      type: Object as PropType<WeeklyHourRangeData>,
+      required: true,
+    },
+  },
+  setup(props) {
+    let selectedWeekdaysRef = ref(props.selectedWeekdays);
+    let selectedHourRangesRef = ref(props.selectedHourRanges);
+    let selectedWeeklyHourRangesRef = ref(props.selectedWeeklyHourRanges);
+
+    // Table header rows emit the event "toggleSelectWeekday"
+    // Table cells in first column emit the event "toggleSelectTimeRange"
+    // Other table cells emit the event "toggleSelectWeeklyTimeRange";
+
     return {
       weekdays,
       hourRangesData,
+      selectedWeekdaysRef,
+      selectedHourRangesRef,
+      selectedWeeklyHourRangesRef,
     };
+  },
+  methods: {
+    toggleSelectWeekday(weekday: WeekdayData) {
+      this.$emit("toggleSelectWeekday", weekday);
+      this.selectedWeekdaysRef[weekday.number] =
+        !this.selectedWeekdaysRef[weekday.number];
+    },
+    toggleSelectTimeRange(range: HourRangeData) {
+      this.$emit("toggleSelectTimeRange", range);
+      this.selectedHourRangesRef[range["12-hour-label"]] =
+        !this.selectedHourRangesRef[range["12-hour-label"]];
+    },
+    addTimeWindowToWeeklyTimeRange(
+      weekdayNumber: string,
+      label: string,
+      range: HourRangeData
+    ) {
+      // If there are no selected times for that day, create an entry for that weekday
+      // and add it to the time list for that weekday
+      if (!this.selectedWeeklyHourRangesRef[weekdayNumber]) {
+        this.selectedWeeklyHourRangesRef[weekdayNumber] = {
+          [label]: { ...range },
+        };
+        return;
+      }
+
+      // If there are selected times for that day, but the time range
+      // does not exist, add the time range to the existing day entry.
+      this.selectedWeeklyHourRangesRef[weekdayNumber][label] = { ...range };
+    },
+    removeTimeWindowFromWeeklyTimeRange(weekdayNumber: string, label: string) {
+      const onlyOneSelectedWindowInWeekday =
+        Object.keys(this.selectedWeeklyHourRangesRef[weekdayNumber]).length ===
+        1;
+
+      if (
+        this.selectedWeeklyHourRangesRef[weekdayNumber] &&
+        this.selectedWeeklyHourRangesRef[weekdayNumber][label] &&
+        onlyOneSelectedWindowInWeekday
+      ) {
+        delete this.selectedWeeklyHourRangesRef[weekdayNumber][label];
+      } else {
+        delete this.selectedWeeklyHourRangesRef[weekdayNumber];
+      }
+    },
+    toggleSelectWeeklyTimeRange(weekdayNumber: string, range: HourRangeData) {
+      this.$emit("toggleWeeklyTimeRange", weekdayNumber, range);
+      const label = range["12-hour-label"];
+
+      // If it already exists, delete it.
+      if (
+        this.selectedWeeklyHourRangesRef[weekdayNumber] &&
+        this.selectedWeeklyHourRangesRef[weekdayNumber][label]
+      ) {
+        this.removeTimeWindowFromWeeklyTimeRange(weekdayNumber, label);
+      } else {
+        // Otherwise, create it.
+        this.addTimeWindowToWeeklyTimeRange(weekdayNumber, label, range);
+      }
+    },
+    shouldBeChecked(weekdayNumber: string, label: string) {
+
+      try {
+        let checked = this.selectedWeeklyHourRangesRef[weekdayNumber] &&
+        this.selectedWeeklyHourRangesRef[weekdayNumber][label]
+        return checked;
+      }
+      catch(err: any) {
+
+        // eslint-disable-next-line 
+        throw new Error(err)
+      }
+    },
   },
 });
 </script>
@@ -57,10 +162,11 @@ export default defineComponent({
                   >
                     <div class="inline-block items-center h-5">
                       <input
-                        id="comments"
-                        aria-describedby="comments-description"
-                        name="comments"
+                        aria-describedby="weekday-name"
+                        name="weekday-name"
                         type="checkbox"
+                        :checked="selectedWeekdaysRef[weekday.number]"
+                        @change="() => toggleSelectWeekday(weekday)"
                         class="
                           focus:ring-indigo-500
                           h-4
@@ -94,6 +200,12 @@ export default defineComponent({
                     <div class="inline-block items-center h-5">
                       <input
                         type="checkbox"
+                        :checked="selectedHourRangesRef[range['12-hour-label']]"
+                        @change="
+                          () => {
+                            toggleSelectTimeRange(range);
+                          }
+                        "
                         class="
                           focus:ring-indigo-500
                           h-4
@@ -127,6 +239,21 @@ export default defineComponent({
                           text-indigo-600
                           border-gray-400
                           rounded
+                        "
+                        :disabled="
+                          selectedHourRangesRef[range['12-hour-label']] ||
+                          selectedWeekdaysRef[weekday.number]
+                        "
+                        :checked="
+                          shouldBeChecked(
+                            weekday.number,
+                            range['12-hour-label']
+                          )
+                        "
+                        @change="
+                          () => {
+                            toggleSelectWeeklyTimeRange(weekday.number, range);
+                          }
                         "
                       />
                     </div>

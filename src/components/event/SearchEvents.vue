@@ -28,11 +28,23 @@ import TimeIcon from "../icons/TimeIcon.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import dateRangeTypes from "@/components/event/dateRangeTypes";
 // import locationFilterTypes from "@/components/event/locationFilterTypes";
-
+import {
+  weekdays,
+  hourRangesData,
+  defaultSelectedWeekdays,
+  defaultSelectedHourRanges,
+} from "@/components/forms/eventSearchOptions";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
 
-import { EventData } from "../../types/eventTypes";
+import {
+  EventData,
+  WeekdayData,
+  HourRangeData,
+  WeeklyHourRangeData,
+  SelectedWeekdays,
+  SelectedHourRanges,
+} from "../../types/eventTypes";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
 
@@ -101,22 +113,22 @@ export default defineComponent({
     const endOfDateRange = ref(defaultEndDateRangeISO);
     const betweenDateTimesFilter = computed(() => {
       return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
-    })
+    });
     // const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
     // const onlyWithAddressFilter = "has: location";
 
-    let showOnlyFreeEvents = ref(false)
+    let showOnlyFreeEvents = ref(false);
 
     let freeEventFilter = computed(() => {
       if (!showOnlyFreeEvents.value) {
-        return '';
+        return "";
       }
       return `,
         cost: {
           eq: "0"
         }
-      `
-    })
+      `;
+    });
 
     let textFilter = computed(() => {
       if (!searchInput.value) {
@@ -131,6 +143,82 @@ export default defineComponent({
         }
       ]
       `;
+    });
+
+    let selectedWeeklyHourRanges: Ref<WeeklyHourRangeData> = ref({});
+
+    // By default, no weekdays or hour ranges are selected.
+    let selectedWeekdays: Ref<SelectedWeekdays> = ref(defaultSelectedWeekdays);
+    let selectedHourRanges: Ref<SelectedHourRanges> = ref(
+      defaultSelectedHourRanges
+    );
+
+    let weeklyTimeRangeFilter = computed(() => {
+      // The selected weekly time windows are in the
+      // piece of state called selectedWeeklyHourRanges.
+      // That data structure is an object where the keys
+      // are weekdays and the values are times of day.
+      // But to create a GraphQL query filter out of that,
+      // this function flattens the structure so that the
+      // filter will look something like this:
+
+      // and: {
+      //   or: [
+      //   {
+      //     startTimeHourOfDay: {
+      //         between: {
+      //           min: 3,
+      //           max: 6
+      //         }
+      //     },
+      //     startTimeDayOfWeek: {
+      //       allofterms: "Thursday"
+      //     }
+      //   },
+      //   {
+      //     startTimeHourOfDay: {
+      //       between: {
+      //         min: 0,
+      //         max: 3
+      //       }
+      //     },
+      //     startTimeDayOfWeek: {
+      //       allofterms: "Friday"
+      //     }
+      //   }
+      //   ]
+      // }
+      if (Object.keys(selectedWeeklyHourRanges.value).length === 0) {
+        return "";
+      }
+      const weekdayNameArray = Object.keys(selectedWeeklyHourRanges.value);
+      const weeklyTimeRangeObjects = weekdayNameArray
+        .map((weekdayName) => {
+          const timeRangeData = selectedWeeklyHourRanges.value[weekdayName];
+          const hourRangeArray = Object.keys(timeRangeData);
+
+          return hourRangeArray
+            .map((hourRangeName) => {
+              const max = timeRangeData[hourRangeName].max;
+              const min = timeRangeData[hourRangeName].min;
+              return `{ 
+                startTimeHourOfDay: {
+                  between: {
+                    min: ${min}, 
+                    max: ${max}
+                  }
+                }, 
+                startTimeDayOfWeek: {
+                  allofterms: "${weekdayName}"
+                }
+              }`;
+            })
+            .join("");
+        })
+        .join("");
+
+      let frame = `and: {or: [${weeklyTimeRangeObjects}]}`;
+      return frame;
     });
 
     let needsCascade = computed(() => {
@@ -154,8 +242,6 @@ export default defineComponent({
       } "Communities"])`;
     });
 
-    
-
     let filterString = computed(() => {
       return `(
           order: ${resultsOrder.value},
@@ -167,6 +253,7 @@ export default defineComponent({
             }
             ${freeEventFilter.value}
             ${textFilter.value}
+            ${weeklyTimeRangeFilter.value}
           }
       ) ${needsCascade.value ? cascadeText.value : ""}`;
     });
@@ -262,14 +349,15 @@ export default defineComponent({
         `;
     });
 
+    // Turn the query string into an actual GraphQL
+    // query. Any GraphQL syntax errors will be thrown here.
     let eventQuery = computed(() => {
-
       try {
         return gql`
           ${eventQueryString.value}
         `;
-      } catch(err) {
-        throw new Error(err)
+      } catch (err) {
+        throw new Error(err);
       }
     });
 
@@ -325,15 +413,21 @@ export default defineComponent({
       } else if (dateRange.value === dateRangeTypes.PAST) {
         return `Past Events`;
       } else if (dateRange.value === dateRangeTypes.BETWEEN_TWO_DATES) {
-        const startDateObject = new DateTime.fromISO(beginningOfDateRange.value)
-        const endDateObject = new DateTime.fromISO(endOfDateRange.value)
-        const formattedStartDate = startDateObject.toLocaleString(DateTime.DATE_MED);
-        const formattedEndDate = endDateObject.toLocaleString(DateTime.DATE_MED);
-        return `From ${formattedStartDate} to ${formattedEndDate}`
+        const startDateObject = new DateTime.fromISO(
+          beginningOfDateRange.value
+        );
+        const endDateObject = new DateTime.fromISO(endOfDateRange.value);
+        const formattedStartDate = startDateObject.toLocaleString(
+          DateTime.DATE_MED
+        );
+        const formattedEndDate = endDateObject.toLocaleString(
+          DateTime.DATE_MED
+        );
+        return `From ${formattedStartDate} to ${formattedEndDate}`;
       } else {
-        return ""
+        return "";
       }
-    })
+    });
 
     return {
       channelId,
@@ -361,6 +455,9 @@ export default defineComponent({
       pastEventsFilter,
       showOnlyFreeEvents,
       searchInput,
+      selectedHourRanges,
+      selectedWeekdays,
+      selectedWeeklyHourRanges,
       setLocationInput,
       setSearchInput,
       setChannelFilters,
@@ -629,12 +726,178 @@ export default defineComponent({
         this.resultsOrder = this.chronologicalOrder;
         this.startTimeFilter = this.betweenDateTimesFilter;
         if (range) {
-          const start = new Date(range.start).toISOString()
+          const start = new Date(range.start).toISOString();
           this.beginningOfDateRange = start;
 
-          const end = new Date(range.end).toISOString()
+          const end = new Date(range.end).toISOString();
           this.endOfDateRange = end;
         }
+      }
+    },
+    removeWeekday(day: WeekdayData) {
+      this.selectedWeekdays[day.number] = false;
+
+      let newSelectedWeeklyHourRanges = { ...this.selectedWeeklyHourRanges };
+      delete newSelectedWeeklyHourRanges[day.number];
+      this.selectedWeeklyHourRanges[day.number] = false;
+    },
+    addWeekday(day: WeekdayData) {
+      this.selectedWeekdays[day.number] = true;
+
+      // When selecting a weekday, first clear out all the
+      // individual time filters inside it.
+      // Then just add all the time ranges for that day.
+      // If you're wondering why we don't filter for a weekday directly,
+      // it's because if we filtered by a weekday and combined it
+      // with a filter for other weekly windows of time, we would get
+      // only results included in BOTH filters.
+      let newSelectedWeeklyHourRanges = { ...this.selectedWeeklyHourRanges };
+      newSelectedWeeklyHourRanges[day.number] = {};
+      for (let i = 0; i < hourRangesData.length; i++) {
+        let timeRange = hourRangesData[i];
+        newSelectedWeeklyHourRanges[day.number][timeRange["12-hour-label"]] = {
+          max: timeRange.max,
+          min: timeRange.min,
+        };
+      }
+      this.selectedWeeklyHourRanges = newSelectedWeeklyHourRanges;
+    },
+    toggleSelectWeekday(day: WeekdayData) {
+      // This function makes it so that when an
+      // entire weekday column
+      // is selected with a checkbox in the form
+      // for selecting availability windows, it applies
+      // the weekday filter.
+      if (this.selectedWeekdays[day.number]) {
+        this.removeWeekday(day);
+      } else {
+        this.addWeekday(day);
+      }
+    },
+    removeTimeRange(timeRange: HourRangeData) {
+      const label = timeRange["12-hour-label"];
+      this.selectedHourRanges[label] = false;
+
+      const newSelectedWeeklyHourRanges = { ...this.selectedWeeklyHourRanges };
+
+      for (let weekday in newSelectedWeeklyHourRanges) {
+        // existing time ranges are in the form of an object
+        // in which the key is the time in 12-hour format.
+        // For each weekday, check to see if the time range
+        // is listed, and if it is listed, remove it.
+
+        if (newSelectedWeeklyHourRanges[weekday] && newSelectedWeeklyHourRanges[weekday][label]) {
+          delete newSelectedWeeklyHourRanges[weekday][label];
+        }
+      }
+      this.selectedWeeklyHourRanges = newSelectedWeeklyHourRanges;
+    },
+    addTimeRange(timeRange: HourRangeData) {
+      const label = timeRange["12-hour-label"];
+      this.selectedHourRanges[label] = true;
+
+      const newSelectedWeeklyHourRanges = { ...this.selectedWeeklyHourRanges };
+
+      // Add the time range for every day of the week.
+      // If you're wondering why we don't filter for a time range directly,
+      // it's because if we filtered by an hour range and combined it
+      // with a filter for other weekly windows of time, we would get
+      // only results included in BOTH filters.
+      for (let i = 0; i < weekdays.length; i++) {
+        let weekdayNumber = weekdays[i].number;
+
+        if (newSelectedWeeklyHourRanges[weekdayNumber]) {
+          // If there is already an entry for the weekday,
+          // avoid overwriting existing data.
+          const existingTimesForWeekday =
+            newSelectedWeeklyHourRanges[weekdayNumber];
+          newSelectedWeeklyHourRanges[weekdayNumber] = {
+            ...existingTimesForWeekday,
+          };
+          newSelectedWeeklyHourRanges[weekdayNumber][label] = {
+            max: timeRange.max,
+            min: timeRange.min,
+          };
+        } else {
+          // If there are no entries for the weekday yet,
+          // add a new one with the given time range.
+          newSelectedWeeklyHourRanges[weekdayNumber] = {};
+          newSelectedWeeklyHourRanges[weekdayNumber][label] = {
+            max: timeRange.max,
+            min: timeRange.min,
+          };
+        }
+      }
+      this.selectedWeeklyHourRanges = {
+        ...newSelectedWeeklyHourRanges,
+      };
+    },
+    toggleSelectTimeRange(timeRange: HourRangeData) {
+      // This function makes it so that when an
+      // entire time range range row is selected with
+      // a checkbox in the form for selecting
+      // availability windows, it applies to the
+      // time range filter.
+      const label = timeRange["12-hour-label"];
+      if (this.selectedHourRanges[label]) {
+        this.removeTimeRange(timeRange);
+      } else {
+        this.addTimeRange(timeRange);
+      }
+    },
+    selectWeeklyTimeRange(day: string, timeRange: HourRangeData) {
+      // If there is no entry for the selected weekday yet,
+      // add it first, then add the entry for the time range.
+      const timeRangeName = timeRange["12-hour-label"];
+      let newWeeklyHourRanges = { ...this.selectedWeeklyHourRanges };
+
+      if (!(day in newWeeklyHourRanges)) {
+        newWeeklyHourRanges[day] = {};
+        newWeeklyHourRanges[day][timeRangeName] = {
+          min: timeRange.min,
+          max: timeRange.max,
+        };
+      } else {
+        newWeeklyHourRanges[day][timeRangeName] = {
+          min: timeRange.min,
+          max: timeRange.max,
+        };
+      }
+      this.selectedWeeklyHourRanges = newWeeklyHourRanges;
+    },
+    deselectWeeklyTimeRange(day: string, timeRange: HourRangeData) {
+      const timeRangeName = timeRange["12-hour-label"];
+      let newWeeklyHourRanges = { ...this.selectedWeeklyHourRanges };
+      delete newWeeklyHourRanges[day][timeRangeName];
+
+      // If there are no other selected time ranges on the weekday,
+      // also delete the selected weekday.
+      if (Object.keys(newWeeklyHourRanges[day]).length === 0) {
+        delete newWeeklyHourRanges[day];
+      }
+      this.selectedWeeklyHourRanges = newWeeklyHourRanges;
+    },
+    weeklyTimeRangeIsAlreadySelected(day: string, timeRange: string) {
+      if (
+        this.selectedWeeklyHourRanges[day] &&
+        this.selectedWeeklyHourRanges[day][timeRange]
+      ) {
+        return true;
+      }
+      return false;
+    },
+    toggleWeeklyTimeRange(dayNumber: string, timeRange: HourRangeData) {
+      // This function selects time ranges based on the
+      // check boxes in individual table cells where each
+      // row is a time range and each column is a weekday.
+      // We keep track of the selected weekly time ranges
+      // in an object data structure to prevent duplicates.
+      const timeRangeName = timeRange["12-hour-label"];
+
+      if (this.weeklyTimeRangeIsAlreadySelected(dayNumber, timeRangeName)) {
+        this.deselectWeeklyTimeRange(dayNumber, timeRange);
+      } else {
+        this.selectWeeklyTimeRange(dayNumber, timeRange);
       }
     },
   },
@@ -682,7 +945,14 @@ export default defineComponent({
           <TimeIcon />
         </template>
         <template v-slot:content>
-          <WeeklyTimePicker />
+          <WeeklyTimePicker
+            :selected-weekdays="selectedWeekdays"
+            :selected-hour-ranges="selectedHourRanges"
+            :selected-weekly-hour-ranges="selectedWeeklyHourRanges"
+            @toggleSelectWeekday="toggleSelectWeekday"
+            @toggleSelectTimeRange="toggleSelectTimeRange"
+            @toggleWeeklyTimeRange="toggleWeeklyTimeRange"
+          />
         </template>
       </FilterChip>
 
@@ -721,7 +991,9 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <div>
-            <label for="location" class="block text-sm font-medium text-gray-700"
+            <label
+              for="location"
+              class="block text-sm font-medium text-gray-700"
               >Search Event Titles and Descriptions</label
             >
 
@@ -733,13 +1005,26 @@ export default defineComponent({
 
             <div class="relative flex items-start mt-4">
               <div class="flex items-center h-5">
-                  <input class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded" type="checkbox" id="onlyFreeEvents" v-model="showOnlyFreeEvents">
+                <input
+                  class="
+                    focus:ring-indigo-500
+                    h-4
+                    w-4
+                    text-indigo-600
+                    border-gray-300
+                    rounded
+                  "
+                  type="checkbox"
+                  id="onlyFreeEvents"
+                  v-model="showOnlyFreeEvents"
+                />
               </div>
               <div class="ml-3 text-sm">
-                <label for="comments" class="font-medium text-gray-700">Show Only Free Events</label>
+                <label for="comments" class="font-medium text-gray-700"
+                  >Show Only Free Events</label
+                >
               </div>
             </div>
-           
           </div>
         </template>
       </FilterChip>
