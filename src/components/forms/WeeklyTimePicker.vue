@@ -51,6 +51,12 @@ export default defineComponent({
     toggleSelectWeeklyTimeRange(weekdayNumber: string, range: HourRangeData) {
       this.$emit("toggleWeeklyTimeRange", weekdayNumber, range);
     },
+    shouldBeDisabled(weekday: WeekdayData, range: HourRangeData) {
+      return (
+        this.selectedHourRangesRef[range["12-hour-label"]] === true ||
+        this.selectedWeekdaysRef[weekday.number] === true
+      );
+    },
   },
 });
 </script>
@@ -166,20 +172,25 @@ export default defineComponent({
                     <div class="flex items-center h-5">
                       <input
                         type="checkbox"
+                        :class="[shouldBeDisabled(weekday, range) ? 'text-indigo-200' : 'text-indigo-600']"
                         class="
                           focus:ring-indigo-500
                           h-4
                           w-4
-                          text-indigo-600
                           border-gray-400
                           rounded
                         "
-                        :checked="selectedWeeklyHourRangesRef[weekday.number][range['12-hour-label']] === true"
-                        :disabled="
-                          selectedHourRangesRef[range['12-hour-label']] === false ||
-                          selectedWeekdaysRef[weekday.number] === false
+                        :checked="
+                          selectedWeeklyHourRangesRef[weekday.number][
+                            range['12-hour-label']
+                          ] === true
                         "
-                        @input="() => {toggleSelectWeeklyTimeRange(weekday.number, range)}"
+                        :disabled="shouldBeDisabled(weekday, range)"
+                        @input="
+                          () => {
+                            toggleSelectWeeklyTimeRange(weekday.number, range);
+                          }
+                        "
                       />
                     </div>
                   </td>

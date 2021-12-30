@@ -82,7 +82,6 @@ const createDefaultSelectedHourRanges = () => {
     const label = hourRangesData[i]["12-hour-label"];
     ranges[label] = false;
   }
-  debugger;
   return ranges;
 }
 

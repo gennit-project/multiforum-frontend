@@ -31,7 +31,7 @@ import dateRangeTypes from "@/components/event/dateRangeTypes";
 import {
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
-  defaultSelectedWeeklyHourRanges
+  defaultSelectedWeeklyHourRanges,
 } from "@/components/forms/eventSearchOptions";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -42,7 +42,7 @@ import {
   HourRangeData,
   SelectedWeekdays,
   SelectedHourRanges,
-  SelectedWeeklyHourRanges
+  SelectedWeeklyHourRanges,
 } from "../../types/eventTypes";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
@@ -149,14 +149,15 @@ export default defineComponent({
     let selectedHourRanges: Ref<SelectedHourRanges> = ref(
       defaultSelectedHourRanges
     );
-    let selectedWeeklyHourRanges: Ref<SelectedWeeklyHourRanges> = ref(defaultSelectedWeeklyHourRanges);
+    let selectedWeeklyHourRanges: Ref<SelectedWeeklyHourRanges> = ref(
+      defaultSelectedWeeklyHourRanges
+    );
 
     let weeklyTimeRangeFilter = computed(() => {
-
-// TODO: i changed the format of selected weekly hour ranges
-// to be more grid-like and this logic will need to change
-// to accommodate that. The boolean for hour range data
-// needs to be replaced with the actual data.
+      // TODO: i changed the format of selected weekly hour ranges
+      // to be more grid-like and this logic will need to change
+      // to accommodate that. The boolean for hour range data
+      // needs to be replaced with the actual data.
 
       // The selected weekly time windows are in the
       // piece of state called selectedWeeklyHourRanges.
@@ -192,7 +193,7 @@ export default defineComponent({
       //   }
       //   ]
       // }
-      return '';
+      return "";
       // if (Object.keys(selectedWeeklyHourRanges.value).length === 0) {
       //   // TODO: This needs to filter out all the falses and then return
       //   // an empty string if everything is false
@@ -208,13 +209,13 @@ export default defineComponent({
       //       .map((hourRangeName) => {
       //         const max = timeRangeData[hourRangeName].max;
       //         const min = timeRangeData[hourRangeName].min;
-      //         return `{ 
+      //         return `{
       //           startTimeHourOfDay: {
       //             between: {
-      //               min: ${min}, 
+      //               min: ${min},
       //               max: ${max}
       //             }
-      //           }, 
+      //           },
       //           startTimeDayOfWeek: {
       //             allofterms: "${weekdayName}"
       //           }
@@ -748,8 +749,13 @@ export default defineComponent({
       const timeSlotsToRemove = Object.keys(this.defaultSelectedHourRanges);
 
       for (let i = 0; i < timeSlotsToRemove.length; i++) {
-        const timeSlot = timeSlotsToRemove[i]
-        this.selectedWeeklyHourRanges[day.number][timeSlot] = false;
+        const timeSlot = timeSlotsToRemove[i];
+
+        // Leave the input enabled if it was locked in place
+        // by highlighting the same weekday for every time slot.
+        if (!this.selectedHourRanges[timeSlot] === true) {
+          this.selectedWeeklyHourRanges[day.number][timeSlot] = false;
+        }
       }
     },
     addWeekday(day: WeekdayData) {
@@ -758,7 +764,7 @@ export default defineComponent({
       const timeSlotsToAdd = Object.keys(this.defaultSelectedHourRanges);
 
       for (let i = 0; i < timeSlotsToAdd.length; i++) {
-        const timeSlot = timeSlotsToAdd[i]
+        const timeSlot = timeSlotsToAdd[i];
         this.selectedWeeklyHourRanges[day.number][timeSlot] = true;
       }
     },
@@ -779,7 +785,11 @@ export default defineComponent({
       this.selectedHourRanges[label] = false;
 
       for (let weekday in this.selectedWeeklyHourRanges) {
-        this.selectedWeeklyHourRanges[weekday][label] = false;
+        // Leave the input enabled if it was locked in place
+        // by highlighting the same time slot for the whole week.
+        if (!this.selectedWeekdays[weekday] === true) {
+          this.selectedWeeklyHourRanges[weekday][label] = false;
+        }
       }
     },
     addTimeRange(timeRange: HourRangeData) {
