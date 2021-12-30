@@ -45,6 +45,14 @@ export type SelectedHourRanges = {
   [index: string]: boolean;
 }
 
+export type SelectedHourRangeObject = {
+  [index: string]: HourRangeData;
+}
+
+export type SelectedWeekdayObject = {
+  [index: string]: string;
+}
+
 export type SelectedWeeklyHourRanges = {
   [index: string]: SelectedHourRanges;
 }

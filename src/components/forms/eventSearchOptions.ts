@@ -1,4 +1,10 @@
-import { SelectedHourRanges, SelectedWeekdays, SelectedWeeklyHourRanges } from "@/types/eventTypes";
+import {
+  SelectedHourRanges,
+  SelectedWeekdays,
+  SelectedWeeklyHourRanges,
+  SelectedHourRangeObject,
+  SelectedWeekdayObject
+} from "@/types/eventTypes";
 
 export const weekdays = [
   { number: "0", name: "Sunday", shortName: "Sun" },
@@ -61,7 +67,6 @@ export const hourRangesData = [
   },
 ];
 
-
 const createDefaultSelectedWeekdays = () => {
   const weekdaysObj = {} as SelectedWeekdays;
 
@@ -70,31 +75,56 @@ const createDefaultSelectedWeekdays = () => {
     weekdaysObj[weekday.number] = false;
   }
   return weekdaysObj;
-}
+};
 
 export const defaultSelectedWeekdays = createDefaultSelectedWeekdays();
-
 
 const createDefaultSelectedHourRanges = () => {
   const ranges = {} as SelectedHourRanges;
 
-  for (let i = 0; i < hourRangesData.length; i++ ) {
+  for (let i = 0; i < hourRangesData.length; i++) {
     const label = hourRangesData[i]["12-hour-label"];
     ranges[label] = false;
   }
   return ranges;
-}
+};
 
 export const defaultSelectedHourRanges = createDefaultSelectedHourRanges();
 
 const createDefaultSelectedWeeklyHourRanges = () => {
   const weeklyTimeSlots = {} as SelectedWeeklyHourRanges;
 
-  for (let i = 0; i < weekdays.length; i++ ){
+  for (let i = 0; i < weekdays.length; i++) {
     const weekday = weekdays[i];
-    weeklyTimeSlots[weekday.number] = {...defaultSelectedHourRanges};
+    weeklyTimeSlots[weekday.number] = { ...defaultSelectedHourRanges };
   }
   return weeklyTimeSlots;
-}
+};
 
 export const defaultSelectedWeeklyHourRanges = createDefaultSelectedWeeklyHourRanges();
+
+const createHourRangesObject = () => {
+  // Used as a reference to build graphQL query from selected time slots
+  const ranges = {} as SelectedHourRangeObject;
+
+  for (let i = 0; i < hourRangesData.length; i++) {
+    const label = hourRangesData[i]["12-hour-label"];
+    ranges[label] = hourRangesData[i];
+  }
+  return ranges;
+};
+
+export const hourRangesObject = createHourRangesObject();
+
+const createWeekdayObject = () => {
+  // Used as a reference to build graphQL query from selected weekdays
+  const dayObj = {} as SelectedWeekdayObject;
+
+  for (let i = 0; i < weekdays.length; i++) {
+    const dayData = weekdays[i];
+    dayObj[dayData.number] = dayData.name;
+  }
+  return dayObj;
+}
+
+export const weekdayObject = createWeekdayObject();

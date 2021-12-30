@@ -172,7 +172,11 @@ export default defineComponent({
                     <div class="flex items-center h-5">
                       <input
                         type="checkbox"
-                        :class="[shouldBeDisabled(weekday, range) ? 'text-indigo-200' : 'text-indigo-600']"
+                        :class="[
+                          shouldBeDisabled(weekday, range)
+                            ? 'text-indigo-200'
+                            : 'text-indigo-600',
+                        ]"
                         class="
                           focus:ring-indigo-500
                           h-4

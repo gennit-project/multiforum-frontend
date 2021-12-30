@@ -32,6 +32,8 @@ import {
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
+  hourRangesObject,
+  weekdayObject,
 } from "@/components/forms/eventSearchOptions";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -153,16 +155,13 @@ export default defineComponent({
       defaultSelectedWeeklyHourRanges
     );
 
-    let weeklyTimeRangeFilter = computed(() => {
-      // TODO: i changed the format of selected weekly hour ranges
-      // to be more grid-like and this logic will need to change
-      // to accommodate that. The boolean for hour range data
-      // needs to be replaced with the actual data.
-
+    const weeklyTimeRangeFilter = computed(() => {
       // The selected weekly time windows are in the
       // piece of state called selectedWeeklyHourRanges.
       // That data structure is an object where the keys
-      // are weekdays and the values are times of day.
+      // are weekdays and the values are objects where the
+      // key is the time slot and the value is a boolean.
+
       // But to create a GraphQL query filter out of that,
       // this function flattens the structure so that the
       // filter will look something like this:
@@ -193,40 +192,40 @@ export default defineComponent({
       //   }
       //   ]
       // }
-      return "";
-      // if (Object.keys(selectedWeeklyHourRanges.value).length === 0) {
-      //   // TODO: This needs to filter out all the falses and then return
-      //   // an empty string if everything is false
-      //   return "";
-      // }
-      // const weekdayNameArray = Object.keys(selectedWeeklyHourRanges.value);
-      // const weeklyTimeRangeObjects = weekdayNameArray
-      //   .map((weekdayName) => {
-      //     const timeRangeData = selectedWeeklyHourRanges.value[weekdayName];
-      //     const hourRangeArray = Object.keys(timeRangeData);
 
-      //     return hourRangeArray
-      //       .map((hourRangeName) => {
-      //         const max = timeRangeData[hourRangeName].max;
-      //         const min = timeRangeData[hourRangeName].min;
-      //         return `{
-      //           startTimeHourOfDay: {
-      //             between: {
-      //               min: ${min},
-      //               max: ${max}
-      //             }
-      //           },
-      //           startTimeDayOfWeek: {
-      //             allofterms: "${weekdayName}"
-      //           }
-      //         }`;
-      //       })
-      //       .join("");
-      //   })
-      //   .join("");
+      let flattened = "";
+      for (let dayNumber in selectedWeeklyHourRanges.value) {
+        const selectedSlotsInDay = selectedWeeklyHourRanges.value[dayNumber];
 
-      // let frame = `and: {or: [${weeklyTimeRangeObjects}]}`;
-      // return frame;
+        for (let timeSlot in selectedSlotsInDay) {
+          const slotIsSelected = selectedSlotsInDay[timeSlot];
+          
+          if (slotIsSelected) {
+            flattened = flattened.concat(`{
+                startTimeHourOfDay: {
+                  between: {
+                    min: ${hourRangesObject[timeSlot].min},
+                    max: ${hourRangesObject[timeSlot].max}
+                  }
+                },
+                startTimeDayOfWeek: {
+                  allofterms: "${weekdayObject[dayNumber]}"
+                }
+              },`);
+          }
+          
+        }
+      }
+
+      if (flattened === "") {
+        return "";
+      }
+      let timeSlotFilter = `and: {
+          or: [
+            ${flattened}
+          ]
+        }`;
+      return timeSlotFilter;
     });
 
     let needsCascade = computed(() => {
@@ -476,6 +475,7 @@ export default defineComponent({
       startTimeFilter,
       tagLabel,
       tagOptions,
+      weeklyTimeRangeFilter
     };
   },
   data(props) {

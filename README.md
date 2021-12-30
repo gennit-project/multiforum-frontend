@@ -28,11 +28,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 ```
 docker run -it -p 8080:8080 dgraph/standalone:master
 
-# Set up the schema
-
 curl -X POST localhost:8080/admin/schema --data-binary '@schema.graphql'
-
-# Add some test data
 
 curl --request POST \
   --url http://localhost:8080/graphql \
