@@ -136,13 +136,12 @@ export default defineComponent({
         return "";
       }
       return `,
-      and: [{ 
-          or: [ 
-            { title: { alloftext: "${searchInput.value}" } },
-            { description: { alloftext: "${searchInput.value}" } }
-          ]
-        }
-      ]
+      { 
+        or: [ 
+          { title: { alloftext: "${searchInput.value}" } },
+          { description: { alloftext: "${searchInput.value}" } }
+        ]
+      },
       `;
     });
 
@@ -199,7 +198,7 @@ export default defineComponent({
 
         for (let timeSlot in selectedSlotsInDay) {
           const slotIsSelected = selectedSlotsInDay[timeSlot];
-          
+
           if (slotIsSelected) {
             flattened = flattened.concat(`{
                 startTimeHourOfDay: {
@@ -213,14 +212,13 @@ export default defineComponent({
                 }
               },`);
           }
-          
         }
       }
 
       if (flattened === "") {
         return "";
       }
-      let timeSlotFilter = `and: {
+      let timeSlotFilter = `{
           or: [
             ${flattened}
           ]
@@ -259,8 +257,13 @@ export default defineComponent({
               ${startTimeFilter.value}
             }
             ${freeEventFilter.value}
-            ${textFilter.value}
-            ${weeklyTimeRangeFilter.value}
+            ${
+              textFilter.value || weeklyTimeRangeFilter.value
+                ? `
+            and: [${textFilter.value} ${weeklyTimeRangeFilter.value}]
+            `
+                : ""
+            }
           }
       ) ${needsCascade.value ? cascadeText.value : ""}`;
     });
@@ -475,7 +478,7 @@ export default defineComponent({
       startTimeFilter,
       tagLabel,
       tagOptions,
-      weeklyTimeRangeFilter
+      weeklyTimeRangeFilter,
     };
   },
   data(props) {
