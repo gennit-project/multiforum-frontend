@@ -56,3 +56,14 @@ export type SelectedWeekdayObject = {
 export type SelectedWeeklyHourRanges = {
   [index: string]: SelectedHourRanges;
 }
+
+export type ReferencePoint = {
+  lat: Number,
+  lng: Number
+}
+
+export type DistanceUnit = {
+  [index: string]: string;
+}
+
+export type Distance = any;

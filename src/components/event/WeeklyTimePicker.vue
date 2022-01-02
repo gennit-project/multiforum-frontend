@@ -7,7 +7,7 @@ import {
   SelectedWeeklyHourRanges,
   WeekdayData,
   HourRangeData,
-} from "../../types/eventTypes";
+} from "@/types/eventTypes";
 
 export default defineComponent({
   props: {

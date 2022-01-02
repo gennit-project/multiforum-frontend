@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { EventData } from "../../types/eventTypes";
+import { EventData } from "@/types/eventTypes";
 import { getDatePieces } from "@/utils/dateTimeUtils";
 import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "../buttons/Tag.vue";

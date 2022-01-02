@@ -12,13 +12,14 @@ import DatePicker from "@/components/forms/DatePicker.vue";
 import EventList from "./EventList.vue";
 import EventPreview from "./EventPreview.vue";
 import LocationIcon from "../icons/LocationIcon.vue";
-import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
+import LocationSearchBar from "@/components/event/LocationSearchBar.vue";
+import LocationPicker from "@/components/event/LocationPicker.vue";
 import Map from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import ToggleMap from "../buttons/ToggleMap.vue";
 import SearchBar from "../forms/SearchBar.vue";
-import WeeklyTimePicker from "@/components/forms/WeeklyTimePicker.vue";
+import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import FilterIcon from "../icons/FilterIcon.vue";
 import CalendarIcon from "../icons/CalendarIcon.vue";
@@ -27,14 +28,17 @@ import TagIcon from "../icons/TagIcon.vue";
 import TimeIcon from "../icons/TimeIcon.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import dateRangeTypes from "@/components/event/dateRangeTypes";
-// import locationFilterTypes from "@/components/event/locationFilterTypes";
+import locationFilterTypes from "@/components/event/locationFilterTypes";
+
 import {
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
   hourRangesObject,
   weekdayObject,
-} from "@/components/forms/eventSearchOptions";
+  distanceOptions,
+  // distanceUnitOptions
+} from "@/components/event/eventSearchOptions";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
 
@@ -45,7 +49,8 @@ import {
   SelectedWeekdays,
   SelectedHourRanges,
   SelectedWeeklyHourRanges,
-} from "../../types/eventTypes";
+  ReferencePoint
+} from "@/types/eventTypes";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
 
@@ -70,6 +75,7 @@ export default defineComponent({
     FilterIcon,
     LocationIcon,
     LocationSearchBar,
+    LocationPicker,
     Map,
     PreviewContainer,
     TagIcon,
@@ -98,8 +104,6 @@ export default defineComponent({
     const nowISO = now.toISO();
     const defaultStartDateObj = now.startOf("day");
     const defaultStartDateISO = defaultStartDateObj.toISO();
-    // const defaultEndOfStartDayObj = defaultStartDateObj.endOf("day");
-    // const defaultEndOfStartDayISO = defaultEndOfStartDayObj.toISO();
     const defaultEndDateRangeObj = defaultStartDateObj.plus({ days: 14 });
     const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
 
@@ -115,8 +119,26 @@ export default defineComponent({
     const betweenDateTimesFilter = computed(() => {
       return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
     });
-    // const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
-    // const onlyWithAddressFilter = "has: location";
+    const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
+    const onlyWithAddressFilter = "has: location";
+
+    const defaultReferencePoint = { lat: 33.4255, lng: -111.94 } as ReferencePoint;
+    const referencePoint = ref(defaultReferencePoint)
+    
+    // const defaultDistanceUnit = distanceUnitOptions.km;
+    // const distanceUnit = ref(defaultDistanceUnit);
+
+    const defaultRadius = distanceOptions[0].km;
+    const radius = ref(defaultRadius);
+
+    const withinRadiusFilter = `location: { 
+      near: { 
+        coordinate: { 
+          latitude: ${referencePoint.value.lat}, 
+          longitude: ${referencePoint.value.lng}}, 
+          distance: ${radius.value}
+        }
+      }`;
 
     let showOnlyFreeEvents = ref(false);
 
@@ -144,6 +166,27 @@ export default defineComponent({
       },
       `;
     });
+
+    let selectedLocationFilter = ref(locationFilterTypes.NONE);
+
+    let locationFilter = computed(() => {
+
+      switch (selectedLocationFilter.value) {
+        case locationFilterTypes.NONE:
+          return '';
+        case locationFilterTypes.ONLY_WITH_ADDRESS:
+          return onlyWithAddressFilter;
+        case locationFilterTypes.ONLY_VIRTUAL:
+          return onlyVirtualFilter;
+        case locationFilterTypes.WITHIN_RADIUS:
+          if (referencePoint.value) {
+            return withinRadiusFilter;
+          }
+          return '';
+        default:
+          return '';
+      }
+    })
 
     // By default, no weekdays or hour ranges are selected.
     let selectedWeekdays: Ref<SelectedWeekdays> = ref(defaultSelectedWeekdays);
@@ -264,6 +307,7 @@ export default defineComponent({
             `
                 : ""
             }
+            ${locationFilter.value}
           }
       ) ${needsCascade.value ? cascadeText.value : ""}`;
     });
@@ -474,6 +518,7 @@ export default defineComponent({
       setChannelFilters,
       setTagFilters,
       selectedChannels,
+      selectedLocationFilter,
       selectedTags,
       startTimeFilter,
       tagLabel,
@@ -836,6 +881,7 @@ export default defineComponent({
         this.selectWeeklyTimeRange(dayNumber, timeRange);
       }
     },
+    updateLocationFilter() {}
   },
 });
 </script>
@@ -867,12 +913,10 @@ export default defineComponent({
           <LocationIcon />
         </template>
         <template v-slot:content>
-          <ul>
-            <li>Both virtual and in-person events</li>
-            <li>In-person only</li>
-            <li>Virtual only</li>
-            <li>Within a radius from an address</li>
-          </ul>
+        <LocationPicker
+          :selected-location-filter="selectedLocationFilter"
+          />
+          
         </template>
       </FilterChip>
 

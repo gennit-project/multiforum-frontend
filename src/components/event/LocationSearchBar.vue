@@ -30,7 +30,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="inline-block">
-    <label for="search" class="sr-only">Search</label>
+    <label for="search" class="sr-only">Search Location</label>
     <div class="relative">
       <div
         class="

@@ -121,9 +121,10 @@ export default defineComponent({
       });
     })
     
+    const center = ref(props.referencePoint);
 
     return {
-      center: { lat: 33.4255, lng: -111.94 },
+      center,
       mapDiv,
       router
     };
@@ -140,7 +141,7 @@ export default defineComponent({
     previewIsOpen: {
       type: Boolean,
       default: false
-    }
+    },
   },
   methods: {
     openPreview() {

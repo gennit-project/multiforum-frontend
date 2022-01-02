@@ -1,0 +1,51 @@
+<script lang="js">
+import { defineComponent, ref } from 'vue'
+
+export default defineComponent({
+    props: {
+        selectedOption: {
+            type: Object,
+            required: true
+        },
+        options: {
+            type: Array,
+            required: true
+        },
+    },
+    setup(props) {
+        const selected = ref(props.selectedOption)
+
+        return { selected }
+    },
+})
+</script>
+<template>
+  <form>
+    <fieldset>
+      <div 
+        :key="option.label" 
+        v-for="option in options" 
+        class="flex items-center mt-4"
+    >
+        <input
+          id="showBothVirtualAndInPerson"
+          name="showBothVirtualAndInPerson"
+          type="radio"
+          :checked="selected.value === option.value"
+          class="
+            focus:ring-indigo-500
+            h-4
+            w-4
+            text-indigo-600
+            border border-gray-300
+          "
+        />
+        <label
+          class="ml-3 block text-sm font-medium text-gray-700"
+        >
+          {{ option.label }}
+        </label>
+      </div>
+    </fieldset>
+  </form>
+</template>

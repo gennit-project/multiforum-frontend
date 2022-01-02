@@ -3,8 +3,11 @@ import {
   SelectedWeekdays,
   SelectedWeeklyHourRanges,
   SelectedHourRangeObject,
-  SelectedWeekdayObject
+  SelectedWeekdayObject,
+  DistanceUnit,
+  Distance
 } from "@/types/eventTypes";
+import locationFilterTypes from "@/components/event/locationFilterTypes";
 
 export const weekdays = [
   { number: "0", name: "Sunday", shortName: "Sun" },
@@ -125,6 +128,61 @@ const createWeekdayObject = () => {
     dayObj[dayData.number] = dayData.name;
   }
   return dayObj;
-}
+};
 
 export const weekdayObject = createWeekdayObject();
+
+export const distanceOptions: Array<Distance> = [
+  {
+    mi: 8046,
+    km: 5000,
+  },
+  {
+    mi: 16093,
+    km: 10000,
+  },
+  {
+    mi: 32187,
+    km: 20000,
+  },
+  {
+    mi: 48280,
+    km: 30000,
+  },
+  {
+    mi: 80467,
+    km: 50000,
+  },
+  {
+    mi: 160934,
+    km: 100000,
+  },
+  {
+    mi: 321869,
+    km: 200000,
+  },
+];
+
+export const distanceUnitOptions: Array<DistanceUnit> = [
+  { label: "km", value: "km" },
+  { label: "mi", value: "mi" },
+];
+
+export const locationFilterOptions = [
+  {
+    value: locationFilterTypes.NONE,
+    label: "Both virtual and in-person events",
+  },
+  {
+    value: locationFilterTypes.ONLY_VIRTUAL,
+    label: "Virtual only",
+  },
+  {
+    value: locationFilterTypes.ONLY_WITH_ADDRESS,
+    label: "In-person only",
+  },
+  {
+    value: locationFilterTypes.WITHIN_RADIUS,
+    label: "Within a radius of an address",
+  },
+];

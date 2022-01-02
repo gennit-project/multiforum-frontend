@@ -21,7 +21,8 @@ export default defineComponent({
   <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
     <div class="relative flex items-center justify-between h-16">
       <div class="flex items-center px-2 lg:px-0">
-        <div class="flex-shrink-0">
+      gennit
+        <!-- <div class="flex-shrink-0">
           <img
             class="block lg:hidden h-8 w-auto"
             src="https://tailwindui.com/img/logos/workflow-mark-indigo-500.svg"
@@ -32,7 +33,7 @@ export default defineComponent({
             src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
             alt="Workflow"
           />
-        </div>
+        </div> -->
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4">
             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
@@ -190,7 +191,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
+      <!-- <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
         <div class="max-w-lg w-full lg:max-w-xs">
           <label for="search" class="sr-only">Search</label>
           <div class="relative">
@@ -205,7 +206,6 @@ export default defineComponent({
                 pointer-events-none
               "
             >
-              <!-- Heroicon name: solid/search -->
               <svg
                 class="h-5 w-5 text-gray-400"
                 xmlns="http://www.w3.org/2000/svg"
@@ -247,7 +247,7 @@ export default defineComponent({
             />
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="flex lg:hidden">
         <!-- Mobile menu button -->
         <button
@@ -313,7 +313,7 @@ export default defineComponent({
           </svg>
         </button>
       </div>
-      <div class="hidden lg:block lg:ml-4">
+      <!-- <div class="hidden lg:block lg:ml-4">
         <div class="flex items-center">
           <button
             type="button"
@@ -332,7 +332,6 @@ export default defineComponent({
             "
           >
             <span class="sr-only">View notifications</span>
-            <!-- Heroicon name: outline/bell -->
             <svg
               class="h-6 w-6"
               xmlns="http://www.w3.org/2000/svg"
@@ -350,7 +349,6 @@ export default defineComponent({
             </svg>
           </button>
 
-          <!-- Profile dropdown -->
           <div class="ml-4 relative flex-shrink-0">
             <div @click="toggleUserProfileDropdown">
               <button
@@ -377,7 +375,7 @@ export default defineComponent({
                   alt=""
                 />
               </button>
-            </div>
+            </div> -->
 
             <!--
               Dropdown menu, show/hide based on menu state.
@@ -389,7 +387,7 @@ export default defineComponent({
                 From: "transform opacity-100 scale-100"
                 To: "transform opacity-0 scale-95"
             -->
-            <div
+            <!-- <div
               v-if="showUserProfileDropdown"
               class="
                 origin-top-right
@@ -410,7 +408,6 @@ export default defineComponent({
               aria-labelledby="user-menu-button"
               tabindex="-1"
             >
-              <!-- Active: "bg-gray-100", Not Active: "" -->
               <router-link
                 to="/u/1"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -438,7 +435,7 @@ export default defineComponent({
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

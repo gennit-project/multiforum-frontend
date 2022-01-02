@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import EventListItem from "./EventListItem.vue";
 import { useRoute } from "vue-router";
-import { EventData } from "../../types/eventTypes";
+import { EventData } from "@/types/eventTypes";
 
 export default defineComponent({
   setup() {

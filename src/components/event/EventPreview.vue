@@ -1,12 +1,13 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { EventData } from "../../types/eventTypes";
+import { EventData } from "@/types/eventTypes";
 import {
   formatAbbreviatedDuration,
   getDurationObj,
   getDatePieces,
 } from "@/utils/dateTimeUtils";
 import Tag from "../buttons/Tag.vue";
+
 const { DateTime } = require("luxon");
 
 export default defineComponent({

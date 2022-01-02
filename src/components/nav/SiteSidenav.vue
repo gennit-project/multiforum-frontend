@@ -58,36 +58,8 @@ export default defineComponent({
       >
         Channels
       </router-link>
-      <router-link
-        to="/c/cats"
-        class="text-gray-300
-          hover:bg-gray-700 hover:text-white
-          block
-          px-3
-          py-2
-          rounded-md
-          text-base
-          font-medium"
-        active-class="bg-gray-900 text-white"
-      >
-        /c/cats
-      </router-link>
-      <router-link
-        to="/c/dogs"
-        class="text-gray-300
-          hover:bg-gray-700 hover:text-white
-          block
-          px-3
-          py-2
-          rounded-md
-          text-base
-          font-medium"
-        active-class="bg-gray-900 text-white"
-      >
-        /c/dogs
-      </router-link>
     </div>
-    <div class="pt-4 pb-3 border-t border-gray-700">
+    <!-- <div class="pt-4 pb-3 border-t border-gray-700">
       <div class="flex items-center px-5">
         <div class="flex-shrink-0">
           <img
@@ -118,7 +90,6 @@ export default defineComponent({
           "
         >
           <span class="sr-only">View notifications</span>
-          <!-- Heroicon name: outline/bell -->
           <svg
             class="h-6 w-6"
             xmlns="http://www.w3.org/2000/svg"
@@ -184,6 +155,6 @@ export default defineComponent({
           >Sign out</a
         >
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
