@@ -34,7 +34,7 @@ export default defineComponent({
 
     const selectedDistance = ref({ ...distanceOptionsWithLabel.value[0] });
 
-    const selectedLocationFilterOption = ref(locationFilterOptions[0])
+    const selectedLocationFilterOption = ref(props.selectedLocationFilter)
 
     return {
       getDistanceOptions,
@@ -51,7 +51,7 @@ export default defineComponent({
   },
   props: {
     selectedLocationFilter: {
-      type: String,
+      type: Object,
       required: true,
     },
   },
@@ -69,6 +69,9 @@ export default defineComponent({
     updateSelectedDistance(radius: Distance) {
       this.selectedDistance = radius;
     },
+    updateSelectedLocationFilter(selected: any){
+      this.$emit('updateLocationFilter', selected)
+    }
   },
 });
 </script>
@@ -78,7 +81,7 @@ export default defineComponent({
     <RadioButtons
       :selected-option="selectedLocationFilterOption"
       :options="locationFilterOptions"
-      @change="$emit('updateLocationFilter', selectedLocationFilter)"
+      @updateSelected="updateSelectedLocationFilter"
     />
     <div
       id="radiusOptions"

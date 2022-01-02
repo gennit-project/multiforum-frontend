@@ -32,6 +32,7 @@ export default defineComponent({
           name="showBothVirtualAndInPerson"
           type="radio"
           :checked="selected.value === option.value"
+          @input="$emit('updateSelected', option)"
           class="
             focus:ring-indigo-500
             h-4

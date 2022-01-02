@@ -35,6 +35,7 @@ import {
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
   hourRangesObject,
+  locationFilterOptions,
   weekdayObject,
   distanceOptions,
   // distanceUnitOptions
@@ -119,7 +120,7 @@ export default defineComponent({
     const betweenDateTimesFilter = computed(() => {
       return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
     });
-    const onlyVirtualFilter = 'not: { virtualEventUrl: { eq: "" }}';
+    const onlyVirtualFilter = 'has: virtualEventUrl';
     const onlyWithAddressFilter = "has: location";
 
     const defaultReferencePoint = { lat: 33.4255, lng: -111.94 } as ReferencePoint;
@@ -167,11 +168,11 @@ export default defineComponent({
       `;
     });
 
-    let selectedLocationFilter = ref(locationFilterTypes.NONE);
+    let selectedLocationFilter = ref(locationFilterOptions[0]);
 
     let locationFilter = computed(() => {
 
-      switch (selectedLocationFilter.value) {
+      switch (selectedLocationFilter.value.value) {
         case locationFilterTypes.NONE:
           return '';
         case locationFilterTypes.ONLY_WITH_ADDRESS:
@@ -500,8 +501,10 @@ export default defineComponent({
       eventQuery,
       eventQueryString,
       eventResult,
+      filterString,
       futureEventsFilter,
       loadMore,
+      locationFilter,
       reachedEndOfResults,
       refetchEvents,
       resultsOrder,
@@ -881,7 +884,10 @@ export default defineComponent({
         this.selectWeeklyTimeRange(dayNumber, timeRange);
       }
     },
-    updateLocationFilter() {}
+    updateLocationFilter(selectedLocationFilter: string) {
+      alert('updtaed locoation' + JSON.stringify(selectedLocationFilter))
+      this.selectedLocationFilter = selectedLocationFilter
+    }
   },
 });
 </script>
@@ -915,7 +921,8 @@ export default defineComponent({
         <template v-slot:content>
         <LocationPicker
           :selected-location-filter="selectedLocationFilter"
-          />
+          @updateLocationFilter="updateLocationFilter"
+        />
           
         </template>
       </FilterChip>

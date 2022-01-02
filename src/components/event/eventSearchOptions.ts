@@ -10,13 +10,13 @@ import {
 import locationFilterTypes from "@/components/event/locationFilterTypes";
 
 export const weekdays = [
-  { number: "0", name: "Sunday", shortName: "Sun" },
-  { number: "1", name: "Monday", shortName: "Mon" },
-  { number: "2", name: "Tuesday", shortName: "Tue" },
-  { number: "3", name: "Wednesday", shortName: "Wed" },
-  { number: "4", name: "Thursday", shortName: "Thu" },
-  { number: "5", name: "Friday", shortName: "Fri" },
-  { number: "6", name: "Saturday", shortName: "Sat" },
+  { number: "1", name: "Sunday", shortName: "Sun" },
+  { number: "2", name: "Monday", shortName: "Mon" },
+  { number: "3", name: "Tuesday", shortName: "Tue" },
+  { number: "4", name: "Wednesday", shortName: "Wed" },
+  { number: "5", name: "Thursday", shortName: "Thu" },
+  { number: "6", name: "Friday", shortName: "Fri" },
+  { number: "7", name: "Saturday", shortName: "Sat" },
 ];
 
 export const hourRangesData = [

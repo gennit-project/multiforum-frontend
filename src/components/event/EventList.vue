@@ -58,7 +58,10 @@ export default defineComponent({
       this.$emit("filterByTag", tag);
     },
     getEventLocationId(event: EventData) {
-      return (event.location?.latitude.toString() || '') + (event.location?.longitude.toString() || '')
+      if (event.location){
+        return (event.location.latitude.toString() || '') + (event.location?.longitude.toString() || '')
+      }
+      return "no_location"
     }
   }
 });
