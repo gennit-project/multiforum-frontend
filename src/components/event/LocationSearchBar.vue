@@ -76,9 +76,24 @@ export default defineComponent({
           sm:text-sm
         "
         placeholder="Enter a location"
+        disablePortal
         @place_changed="updateLocationInput"
       >
       </GMapAutocomplete>
     </div>
   </div>
 </template>
+<style>
+
+/* Prevent the autocomplete dropdown from rendering behind the popper overly */
+.hdpi {
+  z-index: 10001;
+  min-width: 300px;
+}
+
+/* Set minimum width of autocomplete */
+.pac-target-input {
+  min-width: 300px;
+}
+</style>
+
