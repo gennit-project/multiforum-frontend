@@ -5,7 +5,7 @@ import { distanceOptions, distanceUnitOptions } from "./eventSearchOptions";
 import Select from "@/components/forms/Select.vue";
 import RadioButtons from "@/components/forms/RadioButtons.vue";
 import LocationSearchBar from "@/components/event/LocationSearchBar.vue";
-import { locationFilterOptions } from "./eventSearchOptions";
+import { locationFilterOptions, locationFilterMap } from "./eventSearchOptions";
 import { DistanceUnit, Distance } from "@/types/eventTypes";
 
 export default defineComponent({
@@ -41,6 +41,7 @@ export default defineComponent({
       locationFilterOptions,
       locationFilterTypes,
       locationFilter,
+      locationFilterMap,
       distanceOptions,
       distanceUnitOptions,
       distanceOptionsWithLabel,
@@ -51,7 +52,7 @@ export default defineComponent({
   },
   props: {
     selectedLocationFilter: {
-      type: Object,
+      type: String,
       required: true,
     },
   },
@@ -68,9 +69,10 @@ export default defineComponent({
     },
     updateSelectedDistance(radius: Distance) {
       this.selectedDistance = radius;
+      this.$emit('updateRadius', radius.km)
     },
     updateSelectedLocationFilter(selected: any){
-      this.$emit('updateLocationFilter', selected)
+      this.$emit('updateLocationFilter', selected.value)
     }
   },
 });
@@ -79,7 +81,7 @@ export default defineComponent({
 <template>
   <div>
     <RadioButtons
-      :selected-option="selectedLocationFilterOption"
+      :selected-option="locationFilterMap[selectedLocationFilterOption]"
       :options="locationFilterOptions"
       @updateSelected="updateSelectedLocationFilter"
     />

@@ -57,7 +57,7 @@ export default defineComponent({
           const eventLocationId = event.location.latitude.toString() + event.location.longitude.toString();
           
           marker.addListener("click", () => {
-            emit("openPreview", true)
+            emit("openPreview", event, true)
             emit("lockColors")
           })
 
@@ -144,8 +144,8 @@ export default defineComponent({
     },
   },
   methods: {
-    openPreview() {
-      this.$emit("openPreview", true);
+    openPreview(event) {
+      this.$emit("openPreview", event, true);
     },
   },
 });

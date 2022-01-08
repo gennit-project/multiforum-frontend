@@ -134,32 +134,32 @@ export const weekdayObject = createWeekdayObject();
 
 export const distanceOptions: Array<Distance> = [
   {
-    mi: 8046,
-    km: 5000,
+    mi: 8.046,
+    km: 5,
   },
   {
-    mi: 16093,
-    km: 10000,
+    mi: 16.093,
+    km: 10,
   },
   {
-    mi: 32187,
-    km: 20000,
+    mi: 32.187,
+    km: 20,
   },
   {
-    mi: 48280,
-    km: 30000,
+    mi: 48.280,
+    km: 30,
   },
   {
-    mi: 80467,
-    km: 50000,
+    mi: 80.467,
+    km: 50,
   },
   {
-    mi: 160934,
-    km: 100000,
+    mi: 16.0934,
+    km: 100,
   },
   {
-    mi: 321869,
-    km: 200000,
+    mi: 32.1869,
+    km: 200,
   },
 ];
 
@@ -186,3 +186,18 @@ export const locationFilterOptions = [
     label: "Within a radius of an address",
   },
 ];
+
+const getLocationFilterMap = () => {
+  const filterMap = {} as any;
+  for (let i = 0; i < locationFilterOptions.length; i++) {
+    const filterType = locationFilterOptions[i].value;
+    const filterLabel = locationFilterOptions[i].label;
+    filterMap[filterType] = {
+      value: filterType,
+      label: filterLabel
+    };
+  }
+  return filterMap;
+}
+
+export const locationFilterMap = getLocationFilterMap()

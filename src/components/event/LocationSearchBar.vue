@@ -1,15 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-
-interface Ref<T> {
-  value: T;
-}
+import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "LocationSearchBar",
-  setup(props) {
-    const input: Ref<string> = ref(props.routerSearchTerms);
-    return { input };
+  setup() {
   },
   props: {
     searchPlaceholder: {
@@ -75,7 +69,7 @@ export default defineComponent({
           focus:border-indigo-500
           sm:text-sm
         "
-        placeholder="Enter a location"
+        placeholder="Enter an address"
         disablePortal
         @place_changed="updateLocationInput"
       >
@@ -93,7 +87,7 @@ export default defineComponent({
 
 /* Set minimum width of autocomplete */
 .pac-target-input {
-  min-width: 300px;
+  min-width: 400px;
 }
 </style>
 

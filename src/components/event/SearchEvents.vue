@@ -38,7 +38,7 @@ import {
   locationFilterOptions,
   weekdayObject,
   distanceOptions,
-  // distanceUnitOptions
+  distanceUnitOptions
 } from "@/components/event/eventSearchOptions";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -120,26 +120,17 @@ export default defineComponent({
     const betweenDateTimesFilter = computed(() => {
       return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
     });
-    const onlyVirtualFilter = 'has: virtualEventUrl';
-    const onlyWithAddressFilter = "has: location";
 
     const defaultReferencePoint = { lat: 33.4255, lng: -111.94 } as ReferencePoint;
     const referencePoint = ref(defaultReferencePoint)
     
-    // const defaultDistanceUnit = distanceUnitOptions.km;
-    // const distanceUnit = ref(defaultDistanceUnit);
+    const defaultDistanceUnit = distanceUnitOptions[0].value;
+    const distanceUnit = ref(defaultDistanceUnit);
 
     const defaultRadius = distanceOptions[0].km;
     const radius = ref(defaultRadius);
-
-    const withinRadiusFilter = `location: { 
-      near: { 
-        coordinate: { 
-          latitude: ${referencePoint.value.lat}, 
-          longitude: ${referencePoint.value.lng}}, 
-          distance: ${radius.value}
-        }
-      }`;
+    const referencePointAddress = ref('');
+    const referencePointName = ref('');
 
     let showOnlyFreeEvents = ref(false);
 
@@ -168,20 +159,34 @@ export default defineComponent({
       `;
     });
 
-    let selectedLocationFilter = ref(locationFilterOptions[0]);
+    let selectedLocationFilter = ref(locationFilterOptions[0].value);
 
     let locationFilter = computed(() => {
 
-      switch (selectedLocationFilter.value.value) {
+      switch (selectedLocationFilter.value) {
         case locationFilterTypes.NONE:
           return '';
         case locationFilterTypes.ONLY_WITH_ADDRESS:
-          return onlyWithAddressFilter;
+          // Filter by events that have a location
+          // with coordinates
+          return "has: location";
+
         case locationFilterTypes.ONLY_VIRTUAL:
-          return onlyVirtualFilter;
+          // Filter by events that have a virtual event URL
+          return 'has: virtualEventUrl';
+
         case locationFilterTypes.WITHIN_RADIUS:
-          if (referencePoint.value) {
-            return withinRadiusFilter;
+          if (radius.value && referencePoint.value && referencePointAddress.value) {
+
+            // Filter for events within a radius of a reference point
+            return `location: { 
+              near: { 
+                coordinate: { 
+                  latitude: ${referencePoint.value.lat}, 
+                  longitude: ${referencePoint.value.lng}}, 
+                  distance: ${radius.value * 1000}
+                }
+              }`;
           }
           return '';
         default:
@@ -338,16 +343,6 @@ export default defineComponent({
       searchInput.value = input;
       updateRouterQueryParams();
     };
-    const setLocationInput = (placeData: any) => {
-      if (placeData) {
-        const latitude = placeData.geometry.location.lat();
-        const longitude = placeData.geometry.location.lng();
-        console.log("place ", {
-          latitude,
-          longitude,
-        });
-      }
-    };
     const setTagFilters = (tag: Array<string>) => {
       selectedTags.value = tag;
       updateRouterQueryParams();
@@ -454,6 +449,16 @@ export default defineComponent({
       return "Channels";
     });
 
+    const locationLabel = computed(() => {
+      if (selectedLocationFilter.value === locationFilterTypes.WITHIN_RADIUS && referencePoint.value && referencePointAddress.value) {
+        if (referencePointName.value) {
+         return `Within ${radius.value} ${distanceUnit.value} of ${referencePointName.value}`
+        }
+        return `Within ${radius.value} of ${referencePointAddress.value}`
+      }
+      return "Location"
+    })
+
     const tagLabel = computed(() => {
       if (selectedTags.value.length > 0) {
         const tagString = selectedTags.value.join(", ");
@@ -504,9 +509,14 @@ export default defineComponent({
       filterString,
       futureEventsFilter,
       loadMore,
+      locationLabel,
       locationFilter,
+      radius,
       reachedEndOfResults,
       refetchEvents,
+      referencePoint,
+      referencePointAddress,
+      referencePointName,
       resultsOrder,
       reverseChronologicalOrder,
       router,
@@ -516,7 +526,6 @@ export default defineComponent({
       selectedHourRanges,
       selectedWeekdays,
       selectedWeeklyHourRanges,
-      setLocationInput,
       setSearchInput,
       setChannelFilters,
       setTagFilters,
@@ -701,8 +710,13 @@ export default defineComponent({
       this.colorLocked = false;
       this.unhighlight();
     },
-    openPreview(openedFromMap: boolean | false) {
+    openPreview(event: EventData, openedFromMap: boolean | false) {
       if (openedFromMap) {
+        // When opening from a map, count how
+        // many events are at the clicked location.
+        // If there is one event, open the preview for
+        // that event. If there is more than one,
+        // open a preview for multiple events.
         const eventsAtClickedLocation =
           this.markerMap[this.highlightedEventLocationId].numberOfEvents;
 
@@ -716,7 +730,7 @@ export default defineComponent({
         // always preview a specific event.
         this.eventPreviewIsOpen = true;
       }
-
+      this.selectedEvent = event;
       this.colorLocked = true;
     },
     getTagOptionLabels(options: Array<TagData>) {
@@ -729,11 +743,11 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     updateMapCenter(placeData: any) {
-      this.setLocationInput(placeData);
 
       if (this.showMap) {
         const lat = placeData.geometry.location.lat();
         const lng = placeData.geometry.location.lng();
+
         this.map.setCenter({
           lng,
           lat,
@@ -885,8 +899,26 @@ export default defineComponent({
       }
     },
     updateLocationFilter(selectedLocationFilter: string) {
-      alert('updtaed locoation' + JSON.stringify(selectedLocationFilter))
-      this.selectedLocationFilter = selectedLocationFilter
+      this.selectedLocationFilter = selectedLocationFilter;
+    },
+    filterByRadius(placeData: any) {
+      const lat = placeData.geometry.location.lat();
+      const lng = placeData.geometry.location.lng();
+      const referencePoint = {
+        lat,
+        lng
+      }
+      this.referencePoint = referencePoint;
+      const referencePointAddress = placeData.formatted_address;
+
+      if (placeData.name) {
+        this.referencePointName = placeData.name;
+      }
+      this.referencePointAddress = referencePointAddress;
+      this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
+    },
+    updateRadius(radius: Number) {
+      this.radius = radius;
     }
   },
 });
@@ -914,7 +946,7 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="'Location'">
+      <FilterChip :label="locationLabel">
         <template v-slot:icon>
           <LocationIcon />
         </template>
@@ -922,6 +954,8 @@ export default defineComponent({
         <LocationPicker
           :selected-location-filter="selectedLocationFilter"
           @updateLocationFilter="updateLocationFilter"
+          @updateLocationInput="filterByRadius"
+          @updateRadius="updateRadius"
         />
           
         </template>

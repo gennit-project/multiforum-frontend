@@ -87,15 +87,19 @@ export default defineComponent({
         ]"
         @mouseover="
           () => {
-            $emit('highlightEvent', getEventLocationId(event), event.id, event);
+            if (showMap){
+              $emit('highlightEvent', getEventLocationId(event), event.id, event);
+            }
           }
         "
         @mouseleave="
           () => {
-            $emit('unhighlight');
+            if (showMap) {
+              $emit('unhighlight');
+            }
           }
         "
-        @openEventPreview="() => { $emit('openPreview') }"
+        @openEventPreview="() => { $emit('openPreview', event) }"
         @filterByTag="filterByTag"
       />
     </ul>
