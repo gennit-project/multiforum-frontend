@@ -539,6 +539,7 @@ export default defineComponent({
       reverseChronologicalOrder,
       router,
       pastEventsFilter,
+      placeData: null,
       showOnlyFreeEvents,
       searchInput,
       selectedHourRanges,
@@ -944,6 +945,7 @@ export default defineComponent({
     updateLocationInput(placeData: any) {
       this.updateMapCenter(placeData)
       this.filterByRadius(placeData)
+      this.placeData = placeData; // Use for debugging
       this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
     }
   },
@@ -980,6 +982,7 @@ export default defineComponent({
         <template v-slot:content>
           <LocationPicker
             :selected-location-filter="selectedLocationFilter"
+            :reference-point-address-name="referencePointName"
             @updateLocationFilter="updateLocationFilter"
             @updateLocationInput="updateLocationInput"
             @updateDistanceUnit="updateDistanceUnit"

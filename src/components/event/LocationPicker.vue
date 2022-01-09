@@ -59,6 +59,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    referencePointAddressName: {
+      type: String,
+      default: ""
+    }
   },
   methods: {
     updateLocationInput(placeData: any) {
@@ -87,7 +91,6 @@ export default defineComponent({
 <template>
   <div>
     <RadioButtons
-      :key="selectedLocationFilterString"
       :selected-option="selectedLocationFilterOption"
       :options="locationFilterOptions"
       @updateSelected="updateSelectedLocationFilter"
@@ -101,6 +104,7 @@ export default defineComponent({
       >
       <LocationSearchBar
         :search-placeholder="'Address'"
+        :reference-point-address-name="referencePointAddressName"
         @updateLocationInput="updateLocationInput"
       />
       <Select
