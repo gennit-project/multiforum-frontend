@@ -90,7 +90,5 @@ export default defineComponent({
   <div v-if="!discussionId && !eventId">
     <ChannelTabs />
   </div>
-  <div class="px-8">
-    <router-view></router-view>
-  </div>
+  <router-view></router-view>
 </template>

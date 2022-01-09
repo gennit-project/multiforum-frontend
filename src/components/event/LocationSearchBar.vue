@@ -74,7 +74,7 @@ export default defineComponent({
           focus:border-indigo-500
           sm:text-sm
         "
-        :placeholder="referencePointAddressName || 'Enter an address'"
+        :placeholder="referencePointAddressName || 'Search events near an address'"
         disablePortal
         @place_changed="updateLocationInput"
       >

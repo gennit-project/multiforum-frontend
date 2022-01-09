@@ -19,16 +19,17 @@ export default defineComponent({
     <div>
       <MenuButton
         class="
-          mb-1
           inline-flex
-          justify-center
-          w-full
-          rounded-md
-          py-2
-          px-3
-          bg-white
-          text-sm
+          items-center
+          mt-1
+          mb-1
+          max-height-4
+          px-2.5
+          py-1.5
+          border border-transparent
+          text-xs
           font-medium
+          rounded
           text-gray-700
           bg-gray-100
           hover:bg-gray-200
@@ -39,7 +40,7 @@ export default defineComponent({
         "
       >
         Add to Feed
-        <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+        <ChevronDownIcon class="-mr-1 ml-2 h-4 w-5" aria-hidden="true" />
       </MenuButton>
     </div>
 

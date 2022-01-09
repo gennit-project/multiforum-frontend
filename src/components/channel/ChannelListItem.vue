@@ -89,7 +89,7 @@ export default defineComponent({
           :to="`/channels/${channel.url}`"
           class="focus:outline-none cursor-pointer"
         >
-          channels/<HighlightedSearchTerms
+          <HighlightedSearchTerms
             :text="channel.url"
             :search-input="searchInput"
           />
