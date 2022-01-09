@@ -5,7 +5,10 @@ import MobileMenuButton from "@/components/nav/MobileMenuButton.vue";
 // import NotificationButton from '@/components/nav/NotificationButton.vue'
 // import UserProfileDropdownMenu from '@/components/nav/UserProfileDropdownMenu.vue'
 // import UserProfileButton from '@/components/nav/UserProfileButton.vue'
-import { useRoute } from "vue-router";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+import CalendarIcon from "@/components/icons/CalendarIcon.vue";
+import FeedIcon from "@/components/icons/FeedIcon.vue";
+import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 
 export default defineComponent({
   components: {
@@ -14,21 +17,16 @@ export default defineComponent({
     // NotificationButton,
     // UserProfileDropdownMenu,
     // UserProfileButton,
-  },
-  setup() {
-    return { route: null };
+    ChannelIcon,
+    CalendarIcon,
+    FeedIcon,
+    DiscussionIcon,
   },
   data() {
     return {
       showUserProfileDropdown: false,
       showMobileDropdown: false,
     };
-  },
-  computed: {
-    eventLinkIsActive() {
-      const route = useRoute();
-      return route.fullPath.indexOf("events") !== -1;
-    },
   },
   methods: {
     toggleUserProfileDropdown() {
@@ -40,26 +38,30 @@ export default defineComponent({
 
 <template>
   <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
-    <div class="relative flex items-center justify-between h-16">
+    <div class="relative flex items-center justify-between h-10">
       <div class="flex items-center px-2 lg:px-0">
         gennit
         <!-- <SiteLogo/> -->
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4">
-            <TopNavLink
-              :to="'/'"
-              :active="eventLinkIsActive"
-              :label="'Events'"
-            />
-            <TopNavLink :to="'/discussions'" :label="'Discussions'" />
-            <TopNavLink :to="'/channels'" :label="'Channels'" />
-            <TopNavLink :to="'/feeds'" :label="'Feeds'" />
+            <TopNavLink :to="'/'" :label="'Events'">
+              <CalendarIcon />
+            </TopNavLink>
+            <TopNavLink :to="'/discussions'" :label="'Discussions'">
+              <DiscussionIcon />
+            </TopNavLink>
+            <TopNavLink :to="'/channels'" :label="'Channels'">
+              <ChannelIcon />
+            </TopNavLink>
+            <TopNavLink :to="'/feeds'" :label="'Feeds'">
+              <FeedIcon />
+            </TopNavLink>
           </div>
         </div>
       </div>
       <!-- <TopNavSearchBar/> -->
       <div class="flex lg:hidden">
-        <MobileMenuButton @click="$emit('toggleMobileDropdown')"/>
+        <MobileMenuButton @click="$emit('toggleMobileDropdown')" />
       </div>
       <!-- <div class="hidden lg:block lg:ml-4">
         <div class="flex items-center">
