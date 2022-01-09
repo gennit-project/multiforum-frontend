@@ -10,6 +10,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    referencePointAddress: {
+      type: String,
+      default: ""
+    },
     routerSearchTerms: {
       type: String,
       default: "",
@@ -69,7 +73,7 @@ export default defineComponent({
           focus:border-indigo-500
           sm:text-sm
         "
-        placeholder="Enter an address"
+        :placeholder="referencePointAddress || 'Enter an address'"
         disablePortal
         @place_changed="updateLocationInput"
       >

@@ -929,6 +929,7 @@ export default defineComponent({
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
+        :reference-point-address="referencePointAddress"
         @updateLocationInput="updateMapCenter"
       />
 
