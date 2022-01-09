@@ -58,14 +58,14 @@ export default defineComponent({
       return ` ${count} comment${count === 1 ? "" : "s"}`;
     },
     getChannel(commentSection: CommentSectionData) {
-      return commentSection.Community.url;
+      return commentSection.Channel.url;
     },
   },
   data(props) {
     return {
       previewIsOpen: false,
-      isWithinCommunity: props.currentChannelId ? true : false,
-      defaultUrl: props.event.Communities[0].url,
+      isWithinChannel: props.currentChannelId ? true : false,
+      defaultUrl: props.event.Channels[0].url,
     };
   },
   components: {
@@ -116,7 +116,7 @@ export default defineComponent({
             ]"
             class="ml-1 text-indigo-600 underline"
             :key="channel.url"
-            v-for="channel in event?.Communities"
+            v-for="channel in event?.Channels"
             :to="`/c/${channel.url}/event/${event?.id}`"
           >
             {{ channel.url }}
@@ -214,7 +214,7 @@ export default defineComponent({
 
         <div class="text-sm">
           <router-link
-            v-if="isWithinCommunity"
+            v-if="isWithinChannel"
             :to="`/c/${defaultUrl}/event/${event.id}`"
             class="font-medium text-gray-500"
           >

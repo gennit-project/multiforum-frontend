@@ -96,27 +96,3 @@ export const router = createRouter({
     { path: "/settings", component: SiteSettings }
   ],
 });
-
-
-// sort and filter events
-// - event list uses sticky dates
-
-// site navbar
-// - pinned channels section
-// - log in/log out buttons
-// - dark mode
-
-// profile
-// - user data preview on mouseover username
-
-// forms
-// - create/edit community
-// - create/edit discussion
-// - create/edit event
-// - create/edit feed
-
-// feeds
-// - detail - show sources, author, breadcrumbs
-// - feed item preview - overlay
-// - sidebar - feeds
-// - sidebar - my feeds

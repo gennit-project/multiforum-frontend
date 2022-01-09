@@ -1,10 +1,10 @@
 import { StringValueNode } from 'graphql';
-import CommunityData from './communityTypes';
+import ChannelData from './channelTypes';
 
 export type CommentSectionData = {
     id: string;
     CommentsAggregate: {
         count: number;
     },
-    Community: CommunityData;
+    Channel: ChannelData;
 }

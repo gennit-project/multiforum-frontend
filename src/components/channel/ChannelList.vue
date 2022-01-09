@@ -35,7 +35,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-8">
     <ChannelListItem
       v-for="channel in channels"
       :key="channel.url"

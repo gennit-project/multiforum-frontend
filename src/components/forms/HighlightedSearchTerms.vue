@@ -26,6 +26,9 @@ export default defineComponent({
   },
   methods: {
     match(part: string, searchInput: string) {
+      if (!part) {
+        return false;
+      }
       return part.toLowerCase() === searchInput.toLowerCase();
     },
   },

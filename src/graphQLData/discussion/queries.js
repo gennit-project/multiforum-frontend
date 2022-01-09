@@ -12,7 +12,7 @@ export const GET_DISCUSSION = gql`
       Author {
         username
       }
-      Communities {
+      Channels {
         url
       }
       Tags {
@@ -22,13 +22,13 @@ export const GET_DISCUSSION = gql`
   }
 `;
 
-// Get all discussion IDs in community
+// Get all discussion IDs in channel
 // Gets IDs of discussions just so they can be
-// deleted when a community is deleted. This query
-// is needed because you can't cascade delete communities.
-export const GET_DISCUSSION_IDS_IN_COMMUNITY = gql`
-  query getDiscussionIdsInCommunity($url: String!) {
-    getCommunity(url: $url) {
+// deleted when a channel is deleted. This query
+// is needed because you can't cascade delete channels.
+export const GET_DISCUSSION_IDS_IN_CHANNEL = gql`
+  query getDiscussionIdsInChannel($url: String!) {
+    getChannel(url: $url) {
       url
       Discussions {
         id
@@ -37,16 +37,16 @@ export const GET_DISCUSSION_IDS_IN_COMMUNITY = gql`
   }
 `;
 
-// Get all discussions in a community
-export const GET_DISCUSSIONS_IN_COMMUNITY = gql`
-  query getDiscussionsInCommunity($url: String!) {
-    getCommunity (url: $url) {
+// Get all discussions in a channel
+export const GET_DISCUSSIONS_IN_CHANNEL = gql`
+  query getDiscussionsInChannel($url: String!) {
+    getChannel (url: $url) {
       url
       Discussions {
         id
         title
         body
-        Communities {
+        Channels {
           url
         }
         Author {

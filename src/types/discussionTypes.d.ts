@@ -6,7 +6,7 @@ export type DiscussionData = {
     id: number;
     title: string;
     body: string;
-    Communities: [];
+    Channels: [];
     Author: UserData;
     Tags: [TagData];
     CommentSections: [CommentSectionData];

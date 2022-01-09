@@ -1,13 +1,13 @@
 import { gql } from "@apollo/client/core";
 
-export const ADD_COMMUNITY = gql`
-  mutation addCommunity(
+export const ADD_CHANNEL = gql`
+  mutation addChannel(
     $url: String!
     $name: String!
     $description: String
     $username: String!
   ) {
-    addCommunity(
+    addChannel(
       input: [
         {
           description: $description
@@ -17,7 +17,7 @@ export const ADD_COMMUNITY = gql`
         }
       ]
     ) {
-      community {
+      channel {
         description
         name
         url
@@ -30,25 +30,25 @@ export const ADD_COMMUNITY = gql`
 `;
 
 
-export const DELETE_COMMUNITY = gql`
-  mutation deleteCommunity($url: String!) {
-    deleteCommunity(filter: { url: { eq: $url } }) {
-      community {
+export const DELETE_CHANNEL = gql`
+  mutation deleteChannel($url: String!) {
+    deleteChannel(filter: { url: { eq: $url } }) {
+      channel {
         url
       }
     }
   }
 `;
 
-export const UPDATE_COMMUNITY = gql`
-  mutation updateCommunity($url: String!, $name: String, $description: String) {
-    updateCommunity(
+export const UPDATE_CHANNEL = gql`
+  mutation updateChannel($url: String!, $name: String, $description: String) {
+    updateChannel(
       input: {
         filter: { url: { eq: $url } }
         set: { name: $name, description: $description }
       }
     ) {
-      community {
+      channel {
         url
         name
         description
@@ -57,12 +57,12 @@ export const UPDATE_COMMUNITY = gql`
   }
 `;
 
-export const ADD_COMMUNITY_TAG = gql`
-  mutation updateCommunity(
+export const ADD_CHANNEL_TAG = gql`
+  mutation updateChannel(
       $url: String!,
       $text: String!, # text of the tag
     ) {
-    updateCommunity(
+    updateChannel(
       input: { 
         filter: { 
           url: [$url] 
@@ -74,7 +74,7 @@ export const ADD_COMMUNITY_TAG = gql`
         }
       }
     ) {
-      community {
+      channel {
         url
         name
         description
@@ -87,12 +87,12 @@ export const ADD_COMMUNITY_TAG = gql`
 
 
 
-export const REMOVE_COMMUNITY_TAG = gql`
-  mutation updateCommunity (
+export const REMOVE_CHANNEL_TAG = gql`
+  mutation updateChannel (
       $url: String!,
       $text: String!
     ) {
-      updateCommunity(
+      updateChannel(
         input: {
           filter: {
             id: [$commentId]
@@ -103,7 +103,7 @@ export const REMOVE_COMMUNITY_TAG = gql`
             } 
           }
       }){
-          community {
+          channel {
             url
             name
             description

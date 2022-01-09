@@ -8,7 +8,7 @@ export const UPDATE_EVENT = gql`
   mutation updateEvent(
     $id: ID!
     $title: String
-    $Communities: [CommunityRef!]
+    $Channels: [ChannelRef!]
     $Tags: [TagRef!]
     $description: String
     $startTime: DateTime
@@ -34,7 +34,7 @@ export const UPDATE_EVENT = gql`
       input: {
         filter: { id: [$id] }
         set: {
-          Communities: $Communities
+          Channels: $Channels
           Tags: $Tags
           title: $title
           description: $description
@@ -65,7 +65,7 @@ export const UPDATE_EVENT = gql`
         id
         title
         description
-        Communities {
+        Channels {
           url
         }
         Tags {

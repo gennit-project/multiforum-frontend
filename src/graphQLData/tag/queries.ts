@@ -25,7 +25,7 @@ query getEventsByTag($tag: String!) {
         Organizer {
           username
         }
-        Communities {
+        Channels {
           url
         }
         Tags {
@@ -39,13 +39,13 @@ query getEventsByTag($tag: String!) {
         Author {
           username
         }
-        Communities {
+        Channels {
           url
         }
         Tags {
           text
         }
-        CommunitiesAggregate {
+        ChannelsAggregate {
         count
       }
       CommentSections {
@@ -59,7 +59,7 @@ query getEventsByTag($tag: String!) {
         Event {
           id
         }
-        Community {
+        Channel {
           url
         }
       }

@@ -10,7 +10,7 @@ export const ADD_COMMENT_SECTION = gql`
       ) {
         commentSection {
           id
-          Community {
+          Channel {
             url
           }
           CommentsAggregate {
@@ -28,7 +28,7 @@ export const ADD_COMMENT_SECTION = gql`
             UserAuthor {
               username
             }
-            Community {
+            Channel {
               url
             }
             deleted

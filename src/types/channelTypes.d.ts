@@ -1,7 +1,7 @@
 import TagData from './tagTypes';
 
 export type ChannelData = {
-    url: number;
+    url: string;
     name: string;
     description: string?;
     Organizers: [object];

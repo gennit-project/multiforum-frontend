@@ -7,7 +7,7 @@ export const UPDATE_DISCUSSION = gql`
     $title: String, 
     $body: String,
     $editedDate: DateTime
-    $Communities: [CommunityRef!]
+    $Channels: [ChannelRef!]
     $Tags: [TagRef!]
   ) {
     updateDiscussion(
@@ -19,7 +19,7 @@ export const UPDATE_DISCUSSION = gql`
           title: $title, 
           body: $body 
           editedDate: $editedDate
-          Communities: $Communities
+          Channels: $Channels
           Tags: $Tags
         }
       }
@@ -30,7 +30,7 @@ export const UPDATE_DISCUSSION = gql`
         body
         createdDate
         editedDate
-        Communities {
+        Channels {
           url
         }
         Tags {

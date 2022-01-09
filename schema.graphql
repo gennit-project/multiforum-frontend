@@ -6,8 +6,8 @@ type User {
   bio: String
   isAdmin: Boolean
   Comments: [Comment!] @hasInverse(field: UserAuthor)
-  OrganizerOfCommunities: [Community!] @hasInverse(field: Organizers)
-  ModeratorOfCommunities: [Community!] @hasInverse(field: Moderators)
+  OrganizerOfChannels: [Channel!] @hasInverse(field: Organizers)
+  ModeratorOfChannels: [Channel!] @hasInverse(field: Moderators)
   Discussions: [Discussion!] @hasInverse(field: Author)
   Events: [Event!] @hasInverse(field: Organizer)
   SentMessages: [Message!] @hasInverse(field: Author)
@@ -23,8 +23,8 @@ type User {
   IsBlockedBy: User @hasInverse(field: Blocked)
   SubscribesToFeeds: [Feed]
   CreatedPublicFeeds: [Feed]
-  FavoriteCommunities: [Community]
-  RecentlyVisitedCommunities: [Community]
+  FavoriteChannels: [Channel]
+  RecentlyVisitedChannels: [Channel]
   UpvotedComments: [Comment] @hasInverse(field: UpvotedByUsers)
   UpvotedDiscussions: [Discussion] @hasInverse(field: UpvotedByUsers)
   ModerationProfile: ModerationProfile @hasInverse(field: User)
@@ -33,36 +33,36 @@ type User {
   PreferredTimeZone: String
   Issues: [Issue] @hasInverse(field: UserAuthor)
   IssueComments: [IssueComment] @hasInverse(field: UserAuthor)
-  SuspendedFromCommunities: [Community] @hasInverse(field: SuspendedUsers)
+  SuspendedFromChannels: [Channel] @hasInverse(field: SuspendedUsers)
   suspendedFromServer: Boolean @search
 }
 
-type Community {
+type Channel {
   description: String @search(by: [fulltext])
   name: String! @search(by: [fulltext])
   url: String! @id @search(by: [term, fulltext])
-  Organizers: [User] @hasInverse(field: OrganizerOfCommunities)
-  Moderators: [User] @hasInverse(field: ModeratorOfCommunities)
-  Discussions: [Discussion!] @hasInverse(field: Communities)
-  RelatedCommunities: [Community!] @hasInverse(field: RelatedCommunities)
-  Events: [Event] @hasInverse(field: Communities)
+  Organizers: [User] @hasInverse(field: OrganizerOfChannels)
+  Moderators: [User] @hasInverse(field: ModeratorOfChannels)
+  Discussions: [Discussion!] @hasInverse(field: Channels)
+  RelatedChannels: [Channel!] @hasInverse(field: RelatedChannels)
+  Events: [Event] @hasInverse(field: Channels)
   createdDate: DateTime @search
-  Flairs: [Flair] @hasInverse(field: Community)
-  Tags: [Tag] @hasInverse(field: Communities)
-  WikiPages: [WikiPage] @hasInverse(field: Community)
-  ModerationDashboard: ModerationDashboard @hasInverse(field: Community)
-  Rules: [Rule] @hasInverse(field: Community)
+  Flairs: [Flair] @hasInverse(field: Channel)
+  Tags: [Tag] @hasInverse(field: Channels)
+  WikiPages: [WikiPage] @hasInverse(field: Channel)
+  ModerationDashboard: ModerationDashboard @hasInverse(field: Channel)
+  Rules: [Rule] @hasInverse(field: Channel)
   locked: Boolean @search
-  SuspendedUsers: [User] @hasInverse(field: SuspendedFromCommunities)
-  Comments: [Comment!] @hasInverse(field: Community)
-  CommentSections: [CommentSection!] @hasInverse(field: Community)
+  SuspendedUsers: [User] @hasInverse(field: SuspendedFromChannels)
+  Comments: [Comment!] @hasInverse(field: Channel)
+  CommentSections: [CommentSection!] @hasInverse(field: Channel)
 }
 
 type Discussion {
   id: ID! 
   Author: User!
   body: String @search(by: [fulltext])
-  Communities: [Community!]! @hasInverse(field: Discussions)
+  Channels: [Channel!]! @hasInverse(field: Discussions)
   title: String! @search(by: [fulltext])
   createdDate: DateTime! @search
   editedDate: DateTime
@@ -79,7 +79,7 @@ type CommentSection {
   Comments: [Comment] @hasInverse(field: CommentSection)
   Discussion: Discussion @hasInverse(field: CommentSections)
   Event: Event @hasInverse(field: CommentSections)
-  Community: Community @hasInverse(field: CommentSections)
+  Channel: Channel @hasInverse(field: CommentSections)
 }
 
 type DiscussionVersion {
@@ -95,7 +95,7 @@ type Comment {
   UserAuthor: User @hasInverse(field: Comments)
   ModeratorAuthor: ModerationProfile @hasInverse(field: DiscussionComments)
   CommentSection: CommentSection @hasInverse(field: Comments)
-  Community: Community @hasInverse(field: Comments)
+  Channel: Channel @hasInverse(field: Comments)
   ParentComment: Comment @hasInverse(field: ChildComments)
   text: String @search(by: [term])
   isRootComment: Boolean! @search
@@ -140,7 +140,7 @@ interface addEventInput {
   startTimeDayOfWeek: String!
   startTimeHourOfDay: Int!
   endTime: DateTime!
-  Community: Community!
+  Channel: Channel!
   locationName: String
   address: String
   howToFindLocation: String
@@ -168,7 +168,7 @@ type Event {
   startTimeDayOfWeek: String! @search(by: [term])
   startTimeHourOfDay: Int! @search
   endTime: DateTime! @search
-  Communities: [Community!]! @hasInverse(field: Events)
+  Channels: [Channel!]! @hasInverse(field: Events)
   CommentSections: [CommentSection!]
   locationName: String
   address: String
@@ -211,7 +211,7 @@ type EventVersion {
 
 type Flair {
   id: ID!
-  Community: Community @hasInverse(field: Flairs)
+  Channel: Channel @hasInverse(field: Flairs)
   Discussions: [Discussion] @hasInverse(field: Flairs)
   text: String @search(by: [exact])
 }
@@ -220,7 +220,7 @@ type WikiPage {
   id: ID!
   Authors: [User] @hasInverse(field: AuthoredWikiPages)
   text: String
-  Community: Community @hasInverse(field: WikiPages)
+  Channel: Channel @hasInverse(field: WikiPages)
   PastVersions: [WikiPageVersion] @hasInverse(field: WikiPage)
   createdDate: DateTime @search
   Tags: [Tag] @hasInverse(field: WikiPages)
@@ -246,7 +246,7 @@ type WikiChangeProposal {
 
 type Tag {
   text: String! @id @search
-  Communities: [Community] @hasInverse(field: Tags)
+  Channels: [Channel] @hasInverse(field: Tags)
   Discussions: [Discussion] @hasInverse(field: Tags)
   Events: [Event] @hasInverse(field: Tags)
   Users: [User] @hasInverse(field: Tags)
@@ -282,7 +282,7 @@ type Source {
   id: ID!
   type: SourceTypes
   websiteUrl: String
-  channel: [Community]
+  channel: [Channel]
 }
 
 type Emoji {
@@ -308,13 +308,13 @@ type ModerationProfile {
 type ModerationDashboard {
   id: ID!
   issueTemplate: String
-  Community: Community @hasInverse(field: ModerationDashboard)
+  Channel: Channel @hasInverse(field: ModerationDashboard)
   Issues: [Issue] @hasInverse(field: ModerationDashboard)
 }
 
 type Rule {
   id: ID!
-  Community: Community @hasInverse(field: Rules)
+  Channel: Channel @hasInverse(field: Rules)
   orderInList: Int
   summary: String
   description: String

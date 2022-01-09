@@ -56,10 +56,10 @@ export default defineComponent({
       // channels that don't have all the fields that we want. Normally,
       // @cascade would filter out all items that don't have
       // all of the described output fields.
-      // If we are filtering by community but not by tag,
-      // we include only the community field in the cascade parameters.
+      // If we are filtering by channel but not by tag,
+      // we include only the channel field in the cascade parameters.
       // If the tags parameter was included, channels in the
-      // selected community would be excluded for not having tags.
+      // selected channel would be excluded for not having tags.
       return selectedTags.value.length > 0 ? `@cascade(fields: ["Tags"])` : "";
     });
 
@@ -88,8 +88,8 @@ export default defineComponent({
     };
     let channelQueryString = computed(() => {
       return `
-        query queryCommunity ($first: Int, $offset: Int){
-          queryCommunity (offset: $offset, first: $first${textFilters.value}) ${
+        query queryChannel ($first: Int, $offset: Int){
+          queryChannel (offset: $offset, first: $first${textFilters.value}) ${
         needsCascade.value ? cascadeText.value : ""
       }{
             name
@@ -130,18 +130,18 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: channelResult.value.queryCommunity.length,
+          offset: channelResult.value.queryChannel.length,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.queryCommunity.length === 0) {
+          if (fetchMoreResult.queryChannel.length === 0) {
             reachedEndOfResults.value = true;
             return prev;
           }
           return {
             ...prev,
-            queryCommunity: [
-              ...prev.queryCommunity,
-              ...fetchMoreResult.queryCommunity,
+            queryChannel: [
+              ...prev.queryChannel,
+              ...fetchMoreResult.queryChannel,
             ],
           };
         },
@@ -182,7 +182,7 @@ export default defineComponent({
   },
   data() {
     return {
-      queryCommunity: [],
+      queryChannel: [],
     };
   },
   components: {
@@ -233,8 +233,8 @@ export default defineComponent({
     <div v-if="channelLoading">Loading...</div>
     <ChannelList
       class="px-8 flex-1 text-xl font-bold"
-      v-else-if="channelResult && channelResult.queryCommunity"
-      :channels="channelResult.queryCommunity"
+      v-else-if="channelResult && channelResult.queryChannel"
+      :channels="channelResult.queryChannel"
       :search-input="searchInput"
       :selected-tags="selectedTags"
       @filterByTag="filterByTag"

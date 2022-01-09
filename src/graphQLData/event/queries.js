@@ -21,7 +21,7 @@ export const GET_ALL_EVENTS = gql`
       Tags {
         text
       }
-      Communities {
+      Channels {
         url
       }
       Organizer {
@@ -61,7 +61,7 @@ export const GET_EVENT = gql`
       virtualEventUrl
       address
       cost
-      Communities {
+      Channels {
         url
       }
       Organizer {
@@ -79,13 +79,13 @@ export const GET_EVENT = gql`
     }
   }
 `;
-// Get all event IDs in community
+// Get all event IDs in channel
 // Gets IDs of events just so they can be
-// deleted when a community is deleted. This query
-// is needed because you can't cascade delete communities.
-export const GET_EVENT_IDS_IN_COMMUNITY = gql`
-  query getEventIdsInCommunity($url: String!) {
-    getCommunity(url: $url) {
+// deleted when a channel is deleted. This query
+// is needed because you can't cascade delete channels.
+export const GET_EVENT_IDS_IN_CHANNEL = gql`
+  query getEventIdsInChannel($url: String!) {
+    getChannel(url: $url) {
       url
       Events {
         id
@@ -94,15 +94,15 @@ export const GET_EVENT_IDS_IN_COMMUNITY = gql`
   }
 `;
 
-// Get all events in a community
-export const GET_EVENTS_IN_COMMUNITY = gql`
-  query getEventsInCommunity($url: String!) {
-    getCommunity(url: $url) {
+// Get all events in a channel
+export const GET_EVENTS_IN_CHANNEL = gql`
+  query getEventsInChannel($url: String!) {
+    getChannel(url: $url) {
       url
       Events {
         id
         title
-        Communities {
+        Channels {
           url
         }
         Organizer {

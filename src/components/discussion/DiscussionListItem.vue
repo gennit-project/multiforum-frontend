@@ -35,16 +35,16 @@ export default defineComponent({
   data(props) {
     return {
       previewIsOpen: false,
-      defaultUrl: props.discussion.CommentSections[0].Community.url,
+      defaultUrl: props.discussion.CommentSections[0].Channel.url,
       title: props.discussion.title,
       body: props.discussion.body,
       createdDate: props.discussion.createdDate,
       relativeTime: relativeTime(props.discussion.createdDate),
       authorUsername: props.discussion.Author.username,
-      // If we are already within the community, don't show
-      // links to cost communities and don't specify which
-      // community the comments are in.
-      isWithinCommunity: props.currentChannelId ? true : false,
+      // If we are already within the channel, don't show
+      // links to cost channels and don't specify which
+      // channel the comments are in.
+      isWithinChannel: props.currentChannelId ? true : false,
       tags: props.discussion.Tags.map((tag) => {
         return tag.text;
       }),
@@ -56,7 +56,7 @@ export default defineComponent({
       return ` ${count} comment${count === 1 ? "" : "s"}`;
     },
     getChannel(commentSection: CommentSectionData) {
-      return commentSection.Community.url;
+      return commentSection.Channel.url;
     },
   },
   inheritAttrs: false,
@@ -81,7 +81,7 @@ export default defineComponent({
 
           <div class="text-sm">
             <router-link
-              v-if="isWithinCommunity"
+              v-if="isWithinChannel"
               :to="`/c/${defaultUrl}/discussions/${discussion.id}`"
               class="font-medium text-gray-500"
             >

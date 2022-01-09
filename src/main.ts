@@ -16,7 +16,7 @@ const cache = new InMemoryCache({
     Tag: {
       keyFields: ["text"],
     },
-    Community: {
+    Channel: {
       keyFields: ["url"],
     },
     Discussion: {
@@ -27,7 +27,7 @@ const cache = new InMemoryCache({
         queryDiscussion: {
           merge: false,
         },
-        queryCommunity: {
+        queryChannel: {
           merge: false,
         },
       },

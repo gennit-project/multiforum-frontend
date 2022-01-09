@@ -18,7 +18,7 @@ export type EventData = {
   virtualEventUrl?: string;
   startTime: string;
   endTime: string;
-  Communities: Array[ChannelData];
+  Channels: Array[ChannelData];
   Organizer?: UserData;
   Tags: Array[TagData];
   CommentSections: [CommentSectionData];

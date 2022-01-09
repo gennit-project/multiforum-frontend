@@ -39,13 +39,13 @@ export const GET_COMMENT_BY_ID_WITH_REPLIES = gql`
   }
 `;
 
-// Get all comment IDs in community
+// Get all comment IDs in channel
 // Gets IDs of comments just so they can be
-// deleted when a community or discussion is deleted. This query
-// is needed because you can't cascade delete communities.
-export const GET_COMMENT_IDS_IN_COMMUNITY = gql`
+// deleted when a channel or discussion is deleted. This query
+// is needed because you can't cascade delete channels.
+export const GET_COMMENT_IDS_IN_CHANNEL = gql`
   query queryCommentIds($url: String!) {
-    getCommunity(url: $url) {
+    getChannel(url: $url) {
       url
       Comments {
         id
@@ -92,7 +92,7 @@ export const GET_COMMENT_SECTION = gql`
           username
         }
         text
-        Community {
+        Channel {
           url
         }
         authorIsAdmin

@@ -7,7 +7,7 @@ import { useRoute } from "vue-router";
 import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
-import { GET_COMMUNITY_NAMES } from "@/graphQLData/community/queries";
+import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { router } from "@/router";
 import { TagData } from "@/types/tagTypes.d";
@@ -46,21 +46,21 @@ export default defineComponent({
     let cascadeText = computed(() => {
       // Adding parameters to @cascade makes it so that
       // even when we are filtering by
-      // communities, we can still see the discussions that
+      // channels, we can still see the discussions that
       // don't have tags and vice versa. Normally,
       // @cascade would filter
       // out all items that don't have all of the described
       // output fields.
-      // If we are filtering by community but not by tag,
-      // we include only the community field in the cascade parameters.
+      // If we are filtering by channel but not by tag,
+      // we include only the channel field in the cascade parameters.
       // If the tags parameter was included, discussions in the
-      // selected community would be excluded for not having tags.
+      // selected channel would be excluded for not having tags.
       return `@cascade(fields: [${
         selectedTags.value.length > 0 ? `"Tags",` : ""
-      } "Communities"])`;
+      } "Channels"])`;
     });
 
-    let communityFilter = computed(() => {
+    let channelFilter = computed(() => {
       return `(filter: { url: { anyofterms: "${selectedChannels.value.join(
         " "
       )}"}})`;
@@ -101,8 +101,8 @@ export default defineComponent({
             textFilters.value
           }) ${needsCascade.value ? cascadeText.value : ""}{
             id
-            Communities ${
-              selectedChannels.value.length > 0 ? communityFilter.value : ""
+            Channels ${
+              selectedChannels.value.length > 0 ? channelFilter.value : ""
             }{
               url
             }
@@ -115,7 +115,7 @@ export default defineComponent({
             Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
               text
             }
-            CommunitiesAggregate {
+            ChannelsAggregate {
               count
             }
             CommentSections {
@@ -129,7 +129,7 @@ export default defineComponent({
               Event {
                 id
               }
-              Community {
+              Channel {
                 url
               }
             }
@@ -176,7 +176,7 @@ export default defineComponent({
     };
 
     const { result: tagOptions } = useQuery(GET_TAGS);
-    const { result: channelOptions } = useQuery(GET_COMMUNITY_NAMES);
+    const { result: channelOptions } = useQuery(GET_CHANNEL_NAMES);
 
     const openModal = (selectedFilter: string) => {
       showModal.value = true;
@@ -287,9 +287,9 @@ export default defineComponent({
         v-if="
           selectedFilterOptions === 'channelPicker' &&
           channelOptions &&
-          channelOptions.queryCommunity
+          channelOptions.queryChannel
         "
-        :channel-options="getChannelOptionLabels(channelOptions.queryCommunity)"
+        :channel-options="getChannelOptionLabels(channelOptions.queryChannel)"
         :selected-channels="selectedChannels"
         @setChannelFilters="setChannelFilters"
       />

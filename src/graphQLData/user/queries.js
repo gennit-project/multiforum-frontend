@@ -4,10 +4,10 @@ export const GET_USER_INFO_FOR_TAGS = gql`
   query getUser($username: String!) {
     getUser(username: $username) {
       isAdmin
-      OrganizerOfCommunities {
+      OrganizerOfChannels {
         url
       }
-      ModeratorOfCommunities {
+      ModeratorOfChannels {
         url
       }
     }
@@ -23,7 +23,7 @@ export const GET_USER = gql`
       pronouns
       bio
       isAdmin
-      ModeratorOfCommunities {
+      ModeratorOfChannels {
         url
       }
       CommentsAggregate {
@@ -47,7 +47,7 @@ export const USER_LOOKUP = gql`
       pronouns
       bio
       isAdmin
-      ModeratorOfCommunities {
+      ModeratorOfChannels {
         url
       }
       CommentsAggregate {
@@ -80,7 +80,7 @@ export const USER_LOOKUP = gql`
           username
         }
         text
-        Community {
+        Channel {
           url
         }
         authorIsAdmin
@@ -96,7 +96,7 @@ export const USER_LOOKUP = gql`
       }
       Events {
         id
-        Communities {
+        Channels {
           url
         }
         title
@@ -118,7 +118,7 @@ export const USER_LOOKUP = gql`
       }
       Discussions {
         id
-        Communities {
+        Channels {
           url
         }
         title
@@ -130,7 +130,7 @@ export const USER_LOOKUP = gql`
         Tags {
           text
         }
-        CommunitiesAggregate {
+        ChannelsAggregate {
           count
         }
         CommentSections {
@@ -144,7 +144,7 @@ export const USER_LOOKUP = gql`
           Event {
             id
           }
-          Community {
+          Channel {
             url
           }
         }

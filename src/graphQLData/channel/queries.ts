@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client/core';
 
-export const GET_COMMUNITY = gql`
-  query getCommunity($url: String!) {
-    getCommunity(url: $url) {
+export const GET_CHANNEL = gql`
+  query getChannel($url: String!) {
+    getChannel(url: $url) {
       name
       url
       description
@@ -24,7 +24,7 @@ export const GET_DISCUSSIONS = gql`
       id
       title
       body
-      Communities(filter: { url: { eq: "dogs" } }) {
+      Channels(filter: { url: { eq: "dogs" } }) {
         url
       }
       Author {
@@ -38,7 +38,7 @@ export const GET_DISCUSSIONS = gql`
         CommentsAggregate {
           count
         }
-        Community {
+        Channel {
           url
         }
         Event {
@@ -52,9 +52,9 @@ export const GET_DISCUSSIONS = gql`
     }
   }
 `;
-export const GET_COMMUNITIES = gql`
-  query queryCommunity {
-    queryCommunity {
+export const GET_CHANNELS = gql`
+  query queryChannel {
+    queryChannel {
       name
       url
       description
@@ -74,9 +74,9 @@ export const GET_COMMUNITIES = gql`
   }
 `;
 
-export const GET_COMMUNITY_NAMES = gql`
-query getCommunityNames {
-    queryCommunity {
+export const GET_CHANNEL_NAMES = gql`
+query getChannelNames {
+    queryChannel {
       url
     }
 }
