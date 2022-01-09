@@ -970,7 +970,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="py-3 px-3 inline-flex items-center">
+    <div class="py-3 px-3 inline-block items-center">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
