@@ -17,22 +17,31 @@ export default defineComponent({
 
         return { selected }
     },
+    watch: {
+      selectedOption: function(newValue) {
+        this.selected = newValue
+      }
+    }
 })
 </script>
 <template>
   <form>
     <fieldset>
-      <div 
-        :key="option.label" 
-        v-for="option in options" 
+      <div
+        :key="option.label"
+        v-for="option in options"
         class="flex items-center mt-4"
-    >
+      >
         <input
-          id="showBothVirtualAndInPerson"
           name="showBothVirtualAndInPerson"
           type="radio"
           :checked="selected.value === option.value"
-          @input="$emit('updateSelected', option)"
+          @input="
+            () => {
+              $emit('updateSelected', option);
+              selected = option;
+            }
+          "
           class="
             focus:ring-indigo-500
             h-4
@@ -41,9 +50,7 @@ export default defineComponent({
             border border-gray-300
           "
         />
-        <label
-          class="ml-3 block text-sm font-medium text-gray-700"
-        >
+        <label class="ml-3 block text-sm font-medium text-gray-700">
           {{ option.label }}
         </label>
       </div>

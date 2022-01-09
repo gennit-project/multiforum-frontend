@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import locationFilterTypes from "../event/locationFilterTypes";
 import { distanceOptions, distanceUnitOptions } from "./eventSearchOptions";
 import Select from "@/components/forms/Select.vue";
@@ -34,7 +34,10 @@ export default defineComponent({
 
     const selectedDistance = ref({ ...distanceOptionsWithLabel.value[0] });
 
-    const selectedLocationFilterOption = ref(props.selectedLocationFilter)
+    const selectedLocationFilterString = ref(props.selectedLocationFilter)
+    const selectedLocationFilterOption = computed(() => {
+      return locationFilterMap[selectedLocationFilterString.value]
+    })
 
     return {
       getDistanceOptions,
@@ -47,6 +50,7 @@ export default defineComponent({
       distanceOptionsWithLabel,
       selectedDistance,
       selectedDistanceUnit,
+      selectedLocationFilterString,
       selectedLocationFilterOption
     };
   },
@@ -59,6 +63,7 @@ export default defineComponent({
   methods: {
     updateLocationInput(placeData: any) {
       this.$emit("updateLocationInput", placeData);
+      this.selectedLocationFilterString = locationFilterTypes.WITHIN_RADIUS;
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit) {
       this.selectedDistanceUnit = unitOption;
@@ -82,14 +87,14 @@ export default defineComponent({
 <template>
   <div>
     <RadioButtons
-      :selected-option="locationFilterMap[selectedLocationFilterOption]"
+      :key="selectedLocationFilterString"
+      :selected-option="selectedLocationFilterOption"
       :options="locationFilterOptions"
       @updateSelected="updateSelectedLocationFilter"
     />
     <div
       id="radiusOptions"
       class="ml-7 mt-2"
-     
     >
       <label class="block text-xs font-medium text-gray-700 mt-2"
         >Near this Address</label
