@@ -94,7 +94,7 @@ export default defineComponent({
                     {{ discussion.body }}
                     <div class="mt-3 text-sm">
                       <router-link
-                        :to="`/c/${discussion.CommentSections[0].Channel.url}/discussions/${discussion.id}`"
+                        :to="`/channels/${discussion.CommentSections[0].Channel.url}/discussions/${discussion.id}`"
                         class="
                           font-medium
                           text-indigo-600

@@ -82,7 +82,7 @@ export default defineComponent({
           <div class="text-sm">
             <router-link
               v-if="isWithinChannel"
-              :to="`/c/${defaultUrl}/discussions/${discussion.id}`"
+              :to="`/channels/${defaultUrl}/discussions/${discussion.id}`"
               class="font-medium text-gray-500"
             >
               {{ getCommentCount(discussion.CommentSections[0]) }}
@@ -93,14 +93,14 @@ export default defineComponent({
               v-else
               :key="getChannel(commentSection)"
               v-for="(commentSection, i) in discussion.CommentSections"
-              :to="`/c/${getChannel(commentSection)}/discussions/${
+              :to="`/channels/${getChannel(commentSection)}/discussions/${
                 discussion.id
               }`"
               class="font-medium"
             >
               {{ getCommentCount(commentSection) }} in
               <span class="text-gray-800"
-                >c/{{ getChannel(commentSection) }}</span
+                >channels/{{ getChannel(commentSection) }}</span
               >
               {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
             </router-link>

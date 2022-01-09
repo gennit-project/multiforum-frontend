@@ -1,4 +1,3 @@
-
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
@@ -58,8 +57,8 @@ export default defineComponent({
     <div class="flex-1 min-w-0">
      
         <p class="font-large text-gray-900">
-         <router-link :to="`/c/${channel.url}`" class="focus:outline-none cursor-pointer">
-          c/<HighlightedSearchTerms
+         <router-link :to="`/channels/${channel.url}`" class="focus:outline-none cursor-pointer">
+          channels/<HighlightedSearchTerms
             :text="channel.url"
             :search-input="searchInput"
           />

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import locationFilterTypes from "../event/locationFilterTypes";
+import locationFilterTypes from "@/components/event/locationFilterTypes";
 import { distanceOptions, distanceUnitOptions } from "./eventSearchOptions";
 import Select from "@/components/forms/Select.vue";
 import RadioButtons from "@/components/forms/RadioButtons.vue";

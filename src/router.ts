@@ -14,85 +14,92 @@ import SiteSettings from "./components/SiteSettings.vue";
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { 
-      path: "/", 
+    {
+      path: "/",
       component: SearchEvents,
       props(route) {
-        const tagStringArray = route.query.tag?.toString().split(',')
-        const channelStringArray = route.query.channel?.toString().split(',')
+        const tagStringArray = route.query.tag?.toString().split(",");
+        const channelStringArray = route.query.channel?.toString().split(",");
 
         return {
           routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
           routerChannels: route.query.channel ? channelStringArray : [],
-          routerView: route.query.view
-        }
-      }
+          routerView: route.query.view,
+        };
+      },
     },
-    { 
-      path: "/events", 
+    {
+      path: "/events",
       component: SearchEvents,
       props(route) {
-        const tagStringArray = route.query.tag?.toString().split(',')
-        const channelStringArray = route.query.channel?.toString().split(',')
+        const tagStringArray = route.query.tag?.toString().split(",");
+        const channelStringArray = route.query.channel?.toString().split(",");
 
         return {
           routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
           routerChannels: route.query.channel ? channelStringArray : [],
-          routerView: route.query.view
-        }
-      }
+          routerView: route.query.view,
+        };
+      },
     },
     {
       path: "/discussions",
       component: SearchDiscussions,
       props(route) {
-        const tagStringArray = route.query.tag?.toString().split(',')
-        const channelStringArray = route.query.channel?.toString().split(',')
+        const tagStringArray = route.query.tag?.toString().split(",");
+        const channelStringArray = route.query.channel?.toString().split(",");
 
         return {
           routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
-          routerChannels: route.query.channel ? channelStringArray : []
-        }
-      }
+          routerChannels: route.query.channel ? channelStringArray : [],
+        };
+      },
     },
-    { 
-      path: "/channels", 
+    {
+      path: "/channels/",
       component: SearchChannels,
       props(route) {
-        const tagStringArray = route.query.tag?.toString().split(',')
+        const tagStringArray = route.query.tag?.toString().split(",");
 
         return {
           routerSearchTerms: route.query.search,
           routerTags: route.query.tag ? tagStringArray : [],
-        }
-      }
+        };
+      },
     },
-    { path: "/feeds", component: SearchFeeds },
-    { path: "/feeds/:feedId", component: Feed },
-    { path: "/u/:username", component: UserProfile },
-    {
-      path: "/c/:channelId/",
+    { path: "/channels/:channelId",
       component: Channel,
       children: [
         { path: "", component: Overview },
         {
           path: "discussions",
           component: SearchDiscussions,
+          children: [
+            {
+              path: ":discussionId",
+              component: Discussion,
+            },
+          ],
         },
         {
           path: "events",
           component: SearchEvents,
+          children: [
+            {
+              path: ":eventId",
+              component: Event,
+            },
+          ],
         },
-        {
-          path: "/c/:channelId/discussions/:discussionId",
-          component: Discussion,
-        },
-        { path: "/c/:channelId/event/:eventId", component: Event }
       ],
     },
-    { path: "/settings", component: SiteSettings }
+    { path: "/feeds", component: SearchFeeds },
+    { path: "/feeds/:feedId", component: Feed },
+    { path: "/u/:username", component: UserProfile },
+
+    { path: "/settings", component: SiteSettings },
   ],
 });

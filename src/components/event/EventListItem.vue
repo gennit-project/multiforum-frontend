@@ -117,7 +117,7 @@ export default defineComponent({
             class="ml-1 text-indigo-600 underline"
             :key="channel.url"
             v-for="channel in event?.Channels"
-            :to="`/c/${channel.url}/event/${event?.id}`"
+            :to="`/channels/${channel.url}/events/${event?.id}`"
           >
             {{ channel.url }}
           </router-link>
@@ -215,7 +215,7 @@ export default defineComponent({
         <div class="text-sm">
           <router-link
             v-if="isWithinChannel"
-            :to="`/c/${defaultUrl}/event/${event.id}`"
+            :to="`/channels/${defaultUrl}/events/${event.id}`"
             class="font-medium text-gray-500"
           >
             {{ getCommentCount(event.CommentSections[0]) }}
@@ -226,12 +226,12 @@ export default defineComponent({
             v-else
             :key="getChannel(commentSection)"
             v-for="(commentSection, i) in event.CommentSections"
-            :to="`/c/${getChannel(commentSection)}/event/${event.id}`"
+            :to="`/channels/${getChannel(commentSection)}/events/${event.id}`"
             class="font-medium"
           >
             {{ getCommentCount(commentSection) }} in
             <span class="text-gray-800"
-              >c/<HighlightedSearchTerms
+              >channels/<HighlightedSearchTerms
                 :text="getChannel(commentSection)"
                 :search-input="selectedChannels.join(' ')"
             /></span>

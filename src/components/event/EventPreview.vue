@@ -150,7 +150,7 @@ export default defineComponent({
           class="ml-1 text-indigo-600 underline"
           :key="channel.url"
           v-for="channel in event?.Channels"
-          :to="`/c/${channel.url}/event/${event?.id}`"
+          :to="`/channels/${channel.url}/events/${event?.id}`"
         >
           {{ channel.url }}
         </router-link>
@@ -159,7 +159,7 @@ export default defineComponent({
       <hr class="mb-6 mt-3" />
       <div v-if="event" class="mt-3 text-sm">
         <router-link
-          :to="`/c/${event.Channels[0].url}/event/${event.id}`"
+          :to="`/channels/${event.Channels[0].url}/events/${event.id}`"
           class="font-medium text-indigo-600 hover:text-indigo-500"
         >
           View Comments

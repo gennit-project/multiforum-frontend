@@ -94,7 +94,7 @@ export default defineComponent({
                     {{ feed.body }}
                     <div class="mt-3 text-sm">
                       <router-link
-                        :to="`/c/${feed.channelId}/feeds/${feed.id}`"
+                        :to="`/channels/${feed.channelId}/feeds/${feed.id}`"
                         class="
                           font-medium
                           text-indigo-600
