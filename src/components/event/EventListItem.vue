@@ -97,12 +97,15 @@ export default defineComponent({
             />
           </p>
         </div>
-        <div v-if="event.description" class="flex items-center justify-between">
+        <div v-if="event.description" class="items-center">
           <p class="text-sm font-medium text-gray-600 truncate">
             <HighlightedSearchTerms
               :text="event.description"
               :search-input="searchInput"
             />
+          </p>
+          <p v-if="event.cost === '0'" class="text-sm font-medium text-gray-600 truncate">
+            Free
           </p>
         </div>
         <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">

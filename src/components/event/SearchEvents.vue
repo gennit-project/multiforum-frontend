@@ -373,6 +373,7 @@ export default defineComponent({
               latitude
               longitude
             }
+            cost
             Organizer {
               username
             }
@@ -449,6 +450,14 @@ export default defineComponent({
       return "Channels";
     });
 
+    const tagLabel = computed(() => {
+      if (selectedTags.value.length > 0) {
+        const tagString = selectedTags.value.join(", ");
+        return `Tags: ${tagString}`;
+      }
+      return "Tags";
+    });
+
     const locationLabel = computed(() => {
       let distance = '';
       switch (selectedLocationFilter.value) {
@@ -476,14 +485,6 @@ export default defineComponent({
       }
     })
 
-    const tagLabel = computed(() => {
-      if (selectedTags.value.length > 0) {
-        const tagString = selectedTags.value.join(", ");
-        return `Tags: ${tagString}`;
-      }
-      return "Tags";
-    });
-
     const dateLabel = computed(() => {
       if (dateRange.value === dateRangeTypes.FUTURE) {
         return `Future Events`;
@@ -505,6 +506,21 @@ export default defineComponent({
         return "";
       }
     });
+
+    const otherFiltersLabel = computed(() => {
+      if (!searchInput.value && !showOnlyFreeEvents.value) {
+        return "Other Filters"
+      }
+      let labels = []
+      if (searchInput.value) {
+        labels.push(searchInput.value)
+      }
+      if (showOnlyFreeEvents.value) {
+        labels.push("free")
+      }
+      const labelString = labels.join(', ')
+      return `Other Filters: ${labelString}`
+    })
 
     return {
       channelId,
@@ -529,6 +545,7 @@ export default defineComponent({
       loadMore,
       locationLabel,
       locationFilter,
+      otherFiltersLabel,
       radius,
       reachedEndOfResults,
       refetchEvents,
@@ -1036,7 +1053,7 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="'Other Filters'">
+      <FilterChip :label="otherFiltersLabel">
         <template v-slot:icon>
           <FilterIcon />
         </template>
