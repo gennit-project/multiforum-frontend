@@ -73,7 +73,6 @@ export const router = createRouter({
     { path: "/channels/:channelId",
       component: Channel,
       children: [
-        { path: "", component: Overview },
         {
           path: "discussions",
           component: SearchDiscussions,

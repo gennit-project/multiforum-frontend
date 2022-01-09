@@ -1,9 +1,20 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue';
+export default defineComponent({
+  setup(){},
+  props: {
+    wide: {
+      type: Boolean,
+      default: false
+    }
+  }
+})
 </script>
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="-ml-0.5 mr-2 w-4"
+    :class="[wide ? 'w-6' : 'w-4']"
+    class="-ml-0.5 mr-2"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"

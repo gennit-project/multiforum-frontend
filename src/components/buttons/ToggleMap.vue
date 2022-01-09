@@ -10,7 +10,7 @@ export default {
 };
 </script>
 <template>
-  <span class="relative z-0 ml-4 inline-block shadow-sm rounded-md">
+  <span class="relative z-0 inline-block shadow-sm rounded-md">
     <button
       @click="$emit('showMap')"
       type="button"

@@ -1,7 +1,11 @@
 <script>
 import { defineComponent } from "vue";
+import { ChevronDownIcon } from "@heroicons/vue/solid";
 
 export default defineComponent({
+  components: {
+    ChevronDownIcon
+  },
   setup() {},
   props: {
     label: {
@@ -19,7 +23,8 @@ export default defineComponent({
         class="
           inline-flex
           items-center
-          m-1
+          mt-1
+          mb-1
           max-height-4
           px-2.5
           py-1.5
@@ -36,6 +41,7 @@ export default defineComponent({
         <slot name="icon"></slot>
 
         {{ label }}
+        <ChevronDownIcon class="-mr-1 ml-1 h-4 w-4" aria-hidden="true" />
       </button>
       <template #popper >
         <slot name="content"></slot>

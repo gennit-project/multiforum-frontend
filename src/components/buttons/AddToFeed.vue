@@ -30,7 +30,8 @@ export default defineComponent({
           text-sm
           font-medium
           text-gray-700
-          hover:bg-gray-50
+          bg-gray-100
+          hover:bg-gray-200
           focus:outline-none
           focus:ring-offset-2
           focus:ring-offset-gray-100

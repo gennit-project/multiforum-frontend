@@ -38,7 +38,7 @@ import {
   locationFilterOptions,
   weekdayObject,
   distanceOptions,
-  distanceUnitOptions
+  distanceUnitOptions,
 } from "@/components/event/eventSearchOptions";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
@@ -50,7 +50,7 @@ import {
   SelectedWeekdays,
   SelectedHourRanges,
   SelectedWeeklyHourRanges,
-  ReferencePoint
+  ReferencePoint,
 } from "@/types/eventTypes";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
@@ -121,16 +121,19 @@ export default defineComponent({
       return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
     });
 
-    const defaultReferencePoint = { lat: 33.4255, lng: -111.94 } as ReferencePoint;
-    const referencePoint = ref(defaultReferencePoint)
-    
+    const defaultReferencePoint = {
+      lat: 33.4255,
+      lng: -111.94,
+    } as ReferencePoint;
+    const referencePoint = ref(defaultReferencePoint);
+
     const defaultDistanceUnit = distanceUnitOptions[0].value;
     const distanceUnit = ref(defaultDistanceUnit);
 
     const defaultRadius = distanceOptions[0].km;
     const radius = ref(defaultRadius);
-    const referencePointAddress = ref('');
-    const referencePointName = ref('');
+    const referencePointAddress = ref("");
+    const referencePointName = ref("");
 
     let showOnlyFreeEvents = ref(false);
 
@@ -162,10 +165,9 @@ export default defineComponent({
     let selectedLocationFilter = ref(locationFilterOptions[0].value);
 
     let locationFilter = computed(() => {
-
       switch (selectedLocationFilter.value) {
         case locationFilterTypes.NONE:
-          return '';
+          return "";
         case locationFilterTypes.ONLY_WITH_ADDRESS:
           // Filter by events that have a location
           // with coordinates
@@ -173,11 +175,14 @@ export default defineComponent({
 
         case locationFilterTypes.ONLY_VIRTUAL:
           // Filter by events that have a virtual event URL
-          return 'has: virtualEventUrl';
+          return "has: virtualEventUrl";
 
         case locationFilterTypes.WITHIN_RADIUS:
-          if (radius.value && referencePoint.value && referencePointAddress.value) {
-
+          if (
+            radius.value &&
+            referencePoint.value &&
+            referencePointAddress.value
+          ) {
             // Filter for events within a radius of a reference point
             return `location: { 
               near: { 
@@ -188,11 +193,11 @@ export default defineComponent({
                 }
               }`;
           }
-          return '';
+          return "";
         default:
-          return '';
+          return "";
       }
-    })
+    });
 
     // By default, no weekdays or hour ranges are selected.
     let selectedWeekdays: Ref<SelectedWeekdays> = ref(defaultSelectedWeekdays);
@@ -459,22 +464,24 @@ export default defineComponent({
     });
 
     const locationLabel = computed(() => {
-      let distance = '';
+      let distance = "";
       switch (selectedLocationFilter.value) {
-        
         case locationFilterTypes.WITHIN_RADIUS:
-          
           if (distanceUnit.value === "km") {
             distance = radius.value;
           } else if (distanceUnit.value === "mi") {
             distance = (radius.value * 0.62137).toFixed(1);
           }
-          if (referencePoint.value && referencePointAddress.value && referencePointName.value) {
+          if (
+            referencePoint.value &&
+            referencePointAddress.value &&
+            referencePointName.value
+          ) {
             return `Within ${distance} ${distanceUnit.value} of ${referencePointName.value}`;
           } else if (referencePointAddress.value) {
-            return `Within ${distance} ${distanceUnit.value} of ${referencePointAddress.value}`
+            return `Within ${distance} ${distanceUnit.value} of ${referencePointAddress.value}`;
           } else {
-            return "Location"
+            return "Location";
           }
         case locationFilterTypes.ONLY_WITH_ADDRESS:
           return "In-person only";
@@ -483,7 +490,7 @@ export default defineComponent({
         default:
           return "Location";
       }
-    })
+    });
 
     const dateLabel = computed(() => {
       if (dateRange.value === dateRangeTypes.FUTURE) {
@@ -509,18 +516,18 @@ export default defineComponent({
 
     const otherFiltersLabel = computed(() => {
       if (!searchInput.value && !showOnlyFreeEvents.value) {
-        return "Other Filters"
+        return "Other Filters";
       }
-      let labels = []
+      let labels = [];
       if (searchInput.value) {
-        labels.push(searchInput.value)
+        labels.push(searchInput.value);
       }
       if (showOnlyFreeEvents.value) {
-        labels.push("free")
+        labels.push("free");
       }
-      const labelString = labels.join(', ')
-      return `Other Filters: ${labelString}`
-    })
+      const labelString = labels.join(", ");
+      return `Other Filters: ${labelString}`;
+    });
 
     return {
       channelId,
@@ -645,12 +652,12 @@ export default defineComponent({
         });
 
         const openSpecificInfowindow = () => {
-          const eventTitle =
-            this.markerMap[eventLocationId].events[this.highlightedEventId]
-              .title;
-          const eventLocation =
-            this.markerMap[eventLocationId].events[this.highlightedEventId]
-              .locationName;
+          const eventTitle = this.markerMap[eventLocationId].events[
+            this.highlightedEventId
+          ].title;
+          const eventLocation = this.markerMap[eventLocationId].events[
+            this.highlightedEventId
+          ].locationName;
 
           let infowindowContent = `<b>${eventTitle}</b>`;
 
@@ -753,8 +760,9 @@ export default defineComponent({
         // If there is one event, open the preview for
         // that event. If there is more than one,
         // open a preview for multiple events.
-        const eventsAtClickedLocation =
-          this.markerMap[this.highlightedEventLocationId].numberOfEvents;
+        const eventsAtClickedLocation = this.markerMap[
+          this.highlightedEventLocationId
+        ].numberOfEvents;
 
         if (eventsAtClickedLocation > 1) {
           this.multipleEventPreviewIsOpen = true;
@@ -779,7 +787,6 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     updateMapCenter(placeData: any) {
-
       if (this.showMap) {
         const lat = placeData.geometry.location.lat();
         const lng = placeData.geometry.location.lng();
@@ -942,8 +949,8 @@ export default defineComponent({
       const lng = placeData.geometry.location.lng();
       const referencePoint = {
         lat,
-        lng
-      }
+        lng,
+      };
       this.referencePoint = referencePoint;
       const referencePointAddress = placeData.formatted_address;
 
@@ -951,7 +958,6 @@ export default defineComponent({
         this.referencePointName = placeData.name;
       }
       this.referencePointAddress = referencePointAddress;
-      
     },
     updateRadius(radius: Number) {
       this.radius = radius;
@@ -960,24 +966,31 @@ export default defineComponent({
       this.distanceUnit = unit;
     },
     updateLocationInput(placeData: any) {
-      this.updateMapCenter(placeData)
-      this.filterByRadius(placeData)
+      this.updateMapCenter(placeData);
+      this.filterByRadius(placeData);
       this.placeData = placeData; // Use for debugging
       this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
-    }
+    },
   },
 });
 </script>
 <template>
   <div>
-    <div class="py-3 px-3 inline-block items-center">
+    <div class="items-center px-2 mt-2 space-x-2">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
         :reference-point-address-name="referencePointName"
         @updateLocationInput="updateLocationInput"
       />
-
+      <ToggleMap
+        :show-map="showMap"
+        @showMap="setShowMap"
+        @showList="setShowList"
+      />
+      <AddToFeed v-if="channelId" />
+    </div>
+    <div class="items-center px-2 mt-1 space-x-2">
       <FilterChip :label="dateLabel">
         <template v-slot:icon>
           <CalendarIcon />
@@ -1096,14 +1109,7 @@ export default defineComponent({
           </div>
         </template>
       </FilterChip>
-
-      <AddToFeed v-if="channelId" />
     </div>
-    <ToggleMap
-      :show-map="showMap"
-      @showMap="setShowMap"
-      @showList="setShowList"
-    />
 
     <EventList
       id="listView"
@@ -1219,10 +1225,7 @@ export default defineComponent({
 </template>
 
 <style>
-
-
 .gray {
   color: gray;
 }
-
 </style>
