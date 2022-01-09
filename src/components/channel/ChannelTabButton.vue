@@ -31,7 +31,7 @@ export default defineComponent({
               font-medium
               text-sm
             "
-    exact-active-class="border-indigo-500 text-indigo-600"
+    active-class="border-indigo-500 text-indigo-600"
   >
     <span>{{ label }}</span>
   </router-link>

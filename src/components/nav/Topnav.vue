@@ -37,11 +37,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+  <div class="max-w-7xl px-2 sm:px-4 lg:px-8">
     <div class="relative flex items-center justify-between h-10">
       <div class="flex items-center px-2 lg:px-0">
-        gennit
         <!-- <SiteLogo/> -->
+        <div class="px-2">gennit</div>
+        
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4">
             <TopNavLink :to="'/'" :label="'Events'">

@@ -8,7 +8,7 @@ import Feed from "./components/feed/Feed.vue";
 import SearchFeeds from "./components/feed/SearchFeeds.vue";
 import Discussion from "./components/discussion/Discussion.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
-import Overview from "./components/channel/Overview.vue";
+import About from "./components/channel/About.vue";
 import SiteSettings from "./components/SiteSettings.vue";
 
 export const router = createRouter({
@@ -70,9 +70,24 @@ export const router = createRouter({
         };
       },
     },
-    { path: "/channels/:channelId",
+    {
+      path: "/channels/:channelId",
+      name: "Channel",
       component: Channel,
+      redirect: {
+        name: "Channel.about"
+      },
       children: [
+        { 
+          path: "about", 
+          name: "Channel.about", 
+          component: About 
+        },
+        {
+          name: "About",
+          path: "about",
+          component: About,
+        },
         {
           path: "discussions",
           component: SearchDiscussions,

@@ -76,7 +76,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :ref="`#${event.id}`" class="sm:px-8">
+  <li :ref="`#${event.id}`">
     <div class="block">
       <div class="py-4">
         <div class="flex items-center">
@@ -214,7 +214,7 @@ export default defineComponent({
 
         <div class="text-sm">
           <router-link
-            v-if="isWithinChannel"
+            v-if="isWithinChannel && event.CommentSections[0]"
             :to="`/channels/${defaultUrl}/events/${event.id}`"
             class="font-medium text-gray-500"
           >

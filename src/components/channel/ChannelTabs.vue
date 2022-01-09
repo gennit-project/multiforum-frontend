@@ -20,12 +20,13 @@ export default defineComponent({
       tabRoutes: {
         discussions: `/channels/${channelId.value}/discussions`,
         events: `/channels/${channelId.value}/events`,
+        about: `/channels/${channelId.value}/about`
       } as any,
     };
   },
   data() {
     return {
-      selectedTab: "overview",
+      selectedTab: "about",
     };
   },
   methods: {
@@ -58,6 +59,7 @@ export default defineComponent({
       >
         <option value="discussions">Discussions</option>
         <option value="events">Events</option>
+        <option value="about">About</option>
       </select>
     </div>
     <div class="hidden sm:block">
@@ -65,6 +67,7 @@ export default defineComponent({
         <!-- Current: "border-indigo-500 text-indigo-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
         <ChannelTabButton :to="tabRoutes.discussions" :label="'Discussions'"/>
         <ChannelTabButton :to="tabRoutes.events" :label="'Events'"/>
+        <ChannelTabButton :to="tabRoutes.about" :label="'About'"/>
       </nav>
     </div>
     <div class="border-b border-gray-200 width-full"></div>

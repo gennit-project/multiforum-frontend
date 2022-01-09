@@ -1,11 +1,18 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import Topnav from "./components/nav/Topnav.vue";
 import SiteSidenav from "./components/nav/SiteSidenav.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   setup() {
-    
+    const route = useRoute();
+
+    const channelId = computed(() => {
+      return route.params.channelId;
+    });
+
+    return { channelId }
   },
   name: "App",
   components: {
@@ -31,7 +38,11 @@ export default defineComponent({
       <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
       <SiteSidenav :show-mobile-dropdown="showMobileDropdown" />
     </nav>
-    <router-view></router-view>
+    <div v-if="!channelId" class="mx-8 mt-2">
+      <router-view></router-view>
+    </div>
+    
+    <router-view v-else></router-view>
   </div>
 </template>
 
