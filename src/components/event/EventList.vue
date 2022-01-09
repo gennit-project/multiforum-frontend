@@ -68,7 +68,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="['bg-white', 'sm:rounded-md', showMap ? 'constrain-height' : '']">
+  <div :class="['bg-white', 'sm:rounded-md']">
     <p v-if="events.length === 0">
       Could not find any events.
     </p>
@@ -105,9 +105,3 @@ export default defineComponent({
     </ul>
   </div>
 </template>
-
-<style>
-.constrain-height {
-height: calc(100vh - 150px)
-}
-</style>

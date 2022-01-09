@@ -10,7 +10,7 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    referencePointAddress: {
+    referencePointAddressName: {
       type: String,
       default: ""
     },
@@ -73,7 +73,7 @@ export default defineComponent({
           focus:border-indigo-500
           sm:text-sm
         "
-        :placeholder="referencePointAddress || 'Enter an address'"
+        :placeholder="referencePointAddressName || 'Enter an address'"
         disablePortal
         @place_changed="updateLocationInput"
       >

@@ -450,13 +450,23 @@ export default defineComponent({
     });
 
     const locationLabel = computed(() => {
-      if (selectedLocationFilter.value === locationFilterTypes.WITHIN_RADIUS && referencePoint.value && referencePointAddress.value) {
-        if (referencePointName.value) {
-         return `Within ${radius.value} ${distanceUnit.value} of ${referencePointName.value}`
-        }
-        return `Within ${radius.value} of ${referencePointAddress.value}`
+
+      switch (selectedLocationFilter.value) {
+        case locationFilterTypes.WITHIN_RADIUS:
+          if (referencePoint.value && referencePointAddress.value && referencePointName.value) {
+            return `Within ${radius.value} ${distanceUnit.value} of ${referencePointName.value}`;
+          } else if (referencePointAddress.value) {
+            return `Within ${radius.value} of ${referencePointAddress.value}`
+          } else {
+            return "Location"
+          }
+        case locationFilterTypes.ONLY_WITH_ADDRESS:
+          return "In-person only";
+        case locationFilterTypes.ONLY_VIRTUAL:
+          return "Virtual only";
+        default:
+          return "Location";
       }
-      return "Location"
     })
 
     const tagLabel = computed(() => {
@@ -929,7 +939,7 @@ export default defineComponent({
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
-        :reference-point-address="referencePointAddress"
+        :reference-point-address-name="referencePointName"
         @updateLocationInput="updateMapCenter"
       />
 
@@ -1096,7 +1106,7 @@ export default defineComponent({
       <div v-if="eventLoading">Loading...</div>
       <div
         class="overflow-y-scroll"
-        style="position: fixed; right: 0; width: 34vw; bottom: 0px"
+        style="position: fixed; right: 0; width: 34vw; bottom: 0px; top: 150px;"
       >
         <EventList
           class="overscroll-auto overflow-auto"
@@ -1173,11 +1183,10 @@ export default defineComponent({
 </template>
 
 <style>
-.mapHeight {
-  height: 42em;
-}
+
 
 .gray {
   color: gray;
 }
+
 </style>
