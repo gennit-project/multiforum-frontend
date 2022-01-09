@@ -12,10 +12,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    active: {
-      type: Boolean,
-      required: false
-    },
   },
 });
 </script>
@@ -23,11 +19,9 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    :active="active"
     class="
         inline-flex
         items-center
-        text-gray-300
         hover:bg-gray-700 hover:text-white
         px-3
         py-1
@@ -47,7 +41,7 @@ export default defineComponent({
         font-medium
         "
   >
-    <slot/>
+    <slot />
     {{ label }}
   </router-link>
 </template>
