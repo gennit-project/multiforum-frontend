@@ -450,13 +450,20 @@ export default defineComponent({
     });
 
     const locationLabel = computed(() => {
-
+      let distance = '';
       switch (selectedLocationFilter.value) {
+        
         case locationFilterTypes.WITHIN_RADIUS:
+          
+          if (distanceUnit.value === "km") {
+            distance = radius.value;
+          } else if (distanceUnit.value === "mi") {
+            distance = (radius.value * 0.62137).toFixed(1);
+          }
           if (referencePoint.value && referencePointAddress.value && referencePointName.value) {
-            return `Within ${radius.value} ${distanceUnit.value} of ${referencePointName.value}`;
+            return `Within ${distance} ${distanceUnit.value} of ${referencePointName.value}`;
           } else if (referencePointAddress.value) {
-            return `Within ${radius.value} of ${referencePointAddress.value}`
+            return `Within ${distance} ${distanceUnit.value} of ${referencePointAddress.value}`
           } else {
             return "Location"
           }
@@ -511,6 +518,7 @@ export default defineComponent({
       defaultEndDateRangeISO,
       defaultSelectedHourRanges,
       defaultStartDateISO,
+      distanceUnit,
       endOfDateRange,
       eventLoading,
       eventQuery,
@@ -925,10 +933,18 @@ export default defineComponent({
         this.referencePointName = placeData.name;
       }
       this.referencePointAddress = referencePointAddress;
-      this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
+      
     },
     updateRadius(radius: Number) {
       this.radius = radius;
+    },
+    updateDistanceUnit(unit: String) {
+      this.distanceUnit = unit;
+    },
+    updateLocationInput(placeData: any) {
+      this.updateMapCenter(placeData)
+      this.filterByRadius(placeData)
+      this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
     }
   },
 });
@@ -940,7 +956,7 @@ export default defineComponent({
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
         :reference-point-address-name="referencePointName"
-        @updateLocationInput="updateMapCenter"
+        @updateLocationInput="updateLocationInput"
       />
 
       <FilterChip :label="dateLabel">
@@ -962,13 +978,13 @@ export default defineComponent({
           <LocationIcon />
         </template>
         <template v-slot:content>
-        <LocationPicker
-          :selected-location-filter="selectedLocationFilter"
-          @updateLocationFilter="updateLocationFilter"
-          @updateLocationInput="filterByRadius"
-          @updateRadius="updateRadius"
-        />
-          
+          <LocationPicker
+            :selected-location-filter="selectedLocationFilter"
+            @updateLocationFilter="updateLocationFilter"
+            @updateLocationInput="updateLocationInput"
+            @updateDistanceUnit="updateDistanceUnit"
+            @updateRadius="updateRadius"
+          />
         </template>
       </FilterChip>
 

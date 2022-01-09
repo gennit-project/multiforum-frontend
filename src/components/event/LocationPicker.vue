@@ -66,6 +66,7 @@ export default defineComponent({
       this.selectedDistance.label = `${
         this.selectedDistance[unitOption.label].toLocaleString()
       } ${unitOption.label}`;
+      this.$emit('updateDistanceUnit', unitOption.value)
     },
     updateSelectedDistance(radius: Distance) {
       this.selectedDistance = radius;
