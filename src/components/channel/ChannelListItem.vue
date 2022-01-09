@@ -78,8 +78,10 @@ export default defineComponent({
         />
       </p>
       <p class="text-sm text-gray-500 truncate">
-        {{ channel.DiscussionsAggregate.count }} Discussions,
-        {{ channel.EventsAggregate.count }} Events
+        <router-link class="underline" :to="`/channels/${channel.url}/discussions`">{{ channel.DiscussionsAggregate.count }} Discussions</router-link>,
+        
+        <router-link class="underline" :to="`/channels/${channel.url}/events`">{{ channel.EventsAggregate.count }} Events</router-link>
+        
       </p>
       <Tag
         :highlighted="selectedTags.indexOf(tag) !== -1 ? true : false"

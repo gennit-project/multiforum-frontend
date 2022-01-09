@@ -108,7 +108,7 @@ export default defineComponent({
             Free
           </p>
         </div>
-        <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
+        <p v-if="!isWithinChannel" class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
           {{ `Posted in: ` }}
           <router-link
             :class="[

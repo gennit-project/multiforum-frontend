@@ -94,7 +94,15 @@ export default defineComponent({
     });
 
     const selectedTags: Ref<Array<string>> = ref(props.routerTags);
-    const selectedChannels: Ref<Array<string>> = ref(props.routerChannels);
+
+    const getDefaultSelectedChannels = () => {
+      if (channelId.value) {
+        return [channelId.value]
+      }
+      return props.routerChannels
+    }
+
+    const selectedChannels: any = ref(getDefaultSelectedChannels());
     const searchInput: Ref<string> = ref("");
 
     // Variables for the order of the results
