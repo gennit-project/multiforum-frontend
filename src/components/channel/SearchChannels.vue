@@ -112,6 +112,9 @@ export default defineComponent({
             DiscussionsAggregate {
               count
             }
+            EventsAggregate {
+              count
+            }
             Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
               text
             }

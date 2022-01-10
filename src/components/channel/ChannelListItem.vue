@@ -1,39 +1,11 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
-import { gql } from "@apollo/client/core";
-import { useQuery } from "@vue/apollo-composable";
 import HighlightedSearchTerms from "../forms/HighlightedSearchTerms.vue";
 import Tag from "../buttons/Tag.vue";
-const { DateTime } = require("luxon");
 
 export default defineComponent({
   setup() {
-    const now = DateTime.now();
-    const nowISO = now.toISO();
-
-    let futureEventAggregate = computed(() => {
-      try {
-        return gql`
-          query {
-            aggregateEvent( filter: {
-              startTime: {
-                gt: "${nowISO}"
-              }
-            }) {
-              count
-            }
-          }`;
-      } catch (err) {
-        throw new Error(err);
-      }
-    });
-
-    const { result } = useQuery(futureEventAggregate);
-
-    return {
-      result,
-    };
   },
   props: {
     channel: {
@@ -116,11 +88,10 @@ export default defineComponent({
         >,
 
         <router-link
-          v-if="result && result.aggregateEvent"
           class="underline"
           :to="`/channels/${channel.url}/events`"
         >
-          {{ result.aggregateEvent.count }} Future Events</router-link
+          {{ channel.EventsAggregate.count }} Events</router-link
         >
       </p>
       <Tag
