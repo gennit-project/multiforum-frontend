@@ -20,7 +20,7 @@ export default {
         inline-flex
         items-center
         px-4
-        py-2
+        py-1.5
         rounded-l-md
         border border-gray-300
         bg-white
@@ -44,7 +44,7 @@ export default {
         inline-flex
         items-center
         px-4
-        py-2
+        py-1.5
         rounded-r-md
         border border-gray-300
         bg-white
