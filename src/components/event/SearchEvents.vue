@@ -41,6 +41,7 @@ import {
   distanceOptions,
   distanceUnitOptions,
 } from "@/components/event/eventSearchOptions";
+import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
 
@@ -458,19 +459,11 @@ export default defineComponent({
     const { result: channelOptions } = useQuery(GET_CHANNEL_NAMES);
 
     const channelLabel = computed(() => {
-      if (selectedChannels.value.length > 0) {
-        const channelString = selectedChannels.value.join(", ");
-        return `Channels: ${channelString}`;
-      }
-      return "Channels";
+      return getChannelLabel(selectedChannels.value)
     });
 
     const tagLabel = computed(() => {
-      if (selectedTags.value.length > 0) {
-        const tagString = selectedTags.value.join(", ");
-        return `Tags: ${tagString}`;
-      }
-      return "Tags";
+      return getTagLabel(selectedTags.value)
     });
 
     const locationLabel = computed(() => {

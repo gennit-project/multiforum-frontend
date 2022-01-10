@@ -4,7 +4,6 @@ import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
-import FilterModal from "@/components/forms/FilterModal.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
@@ -12,12 +11,26 @@ import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { router } from "@/router";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+import SearchBar from "@/components/forms/SearchBar.vue";
+import TagIcon from "@/components/icons/TagIcon.vue";
+import FilterChip from "@/components/forms/FilterChip.vue";
+import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 
 interface Ref<T> {
   value: T;
 }
 
 export default defineComponent({
+  components: {
+    DiscussionList,
+    ChannelIcon,
+    FilterChip,
+    ChannelPicker,
+    TagPicker,
+    SearchBar,
+    TagIcon,
+  },
   setup(props) {
     const route = useRoute();
 
@@ -28,7 +41,16 @@ export default defineComponent({
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(props.routerTags);
-    const selectedChannels: Ref<Array<string>> = ref(props.routerChannels);
+
+
+    const getDefaultSelectedChannels = () => {
+      if (channelId.value) {
+        return [channelId.value]
+      }
+      return props.routerChannels
+    }
+
+    const selectedChannels: any = ref(getDefaultSelectedChannels());
     const searchInput: Ref<string> = ref(props.routerSearchTerms);
 
     let textFilters = computed((): string => {
@@ -160,7 +182,6 @@ export default defineComponent({
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (fetchMoreResult.queryDiscussion.length === 0) {
-            
             reachedEndOfResults.value = true;
             return prev;
           }
@@ -187,8 +208,17 @@ export default defineComponent({
       selectedFilterOptions.value = "";
     };
 
+    const channelLabel = computed(() => {
+      return getChannelLabel(selectedChannels.value);
+    });
+
+    const tagLabel = computed(() => {
+      return getTagLabel(selectedTags.value);
+    });
+
     return {
       channelId,
+      channelLabel,
       channelOptions,
       closeModal,
       discussionLoading,
@@ -207,17 +237,12 @@ export default defineComponent({
       selectedChannels,
       selectedFilterOptions,
       selectedTags,
+      tagLabel,
       tagOptions,
       textFilters,
     };
   },
-  components: {
-    DiscussionList,
-    // ActiveFilters,
-    FilterModal,
-    ChannelPicker,
-    TagPicker,
-  },
+
   props: {
     routerTags: {
       type: Array as PropType<Array<string>>,
@@ -255,17 +280,41 @@ export default defineComponent({
 
 <template>
   <div>
-    <!-- <ActiveFilters
-      :class="['mx-auto', 'max-w-5xl']"
-      :search-placeholder="'Search discussions'"
-      :applicable-filters="channelId ? ['tags'] : ['channels', 'tags']"
-      :selected-tags="selectedTags"
-      :selected-channels="selectedChannels"
-      :channel-id="channelId"
-      :router-search-terms="routerSearchTerms"
-      @openModal="openModal"
-      @updateSearchInput="updateSearchResult"
-    /> -->
+    <div :class="[channelId ? 'px-8' : '']" class="items-center inline-flex mt-1 space-x-2">
+      <SearchBar
+        :router-search-terms="routerSearchTerms"
+        :search-placeholder="'Search discussions'"
+        @updateSearchInput="updateSearchResult"
+      />
+      <FilterChip v-if="!channelId" :label="channelLabel">
+        <template v-slot:icon>
+          <ChannelIcon />
+        </template>
+        <template v-slot:content>
+          <ChannelPicker
+            v-model="selectedChannels"
+            :channel-options="
+              getChannelOptionLabels(channelOptions.queryChannel)
+            "
+            :selected-channels="selectedChannels"
+            @setChannelFilters="setChannelFilters"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip :label="tagLabel">
+        <template v-slot:icon>
+          <TagIcon />
+        </template>
+        <template v-slot:content>
+          <TagPicker
+            :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+            :selected-tags="selectedTags"
+            @setTagFilters="setTagFilters"
+          />
+        </template>
+      </FilterChip>
+    </div>
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList
       v-else-if="discussionResult && discussionResult.queryDiscussion"
@@ -273,6 +322,7 @@ export default defineComponent({
       :channel-id="channelId"
       :search-input="searchInput"
       :selected-tags="selectedTags"
+      :selected-channels="selectedChannels"
       @filterByTag="filterByTag"
     />
     <div class="grid justify-items-stretch">
@@ -280,29 +330,5 @@ export default defineComponent({
         {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
       </button>
     </div>
-
-    <FilterModal :show="showModal" @closeModal="closeModal">
-      <ChannelPicker
-        v-model="selectedChannels"
-        v-if="
-          selectedFilterOptions === 'channelPicker' &&
-          channelOptions &&
-          channelOptions.queryChannel
-        "
-        :channel-options="getChannelOptionLabels(channelOptions.queryChannel)"
-        :selected-channels="selectedChannels"
-        @setChannelFilters="setChannelFilters"
-      />
-      <TagPicker
-        v-if="
-          selectedFilterOptions === 'tagPicker' &&
-          tagOptions &&
-          tagOptions.queryTag
-        "
-        :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-        :selected-tags="selectedTags"
-        @setTagFilters="setTagFilters"
-      />
-    </FilterModal>
   </div>
 </template>

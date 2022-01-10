@@ -33,6 +33,12 @@ export default defineComponent({
         return [];
       },
     },
+    selectedChannels: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    }
   },
   data() {
     return {
@@ -69,6 +75,7 @@ export default defineComponent({
         :current-channel-id="channelId"
         :search-input="searchInput"
         :selected-tags="selectedTags"
+        :selected-channels="selectedChannels"
         @openDiscussionPreview="openPreview"
         @filterByTag="filterByTag"
       />

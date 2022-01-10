@@ -2,19 +2,30 @@
 import { defineComponent, computed, ref, PropType } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import ChannelList from "./ChannelList.vue";
-import FilterModal from "@/components/forms/FilterModal.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
+// import TagPicker from "@/components/forms/TagPicker.vue";
 import { gql } from "@apollo/client/core";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
 import { router } from "@/router";
+import SearchBar from "@/components/forms/SearchBar.vue";
+import TagIcon from "@/components/icons/TagIcon.vue";
+import FilterChip from "@/components/forms/FilterChip.vue";
+import TagPicker from "@/components/forms/TagPicker.vue";
+import { getTagLabel } from "@/components/forms/utils";
 
 interface Ref<T> {
   value: T;
 }
 
 export default defineComponent({
+  components: {
+    ChannelList,
+    FilterChip,
+    TagPicker,
+    SearchBar,
+    TagIcon,
+  },
   setup(props) {
     const links = computed(() => {
       return [
@@ -156,6 +167,10 @@ export default defineComponent({
       selectedFilterOptions.value = "";
     };
 
+    const tagLabel = computed(() => {
+      return getTagLabel(selectedTags.value);
+    });
+
     return {
       closeModal,
       channelLoading,
@@ -173,6 +188,7 @@ export default defineComponent({
       showModal,
       selectedFilterOptions,
       selectedTags,
+      tagLabel,
       tagOptions,
       textFilters,
     };
@@ -182,12 +198,7 @@ export default defineComponent({
       queryChannel: [],
     };
   },
-  components: {
-    ChannelList,
-    // ActiveFilters,
-    FilterModal,
-    TagPicker,
-  },
+  
   props: {
     routerTags: {
       type: Array as PropType<Array<string>>,
@@ -219,14 +230,25 @@ export default defineComponent({
 
 <template>
   <div>
-    <!-- <ActiveFilters
-      :search-placeholder="'Search channels'"
-      :selected-tags="selectedTags"
-      :router-search-terms="routerSearchTerms"
-      :applicable-filters="['tags']"
-      @openModal="openModal"
-      @updateSearchInput="updateSearchResult"
-    /> -->
+    <div class="items-center inline-flex mt-1 space-x-2">
+      <SearchBar
+        :router-search-terms="routerSearchTerms"
+        :search-placeholder="'Search channels'"
+        @updateSearchInput="updateSearchResult"
+      />
+      <FilterChip :label="tagLabel">
+        <template v-slot:icon>
+          <TagIcon />
+        </template>
+        <template v-slot:content>
+          <TagPicker
+            :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+            :selected-tags="selectedTags"
+            @setTagFilters="setTagFilters"
+          />
+        </template>
+      </FilterChip>
+    </div>
     <div v-if="channelLoading">Loading...</div>
     <ChannelList
       class="px-8 flex-1 text-xl font-bold"
@@ -241,14 +263,5 @@ export default defineComponent({
         {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
       </button>
     </div>
-
-    <FilterModal :show="showModal" @closeModal="closeModal">
-      <TagPicker
-        v-if="selectedFilterOptions === 'tagPicker'"
-        :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-        :selected-tags="selectedTags"
-        @setTagFilters="setTagFilters"
-      />
-    </FilterModal>
   </div>
 </template>

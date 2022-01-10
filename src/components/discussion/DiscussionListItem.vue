@@ -27,6 +27,12 @@ export default defineComponent({
         return [];
       },
     },
+    selectedChannels: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return []
+      }
+    }
   },
   components: {
     Tag,
@@ -99,9 +105,12 @@ export default defineComponent({
               class="font-medium"
             >
               {{ getCommentCount(commentSection) }} in
-              <span class="text-gray-800"
-                >channels/{{ getChannel(commentSection) }}</span
-              >
+
+              <HighlightedSearchTerms
+                :text="getChannel(commentSection)"
+                :search-input="selectedChannels.join(' ')"
+              />
+              
               {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
             </router-link>
           </div>
