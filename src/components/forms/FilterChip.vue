@@ -24,7 +24,7 @@ export default defineComponent({
           inline-flex
           items-center
           mt-1
-          mb-1
+          mb-2
           max-height-4
           px-2.5
           py-1.5
@@ -32,9 +32,9 @@ export default defineComponent({
           text-xs
           font-medium
           rounded
-          text-indigo-700
-          bg-indigo-100
-          hover:bg-indigo-200
+          text-gray-700
+          bg-gray-100
+          hover:bg-gray-200
           focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
         "
       >

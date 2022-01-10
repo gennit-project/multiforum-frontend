@@ -809,8 +809,9 @@ export default defineComponent({
     },
     setShowMap() {
       this.showMap = true;
+      const path = this.channelId ? `/channels/${this.channelId}/events` : "events";
       router.push({
-        path: "/events",
+        path,
         query: {
           search: this.searchInput.value,
           channel: this.selectedChannels.value,
@@ -821,8 +822,9 @@ export default defineComponent({
     },
     setShowList() {
       this.showMap = false;
+      const path = this.channelId ? `/channels/${this.channelId}/events` : "events";
       router.push({
-        path: "/events",
+        path,
         query: {
           search: this.searchInput.value,
           channel: this.selectedChannels.value,
@@ -979,9 +981,8 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div 
-      :class="[channelId ? 'px-8' : '']"
-      class="items-center mt-2 space-x-2"
+    <div
+      class="items-center mt-2 space-x-2 px-8"
     >
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
@@ -997,7 +998,7 @@ export default defineComponent({
       <AddToFeed v-if="channelId" />
       <CreateEventButton/>
     </div>
-    <div :class="[channelId ? 'px-8' : '']" class="items-center mt-1 space-x-2">
+    <div class="items-center mt-1 space-x-2 px-8">
       <FilterChip :label="dateLabel">
         <template v-slot:icon>
           <CalendarIcon />
@@ -1121,6 +1122,7 @@ export default defineComponent({
     <EventList
       id="listView"
       v-if="!showMap && eventResult && eventResult.queryEvent"
+      :class="[!channelId ? 'px-8' : '']"
       class="relative text-lg max-w-6xl"
       :events="eventResult.queryEvent"
       :channel-id="channelId"
@@ -1141,6 +1143,7 @@ export default defineComponent({
         {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
       </button>
     </div>
+
     <div v-if="showMap" id="mapView">
       <Map
         v-if="showMap && eventResult && eventResult.queryEvent"
@@ -1155,7 +1158,7 @@ export default defineComponent({
       <div v-if="eventLoading">Loading...</div>
       <div
         class="overflow-y-scroll"
-        style="position: fixed; right: 0; width: 34vw; bottom: 0px; top: 150px;"
+        style="position: fixed; right: 0; width: 34vw; "
       >
         <EventList
           class="overscroll-auto overflow-auto"

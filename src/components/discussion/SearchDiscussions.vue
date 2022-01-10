@@ -93,8 +93,9 @@ export default defineComponent({
       )}" }})`;
     });
     const updateRouterQueryParams = () => {
+      const path = channelId.value ? `/channels/${channelId.value}/discussions` : "/discussions"
       router.push({
-        path: "/discussions",
+        path,
         query: {
           search: searchInput.value,
           channel: selectedChannels.value,
@@ -280,7 +281,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div :class="[channelId ? 'px-8' : '']" class="items-center inline-flex mt-1 space-x-2">
+    <div class="items-center inline-flex mt-1 space-x-2 px-8">
       <SearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Search discussions'"

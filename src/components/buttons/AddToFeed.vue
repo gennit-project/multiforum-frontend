@@ -30,9 +30,9 @@ export default defineComponent({
           text-xs
           font-medium
           rounded
-          text-gray-700
-          bg-gray-100
-          hover:bg-gray-200
+          text-indigo-700
+          bg-indigo-100
+          hover:bg-indigo-200
           focus:outline-none
           focus:ring-offset-2
           focus:ring-offset-gray-100

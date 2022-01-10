@@ -68,7 +68,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="['bg-white', 'sm:rounded-md', channelId ? 'px-8' : '']">
+  <div :class="['bg-white', 'sm:rounded-md', 'px-8']">
     <p v-if="events.length === 0">
       Could not find any events.
     </p>

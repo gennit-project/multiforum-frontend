@@ -38,7 +38,7 @@ export default defineComponent({
       <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
       <SiteSidenav :show-mobile-dropdown="showMobileDropdown" />
     </nav>
-    <div v-if="!channelId" class="mx-8 mt-2">
+    <div v-if="!channelId" class="mt-2">
       <router-view></router-view>
     </div>
     
