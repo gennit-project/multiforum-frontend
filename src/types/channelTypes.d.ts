@@ -4,7 +4,7 @@ export type ChannelData = {
     url: string;
     name: string;
     description: string?;
-    Organizers: [object];
+    Posters: [object];
     DiscussionsAggregate: {
         count: string;
     };

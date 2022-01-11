@@ -106,7 +106,7 @@ export default defineComponent({
             name
             url
             description
-            Organizers {
+            Posters {
               username
             }
             DiscussionsAggregate {

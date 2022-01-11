@@ -17,7 +17,7 @@ export const GET_COMMENT_BY_ID_WITH_REPLIES = gql`
       }
       authorIsAdmin
       authorIsModerator
-      authorIsOrganizer
+      authorIsPoster
       authorIsOriginalPoster
       deleted
       createdDate
@@ -97,7 +97,7 @@ export const GET_COMMENT_SECTION = gql`
         }
         authorIsAdmin
         authorIsModerator
-        authorIsOrganizer
+        authorIsPoster
         authorIsOriginalPoster
         deleted
         createdDate

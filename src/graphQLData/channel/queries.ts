@@ -6,7 +6,7 @@ export const GET_CHANNEL = gql`
       name
       url
       description
-      Organizers {
+      Posters {
         username
       }
       Moderators {
@@ -58,7 +58,7 @@ export const GET_CHANNELS = gql`
       name
       url
       description
-      Organizers {
+      Posters {
         username
       }
       DiscussionsAggregate {

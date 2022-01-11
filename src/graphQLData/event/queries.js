@@ -24,7 +24,7 @@ export const GET_ALL_EVENTS = gql`
       Channels {
         url
       }
-      Organizer {
+      Poster {
         username
       }
       placeId
@@ -64,7 +64,7 @@ export const GET_EVENT = gql`
       Channels {
         url
       }
-      Organizer {
+      Poster {
         username
       }
       placeId
@@ -105,7 +105,7 @@ export const GET_EVENTS_IN_CHANNEL = gql`
         Channels {
           url
         }
-        Organizer {
+        Poster {
           username
         }
         startTime

@@ -22,7 +22,7 @@ query getEventsByTag($tag: String!) {
         locationName
         address
         virtualEventUrl
-        Organizer {
+        Poster {
           username
         }
         Channels {

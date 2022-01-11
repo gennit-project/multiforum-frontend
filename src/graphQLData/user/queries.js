@@ -4,7 +4,7 @@ export const GET_USER_INFO_FOR_TAGS = gql`
   query getUser($username: String!) {
     getUser(username: $username) {
       isAdmin
-      OrganizerOfChannels {
+      PosterOfChannels {
         url
       }
       ModeratorOfChannels {
@@ -85,7 +85,7 @@ export const USER_LOOKUP = gql`
         }
         authorIsAdmin
         authorIsModerator
-        authorIsOrganizer
+        authorIsPoster
         authorIsOriginalPoster
         deleted
         createdDate
@@ -109,7 +109,7 @@ export const USER_LOOKUP = gql`
           latitude
           longitude
         }
-        Organizer {
+        Poster {
           username
         }
         Tags {

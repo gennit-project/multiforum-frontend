@@ -6,10 +6,10 @@ type User {
   bio: String
   isAdmin: Boolean
   Comments: [Comment!] @hasInverse(field: UserAuthor)
-  OrganizerOfChannels: [Channel!] @hasInverse(field: Organizers)
+  PosterOfChannels: [Channel!] @hasInverse(field: Posters)
   ModeratorOfChannels: [Channel!] @hasInverse(field: Moderators)
   Discussions: [Discussion!] @hasInverse(field: Author)
-  Events: [Event!] @hasInverse(field: Organizer)
+  Events: [Event!] @hasInverse(field: Poster)
   SentMessages: [Message!] @hasInverse(field: Author)
   ReceivedMessages: [Message!] @hasInverse(field: Recipient)
   Feeds: [Feed!] @hasInverse(field: Owner)
@@ -41,7 +41,7 @@ type Channel {
   description: String @search(by: [fulltext])
   name: String! @search(by: [fulltext])
   url: String! @id @search(by: [term, fulltext])
-  Organizers: [User] @hasInverse(field: OrganizerOfChannels)
+  Posters: [User] @hasInverse(field: PosterOfChannels)
   Moderators: [User] @hasInverse(field: ModeratorOfChannels)
   Discussions: [Discussion!] @hasInverse(field: Channels)
   RelatedChannels: [Channel!] @hasInverse(field: RelatedChannels)
@@ -102,7 +102,7 @@ type Comment {
   ChildComments: [Comment] @hasInverse(field: ParentComment)
   authorIsAdmin: Boolean
   authorIsModerator: Boolean
-  authorIsOrganizer: Boolean
+  authorIsPoster: Boolean
   authorIsOriginalPoster: Boolean
   deleted: Boolean
   editedDate: DateTime
@@ -145,7 +145,7 @@ interface addEventInput {
   address: String
   howToFindLocation: String
   virtualEventUrl: String
-  Organizer: User!
+  Poster: User!
   createdDate: DateTime
   placeId: String
   isInPrivateResidence: Boolean
@@ -174,7 +174,7 @@ type Event {
   address: String
   howToFindLocation: String
   virtualEventUrl: String @search(by: [hash])
-  Organizer: User! @hasInverse(field: Events)
+  Poster: User! @hasInverse(field: Events)
   editedDate: DateTime
   createdDate: DateTime
   placeId: String @search(by:[exact])

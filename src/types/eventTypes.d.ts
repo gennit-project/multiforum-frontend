@@ -19,7 +19,7 @@ export type EventData = {
   startTime: string;
   endTime: string;
   Channels: Array[ChannelData];
-  Organizer?: UserData;
+  Poster?: UserData;
   Tags: Array[TagData];
   CommentSections: [CommentSectionData];
 };

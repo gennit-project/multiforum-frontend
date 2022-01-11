@@ -139,9 +139,9 @@ export default defineComponent({
         Posted by
         <router-link
           className="text-indigo-600 underline ml-1"
-          :to="`/u/${event?.Organizer.username}`"
+          :to="`/u/${event?.Poster.username}`"
         >
-          {{ event?.Organizer.username }}
+          {{ event?.Poster.username }}
         </router-link>
       </p>
       <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">

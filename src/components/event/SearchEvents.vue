@@ -390,7 +390,7 @@ export default defineComponent({
               longitude
             }
             cost
-            Organizer {
+            Poster {
               username
             }
             Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{

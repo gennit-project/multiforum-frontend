@@ -13,7 +13,7 @@ export const ADD_CHANNEL = gql`
           description: $description
           name: $name
           url: $url
-          Organizers: [{ username: $username }]
+          Posters: [{ username: $username }]
         }
       ]
     ) {
@@ -21,7 +21,7 @@ export const ADD_CHANNEL = gql`
         description
         name
         url
-        Organizers {
+        Posters {
           username
         }
       }
