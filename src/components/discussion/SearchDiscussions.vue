@@ -209,6 +209,11 @@ export default defineComponent({
       selectedFilterOptions.value = "";
     };
 
+    const defaultLabels = {
+      channels: "Channels",
+      tags: "Tags"
+    }
+
     const channelLabel = computed(() => {
       return getChannelLabel(selectedChannels.value);
     });
@@ -222,6 +227,7 @@ export default defineComponent({
       channelLabel,
       channelOptions,
       closeModal,
+      defaultLabels,
       discussionLoading,
       discussionQuery,
       discussionQueryString,
@@ -287,7 +293,7 @@ export default defineComponent({
         :search-placeholder="'Search discussions'"
         @updateSearchInput="updateSearchResult"
       />
-      <FilterChip v-if="!channelId" :label="channelLabel">
+      <FilterChip v-if="!channelId" :label="channelLabel" :highlighted="channelLabel !== defaultLabels.channels">
         <template v-slot:icon>
           <ChannelIcon />
         </template>
@@ -303,7 +309,7 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="tagLabel">
+      <FilterChip :label="tagLabel" :highlighted="tagLabel !== defaultLabels.tags">
         <template v-slot:icon>
           <TagIcon />
         </template>

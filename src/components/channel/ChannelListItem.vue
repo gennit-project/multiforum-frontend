@@ -74,7 +74,7 @@ export default defineComponent({
           :search-input="searchInput"
         />
       </p>
-      <p class="text-sm text-gray-500 truncate">
+      <p v-if="channel.description" class="text-sm text-gray-500 truncate">
         <HighlightedSearchTerms
           :text="channel.description"
           :search-input="searchInput"
@@ -95,7 +95,7 @@ export default defineComponent({
         >
       </p>
       <Tag
-        :highlighted="selectedTags.indexOf(tag) !== -1 ? true : false"
+        :highlighted-tags="selectedTags"
         :key="tag"
         v-for="tag in tags"
         :tag="tag"

@@ -115,7 +115,7 @@ export default defineComponent({
             </router-link>
           </div>
           <Tag
-            :highlighted="selectedTags.indexOf(tag) !== -1 ? true : false"
+            :highlighted-tags="selectedTags"
             :key="tag"
             v-for="tag in tags"
             :tag="tag"

@@ -179,7 +179,7 @@ export default defineComponent({
           </router-link>
         </div>
         <Tag
-          :highlighted="selectedTags.indexOf(tag.text) !== -1 ? true : false"
+          :highlighted-tags="selectedTags"
           :key="tag"
           v-for="tag in event.Tags"
           :tag="tag.text"

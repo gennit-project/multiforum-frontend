@@ -459,6 +459,15 @@ export default defineComponent({
     const { result: tagOptions } = useQuery(GET_TAGS);
     const { result: channelOptions } = useQuery(GET_CHANNEL_NAMES);
 
+    const defaultFilterLabels = {
+      date: "Future Events",
+      location: "Location",
+      weeklyTimeSlot: "Weekday & Time",
+      channels: "Channels",
+      tags: "Tags",
+      other: "Other Filters"
+    };
+
     const channelLabel = computed(() => {
       return getChannelLabel(selectedChannels.value);
     });
@@ -485,20 +494,20 @@ export default defineComponent({
           } else if (referencePointAddress.value) {
             return `Within ${distance} ${distanceUnit.value} of ${referencePointAddress.value}`;
           } else {
-            return "Location";
+            return defaultFilterLabels.location;
           }
         case locationFilterTypes.ONLY_WITH_ADDRESS:
           return "In-person only";
         case locationFilterTypes.ONLY_VIRTUAL:
           return "Virtual only";
         default:
-          return "Location";
+          return defaultFilterLabels.location;
       }
     });
 
     const dateLabel = computed(() => {
       if (dateRange.value === dateRangeTypes.FUTURE) {
-        return `Future Events`;
+        return defaultFilterLabels.date;
       } else if (dateRange.value === dateRangeTypes.PAST) {
         return `Past Events`;
       } else if (dateRange.value === dateRangeTypes.BETWEEN_TWO_DATES) {
@@ -535,7 +544,7 @@ export default defineComponent({
       // Populate hour range labels, ex. 4-6pm, 2-4pm
       for (let hourRange in selectedHourRanges.value) {
         if (selectedHourRanges.value[hourRange] === true) {
-          const hourRangeLabel = `Any day at ${hourRange}`
+          const hourRangeLabel = `Any day at ${hourRange}`;
           selectedHourRangeLabels.push(hourRangeLabel);
         }
       }
@@ -565,14 +574,14 @@ export default defineComponent({
       ];
 
       if (allLabels.length === 0) {
-        return "Weekday & Time";
+        return defaultFilterLabels.weeklyTimeSlot;
       }
       return allLabels.join(", ");
     });
 
     const otherFiltersLabel = computed(() => {
       if (!searchInput.value && !showOnlyFreeEvents.value) {
-        return "Other Filters";
+        return defaultFilterLabels.other;
       }
       let labels = [];
       if (searchInput.value) {
@@ -595,6 +604,7 @@ export default defineComponent({
       dateLabel,
       dateRange,
       defaultEndDateRangeISO,
+      defaultFilterLabels,
       defaultSelectedHourRanges,
       defaultStartDateISO,
       distanceUnit,
@@ -1055,7 +1065,10 @@ export default defineComponent({
       <CreateEventButton />
     </div>
     <div class="items-center mt-1 space-x-2 px-8">
-      <FilterChip :label="dateLabel">
+      <FilterChip
+        :label="dateLabel"
+        :highlighted="dateLabel !== defaultFilterLabels.date"
+      >
         <template v-slot:icon>
           <CalendarIcon />
         </template>
@@ -1069,7 +1082,10 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="locationLabel">
+      <FilterChip
+        :label="locationLabel"
+        :highlighted="locationLabel !== defaultFilterLabels.location"
+      >
         <template v-slot:icon>
           <LocationIcon />
         </template>
@@ -1085,7 +1101,10 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="weeklyTimeLabel">
+      <FilterChip
+        :label="weeklyTimeLabel"
+        :highlighted="weeklyTimeLabel !== defaultFilterLabels.weeklyTimeSlot"
+      >
         <template v-slot:icon>
           <TimeIcon />
         </template>
@@ -1101,7 +1120,11 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip v-if="!channelId" :label="channelLabel">
+      <FilterChip
+        v-if="!channelId"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels"
+      >
         <template v-slot:icon>
           <ChannelIcon />
         </template>
@@ -1117,7 +1140,10 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="tagLabel">
+      <FilterChip
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultFilterLabels.tags"
+      >
         <template v-slot:icon>
           <TagIcon />
         </template>
@@ -1130,7 +1156,10 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="otherFiltersLabel">
+      <FilterChip
+        :label="otherFiltersLabel"
+        :highlighted="otherFiltersLabel !== defaultFilterLabels.other"
+      >
         <template v-slot:icon>
           <FilterIcon />
         </template>

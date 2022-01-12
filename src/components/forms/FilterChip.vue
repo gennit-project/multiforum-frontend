@@ -12,6 +12,10 @@ export default defineComponent({
       type: String,
       default: "No label",
     },
+    highlighted: {
+      type: Boolean,
+      default: false
+    }
   },
 });
 </script>
@@ -20,6 +24,7 @@ export default defineComponent({
   <div class="inline-block">
     <VDropdown>
       <button
+        :class="[highlighted ? 'ring-1 ring-indigo-500 border-indigo-500' : '']"
         class="
           inline-flex
           items-center

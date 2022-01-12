@@ -100,7 +100,11 @@ export default defineComponent({
     let channelQueryString = computed(() => {
       return `
         query queryChannel ($first: Int, $offset: Int){
-          queryChannel (offset: $offset, first: $first${textFilters.value}) ${
+          queryChannel (
+            offset: $offset, 
+            first: $first
+            ${textFilters.value}
+          ) ${
         needsCascade.value ? cascadeText.value : ""
       }{
             name
@@ -170,6 +174,10 @@ export default defineComponent({
       selectedFilterOptions.value = "";
     };
 
+    const defaultLabels = {
+      tags: "Tags"
+    }
+
     const tagLabel = computed(() => {
       return getTagLabel(selectedTags.value);
     });
@@ -180,6 +188,7 @@ export default defineComponent({
       channelQuery,
       channelQueryString,
       channelResult,
+      defaultLabels,
       links,
       loadMore,
       openModal,
@@ -239,7 +248,7 @@ export default defineComponent({
         :search-placeholder="'Search channels'"
         @updateSearchInput="updateSearchResult"
       />
-      <FilterChip :label="tagLabel">
+      <FilterChip :label="tagLabel" :highlighted="tagLabel !== defaultLabels.tags">
         <template v-slot:icon>
           <TagIcon />
         </template>
