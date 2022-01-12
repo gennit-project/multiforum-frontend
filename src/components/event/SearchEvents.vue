@@ -40,6 +40,7 @@ import {
   weekdayObject,
   distanceOptions,
   distanceUnitOptions,
+  weekdayMap,
 } from "@/components/event/eventSearchOptions";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 import { router } from "@/router";
@@ -100,10 +101,10 @@ export default defineComponent({
 
     const getDefaultSelectedChannels = () => {
       if (channelId.value) {
-        return [channelId.value]
+        return [channelId.value];
       }
-      return props.routerChannels
-    }
+      return props.routerChannels;
+    };
 
     const selectedChannels: any = ref(getDefaultSelectedChannels());
     const searchInput: Ref<string> = ref("");
@@ -459,11 +460,11 @@ export default defineComponent({
     const { result: channelOptions } = useQuery(GET_CHANNEL_NAMES);
 
     const channelLabel = computed(() => {
-      return getChannelLabel(selectedChannels.value)
+      return getChannelLabel(selectedChannels.value);
     });
 
     const tagLabel = computed(() => {
-      return getTagLabel(selectedTags.value)
+      return getTagLabel(selectedTags.value);
     });
 
     const locationLabel = computed(() => {
@@ -515,6 +516,58 @@ export default defineComponent({
       } else {
         return "";
       }
+    });
+
+    const weeklyTimeLabel = computed(() => {
+      let weekdayLabels = [];
+      let selectedHourRangeLabels = [];
+      let selectedWeeklyHourRangeLabels = [];
+
+      // Populate weekday labels, ex. Saturdays and Sundays
+      for (let weekdayNumber in selectedWeekdays.value) {
+        if (selectedWeekdays.value[weekdayNumber] === true) {
+          const weekdayName = weekdayMap[weekdayNumber];
+          const weekdayLabel = `${weekdayName}s`;
+          weekdayLabels.push(weekdayLabel);
+        }
+      }
+
+      // Populate hour range labels, ex. 4-6pm, 2-4pm
+      for (let hourRange in selectedHourRanges.value) {
+        if (selectedHourRanges.value[hourRange] === true) {
+          const hourRangeLabel = `Any day at ${hourRange}`
+          selectedHourRangeLabels.push(hourRangeLabel);
+        }
+      }
+
+      // Populate weekly time slot labels, ex. Saturdays from 12-2pm
+      for (let weekdayNumber in selectedWeeklyHourRanges.value) {
+        const hourRangesForWeekday =
+          selectedWeeklyHourRanges.value[weekdayNumber];
+
+        for (let hourRange in hourRangesForWeekday) {
+          // Don't add "Wednesdays from 2-4pm" if "Wednesdays" is already added
+          // or if "2-4pm" is already added
+          if (
+            hourRangesForWeekday[hourRange] === true &&
+            selectedWeekdays.value[weekdayNumber] === false &&
+            selectedHourRanges.value[hourRange] === false
+          ) {
+            const timeSlotLabel = `${weekdayMap[weekdayNumber]}s from ${hourRange}`;
+            selectedWeeklyHourRangeLabels.push(timeSlotLabel);
+          }
+        }
+      }
+      const allLabels = [
+        ...weekdayLabels,
+        ...selectedHourRangeLabels,
+        ...selectedWeeklyHourRangeLabels,
+      ];
+
+      if (allLabels.length === 0) {
+        return "Weekday & Time";
+      }
+      return allLabels.join(", ");
     });
 
     const otherFiltersLabel = computed(() => {
@@ -581,6 +634,7 @@ export default defineComponent({
       startTimeFilter,
       tagLabel,
       tagOptions,
+      weeklyTimeLabel,
       weeklyTimeRangeFilter,
     };
   },
@@ -809,7 +863,9 @@ export default defineComponent({
     },
     setShowMap() {
       this.showMap = true;
-      const path = this.channelId ? `/channels/${this.channelId}/events` : "events";
+      const path = this.channelId
+        ? `/channels/${this.channelId}/events`
+        : "events";
       router.push({
         path,
         query: {
@@ -822,7 +878,9 @@ export default defineComponent({
     },
     setShowList() {
       this.showMap = false;
-      const path = this.channelId ? `/channels/${this.channelId}/events` : "events";
+      const path = this.channelId
+        ? `/channels/${this.channelId}/events`
+        : "events";
       router.push({
         path,
         query: {
@@ -981,9 +1039,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div
-      class="items-center mt-2 space-x-2 px-8"
-    >
+    <div class="items-center mt-2 space-x-2 px-8">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
@@ -996,7 +1052,7 @@ export default defineComponent({
         @showList="setShowList"
       />
       <AddToFeed v-if="channelId" />
-      <CreateEventButton/>
+      <CreateEventButton />
     </div>
     <div class="items-center mt-1 space-x-2 px-8">
       <FilterChip :label="dateLabel">
@@ -1029,7 +1085,7 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="'Weekday & Time'">
+      <FilterChip :label="weeklyTimeLabel">
         <template v-slot:icon>
           <TimeIcon />
         </template>
