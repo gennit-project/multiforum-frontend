@@ -7,8 +7,8 @@ interface Ref<T> {
 
 export default defineComponent({
   setup(props) {
-    const input: Ref<string> = ref(props.routerSearchTerms)
-    return { input }
+    const input: Ref<string> = ref(props.routerSearchTerms);
+    return { input };
   },
   props: {
     searchPlaceholder: {
@@ -17,12 +17,24 @@ export default defineComponent({
     },
     routerSearchTerms: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   methods: {
+    removeQuotationMarks(input: String) {
+      // Prevent errors when quotation marks are added
+      // to GraphQL query
+      return input
+        .split("'")
+        .join("")
+        .split('"')
+        .join("");
+    },
     updateSearchInput(e: any) {
-      this.$emit("updateSearchInput", e.target.value);
+      this.$emit(
+        "updateSearchInput",
+        this.removeQuotationMarks(e.target.value)
+      );
     },
   },
 });
