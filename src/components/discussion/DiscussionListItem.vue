@@ -81,8 +81,15 @@ export default defineComponent({
             <HighlightedSearchTerms :text="title" :search-input="searchInput" />
           </p>
 
-          <p class="line-clamp-2 text-sm font-medium text-gray-500">
+          <p class="line-clamp-2 text-sm font-medium text-gray-500 space-x-1">
             <HighlightedSearchTerms :text="body" :search-input="searchInput" />
+            <Tag
+            :highlighted-tags="selectedTags"
+            :key="tag"
+            v-for="tag in tags"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
           </p>
 
           <div class="text-sm">
@@ -114,13 +121,6 @@ export default defineComponent({
               {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
             </router-link>
           </div>
-          <Tag
-            :highlighted-tags="selectedTags"
-            :key="tag"
-            v-for="tag in tags"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
-          />
         </div>
       </div>
       <div class="col-span-1">
