@@ -7,6 +7,7 @@ import { ApolloClient, InMemoryCache } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import config from "./config";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
+import '@github/markdown-toolbar-element'
 
 const VTooltipPlugin = require("v-tooltip");
 
@@ -48,6 +49,10 @@ const app = createApp({
 
   render: () => h(App),
 });
+
+// app.config.compilerOptions.isCustomElement = tag => {
+//   return tag.startsWith('md-') || tag.startsWith('markdown-')
+// }
 
 app
   .use(router)

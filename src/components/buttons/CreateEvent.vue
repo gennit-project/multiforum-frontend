@@ -1,12 +1,18 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import { router } from "@/router";
+
+// need to get channel id, render differently if clicked within channel
 
 export default defineComponent({
-  setup() {},
+  setup() {
+    return { router }
+  },
 });
 </script>
 <template>
   <button
+    @click="router.push('/events/create')"
     class="
           inline-flex
           items-center
