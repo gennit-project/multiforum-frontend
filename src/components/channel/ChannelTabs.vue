@@ -42,7 +42,7 @@ export default defineComponent({
   <div>
     <div class="sm:hidden px-8">
       <label for="tabs" class="sr-only">Select a tab</label>
-      <!-- Use an "onChange" listener to redirect the user to the selected tab URL. -->
+      <!-- Use an "onChange" listener to redirect the user to the selected tab uniqueName. -->
       <select
         v-model="selectedTab"
         @change="redirect($event)"

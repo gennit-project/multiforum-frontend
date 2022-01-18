@@ -45,7 +45,7 @@ export default defineComponent({
             clickable: true,
             draggable: true,
             icon: {
-              url: require('@/assets/images/place-icon.svg').default,
+              uniqueName: require('@/assets/images/place-icon.svg').default,
               scaledSize: { width: 20, height: 20 },
             },
           });

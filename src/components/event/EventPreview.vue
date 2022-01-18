@@ -148,18 +148,18 @@ export default defineComponent({
         {{ `Posted in: ` }}
         <router-link
           class="ml-1 text-indigo-600 underline"
-          :key="channel.url"
+          :key="channel.uniqueName"
           v-for="channel in event?.Channels"
-          :to="`/channels/${channel.url}/events/${event?.id}`"
+          :to="`/channels/${channel.uniqueName}/events/${event?.id}`"
         >
-          {{ channel.url }}
+          {{ channel.uniqueName }}
         </router-link>
       </p>
 
       <hr class="mb-6 mt-3" />
       <div v-if="event" class="mt-3 text-sm">
         <router-link
-          :to="`/channels/${event.Channels[0].url}/events/${event.id}`"
+          :to="`/channels/${event.Channels[0].uniqueName}/events/${event.id}`"
           class="font-medium text-indigo-600 hover:text-indigo-500"
         >
           View Comments

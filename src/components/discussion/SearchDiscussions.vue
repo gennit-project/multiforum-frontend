@@ -83,7 +83,7 @@ export default defineComponent({
     });
 
     let channelFilter = computed(() => {
-      return `(filter: { url: { anyofterms: "${selectedChannels.value.join(
+      return `(filter: { uniqueName: { anyofterms: "${selectedChannels.value.join(
         " "
       )}"}})`;
     });
@@ -127,7 +127,7 @@ export default defineComponent({
             Channels ${
               selectedChannels.value.length > 0 ? channelFilter.value : ""
             }{
-              url
+              uniqueName
             }
             title
             body
@@ -153,7 +153,7 @@ export default defineComponent({
                 id
               }
               Channel {
-                url
+                uniqueName
               }
             }
           }
@@ -273,7 +273,7 @@ export default defineComponent({
       return options.map((tag) => tag.text);
     },
     getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.url);
+      return options.map((channel) => channel.uniqueName);
     },
     updateSearchResult(input: string) {
       this.setSearchInput(input);

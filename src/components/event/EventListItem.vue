@@ -59,14 +59,14 @@ export default defineComponent({
       return ` ${count} comment${count === 1 ? "" : "s"}`;
     },
     getChannel(commentSection: CommentSectionData) {
-      return commentSection.Channel.url;
+      return commentSection.Channel.uniqueName;
     },
   },
   data(props) {
     return {
       previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
-      defaultUrl: props.event.Channels[0].url,
+      defaultUniqueName: props.event.Channels[0].uniqueName,
     };
   },
   components: {
@@ -119,14 +119,14 @@ export default defineComponent({
           {{ `Posted in: ` }}
           <router-link
             :class="[
-              selectedChannels.indexOf(channel.url) !== -1 ? 'highlighted' : '',
+              selectedChannels.indexOf(channel.uniqueName) !== -1 ? 'highlighted' : '',
             ]"
             class="ml-1 text-indigo-600 underline"
-            :key="channel.url"
+            :key="channel.uniqueName"
             v-for="channel in event?.Channels"
-            :to="`/channels/${channel.url}/events/${event?.id}`"
+            :to="`/channels/${channel.uniqueName}/events/${event?.id}`"
           >
-            {{ channel.url }}
+            {{ channel.uniqueName }}
           </router-link>
         </p>
         <div class="grid auto-cols-auto">
@@ -155,7 +155,7 @@ export default defineComponent({
         <div class="text-sm">
           <router-link
             v-if="isWithinChannel && event.CommentSections[0]"
-            :to="`/channels/${defaultUrl}/events/${event.id}`"
+            :to="`/channels/${defaultUniqueName}/events/${event.id}`"
             class="font-medium text-gray-500"
           >
             {{ getCommentCount(event.CommentSections[0]) }}

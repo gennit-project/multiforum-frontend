@@ -50,7 +50,7 @@ export default defineComponent({
           alloftext: "${searchInput.value}"
         }, 
         or: { 
-          url: { 
+          uniqueName: { 
             alloftext: "${searchInput.value}"
           }
         }, }`;
@@ -104,13 +104,11 @@ export default defineComponent({
             offset: $offset, 
             first: $first
             ${textFilters.value}
-          ) ${
-        needsCascade.value ? cascadeText.value : ""
-      }{
+          ) ${needsCascade.value ? cascadeText.value : ""}{
             name
-            url
+            uniqueName
             description
-            Posters {
+            Admins {
               username
             }
             DiscussionsAggregate {
@@ -128,9 +126,13 @@ export default defineComponent({
     });
 
     let channelQuery = computed(() => {
-      return gql`
-        ${channelQueryString.value}
-      `;
+      try {
+        return gql`
+          ${channelQueryString.value}
+        `;
+      } catch (err) {
+        throw new Error(err);
+      }
     });
 
     const {
@@ -175,8 +177,8 @@ export default defineComponent({
     };
 
     const defaultLabels = {
-      tags: "Tags"
-    }
+      tags: "Tags",
+    };
 
     const tagLabel = computed(() => {
       return getTagLabel(selectedTags.value);
@@ -210,7 +212,7 @@ export default defineComponent({
       queryChannel: [],
     };
   },
-  
+
   props: {
     routerTags: {
       type: Array as PropType<Array<string>>,
@@ -228,7 +230,7 @@ export default defineComponent({
       return options.map((tag) => tag.text);
     },
     getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.url);
+      return options.map((channel) => channel.uniqueName);
     },
     updateSearchResult(input: string) {
       this.setSearchInput(input);
@@ -248,7 +250,10 @@ export default defineComponent({
         :search-placeholder="'Search channels'"
         @updateSearchInput="updateSearchResult"
       />
-      <FilterChip :label="tagLabel" :highlighted="tagLabel !== defaultLabels.tags">
+      <FilterChip
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultLabels.tags"
+      >
         <template v-slot:icon>
           <TagIcon />
         </template>

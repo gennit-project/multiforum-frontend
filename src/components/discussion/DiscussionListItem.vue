@@ -41,7 +41,7 @@ export default defineComponent({
   data(props) {
     return {
       previewIsOpen: false,
-      defaultUrl: props.discussion.CommentSections[0].Channel.url,
+      defaultuniqueName: props.discussion.CommentSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body,
       createdDate: props.discussion.createdDate,
@@ -62,7 +62,7 @@ export default defineComponent({
       return ` ${count} comment${count === 1 ? "" : "s"}`;
     },
     getChannel(commentSection: CommentSectionData) {
-      return commentSection.Channel.url;
+      return commentSection.Channel.uniqueName;
     },
   },
   inheritAttrs: false,
@@ -95,7 +95,7 @@ export default defineComponent({
           <div class="text-sm">
             <router-link
               v-if="isWithinChannel"
-              :to="`/channels/${defaultUrl}/discussions/${discussion.id}`"
+              :to="`/channels/${defaultUniqueName}/discussions/${discussion.id}`"
               class="font-medium text-gray-500"
             >
               {{ getCommentCount(discussion.CommentSections[0]) }}

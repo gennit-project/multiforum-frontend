@@ -6,7 +6,7 @@ type User {
   bio: String
   isAdmin: Boolean
   Comments: [Comment!] @hasInverse(field: UserAuthor)
-  PosterOfChannels: [Channel!] @hasInverse(field: Posters)
+  AdminOfChannels: [Channel!] @hasInverse(field: Admins)
   ModeratorOfChannels: [Channel!] @hasInverse(field: Moderators)
   Discussions: [Discussion!] @hasInverse(field: Author)
   Events: [Event!] @hasInverse(field: Poster)
@@ -40,8 +40,8 @@ type User {
 type Channel {
   description: String @search(by: [fulltext])
   name: String! @search(by: [fulltext])
-  url: String! @id @search(by: [term, fulltext])
-  Posters: [User] @hasInverse(field: PosterOfChannels)
+  uniqueName: String! @id @search(by: [term, fulltext])
+  Admins: [User] @hasInverse(field: AdminOfChannels)
   Moderators: [User] @hasInverse(field: ModeratorOfChannels)
   Discussions: [Discussion!] @hasInverse(field: Channels)
   RelatedChannels: [Channel!] @hasInverse(field: RelatedChannels)
@@ -75,6 +75,8 @@ type Discussion {
 }
 
 type CommentSection {
+  # Must have a Channel and either a Discussion or an Event.
+  # Channel is technically optional because channels can be deleted.
   id: ID!
   Comments: [Comment] @hasInverse(field: CommentSection)
   Discussion: Discussion @hasInverse(field: CommentSections)
