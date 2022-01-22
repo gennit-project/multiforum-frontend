@@ -17,29 +17,38 @@ export default defineComponent({
 </script>
 
 <template>
-  <nav class="flex cursor-pointer px-3 transparent-bottom-border" :class="[
+  <nav class="flex cursor-pointer px-3 link rounded-t-md " :class="[
         active
-          ? 'active-link border rounded-t-md'
-          : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
+          ? 'active-border text-gray-800'
+          : 'inactive-border text-gray-400 hover:bg-white',
         'whitespace-nowrap py-2 font-medium text-sm',
       ]" aria-label="Tabs">
-    <p
-      
-      :aria-current="active ? 'page' : undefined"
-    >
+
       {{ label }}
-    </p>
   </nav>
 </template>
 
 <style>
-.active-link {
-    color: #495057;
-    background-color: #fff;
-    border-color: #dee2e6 #dee2e6 #fff;
+
+
+.active-border {
+   border-top: 1px solid gray;
+   border-left: 1px solid gray;
+   border-right: 1px solid gray;
+   border-bottom: 1px solid white;
 }
 
-.transparent-bottom-bborder {
-    border-bottom: 1px solid transparent;
+.inactive-border {
+   border-top: 1px solid lightgray;
+   border-left: 1px solid lightgray;
+   border-right: 1px solid lightgray;
+   border-bottom: 1px solid transparent;;
+}
+
+.link {
+    margin-bottom: -1px;
+    display: block;
+    padding: 0.5rem 1rem;
+    text-decoration: none;
 }
 </style>
