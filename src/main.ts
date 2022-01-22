@@ -18,7 +18,7 @@ const cache = new InMemoryCache({
       keyFields: ["text"],
     },
     Channel: {
-      keyFields: ["url"],
+      keyFields: ["uniqueName"],
     },
     Discussion: {
       keyFields: ["id"],

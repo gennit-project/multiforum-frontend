@@ -140,7 +140,12 @@ export default defineComponent({
       loading: channelLoading,
       refetch: refetchChannels,
       fetchMore,
+      error
     } = useQuery(channelQuery, { first: 20, offset: 0 });
+
+    if (error.value) {
+      alert(JSON.stringify(error.value))
+    }
 
     const reachedEndOfResults = ref(false);
 
