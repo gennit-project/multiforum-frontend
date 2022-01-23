@@ -102,7 +102,7 @@ export default defineComponent({
         v-model="text"
       ></textarea>
       <Markdown
-        class="prose"
+        class="prose prose-sm"
         v-show="showFormatted"
         :source="text"
         linkify
@@ -115,7 +115,7 @@ export default defineComponent({
 
 <style>
 .textbox {
-  min-height: 100px;
+  min-height: 150px;
   max-height: 500px;
 }
 
