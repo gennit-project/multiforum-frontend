@@ -50,10 +50,6 @@ const app = createApp({
   render: () => h(App),
 });
 
-// app.config.compilerOptions.isCustomElement = tag => {
-//   return tag.startsWith('md-') || tag.startsWith('markdown-')
-// }
-
 app
   .use(router)
   .use(VTooltipPlugin)

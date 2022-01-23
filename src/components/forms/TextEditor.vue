@@ -2,10 +2,12 @@
 import { defineComponent, ref } from "vue";
 import CommentTab from "@/components/forms/CommentTab.vue";
 import "@github/markdown-toolbar-element";
+const Markdown = require("vue3-markdown-it").default;
 
 export default defineComponent({
   components: {
     CommentTab,
+    Markdown,
   },
   setup() {
     const showFormatted = ref(false);
@@ -40,7 +42,11 @@ export default defineComponent({
         />
       </div>
       <div class="float-right mr-1 mt-3">
-        <markdown-toolbar for="textarea_id" class="block space-x-0.5">
+        <markdown-toolbar
+          v-show="!showFormatted"
+          for="markdown_textarea"
+          class="block space-x-0.5"
+        >
           <md-bold class="p-1 rounded hover:text-indigo-600"
             ><i class="fas fa-bold"></i
           ></md-bold>
@@ -79,8 +85,8 @@ export default defineComponent({
     </div>
     <div class="py-1 px-2">
       <textarea
-        v-show="showFormatted === false"
-        id="textarea_id"
+        id="markdown_textarea"
+        v-show="!showFormatted"
         class="
           mt-1
           shadow-sm
@@ -90,15 +96,16 @@ export default defineComponent({
           sm:text-sm
           border border-gray-300
           rounded-md
+          textbox
         "
         placeholder="preformatted"
         v-model="text"
       ></textarea>
-      <textarea
-        v-show="showFormatted === true"
-        id="textarea_id"
+      <Markdown
         class="
           mt-1
+          py-2
+          px-3
           shadow-sm
           block
           w-full
@@ -106,17 +113,18 @@ export default defineComponent({
           sm:text-sm
           border border-gray-300
           rounded-md
+          textbox
         "
-        placeholder="formatted"
-        v-model="text"
-      ></textarea>
+        v-show="showFormatted"
+        :source="text"
+      />
       <p class="text-xs">Markdown formatting is supported</p>
     </div>
   </div>
 </template>
 
-<style>
-textarea {
+<style scoped>
+.textbox {
   min-height: 100px;
   max-height: 500px;
 }
