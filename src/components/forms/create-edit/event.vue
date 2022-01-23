@@ -5,19 +5,28 @@ import { gql } from "@apollo/client/core";
 import { useRoute } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
-import CancelButton from "@/components/buttons/CancelButton.vue"
-import SaveButton from "@/components/buttons/SaveButton.vue"
+import CancelButton from "@/components/buttons/CancelButton.vue";
+import SaveButton from "@/components/buttons/SaveButton.vue";
 import TextEditor from "@/components/forms/TextEditor.vue";
 import FormTitle from "@/components/forms/FormTitle.vue";
 import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
+import TextInput from "@/components/forms/TextInput.vue";
 const { DateTime } = require("luxon");
 
 const MINUTES_IN_A_DAY = 1440;
 
 export default defineComponent({
   name: "CreateEditEvent",
-  components: { TextEditor, Form, FormTitle, FormRow, CancelButton, SaveButton },
+  components: {
+    TextEditor,
+    Form,
+    FormTitle,
+    FormRow,
+    CancelButton,
+    SaveButton,
+    TextInput,
+  },
   setup() {
     const now = DateTime.now();
 
@@ -377,6 +386,8 @@ export default defineComponent({
       latitude,
       longitude,
       tagsError,
+      title,
+      description,
       tagsLoading,
       virtualEventUrl,
     };
@@ -500,37 +511,28 @@ export default defineComponent({
       const variables = this.getVariablesForAddEvent();
       this.addEvent(...variables);
     },
+    updateTitle(updated: String) {
+      this.title = updated;
+    }
   },
 });
 </script>
 <template>
-<div>
-  <Form>
-   <div v-if="channelLoading || tagsLoading"></div>
+  <div>
+    <Form>
+      <div v-if="channelLoading || tagsLoading"></div>
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div>
           <FormTitle> Create Event </FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <div class="flex rounded-md shadow-sm">
-                <input
-                  type="text"
-                  name="username"
-                  id="username"
-                  class="
-                    flex-1
-                    block
-                    w-full
-                    focus:ring-indigo-500 focus:border-indigo-500
-                    min-w-0
-                    rounded-none rounded-r-md
-                    sm:text-sm
-                    border-gray-300
-                  "
-                />
-              </div>
+              <TextInput :value="title" @update="updateTitle"/>
             </FormRow>
+
+            <FormRow :section-title="'When'"> Enter time data here </FormRow>
+
+            <FormRow :section-title="'Where'"> Enter location here </FormRow>
 
             <FormRow :section-title="'More Info'">
               <TextEditor />
@@ -541,8 +543,8 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton/>
-          <SaveButton @click="onSubmit"/>
+          <CancelButton />
+          <SaveButton @click="onSubmit" />
         </div>
       </div>
     </Form>
