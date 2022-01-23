@@ -10,7 +10,7 @@ import Discussion from "./components/discussion/Discussion.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
 import SiteSettings from "./components/SiteSettings.vue";
-import CreateEventForm from "@/components/forms/CreateEvent.vue"
+import CreateEventForm from "@/components/forms/CreateEditEvent.vue"
 
 export const router = createRouter({
   history: createWebHistory(),

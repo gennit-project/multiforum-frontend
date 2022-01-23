@@ -1,5 +1,4 @@
 const { DateTime, Interval } = require("luxon");
-// TODO: Use luxon types instead of 'any' for DateTime objects
 
 const relativeTime = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);
@@ -42,7 +41,7 @@ const durationHoursAndMinutes = (startISO: string, endISO: string) => {
   }
 };
 
-const formatDuration = (eventDurationObj: any) => {
+const formatDuration = (eventDurationObj: typeof DateTime) => {
   const { hours, minutes } = eventDurationObj;
 
   if (hours === 0) {
@@ -62,7 +61,7 @@ const formatDuration = (eventDurationObj: any) => {
   }
 };
 
-const formatAbbreviatedDuration = (eventDurationObj: any) => {
+const formatAbbreviatedDuration = (eventDurationObj: typeof DateTime) => {
   const { hours, minutes } = eventDurationObj;
 
   if (hours === 0) {
@@ -105,12 +104,27 @@ const compareDate = (e1: any, e2: any) => {
   return 0;
 };
 
+const getReadableTimeFromISO = (timeISO: string)=>{
+  const timeObject = DateTime.fromISO(timeISO)
+  // TIME_SIMPLE yields the time in this format: 1:30 PM
+  const humanReadableTime = timeObject.toLocaleString(DateTime.TIME_SIMPLE)
+  return humanReadableTime
+}
+const convertTimeToReadableFormat = (time: string) => {
+  const timeObject = DateTime.fromISO(time)
+  const humanReadableTime = timeObject.toLocaleString(DateTime.TIME_SIMPLE)
+  return humanReadableTime;
+}
+
+
 export {
+  compareDate,
+  convertTimeToReadableFormat,
   formatDuration,
   formatAbbreviatedDuration,
   relativeTime,
   relativeTimeHoursAndMinutes,
   durationHoursAndMinutes,
   getDurationObj,
-  compareDate,
+  getReadableTimeFromISO,
 };

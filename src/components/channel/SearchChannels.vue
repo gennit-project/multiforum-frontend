@@ -2,7 +2,6 @@
 import { defineComponent, computed, ref, PropType } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import ChannelList from "./ChannelList.vue";
-// import TagPicker from "@/components/forms/TagPicker.vue";
 import { gql } from "@apollo/client/core";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { TagData } from "@/types/tagTypes.d";
