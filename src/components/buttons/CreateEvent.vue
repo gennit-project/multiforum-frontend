@@ -21,7 +21,7 @@ export default defineComponent({
           max-height-4
           px-2.5
           py-1.5
-          border border-transparent
+          border border-indigo-700
           text-xs
           font-medium
           rounded

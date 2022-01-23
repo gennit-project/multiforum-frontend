@@ -27,7 +27,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="m-5 border rounded max-w-3xl">
+  <div class="border rounded max-w-3xl">
     <div class="tabs">
       <div class="inline-flex space-x-3 pl-2 pr-2 pt-2">
         <CommentTab

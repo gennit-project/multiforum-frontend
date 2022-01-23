@@ -33,12 +33,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div className="App">
+  <div class="bg-gray-100 h-screen">
     <nav class="bg-gray-800">
       <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
       <SiteSidenav :show-mobile-dropdown="showMobileDropdown" />
     </nav>
-    <div v-if="!channelId" class="mt-2">
+    <div v-if="!channelId">
       <router-view></router-view>
     </div>
     

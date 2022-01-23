@@ -33,12 +33,12 @@ export default defineComponent({
           max-height-4
           px-2.5
           py-1.5
-          border border-transparent
+          border
           text-xs
           font-medium
           rounded
           text-gray-700
-          bg-gray-100
+          bg-white
           hover:bg-gray-200
           focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
         "
