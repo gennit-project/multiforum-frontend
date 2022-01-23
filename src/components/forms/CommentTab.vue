@@ -20,7 +20,7 @@ export default defineComponent({
   <nav class="flex cursor-pointer px-3 link rounded-t-md " :class="[
         active
           ? 'active-border text-gray-800'
-          : 'inactive-border text-gray-400 hover:bg-white',
+          : 'inactive-border text-gray-400 hover:text-gray-800',
         'whitespace-nowrap py-2 font-medium text-sm',
       ]" aria-label="Tabs">
 

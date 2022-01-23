@@ -99,7 +99,7 @@ export default defineComponent({
         v-model="text"
       ></textarea>
       <Markdown
-        class="prose prose-sm"
+        class="prose prose-sm textbox"
         v-show="showFormatted"
         :source="text"
         linkify
@@ -113,7 +113,6 @@ export default defineComponent({
 <style>
 .textbox {
   min-height: 150px;
-  max-height: 500px;
 }
 
 .tabs {
