@@ -74,9 +74,6 @@ export default defineComponent({
           <md-ordered-list class="p-1 rounded hover:text-indigo-600"
             ><i class="fas fa-list-ol"></i
           ></md-ordered-list>
-          <md-task-list class="p-1 rounded hover:text-indigo-600"
-            ><i class="far fa-check-square"></i
-          ></md-task-list>
           <!-- <md-mention>@</md-mention>
       <md-ref>#</md-ref>
       <button data-md-button>Custom button</button> -->
