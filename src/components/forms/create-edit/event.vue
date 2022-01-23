@@ -5,14 +5,19 @@ import { gql } from "@apollo/client/core";
 import { useRoute } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
-import TextEditor from "./TextEditor.vue";
+import CancelButton from "@/components/buttons/CancelButton.vue"
+import SaveButton from "@/components/buttons/SaveButton.vue"
+import TextEditor from "@/components/forms/TextEditor.vue";
+import FormTitle from "@/components/forms/FormTitle.vue";
+import FormRow from "@/components/forms/FormRow.vue";
+import Form from "@/components/forms/Form.vue";
 const { DateTime } = require("luxon");
 
 const MINUTES_IN_A_DAY = 1440;
 
 export default defineComponent({
   name: "CreateEditEvent",
-  components: { TextEditor },
+  components: { TextEditor, Form, FormTitle, FormRow, CancelButton, SaveButton },
   setup() {
     const now = DateTime.now();
 
@@ -100,7 +105,9 @@ export default defineComponent({
     } = useQuery(GET_TAGS);
 
     if (tagsData.value) {
-      const tagOptions = tagsData.value.queryTag.map((tag: TagData) => tag.text);
+      const tagOptions = tagsData.value.queryTag.map(
+        (tag: TagData) => tag.text
+      );
       tagList.value = tagOptions;
     }
 
@@ -497,133 +504,48 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="bg-gray-100 pt-8 pb-8 h-full">
-    <div v-if="channelLoading || tagsLoading"></div>
-
-    <form class="mx-auto space-y-8 divide-y divide-gray-200 max-w-4xl border bg-white p-8 shadow rounded">
+<div>
+  <Form>
+   <div v-if="channelLoading || tagsLoading"></div>
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div>
-          <div>
-            <h1 class="text-lg leading-6 font-medium text-gray-900">
-              Create Event
-            </h1>
-          </div>
+          <FormTitle> Create Event </FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-            <div
-              class="
-                sm:grid
-                sm:grid-cols-3
-                sm:gap-4
-                sm:items-start
-                sm:border-t
-                sm:border-gray-200
-                sm:pt-5
-              "
-            >
-              <label
-                for="title"
-                class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-              >
-                Title
-              </label>
-              <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <div class="flex rounded-md shadow-sm">
-                  <input
-                    type="text"
-                    name="username"
-                    id="username"
-                    class="
-                      flex-1
-                      block
-                      w-full
-                      focus:ring-indigo-500 focus:border-indigo-500
-                      min-w-0
-                      rounded-none rounded-r-md
-                      sm:text-sm
-                      border-gray-300
-                    "
-                  />
-                </div>
+            <FormRow :section-title="'Title'">
+              <div class="flex rounded-md shadow-sm">
+                <input
+                  type="text"
+                  name="username"
+                  id="username"
+                  class="
+                    flex-1
+                    block
+                    w-full
+                    focus:ring-indigo-500 focus:border-indigo-500
+                    min-w-0
+                    rounded-none rounded-r-md
+                    sm:text-sm
+                    border-gray-300
+                  "
+                />
               </div>
-            </div>
+            </FormRow>
 
-            <div
-              class="
-                sm:grid
-                sm:grid-cols-3
-                sm:gap-4
-                sm:items-start
-                sm:border-t
-                sm:border-gray-200
-                sm:pt-5
-              "
-            >
-              <label
-                for="about"
-                class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2"
-              >
-                About
-              </label>
-              <div class="mt-1 sm:mt-0 sm:col-span-2">
-                <TextEditor />
-              </div>
-            </div>
+            <FormRow :section-title="'More Info'">
+              <TextEditor />
+            </FormRow>
           </div>
         </div>
       </div>
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <button
-            type="button"
-            class="
-              bg-white
-              py-2
-              px-4
-              border border-gray-300
-              rounded-md
-              shadow-sm
-              text-sm
-              font-medium
-              text-gray-700
-              hover:bg-gray-50
-              focus:outline-none
-              focus:ring-2
-              focus:ring-offset-2
-              focus:ring-indigo-500
-            "
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            @click="onSubmit"
-            class="
-              ml-3
-              inline-flex
-              justify-center
-              py-2
-              px-4
-              border border-transparent
-              shadow-sm
-              text-sm
-              font-medium
-              rounded-md
-              text-white
-              bg-indigo-600
-              hover:bg-indigo-700
-              focus:outline-none
-              focus:ring-2
-              focus:ring-offset-2
-              focus:ring-indigo-500
-            "
-          >
-            Save
-          </button>
+          <CancelButton/>
+          <SaveButton @click="onSubmit"/>
         </div>
       </div>
-    </form>
+    </Form>
 
     <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
       {{ error.message }}
