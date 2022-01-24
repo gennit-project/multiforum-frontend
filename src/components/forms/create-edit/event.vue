@@ -14,11 +14,14 @@ import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "../ChannelPicker.vue";
 import TagPicker from "../TagPicker.vue";
+import Select from "@/components/forms/Select.vue";
 import { DatePicker } from "v-calendar";
 import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
+import { ADD_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import { ADD_EVENT } from "@/graphQLData/event/mutations";
 const { DateTime } = require("luxon");
 
 const MINUTES_IN_A_DAY = 1440;
@@ -33,6 +36,7 @@ export default defineComponent({
     FormRow,
     FormTitle,
     SaveButton,
+    Select,
     TagPicker,
     TextEditor,
     TextInput,
@@ -74,7 +78,6 @@ export default defineComponent({
     const address = ref("");
     const placeId = ref("");
 
-    // const howToFindLocation = ref("");
     const virtualEventUrl = ref("");
 
     const isInPrivateResidence = ref("false");
@@ -99,7 +102,6 @@ export default defineComponent({
       error: channelError,
       result: channelData,
     } = useQuery(GET_CHANNEL_NAMES);
-
 
     const GET_TAGS = gql`
       query getTags {
@@ -182,137 +184,7 @@ export default defineComponent({
       return variablesForAnyEvent;
     };
 
-    const ADD_COMMENT_SECTION = gql`
-      mutation addCommentSection(
-        $commentSectionObjects: [AddCommentSectionInput!]!
-      ) {
-        addCommentSection(input: $commentSectionObjects, upsert: true) {
-          commentSection {
-            id
-            Channel {
-              url
-            }
-            CommentsAggregate {
-              count
-            }
-            Discussion {
-              id
-            }
-            Event {
-              id
-            }
-            Comments {
-              id
-              text
-              UserAuthor {
-                username
-              }
-              Channel {
-                uniqueName
-              }
-              deleted
-              createdDate
-              editedDate
-              Tags {
-                text
-              }
-            }
-          }
-        }
-      }
-    `;
-
     const { mutate: addCommentSection } = useMutation(ADD_COMMENT_SECTION);
-
-    const ADD_EVENT = gql`
-      mutation addEvent(
-        $title: String!
-        $description: String
-        $startTime: DateTime!
-        $startTimeYear: String!
-        $startTimeMonth: String!
-        $startTimeDayOfMonth: String!
-        $startTimeDayOfWeek: String!
-        $startTimeHourOfDay: Int!
-        $endTime: DateTime!
-        $Communities: [CommunityRef!]
-        $Tags: [TagRef!]
-        $locationName: String
-        $address: String
-        $howToFindLocation: String
-        $virtualEventUrl: String
-        $organizer: String!
-        $createdDate: DateTime!
-        $isInPrivateResidence: Boolean
-        $cost: String
-        $placeId: String
-        $location: PointRef
-      ) {
-        addEvent(
-          input: [
-            {
-              title: $title
-              description: $description
-              startTime: $startTime
-              startTimeYear: $startTimeYear
-              startTimeMonth: $startTimeMonth
-              startTimeDayOfMonth: $startTimeDayOfMonth
-              startTimeDayOfWeek: $startTimeDayOfWeek
-              startTimeHourOfDay: $startTimeHourOfDay
-              endTime: $endTime
-              Communities: $Communities
-              Tags: $Tags
-              locationName: $locationName
-              address: $address
-              howToFindLocation: $howToFindLocation
-              virtualEventUrl: $virtualEventUrl
-              Organizer: { username: $organizer }
-              createdDate: $createdDate
-              isInPrivateResidence: $isInPrivateResidence
-              cost: $cost
-              placeId: $placeId
-              location: $location
-              canceled: false
-            }
-          ]
-        ) {
-          event {
-            id
-            title
-            description
-            Communities {
-              url
-            }
-            Organizer {
-              username
-            }
-            locationName
-            address
-            howToFindLocation
-            startTime
-            startTimeYear
-            startTimeMonth
-            startTimeDayOfMonth
-            startTimeDayOfWeek
-            startTimeHourOfDay
-            endTime
-            virtualEventUrl
-            createdDate
-            isInPrivateResidence
-            cost
-            placeId
-            location {
-              latitude
-              longitude
-            }
-            canceled
-            Tags {
-              text
-            }
-          }
-        }
-      }
-    `;
 
     const { mutate: addEvent } = useMutation(ADD_EVENT, {
       errorPolicy: "all",
@@ -457,11 +329,11 @@ export default defineComponent({
       // are only for later today.
       if (startTimeObj.startOf("day").toISO() === startOfToday.toISO()) {
         let endOfDay = startTimeObj.endOf("day");
-        let currentOption = startTimeObj.plus({ minutes: 60 });
+        let currentOption = startTimeObj.plus({ minutes: 30 });
         while (currentOption < endOfDay) {
           let optionAsISO = currentOption.toISO();
           startTimeISOs.push(optionAsISO);
-          currentOption = currentOption.plus({ minutes: 120 });
+          currentOption = currentOption.plus({ minutes: 30 });
         }
         return startTimeISOs;
       }
@@ -475,6 +347,14 @@ export default defineComponent({
         startTimeISOs.push(startTimeISO);
       }
       return startTimeISOs;
+    },
+    startTimeOptions() {
+      return this.startTimeISOs.map((iso: string) => {
+        return {
+          label: getReadableTimeFromISO(iso),
+          value: iso,
+        };
+      });
     },
     eventLength() {
       let humanReadableEndTime = this.getReadableTimeFromISO(this.endTimeISO);
@@ -522,7 +402,7 @@ export default defineComponent({
     },
     updateDescription(updated: string) {
       this.description = updated;
-    }
+    },
   },
 });
 </script>
@@ -536,7 +416,11 @@ export default defineComponent({
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <TextInput :value="title" @update="updateTitle" />
+              <TextInput
+                :value="title"
+                :full-width="true"
+                @update="updateTitle"
+              />
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
@@ -551,25 +435,40 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Time'">
-              <DatePicker
-                v-model="startTime"
-                mode="date"
-                :minute-increment="30"
-              >
-                <template v-slot="{ inputValue, inputEvents }">
-                  <input
-                    class="
-                      px-2
-                      py-1
-                      border
-                      rounded
-                      focus:outline-none focus:border-blue-300
-                    "
-                    :value="inputValue"
-                    v-on="inputEvents"
-                  />
-                </template>
-              </DatePicker>
+              <div class="sm:inline-block md:flex items-center space-x-2">
+                <DatePicker
+                  v-model="startTime"
+                  mode="date"
+                  :minute-increment="30"
+                >
+                  <template v-slot="{ inputValue, inputEvents }">
+                    <input
+                      class="
+                        px-2
+                        py-1.5
+                        border
+                        rounded
+                        focus:ring-indigo-500 focus:border-indigo-500
+                        border-gray-300
+                      "
+                      :value="inputValue"
+                      v-on="inputEvents"
+                    />
+                  </template>
+                </DatePicker>
+
+                <Select
+                  :options="startTimeOptions"
+                  :selected-option="startTimeOptions[0]"
+                />
+
+                <span class="m-1">to</span>
+
+                <Select
+                  :options="startTimeOptions"
+                  :selected-option="startTimeOptions[0]"
+                />
+              </div>
             </FormRow>
 
             <FormRow :section-title="'Virtual Event URL'"> URL </FormRow>
@@ -577,7 +476,7 @@ export default defineComponent({
             <FormRow :section-title="'Address'"> Address </FormRow>
 
             <FormRow :section-title="'More Info'">
-              <TextEditor :value="description" @update="updateDescription"/>
+              <TextEditor :value="description" @update="updateDescription" />
             </FormRow>
 
             <FormRow :section-title="'Tags'">

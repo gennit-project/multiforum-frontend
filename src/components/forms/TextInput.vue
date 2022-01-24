@@ -24,7 +24,6 @@ export default defineComponent({
       class="
         flex-1
         block
-        w-full
         focus:ring-indigo-500 focus:border-indigo-500
         min-w-0
         rounded-none rounded-r-md

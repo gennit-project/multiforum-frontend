@@ -1,7 +1,95 @@
 import { gql } from "@apollo/client/core";
 
 
-
+export const ADD_EVENT = gql`
+      mutation addEvent(
+        $title: String!
+        $description: String
+        $startTime: DateTime!
+        $startTimeYear: String!
+        $startTimeMonth: String!
+        $startTimeDayOfMonth: String!
+        $startTimeDayOfWeek: String!
+        $startTimeHourOfDay: Int!
+        $endTime: DateTime!
+        $Communities: [CommunityRef!]
+        $Tags: [TagRef!]
+        $locationName: String
+        $address: String
+        $howToFindLocation: String
+        $virtualEventUrl: String
+        $organizer: String!
+        $createdDate: DateTime!
+        $isInPrivateResidence: Boolean
+        $cost: String
+        $placeId: String
+        $location: PointRef
+      ) {
+        addEvent(
+          input: [
+            {
+              title: $title
+              description: $description
+              startTime: $startTime
+              startTimeYear: $startTimeYear
+              startTimeMonth: $startTimeMonth
+              startTimeDayOfMonth: $startTimeDayOfMonth
+              startTimeDayOfWeek: $startTimeDayOfWeek
+              startTimeHourOfDay: $startTimeHourOfDay
+              endTime: $endTime
+              Communities: $Communities
+              Tags: $Tags
+              locationName: $locationName
+              address: $address
+              howToFindLocation: $howToFindLocation
+              virtualEventUrl: $virtualEventUrl
+              Organizer: { username: $organizer }
+              createdDate: $createdDate
+              isInPrivateResidence: $isInPrivateResidence
+              cost: $cost
+              placeId: $placeId
+              location: $location
+              canceled: false
+            }
+          ]
+        ) {
+          event {
+            id
+            title
+            description
+            Communities {
+              url
+            }
+            Organizer {
+              username
+            }
+            locationName
+            address
+            howToFindLocation
+            startTime
+            startTimeYear
+            startTimeMonth
+            startTimeDayOfMonth
+            startTimeDayOfWeek
+            startTimeHourOfDay
+            endTime
+            virtualEventUrl
+            createdDate
+            isInPrivateResidence
+            cost
+            placeId
+            location {
+              latitude
+              longitude
+            }
+            canceled
+            Tags {
+              text
+            }
+          }
+        }
+      }
+    `;
 
 // Update event
 export const UPDATE_EVENT = gql`

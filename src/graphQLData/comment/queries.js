@@ -119,3 +119,43 @@ export const GET_COMMENT_SECTION = gql`
     }
   }
 `;
+
+export const ADD_COMMENT_SECTION = gql`
+      mutation addCommentSection(
+        $commentSectionObjects: [AddCommentSectionInput!]!
+      ) {
+        addCommentSection(input: $commentSectionObjects, upsert: true) {
+          commentSection {
+            id
+            Channel {
+              url
+            }
+            CommentsAggregate {
+              count
+            }
+            Discussion {
+              id
+            }
+            Event {
+              id
+            }
+            Comments {
+              id
+              text
+              UserAuthor {
+                username
+              }
+              Channel {
+                uniqueName
+              }
+              deleted
+              createdDate
+              editedDate
+              Tags {
+                text
+              }
+            }
+          }
+        }
+      }
+    `;

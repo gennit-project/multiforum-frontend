@@ -1,5 +1,5 @@
-<script lang="js">
-import { defineComponent, ref } from "vue";
+<script lang="ts">
+import { defineComponent, ref, PropType } from "vue";
 import ListboxButton from "@/components/forms/ListboxButton.vue";
 import {
   Listbox,
@@ -8,6 +8,7 @@ import {
   ListboxOptions,
 } from "@headlessui/vue";
 import { CheckIcon } from "@heroicons/vue/solid";
+import { SelectOptionData } from "@/types/genericFormTypes";
 
 export default defineComponent({
   components: {
@@ -20,32 +21,41 @@ export default defineComponent({
   },
   props: {
     selectLabel: {
-        type: String,
-        required: false
+      type: String,
+      required: false,
     },
     selectedOption: {
-        type: Object,
-        required: true
+      type: Object as PropType<SelectOptionData>,
+      required: true,
     },
     options: {
-        type: Array,
-        required: true
-    }
+      type: Array as PropType<Array<SelectOptionData>>,
+      required: true,
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
-      const selected = ref(props.selectedOption)
-      return {
-          selected
-      }
-  }
+    const selected = ref(props.selectedOption);
+    return {
+      selected,
+    };
+  },
 });
 </script>
 
 <template>
-  <Listbox as="div" v-model="selected" @update:model-value="$emit('updateSelected', selected)">
+  <Listbox
+    as="div"
+    :class="[fullWidth ? 'w-full' : 'w-40']"
+    v-model="selected"
+    @update:model-value="$emit('updateSelected', selected)"
+  >
     <ListboxLabel
       v-if="selectLabel"
-      class="block text-xs font-medium text-gray-700 mt-2"
+      class="block text-xs font-medium text-gray-700"
     >
       {{ selectLabel }}
     </ListboxLabel>
