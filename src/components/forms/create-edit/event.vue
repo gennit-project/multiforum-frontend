@@ -14,10 +14,12 @@ import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "../ChannelPicker.vue";
 import TagPicker from "../TagPicker.vue";
-import { DatePicker } from 'v-calendar';
-import { getReadableTimeFromISO, durationHoursAndMinutes } from "@/dateTimeUtils"
+import { DatePicker } from "v-calendar";
+import {
+  getReadableTimeFromISO,
+  durationHoursAndMinutes,
+} from "@/dateTimeUtils";
 const { DateTime } = require("luxon");
-
 
 const MINUTES_IN_A_DAY = 1440;
 
@@ -84,9 +86,6 @@ export default defineComponent({
     const selectedChannels = ref(channelId ? [channelId] : []);
     const selectedTags = ref([]);
 
-    const channelOptions = ref([]);
-    const tagOptions = ref([]);
-
     const GET_CHANNEL_NAMES = gql`
       query getChannelNames {
         queryChannel {
@@ -101,11 +100,6 @@ export default defineComponent({
       result: channelData,
     } = useQuery(GET_CHANNEL_NAMES);
 
-    if (channelData.value) {
-      channelOptions.value = channelData.value.queryChannel.map(
-        (channelData: ChannelData) => channelData.uniqueName
-      );
-    }
 
     const GET_TAGS = gql`
       query getTags {
@@ -120,12 +114,6 @@ export default defineComponent({
       error: tagsError,
       result: tagsData,
     } = useQuery(GET_TAGS);
-
-    if (tagsData.value) {
-      tagOptions.value  = tagsData.value.queryTag.map(
-        (tag: TagData) => tag.text
-      );
-    }
 
     const getCommentSectionObjects = (newEventId: string) => {
       return selectedChannels.value.map((c) => {
@@ -383,11 +371,9 @@ export default defineComponent({
     return {
       addEvent,
       address,
-      channelId,
       channelData,
       channelError,
       channelLoading,
-      channelOptions,
       description,
       durationHoursAndMinutes,
       getReadableTimeFromISO,
@@ -400,7 +386,6 @@ export default defineComponent({
       selectedTags,
       startTime,
       tagsData,
-      tagOptions,
       tagsLoading,
       tagsError,
       title,
@@ -533,7 +518,10 @@ export default defineComponent({
       return options.map((channel) => channel.uniqueName);
     },
     getTagOptionLabels(options: Array<TagData>) {
-      return options.map(tag => tag.text)
+      return options.map((tag) => tag.text);
+    },
+    updateDescription(updated: string) {
+      this.description = updated;
     }
   },
 });
@@ -548,7 +536,7 @@ export default defineComponent({
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <TextInput :value="title" @update="updateTitle"/>
+              <TextInput :value="title" @update="updateTitle" />
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
@@ -563,15 +551,25 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Time'">
-            <DatePicker v-model="startTime" mode="date" :minute-increment="30">
-              <template v-slot="{ inputValue, inputEvents }">
-                <input
-                  class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300"
-                  :value="inputValue"
-                  v-on="inputEvents"
-                />
-              </template>
-            </DatePicker>
+              <DatePicker
+                v-model="startTime"
+                mode="date"
+                :minute-increment="30"
+              >
+                <template v-slot="{ inputValue, inputEvents }">
+                  <input
+                    class="
+                      px-2
+                      py-1
+                      border
+                      rounded
+                      focus:outline-none focus:border-blue-300
+                    "
+                    :value="inputValue"
+                    v-on="inputEvents"
+                  />
+                </template>
+              </DatePicker>
             </FormRow>
 
             <FormRow :section-title="'Virtual Event URL'"> URL </FormRow>
@@ -579,7 +577,7 @@ export default defineComponent({
             <FormRow :section-title="'Address'"> Address </FormRow>
 
             <FormRow :section-title="'More Info'">
-              <TextEditor />
+              <TextEditor :value="description" @update="updateDescription"/>
             </FormRow>
 
             <FormRow :section-title="'Tags'">
@@ -612,5 +610,4 @@ export default defineComponent({
 </template>
 
 <style>
-
 </style>

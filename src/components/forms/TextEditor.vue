@@ -9,12 +9,19 @@ export default defineComponent({
     CommentTab,
     Markdown,
   },
-  setup() {
+  setup(props) {
     const showFormatted = ref(false);
+
     return {
       showFormatted,
-      text: "",
+      text: props.value,
     };
+  },
+  props: {
+    value: {
+      type: String,
+      default: ''
+    }
   },
   methods: {
     setTab(selected: string) {
@@ -97,9 +104,10 @@ export default defineComponent({
         "
         placeholder="preformatted"
         v-model="text"
+        @keyup="$emit('update', text)"
       ></textarea>
       <Markdown
-        class="prose prose-sm mt-1
+        class="prose prose-sm mt-1 p-3
           shadow-sm
           block
           sm:text-sm
