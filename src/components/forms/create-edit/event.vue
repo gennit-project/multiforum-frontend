@@ -302,7 +302,7 @@ export default defineComponent({
       let startTimeObject = DateTime.fromISO(this.startTime);
 
       // We generate a list of end times
-      // at fifteen-minute intervals, starting with fifteen
+      // at 30-minute intervals, starting with 30
       // minutes after the start time.
       for (let i = 30; i < MINUTES_IN_A_DAY; i += 30) {
         let endTimeObject = startTimeObject.plus({ minutes: i });
@@ -356,6 +356,14 @@ export default defineComponent({
         };
       });
     },
+    endTimeOptions() {
+      return this.endTimeISOs.map((iso: string) => {
+        return {
+          label: getReadableTimeFromISO(iso),
+          value: iso
+        }
+      })
+    },
     eventLength() {
       let humanReadableEndTime = this.getReadableTimeFromISO(this.endTimeISO);
       let lengthOfEvent = this.durationHoursAndMinutes(
@@ -403,6 +411,9 @@ export default defineComponent({
     updateDescription(updated: string) {
       this.description = updated;
     },
+    updateVirtualEventUrl(updated: string) {
+      this.virtualEventUrl = updated;
+    }
   },
 });
 </script>
@@ -435,7 +446,7 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Time'">
-              <div class="sm:inline-block md:flex items-center space-x-2">
+              <div class="sm:inline-block md:flex items-center md:space-x-2">
                 <DatePicker
                   v-model="startTime"
                   mode="date"
@@ -465,13 +476,19 @@ export default defineComponent({
                 <span class="m-1">to</span>
 
                 <Select
-                  :options="startTimeOptions"
-                  :selected-option="startTimeOptions[0]"
+                  :options="endTimeOptions"
+                  :selected-option="endTimeOptions[0]"
                 />
               </div>
             </FormRow>
 
-            <FormRow :section-title="'Virtual Event URL'"> URL </FormRow>
+            <FormRow :section-title="'Virtual Event URL'">
+              <TextInput
+                :value="virtualEventUrl"
+                :full-width="true"
+                @update="updateVirtualEventUrl"
+              />
+            </FormRow>
 
             <FormRow :section-title="'Address'"> Address </FormRow>
 
