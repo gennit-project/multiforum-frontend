@@ -11,6 +11,10 @@ export default defineComponent({
       value: {
           type: String,
           required: true
+      },
+      placeholder: {
+          type: String,
+          default: ''
       }
   },
 });
@@ -20,13 +24,14 @@ export default defineComponent({
     <input
       v-model="text"
       @change="$emit('update', text)"
+      :placeholder="placeholder"
       type="text"
       class="
         flex-1
         block
         focus:ring-indigo-500 focus:border-indigo-500
         min-w-0
-        rounded-none rounded-r-md
+        rounded
         sm:text-sm
         border-gray-300
       "

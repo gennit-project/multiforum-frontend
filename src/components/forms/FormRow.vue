@@ -32,7 +32,7 @@ export default defineComponent({
     <FormSectionTitle>
       {{ sectionTitle }}
     </FormSectionTitle>
-    <div class="mt-1 sm:mt-0 sm:col-span-2">
+    <div class="mt-1 sm:col-span-2">
       <slot />
     </div>
   </div>

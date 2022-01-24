@@ -3,9 +3,7 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   name: "LocationSearchBar",
-  setup() {
-
-  },
+  setup() {},
   props: {
     searchPlaceholder: {
       type: String,
@@ -13,11 +11,15 @@ export default defineComponent({
     },
     referencePointAddressName: {
       type: String,
-      default: ""
+      default: "",
     },
     routerSearchTerms: {
       type: String,
       default: "",
+    },
+    fullWidth: {
+      type: Boolean,
+      default: false,
     },
   },
   methods: {
@@ -28,7 +30,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="inline-block">
+  <div :class="[fullWidth ? 'w-full' : '', 'inline-block']" class="inline-block">
     <label for="search" class="sr-only">Search Location</label>
     <div class="relative">
       <div
@@ -58,10 +60,11 @@ export default defineComponent({
         </svg>
       </div>
       <GMapAutocomplete
+        :class="[fullWidth ? 'w-full' : '']"
         class="
           pl-10
           pr-3
-          py-1.5
+          py-2
           border border-gray-300
           rounded-md
           leading-5
@@ -72,9 +75,13 @@ export default defineComponent({
           focus:ring-1
           focus:ring-indigo-500
           focus:border-indigo-500
-          text-xs
+          text-sm
         "
-        :placeholder="referencePointAddressName || searchPlaceholder || 'Search events near an address'"
+        :placeholder="
+          referencePointAddressName ||
+          searchPlaceholder ||
+          'Search events near an address'
+        "
         disablePortal
         @place_changed="updateLocationInput"
       >
@@ -83,7 +90,6 @@ export default defineComponent({
   </div>
 </template>
 <style>
-
 /* Prevent the autocomplete dropdown from rendering behind the popper overly */
 .hdpi {
   z-index: 10001;

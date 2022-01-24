@@ -475,6 +475,7 @@ export default defineComponent({
                 </DatePicker>
 
                 <Select
+                  class="mt-2 mb-2 inline-flex"
                   :options="startTimeOptions"
                   :selected-option="startTimeOptions[0]"
                 />
@@ -482,6 +483,7 @@ export default defineComponent({
                 <span class="m-1">to</span>
 
                 <Select
+                  class="mt-2 mb-2 inline-flex"
                   :options="endTimeOptions"
                   :selected-option="endTimeOptions[0]"
                 />
@@ -492,12 +494,13 @@ export default defineComponent({
               <TextInput
                 :value="virtualEventUrl"
                 :full-width="true"
+                :placeholder="'www.example.com'"
                 @update="updateVirtualEventUrl"
               />
             </FormRow>
 
             <FormRow :section-title="'Address'">
-              <LocationSearchBar :search-placeholder="'Location'"/>
+              <LocationSearchBar :search-placeholder="'Location'" :full-width="true"/>
             </FormRow>
 
             <FormRow :section-title="'More Info'">

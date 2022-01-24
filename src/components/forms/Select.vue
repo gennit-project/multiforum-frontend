@@ -49,7 +49,6 @@ export default defineComponent({
 <template>
   <Listbox
     as="div"
-    :class="[fullWidth ? 'w-full' : 'w-40']"
     v-model="selected"
     @update:model-value="$emit('updateSelected', selected)"
   >
@@ -59,7 +58,7 @@ export default defineComponent({
     >
       {{ selectLabel }}
     </ListboxLabel>
-    <div class="relative">
+    <div :class="[fullWidth ? 'w-full' : 'w-40', 'relative']">
       <ListboxButton :label="`${selected.label}`" />
       <transition
         leave-active-class="transition ease-in duration-100"
