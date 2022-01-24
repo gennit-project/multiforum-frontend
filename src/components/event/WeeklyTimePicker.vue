@@ -8,8 +8,18 @@ import {
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
+import CheckBox from "../forms/CheckBox.vue";
+import TableData from "../TableData.vue";
+import Table from "../Table.vue";
+import TableHead from "../TableHead.vue";
 
 export default defineComponent({
+  components: {
+    CheckBox,
+    Table,
+    TableData,
+    TableHead,
+  },
   props: {
     selectedWeekdays: {
       type: Object as PropType<SelectedWeekdays>,
@@ -73,134 +83,53 @@ export default defineComponent({
               sm:rounded-lg
             "
           >
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <Table>
+              <template v-slot:head>
                 <tr>
-                  <th
-                    scope="col"
-                    class="
-                      px-3
-                      py-2
-                      text-left text-xs
-                      font-medium
-                      text-gray-500
-                      uppercase
-                      tracking-wider
-                    "
-                  >
-                    Time Range
-                  </th>
-                  <th
+                  <TableHead> Time Range </TableHead>
+                  <TableHead
                     v-for="weekday in weekdays"
                     :key="weekday.shortName"
-                    scope="col"
-                    class="
-                      px-3
-                      py-2
-                      text-left text-xs
-                      font-medium
-                      text-gray-500
-                      uppercase
-                      tracking-wider
-                    "
                   >
-                    <div class="inline-block items-center h-5">
-                      <input
-                        aria-describedby="weekday-name"
-                        name="weekday-name"
-                        type="checkbox"
-                        :checked="selectedWeekdaysRef[weekday.number] === true"
-                        @input="() => toggleSelectWeekday(weekday)"
-                        class="
-                          focus:ring-indigo-500
-                          h-4
-                          w-4
-                          text-indigo-600
-                          border-gray-400
-                          rounded
-                        "
-                      />
-                    </div>
-                    {{ weekday.shortName }}
-                  </th>
+                    <CheckBox
+                      :checked="selectedWeekdaysRef[weekday.number] === true"
+                      @input="() => toggleSelectWeekday(weekday)"
+                    />
+                    <span class="ml-1">{{ weekday.shortName }}</span>
+                  </TableHead>
                 </tr>
-              </thead>
-              <tbody>
+              </template>
+              <template v-slot:body>
                 <tr
                   class="bg-white"
                   :key="range['12-hour-label']"
                   v-for="range in hourRangesData"
                 >
-                  <td
-                    class="
-                      px-3
-                      py-3
-                      whitespace-nowrap
-                      text-left text-sm
-                      font-medium
-                      text-gray-900
-                    "
-                  >
-                    <div class="inline-block items-center h-5">
-                      <input
-                        type="checkbox"
-                        :checked="selectedHourRangesRef[range['12-hour-label']]"
-                        @input="() => toggleSelectTimeRange(range)"
-                        class="
-                          focus:ring-indigo-500
-                          h-4
-                          w-4
-                          text-indigo-600
-                          border-gray-400
-                          rounded
-                        "
-                      />
-                    </div>
-                    {{ range["12-hour-label"] }}
-                  </td>
-                  <td
-                    :key="weekday.number"
-                    v-for="weekday in weekdays"
-                    class="
-                      px-3
-                      py-4
-                      text-left
-                      whitespace-nowrap
-                      text-sm text-gray-500
-                    "
-                  >
-                    <div class="flex items-center h-5">
-                      <input
-                        type="checkbox"
-                        :class="[
-                          shouldBeDisabled(weekday, range)
-                            ? 'text-indigo-200'
-                            : 'text-indigo-600',
-                        ]"
-                        class="
-                          focus:ring-indigo-500
-                          h-4
-                          w-4
-                          border-gray-400
-                          rounded
-                        "
-                        :checked="
-                          selectedWeeklyHourRangesRef[weekday.number][
-                            range['12-hour-label']
-                          ] === true
-                        "
-                        :disabled="shouldBeDisabled(weekday, range)"
-                        @input="
-                          () => {
-                            toggleSelectWeeklyTimeRange(weekday.number, range);
-                          }
-                        "
-                      />
-                    </div>
-                  </td>
+                  <TableData>
+                    <CheckBox
+                      :checked="selectedHourRangesRef[range['12-hour-label']]"
+                      @input="() => toggleSelectTimeRange(range)"
+                    />
+                    <span class="ml-1">{{ range["12-hour-label"] }}</span>
+                  </TableData>
+                  <TableData :key="weekday.number" v-for="weekday in weekdays">
+                    <CheckBox
+                      :disabled="shouldBeDisabled(weekday, range)"
+                      :checked="
+                        selectedWeeklyHourRangesRef[weekday.number][
+                          range['12-hour-label']
+                        ] === true
+                      "
+                      @input="
+                        () => {
+                          toggleSelectWeeklyTimeRange(weekday.number, range);
+                        }
+                      "
+                    />
+                  </TableData>
                 </tr>
-              </tbody>
-            </table>
+              </template>
+            </Table>
           </div>
         </div>
       </div>
