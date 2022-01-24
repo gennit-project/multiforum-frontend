@@ -74,7 +74,7 @@ export default defineComponent({
           focus:border-indigo-500
           text-xs
         "
-        :placeholder="referencePointAddressName || 'Search events near an address'"
+        :placeholder="referencePointAddressName || searchPlaceholder || 'Search events near an address'"
         disablePortal
         @place_changed="updateLocationInput"
       >

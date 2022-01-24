@@ -102,7 +102,6 @@ export default defineComponent({
           rounded-md
           textbox
         "
-        placeholder="preformatted"
         v-model="text"
         @keyup="$emit('update', text)"
       ></textarea>

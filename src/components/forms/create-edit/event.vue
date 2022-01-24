@@ -20,6 +20,7 @@ import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
+import LocationSearchBar from "@/components/event/LocationSearchBar.vue"
 import { ADD_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { ADD_EVENT } from "@/graphQLData/event/mutations";
 const { DateTime } = require("luxon");
@@ -35,6 +36,7 @@ export default defineComponent({
     Form,
     FormRow,
     FormTitle,
+    LocationSearchBar,
     SaveButton,
     Select,
     TagPicker,
@@ -246,6 +248,7 @@ export default defineComponent({
       channelData,
       channelError,
       channelLoading,
+      cost,
       description,
       durationHoursAndMinutes,
       getReadableTimeFromISO,
@@ -413,6 +416,9 @@ export default defineComponent({
     },
     updateVirtualEventUrl(updated: string) {
       this.virtualEventUrl = updated;
+    },
+    updateCost(updated: string) {
+      this.cost = updated;
     }
   },
 });
@@ -490,10 +496,20 @@ export default defineComponent({
               />
             </FormRow>
 
-            <FormRow :section-title="'Address'"> Address </FormRow>
+            <FormRow :section-title="'Address'">
+              <LocationSearchBar :search-placeholder="'Location'"/>
+            </FormRow>
 
             <FormRow :section-title="'More Info'">
               <TextEditor :value="description" @update="updateDescription" />
+            </FormRow>
+
+            <FormRow :section-title="'Cost'">
+              <TextInput
+                :value="cost"
+                :full-width="true"
+                @update="updateCost"
+              />
             </FormRow>
 
             <FormRow :section-title="'Tags'">
