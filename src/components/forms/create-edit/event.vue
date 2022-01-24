@@ -20,9 +20,10 @@ import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
-import LocationSearchBar from "@/components/event/LocationSearchBar.vue"
+import LocationSearchBar from "@/components/event/LocationSearchBar.vue";
 import { ADD_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { ADD_EVENT } from "@/graphQLData/event/mutations";
+import CheckBox from "@/components/forms/CheckBox.vue";
 const { DateTime } = require("luxon");
 
 const MINUTES_IN_A_DAY = 1440;
@@ -32,6 +33,7 @@ export default defineComponent({
   components: {
     CancelButton,
     ChannelPicker,
+    CheckBox,
     DatePicker,
     Form,
     FormRow,
@@ -267,6 +269,9 @@ export default defineComponent({
       virtualEventUrl,
     };
   },
+  data(){
+    return {showCostField: false}
+  },
   props: {
     mode: {
       type: String,
@@ -363,9 +368,9 @@ export default defineComponent({
       return this.endTimeISOs.map((iso: string) => {
         return {
           label: getReadableTimeFromISO(iso),
-          value: iso
-        }
-      })
+          value: iso,
+        };
+      });
     },
     eventLength() {
       let humanReadableEndTime = this.getReadableTimeFromISO(this.endTimeISO);
@@ -419,7 +424,10 @@ export default defineComponent({
     },
     updateCost(updated: string) {
       this.cost = updated;
-    }
+    },
+    toggleCostField() {
+      this.showCostField = !this.showCostField;
+    },
   },
 });
 </script>
@@ -500,27 +508,35 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Address'">
-              <LocationSearchBar :search-placeholder="'Location'" :full-width="true"/>
-            </FormRow>
-
-            <FormRow :section-title="'More Info'">
-              <TextEditor :value="description" @update="updateDescription" />
-            </FormRow>
-
-            <FormRow :section-title="'Cost'">
-              <TextInput
-                :value="cost"
+              <LocationSearchBar
+                :search-placeholder="'Location'"
                 :full-width="true"
-                @update="updateCost"
               />
             </FormRow>
 
-            <FormRow :section-title="'Tags'">
+            <FormRow :section-title="'More Info'">
+              <TextEditor
+                class="mb-3"
+                :value="description"
+                @update="updateDescription"
+              />
+
               <TagPicker
+                class="mt-3 mb-3"
                 v-if="tagsData && tagsData.queryTag"
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.queryTag)"
                 :selected-tags="selectedTags"
+              />
+              <CheckBox :checked="!showCostField" @input="toggleCostField" />
+              <span class="ml-2">This event is free</span>
+            </FormRow>
+
+            <FormRow :section-title="'Cost'" v-show="showCostField">
+              <TextInput
+                :value="cost"
+                :full-width="true"
+                @update="updateCost"
               />
             </FormRow>
           </div>
