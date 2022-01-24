@@ -13,21 +13,27 @@ import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "../ChannelPicker.vue";
+import TagPicker from "../TagPicker.vue";
+import { DatePicker } from 'v-calendar';
+import { getReadableTimeFromISO, durationHoursAndMinutes } from "@/dateTimeUtils"
 const { DateTime } = require("luxon");
+
 
 const MINUTES_IN_A_DAY = 1440;
 
 export default defineComponent({
   name: "CreateEditEvent",
   components: {
-    TextEditor,
-    Form,
-    FormTitle,
-    FormRow,
     CancelButton,
+    ChannelPicker,
+    DatePicker,
+    Form,
+    FormRow,
+    FormTitle,
     SaveButton,
+    TagPicker,
+    TextEditor,
     TextInput,
-    ChannelPicker
   },
   setup() {
     const now = DateTime.now();
@@ -116,10 +122,9 @@ export default defineComponent({
     } = useQuery(GET_TAGS);
 
     if (tagsData.value) {
-      const tagList = tagsData.value.queryTag.map(
+      tagOptions.value  = tagsData.value.queryTag.map(
         (tag: TagData) => tag.text
       );
-      tagOptions.value = tagList;
     }
 
     const getCommentSectionObjects = (newEventId: string) => {
@@ -384,6 +389,8 @@ export default defineComponent({
       channelLoading,
       channelOptions,
       description,
+      durationHoursAndMinutes,
+      getReadableTimeFromISO,
       getVariablesForAddEvent,
       latitude,
       longitude,
@@ -392,6 +399,7 @@ export default defineComponent({
       selectedChannels,
       selectedTags,
       startTime,
+      tagsData,
       tagOptions,
       tagsLoading,
       tagsError,
@@ -524,6 +532,9 @@ export default defineComponent({
     getChannelOptionLabels(options: Array<ChannelData>) {
       return options.map((channel) => channel.uniqueName);
     },
+    getTagOptionLabels(options: Array<TagData>) {
+      return options.map(tag => tag.text)
+    }
   },
 });
 </script>
@@ -551,7 +562,17 @@ export default defineComponent({
               />
             </FormRow>
 
-            <FormRow :section-title="'Time'"> Enter time data here </FormRow>
+            <FormRow :section-title="'Time'">
+            <DatePicker v-model="startTime" mode="date" :minute-increment="30">
+              <template v-slot="{ inputValue, inputEvents }">
+                <input
+                  class="px-2 py-1 border rounded focus:outline-none focus:border-blue-300"
+                  :value="inputValue"
+                  v-on="inputEvents"
+                />
+              </template>
+            </DatePicker>
+            </FormRow>
 
             <FormRow :section-title="'Virtual Event URL'"> URL </FormRow>
 
@@ -559,6 +580,15 @@ export default defineComponent({
 
             <FormRow :section-title="'More Info'">
               <TextEditor />
+            </FormRow>
+
+            <FormRow :section-title="'Tags'">
+              <TagPicker
+                v-if="tagsData && tagsData.queryTag"
+                v-model="selectedTags"
+                :tag-options="getTagOptionLabels(tagsData.queryTag)"
+                :selected-tags="selectedTags"
+              />
             </FormRow>
           </div>
         </div>
@@ -580,3 +610,7 @@ export default defineComponent({
     </div>
   </div>
 </template>
+
+<style>
+
+</style>
