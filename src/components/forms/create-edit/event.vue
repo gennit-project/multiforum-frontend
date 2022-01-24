@@ -12,6 +12,7 @@ import FormTitle from "@/components/forms/FormTitle.vue";
 import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
+import ChannelPicker from "../ChannelPicker.vue";
 const { DateTime } = require("luxon");
 
 const MINUTES_IN_A_DAY = 1440;
@@ -26,13 +27,14 @@ export default defineComponent({
     CancelButton,
     SaveButton,
     TextInput,
+    ChannelPicker
   },
   setup() {
     const now = DateTime.now();
 
     const route = useRoute();
 
-    const channelId = route.params.channelId;
+    const channelId = route.params.channelId as string;
 
     const username = "cluse";
 
@@ -76,8 +78,8 @@ export default defineComponent({
     const selectedChannels = ref(channelId ? [channelId] : []);
     const selectedTags = ref([]);
 
-    const channelList = ref([]);
-    const tagList = ref([]);
+    const channelOptions = ref([]);
+    const tagOptions = ref([]);
 
     const GET_CHANNEL_NAMES = gql`
       query getChannelNames {
@@ -94,7 +96,7 @@ export default defineComponent({
     } = useQuery(GET_CHANNEL_NAMES);
 
     if (channelData.value) {
-      channelList.value = channelData.value.queryChannel.map(
+      channelOptions.value = channelData.value.queryChannel.map(
         (channelData: ChannelData) => channelData.uniqueName
       );
     }
@@ -114,10 +116,10 @@ export default defineComponent({
     } = useQuery(GET_TAGS);
 
     if (tagsData.value) {
-      const tagOptions = tagsData.value.queryTag.map(
+      const tagList = tagsData.value.queryTag.map(
         (tag: TagData) => tag.text
       );
-      tagList.value = tagOptions;
+      tagOptions.value = tagList;
     }
 
     const getCommentSectionObjects = (newEventId: string) => {
@@ -375,20 +377,25 @@ export default defineComponent({
 
     return {
       addEvent,
+      address,
       channelId,
+      channelData,
       channelError,
       channelLoading,
+      channelOptions,
+      description,
       getVariablesForAddEvent,
-      now,
-      startTime,
-      address,
-      placeId,
       latitude,
       longitude,
+      now,
+      placeId,
+      selectedChannels,
+      selectedTags,
+      startTime,
+      tagOptions,
+      tagsLoading,
       tagsError,
       title,
-      description,
-      tagsLoading,
       virtualEventUrl,
     };
   },
@@ -513,7 +520,10 @@ export default defineComponent({
     },
     updateTitle(updated: String) {
       this.title = updated;
-    }
+    },
+    getChannelOptionLabels(options: Array<ChannelData>) {
+      return options.map((channel) => channel.uniqueName);
+    },
   },
 });
 </script>
@@ -530,9 +540,22 @@ export default defineComponent({
               <TextInput :value="title" @update="updateTitle"/>
             </FormRow>
 
-            <FormRow :section-title="'When'"> Enter time data here </FormRow>
+            <FormRow :section-title="'Channel(s)'">
+              <ChannelPicker
+                v-if="channelData && channelData.queryChannel"
+                v-model="selectedChannels"
+                :channel-options="
+                  getChannelOptionLabels(channelData.queryChannel)
+                "
+                :selected-channels="selectedChannels"
+              />
+            </FormRow>
 
-            <FormRow :section-title="'Where'"> Enter location here </FormRow>
+            <FormRow :section-title="'Time'"> Enter time data here </FormRow>
+
+            <FormRow :section-title="'Virtual Event URL'"> URL </FormRow>
+
+            <FormRow :section-title="'Address'"> Address </FormRow>
 
             <FormRow :section-title="'More Info'">
               <TextEditor />

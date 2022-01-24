@@ -99,7 +99,13 @@ export default defineComponent({
         v-model="text"
       ></textarea>
       <Markdown
-        class="prose prose-sm textbox"
+        class="prose prose-sm mt-1
+          shadow-sm
+          block
+          sm:text-sm
+          border border-gray-300
+          rounded-md
+          textbox"
         v-show="showFormatted"
         :source="text"
         linkify

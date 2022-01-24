@@ -52,4 +52,9 @@ export default defineComponent({
 .wide {
   min-width: 250px;
 }
+
+.multiselect-tag {
+  background-color: lightgray;
+  color: black;
+}
 </style>
