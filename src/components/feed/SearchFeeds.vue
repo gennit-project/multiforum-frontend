@@ -11,8 +11,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <div class="relative h-full text-lg max-w-prose mx-auto">
+  <div class="mx-auto max-w-4xl">
+    <div class="relative h-full text-lg">
       <FeedList/>
     </div>
   </div>

@@ -247,7 +247,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="mx-auto max-w-4xl">
     <div class="items-center inline-flex mt-1 space-x-2 px-8">
       <SearchBar
         :router-search-terms="routerSearchTerms"

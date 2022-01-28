@@ -465,7 +465,7 @@ export default defineComponent({
       weeklyTimeSlot: "Weekday & Time",
       channels: "Channels",
       tags: "Tags",
-      other: "Other Filters"
+      other: "Other Filters",
     };
 
     const channelLabel = computed(() => {
@@ -719,12 +719,12 @@ export default defineComponent({
         });
 
         const openSpecificInfowindow = () => {
-          const eventTitle = this.markerMap[eventLocationId].events[
-            this.highlightedEventId
-          ].title;
-          const eventLocation = this.markerMap[eventLocationId].events[
-            this.highlightedEventId
-          ].locationName;
+          const eventTitle =
+            this.markerMap[eventLocationId].events[this.highlightedEventId]
+              .title;
+          const eventLocation =
+            this.markerMap[eventLocationId].events[this.highlightedEventId]
+              .locationName;
 
           let infowindowContent = `<b>${eventTitle}</b>`;
 
@@ -827,9 +827,8 @@ export default defineComponent({
         // If there is one event, open the preview for
         // that event. If there is more than one,
         // open a preview for multiple events.
-        const eventsAtClickedLocation = this.markerMap[
-          this.highlightedEventLocationId
-        ].numberOfEvents;
+        const eventsAtClickedLocation =
+          this.markerMap[this.highlightedEventLocationId].numberOfEvents;
 
         if (eventsAtClickedLocation > 1) {
           this.multipleEventPreviewIsOpen = true;
@@ -1048,160 +1047,161 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <div class="items-center mt-2 space-x-2 px-8">
-      <LocationSearchBar
-        :router-search-terms="routerSearchTerms"
-        :search-placeholder="'Location'"
-        :reference-point-address-name="referencePointName"
-        @updateLocationInput="updateLocationInput"
-      />
-      <ToggleMap
-        :show-map="showMap"
-        @showMap="setShowMap"
-        @showList="setShowList"
-      />
-      <AddToFeed v-if="channelId" />
-      <CreateEventButton />
-    </div>
-    <div class="items-center mt-1 space-x-2 px-8">
-      <FilterChip
-        :label="dateLabel"
-        :highlighted="dateLabel !== defaultFilterLabels.date"
-      >
-        <template v-slot:icon>
-          <CalendarIcon />
-        </template>
-        <template v-slot:content>
-          <DatePicker
-            :end-iso="endOfDateRange"
-            :start-iso="beginningOfDateRange"
-            :date-range="dateRange"
-            @updateDateFilter="updateDateFilter"
-          />
-        </template>
-      </FilterChip>
 
-      <FilterChip
-        :label="locationLabel"
-        :highlighted="locationLabel !== defaultFilterLabels.location"
-      >
-        <template v-slot:icon>
-          <LocationIcon />
-        </template>
-        <template v-slot:content>
-          <LocationPicker
-            :selected-location-filter="selectedLocationFilter"
-            :reference-point-address-name="referencePointName"
-            @updateLocationFilter="updateLocationFilter"
-            @updateLocationInput="updateLocationInput"
-            @updateDistanceUnit="updateDistanceUnit"
-            @updateRadius="updateRadius"
-          />
-        </template>
-      </FilterChip>
-
-      <FilterChip
-        :label="weeklyTimeLabel"
-        :highlighted="weeklyTimeLabel !== defaultFilterLabels.weeklyTimeSlot"
-      >
-        <template v-slot:icon>
-          <TimeIcon />
-        </template>
-        <template v-slot:content>
-          <WeeklyTimePicker
-            :selected-weekdays="selectedWeekdays"
-            :selected-hour-ranges="selectedHourRanges"
-            :selected-weekly-hour-ranges="selectedWeeklyHourRanges"
-            @toggleSelectWeekday="toggleSelectWeekday"
-            @toggleSelectTimeRange="toggleSelectTimeRange"
-            @toggleWeeklyTimeRange="toggleWeeklyTimeRange"
-          />
-        </template>
-      </FilterChip>
-
-      <FilterChip
-        v-if="!channelId"
-        :label="channelLabel"
-        :highlighted="channelLabel !== defaultFilterLabels.channels"
-      >
-        <template v-slot:icon>
-          <ChannelIcon />
-        </template>
-        <template v-slot:content>
-          <ChannelPicker
-            v-model="selectedChannels"
-            :channel-options="
-              getChannelOptionLabels(channelOptions.queryChannel)
-            "
-            :selected-channels="selectedChannels"
-            @setChannelFilters="setChannelFilters"
-          />
-        </template>
-      </FilterChip>
-
-      <FilterChip
-        :label="tagLabel"
-        :highlighted="tagLabel !== defaultFilterLabels.tags"
-      >
-        <template v-slot:icon>
-          <TagIcon />
-        </template>
-        <template v-slot:content>
-          <TagPicker
-            :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-            :selected-tags="selectedTags"
-            @setTagFilters="setTagFilters"
-          />
-        </template>
-      </FilterChip>
-
-      <FilterChip
-        :label="otherFiltersLabel"
-        :highlighted="otherFiltersLabel !== defaultFilterLabels.other"
-      >
-        <template v-slot:icon>
-          <FilterIcon />
-        </template>
-        <template v-slot:content>
-          <div>
-            <label
-              for="location"
-              class="block text-sm font-medium text-gray-700"
-              >Search Event Titles and Descriptions</label
-            >
-
-            <SearchBar
-              :router-search-terms="routerSearchTerms"
-              :search-placeholder="'Search'"
-              @updateSearchInput="updateSearchResult"
+    <div class="mx-auto max-w-4xl">
+      <div class="items-center mt-2 space-x-2">
+        <LocationSearchBar
+          :router-search-terms="routerSearchTerms"
+          :search-placeholder="'Location'"
+          :reference-point-address-name="referencePointName"
+          @updateLocationInput="updateLocationInput"
+        />
+        <ToggleMap
+          :show-map="showMap"
+          @showMap="setShowMap"
+          @showList="setShowList"
+        />
+        <AddToFeed v-if="channelId" />
+        <CreateEventButton />
+      </div>
+      <div class="items-center mt-1 space-x-2">
+        <FilterChip
+          :label="dateLabel"
+          :highlighted="dateLabel !== defaultFilterLabels.date"
+        >
+          <template v-slot:icon>
+            <CalendarIcon />
+          </template>
+          <template v-slot:content>
+            <DatePicker
+              :end-iso="endOfDateRange"
+              :start-iso="beginningOfDateRange"
+              :date-range="dateRange"
+              @updateDateFilter="updateDateFilter"
             />
+          </template>
+        </FilterChip>
 
-            <div class="relative flex items-start mt-4">
-              <div class="flex items-center h-5">
-                <input
-                  class="
-                    focus:ring-indigo-500
-                    h-4
-                    w-4
-                    text-indigo-600
-                    border-gray-300
-                    rounded
-                  "
-                  type="checkbox"
-                  id="onlyFreeEvents"
-                  v-model="showOnlyFreeEvents"
-                />
-              </div>
-              <div class="ml-3 text-sm">
-                <label for="comments" class="font-medium text-gray-700"
-                  >Show Only Free Events</label
-                >
+        <FilterChip
+          :label="locationLabel"
+          :highlighted="locationLabel !== defaultFilterLabels.location"
+        >
+          <template v-slot:icon>
+            <LocationIcon />
+          </template>
+          <template v-slot:content>
+            <LocationPicker
+              :selected-location-filter="selectedLocationFilter"
+              :reference-point-address-name="referencePointName"
+              @updateLocationFilter="updateLocationFilter"
+              @updateLocationInput="updateLocationInput"
+              @updateDistanceUnit="updateDistanceUnit"
+              @updateRadius="updateRadius"
+            />
+          </template>
+        </FilterChip>
+
+        <FilterChip
+          :label="weeklyTimeLabel"
+          :highlighted="weeklyTimeLabel !== defaultFilterLabels.weeklyTimeSlot"
+        >
+          <template v-slot:icon>
+            <TimeIcon />
+          </template>
+          <template v-slot:content>
+            <WeeklyTimePicker
+              :selected-weekdays="selectedWeekdays"
+              :selected-hour-ranges="selectedHourRanges"
+              :selected-weekly-hour-ranges="selectedWeeklyHourRanges"
+              @toggleSelectWeekday="toggleSelectWeekday"
+              @toggleSelectTimeRange="toggleSelectTimeRange"
+              @toggleWeeklyTimeRange="toggleWeeklyTimeRange"
+            />
+          </template>
+        </FilterChip>
+
+        <FilterChip
+          v-if="!channelId"
+          :label="channelLabel"
+          :highlighted="channelLabel !== defaultFilterLabels.channels"
+        >
+          <template v-slot:icon>
+            <ChannelIcon />
+          </template>
+          <template v-slot:content>
+            <ChannelPicker
+              v-model="selectedChannels"
+              :channel-options="
+                getChannelOptionLabels(channelOptions.queryChannel)
+              "
+              :selected-channels="selectedChannels"
+              @setChannelFilters="setChannelFilters"
+            />
+          </template>
+        </FilterChip>
+
+        <FilterChip
+          :label="tagLabel"
+          :highlighted="tagLabel !== defaultFilterLabels.tags"
+        >
+          <template v-slot:icon>
+            <TagIcon />
+          </template>
+          <template v-slot:content>
+            <TagPicker
+              :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+              :selected-tags="selectedTags"
+              @setTagFilters="setTagFilters"
+            />
+          </template>
+        </FilterChip>
+
+        <FilterChip
+          :label="otherFiltersLabel"
+          :highlighted="otherFiltersLabel !== defaultFilterLabels.other"
+        >
+          <template v-slot:icon>
+            <FilterIcon />
+          </template>
+          <template v-slot:content>
+            <div>
+              <label
+                for="location"
+                class="block text-sm font-medium text-gray-700"
+                >Search Event Titles and Descriptions</label
+              >
+
+              <SearchBar
+                :router-search-terms="routerSearchTerms"
+                :search-placeholder="'Search'"
+                @updateSearchInput="updateSearchResult"
+              />
+
+              <div class="relative flex items-start mt-4">
+                <div class="flex items-center h-5">
+                  <input
+                    class="
+                      focus:ring-indigo-500
+                      h-4
+                      w-4
+                      text-indigo-600
+                      border-gray-300
+                      rounded
+                    "
+                    type="checkbox"
+                    id="onlyFreeEvents"
+                    v-model="showOnlyFreeEvents"
+                  />
+                </div>
+                <div class="ml-3 text-sm">
+                  <label for="comments" class="font-medium text-gray-700"
+                    >Show Only Free Events</label
+                  >
+                </div>
               </div>
             </div>
-          </div>
-        </template>
-      </FilterChip>
+          </template>
+        </FilterChip>
     </div>
 
     <EventList
@@ -1243,7 +1243,7 @@ export default defineComponent({
       <div v-if="eventLoading">Loading...</div>
       <div
         class="overflow-y-scroll"
-        style="position: fixed; right: 0; width: 34vw; "
+        style="position: fixed; right: 0; width: 34vw"
       >
         <EventList
           class="overscroll-auto overflow-auto"

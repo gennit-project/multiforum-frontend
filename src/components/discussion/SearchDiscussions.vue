@@ -286,8 +286,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <div class="items-center inline-flex mt-2 space-x-2 px-8">
+  <div class="mx-auto max-w-4xl">
+    <div class="items-center inline-flex mt-2 space-x-2">
       <SearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Search discussions'"

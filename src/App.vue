@@ -47,7 +47,5 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-body {
-  color: gray;
-}
+
 </style>
