@@ -465,6 +465,9 @@ export default defineComponent({
                   v-model="startTime"
                   mode="date"
                   :minute-increment="30"
+                  :masks="{
+                    iso: 'YYYY-MM-DDTHH:mm:ss.SSSZ'
+                  }"
                 >
                   <template v-slot="{ inputValue, inputEvents }">
                     <input
