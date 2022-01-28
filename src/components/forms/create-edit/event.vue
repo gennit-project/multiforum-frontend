@@ -270,7 +270,13 @@ export default defineComponent({
     };
   },
   data(){
-    return {showCostField: false}
+    return {
+      showCostField: false,
+      modelConfig: {
+        type: 'string',
+        mask: 'iso',
+      },
+    }
   },
   props: {
     mode: {
@@ -464,10 +470,7 @@ export default defineComponent({
                 <DatePicker
                   v-model="startTime"
                   mode="date"
-                  :minute-increment="30"
-                  :masks="{
-                    iso: 'YYYY-MM-DDTHH:mm:ss.SSSZ'
-                  }"
+                  :modelConfig="modelConfig"
                 >
                   <template v-slot="{ inputValue, inputEvents }">
                     <input
