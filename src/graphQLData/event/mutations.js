@@ -12,13 +12,12 @@ export const ADD_EVENT = gql`
         $startTimeDayOfWeek: String!
         $startTimeHourOfDay: Int!
         $endTime: DateTime!
-        $Communities: [CommunityRef!]
+        $Channels: [ChannelRef!]!
         $Tags: [TagRef!]
         $locationName: String
         $address: String
-        $howToFindLocation: String
         $virtualEventUrl: String
-        $organizer: String!
+        $poster: UserRef!
         $createdDate: DateTime!
         $isInPrivateResidence: Boolean
         $cost: String
@@ -37,18 +36,17 @@ export const ADD_EVENT = gql`
               startTimeDayOfWeek: $startTimeDayOfWeek
               startTimeHourOfDay: $startTimeHourOfDay
               endTime: $endTime
-              Communities: $Communities
+              Channels: $Channels
               Tags: $Tags
               locationName: $locationName
+              location: $location
               address: $address
-              howToFindLocation: $howToFindLocation
               virtualEventUrl: $virtualEventUrl
-              Organizer: { username: $organizer }
+              Poster: $poster
               createdDate: $createdDate
               isInPrivateResidence: $isInPrivateResidence
               cost: $cost
               placeId: $placeId
-              location: $location
               canceled: false
             }
           ]
@@ -57,15 +55,14 @@ export const ADD_EVENT = gql`
             id
             title
             description
-            Communities {
-              url
+            Channels {
+              uniqueName
             }
-            Organizer {
+            Poster {
               username
             }
             locationName
             address
-            howToFindLocation
             startTime
             startTimeYear
             startTimeMonth
