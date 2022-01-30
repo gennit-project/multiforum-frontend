@@ -20,7 +20,7 @@ import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
-import LocationSearchBar from "@/components/event/LocationSearchBar.vue";
+import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import { ADD_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { ADD_EVENT } from "@/graphQLData/event/mutations";
 import CheckBox from "@/components/forms/CheckBox.vue";
@@ -257,6 +257,7 @@ export default defineComponent({
       getReadableTimeFromISO,
       getVariablesForAddEvent,
       latitude,
+      locationName,
       longitude,
       minStartTimeISO,
       now,
@@ -330,6 +331,7 @@ export default defineComponent({
     onSubmit() {
       const variables = this.getVariablesForAddEvent();
       this.addEvent(...variables);
+      debugger;
     },
     updateTitle(updated: String) {
       this.title = updated;
@@ -355,6 +357,18 @@ export default defineComponent({
     updateStartTime(time: Date) {
       // Sat Jan 01 2022 18:30:00 GMT-0700 (Mountain Standard Time)
       this.startTime = time.toISOString();
+    },
+    updateLocationInput(placeData: any) {
+
+      try {
+        this.placeId = placeData.place_id
+        this.latitude = placeData.geometry.location.lat()
+        this.longitude = placeData.geometry.location.lat()
+        this.address = placeData.formatted_address;
+        this.locationName = placeData.name;
+      } catch (e: any){
+        throw new Error(e)
+      }
     }
   },
 });
@@ -421,6 +435,7 @@ export default defineComponent({
               <LocationSearchBar
                 :search-placeholder="'Location'"
                 :full-width="true"
+                @updateLocationInput="updateLocationInput"
               />
             </FormRow>
 

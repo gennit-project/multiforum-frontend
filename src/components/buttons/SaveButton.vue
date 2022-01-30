@@ -7,7 +7,6 @@ export default defineComponent({
 </script>
 <template>
   <button
-    type="submit"
     class="
       ml-3
       inline-flex

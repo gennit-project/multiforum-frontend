@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import locationFilterTypes from "@/components/event/locationFilterTypes";
-import { distanceOptions, distanceUnitOptions } from "./eventSearchOptions";
+import { distanceOptions, distanceUnitOptions } from "@/components/event/eventSearchOptions";
 import Select from "@/components/forms/Select.vue";
 import RadioButtons from "@/components/forms/RadioButtons.vue";
-import LocationSearchBar from "@/components/event/LocationSearchBar.vue";
-import { locationFilterOptions, locationFilterMap } from "./eventSearchOptions";
+import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
+import { locationFilterOptions, locationFilterMap } from "@/components/event/eventSearchOptions";
 import { DistanceUnit, Distance } from "@/types/eventTypes";
 
 export default defineComponent({
