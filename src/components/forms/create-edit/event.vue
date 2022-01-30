@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { useRoute } from "vue-router";
@@ -144,53 +144,57 @@ export default defineComponent({
     //   address: false,
     // });
 
-    const variablesForAnyEvent = {
-      poster: username,
-      createdDate: DateTime.now().toISO(),
-      title: title.value,
-      description: description.value,
-      startTime: startTime.value,
-      endTime: endTime.value,
-      startTimeYear: startTimePieces.value.startTimeYear,
-      startTimeMonth: startTimePieces.value.startTimeMonth,
-      startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth,
-      startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek,
-      startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay,
-      Channels: selectedChannels.value.map((c) => {
-        return { uniqueName: c };
-      }),
-      Tags: selectedTags.value.map((t) => {
-        return { text: t };
-      }),
-      cost,
-      canceled: false,
-      virtualEventUrl,
-    };
+    const variablesForAnyEvent = computed(() => {
+      return {
+        poster: username,
+        createdDate: DateTime.now().toISO(),
+        title: title.value,
+        description: description.value,
+        startTime: startTime.value,
+        endTime: endTime.value,
+        startTimeYear: startTimePieces.value.startTimeYear,
+        startTimeMonth: startTimePieces.value.startTimeMonth,
+        startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth,
+        startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek,
+        startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay,
+        Channels: selectedChannels.value.map((c) => {
+          return { uniqueName: c };
+        }),
+        Tags: selectedTags.value.map((t) => {
+          return { text: t };
+        }),
+        cost: cost.value,
+        canceled: false,
+        virtualEventUrl: virtualEventUrl.value,
+      };
+    });
 
-    const variablesForEventWithLocation = {
-      locationName,
-      address,
-      isInPrivateResidence,
-      placeId,
-      location: {
-        latitude,
-        longitude,
-      },
-    };
+    const variablesForEventWithLocation = computed(() => {
+      return {
+        locationName: locationName.value,
+        address: address.value,
+        isInPrivateResidence: isInPrivateResidence.value,
+        placeId: placeId.value,
+        location: {
+          latitude: latitude.value,
+          longitude: longitude.value,
+        },
+      };
+    });
 
     const getVariablesForAddEvent = () => {
       if (latitude.value && longitude.value) {
         return {
-          ...variablesForAnyEvent,
-          ...variablesForEventWithLocation,
+          ...variablesForAnyEvent.value,
+          ...variablesForEventWithLocation.value,
         };
       }
-      return variablesForAnyEvent;
+      return variablesForAnyEvent.value;
     };
 
     const { mutate: addCommentSection } = useMutation(ADD_COMMENT_SECTION);
 
-    const { mutate: addEvent } = useMutation(ADD_EVENT, {
+    const { mutate: addEvent, error: addEventError } = useMutation(ADD_EVENT, {
       errorPolicy: "all",
       update(cache, { data: { addEvent } }) {
         const newEventId = addEvent.event[0].id;
@@ -246,6 +250,7 @@ export default defineComponent({
 
     return {
       addEvent,
+      addEventError,
       address,
       channelData,
       channelError,
@@ -272,10 +277,10 @@ export default defineComponent({
       virtualEventUrl,
     };
   },
-  data(){
+  data() {
     return {
       showCostField: false,
-    }
+    };
   },
   props: {
     mode: {
@@ -328,9 +333,10 @@ export default defineComponent({
       ); // fragment locator
       return !!pattern.test(str);
     },
-    onSubmit() {
+    async onSubmit() {
       const variables = this.getVariablesForAddEvent();
-      this.addEvent(...variables);
+      debugger;
+      await this.addEvent(...variables);
       debugger;
     },
     updateTitle(updated: String) {
@@ -359,17 +365,22 @@ export default defineComponent({
       this.startTime = time.toISOString();
     },
     updateLocationInput(placeData: any) {
-
       try {
-        this.placeId = placeData.place_id
-        this.latitude = placeData.geometry.location.lat()
-        this.longitude = placeData.geometry.location.lat()
+        this.placeId = placeData.place_id;
+        this.latitude = placeData.geometry.location.lat();
+        this.longitude = placeData.geometry.location.lat();
         this.address = placeData.formatted_address;
         this.locationName = placeData.name;
-      } catch (e: any){
-        throw new Error(e)
+      } catch (e: any) {
+        throw new Error(e);
       }
-    }
+    },
+    setTagFilters(tag: Array<string>) {
+      this.selectedTags = tag;
+    },
+    setChannelFilters(channel: Array<string>) {
+      this.selectedChannels = channel;
+    },
   },
 });
 </script>
@@ -398,6 +409,7 @@ export default defineComponent({
                   getChannelOptionLabels(channelData.queryChannel)
                 "
                 :selected-channels="selectedChannels"
+                @setChannelFilters="setChannelFilters"
               />
             </FormRow>
 
@@ -452,6 +464,7 @@ export default defineComponent({
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.queryTag)"
                 :selected-tags="selectedTags"
+                @setTagFilters="setTagFilters"
               />
               <CheckBox :checked="!showCostField" @input="toggleCostField" />
               <span class="ml-2">This event is free</span>
@@ -480,6 +493,9 @@ export default defineComponent({
       {{ error.message }}
     </div>
     <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
+      {{ error.message }}
+    </div>
+    <div v-for="(error, i) of addEventError?.graphQLErrors" :key="i">
       {{ error.message }}
     </div>
   </div>
