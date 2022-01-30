@@ -14,8 +14,8 @@ import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "../ChannelPicker.vue";
 import TagPicker from "../TagPicker.vue";
-import Select from "@/components/forms/Select.vue";
-import { DatePicker } from "v-calendar";
+import DatePicker from "vue3-date-time-picker";
+import "vue3-date-time-picker/dist/main.css";
 import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
@@ -25,8 +25,6 @@ import { ADD_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { ADD_EVENT } from "@/graphQLData/event/mutations";
 import CheckBox from "@/components/forms/CheckBox.vue";
 const { DateTime } = require("luxon");
-
-const MINUTES_IN_A_DAY = 1440;
 
 export default defineComponent({
   name: "CreateEditEvent",
@@ -40,7 +38,6 @@ export default defineComponent({
     FormTitle,
     LocationSearchBar,
     SaveButton,
-    Select,
     TagPicker,
     TextEditor,
     TextInput,
@@ -58,7 +55,10 @@ export default defineComponent({
     const description = ref("");
 
     const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
+    const minStartTimeObj = defaultStartTimeObj.minus({ days: 1 });
+
     const defaultStartTimeISO = defaultStartTimeObj.toISO();
+    const minStartTimeISO = minStartTimeObj.toISO();
     const startTime = ref(defaultStartTimeISO);
 
     const getStartTimePieces = (defaultStartTimeObj: typeof DateTime) => {
@@ -253,10 +253,12 @@ export default defineComponent({
       cost,
       description,
       durationHoursAndMinutes,
+      endTime,
       getReadableTimeFromISO,
       getVariablesForAddEvent,
       latitude,
       longitude,
+      minStartTimeISO,
       now,
       placeId,
       selectedChannels,
@@ -272,10 +274,6 @@ export default defineComponent({
   data(){
     return {
       showCostField: false,
-      modelConfig: {
-        type: 'string',
-        mask: 'iso',
-      },
     }
   },
   props: {
@@ -311,88 +309,8 @@ export default defineComponent({
       );
       return needsChanges;
     },
-    endTimeISOs() {
-      let endTimeISOs = [];
-      let startTimeObject = DateTime.fromISO(this.startTime);
-
-      // We generate a list of end times
-      // at 30-minute intervals, starting with 30
-      // minutes after the start time.
-      for (let i = 30; i < MINUTES_IN_A_DAY; i += 30) {
-        let endTimeObject = startTimeObject.plus({ minutes: i });
-        let endTimeISO = endTimeObject.toISO();
-        endTimeISOs.push(endTimeISO);
-      }
-      return endTimeISOs;
-    },
-    startTimeISOs() {
-      // The intent is to allow a user to select
-      // a start time for an event by clicking
-      // one option. This is more convenient
-      // than typing and also helps us prevent
-      // invalid inputs.
-
-      // To make this possible, we generate a list of
-      // start times at thirty-minute intervals.
-
-      let startTimeISOs = [];
-      let startOfToday = DateTime.now().startOf("day");
-      let startTimeObj = DateTime.fromISO(this.startTime);
-
-      // If the start date is today, the options
-      // are only for later today.
-      if (startTimeObj.startOf("day").toISO() === startOfToday.toISO()) {
-        let endOfDay = startTimeObj.endOf("day");
-        let currentOption = startTimeObj.plus({ minutes: 30 });
-        while (currentOption < endOfDay) {
-          let optionAsISO = currentOption.toISO();
-          startTimeISOs.push(optionAsISO);
-          currentOption = currentOption.plus({ minutes: 30 });
-        }
-        return startTimeISOs;
-      }
-
-      // If the start date is after today, the options
-      // can be any time during the day.
-      let beginningOfDay = startTimeObj.startOf("day");
-      for (let i = 0; i < MINUTES_IN_A_DAY; i += 120) {
-        let startTimeObject = beginningOfDay.plus({ minutes: i });
-        let startTimeISO = startTimeObject.toISO();
-        startTimeISOs.push(startTimeISO);
-      }
-      return startTimeISOs;
-    },
-    startTimeOptions() {
-      return this.startTimeISOs.map((iso: string) => {
-        return {
-          label: getReadableTimeFromISO(iso),
-          value: iso,
-        };
-      });
-    },
-    endTimeOptions() {
-      return this.endTimeISOs.map((iso: string) => {
-        return {
-          label: getReadableTimeFromISO(iso),
-          value: iso,
-        };
-      });
-    },
-    eventLength() {
-      let humanReadableEndTime = this.getReadableTimeFromISO(this.endTimeISO);
-      let lengthOfEvent = this.durationHoursAndMinutes(
-        this.startTimeISO,
-        this.endTimeISO
-      );
-      return `${humanReadableEndTime} (${lengthOfEvent})`;
-    },
   },
   methods: {
-    getRelativeTimeFromISO(timeISO: string) {
-      let humanReadableStartTime = this.getReadableTimeFromISO(timeISO);
-      let timeFromNow = this.relativeTimeHoursAndMinutes(timeISO);
-      return `${humanReadableStartTime} (${timeFromNow})`;
-    },
     urlIsValid(str: string) {
       // Valid URL checker from Devshed
       // Sources:
@@ -434,6 +352,10 @@ export default defineComponent({
     toggleCostField() {
       this.showCostField = !this.showCostField;
     },
+    updateStartTime(time: Date) {
+      // Sat Jan 01 2022 18:30:00 GMT-0700 (Mountain Standard Time)
+      this.startTime = time.toISOString();
+    }
   },
 });
 </script>
@@ -465,41 +387,23 @@ export default defineComponent({
               />
             </FormRow>
 
-            <FormRow :section-title="'Time'">
+            <FormRow :section-title="'Start Time'">
               <div class="sm:inline-block md:flex items-center md:space-x-2">
                 <DatePicker
                   v-model="startTime"
-                  mode="date"
-                  :modelConfig="modelConfig"
-                >
-                  <template v-slot="{ inputValue, inputEvents }">
-                    <input
-                      class="
-                        px-2
-                        py-1.5
-                        border
-                        rounded
-                        focus:ring-indigo-500 focus:border-indigo-500
-                        border-gray-300
-                      "
-                      :value="inputValue"
-                      v-on="inputEvents"
-                    />
-                  </template>
-                </DatePicker>
-
-                <Select
-                  class="mt-2 mb-2 inline-flex"
-                  :options="startTimeOptions"
-                  :selected-option="startTimeOptions[0]"
+                  :is-24="false"
+                  :minutesIncrement="30"
+                  :minDate="minStartTimeISO"
                 />
-
-                <span class="m-1">to</span>
-
-                <Select
-                  class="mt-2 mb-2 inline-flex"
-                  :options="endTimeOptions"
-                  :selected-option="endTimeOptions[0]"
+              </div>
+            </FormRow>
+            <FormRow :section-title="'End Time'">
+              <div class="sm:inline-block md:flex items-center md:space-x-2">
+                <DatePicker
+                  v-model="endTime"
+                  :is-24="false"
+                  :minutesIncrement="30"
+                  @update:modelValue="updateStartTime"
                 />
               </div>
             </FormRow>
