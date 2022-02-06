@@ -146,7 +146,7 @@ export default defineComponent({
 
     const variablesForAnyEvent = computed(() => {
       return {
-        poster: username,
+        poster: { username },
         createdDate: DateTime.now().toISO(),
         title: title.value,
         description: description.value,
@@ -381,8 +381,20 @@ export default defineComponent({
     setChannelFilters(channel: Array<string>) {
       this.selectedChannels = channel;
     },
-  },
-});
+    addEvent2() {
+      // We save the user input in case of an error
+      // Call to the graphql mutation
+      this.$apollo.mutate({
+        // Query
+        mutation: this.addEvent,
+        // Parameters
+        variables: {
+          label: this.getVariablesForAddEvent(),
+        },
+      })
+    }
+  }
+})
 </script>
 <template>
   <div>
@@ -484,7 +496,7 @@ export default defineComponent({
       <div class="pt-5">
         <div class="flex justify-end">
           <CancelButton />
-          <SaveButton @click="onSubmit" />
+          <SaveButton @click="addEvent2" />
         </div>
       </div>
     </Form>

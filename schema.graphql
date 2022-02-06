@@ -1,353 +1,317 @@
-type User {
-  username: String! @id @search(by: [hash])
-  name: String @search(by: [exact])
-  pronouns: String
-  location: String
-  bio: String
-  isAdmin: Boolean
-  Comments: [Comment!] @hasInverse(field: UserAuthor)
-  AdminOfChannels: [Channel!] @hasInverse(field: Admins)
-  ModeratorOfChannels: [Channel!] @hasInverse(field: Moderators)
-  Discussions: [Discussion!] @hasInverse(field: Author)
-  Events: [Event!] @hasInverse(field: Poster)
-  SentMessages: [Message!] @hasInverse(field: Author)
-  ReceivedMessages: [Message!] @hasInverse(field: Recipient)
-  Feeds: [Feed!] @hasInverse(field: Owner)
-  DefaultFeed: Feed
-  createdDate: DateTime @search
-  Tags: [Tag] @hasInverse(field: Users)
-  AuthoredWikiPages: [WikiPage] @hasInverse(field: Authors)
-  WikiChangeProposals: [WikiChangeProposal] @hasInverse(field: Author)
-  Notifications: [Notification] @hasInverse(field: User)
-  Blocked: User @hasInverse(field: IsBlockedBy)
-  IsBlockedBy: User @hasInverse(field: Blocked)
-  SubscribesToFeeds: [Feed]
-  CreatedPublicFeeds: [Feed]
-  FavoriteChannels: [Channel]
-  RecentlyVisitedChannels: [Channel]
-  UpvotedComments: [Comment] @hasInverse(field: UpvotedByUsers)
-  UpvotedDiscussions: [Discussion] @hasInverse(field: UpvotedByUsers)
-  ModerationProfile: ModerationProfile @hasInverse(field: User)
-  DefaultEmojiSkintone: String
-  NotificationBundleInterval: String
-  PreferredTimeZone: String
-  Issues: [Issue] @hasInverse(field: UserAuthor)
-  IssueComments: [IssueComment] @hasInverse(field: UserAuthor)
-  SuspendedFromChannels: [Channel] @hasInverse(field: SuspendedUsers)
-  suspendedFromServer: Boolean @search
-}
-
-type Channel {
-  description: String @search(by: [fulltext])
-  name: String! @search(by: [fulltext])
-  uniqueName: String! @id @search(by: [term, fulltext])
-  Admins: [User] @hasInverse(field: AdminOfChannels)
-  Moderators: [User] @hasInverse(field: ModeratorOfChannels)
-  Discussions: [Discussion!] @hasInverse(field: Channels)
-  RelatedChannels: [Channel!] @hasInverse(field: RelatedChannels)
-  Events: [Event] @hasInverse(field: Channels)
-  createdDate: DateTime @search
-  Flairs: [Flair] @hasInverse(field: Channel)
-  Tags: [Tag] @hasInverse(field: Channels)
-  WikiPages: [WikiPage] @hasInverse(field: Channel)
-  ModerationDashboard: ModerationDashboard @hasInverse(field: Channel)
-  Rules: [Rule] @hasInverse(field: Channel)
-  locked: Boolean @search
-  SuspendedUsers: [User] @hasInverse(field: SuspendedFromChannels)
-  Comments: [Comment!] @hasInverse(field: Channel)
-  CommentSections: [CommentSection!] @hasInverse(field: Channel)
-}
-
-type Discussion {
-  id: ID! 
-  Author: User!
-  body: String @search(by: [fulltext])
-  Channels: [Channel!]! @hasInverse(field: Discussions)
-  title: String! @search(by: [fulltext])
-  createdDate: DateTime! @search
-  editedDate: DateTime
-  Flairs: [Flair] @hasInverse(field: Discussions)
-  Tags: [Tag] @hasInverse(field: Discussions)
-  UpvotedByUsers: [User] @hasInverse(field: UpvotedDiscussions)
-  DownvotedByModerators: [ModerationProfile] @hasInverse(field: DownvotedDiscussions)
-  PastVersions: [DiscussionVersion] @hasInverse(field: Discussion)
-  CommentSections: [CommentSection!]
-}
-
-type CommentSection {
-  # Must have a Channel and either a Discussion or an Event.
-  # Channel is technically optional because channels can be deleted.
-  id: ID!
-  Comments: [Comment] @hasInverse(field: CommentSection)
-  Discussion: Discussion @hasInverse(field: CommentSections)
-  Event: Event @hasInverse(field: CommentSections)
-  Channel: Channel @hasInverse(field: CommentSections)
-}
-
-type DiscussionVersion {
-  id: ID!
-  title: String!
-  body: String
-  createdDate: DateTime! @search
-  Discussion: Discussion @hasInverse(field: PastVersions)
-}
-
-type Comment {
-  id: ID!
-  UserAuthor: User @hasInverse(field: Comments)
-  ModeratorAuthor: ModerationProfile @hasInverse(field: DiscussionComments)
-  CommentSection: CommentSection @hasInverse(field: Comments)
-  Channel: Channel @hasInverse(field: Comments)
-  ParentComment: Comment @hasInverse(field: ChildComments)
-  text: String @search(by: [term])
-  isRootComment: Boolean! @search
-  ChildComments: [Comment] @hasInverse(field: ParentComment)
-  authorIsAdmin: Boolean
-  authorIsModerator: Boolean
-  authorIsPoster: Boolean
-  authorIsOriginalPoster: Boolean
-  deleted: Boolean
-  editedDate: DateTime
-  createdDate: DateTime @search
-  Emoji: [Emoji] 
-  Tags: [Tag] @hasInverse(field: Comments)
-  ReplyUpvotes: Int
-  UpvotedByUsers: [User] @hasInverse(field: UpvotedComments)
-  DownvotedByModerators: [ModerationProfile] @hasInverse(field: DownvotedComments)
-  PastVersions: [CommentVersion] @hasInverse(field: Comment)
-}
-
-type CommentVersion {
-  id: ID!
-  text: String
-  Comment: Comment @hasInverse(field: PastVersions)
-  createdDate: DateTime! @search
-}
-
-type Message {
-  id: ID!
-  Author: User!
-  Recipient: User!
-  text: String! @search(by: [hash])
-  createdDate: DateTime @search
-}
-
-interface addEventInput {
-  title: String!
-  description: String
-  startTime: DateTime!
-  startTimeYear: String!
-  startTimeMonth: String!
-  startTimeDayOfMonth: String!
-  startTimeDayOfWeek: String!
-  startTimeHourOfDay: Int!
-  endTime: DateTime!
-  Channel: Channel!
-  locationName: String
-  address: String
-  howToFindLocation: String
-  virtualEventUrl: String
-  Poster: User!
-  createdDate: DateTime
-  placeId: String
-  isInPrivateResidence: Boolean
-  cost: String
-  location: Point
-  hostType: String
-  hostName: String
-  Tags: [Tag]
-  CommentSections: [CommentSection!]!
-}
-
 type Event {
-  id: ID!
-  title: String! @search(by: [fulltext])
-  description: String @search(by: [fulltext])
-  startTime: DateTime! @search
-  startTimeYear: String! @search(by: [term])
-  startTimeMonth: String! @search(by: [term])
-  startTimeDayOfMonth: String! @search(by: [term])
-  startTimeDayOfWeek: String! @search(by: [term])
-  startTimeHourOfDay: Int! @search
-  endTime: DateTime! @search
-  Channels: [Channel!]! @hasInverse(field: Events)
-  CommentSections: [CommentSection!]
-  locationName: String
-  address: String
-  virtualEventUrl: String @search(by: [hash])
-  Poster: User! @hasInverse(field: Events)
-  editedDate: DateTime
-  createdDate: DateTime
-  placeId: String @search(by:[exact])
-  isInPrivateResidence: Boolean
-  cost: String @search(by: [hash])
-  location: Point @search
-  hostType: String @search(by: [exact])
-  hostName: String
-  canceled: Boolean! @search
-  Tags: [Tag] @hasInverse(field: Events)
-  PastVersions: [EventVersion] @hasInverse(field: Event)
-}
-
-type EventVersion {
-  id: ID!
-  title: String
-  description: String
-  startTime: DateTime
-  endTime: DateTime
-  locationName: String
-  address: String
-  howToFindLocation: String
-  virtualEventUrl: String
-  placeId: String
-  isInPrivateResidence: Boolean
-  cost: String
-  location: Point
-  hostType: String
-  hostName: String
-  canceled: Boolean
-  createdDate: Boolean! @search
-  Event: Event @hasInverse(field: PastVersions)
-}
-
-type Flair {
-  id: ID!
-  Channel: Channel @hasInverse(field: Flairs)
-  Discussions: [Discussion] @hasInverse(field: Flairs)
-  text: String @search(by: [exact])
-}
-
-type WikiPage {
-  id: ID!
-  Authors: [User] @hasInverse(field: AuthoredWikiPages)
-  text: String
-  Channel: Channel @hasInverse(field: WikiPages)
-  PastVersions: [WikiPageVersion] @hasInverse(field: WikiPage)
-  createdDate: DateTime @search
-  Tags: [Tag] @hasInverse(field: WikiPages)
-  WikiChangeProposals:[WikiChangeProposal] @hasInverse(field:WikiPage)
-}
-
-type WikiPageVersion {
-  id: ID!
-  text: String
-  Authors: [User]
-  WikiPage: WikiPage @hasInverse(field: PastVersions)
-  createdDate: DateTime! @search
-}
-
-type WikiChangeProposal {
-  id: ID!
-  text: String
-  Author: User @hasInverse(field: WikiChangeProposals)
-  WikiPage: WikiPage @hasInverse(field: WikiChangeProposals)
-  createdDate: DateTime! @search
-  status: String
-}
-
-type Tag {
-  text: String! @id @search
-  Channels: [Channel] @hasInverse(field: Tags)
-  Discussions: [Discussion] @hasInverse(field: Tags)
-  Events: [Event] @hasInverse(field: Tags)
-  Users: [User] @hasInverse(field: Tags)
-  Comments: [Comment] @hasInverse(field: Tags)
-  WikiPages: [WikiPage] @hasInverse(field: Tags)
-  Feeds: [Feed] @hasInverse(field: Tags)
-}
-
-type Notification {
-  id: ID!
-  User: User @hasInverse(field:Notifications)
-  text: String
-  read: Boolean
-}
-
-type Feed {
-  id: ID!
-  title: String @search(by: [hash])
-  description: String @search(by: [hash])
-  Owner: User
-  Sources: [Source]
-  Tags: [Tag] @hasInverse(field:Feeds)
-}
-
-enum SourceTypes {
-  rss,
-  activityPub,
-  channelEvents,
-  channelDiscussions
-}
-
-type Source {
-  id: ID!
-  type: SourceTypes
-  websiteUrl: String
-  channel: [Channel]
-}
-
-type Emoji {
-  id: ID!
-  identifier: String!
-  colons: String!
-  name: String!
-  native: String!
-  addedBy: User!
-}
-
-type ModerationProfile {
-  id: ID!
-  User: User @hasInverse(field: ModerationProfile)
-  DownvotedComments: [Comment] @hasInverse(field: DownvotedByModerators)
-  DownvotedDiscussions: [Discussion] @hasInverse(field: DownvotedByModerators)
-  CreatedReports: [Report] @hasInverse(field: Author)
-  Issues: [Issue] @hasInverse(field: ModeratorAuthor)
-  DiscussionComments: [Comment] @hasInverse(field: ModeratorAuthor)
-  IssueComments: [IssueComment] @hasInverse(field: ModeratorAuthor)
-}
-
-type ModerationDashboard {
-  id: ID!
-  issueTemplate: String
-  Channel: Channel @hasInverse(field: ModerationDashboard)
-  Issues: [Issue] @hasInverse(field: ModerationDashboard)
-}
-
-type Rule {
-  id: ID!
-  Channel: Channel @hasInverse(field: Rules)
-  orderInList: Int
-  summary: String
-  description: String
-}
-
-type Report {
-  id: ID!
-  Author: ModerationProfile @hasInverse(field: CreatedReports)
-  text: String
-  RuleViolations: [Rule]
-  Issues: [Issue] @hasInverse(field: Reports)
-  createdDate: DateTime! @search
-  editedDate: DateTime
-}
-
-type Issue {
-  id: ID!
-  ModeratorAuthor: ModerationProfile @hasInverse(field: Issues)
-  UserAuthor: User @hasInverse(field: Issues)
-  title: String @search(by: [hash])
-  body: String @search(by: [hash])
-  ModerationDashboard: ModerationDashboard @hasInverse(field: Issues)
-  isOpen: Boolean! @search
-  Reports: [Report] @hasInverse(field: Issues)
-  createdDate: DateTime! @search
-  editedDate: DateTime
-}
-
-type IssueComment {
-  id: ID!
-  UserAuthor: User @hasInverse(field: IssueComments)
-  ModeratorAuthor: ModerationProfile @hasInverse(field: IssueComments)
-  createdDate: DateTime! @search
-  editedDate: DateTime
-}
+    id:                    ID!
+    title:                 String!
+    description:           String
+    startTime:             DateTime!
+    startTimeYear:         String!
+    startTimeMonth:        String!
+    startTimeDayOfMonth:   String!
+    startTimeDayOfWeek:    String!
+    startTimeHourOfDay:    Int!
+    endTime:               DateTime!
+    Channels:              [Channel!]       @relationship(type: "POSTED_IN_CHANNEL", direction: OUT)
+    CommentSections:       [CommentSection!] @relationship(type: "HAS_COMMENTS_IN", direction: OUT)
+    locationName:          String
+    address:               String
+    virtualEventUrl:       String
+    Poster:                User!             @relationship(type: "POSTED_BY", direction: OUT)
+    updatedAt:             DateTime!         @timestamp(operations: [UPDATE])
+    createdAt:             DateTime!         @timestamp(operations: [CREATE])
+    placeId:               String
+    isInPrivateResidence:  Boolean 
+    cost:                  String
+    location:              Point
+    canceled:              Boolean! 
+    Tags:                  [Tag]             @relationship(type: "HAS_TAG", direction: OUT)
+    PastVersions:          [EventVersion]    @relationship(type: "HAS_VERSION", direction: OUT)
+  }
+  
+  type User {
+    username:                String! @unique
+    name:                    String
+    pronouns:                String
+    location:                String
+    bio:                     String
+    isAdmin:                 Boolean
+    Comments:                [Comment!]           @relationship(type: "AUTHORED_COMMENT", direction: OUT)
+    AdminOfChannels:         [Channel!]           @relationship(type: "ADMIN_OF_CHANNEL", direction: OUT)
+    ModeratorOfChannels:     [Channel!]           @relationship(type: "MODERATOR_OF_CHANNEL", direction: OUT)
+    Discussions:             [Discussion!]        @relationship(type: "POSTED_DISCUSSION", direction: OUT)
+    Events:                  [Event!]             @relationship(type: "POSTED_BY", direction: IN)
+    SentMessages:            [Message!]           @relationship(type: "SENT_MESSAGE", direction: OUT)
+    ReceivedMessages:        [Message!]           @relationship(type: "RECEIVED_MESSAGE", direction: OUT)
+    Feeds:                   [Feed!]              @relationship(type: "HAS_FEED_IN_LIBRARY", direction: OUT)
+    CreatedFeeds:            [Feed!]              @relationship(type: "CREATED_FEED", direction: OUT)
+    DefaultFeed:             Feed                 @relationship(type: "DEFAULT_FEED", direction: OUT)
+    createdAt:               DateTime!            @timestamp(operations: [CREATE])
+    AuthoredWikiPages:       [WikiPage]           @relationship(type: "AUTHORED_PAGE", direction: OUT)
+    WikiChangeProposals:     [WikiChangeProposal] @relationship(type: "AUTHORED_CHANGE_PROPOSAL", direction: OUT)
+    Notifications:           [Notification]       @relationship(type: "HAS_NOTIFICATION", direction: OUT)
+    Blocked:                 User                 @relationship(type: "BLOCKED", direction: OUT)
+    IsBlockedBy:             User                 @relationship(type: "BLOCKED", direction: IN)
+    FavoriteChannels:        [Channel]            @relationship(type: "FAVORITE_CHANNEL", direction: OUT)
+    RecentlyVisitedChannels: [Channel]            @relationship(type: "RECENTLY_VISITED_CHANNEL", direction: OUT)
+    UpvotedComments:         [Comment]            @relationship(type: "UPVOTED_COMMENT", direction: OUT)
+    UpvotedDiscussions:      [Discussion]         @relationship(type: "UPVOTED_DISCUSSION", direction: OUT)
+    ModerationProfile:       ModerationProfile    @relationship(type: "MODERATION_PROFILE", direction: OUT)
+    DefaultEmojiSkintone:    String
+    NotificationBundleInterval: String
+    PreferredTimeZone:       String
+    Issues:                  [Issue]               @relationship(type: "AUTHORED_ISSUE", direction: OUT)
+    IssueComments:           [IssueComment]        @relationship(type: "AUTHORED_ISSUE_COMMENT", direction: OUT)
+    SuspendedFromChannels:   [Channel]             @relationship(type: "SUSPENDED_FROM_CHANNEL", direction: OUT)
+    suspendedFromServer:      Boolean
+  }
+  
+  type Channel {
+    description:              String 
+    name:                     String!
+    uniqueName:               String! @unique
+    Admins:                   [User]                 @relationship(type: "ADMIN_OF_CHANNEL", direction: IN)
+    Moderators:               [User]                 @relationship(type: "MODERATOR_OF_CHANNEL", direction: IN)
+    Discussions:              [Discussion!]          @relationship(type: "POSTED_IN_CHANNEL", direction: IN)
+    RelatedChannels:          [Channel!]             @relationship(type: "RELATED_CHANNEL", direction: OUT)
+    Events:                   [Event]                @relationship(type: "POSTED_IN_CHANNEL", direction: IN)
+    createdAt:                DateTime!              @timestamp(operations: [CREATE])
+    Flairs:                   [Flair]                @relationship(type: "HAS_FLAIR", direction: OUT)
+    Tags:                     [Tag]                  @relationship(type: "HAS_TAG", direction: OUT)
+    WikiPages:                [WikiPage]             @relationship(type: "HAS_WIKI_PAGE", direction: OUT)
+    ModerationDashboard:      ModerationDashboard    @relationship(type: "HAS_MODERATION_DASHBOARD", direction: OUT)
+    Rules:                    [Rule]                 @relationship(type: "HAS_RULE", direction: OUT)
+    locked:                   Boolean
+    SuspendedUsers:           [User]                 @relationship(type: "SUSPENDED_FROM_CHANNEL", direction: IN)
+    Comments:                 [Comment!]             @relationship(type: "HAS_COMMENT", direction: OUT)
+    CommentSections:          [CommentSection!]      @relationship(type: "HAS_COMMENT_SECTION", direction: OUT)
+  }
+  
+  type Discussion {
+    id:                      ID! 
+    Author:                  User!                   @relationship(type: "POSTED_DISCUSSION", direction: IN)
+    body:                    String
+    Channels:                [Channel!]!             @relationship(type: "POSTED_IN_CHANNEL", direction: OUT)
+    title:                   String!
+    createdAt:               DateTime!               @timestamp(operations: [CREATE])
+    updatedAt:               DateTime!               @timestamp(operations: [UPDATE])
+    Flairs:                  [Flair]                 @relationship(type: "HAS_FLAIR", direction: OUT)
+    Tags:                    [Tag]                   @relationship(type: "HAS_TAG", direction: OUT)
+    UpvotedByUsers:          [User]                  @relationship(type: "UPVOTED_DISCUSSION", direction: IN)
+    DownvotedByModerators:   [ModerationProfile]     @relationship(type: "DOWNVOTED_DISCUSSION", direction: IN)
+    PastVersions:            [DiscussionVersion]     @relationship(type: "HAS_VERSION", direction: OUT)
+    CommentSections:         [CommentSection!]       @relationship(type: "HAS_COMMENTS_IN", direction: OUT)
+  }
+  
+  union OriginalPost = Discussion | Event
+  
+  type CommentSection {
+    # Must have a Channel and either a Discussion or an Event.
+    # Channel is technically optional because channels can be deleted.
+    id:                       ID!
+    Comments:                 [Comment]               @relationship(type: "CONTAINS_COMMENT", direction: OUT)
+    OriginalPost:             OriginalPost            @relationship(type: "HAS_COMMENTS_IN", direction: IN)
+    Channel:                  Channel                 @relationship(type: "HAS_COMMENT_SECTION", direction: IN)
+  }
+  
+  type DiscussionVersion {
+    id:                       ID!
+    title:                    String!
+    body:                     String
+    createdAt:                DateTime!              @timestamp(operations: [CREATE])
+    Discussion:               Discussion             @relationship(type: "HAS_VERSION", direction: IN)
+  }
+  
+  union CommentAuthor = User | ModerationProfile
+  
+  type Comment {
+    id:                      ID!
+    CommentAuthor:           CommentAuthor                    @relationship(type: "AUTHORED_COMMENT", direction: IN)
+    CommentSection:          CommentSection          @relationship(type: "CONTAINS_COMMENT", direction: IN)
+    Channel:                 Channel                 @relationship(type: "HAS_COMMENT", direction: IN)
+    ParentComment:           Comment                 @relationship(type: "IS_REPLY_TO", direction: OUT)
+    text:                    String
+    isRootComment:           Boolean!
+    ChildComments:           [Comment]               @relationship(type: "IS_REPLY_TO", direction: IN)
+    deleted:                 Boolean
+    updatedAt:               DateTime!               @timestamp(operations: [UPDATE])
+    createdAt:               DateTime!               @timestamp(operations: [CREATE])
+    Emoji:                   [Emoji]                 @relationship(type: "HAS_EMOJI", direction: OUT)
+    Tags:                    [Tag]                   @relationship(type: "HAS_TAG", direction: OUT)
+    ReplyUpvotes:            Int
+    UpvotedByUsers:          [User]                  @relationship(type: "UPVOTED_COMMENT", direction: IN)
+    DownvotedByModerators:   [ModerationProfile]     @relationship(type: "DOWNVOTED_COMMENT", direction: IN)
+    PastVersions:            [CommentVersion]        @relationship(type: "HAS_VERSION", direction: OUT)
+  }
+  
+  type CommentVersion {
+    id:                      ID! @id
+    text:                    String
+    Comment:                 Comment                 @relationship(type: "HAS_VERSION", direction: IN)
+    createdAt:               DateTime!               @timestamp(operations: [CREATE])
+  }
+  
+  type Message {
+    id:                      ID! @id
+    Author:                  User!                   @relationship(type: "SENT_MESSAGE", direction: IN)
+    Recipient:               User!                   @relationship(type: "RECEIVED_MESSAGE", direction: IN)
+    text:                    String!
+    createdAt:               DateTime!               @timestamp(operations: [CREATE])
+  }
+  
+  type EventVersion {
+    id:                     ID! @id
+    title:                  String
+    description:            String
+    startTime:              DateTime
+    endTime:                DateTime
+    locationName:           String
+    address:                String
+    howToFindLocation:      String
+    virtualEventUrl:        String
+    placeId:                String
+    isInPrivateResidence:   Boolean
+    cost:                   String
+    location:               Point
+    hostType:               String
+    hostName:               String
+    canceled:               Boolean
+    createdAt:              DateTime!               @timestamp(operations: [CREATE])
+    Event:                  Event                   @relationship(type: "HAS_VERSION", direction: IN)
+  }
+  
+  type Flair {
+    id:                     ID! @id
+    Discussions:            [Discussion]            @relationship(type: "HAS_FLAIR", direction: IN)
+    text:                   String
+  }
+  
+  type WikiPage {
+    id:                     ID! @id
+    Authors:                [User]                  @relationship(type: "AUTHORED_PAGE", direction: IN)
+    text:                   String
+    Channel:                Channel                 @relationship(type: "HAS_WIKI_PAGE", direction: IN)
+    PastVersions:           [WikiPageVersion]       @relationship(type: "HAS_VERSION", direction: OUT)
+    createdAt:              DateTime!               @timestamp(operations: [CREATE])
+    Tags:                   [Tag]                   @relationship(type: "HAS_TAG", direction: OUT)
+    WikiChangeProposals:    [WikiChangeProposal]    @relationship(type: "HAS_CHANGE_PROPOSAL", direction: OUT)
+  }
+  
+  type WikiPageVersion {
+    id:                     ID! @id
+    text:                   String
+    Authors:                [User]
+    WikiPage:               WikiPage                @relationship(type: "HAS_VERSION", direction: IN)
+    createdAt:              DateTime!               @timestamp(operations: [CREATE])
+  }
+  
+  type WikiChangeProposal {
+    id:                     ID! @id
+    text:                   String
+    Author:                 User                   @relationship(type: "AUTHORED_CHANGE_PROPOSAL", direction: IN)
+    WikiPage:               WikiPage               @relationship(type: "HAS_CHANGE_PROPOSAL", direction: IN)
+    createdAt:              DateTime!              @timestamp(operations: [CREATE])
+    status:                 String
+  }
+  
+  type Tag {
+    text:                  String! @unique
+    Channels:              [Channel]               @relationship(type: "HAS_TAG", direction: IN)
+    Discussions:           [Discussion]            @relationship(type: "HAS_TAG", direction: IN)
+    Events:                [Event]                 @relationship(type: "HAS_TAG", direction: IN)
+    Comments:              [Comment]               @relationship(type: "HAS_TAG", direction: IN)
+    WikiPages:             [WikiPage]              @relationship(type: "HAS_TAG", direction: IN)
+    Feeds:                 [Feed]                  @relationship(type: "HAS_TAG", direction: IN)
+  }
+  
+  type Notification {
+    id:                    ID! @id
+    text:                  String
+    read:                  Boolean
+  }
+  
+  type Feed {
+    id:                    ID! @id
+    title:                 String
+    description:           String
+    Owner:                 User                   @relationship(type: "CREATED_FEED", direction: IN)
+    Sources:               [Source]
+    Tags:                  [Tag]                  @relationship(type: "HAS_TAG", direction: OUT)
+  }
+  
+  enum SourceTypes {
+    rss,
+    activityPub,
+    channelEvents,
+    channelDiscussions
+  }
+  
+  type Source {
+    id:   ID! @id
+    type: SourceTypes
+    info: String
+  }
+  
+  type Emoji {
+    id:         ID! @id
+    identifier: String!
+    colons:     String!
+    name:       String!
+    native:     String!
+    addedBy:    User!
+  }
+  
+  type ModerationProfile {
+    id:                     ID! @id
+    User:                   User           @relationship(type: "MODERATION_PROFILE", direction: IN)
+    DownvotedComments:      [Comment]      @relationship(type: "DOWNVOTED_COMMENT", direction: OUT)
+    DownvotedDiscussions:   [Discussion]   @relationship(type: "DOWNVOTED_DISCUSSION", direction: OUT)
+    AuthoredReports:        [Report]       @relationship(type: "AUTHORED_REPORT", direction: OUT)
+    Issues:                 [Issue]        @relationship(type: "AUTHORED_ISSUE", direction: OUT)
+    DiscussionComments:     [Comment]      @relationship(type: "AUTHORED_COMMENT", direction: OUT)
+    IssueComments:          [IssueComment] @relationship(type: "AUTHORED_ISSUE_COMMENT", direction: OUT)
+  }
+  
+  type ModerationDashboard {
+    id:            ID! @id
+    issueTemplate: String
+    Channel:       Channel  @relationship(type: "HAS_MODERATION_DASHBOARD", direction: IN)
+    Issues:        [Issue]  @relationship(type: "HAS_ISSUE", direction: OUT)
+  }
+  
+  type Report {
+    id:              ID! @id
+    Author:          ModerationProfile    @relationship(type: "AUTHORED_REPORT", direction: IN)
+    text:            String
+    RuleViolations:  [Rule]               @relationship(type: "CITED_RULE", direction: OUT)
+    Issues:          [Issue]              @relationship(type: "CITED_REPORT", direction: IN)
+    createdAt:       DateTime!            @timestamp(operations: [CREATE])
+    updatedAt:       DateTime!            @timestamp(operations: [UPDATE])
+  }
+  
+  type Rule {
+    id:            ID! @id
+    orderInList:   Int
+    summary:       String
+    description:   String
+  }
+  
+  union IssueAuthor = User | ModerationProfile
+  
+  type Issue {
+    id:                   ID! @id
+    Author:               IssueAuthor         @relationship(type: "AUTHORED_ISSUE", direction: IN)
+    title:                String
+    body:                 String
+    ModerationDashboard:  ModerationDashboard @relationship(type: "HAS_ISSUE", direction: IN)
+    isOpen:               Boolean!
+    Reports:              [Report]            @relationship(type: "CITED_REPORT", direction: OUT)
+    createdAt:            DateTime!           @timestamp(operations: [CREATE])
+    updatedAt:            DateTime!           @timestamp(operations: [UPDATE])
+  }
+  
+  union IssueCommentAuthor = User | ModerationProfile
+  
+  type IssueComment {
+    id:         ID! @id
+    Author:     IssueCommentAuthor  @relationship(type: "AUTHORED_ISSUE_COMMENT", direction: IN)
+    createdAt:  DateTime!           @timestamp(operations: [CREATE])
+    updatedAt:  DateTime!           @timestamp(operations: [UPDATE])
+  }
