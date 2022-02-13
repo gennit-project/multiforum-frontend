@@ -1,5 +1,5 @@
 type Event {
-    id:                    ID!
+    id:                    ID! @id
     title:                 String!
     description:           String
     startTime:             DateTime!
@@ -85,7 +85,7 @@ type Event {
   }
   
   type Discussion {
-    id:                      ID! 
+    id:                      ID! @id
     Author:                  User!                   @relationship(type: "POSTED_DISCUSSION", direction: IN)
     body:                    String
     Channels:                [Channel!]!             @relationship(type: "POSTED_IN_CHANNEL", direction: OUT)
@@ -105,14 +105,14 @@ type Event {
   type CommentSection {
     # Must have a Channel and either a Discussion or an Event.
     # Channel is technically optional because channels can be deleted.
-    id:                       ID!
+    id:                       ID! @id
     Comments:                 [Comment]               @relationship(type: "CONTAINS_COMMENT", direction: OUT)
     OriginalPost:             OriginalPost            @relationship(type: "HAS_COMMENTS_IN", direction: IN)
     Channel:                  Channel                 @relationship(type: "HAS_COMMENT_SECTION", direction: IN)
   }
   
   type DiscussionVersion {
-    id:                       ID!
+    id:                       ID! @id
     title:                    String!
     body:                     String
     createdAt:                DateTime!              @timestamp(operations: [CREATE])
@@ -122,8 +122,8 @@ type Event {
   union CommentAuthor = User | ModerationProfile
   
   type Comment {
-    id:                      ID!
-    CommentAuthor:           CommentAuthor                    @relationship(type: "AUTHORED_COMMENT", direction: IN)
+    id:                      ID! @id
+    CommentAuthor:           CommentAuthor           @relationship(type: "AUTHORED_COMMENT", direction: IN)
     CommentSection:          CommentSection          @relationship(type: "CONTAINS_COMMENT", direction: IN)
     Channel:                 Channel                 @relationship(type: "HAS_COMMENT", direction: IN)
     ParentComment:           Comment                 @relationship(type: "IS_REPLY_TO", direction: OUT)
