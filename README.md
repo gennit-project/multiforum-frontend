@@ -32,7 +32,15 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 Start the database with the APOC plugin: https://neo4j.com/docs/graphql-manual/current/introduction/#introduction-requirements
 
-Run the server:
+
+Clone the back end:
+
+```
+git clone https://github.com/catherineluse/gennit-backend.git
+```
+
+
+Run the back end:
 ```
 node index.js
 ```

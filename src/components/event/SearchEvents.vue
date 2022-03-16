@@ -110,8 +110,8 @@ export default defineComponent({
     const searchInput: Ref<string> = ref("");
 
     // Variables for the order of the results
-    const chronologicalOrder = "{ asc: startTime }";
-    const reverseChronologicalOrder = "{ desc: startTime }";
+    const chronologicalOrder = `[{ startTime: ASC }]`;
+    const reverseChronologicalOrder = `[{ startTime: DESC }]`;
 
     const now = DateTime.now();
     const nowISO = now.toISO();
@@ -122,8 +122,8 @@ export default defineComponent({
 
     const dateRange = ref(dateRangeTypes.FUTURE);
 
-    const futureEventsFilter = `gt: "${nowISO}"`;
-    const pastEventsFilter = `lt: "${nowISO}"`;
+    const futureEventsFilter = `{ startTime_GT: "${nowISO}" }`;
+    const pastEventsFilter = `{ startTime_LT: "${nowISO}" }`;
 
     const startTimeFilter = ref(futureEventsFilter);
     const resultsOrder = ref(chronologicalOrder);
@@ -315,9 +315,12 @@ export default defineComponent({
 
     let filterString = computed(() => {
       return `(
-          order: ${resultsOrder.value},
-          offset: $offset, 
-          first: $first, 
+        options: {
+          sort: ${resultsOrder.value}
+        }
+        where: 
+
+
           filter: {
             startTime: {
               ${startTimeFilter.value}
@@ -371,8 +374,8 @@ export default defineComponent({
 
     let eventQueryString = computed(() => {
       return `
-        query getEvents ($first: Int, $offset: Int){
-          queryEvent ${filterString.value}{
+        query getEvents {
+          events ${filterString.value}{
             id
             Channels ${
               selectedChannels.value.length > 0 ? channelFilter.value : ""
@@ -903,24 +906,30 @@ export default defineComponent({
     updateDateFilter(selectedDateRange: string, range: any) {
       this.dateRange = selectedDateRange;
 
-      if (selectedDateRange === dateRangeTypes.FUTURE) {
-        this.resultsOrder = this.chronologicalOrder;
-        this.startTimeFilter = this.futureEventsFilter;
-      }
-      if (selectedDateRange === dateRangeTypes.PAST) {
-        this.resultsOrder = this.reverseChronologicalOrder;
-        this.startTimeFilter = this.pastEventsFilter;
-      }
-      if (selectedDateRange === dateRangeTypes.BETWEEN_TWO_DATES) {
-        this.resultsOrder = this.chronologicalOrder;
-        this.startTimeFilter = this.betweenDateTimesFilter;
-        if (range) {
-          const start = new Date(range.start).toISOString();
-          this.beginningOfDateRange = start;
+      switch (selectedDateRange) {
+        case dateRangeTypes.FUTURE:
+          this.resultsOrder = this.chronologicalOrder;
+          this.startTimeFilter = this.futureEventsFilter;
+          break;
 
-          const end = new Date(range.end).toISOString();
-          this.endOfDateRange = end;
-        }
+        case dateRangeTypes.PAST:
+          this.resultsOrder = this.reverseChronologicalOrder;
+          this.startTimeFilter = this.pastEventsFilter;
+          break;
+
+        case dateRangeTypes.BETWEEN_TWO_DATES:
+          this.resultsOrder = this.chronologicalOrder;
+          this.startTimeFilter = this.betweenDateTimesFilter;
+          if (range) {
+            const start = new Date(range.start).toISOString();
+            this.beginningOfDateRange = start;
+
+            const end = new Date(range.end).toISOString();
+            this.endOfDateRange = end;
+          }
+          break;
+        default:
+          break;
       }
     },
     removeWeekday(day: WeekdayData) {
