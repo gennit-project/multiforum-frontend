@@ -130,13 +130,22 @@ export default defineComponent({
     const beginningOfDateRange = ref(defaultStartDateISO);
     const endOfDateRange = ref(defaultEndDateRangeISO);
     const betweenDateTimesFilter = computed(() => {
-      return `between: { min: "${beginningOfDateRange.value}", max: "${endOfDateRange.value}"}`;
+      return `{ 
+        AND: [
+          {
+          startTime_GT: "${beginningOfDateRange.value}"
+          },
+          {
+          startTime_LT: "${endOfDateRange.value}"
+          }
+        ]
+      }`;
     });
 
-    const defaultReferencePoint = {
+    const defaultReferencePoint: ReferencePoint = {
       lat: 33.4255,
       lng: -111.94,
-    } as ReferencePoint;
+    }
     const referencePoint = ref(defaultReferencePoint);
 
     const defaultDistanceUnit = distanceUnitOptions[0].value;
@@ -153,23 +162,24 @@ export default defineComponent({
       if (!showOnlyFreeEvents.value) {
         return "";
       }
-      return `,
-        cost: {
-          eq: "0"
-        }
-      `;
+      return `{ cost: "0" }`;
     });
 
     let textFilter = computed(() => {
       if (!searchInput.value) {
         return "";
       }
+
+      // Match a case-insensitive regex for the search term
       return `,
       { 
-        or: [ 
-          { title: { alloftext: "${searchInput.value}" } },
-          { description: { alloftext: "${searchInput.value}" } }
-        ]
+        OR: [
+			    {
+		        title_MATCHES: "(?i).*${searchInput.value}.*"
+			    },{
+			    	description_MATCHES: "(?i).*${searchInput.value}.*"
+			    }
+		    ]
       },
       `;
     });
