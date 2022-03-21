@@ -42,13 +42,12 @@ export default defineComponent({
     const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(props.routerTags);
 
-
     const getDefaultSelectedChannels = () => {
       if (channelId.value) {
-        return [channelId.value]
+        return [channelId.value];
       }
-      return props.routerChannels
-    }
+      return props.routerChannels;
+    };
 
     const selectedChannels: any = ref(getDefaultSelectedChannels());
     const searchInput: Ref<string> = ref(props.routerSearchTerms);
@@ -93,7 +92,9 @@ export default defineComponent({
       )}" }})`;
     });
     const updateRouterQueryParams = () => {
-      const path = channelId.value ? `/channels/${channelId.value}/discussions` : "/discussions"
+      const path = channelId.value
+        ? `/channels/${channelId.value}/discussions`
+        : "/discussions";
       router.push({
         path,
         query: {
@@ -162,9 +163,13 @@ export default defineComponent({
     });
 
     let discussionQuery = computed(() => {
-      return gql`
-        ${discussionQueryString.value}
-      `;
+      try {
+        return gql`
+          ${discussionQueryString.value}
+        `;
+      } catch (err) {
+        throw new Error(`Invalid query string: ${discussionQueryString.value}`);
+      }
     });
 
     const {
@@ -211,8 +216,8 @@ export default defineComponent({
 
     const defaultLabels = {
       channels: "Channels",
-      tags: "Tags"
-    }
+      tags: "Tags",
+    };
 
     const channelLabel = computed(() => {
       return getChannelLabel(selectedChannels.value);
@@ -293,7 +298,11 @@ export default defineComponent({
         :search-placeholder="'Search discussions'"
         @updateSearchInput="updateSearchResult"
       />
-      <FilterChip v-if="!channelId" :label="channelLabel" :highlighted="channelLabel !== defaultLabels.channels">
+      <FilterChip
+        v-if="!channelId"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultLabels.channels"
+      >
         <template v-slot:icon>
           <ChannelIcon />
         </template>
@@ -301,7 +310,7 @@ export default defineComponent({
           <ChannelPicker
             v-model="selectedChannels"
             :channel-options="
-              getChannelOptionLabels(channelOptions.queryChannel)
+              getChannelOptionLabels(channelOptions.channels)
             "
             :selected-channels="selectedChannels"
             @setChannelFilters="setChannelFilters"
@@ -309,13 +318,16 @@ export default defineComponent({
         </template>
       </FilterChip>
 
-      <FilterChip :label="tagLabel" :highlighted="tagLabel !== defaultLabels.tags">
+      <FilterChip
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultLabels.tags"
+      >
         <template v-slot:icon>
           <TagIcon />
         </template>
         <template v-slot:content>
           <TagPicker
-            :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+            :tag-options="getTagOptionLabels(tagOptions.tags)"
             :selected-tags="selectedTags"
             @setTagFilters="setTagFilters"
           />

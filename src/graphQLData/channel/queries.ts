@@ -73,11 +73,10 @@ export const GET_CHANNELS = gql`
     }
   }
 `;
-
 export const GET_CHANNEL_NAMES = gql`
 query getChannelNames {
-    queryChannel {
-      url
+    channels {
+      uniqueName
     }
 }
 `

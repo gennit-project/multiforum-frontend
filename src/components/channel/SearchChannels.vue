@@ -130,7 +130,7 @@ export default defineComponent({
           ${channelQueryString.value}
         `;
       } catch (err) {
-        throw new Error(err);
+        throw new Error(`Invalid query string: ${channelQueryString.value}`);
       }
     });
 
@@ -139,11 +139,11 @@ export default defineComponent({
       loading: channelLoading,
       refetch: refetchChannels,
       fetchMore,
-      error
+      error,
     } = useQuery(channelQuery, { first: 20, offset: 0 });
 
     if (error.value) {
-      alert(JSON.stringify(error.value))
+      alert(JSON.stringify(error.value));
     }
 
     const reachedEndOfResults = ref(false);
@@ -263,7 +263,7 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <TagPicker
-            :tag-options="getTagOptionLabels(tagOptions.queryTag)"
+            :tag-options="getTagOptionLabels(tagOptions.tags)"
             :selected-tags="selectedTags"
             @setTagFilters="setTagFilters"
           />

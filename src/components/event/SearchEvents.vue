@@ -130,22 +130,19 @@ export default defineComponent({
     const beginningOfDateRange = ref(defaultStartDateISO);
     const endOfDateRange = ref(defaultEndDateRangeISO);
     const betweenDateTimesFilter = computed(() => {
-      return `{ 
-        AND: [
+      return `
           {
-          startTime_GT: "${beginningOfDateRange.value}"
+            startTime_GT: "${beginningOfDateRange.value}"
           },
           {
-          startTime_LT: "${endOfDateRange.value}"
-          }
-        ]
-      }`;
+            startTime_LT: "${endOfDateRange.value}"
+          },`;
     });
 
     const defaultReferencePoint: ReferencePoint = {
       lat: 33.4255,
       lng: -111.94,
-    }
+    };
     const referencePoint = ref(defaultReferencePoint);
 
     const defaultDistanceUnit = distanceUnitOptions[0].value;
@@ -162,7 +159,7 @@ export default defineComponent({
       if (!showOnlyFreeEvents.value) {
         return "";
       }
-      return `{ cost: "0" }`;
+      return `{ cost: "0" },`;
     });
 
     let textFilter = computed(() => {
@@ -193,11 +190,11 @@ export default defineComponent({
         case locationFilterTypes.ONLY_WITH_ADDRESS:
           // Filter by events that have a location
           // with coordinates
-          return "has: location";
+          return "{ location_NOT: null },";
 
         case locationFilterTypes.ONLY_VIRTUAL:
           // Filter by events that have a virtual event URL
-          return "has: virtualEventUrl";
+          return "{ virtualEventUrl_NOT: null },";
 
         case locationFilterTypes.WITHIN_RADIUS:
           if (
@@ -206,14 +203,15 @@ export default defineComponent({
             referencePointAddress.value
           ) {
             // Filter for events within a radius of a reference point
-            return `location: { 
-              near: { 
-                coordinate: { 
-                  latitude: ${referencePoint.value.lat}, 
-                  longitude: ${referencePoint.value.lng}}, 
-                  distance: ${radius.value * 1000}
-                }
-              }`;
+            return `{
+              location_LTE: {
+                point: {
+                  latitude: ${referencePoint.value.lat},
+                  longitude: ${referencePoint.value.lng},
+                },
+                distance: ${radius.value * 1000}
+              }
+            },`;
           }
           return "";
         default:
@@ -238,35 +236,7 @@ export default defineComponent({
       // key is the time slot and the value is a boolean.
 
       // But to create a GraphQL query filter out of that,
-      // this function flattens the structure so that the
-      // filter will look something like this:
-
-      // and: {
-      //   or: [
-      //   {
-      //     startTimeHourOfDay: {
-      //         between: {
-      //           min: 3,
-      //           max: 6
-      //         }
-      //     },
-      //     startTimeDayOfWeek: {
-      //       allofterms: "Thursday"
-      //     }
-      //   },
-      //   {
-      //     startTimeHourOfDay: {
-      //       between: {
-      //         min: 0,
-      //         max: 3
-      //       }
-      //     },
-      //     startTimeDayOfWeek: {
-      //       allofterms: "Friday"
-      //     }
-      //   }
-      //   ]
-      // }
+      // this function flattens the structure.
 
       let flattened = "";
       for (let dayNumber in selectedWeeklyHourRanges.value) {
@@ -276,17 +246,21 @@ export default defineComponent({
           const slotIsSelected = selectedSlotsInDay[timeSlot];
 
           if (slotIsSelected) {
-            flattened = flattened.concat(`{
-                startTimeHourOfDay: {
-                  between: {
-                    min: ${hourRangesObject[timeSlot].min},
-                    max: ${hourRangesObject[timeSlot].max}
+            flattened = flattened.concat(`
+              {
+                AND: [
+                  {
+                    startTimeHourOfDay_LTE: ${hourRangesObject[timeSlot].max}
+                  },
+                  {
+                    startTimeHourOfDay_GTE: ${hourRangesObject[timeSlot].min}
+                  },
+                  {
+                    startTimeDayOfWeek: "${weekdayObject[dayNumber]}"
                   }
-                },
-                startTimeDayOfWeek: {
-                  allofterms: "${weekdayObject[dayNumber]}"
-                }
-              },`);
+                ]
+              },
+            `);
           }
         }
       }
@@ -295,69 +269,66 @@ export default defineComponent({
         return "";
       }
       let timeSlotFilter = `{
-          or: [
+          OR: [
             ${flattened}
           ]
-        }`;
+        },`;
       return timeSlotFilter;
     });
 
-    let needsCascade = computed(() => {
-      return selectedChannels.value.length > 0 || selectedTags.value.length > 0;
-    });
+    
 
-    let cascadeText = computed(() => {
-      // Adding parameters to @cascade makes it so that
-      // even when we are filtering by
-      // channels or tags, we can still see the events that
-      // don't have all the fields that we want. Normally,
-      // @cascade would filter
-      // out all items that don't have all of the described
-      // output fields.
-      // If we are filtering by channel but not by tag,
-      // we include only the channel field in the cascade parameters.
-      // If the tags parameter was included, events in the
-      // selected channel would be excluded for not having tags.
-      return `@cascade(fields: [${
-        selectedTags.value.length > 0 ? `"Tags",` : ""
-      } "Channels"])`;
-    });
-
-    let filterString = computed(() => {
-      return `(
-        options: {
-          sort: ${resultsOrder.value}
-        }
-        where: 
-
-
-          filter: {
-            startTime: {
-              ${startTimeFilter.value}
-            }
-            ${freeEventFilter.value}
-            ${
-              textFilter.value || weeklyTimeRangeFilter.value
-                ? `
-            and: [${textFilter.value} ${weeklyTimeRangeFilter.value}]
-            `
-                : ""
-            }
-            ${locationFilter.value}
+    let tagFilter = computed(() => {
+      if (selectedTags.value.length > 0){
+        let matchTags = selectedTags.value.reduce((prev, curr) => {
+          return prev + `{ text_MATCHES: "(?i)${curr}" },`;
+        },'')
+        return `{
+          TagsConnection: {
+            node: {
+              OR: [${matchTags}]
           }
-      ) ${needsCascade.value ? cascadeText.value : ""}`;
+        }`
+      }
+      return "";
     });
+
+    
 
     let channelFilter = computed(() => {
-      return `(filter: { uniqueName: { anyofterms: "${selectedChannels.value.join(
-        " "
-      )}"}})`;
+      if (selectedChannels.value.length > 0) {
+        let matchChannels = selectedChannels.value.reduce((prev: string, curr: string) => {
+          return prev + `{ uniqueName_MATCHES: "(?i)${curr}" },`;
+        },'')
+        return `{
+          ChannelsConnection: {
+            node: {
+              OR: [${matchChannels}]
+          }
+        }`
+      }
+      return "";
     });
-    let tagFilter = computed(() => {
-      return `(filter: { text: { anyofterms: "${selectedTags.value.join(
-        " "
-      )}" }})`;
+
+    let eventFilterString = computed(() => {
+      return `(
+                options: {
+                  sort: ${resultsOrder.value}
+                }
+                where: {
+                  AND: [
+                    ${startTimeFilter.value}
+                    ${freeEventFilter.value}
+                    ${textFilter.value}
+                    ${weeklyTimeRangeFilter.value}
+                    ${locationFilter.value}
+                    ${channelFilter.value}
+                    ${tagFilter.value}
+                  ]
+                }
+              ) `;
     });
+
     const updateRouterQueryParams = () => {
       router.push({
         path: "/events",
@@ -383,13 +354,11 @@ export default defineComponent({
     };
 
     let eventQueryString = computed(() => {
-      return `
-        query getEvents {
-          events ${filterString.value}{
+      let str = `
+        query {
+          events ${eventFilterString.value}{
             id
-            Channels ${
-              selectedChannels.value.length > 0 ? channelFilter.value : ""
-            }{
+            Channels {
               uniqueName
             }
             title
@@ -407,7 +376,7 @@ export default defineComponent({
             Poster {
               username
             }
-            Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
+            Tags {
               text
             }
             CommentSections {
@@ -415,19 +384,25 @@ export default defineComponent({
               CommentsAggregate {
                 count
               }
-              Discussion {
-                id
-              }
-              Event {
-                id
+              OriginalPost {
+                __typename
+                ... on Discussion {
+                  id
+                  title
+                }
+                ... on Event {
+                  id
+                  title
+                }
               }
               Channel {
                 uniqueName
               }
             }
           }
-        }
-        `;
+        }`;
+        console.log(str)
+        return str
     });
 
     // Turn the query string into an actual GraphQL
@@ -438,7 +413,7 @@ export default defineComponent({
           ${eventQueryString.value}
         `;
       } catch (err) {
-        throw new Error(err);
+        throw new Error(`Invalid query string: ${eventQueryString.value}`);
       }
     });
 
@@ -519,24 +494,25 @@ export default defineComponent({
     });
 
     const dateLabel = computed(() => {
-      if (dateRange.value === dateRangeTypes.FUTURE) {
-        return defaultFilterLabels.date;
-      } else if (dateRange.value === dateRangeTypes.PAST) {
-        return `Past Events`;
-      } else if (dateRange.value === dateRangeTypes.BETWEEN_TWO_DATES) {
-        const startDateObject = new DateTime.fromISO(
-          beginningOfDateRange.value
-        );
-        const endDateObject = new DateTime.fromISO(endOfDateRange.value);
-        const formattedStartDate = startDateObject.toLocaleString(
-          DateTime.DATE_MED
-        );
-        const formattedEndDate = endDateObject.toLocaleString(
-          DateTime.DATE_MED
-        );
-        return `From ${formattedStartDate} to ${formattedEndDate}`;
-      } else {
-        return "";
+      const startDateObject = new DateTime.fromISO(beginningOfDateRange.value);
+      const endDateObject = new DateTime.fromISO(endOfDateRange.value);
+      const formattedStartDate = startDateObject.toLocaleString(
+        DateTime.DATE_MED
+      );
+      const formattedEndDate = endDateObject.toLocaleString(DateTime.DATE_MED);
+
+      switch (dateRange.value) {
+        case dateRangeTypes.FUTURE:
+          return defaultFilterLabels.date;
+
+        case dateRangeTypes.PAST:
+          return `Past Events`;
+
+        case dateRangeTypes.BETWEEN_TWO_DATES:
+          return `From ${formattedStartDate} to ${formattedEndDate}`;
+
+        default:
+          return "";
       }
     });
 
@@ -626,7 +602,7 @@ export default defineComponent({
       eventQuery,
       eventQueryString,
       eventResult,
-      filterString,
+      eventFilterString,
       futureEventsFilter,
       loadMore,
       locationLabel,
@@ -1066,161 +1042,160 @@ export default defineComponent({
 });
 </script>
 <template>
+  <div class="mx-auto max-w-4xl">
+    <div class="items-center mt-2 space-x-2">
+      <LocationSearchBar
+        :router-search-terms="routerSearchTerms"
+        :search-placeholder="'Location'"
+        :reference-point-address-name="referencePointName"
+        @updateLocationInput="updateLocationInput"
+      />
+      <ToggleMap
+        :show-map="showMap"
+        @showMap="setShowMap"
+        @showList="setShowList"
+      />
+      <AddToFeed v-if="channelId" />
+      <CreateEventButton />
+    </div>
+    <div class="items-center mt-1 space-x-2">
+      <FilterChip
+        :label="dateLabel"
+        :highlighted="dateLabel !== defaultFilterLabels.date"
+      >
+        <template v-slot:icon>
+          <CalendarIcon />
+        </template>
+        <template v-slot:content>
+          <DatePicker
+            :end-iso="endOfDateRange"
+            :start-iso="beginningOfDateRange"
+            :date-range="dateRange"
+            @updateDateFilter="updateDateFilter"
+          />
+        </template>
+      </FilterChip>
 
-    <div class="mx-auto max-w-4xl">
-      <div class="items-center mt-2 space-x-2">
-        <LocationSearchBar
-          :router-search-terms="routerSearchTerms"
-          :search-placeholder="'Location'"
-          :reference-point-address-name="referencePointName"
-          @updateLocationInput="updateLocationInput"
-        />
-        <ToggleMap
-          :show-map="showMap"
-          @showMap="setShowMap"
-          @showList="setShowList"
-        />
-        <AddToFeed v-if="channelId" />
-        <CreateEventButton />
-      </div>
-      <div class="items-center mt-1 space-x-2">
-        <FilterChip
-          :label="dateLabel"
-          :highlighted="dateLabel !== defaultFilterLabels.date"
-        >
-          <template v-slot:icon>
-            <CalendarIcon />
-          </template>
-          <template v-slot:content>
-            <DatePicker
-              :end-iso="endOfDateRange"
-              :start-iso="beginningOfDateRange"
-              :date-range="dateRange"
-              @updateDateFilter="updateDateFilter"
+      <FilterChip
+        :label="locationLabel"
+        :highlighted="locationLabel !== defaultFilterLabels.location"
+      >
+        <template v-slot:icon>
+          <LocationIcon />
+        </template>
+        <template v-slot:content>
+          <LocationPicker
+            :selected-location-filter="selectedLocationFilter"
+            :reference-point-address-name="referencePointName"
+            @updateLocationFilter="updateLocationFilter"
+            @updateLocationInput="updateLocationInput"
+            @updateDistanceUnit="updateDistanceUnit"
+            @updateRadius="updateRadius"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip
+        :label="weeklyTimeLabel"
+        :highlighted="weeklyTimeLabel !== defaultFilterLabels.weeklyTimeSlot"
+      >
+        <template v-slot:icon>
+          <TimeIcon />
+        </template>
+        <template v-slot:content>
+          <WeeklyTimePicker
+            :selected-weekdays="selectedWeekdays"
+            :selected-hour-ranges="selectedHourRanges"
+            :selected-weekly-hour-ranges="selectedWeeklyHourRanges"
+            @toggleSelectWeekday="toggleSelectWeekday"
+            @toggleSelectTimeRange="toggleSelectTimeRange"
+            @toggleWeeklyTimeRange="toggleWeeklyTimeRange"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip
+        v-if="!channelId"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels"
+      >
+        <template v-slot:icon>
+          <ChannelIcon />
+        </template>
+        <template v-slot:content>
+          <ChannelPicker
+            v-model="selectedChannels"
+            :channel-options="
+              getChannelOptionLabels(channelOptions.channels)
+            "
+            :selected-channels="selectedChannels"
+            @setChannelFilters="setChannelFilters"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultFilterLabels.tags"
+      >
+        <template v-slot:icon>
+          <TagIcon />
+        </template>
+        <template v-slot:content>
+          <TagPicker
+            :tag-options="getTagOptionLabels(tagOptions.tags)"
+            :selected-tags="selectedTags"
+            @setTagFilters="setTagFilters"
+          />
+        </template>
+      </FilterChip>
+
+      <FilterChip
+        :label="otherFiltersLabel"
+        :highlighted="otherFiltersLabel !== defaultFilterLabels.other"
+      >
+        <template v-slot:icon>
+          <FilterIcon />
+        </template>
+        <template v-slot:content>
+          <div>
+            <label
+              for="location"
+              class="block text-sm font-medium text-gray-700"
+              >Search Event Titles and Descriptions</label
+            >
+
+            <SearchBar
+              :router-search-terms="routerSearchTerms"
+              :search-placeholder="'Search'"
+              @updateSearchInput="updateSearchResult"
             />
-          </template>
-        </FilterChip>
 
-        <FilterChip
-          :label="locationLabel"
-          :highlighted="locationLabel !== defaultFilterLabels.location"
-        >
-          <template v-slot:icon>
-            <LocationIcon />
-          </template>
-          <template v-slot:content>
-            <LocationPicker
-              :selected-location-filter="selectedLocationFilter"
-              :reference-point-address-name="referencePointName"
-              @updateLocationFilter="updateLocationFilter"
-              @updateLocationInput="updateLocationInput"
-              @updateDistanceUnit="updateDistanceUnit"
-              @updateRadius="updateRadius"
-            />
-          </template>
-        </FilterChip>
-
-        <FilterChip
-          :label="weeklyTimeLabel"
-          :highlighted="weeklyTimeLabel !== defaultFilterLabels.weeklyTimeSlot"
-        >
-          <template v-slot:icon>
-            <TimeIcon />
-          </template>
-          <template v-slot:content>
-            <WeeklyTimePicker
-              :selected-weekdays="selectedWeekdays"
-              :selected-hour-ranges="selectedHourRanges"
-              :selected-weekly-hour-ranges="selectedWeeklyHourRanges"
-              @toggleSelectWeekday="toggleSelectWeekday"
-              @toggleSelectTimeRange="toggleSelectTimeRange"
-              @toggleWeeklyTimeRange="toggleWeeklyTimeRange"
-            />
-          </template>
-        </FilterChip>
-
-        <FilterChip
-          v-if="!channelId"
-          :label="channelLabel"
-          :highlighted="channelLabel !== defaultFilterLabels.channels"
-        >
-          <template v-slot:icon>
-            <ChannelIcon />
-          </template>
-          <template v-slot:content>
-            <ChannelPicker
-              v-model="selectedChannels"
-              :channel-options="
-                getChannelOptionLabels(channelOptions.queryChannel)
-              "
-              :selected-channels="selectedChannels"
-              @setChannelFilters="setChannelFilters"
-            />
-          </template>
-        </FilterChip>
-
-        <FilterChip
-          :label="tagLabel"
-          :highlighted="tagLabel !== defaultFilterLabels.tags"
-        >
-          <template v-slot:icon>
-            <TagIcon />
-          </template>
-          <template v-slot:content>
-            <TagPicker
-              :tag-options="getTagOptionLabels(tagOptions.queryTag)"
-              :selected-tags="selectedTags"
-              @setTagFilters="setTagFilters"
-            />
-          </template>
-        </FilterChip>
-
-        <FilterChip
-          :label="otherFiltersLabel"
-          :highlighted="otherFiltersLabel !== defaultFilterLabels.other"
-        >
-          <template v-slot:icon>
-            <FilterIcon />
-          </template>
-          <template v-slot:content>
-            <div>
-              <label
-                for="location"
-                class="block text-sm font-medium text-gray-700"
-                >Search Event Titles and Descriptions</label
-              >
-
-              <SearchBar
-                :router-search-terms="routerSearchTerms"
-                :search-placeholder="'Search'"
-                @updateSearchInput="updateSearchResult"
-              />
-
-              <div class="relative flex items-start mt-4">
-                <div class="flex items-center h-5">
-                  <input
-                    class="
-                      focus:ring-indigo-500
-                      h-4
-                      w-4
-                      text-indigo-600
-                      border-gray-300
-                      rounded
-                    "
-                    type="checkbox"
-                    id="onlyFreeEvents"
-                    v-model="showOnlyFreeEvents"
-                  />
-                </div>
-                <div class="ml-3 text-sm">
-                  <label for="comments" class="font-medium text-gray-700"
-                    >Show Only Free Events</label
-                  >
-                </div>
+            <div class="relative flex items-start mt-4">
+              <div class="flex items-center h-5">
+                <input
+                  class="
+                    focus:ring-indigo-500
+                    h-4
+                    w-4
+                    text-indigo-600
+                    border-gray-300
+                    rounded
+                  "
+                  type="checkbox"
+                  id="onlyFreeEvents"
+                  v-model="showOnlyFreeEvents"
+                />
+              </div>
+              <div class="ml-3 text-sm">
+                <label for="comments" class="font-medium text-gray-700"
+                  >Show Only Free Events</label
+                >
               </div>
             </div>
-          </template>
-        </FilterChip>
+          </div>
+        </template>
+      </FilterChip>
     </div>
 
     <EventList

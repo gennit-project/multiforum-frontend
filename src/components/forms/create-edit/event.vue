@@ -95,7 +95,7 @@ export default defineComponent({
 
     const GET_CHANNEL_NAMES = gql`
       query getChannelNames {
-        queryChannel {
+        channels {
           uniqueName
         }
       }
@@ -108,8 +108,8 @@ export default defineComponent({
     } = useQuery(GET_CHANNEL_NAMES);
 
     const GET_TAGS = gql`
-      query getTags {
-        queryTag {
+      query {
+        tags {
           text
         }
       }
@@ -415,10 +415,10 @@ export default defineComponent({
 
             <FormRow :section-title="'Channel(s)'">
               <ChannelPicker
-                v-if="channelData && channelData.queryChannel"
+                v-if="channelData && channelData.channels"
                 v-model="selectedChannels"
                 :channel-options="
-                  getChannelOptionLabels(channelData.queryChannel)
+                  getChannelOptionLabels(channelData.channels)
                 "
                 :selected-channels="selectedChannels"
                 @setChannelFilters="setChannelFilters"
@@ -472,9 +472,9 @@ export default defineComponent({
 
               <TagPicker
                 class="mt-3 mb-3"
-                v-if="tagsData && tagsData.queryTag"
+                v-if="tagsData && tagsData"
                 v-model="selectedTags"
-                :tag-options="getTagOptionLabels(tagsData.queryTag)"
+                :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
                 @setTagFilters="setTagFilters"
               />
