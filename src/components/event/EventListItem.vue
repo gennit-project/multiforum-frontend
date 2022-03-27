@@ -21,6 +21,7 @@ export default defineComponent({
     const formattedDate = `${weekday}, ${month} ${day}${
       year !== currentYear ? ", " + year : ""
     }`;
+    console.log('props ', props.event)
 
     return {
       formattedDate,

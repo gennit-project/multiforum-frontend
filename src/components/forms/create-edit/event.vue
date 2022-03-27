@@ -222,7 +222,7 @@ export default defineComponent({
         const newEvent = addEvent.event[0];
         cache.modify({
           fields: {
-            queryEvent(existingEventRefs = [], { readField }) {
+            events(existingEventRefs = [], { readField }) {
               const newEventRef = cache.writeFragment({
                 data: newEvent,
                 fragment: gql`

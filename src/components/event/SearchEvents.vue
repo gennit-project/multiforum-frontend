@@ -122,8 +122,8 @@ export default defineComponent({
 
     const dateRange = ref(dateRangeTypes.FUTURE);
 
-    const futureEventsFilter = `{ startTime_GT: "${nowISO}" }`;
-    const pastEventsFilter = `{ startTime_LT: "${nowISO}" }`;
+    const futureEventsFilter = `{ startTime_GT: "${nowISO}" },`;
+    const pastEventsFilter = `{ startTime_LT: "${nowISO}" },`;
 
     const startTimeFilter = ref(futureEventsFilter);
     const resultsOrder = ref(chronologicalOrder);
@@ -304,6 +304,7 @@ export default defineComponent({
           ChannelsConnection: {
             node: {
               OR: [${matchChannels}]
+            }
           }
         }`
       }
@@ -429,16 +430,16 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: eventResult.value.queryEvent.length,
+          offset: eventResult.value.events.length,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.queryEvent.length === 0) {
+          if (fetchMoreResult.events.length === 0) {
             reachedEndOfResults.value = true;
             return prev;
           }
           return {
             ...prev,
-            queryEvent: [...prev.queryEvent, ...fetchMoreResult.queryEvent],
+            events: [...prev.events, ...fetchMoreResult.events],
           };
         },
       });
@@ -1038,6 +1039,11 @@ export default defineComponent({
       this.placeData = placeData; // Use for debugging
       this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
     },
+    getNonDeleted(events: Array<EventData>) {
+      return events.filter((e) => {
+        return e.Channels.length > 0;
+      })
+    }
   },
 });
 </script>
@@ -1200,10 +1206,10 @@ export default defineComponent({
 
     <EventList
       id="listView"
-      v-if="!showMap && eventResult && eventResult.queryEvent"
+      v-if="!showMap && eventResult && eventResult.events"
       :class="[!channelId ? 'px-8' : '']"
       class="relative text-lg max-w-6xl"
-      :events="eventResult.queryEvent"
+      :events="getNonDeleted(eventResult.events)"
       :channel-id="channelId"
       :search-input="searchInput"
       :selected-tags="selectedTags"
@@ -1215,7 +1221,7 @@ export default defineComponent({
       @unhighlight="unhighlight"
     />
     <div
-      v-if="!showMap && eventResult && eventResult.queryEvent"
+      v-if="!showMap && eventList"
       class="grid justify-items-stretch"
     >
       <button class="justify-self-center" @click="loadMore">
@@ -1225,8 +1231,8 @@ export default defineComponent({
 
     <div v-if="showMap" id="mapView">
       <Map
-        v-if="showMap && eventResult && eventResult.queryEvent"
-        :events="eventResult.queryEvent"
+        v-if="showMap && eventResult"
+        :events="getNonDeleted(eventResult.events)"
         :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
         @highlightEvent="highlightEvent"
@@ -1242,8 +1248,8 @@ export default defineComponent({
         <EventList
           class="overscroll-auto overflow-auto"
           key="highlightedEventId"
-          v-if="showMap && eventResult && eventResult.queryEvent"
-          :events="eventResult.queryEvent"
+          v-if="showMap && eventResult && eventResult.events"
+          :events="getNonDeleted(eventResult.events)"
           :channel-id="channelId"
           :search-input="searchInput"
           :highlighted-event-location-id="highlightedEventLocationId"

@@ -1,47 +1,5 @@
 import { gql } from "@apollo/client/core";
 
-export const GET_ALL_EVENTS = gql`
-  query getEvents {
-    queryEvent {
-      id
-      title
-      description
-      startTime
-      startTimeYear
-      startTimeMonth
-      startTimeDayOfMonth
-      startTimeDayOfWeek
-      startTimeHourOfDay
-      endTime
-      locationName
-      virtualEventUrl
-      address
-      cost
-      canceled
-      Tags {
-        text
-      }
-      Channels {
-        url
-      }
-      Poster {
-        username
-      }
-      placeId
-      location {
-        latitude
-        longitude
-      }
-      Comments {
-        id
-        UserAuthor {
-          username
-        }
-        text
-      }
-    }
-  }
-`;
 
 // get event by ID
 export const GET_EVENT = gql`
