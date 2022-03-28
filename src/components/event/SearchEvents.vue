@@ -318,6 +318,11 @@ export default defineComponent({
                 }
                 where: {
                   AND: [
+                    {
+											ChannelsAggregate: {
+												count_GT: 0
+											}
+										},
                     ${startTimeFilter.value}
                     ${freeEventFilter.value}
                     ${textFilter.value}
@@ -1039,16 +1044,11 @@ export default defineComponent({
       this.placeData = placeData; // Use for debugging
       this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
     },
-    getNonDeleted(events: Array<EventData>) {
-      return events.filter((e) => {
-        return e.Channels.length > 0;
-      })
-    }
   },
 });
 </script>
 <template>
-  <div class="mx-auto max-w-4xl">
+  <div class="mx-auto max-w-5xl">
     <div class="items-center mt-2 space-x-2">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
@@ -1207,9 +1207,9 @@ export default defineComponent({
     <EventList
       id="listView"
       v-if="!showMap && eventResult && eventResult.events"
-      :class="[!channelId ? 'px-8' : '']"
+      :class="[!channelId ? '' : '']"
       class="relative text-lg max-w-6xl"
-      :events="getNonDeleted(eventResult.events)"
+      :events="eventResult.events"
       :channel-id="channelId"
       :search-input="searchInput"
       :selected-tags="selectedTags"
@@ -1221,7 +1221,7 @@ export default defineComponent({
       @unhighlight="unhighlight"
     />
     <div
-      v-if="!showMap && eventList"
+      v-if="!showMap && eventResult && eventResult.events"
       class="grid justify-items-stretch"
     >
       <button class="justify-self-center" @click="loadMore">
@@ -1231,8 +1231,8 @@ export default defineComponent({
 
     <div v-if="showMap" id="mapView">
       <Map
-        v-if="showMap && eventResult"
-        :events="getNonDeleted(eventResult.events)"
+        v-if="showMap && eventResult && eventResult.events"
+        :events="eventResult.events"
         :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
         @highlightEvent="highlightEvent"
@@ -1249,7 +1249,7 @@ export default defineComponent({
           class="overscroll-auto overflow-auto"
           key="highlightedEventId"
           v-if="showMap && eventResult && eventResult.events"
-          :events="getNonDeleted(eventResult.events)"
+          :events="eventResult.events"
           :channel-id="channelId"
           :search-input="searchInput"
           :highlighted-event-location-id="highlightedEventLocationId"

@@ -68,8 +68,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="['bg-white', 'sm:rounded-md', 'px-8']" class="mx-auto
-        max-w-4xl">
+  <div :class="['bg-white', 'sm:rounded-md']" class="mx-auto
+        max-w-5xl">
     <p v-if="events.length === 0">
       Could not find any events.
     </p>

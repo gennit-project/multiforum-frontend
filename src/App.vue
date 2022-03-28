@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-100 h-screen">
+  <div class="h-screen">
     <nav class="bg-gray-800">
       <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
       <SiteSidenav :show-mobile-dropdown="showMobileDropdown" />
