@@ -11,7 +11,8 @@ export default defineComponent({
     const mapDiv = ref(null)
     let map = ref(null)
 
-    // Only have one marker per location
+    // Only have one marker per location, even if multiple
+    // events are at the location.
     let markerMap = {};
 
 
@@ -30,7 +31,6 @@ export default defineComponent({
       // eslint-disable-next-line
       const infowindow = new google.maps.InfoWindow()
 
-
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i];
         
@@ -45,9 +45,9 @@ export default defineComponent({
             clickable: true,
             draggable: true,
             icon: {
-              uniqueName: require('@/assets/images/place-icon.svg').default,
+              url: require('@/assets/images/place-icon.svg').default,
               scaledSize: { width: 20, height: 20 },
-            },
+            }
           });
 
           // Extend the map bounds to include each marker's position

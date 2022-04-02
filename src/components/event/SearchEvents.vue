@@ -348,7 +348,7 @@ export default defineComponent({
     };
 
     const setSearchInput = (input: string) => {
-      searchInput.value = input;
+      searchInput.value = input; // remove - should watch params instead
       updateRouterQueryParams();
     };
     const setTagFilters = (tag: Array<string>) => {
@@ -408,7 +408,6 @@ export default defineComponent({
             }
           }
         }`;
-        console.log(str)
         return str
     });
 
