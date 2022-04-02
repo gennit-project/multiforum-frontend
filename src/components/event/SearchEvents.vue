@@ -287,6 +287,7 @@ export default defineComponent({
           TagsConnection: {
             node: {
               OR: [${matchTags}]
+            }
           }
         }`
       }
