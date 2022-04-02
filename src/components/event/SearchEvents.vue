@@ -183,9 +183,14 @@ export default defineComponent({
 
     let selectedLocationFilter = ref(locationFilterOptions[0].value);
 
+    let showMap = ref(props.routerView === "map" ? true : false);
+
     let locationFilter = computed(() => {
       switch (selectedLocationFilter.value) {
         case locationFilterTypes.NONE:
+          if (showMap.value) {
+            return "{ location_NOT: null },"
+          }
           return "";
         case locationFilterTypes.ONLY_WITH_ADDRESS:
           // Filter by events that have a location
@@ -194,6 +199,13 @@ export default defineComponent({
 
         case locationFilterTypes.ONLY_VIRTUAL:
           // Filter by events that have a virtual event URL
+          if (showMap.value) {
+            // If map view is shown, only include
+            // events with both a physical location
+            // and a virtual event url
+            return `{ location_NOT: null },
+            { virtualEventUrl_NOT: null },`
+          }
           return "{ virtualEventUrl_NOT: null },";
 
         case locationFilterTypes.WITHIN_RADIUS:
@@ -626,6 +638,7 @@ export default defineComponent({
       pastEventsFilter,
       placeData: null,
       showOnlyFreeEvents,
+      showMap,
       searchInput,
       selectedHourRanges,
       selectedWeekdays,
@@ -643,13 +656,8 @@ export default defineComponent({
       weeklyTimeRangeFilter,
     };
   },
-  data(props) {
-    let showMap = false;
-    if (props.routerView === "map") {
-      showMap = true;
-    }
+  data() {
     return {
-      showMap,
       eventPreviewIsOpen: false,
       multipleEventPreviewIsOpen: false,
       selectedEvent: null as EventData | null,
@@ -1048,8 +1056,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mx-auto max-w-5xl">
-    <div class="items-center mt-2 space-x-2">
+  <div>
+    <div class="items-center mt-2 mx-2 space-x-2">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
@@ -1064,7 +1072,7 @@ export default defineComponent({
       <AddToFeed v-if="channelId" />
       <CreateEventButton />
     </div>
-    <div class="items-center mt-1 space-x-2">
+    <div class="items-center mt-1 mx-2 space-x-2">
       <FilterChip
         :label="dateLabel"
         :highlighted="dateLabel !== defaultFilterLabels.date"
@@ -1230,6 +1238,7 @@ export default defineComponent({
     </div>
 
     <div v-if="showMap" id="mapView">
+      <div v-if="eventLoading">Loading...</div>
       <Map
         v-if="showMap && eventResult && eventResult.events"
         :events="eventResult.events"
@@ -1240,7 +1249,6 @@ export default defineComponent({
         @lockColors="colorLocked = true"
         @setMarkerData="setMarkerData"
       />
-      <div v-if="eventLoading">Loading...</div>
       <div
         class="overflow-y-scroll"
         style="position: fixed; right: 0; width: 34vw"

@@ -152,7 +152,11 @@ export default defineComponent({
 </script>
 
 <template>
+  <p class="mx-3" v-if="events.length === 0">
+    Could not find any events with a location.
+  </p>
   <div
+    v-else
     ref="mapDiv"
     style="position: fixed; width: 66vw; height: calc(100vh - 130px)"
   />

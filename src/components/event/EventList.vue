@@ -70,7 +70,7 @@ export default defineComponent({
 <template>
   <div :class="['bg-white', 'sm:rounded-md']" class="mx-auto
         max-w-5xl">
-    <p v-if="events.length === 0">
+    <p v-if="events.length === 0 && !showMap">
       Could not find any events.
     </p>
     <ul role="list" class="divide-y divide-gray-200">
