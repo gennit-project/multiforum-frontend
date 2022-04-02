@@ -77,9 +77,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :ref="`#${event.id}`" class="p-2">
+  <li :ref="`#${event.id}`" class="px-3">
     <div class="block">
-      <div class="py-1">
+      <div class="py-2">
         <div class="flex items-center">
           <p
             @click="$emit('openEventPreview')"

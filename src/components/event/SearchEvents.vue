@@ -1237,26 +1237,27 @@ export default defineComponent({
       </button>
     </div>
 
-    <div v-if="showMap" id="mapView">
-      <div v-if="eventLoading">Loading...</div>
-      <Map
-        v-if="showMap && eventResult && eventResult.events"
-        :events="eventResult.events"
-        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-        :color-locked="colorLocked"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-        @lockColors="colorLocked = true"
-        @setMarkerData="setMarkerData"
-      />
+    <div v-if="eventLoading">Loading...</div>
+    <div v-else-if="showMap && eventResult && eventResult.events" id="mapView" class="overflow-y-scroll">
       <div
-        class="overflow-y-scroll"
+        style="position: fixed; width: 66vw; height: calc(100vh - 130px)"
+      >
+        <Map
+          :events="eventResult.events"
+          :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+          :color-locked="colorLocked"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @lockColors="colorLocked = true"
+          @setMarkerData="setMarkerData"
+        />
+      </div>
+      <div
         style="position: fixed; right: 0; width: 34vw"
       >
         <EventList
           class="overscroll-auto overflow-auto"
           key="highlightedEventId"
-          v-if="showMap && eventResult && eventResult.events"
           :events="eventResult.events"
           :channel-id="channelId"
           :search-input="searchInput"
