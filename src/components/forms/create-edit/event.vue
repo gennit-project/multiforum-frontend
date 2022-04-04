@@ -1,6 +1,10 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import { useQuery, useMutation } from "@vue/apollo-composable";
+import { defineComponent, ref } from "vue";
+import {
+  useQuery,
+  useMutation,
+  provideApolloClient,
+} from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { useRoute } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
@@ -16,13 +20,13 @@ import ChannelPicker from "../ChannelPicker.vue";
 import TagPicker from "../TagPicker.vue";
 import DatePicker from "vue3-date-time-picker";
 import "vue3-date-time-picker/dist/main.css";
+import { apolloClient } from "@/main";
 import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-import { ADD_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-import { ADD_EVENT } from "@/graphQLData/event/mutations";
+// import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import CheckBox from "@/components/forms/CheckBox.vue";
 const { DateTime } = require("luxon");
 
@@ -42,7 +46,9 @@ export default defineComponent({
     TextEditor,
     TextInput,
   },
+  apollo: {},
   setup() {
+    provideApolloClient(apolloClient);
     const now = DateTime.now();
 
     const route = useRoute();
@@ -121,19 +127,19 @@ export default defineComponent({
       result: tagsData,
     } = useQuery(GET_TAGS);
 
-    const getCommentSectionObjects = (newEventId: string) => {
-      return selectedChannels.value.map((c) => {
-        return {
-          id: newEventId + c,
-          Event: {
-            id: newEventId,
-          },
-          Channel: {
-            uniqueName: c,
-          },
-        };
-      });
-    };
+    // const getCommentSectionObjects = (newEventId: string) => {
+    //   return selectedChannels.value.map((c) => {
+    //     return {
+    //       id: newEventId + c,
+    //       Event: {
+    //         id: newEventId,
+    //       },
+    //       Channel: {
+    //         uniqueName: c,
+    //       },
+    //     };
+    //   });
+    // };
 
     // let touched = ref({
     //   title: false,
@@ -144,113 +150,8 @@ export default defineComponent({
     //   address: false,
     // });
 
-    const variablesForAnyEvent = computed(() => {
-      return {
-        poster: { username },
-        createdDate: DateTime.now().toISO(),
-        title: title.value,
-        description: description.value,
-        startTime: startTime.value,
-        endTime: endTime.value,
-        startTimeYear: startTimePieces.value.startTimeYear,
-        startTimeMonth: startTimePieces.value.startTimeMonth,
-        startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth,
-        startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek,
-        startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay,
-        Channels: selectedChannels.value.map((c) => {
-          return { uniqueName: c };
-        }),
-        Tags: selectedTags.value.map((t) => {
-          return { text: t };
-        }),
-        cost: cost.value,
-        canceled: false,
-        virtualEventUrl: virtualEventUrl.value,
-      };
-    });
-
-    const variablesForEventWithLocation = computed(() => {
-      return {
-        locationName: locationName.value,
-        address: address.value,
-        isInPrivateResidence: isInPrivateResidence.value,
-        placeId: placeId.value,
-        location: {
-          latitude: latitude.value,
-          longitude: longitude.value,
-        },
-      };
-    });
-
-    const getVariablesForAddEvent = () => {
-      if (latitude.value && longitude.value) {
-        return {
-          ...variablesForAnyEvent.value,
-          ...variablesForEventWithLocation.value,
-        };
-      }
-      return variablesForAnyEvent.value;
-    };
-
-    const { mutate: addCommentSection } = useMutation(ADD_COMMENT_SECTION);
-
-    const { mutate: addEvent, error: addEventError } = useMutation(ADD_EVENT, {
-      errorPolicy: "all",
-      update(cache, { data: { addEvent } }) {
-        const newEventId = addEvent.event[0].id;
-
-        // Add a new comment section for each selected community.
-        addCommentSection({
-          variables: {
-            commentSectionObjects: getCommentSectionObjects(newEventId),
-          },
-        });
-
-        // If the event was created in the context
-        // of a community, redirect to the community.
-        if (channelId) {
-          this.$router.push(`/c/${channelId}/event/${newEventId}`);
-        } else {
-          // If the event was created in the context
-          // of the server-wide events page,
-          // redirect to the first community that the
-          // event was submitted to.
-          this.$router.push(
-            `/c/${selectedChannels.value[0]}/event/${newEventId}`
-          );
-        }
-        const newEvent = addEvent.event[0];
-        cache.modify({
-          fields: {
-            events(existingEventRefs = [], { readField }) {
-              const newEventRef = cache.writeFragment({
-                data: newEvent,
-                fragment: gql`
-                  fragment NewEvent on Events {
-                    url
-                  }
-                `,
-              });
-
-              // Quick safety check - if the new event is already
-              // present in the cache, we don't need to add it again.
-              if (
-                existingEventRefs.some(
-                  (ref: any) => readField("id", ref) === addEvent.id
-                )
-              ) {
-                return existingEventRefs;
-              }
-              return [newEventRef, ...existingEventRefs];
-            },
-          },
-        });
-      },
-    });
-
     return {
-      addEvent,
-      addEventError,
+      channelId,
       address,
       channelData,
       channelError,
@@ -260,7 +161,7 @@ export default defineComponent({
       durationHoursAndMinutes,
       endTime,
       getReadableTimeFromISO,
-      getVariablesForAddEvent,
+      isInPrivateResidence,
       latitude,
       locationName,
       longitude,
@@ -270,10 +171,12 @@ export default defineComponent({
       selectedChannels,
       selectedTags,
       startTime,
+      startTimePieces,
       tagsData,
       tagsLoading,
       tagsError,
       title,
+      username,
       virtualEventUrl,
     };
   },
@@ -291,7 +194,7 @@ export default defineComponent({
   computed: {
     changesRequired() {
       // We do these checks:
-      // - At least one community is selected
+      // - At least one channel is selected
       // - Title is included
       // - Start date and time are in the future
       // - Either a valid event URL or an address is included
@@ -333,11 +236,234 @@ export default defineComponent({
       ); // fragment locator
       return !!pattern.test(str);
     },
-    async onSubmit() {
-      const variables = this.getVariablesForAddEvent();
-      debugger;
-      await this.addEvent(...variables);
-      debugger;
+    getVirtualEventInfo() {
+      if (this.virtualEventUrl) {
+        return `virtualEventUrl: "${this.virtualEventUrl}"`;
+      }
+      return "";
+    },
+    getLocationInfo() {
+      if (this.latitude && this.longitude) {
+        return `
+          locationName: ${this.locationName}
+          location: {
+            latitude: ${this.latitude}
+            longitude: ${this.longitude}
+          }
+          address: ${this.address}
+          placeId: ${this.placeId}
+          isInPrivateResidence: ${this.isInPrivateResidence}
+        `;
+      }
+      return "";
+    },
+    buildChannelString() {
+      if (this.selectedChannels.length === 0) {
+        throw new Error(
+          "Cannot create an event without selecting at least one channel."
+        );
+      }
+      let channelString = "";
+
+      this.selectedChannels.forEach((channel: ChannelData) => {
+        channelString += `
+        {
+          where: {
+            node: {
+              uniqueName: "${channel}"
+            }
+          }
+        },`;
+      });
+
+      return `Channels: {
+        connect: [${channelString}]
+      }`;
+    },
+    buildTagString() {
+      if (this.selectedTags.length === 0) {
+        return "";
+      }
+      let tagString = "";
+
+      this.selectedTags.forEach((tag: TagData) => {
+        tagString += `
+        {
+          onCreate: {
+            node: {
+              text: ${tag}
+            }
+          }
+          where: {
+            node: {
+              text: ${tag}
+            }
+          }
+        },
+        `;
+      });
+      return `Tags: {
+        connectOrCreate: [${tagString}]
+      }`;
+    },
+    buildDescriptionString() {
+      if (!this.description) {
+        return "";
+      }
+      return `description: "${this.description}""`;
+    },
+    async onSubmit1() {
+      let CREATE_EVENT;
+      let createEventMutationString;
+
+      try {
+        createEventMutationString = `
+          mutation {
+            createEvents(
+              input: [
+                {
+                  title: "${this.title}"
+                  ${this.buildDescriptionString()}
+                  startTime: "${this.startTime}"
+                  startTimeYear: "${this.startTimePieces.startTimeYear}"
+                  startTimeMonth: "${this.startTimePieces.startTimeMonth}"
+                  startTimeDayOfMonth: "${
+                    this.startTimePieces.startTimeDayOfMonth
+                  }"
+                  startTimeDayOfWeek: "${
+                    this.startTimePieces.startTimeDayOfWeek
+                  }"
+                  startTimeHourOfDay: ${this.startTimePieces.startTimeHourOfDay}
+                  endTime: "${this.endTime}"
+                  ${this.buildChannelString()}
+                  ${this.buildTagString()}
+                  ${this.getLocationInfo()}
+                  ${this.getVirtualEventInfo()}
+                  Poster: {
+                    connect: {
+                      where: {
+                        node: {
+                          username: "${this.username}"
+                        }
+                      }
+                    }
+                  }
+                  cost: "${this.cost}"
+                  canceled: false
+                }
+              ]
+            ) {
+              events {
+                id
+                title
+                description
+                Channels {
+                  uniqueName
+                }
+                Poster {
+                  username
+                }
+                locationName
+                address
+                startTime
+                startTimeYear
+                startTimeMonth
+                startTimeDayOfMonth
+                startTimeDayOfWeek
+                startTimeHourOfDay
+                endTime
+                virtualEventUrl
+                createdAt
+                isInPrivateResidence
+                cost
+                placeId
+                location {
+                  latitude
+                  longitude
+                }
+                canceled
+                Tags {
+                  text
+                }
+              }
+            }
+          }
+        `;
+        CREATE_EVENT = gql`
+          ${createEventMutationString}
+        `;
+      } catch (err) {
+        throw new Error(err + createEventMutationString);
+      }
+
+      const { mutate: createEvent } = useMutation(CREATE_EVENT, {
+        errorPolicy: "all",
+      });
+      await createEvent()
+        .then((d) => {
+          console.log(d);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // {
+      //   errorPolicy: "all",
+      //   update(cache, { data: { events } }) {
+      //     const newEventId = events.event[0].id;
+
+      //     // Add a new comment section for each selected channel.
+      //     // createCommentSections({
+      //     //   variables: {
+      //     //     commentSectionObjects: getCommentSectionObjects(newEventId),
+      //     //   },
+      //     // });
+
+      //     // If the event was created in the context
+      //     // of a channel, redirect to the event detail page in
+      //     // the channel.
+      //     if (this.channelId) {
+      //       this.$router.push(`/c/${this.channelId}/event/${newEventId}`);
+      //     } else {
+      //       // If the event was created in the context
+      //       // of the server-wide events page,
+      //       // redirect to the event detail page in the first
+      //       // channel that the event was submitted to.
+      //       this.$router.push(
+      //         `/c/${this.selectedChannels.value[0]}/event/${newEventId}`
+      //       );
+      //     }
+      //     const newEvent = events.event[0];
+      //     cache.modify({
+      //       fields: {
+      //         events(existingEventRefs = [], { readField }) {
+      //           const newEventRef = cache.writeFragment({
+      //             data: newEvent,
+      //             fragment: gql`
+      //               fragment NewEvent on Events {
+      //                 id
+      //               }
+      //             `,
+      //           });
+
+      //           // Quick safety check - if the new event is already
+      //           // present in the cache, we don't need to add it again.
+      //           if (
+      //             existingEventRefs.some(
+      //               (ref: any) => readField("id", ref) === newEvent.id
+      //             )
+      //           ) {
+      //             return existingEventRefs;
+      //           }
+      //           return [newEventRef, ...existingEventRefs];
+      //         },
+      //       },
+      //     });
+      //   },
+      // }
+      // );
+      // if (createEventError) {
+      //   throw new Error(createEventError.toString())
+      // }
     },
     updateTitle(updated: String) {
       this.title = updated;
@@ -381,20 +507,8 @@ export default defineComponent({
     setChannelFilters(channel: Array<string>) {
       this.selectedChannels = channel;
     },
-    addEvent2() {
-      // We save the user input in case of an error
-      // Call to the graphql mutation
-      this.$apollo.mutate({
-        // Query
-        mutation: this.addEvent,
-        // Parameters
-        variables: {
-          label: this.getVariablesForAddEvent(),
-        },
-      })
-    }
-  }
-})
+  },
+});
 </script>
 <template>
   <div>
@@ -417,9 +531,7 @@ export default defineComponent({
               <ChannelPicker
                 v-if="channelData && channelData.channels"
                 v-model="selectedChannels"
-                :channel-options="
-                  getChannelOptionLabels(channelData.channels)
-                "
+                :channel-options="getChannelOptionLabels(channelData.channels)"
                 :selected-channels="selectedChannels"
                 @setChannelFilters="setChannelFilters"
               />
@@ -496,7 +608,7 @@ export default defineComponent({
       <div class="pt-5">
         <div class="flex justify-end">
           <CancelButton />
-          <SaveButton @click="addEvent2" />
+          <SaveButton @click="onSubmit1" />
         </div>
       </div>
     </Form>
@@ -505,9 +617,6 @@ export default defineComponent({
       {{ error.message }}
     </div>
     <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-    <div v-for="(error, i) of addEventError?.graphQLErrors" :key="i">
       {{ error.message }}
     </div>
   </div>

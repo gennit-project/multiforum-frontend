@@ -12,7 +12,7 @@ export default defineComponent({
         mx-auto
         max-w-4xl
         space-y-8
-        divide-y divide-gray-200
+        divide-y
         border
         bg-white
         p-8

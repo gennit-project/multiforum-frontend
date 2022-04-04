@@ -1,10 +1,11 @@
-import { createApp, provide, h } from "vue";
+import { createApp, h, provide } from "vue";
 import App from "./App.vue";
 import { router } from "./router";
 import "./index.css";
 import "v-tooltip/dist/v-tooltip.css";
 import { ApolloClient, InMemoryCache } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
+import { createApolloProvider } from '@vue/apollo-option'
 import config from "./config";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import '@github/markdown-toolbar-element'
@@ -23,6 +24,9 @@ const cache = new InMemoryCache({
     Discussion: {
       keyFields: ["id"],
     },
+    Event: {
+      keyFields: ["id"],
+    },
     Query: {
       fields: {
         queryDiscussion: {
@@ -37,10 +41,14 @@ const cache = new InMemoryCache({
 });
 
 // Create the apollo client
-const apolloClient = new ApolloClient({
+export const apolloClient = new ApolloClient({
   uri: config.graphqlUrl,
   cache,
 });
+
+const apolloProvider = createApolloProvider({
+  defaultClient: apolloClient,
+})
 
 const app = createApp({
   setup() {
@@ -59,4 +67,5 @@ app
       libraries: "places",
     },
   })
+  .use(apolloProvider)
   .mount("#app");

@@ -189,7 +189,7 @@ export default defineComponent({
       switch (selectedLocationFilter.value) {
         case locationFilterTypes.NONE:
           if (showMap.value) {
-            return "{ location_NOT: null },"
+            return "{ location_NOT: null },";
           }
           return "";
         case locationFilterTypes.ONLY_WITH_ADDRESS:
@@ -204,7 +204,7 @@ export default defineComponent({
             // events with both a physical location
             // and a virtual event url
             return `{ location_NOT: null },
-            { virtualEventUrl_NOT: null },`
+            { virtualEventUrl_NOT: null },`;
           }
           return "{ virtualEventUrl_NOT: null },";
 
@@ -288,38 +288,37 @@ export default defineComponent({
       return timeSlotFilter;
     });
 
-    
-
     let tagFilter = computed(() => {
-      if (selectedTags.value.length > 0){
+      if (selectedTags.value.length > 0) {
         let matchTags = selectedTags.value.reduce((prev, curr) => {
           return prev + `{ text_MATCHES: "(?i)${curr}" },`;
-        },'')
+        }, "");
         return `{
           TagsConnection: {
             node: {
               OR: [${matchTags}]
             }
           }
-        }`
+        }`;
       }
       return "";
     });
 
-    
-
     let channelFilter = computed(() => {
       if (selectedChannels.value.length > 0) {
-        let matchChannels = selectedChannels.value.reduce((prev: string, curr: string) => {
-          return prev + `{ uniqueName_MATCHES: "(?i)${curr}" },`;
-        },'')
+        let matchChannels = selectedChannels.value.reduce(
+          (prev: string, curr: string) => {
+            return prev + `{ uniqueName_MATCHES: "(?i)${curr}" },`;
+          },
+          ""
+        );
         return `{
           ChannelsConnection: {
             node: {
               OR: [${matchChannels}]
             }
           }
-        }`
+        }`;
       }
       return "";
     });
@@ -420,7 +419,7 @@ export default defineComponent({
             }
           }
         }`;
-        return str
+      return str;
     });
 
     // Turn the query string into an actual GraphQL
@@ -1139,9 +1138,7 @@ export default defineComponent({
         <template v-slot:content>
           <ChannelPicker
             v-model="selectedChannels"
-            :channel-options="
-              getChannelOptionLabels(channelOptions.channels)
-            "
+            :channel-options="getChannelOptionLabels(channelOptions.channels)"
             :selected-channels="selectedChannels"
             @setChannelFilters="setChannelFilters"
           />
@@ -1238,10 +1235,12 @@ export default defineComponent({
     </div>
 
     <div v-if="eventLoading">Loading...</div>
-    <div v-else-if="showMap && eventResult && eventResult.events" id="mapView" class="overflow-y-scroll">
-      <div
-        style="position: fixed; width: 66vw; height: calc(100vh - 130px)"
-      >
+    <div
+      v-else-if="showMap && eventResult && eventResult.events"
+      id="mapView"
+      class="overflow-y-scroll"
+    >
+      <div style="position: fixed; width: 66vw; height: calc(100vh - 130px)">
         <Map
           :events="eventResult.events"
           :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
@@ -1252,9 +1251,7 @@ export default defineComponent({
           @setMarkerData="setMarkerData"
         />
       </div>
-      <div
-        style="position: fixed; right: 0; width: 34vw"
-      >
+      <div style="position: fixed; right: 0; width: 34vw">
         <EventList
           class="overscroll-auto overflow-auto"
           key="highlightedEventId"

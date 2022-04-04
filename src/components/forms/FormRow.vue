@@ -1,39 +1,48 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FormSectionTitle from "./FormSectionTitle.vue";
 
 export default defineComponent({
-    components: {
-        FormSectionTitle
+  setup() {},
+  props: {
+    sectionTitle: {
+      type: String,
+      default: "",
     },
-    setup(){},
-    props: {
-        sectionTitle: {
-            type: String,
-            default: ''
-        }
-    }
-})
+  },
+});
 </script>
 
 <template>
   <div
     class="
       sm:grid
-      sm:grid-cols-3
+      sm:grid-cols-4
       sm:gap-4
       sm:items-start
-      sm:border-t
-      sm:border-gray-200
-      sm:pt-5
     "
   >
-    <FormSectionTitle>
+    <label
+      for="title"
+      class="
+        block
+        text-sm
+        font-medium
+        text-gray-700
+        sm:mt-px sm:pt-2
+        align-right
+      "
+    >
       {{ sectionTitle }}
-    </FormSectionTitle>
-    <div class="mt-1 sm:col-span-2">
+    </label>
+    <div class="mt-1 sm:col-span-3">
       <slot />
     </div>
   </div>
 </template>
+<style scoped>
+.align-right {
+  display: inline-block;
+  text-align: right;
+}
+</style>
