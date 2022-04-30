@@ -106,14 +106,12 @@ export const router = createRouter({
         },
         {
           path: "events",
-          component: SearchEvents,
-          children: [
-            {
-              path: ":eventId",
-              component: Event,
-            },
-          ],
+          component: SearchEvents
         },
+        {
+          path: "events/:eventId",
+          component: Event
+        }
       ],
     },
     { path: "/feeds", component: SearchFeeds },

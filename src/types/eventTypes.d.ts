@@ -6,7 +6,7 @@ import CommentSectionData from './commentTypes';
 export type Point = {
   latitude: number;
   longitude: number;
-};
+};        
 
 export type EventData = {
   id: string;
@@ -14,14 +14,26 @@ export type EventData = {
   description: string;
   address?: string;
   location?: Point;
+  placeId: string;
   locationName?: string;
+  isInPrivateResidence: boolean;
   virtualEventUrl?: string;
   startTime: string;
+  startTimeYear:         string;
+  startTimeMonth:        string;
+  startTimeDayOfMonth:   string;
+  startTimeDayOfWeek:    string;
+  startTimeHourOfDay:  number;
   endTime: string;
+  canceled: boolean;
+  deleted: boolean;
+  cost: string;
   Channels: Array[ChannelData];
   Poster?: UserData;
   Tags: Array[TagData];
   CommentSections: [CommentSectionData];
+  updatedAt: string;
+  createdAt: string;
 };
 
 export type WeekdayData = {
