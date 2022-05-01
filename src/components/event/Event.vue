@@ -172,113 +172,41 @@ export default defineComponent({
     </div> -->
 
     <div v-else-if="eventResult && eventResult.events">
-      <h1>{{ eventData.title }}</h1>
-      <div>
-        <table size="sm" borderless>
-          <tbody>
-            <tr>
-              <td>
-                <span className="hanging-indent">
-                  <i className="far fa-calendar"></i>
-                  {{ getFormattedDateString(eventData.startTime) }}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span className="hanging-indent">
-                  <i className="far fa-clock"></i>
-                  {{
-                    getFormattedTimeString(
-                      eventData.startTime,
-                      eventData.endTime
-                    )
-                  }}
-                </span>
-              </td>
-            </tr>
-            <tr v-if="eventData.virtualEventUrl">
-              <td>
-                <span className="hanging-indent">
-                  <i className="fas fa-globe"></i>This is a virtual event. Go
-                  to: {{ eventData.virtualEventUrl }}
-                </span>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <span>
-                  <i className="fas fa-map-marker-alt"></i>
-                  <a
-                    className="placeLink"
-                    target="_blank"
-                    rel="noreferrer"
-                    :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
-                  >
-                    {{ `${eventData.locationName ? eventData.locationName : ''}, ${eventData.address ? eventData.address : ""}`}}
-                  </a>
-                  <!-- <CopyToClipboard
-                        text={address}
-                        onCopy={() => setCopiedAddress(true)}
-                      >
-                        <span>
-                          {' '}
-                          <i className='far fa-copy copy-button'></i>{' '}
-                          {copiedAddress && 'Copied!'}
-                        </span>
-                      </CopyToClipboard> -->
-                  <span
-                    v-if="eventData.isInPrivateResidence"
-                    className="event-note"
-                  >
-                    This location is a private residence.
-                  </span>
-                </span>
-              </td>
-            </tr>
-            
-            <tr v-if="eventData.cost">
-              <td>
-                <i className="fa fa-ticket" aria-hidden="true"></i
-                >{{ eventData.cost }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <!-- <AddToCalendar :event="getCalendarData" /> -->
-      </div>
-      <div v-if="eventData.description">
-        <div className="pageTitle">About this Event</div>
-        <p>{{ eventData.description }}</p>
-      </div>
-      <Tag
-        v-for="tag in eventData.Tags"
-        :tag="tag"
-        :key="tag.text"
-        :eventId="eventId"
-      />
-      <div v-if="channelId && channelsExceptCurrent.length > 0">
-        Crossposted To
-      </div>
-      <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
-        <router-link
-          key="{channel.uniqueName}"
-          className="understatedLink"
-          :to="`/channels/${channel.uniqueName}/events/${eventId}`"
-        >
-          {{ `c/${channel.uniqueName}` }}
-        </router-link>
-      </p>
-      <div className="event-footer">
-        <div className="organizer">
-          Posted by {{ eventData.Poster.username }}
-          <!-- <Link
+      <div class="grid grid-cols-3 gap-4 ">
+        <div class="col-start-1 col-span-2 ">
+          <h2 class="text-lg mb-2 text-gray-700">{{ eventData.title }}</h2>
+          <p class="mb-4" v-if="eventData.description">{{ eventData.description }}</p>
+          <Tag
+            v-for="tag in eventData.Tags"
+            :tag="tag.text"
+            :key="tag.text"
+            :eventId="eventId"
+          />
+          <div v-if="channelId && channelsExceptCurrent.length > 0">
+            Crossposted To
+          </div>
+          <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
+            <router-link
+              key="{channel.uniqueName}"
+              className="understatedLink"
+              :to="`/channels/${channel.uniqueName}/events/${eventId}`"
+            >
+              {{ `c/${channel.uniqueName}` }}
+            </router-link>
+          </p>
+          <div className="text-xs text-gray-600 mt-4">
+            <div className="organizer">
+              Posted by 
+              <router-link class="text-indigo-800 underline" :to="`/u/${eventData.Poster.username}`">
+              {{ eventData.Poster.username }}
+              </router-link>
+              <!-- <Link
               className='organizerLink'
               to={`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
             >
               {`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
             </Link> -->
-          <!-- {isAuthenticated && isCreatorOfEvent() ? (
+              <!-- {isAuthenticated && isCreatorOfEvent() ? (
               <>
                 <span> &#8226; </span>
                 <Link
@@ -298,27 +226,90 @@ export default defineComponent({
                 </span>
               </>
             ) : null} -->
+            </div>
+            <div className="time-zone">
+              {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
+            </div>
+            <div className="created-date">
+              {{
+                `${
+                  eventData.createdAt
+                    ? `Created ${relativeTime(eventData.createdAt)}`
+                    : ""
+                }`
+              }}
+              <span v-if="eventData.updatedAt"> &#8226; </span>
+              {{
+                eventData.updatedAt
+                  ? `${eventData.updatedAt} Edited ${relativeTime(
+                      eventData.updatedAt
+                    )}`
+                  : ""
+              }}
+            </div>
+          </div>
         </div>
-        <div className="time-zone">
-          {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
+        <div class="col-start-3 col-span-1 text-sm text-gray-700 space-y-2">
+          <p className="hanging-indent">
+            <i className="far fa-calendar"></i>
+            {{ getFormattedDateString(eventData.startTime) }}
+          </p>
+          <p className="hanging-indent">
+            <i className="far fa-clock"></i>
+            {{ getFormattedTimeString(eventData.startTime, eventData.endTime) }}
+          </p>
+          <div v-if="eventData.virtualEventUrl" class="row">
+            <p className="hanging-indent">
+              <i className="fas fa-globe"></i>This is a virtual event. Go to:
+              {{ eventData.virtualEventUrl }}
+            </p>
+          </div>
+
+          <p v-if="eventData.placeId">
+            <i className="fas fa-map-marker-alt"></i>
+            <a
+              className="placeLink"
+              target="_blank"
+              rel="noreferrer"
+              :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
+            >
+              {{
+                `${eventData.locationName ? eventData.locationName : ""}${
+                  eventData.address ? `, ${eventData.address}` : ""
+                }`
+              }}
+            </a>
+          </p>
+          <p v-else>
+            <i className="fas fa-map-marker-alt"></i>
+            {{
+              `${eventData.locationName ? eventData.locationName : ""}${
+                eventData.address ? `, ${eventData.address}` : ""
+              }`
+            }}
+          </p>
+          <!-- <CopyToClipboard
+              text={address}
+              onCopy={() => setCopiedAddress(true)}
+            >
+              <span>
+                {' '}
+                <i className='far fa-copy copy-button'></i>{' '}
+                {copiedAddress && 'Copied!'}
+              </span>
+            </CopyToClipboard> -->
+
+          <p v-if="eventData.isInPrivateResidence" className="event-note">
+            This location is a private residence.
+          </p>
+          <p v-if="eventData.cost">
+            <i className="fa fa-ticket" aria-hidden="true"></i>
+            {{ eventData.cost }}
+          </p>
         </div>
-        <div className="created-date">
-          {{
-            `${
-              eventData.createdAt
-                ? `Created ${relativeTime(eventData.createdAt)}`
-                : ""
-            }`
-          }}
-          <span v-if="eventData.updatedAt"> &#8226; </span>
-          {{
-            eventData.updatedAt
-              ? `${eventData.updatedAt} Edited ${relativeTime(
-                  eventData.updatedAt
-                )}`
-              : ""
-          }}
-        </div>
+
+        <!-- <AddToCalendar :event="getCalendarData" /> -->
+
       </div>
     </div>
   </div>

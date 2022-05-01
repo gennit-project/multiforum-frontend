@@ -5,6 +5,16 @@ import { router } from "@/router";
 // need to get channel id, render differently if clicked within channel
 
 export default defineComponent({
+  props: {
+    to: {
+      type: String,
+      required: true
+    },
+    label: {
+      type: String,
+      required: true
+    }
+  },
   setup() {
     return { router };
   },
@@ -12,9 +22,10 @@ export default defineComponent({
 </script>
 <template>
   <button
-    @click="router.push('/events/create')"
+    @click="router.push(to)"
     class="
       inline-flex
+      whitespace-nowrap
       items-center
       mt-1
       mb-1
@@ -33,6 +44,6 @@ export default defineComponent({
       focus:ring-indigo-500
     "
   >
-    Create Event
+    {{ label }}
   </button>
 </template>

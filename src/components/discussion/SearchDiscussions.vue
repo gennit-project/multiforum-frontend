@@ -15,6 +15,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import SearchBar from "@/components/forms/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
+import CreateButton from "@/components/buttons/CreateButton.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 
 interface Ref<T> {
@@ -23,12 +24,13 @@ interface Ref<T> {
 
 export default defineComponent({
   components: {
-    DiscussionList,
     ChannelIcon,
-    FilterChip,
     ChannelPicker,
-    TagPicker,
+    CreateButton,
+    DiscussionList,
+    FilterChip,
     SearchBar,
+    TagPicker,
     TagIcon,
   },
   setup(props) {
@@ -120,10 +122,8 @@ export default defineComponent({
 
     let discussionQueryString = computed(() => {
       return `
-        query getDiscussions ($first: Int, $offset: Int){
-          queryDiscussion (order: { desc: createdDate }, offset: $offset, first: $first${
-            textFilters.value
-          }) ${needsCascade.value ? cascadeText.value : ""}{
+        query getDiscussions {
+          discussions  ${needsCascade.value ? cascadeText.value : ""}{
             id
             Channels ${
               selectedChannels.value.length > 0 ? channelFilter.value : ""
@@ -132,7 +132,7 @@ export default defineComponent({
             }
             title
             body
-            createdDate
+            createdAt
             Author {
               username
             }
@@ -144,17 +144,12 @@ export default defineComponent({
             }
             CommentSections {
               id
-              CommentsAggregate {
-                count
-              }
-              Discussion {
-                id
-              }
-              Event {
-                id
-              }
-              Channel {
-                uniqueName
+              __typename
+              OriginalPost {
+                ... on Discussion {
+                  id
+                  title
+                }
               }
             }
           }
@@ -184,18 +179,18 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: discussionResult.value.queryDiscussion.length,
+          offset: discussionResult.value.discussions.length,
         },
         updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.queryDiscussion.length === 0) {
+          if (fetchMoreResult.discussions.length === 0) {
             reachedEndOfResults.value = true;
             return prev;
           }
           return {
             ...prev,
-            queryDiscussion: [
-              ...prev.queryDiscussion,
-              ...fetchMoreResult.queryDiscussion,
+            discussions: [
+              ...prev.discussions,
+              ...fetchMoreResult.discussions,
             ],
           };
         },
@@ -333,11 +328,12 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
+      <CreateButton :to="'/discussions/create'" :label="'Create Discussion'"/>
     </div>
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList
-      v-else-if="discussionResult && discussionResult.queryDiscussion"
-      :discussions="discussionResult.queryDiscussion"
+      v-else-if="discussionResult && discussionResult.discussions"
+      :discussions="discussionResult.discussions"
       :channel-id="channelId"
       :search-input="searchInput"
       :selected-tags="selectedTags"

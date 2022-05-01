@@ -41,7 +41,7 @@ export default defineComponent({
   data(props) {
     return {
       previewIsOpen: false,
-      defaultUniqueName: props.discussion.CommentSections[0].Channel.uniqueName,
+      defaultUniqueName: '' , //props.discussion.CommentSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body,
       createdDate: props.discussion.createdDate,

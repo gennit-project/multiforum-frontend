@@ -29,7 +29,7 @@ import TimeIcon from "../icons/TimeIcon.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
 import dateRangeTypes from "@/components/event/dateRangeTypes";
 import locationFilterTypes from "@/components/event/locationFilterTypes";
-import CreateEventButton from "@/components/buttons/CreateEvent.vue";
+import CreateButton from "@/components/buttons/CreateButton.vue";
 
 import {
   defaultSelectedWeekdays,
@@ -72,7 +72,7 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     CloseButton,
-    CreateEventButton,
+    CreateButton,
     DatePicker,
     EventList,
     EventPreview,
@@ -1069,7 +1069,7 @@ export default defineComponent({
         @showList="setShowList"
       />
       <AddToFeed v-if="channelId" />
-      <CreateEventButton />
+      <CreateButton :to="'/events/create'" :label="'Create Event'"/>
     </div>
     <div class="items-center mt-1 mx-2 space-x-2">
       <FilterChip

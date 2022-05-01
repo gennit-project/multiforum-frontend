@@ -20,7 +20,7 @@ export const GET_CHANNEL = gql`
 `;
 export const GET_DISCUSSIONS = gql`
   query queryDiscussion{
-    queryDiscussion {
+    discussions {
       id
       title
       body
