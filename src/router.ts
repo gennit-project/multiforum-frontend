@@ -2,16 +2,16 @@ import { createRouter, createWebHistory } from "vue-router";
 import Channel from "./components/channel/Channel.vue";
 import UserProfile from "./components/UserProfile.vue";
 import SearchChannels from "./components/channel/SearchChannels.vue";
-import Event from "./components/event/Event.vue";
+import EventDetail from "./components/event/EventDetail.vue";
 import SearchEvents from "./components/event/SearchEvents.vue";
 import Feed from "./components/feed/Feed.vue";
 import SearchFeeds from "./components/feed/SearchFeeds.vue";
-import Discussion from "./components/discussion/Discussion.vue";
+import DiscussionDetail from "./components/discussion/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
 import SiteSettings from "./components/SiteSettings.vue";
-import CreateEventForm from "@/components/forms/create-edit/event.vue";
-import CreateDiscussionForm from "@/components/forms/create-edit/discussion.vue";
+import CreateEditEvent from "@/components/forms/create-edit/event.vue";
+import CreateEditDiscussion from "@/components/forms/create-edit/discussion.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -49,7 +49,7 @@ export const router = createRouter({
     {
       path: "/events/create",
       name: "CreateEvent",
-      component: CreateEventForm
+      component: CreateEditEvent
     },
     {
       path: "/discussions",
@@ -68,7 +68,7 @@ export const router = createRouter({
     {
       path: "/discussions/create",
       name: "CreateDiscussion",
-      component: CreateDiscussionForm
+      component: CreateEditDiscussion
     },
     {
       path: "/channels/",
@@ -105,16 +105,25 @@ export const router = createRouter({
           component: SearchDiscussions
         },
         {
+          path: "discussions/:discussionId/edit",
+          component: CreateEditDiscussion
+        },
+        {
+          name: "DiscussionDetail",
           path: "discussions/:discussionId",
-          component: Discussion
+          component: DiscussionDetail
         },
         {
           path: "events",
           component: SearchEvents
         },
         {
+          path: "events/:eventId/edit",
+          component: CreateEditEvent
+        },
+        {
           path: "events/:eventId",
-          component: Event
+          component: EventDetail
         }
       ],
     },

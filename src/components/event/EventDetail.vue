@@ -103,7 +103,6 @@ export default defineComponent({
       eventLoading,
       eventId,
       channelId,
-
       eventData,
       channelsExceptCurrent,
       commentSectionId,

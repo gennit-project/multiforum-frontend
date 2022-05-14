@@ -1,13 +1,14 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
   useMutation,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
-import { useRoute } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
+// import { DiscussionData } from "@/types/discussionTypes";
 import { TagData } from "@/types/tagTypes";
 import CancelButton from "@/components/buttons/CancelButton.vue";
 import SaveButton from "@/components/buttons/SaveButton.vue";
@@ -38,8 +39,9 @@ export default defineComponent({
     provideApolloClient(apolloClient);
 
     const route = useRoute();
+    const router = useRouter();
 
-    const channelId = route.params.channelId as string;
+    const channelId: string | string[] = route.params.channelId;
 
     const username = "cluse";
 
@@ -94,11 +96,190 @@ export default defineComponent({
     //   title: false,
     // });
 
+    const createDiscussionInput = computed(() => {
+      const tagConnections = selectedTags.value.map((tag: string) => {
+        return {
+          onCreate: {
+            node: {
+              text: tag,
+            },
+          },
+          where: {
+            node: {
+              text: tag,
+            },
+          },
+        };
+      });
+
+      const channelConnections = selectedChannels.value.map(
+        (channel: string | string[]) => {
+          return {
+            where: {
+              node: {
+                uniqueName: channel,
+              },
+            },
+          };
+        }
+      );
+
+      return [
+        {
+          title: title.value,
+          body: body.value,
+          Channels: {
+            connect: channelConnections,
+          },
+          Tags: {
+            connectOrCreate: tagConnections,
+          },
+          Author: {
+            connect: {
+              where: {
+                node: {
+                  username: "cluse",
+                },
+              },
+            },
+          },
+        },
+      ];
+    });
+    console.log({
+      createDiscussionInput: createDiscussionInput.value,
+    });
+
+    const CREATE_DISCUSSION = gql`
+      mutation createDiscussion(
+        $createDiscussionInput: [DiscussionCreateInput!]!
+      ) {
+        createDiscussions(input: $createDiscussionInput) {
+          discussions {
+            id
+            title
+            body
+            Channels {
+              uniqueName
+            }
+            Author {
+              username
+            }
+            createdAt
+            updatedAt
+            Tags {
+              text
+            }
+          }
+        }
+      }
+    `;
+
+    const {
+      mutate: createDiscussion,
+      error: createDiscussionError,
+      onDone,
+    } = useMutation(CREATE_DISCUSSION, () => ({
+      variables: {
+        createDiscussionInput: createDiscussionInput.value,
+      },
+      update: (cache: any, result: any) => {
+        // const createDiscussion: any = result.data.createDiscussion;
+        console.log({ updateResult: result });
+      },
+    }));
+
+    // const discussions: DiscussionData[] = data.discussions
+    //   const newDiscussionId = discussions[0].id;
+    //   console.log({discussions, newDiscussionId})
+    //   alert(newDiscussionId)
+    //   debugger
+
+    //   //   // Add a new comment section for each selected channel.
+    //   //   // createCommentSections({
+    //   //   //   variables: {
+    //   //   //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
+    //   //   //   },
+    //   //   // });
+
+    //   // }
+    //   // const newDiscussion = discussions[0];
+    //   // cache.modify({
+    //   //   fields: {
+    //   //     discussions(existingDiscussionRefs = [], fieldInfo: any) {
+    //   //       const readField = fieldInfo.readField
+    //   //       const newDiscussionRef = cache.writeFragment({
+    //   //         data: newDiscussion,
+    //   //         fragment: gql`
+    //   //           fragment NewDiscussion on Discussions {
+    //   //             id
+    //   //           }
+    //   //         `,
+    //   //       });
+
+    //   //       // Quick safety check - if the new discussion is already
+    //   //       // present in the cache, we don't need to add it again.
+    //   //       if (
+    //   //         existingDiscussionRefs.some(
+    //   //           (ref: any) => readField("id", ref) === newDiscussion.id
+    //   //         )
+    //   //       ) {
+    //   //         return existingDiscussionRefs;
+    //   //       }
+    //   //       return [newDiscussionRef, ...existingDiscussionRefs];
+    //   //     },
+    //   //   },
+    //   // });
+    // },
+    //  }
+    // }
+
+    onDone((response: any) => {
+      console.log({
+        response
+      })
+      const newDiscussionId = response.data.createDiscussions.discussions[0].id;
+      
+
+      /*
+        If the discussion was created in the context
+        of a channel, redirect to the discussion detail page in
+        the channel.
+      */
+      
+      if (channelId) {
+        router.push({
+          name: "DiscussionDetail",
+          params: {
+            channelId,
+            discussionId: newDiscussionId
+          }
+        });
+      } else {
+        /*
+        If the discussion was created in the context
+        of the server-wide discussions page,
+        redirect to the discussion detail page in the first
+        channel that the discussion was submitted to.
+      */
+        router.push({
+          name: "DiscussionDetail",
+          params: {
+            channelId: selectedChannels.value[0],
+            discussionId: newDiscussionId
+          }
+        });
+      }
+    });
+
     return {
       channelId,
       channelData,
       channelError,
       channelLoading,
+      createDiscussion,
+      createDiscussionError,
+      createDiscussionInput,
       body,
       selectedChannels,
       selectedTags,
@@ -131,193 +312,6 @@ export default defineComponent({
     },
   },
   methods: {
-    buildChannelString() {
-      // Connect the discussion to existing channels.
-      if (this.selectedChannels.length === 0) {
-        throw new Error(
-          "Cannot create a discussion without selecting at least one channel."
-        );
-      }
-      let channelString = "";
-
-      this.selectedChannels.forEach((channel: ChannelData) => {
-        channelString += `
-        {
-          where: {
-            node: {
-              uniqueName: "${channel}"
-            }
-          }
-        },`;
-      });
-
-      return `Channels: {
-        connect: [${channelString}]
-      }`;
-    },
-    buildTagString() {
-      // Connect the discussion to existing tags
-      if (this.selectedTags.length === 0) {
-        return "";
-      }
-      let tagString = "";
-
-      this.selectedTags.forEach((tag: TagData) => {
-        tagString += `
-        {
-          onCreate: {
-            node: {
-              text: "${tag}"
-            }
-          }
-          where: {
-            node: {
-              text: "${tag}"
-            }
-          }
-        },
-        `;
-      });
-      return `Tags: {
-        connectOrCreate: [${tagString}]
-      }`;
-    },
-    buildBodyString() {
-      if (!this.body) {
-        return "";
-      }
-      return `body: "${this.body}"`;
-    },
-    async submit() {
-      let CREATE_DISCUSSION;
-      let createDiscussionMutationString;
-
-      //   try {
-      createDiscussionMutationString = `
-          mutation {
-            createDiscussions(
-              input: [
-                {
-                  title: "${this.title}"
-                  ${this.buildBodyString()}
-                  ${this.buildChannelString()}
-                  ${this.buildTagString()}
-                  Author: {
-                    connect: {
-                      where: {
-                        node: {
-                          username: "${this.username}"
-                        }
-                      }
-                    }
-                  }
-                }
-              ]
-            ) {
-              discussions {
-                id
-                title
-                body
-                Channels {
-                  uniqueName
-                }
-                Author {
-                  username
-                }
-                createdAt
-                updatedAt
-                Tags {
-                  text
-                }
-              }
-            }
-          }
-        `;
-
-      CREATE_DISCUSSION = gql`
-        ${createDiscussionMutationString}
-      `;
-      //   } catch (err) {
-      //       console.log(err)
-      //     throw new Error(`${err} ${createDiscussionMutationString}`);
-      //   }
-      //   debugger
-
-      const { mutate: createDiscussion, error: createDiscussionError } = useMutation(CREATE_DISCUSSION, {
-        errorPolicy: "all",
-      });
-
-      try {
-        const result = await createDiscussion();
-        console.log(result)
-        alert(result)
-      } catch (err) {
-        alert("Could not create discussion: " + err)
-        debugger
-        throw new Error("Could not create discussion: " + err + createDiscussionError);
-        
-      }
-
-      this.$router.push(`/c/${this.selectedChannels.value[0]}/discussions`);
-      // {
-      //   errorPolicy: "all",
-      //   update(cache, { data: { discussions } }) {
-      //     const newDiscussionId = discussions.discussion[0].id;
-
-      //     // Add a new comment section for each selected channel.
-      //     // createCommentSections({
-      //     //   variables: {
-      //     //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
-      //     //   },
-      //     // });
-
-      //     // If the discussion was created in the context
-      //     // of a channel, redirect to the discussion detail page in
-      //     // the channel.
-      //     if (this.channelId) {
-      //       this.$router.push(`/c/${this.channelId}/discussions/${newDiscussionId}`);
-      //     } else {
-      //       // If the discussion was created in the context
-      //       // of the server-wide discussions page,
-      //       // redirect to the discussion detail page in the first
-      //       // channel that the discussion was submitted to.
-      //       this.$router.push(
-      //         `/c/${this.selectedChannels.value[0]}/discussions/${newDiscussionId}`
-      //       );
-      //     }
-      //     const newDiscussion = discussions.discussion[0];
-      //     cache.modify({
-      //       fields: {
-      //         discussions(existingDiscussionRefs = [], { readField }) {
-      //           const newDiscussionRef = cache.writeFragment({
-      //             data: newDiscussion,
-      //             fragment: gql`
-      //               fragment NewDiscussion on Discussions {
-      //                 id
-      //               }
-      //             `,
-      //           });
-
-      //           // Quick safety check - if the new discussion is already
-      //           // present in the cache, we don't need to add it again.
-      //           if (
-      //             existingDiscussionRefs.some(
-      //               (ref: any) => readField("id", ref) === newDiscussion.id
-      //             )
-      //           ) {
-      //             return existingDiscussionRefs;
-      //           }
-      //           return [newDiscussionRef, ...existingDiscussionRefs];
-      //         },
-      //       },
-      //     });
-      //   },
-      // }
-      // );
-      // if (createDiscussionError) {
-      //   throw new Error(createDiscussionError.toString())
-      // }
-    },
     getChannelOptionLabels(options: Array<ChannelData>) {
       return options.map((channel) => channel.uniqueName);
     },
@@ -329,21 +323,29 @@ export default defineComponent({
     },
     updateText(updated: string) {
       this.title = updated;
-    }
+    },
+    async submit() {
+      this.createDiscussion();
+    },
   },
 });
 </script>
 <template>
   <div>
     <Form>
-      <div v-if="channelLoading || tagsLoading"></div>
+      <div v-if="channelLoading || tagsLoading">Loading...</div>
+      <div v-if="createDiscussionError">{{ createDiscussionError }}</div>
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div>
           <FormTitle> Create Discussion </FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <TextInput :value="title" :full-width="true" @update="updateText"/>
+              <TextInput
+                :value="title"
+                :full-width="true"
+                @update="updateText"
+              />
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
@@ -374,7 +376,7 @@ export default defineComponent({
       <div class="pt-5">
         <div class="flex justify-end">
           <CancelButton />
-          <SaveButton @click="submit" :disabled="changesRequired"/>
+          <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>
     </Form>

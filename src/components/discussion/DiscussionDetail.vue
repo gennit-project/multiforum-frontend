@@ -1,0 +1,127 @@
+<script lang="ts">
+import { defineComponent, computed } from "vue";
+import { useRoute } from "vue-router";
+import { useQuery, useResult } from "@vue/apollo-composable";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import { ChannelData } from "@/types/channelTypes";
+import Tag from "../buttons/Tag.vue";
+import { relativeTime } from "../../dateTimeUtils";
+const Markdown = require("vue3-markdown-it").default;
+
+export default defineComponent({
+  components: {
+    Markdown,
+    Tag,
+  },
+  setup() {
+    const route = useRoute();
+    const discussionId = computed(() => {
+      return route.params.discussionId;
+    });
+    const channelId = computed(() => {
+      return route.params.channelId;
+    });
+
+    const { result, loading } = useQuery(GET_DISCUSSION, { id: discussionId });
+
+    const body = useResult(
+      result,
+      null,
+      (data: any) => data.discussions[0]?.body || ""
+    );
+    const title = useResult(
+      result,
+      null,
+      (data: any) => data.discussions[0]?.title || ""
+    );
+    const tags = useResult(
+      result,
+      null,
+      (data: any) => data.discussions[0]?.Tags || []
+    );
+    const channelsExceptCurrent = useResult(result, null, (data: any) => {
+      if (!data.discussions[0] || data.discussions[0].Channels.length < 2) {
+        return [];
+      }
+      return (
+        data.discussions[0]?.Channels.filter((channel: ChannelData) => {
+          return channel.uniqueName !== channelId.value;
+        }) || []
+      );
+    });
+    const authorUsername = useResult(result, null, (data: any) => {
+      return data.discussions[0]?.Author?.username || "[deleted]";
+    });
+    const createdAt = useResult(
+      result,
+      null,
+      (data: any) => data.discussions[0]?.createdAt || ""
+    );
+    const updatedAt = useResult(
+      result,
+      null,
+      (data: any) => data.discussions[0]?.updatedAt || ""
+    );
+    return {
+      authorUsername,
+      body,
+      channelsExceptCurrent,
+      createdAt,
+      tags,
+      title,
+      channelId,
+      discussionId,
+      loading,
+      relativeTime,
+      result,
+      updatedAt,
+    };
+  },
+});
+</script>
+
+<template>
+  <div class="px-8 mx-auto max-w-4xl">
+    <div class="pb-5 border-b border-gray-200">
+      <h1 class="text-lg leading-6 font-medium text-gray-900">{{ title }}</h1>
+    </div>
+
+    <div v-if="loading">Loading...</div>
+
+    <div class="mt-6 prose prose-indigo prose-lg text-gray-500">
+      <Markdown v-if="body" :source="body" linkify html />
+    </div>
+    <Tag
+      v-for="tag in tags"
+      :tag="tag.text"
+      :key="tag.text"
+      :discussionId="discussionId"
+    />
+    <div class="prose w-full text-xs mt-4 text-gray-700">
+    <div>
+        Posted by
+        <router-link :to="`/u/${authorUsername}`">
+          {{ `/u/${authorUsername ? authorUsername : "[deleted]"}` }}
+        </router-link>
+        {{ `${createdAt ? `&#8226; Created ${relativeTime("" + createdAt)}` : ""}` }}
+        <span v-if="updatedAt"> &#8226; </span>
+        {{ updatedAt ? `Edited ${relativeTime("" + updatedAt)}` : "" }}
+        <span> &#8226; 
+          <router-link :to="`/channels/${channelId}/discussions/${discussionId}/edit`">Edit</router-link>
+        </span>
+        <span> &#8226; Delete</span>
+      </div>
+      <div>
+        Crossposted to
+        <router-link
+          v-for="channel in channelsExceptCurrent"
+          :key="channel.uniqueName"
+          :to="`/channels/${channel.uniqueName}/discussions/${discussionId}`"
+        >
+          {{ `c/${channel.uniqueName}` }}
+        </router-link>
+      </div>
+      
+    </div>
+  </div>
+</template>
