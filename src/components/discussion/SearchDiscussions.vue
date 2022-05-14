@@ -62,32 +62,34 @@ export default defineComponent({
       return textFilterString;
     });
 
-    let needsCascade = computed(() => {
-      return selectedChannels.value.length > 0 || selectedTags.value.length > 0;
-    });
-
-    let cascadeText = computed(() => {
-      // Adding parameters to @cascade makes it so that
-      // even when we are filtering by
-      // channels, we can still see the discussions that
-      // don't have tags and vice versa. Normally,
-      // @cascade would filter
-      // out all items that don't have all of the described
-      // output fields.
-      // If we are filtering by channel but not by tag,
-      // we include only the channel field in the cascade parameters.
-      // If the tags parameter was included, discussions in the
-      // selected channel would be excluded for not having tags.
-      return `@cascade(fields: [${
-        selectedTags.value.length > 0 ? `"Tags",` : ""
-      } "Channels"])`;
-    });
-
     let channelFilter = computed(() => {
-      return `(filter: { uniqueName: { anyofterms: "${selectedChannels.value.join(
-        " "
-      )}"}})`;
+      if (selectedChannels.value.length === 1) {
+        return ` ChannelsConnection: {
+                  node: {
+                    uniqueName_MATCHES: "(?i)${selectedChannels.value[0]}"
+                  }
+                }`;
+      }
+
+      if (selectedChannels.value.length > 1) {
+        const channelFilterString = selectedChannels.value
+          .map((channel: string) => {
+            return `{
+						uniqueName_MATCHES: "(?i${channel}"
+					},`;
+          })
+          .join("")
+          
+          return `ChannelsConnection: {
+                node: {
+                  OR: [${channelFilterString}]
+                }
+              }`;
+      }
+
+      return "";
     });
+
     let tagFilter = computed(() => {
       return `(filter: { text: { anyofterms: "${selectedTags.value.join(
         " "
@@ -123,11 +125,12 @@ export default defineComponent({
     let discussionQueryString = computed(() => {
       return `
         query getDiscussions {
-          discussions  ${needsCascade.value ? cascadeText.value : ""}{
+          discussions  (where: {
+            ${selectedChannels.value.length > 0 ? channelFilter.value : ""}
+            ${selectedTags.value.length > 0 ? tagFilter.value : ""}
+          }){
             id
-            Channels ${
-              selectedChannels.value.length > 0 ? channelFilter.value : ""
-            }{
+            Channels {
               uniqueName
             }
             title
@@ -136,7 +139,7 @@ export default defineComponent({
             Author {
               username
             }
-            Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
+            Tags {
               text
             }
             ChannelsAggregate {
@@ -188,10 +191,7 @@ export default defineComponent({
           }
           return {
             ...prev,
-            discussions: [
-              ...prev.discussions,
-              ...fetchMoreResult.discussions,
-            ],
+            discussions: [...prev.discussions, ...fetchMoreResult.discussions],
           };
         },
       });
@@ -304,9 +304,7 @@ export default defineComponent({
         <template v-slot:content>
           <ChannelPicker
             v-model="selectedChannels"
-            :channel-options="
-              getChannelOptionLabels(channelOptions.channels)
-            "
+            :channel-options="getChannelOptionLabels(channelOptions.channels)"
             :selected-channels="selectedChannels"
             @setChannelFilters="setChannelFilters"
           />
@@ -328,7 +326,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <CreateButton :to="'/discussions/create'" :label="'Create Discussion'"/>
+      <CreateButton :to="'/discussions/create'" :label="'Create Discussion'" />
     </div>
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList

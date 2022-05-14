@@ -3,23 +3,39 @@ import { gql } from '@apollo/client/core';
 // get discussion by ID
 export const GET_DISCUSSION = gql`
   query getDiscussion($id: ID!) {
-    getDiscussion(id: $id) {
+    discussions (
+      where: { 
+        id: $id
+      }
+    ) {
       id
       title
       body
-      createdDate
-      editedDate
+      createdAt
+      updatedAt
       Author {
         username
       }
       Channels {
-        url
+        uniqueName
       }
       Tags {
         text
       }
+      CommentSections {
+        id
+        __typename
+        OriginalPost {
+          ... on Discussion {
+            id
+            title
+          }
+        }
+      }
     }
   }
+
+  
 `;
 
 // Get all discussion IDs in channel

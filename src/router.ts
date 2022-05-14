@@ -102,13 +102,11 @@ export const router = createRouter({
         },
         {
           path: "discussions",
-          component: SearchDiscussions,
-          children: [
-            {
-              path: ":discussionId",
-              component: Discussion,
-            },
-          ],
+          component: SearchDiscussions
+        },
+        {
+          path: "discussions/:discussionId",
+          component: Discussion
         },
         {
           path: "events",

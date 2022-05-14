@@ -29,10 +29,13 @@ const cache = new InMemoryCache({
     },
     Query: {
       fields: {
-        queryDiscussion: {
+        events: {
+          merge: false
+        },
+        discussions: {
           merge: false,
         },
-        queryChannel: {
+        channels: {
           merge: false,
         },
       },

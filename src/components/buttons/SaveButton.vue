@@ -2,11 +2,23 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {},
 });
 </script>
 <template>
   <button
+    :disabled="disabled"
+    :class="[
+      disabled
+        ? 'bg-gray-200 cursor-default text-gray-600'
+        : 'text-white hover:bg-indigo-700 bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+    ]"
     class="
       ml-3
       inline-flex
@@ -18,10 +30,6 @@ export default defineComponent({
       text-sm
       font-medium
       rounded-md
-      text-white
-      bg-indigo-600
-      hover:bg-indigo-700
-      focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
     "
   >
     Save

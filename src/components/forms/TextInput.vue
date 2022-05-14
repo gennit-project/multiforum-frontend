@@ -10,7 +10,7 @@ export default defineComponent({
   props: {
       value: {
           type: String,
-          required: true
+          default: ''
       },
       placeholder: {
           type: String,
@@ -23,7 +23,7 @@ export default defineComponent({
   <div class="flex rounded-md shadow-sm">
     <input
       v-model="text"
-      @change="$emit('update', text)"
+      @keyup="$emit('update', text)"
       :placeholder="placeholder"
       type="text"
       class="

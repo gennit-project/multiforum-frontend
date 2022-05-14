@@ -167,12 +167,12 @@ export default defineComponent({
         {
           onCreate: {
             node: {
-              text: ${tag}
+              text: "${tag}"
             }
           }
           where: {
             node: {
-              text: ${tag}
+              text: "${tag}"
             }
           }
         },
@@ -188,12 +188,12 @@ export default defineComponent({
       }
       return `body: "${this.body}"`;
     },
-    async onSubmit1() {
+    async submit() {
       let CREATE_DISCUSSION;
       let createDiscussionMutationString;
 
-    //   try {
-        createDiscussionMutationString = `
+      //   try {
+      createDiscussionMutationString = `
           mutation {
             createDiscussions(
               input: [
@@ -233,29 +233,32 @@ export default defineComponent({
             }
           }
         `;
-        debugger
-        CREATE_DISCUSSION = gql`
-          ${createDiscussionMutationString}
-        `;
-    //   } catch (err) {
-    //       console.log(err)
-    //     throw new Error(`${err} ${createDiscussionMutationString}`);
-    //   }
-    //   debugger
 
-      const { mutate: createDiscussion } = useMutation(CREATE_DISCUSSION, {
+      CREATE_DISCUSSION = gql`
+        ${createDiscussionMutationString}
+      `;
+      //   } catch (err) {
+      //       console.log(err)
+      //     throw new Error(`${err} ${createDiscussionMutationString}`);
+      //   }
+      //   debugger
+
+      const { mutate: createDiscussion, error: createDiscussionError } = useMutation(CREATE_DISCUSSION, {
         errorPolicy: "all",
       });
-      await createDiscussion()
-        .then((d) => {
-          console.log(d);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      this.$router.push(
-              `/c/${this.selectedChannels.value[0]}/discussions`
-            );
+
+      try {
+        const result = await createDiscussion();
+        console.log(result)
+        alert(result)
+      } catch (err) {
+        alert("Could not create discussion: " + err)
+        debugger
+        throw new Error("Could not create discussion: " + err + createDiscussionError);
+        
+      }
+
+      this.$router.push(`/c/${this.selectedChannels.value[0]}/discussions`);
       // {
       //   errorPolicy: "all",
       //   update(cache, { data: { discussions } }) {
@@ -315,9 +318,6 @@ export default defineComponent({
       //   throw new Error(createDiscussionError.toString())
       // }
     },
-    updateTitle(updated: String) {
-      this.title = updated;
-    },
     getChannelOptionLabels(options: Array<ChannelData>) {
       return options.map((channel) => channel.uniqueName);
     },
@@ -327,12 +327,9 @@ export default defineComponent({
     updateBody(updated: string) {
       this.body = updated;
     },
-    setTagFilters(tag: Array<string>) {
-      this.selectedTags = tag;
-    },
-    setChannelFilters(channel: Array<string>) {
-      this.selectedChannels = channel;
-    },
+    updateText(updated: string) {
+      this.title = updated;
+    }
   },
 });
 </script>
@@ -346,11 +343,7 @@ export default defineComponent({
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <TextInput
-                :value="title"
-                :full-width="true"
-                @update="updateTitle"
-              />
+              <TextInput :value="title" :full-width="true" @update="updateText"/>
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
@@ -359,20 +352,19 @@ export default defineComponent({
                 v-model="selectedChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 :selected-channels="selectedChannels"
-                @setChannelFilters="setChannelFilters"
               />
             </FormRow>
 
-            <FormRow :section-title="'More Info'">
+            <FormRow :section-title="'Body'">
               <TextEditor class="mb-3" :value="body" @update="updateBody" />
-
+            </FormRow>
+            <FormRow :section-title="'Tags'">
               <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
-                @setTagFilters="setTagFilters"
               />
             </FormRow>
           </div>
@@ -382,7 +374,7 @@ export default defineComponent({
       <div class="pt-5">
         <div class="flex justify-end">
           <CancelButton />
-          <SaveButton @click="onSubmit1" />
+          <SaveButton @click="submit" :disabled="changesRequired"/>
         </div>
       </div>
     </Form>

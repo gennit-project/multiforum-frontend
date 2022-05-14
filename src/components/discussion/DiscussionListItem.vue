@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from "vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
-import { CommentSectionData } from "../../types/commentTypes";
+// import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "../buttons/Tag.vue";
 import HighlightedSearchTerms from "@/components/forms/HighlightedSearchTerms.vue";
 
@@ -41,7 +41,7 @@ export default defineComponent({
   data(props) {
     return {
       previewIsOpen: false,
-      defaultUniqueName: '' , //props.discussion.CommentSections[0].Channel.uniqueName,
+      defaultUniqueName: props.currentChannelId , //props.discussion.CommentSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body,
       createdDate: props.discussion.createdDate,
@@ -56,15 +56,12 @@ export default defineComponent({
       }),
     };
   },
-  methods: {
-    getCommentCount(commentSection: CommentSectionData) {
-      const count = commentSection.CommentsAggregate.count;
-      return ` ${count} comment${count === 1 ? "" : "s"}`;
-    },
-    getChannel(commentSection: CommentSectionData) {
-      return commentSection.Channel.uniqueName;
-    },
-  },
+  // methods: {
+  //   getCommentCount(commentSection: CommentSectionData) {
+  //     const count = commentSection.CommentsAggregate.count;
+  //     return ` ${count} comment${count === 1 ? "" : "s"}`;
+  //   },
+  // },
   inheritAttrs: false,
 });
 </script>
@@ -98,23 +95,24 @@ export default defineComponent({
               :to="`/channels/${defaultUniqueName}/discussions/${discussion.id}`"
               class="font-medium text-gray-500"
             >
-              {{ getCommentCount(discussion.CommentSections[0]) }}
+              <!-- {{ getCommentCount(discussion.CommentSections[0]) }} -->
+              comment count goes here
               <span aria-hidden="true">&rarr;</span>
             </router-link>
 
             <router-link
               v-else
-              :key="getChannel(commentSection)"
-              v-for="(commentSection, i) in discussion.CommentSections"
-              :to="`/channels/${getChannel(commentSection)}/discussions/${
+              :key="i"
+              v-for="(channel, i) in discussion.Channels"
+              :to="`/channels/${channel.uniqueName}/discussions/${
                 discussion.id
               }`"
               class="font-medium"
             >
-              {{ getCommentCount(commentSection) }} in
+              {{ 'comment count goes here' }} in
 
               <HighlightedSearchTerms
-                :text="getChannel(commentSection)"
+                :text="channel.uniqueName"
                 :search-input="selectedChannels.join(' ')"
               />
               

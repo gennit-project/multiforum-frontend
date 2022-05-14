@@ -16,12 +16,12 @@ export default defineComponent({
       };
     });
     return {
-      value: props.selectedTags,
+      selectedTags: props.value,
       formattedTagOptions,
     };
   },
   props: {
-    selectedTags: {
+    value: {
       type: Array as PropType<string[]>,
       default: () => {
         return [];
@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 <template>
     <Multiselect
-      v-model="value"
+      v-model="selectedTags"
       class="wide "
       :classes="{
         containerActive: 'ring-0',
