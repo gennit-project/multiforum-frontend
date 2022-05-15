@@ -31,7 +31,7 @@ import CheckBox from "@/components/forms/CheckBox.vue";
 const { DateTime } = require("luxon");
 
 export default defineComponent({
-  name: "CreateEditEvent",
+  name: "EditEvent",
   components: {
     CancelButton,
     ChannelPicker,
@@ -501,10 +501,10 @@ export default defineComponent({
         throw new Error(e);
       }
     },
-    setTagFilters(tag: Array<string>) {
+    setSelectedTags(tag: Array<string>) {
       this.selectedTags = tag;
     },
-    setChannelFilters(channel: Array<string>) {
+    setSelectedChannels(channel: Array<string>) {
       this.selectedChannels = channel;
     },
   },
@@ -533,7 +533,7 @@ export default defineComponent({
                 v-model="selectedChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 :selected-channels="selectedChannels"
-                @setChannelFilters="setChannelFilters"
+                @setSelectedChannels="setSelectedChannels"
               />
             </FormRow>
 
@@ -588,7 +588,7 @@ export default defineComponent({
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
-                @setTagFilters="setTagFilters"
+                @setSelectedTags="setSelectedTags"
               />
               <CheckBox :checked="!showCostField" @input="toggleCostField" />
               <span class="ml-2">This event is free</span>

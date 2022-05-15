@@ -2,21 +2,22 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup(props) {
-      return {
-          text: props.value
-      }
-  },
+  setup() {},
   props: {
-      value: {
-          type: String,
-          default: ''
-      },
-      placeholder: {
-          type: String,
-          default: ''
-      }
+    initialValue: {
+      type: String,
+      default: "",
+    },
+    placeholder: {
+      type: String,
+      default: "",
+    },
   },
+  data(props) {
+    return {
+      text: props.initialValue
+    }
+  }
 });
 </script>
 <template>

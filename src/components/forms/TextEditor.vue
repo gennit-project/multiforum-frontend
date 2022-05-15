@@ -10,18 +10,16 @@ export default defineComponent({
     Markdown,
   },
   setup(props) {
-    const showFormatted = ref(false);
-
     return {
-      showFormatted,
-      text: props.value,
+      showFormatted: ref(false),
+      text: ref(props.initialValue),
     };
   },
   props: {
-    value: {
+    initialValue: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
   methods: {
     setTab(selected: string) {
@@ -54,31 +52,33 @@ export default defineComponent({
           for="markdown_textarea"
           class="block space-x-0.5"
         >
-          <md-bold class="p-1 rounded hover:text-indigo-600"
+          <md-bold class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-bold"></i
           ></md-bold>
-          <md-header class="p-1 rounded hover:text-indigo-600"
+          <md-header class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-heading"></i
           ></md-header>
-          <md-italic class="p-1 rounded hover:text-indigo-600"
+          <md-italic class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-italic"></i
           ></md-italic>
-          <md-quote class="p-1 rounded hover:text-indigo-600"
+          <md-quote class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-quote-left"></i
           ></md-quote>
-          <md-code class="p-1 rounded hover:text-indigo-600"
+          <md-code class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-code"></i
           ></md-code>
-          <md-link class="p-1 rounded hover:text-indigo-600"
+          <md-link class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-link"></i
           ></md-link>
-          <md-image class="p-1 rounded hover:text-indigo-600"
+          <md-image class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-image"></i
           ></md-image>
-          <md-unordered-list class="p-1 rounded hover:text-indigo-600"
+          <md-unordered-list
+            class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-list-ul"></i
           ></md-unordered-list>
-          <md-ordered-list class="p-1 rounded hover:text-indigo-600"
+          <md-ordered-list
+            class="p-1 rounded text-gray-400 hover:text-indigo-600"
             ><i class="fas fa-list-ol"></i
           ></md-ordered-list>
           <!-- <md-mention>@</md-mention>
@@ -98,7 +98,7 @@ export default defineComponent({
           w-full
           focus:ring-indigo-500 focus:border-indigo-500
           sm:text-sm
-          border border-gray-300
+          border border-gray-400
           rounded-md
           textbox
         "
@@ -106,13 +106,17 @@ export default defineComponent({
         @keyup="$emit('update', text)"
       ></textarea>
       <Markdown
-        class="prose prose-sm mt-1 p-3
+        class="
+          prose prose-sm
+          mt-1
+          p-3
           shadow-sm
           block
           sm:text-sm
-          border border-gray-300
+          border border-gray-400
           rounded-md
-          textbox"
+          textbox
+        "
         v-show="showFormatted"
         :source="text"
         linkify
@@ -138,5 +142,4 @@ export default defineComponent({
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
 }
-
 </style>

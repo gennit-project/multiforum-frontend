@@ -9,6 +9,7 @@ import { createApolloProvider } from '@vue/apollo-option'
 import config from "./config";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import '@github/markdown-toolbar-element'
+import 'highlight.js/styles/github-dark-dimmed.css'
 
 const VTooltipPlugin = require("v-tooltip");
 

@@ -92,7 +92,7 @@ export default defineComponent({
       searchInput.value = input;
       updateRouterQueryParams();
     };
-    const setTagFilters = (tag: Array<string>) => {
+    const setSelectedTags = (tag: Array<string>) => {
       selectedTags.value = tag;
       updateRouterQueryParams();
     };
@@ -202,7 +202,7 @@ export default defineComponent({
       refetchChannels,
       searchInput,
       setSearchInput,
-      setTagFilters,
+      setSelectedTags,
       showModal,
       selectedFilterOptions,
       selectedTags,
@@ -240,7 +240,7 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     filterByTag(tag: string) {
-      this.setTagFilters([tag]);
+      this.setSelectedTags([tag]);
     },
   },
 });
@@ -265,7 +265,7 @@ export default defineComponent({
           <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
             :selected-tags="selectedTags"
-            @setTagFilters="setTagFilters"
+            @setSelectedTags="setSelectedTags"
           />
         </template>
       </FilterChip>

@@ -113,11 +113,11 @@ export default defineComponent({
       searchInput.value = input;
       updateRouterQueryParams();
     };
-    const setTagFilters = (tag: Array<string>) => {
+    const setSelectedTags = (tag: Array<string>) => {
       selectedTags.value = tag;
       updateRouterQueryParams();
     };
-    const setChannelFilters = (channel: Array<string>) => {
+    const setSelectedChannels = (channel: Array<string>) => {
       selectedChannels.value = channel;
       updateRouterQueryParams();
     };
@@ -238,8 +238,8 @@ export default defineComponent({
       refetchDiscussions,
       searchInput,
       setSearchInput,
-      setChannelFilters,
-      setTagFilters,
+      setSelectedChannels,
+      setSelectedTags,
       showModal,
       selectedChannels,
       selectedFilterOptions,
@@ -279,7 +279,7 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     filterByTag(tag: string) {
-      this.setTagFilters([tag]);
+      this.setSelectedTags([tag]);
     },
   },
 });
@@ -306,7 +306,7 @@ export default defineComponent({
             v-model="selectedChannels"
             :channel-options="getChannelOptionLabels(channelOptions.channels)"
             :selected-channels="selectedChannels"
-            @setChannelFilters="setChannelFilters"
+            @setSelectedChannels="setSelectedChannels"
           />
         </template>
       </FilterChip>
@@ -322,7 +322,7 @@ export default defineComponent({
           <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
             :selected-tags="selectedTags"
-            @setTagFilters="setTagFilters"
+            @setSelectedTags="setSelectedTags"
           />
         </template>
       </FilterChip>

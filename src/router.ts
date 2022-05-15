@@ -10,8 +10,10 @@ import DiscussionDetail from "./components/discussion/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
 import SiteSettings from "./components/SiteSettings.vue";
-import CreateEditEvent from "@/components/forms/create-edit/event.vue";
-import CreateEditDiscussion from "@/components/forms/create-edit/discussion.vue";
+import CreateEvent from "@/components/forms/create/event.vue";
+import EditEvent from "@/components/forms/edit/event.vue";
+import CreateDiscussion from "@/components/forms/create/discussion.vue";
+import EditDiscussion from "@/components/forms/edit/discussion.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -49,7 +51,7 @@ export const router = createRouter({
     {
       path: "/events/create",
       name: "CreateEvent",
-      component: CreateEditEvent
+      component: CreateEvent
     },
     {
       path: "/discussions",
@@ -68,7 +70,7 @@ export const router = createRouter({
     {
       path: "/discussions/create",
       name: "CreateDiscussion",
-      component: CreateEditDiscussion
+      component: CreateDiscussion
     },
     {
       path: "/channels/",
@@ -106,7 +108,7 @@ export const router = createRouter({
         },
         {
           path: "discussions/:discussionId/edit",
-          component: CreateEditDiscussion
+          component: EditDiscussion
         },
         {
           name: "DiscussionDetail",
@@ -119,7 +121,7 @@ export const router = createRouter({
         },
         {
           path: "events/:eventId/edit",
-          component: CreateEditEvent
+          component: EditEvent
         },
         {
           path: "events/:eventId",

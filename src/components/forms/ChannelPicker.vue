@@ -9,11 +9,11 @@ export default defineComponent({
   },
   data(props) {
     return {
-      value: props.selectedChannels,
+      selectedChannels: props.initialValue,
     };
   },
   props: {
-    selectedChannels: {
+    initialValue: {
       type: Array as PropType<string[]>,
       default: () => {
         return [];
@@ -36,11 +36,11 @@ export default defineComponent({
       tagsSearch:
         'absolute inset-0 border-0 outline-none focus:ring-0 appearance-none p-0 text-base font-sans box-border w-full',
     }"
-    v-model="value"
+    v-model="selectedChannels"
     mode="tags"
-    @select="$emit('setChannelFilters', value)"
-    @deselect="$emit('setChannelFilters', [])"
-    @clear="$emit('setChannelFilters', [])"
+    @select="$emit('setSelectedChannels', selectedChannels)"
+    @deselect="$emit('setSelectedChannels', [])"
+    @clear="$emit('setSelectedChannels', [])"
     :placeholder="'Enter channels here'"
     :closeOnSelect="false"
     :searchable="true"

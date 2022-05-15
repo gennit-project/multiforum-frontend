@@ -83,11 +83,11 @@ export default defineComponent({
 <template>
   <div class="flex-1 px-10">
     <Breadcrumbs :links="links" />
-    <h1 class="text-xl inline-flex mt-3 text-black">
-      <ChannelIcon :wide="true" />{{ channelId }}
-    </h1>
   </div>
   <div v-if="!discussionId && !eventId">
+    <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
+      <ChannelIcon :wide="true" />{{ channelId }}
+    </h1>
     <ChannelTabs />
   </div>
   <router-view></router-view>

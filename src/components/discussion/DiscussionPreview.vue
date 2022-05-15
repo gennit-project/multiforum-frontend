@@ -7,10 +7,20 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
+const Markdown = require("vue3-markdown-it").default
 import { XIcon } from "@heroicons/vue/outline";
 import { DiscussionData } from "../../types/discussionTypes";
 
 export default defineComponent({
+  components: {
+    Dialog,
+    DialogOverlay,
+    DialogTitle,
+    Markdown,
+    TransitionChild,
+    TransitionRoot,
+    XIcon,
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -22,14 +32,7 @@ export default defineComponent({
     },
   },
   setup() {},
-  components: {
-    Dialog,
-    DialogOverlay,
-    DialogTitle,
-    TransitionChild,
-    TransitionRoot,
-    XIcon,
-  },
+  
 });
 </script>
 
@@ -53,7 +56,7 @@ export default defineComponent({
             leave-from="translate-x-0"
             leave-to="translate-x-full"
           >
-            <div class="w-screen max-w-md">
+            <div class="w-screen max-w-xl">
               <div
                 class="
                   h-full
@@ -91,7 +94,15 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="mt-6 relative flex-1 px-4 sm:px-6">
-                    {{ discussion.body }}
+        
+                    <div class="mt-6 prose text-gray-500">
+                      <Markdown
+                        v-if="discussion.body"
+                        :source="discussion.body"
+                        linkify
+                        html
+                      />
+                    </div>
                     <div class="mt-3 text-sm">
                       <router-link
                         :to="`/channels/${discussion.Channels[0].uniqueName}/discussions/${discussion.id}`"
@@ -122,6 +133,7 @@ export default defineComponent({
                           <textarea
                             id="description"
                             name="description"
+                            placeholder="Resist the hivemind by commenting before reading other comments"
                             rows="4"
                             class="
                               block

@@ -1,9 +1,12 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+
+import { defineComponent, computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
   useMutation,
+  useResult,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
@@ -16,16 +19,18 @@ import TextEditor from "@/components/forms/TextEditor.vue";
 import FormTitle from "@/components/forms/FormTitle.vue";
 import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
+import ErrorBanner from "@/components/forms/ErrorBanner.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "../ChannelPicker.vue";
 import TagPicker from "../TagPicker.vue";
 import { apolloClient } from "@/main";
 
 export default defineComponent({
-  name: "CreateEditDiscussion",
+  name: "EditDiscussion",
   components: {
     CancelButton,
     ChannelPicker,
+    ErrorBanner,
     Form,
     FormRow,
     FormTitle,
@@ -42,13 +47,50 @@ export default defineComponent({
     const router = useRouter();
 
     const channelId: string | string[] = route.params.channelId;
+    const discussionId: string | string[] = route.params.discussionId;
+
+    const { result, loading: discussionLoading } = useQuery(GET_DISCUSSION, {
+      id: discussionId,
+    });
+
+    const existingBody = useResult(
+      result,
+      "",
+      (data: any) => data.discussions[0]?.body
+    );
+
+    const existingTitle = useResult(
+      result,
+      "",
+      (data: any) => data.discussions[0]?.title
+    );
+    const existingTags = useResult(result, [], (data: any) => {
+      if (data.discussions[0]?.Tags) {
+        return data.discussions[0].Tags.map((tag: TagData) => {
+          return tag.text;
+        });
+      }
+      return [];
+    });
+
+    const existingChannels = useResult(result, [], (data: any) => {
+      if (data.discussions[0]?.Channels) {
+        return data.discussions[0].Channels.map((channel: ChannelData) => {
+          return channel.uniqueName;
+        });
+      }
+      return [];
+    });
+
+    // The form fields in the edit form are initialized
+    // with the existing values.
+
+    const body = ref(existingBody.value);
+    const title = ref(existingTitle.value);
+    const selectedChannels = ref(existingChannels.value);
+    const selectedTags = ref(existingTags.value);
 
     const username = "cluse";
-
-    const title = ref("");
-    const body = ref("");
-    const selectedChannels = ref(channelId ? [channelId] : []);
-    const selectedTags = ref([]);
 
     const GET_CHANNEL_NAMES = gql`
       query getChannelNames {
@@ -96,65 +138,57 @@ export default defineComponent({
     //   title: false,
     // });
 
-    const createDiscussionInput = computed(() => {
-      const tagConnections = selectedTags.value.map((tag: string) => {
-        return {
-          onCreate: {
-            node: {
-              text: tag,
-            },
-          },
-          where: {
-            node: {
-              text: tag,
-            },
-          },
-        };
-      });
-
-      const channelConnections = selectedChannels.value.map(
-        (channel: string | string[]) => {
-          return {
-            where: {
-              node: {
-                uniqueName: channel,
-              },
-            },
-          };
-        }
-      );
-
-      return [
-        {
-          title: title.value,
-          body: body.value,
-          Channels: {
-            connect: channelConnections,
-          },
-          Tags: {
-            connectOrCreate: tagConnections,
-          },
-          Author: {
-            connect: {
-              where: {
+    const updateDiscussionInput = computed(() => {
+      const tagConnections = selectedTags.value
+        ? selectedTags.value.map((tag: string) => {
+            return {
+              onCreate: {
                 node: {
-                  username: "cluse",
+                  text: tag,
                 },
               },
-            },
-          },
+              where: {
+                node: {
+                  text: tag,
+                },
+              },
+            };
+          })
+        : [];
+
+      const channelConnections = selectedChannels.value
+        ? selectedChannels.value.map((channel: string) => {
+            return {
+              where: {
+                node: {
+                  uniqueName: channel,
+                },
+              },
+            };
+          })
+        : [];
+
+      return {
+        title: title.value,
+        body: body.value,
+        Channels: {
+          connect: channelConnections,
         },
-      ];
-    });
-    console.log({
-      createDiscussionInput: createDiscussionInput.value,
+        Tags: {
+          connectOrCreate: tagConnections,
+        },
+      };
     });
 
-    const CREATE_DISCUSSION = gql`
-      mutation createDiscussion(
-        $createDiscussionInput: [DiscussionCreateInput!]!
+    const UPDATE_DISCUSSION = gql`
+      mutation updateDiscussion(
+        $updateDiscussionInput: DiscussionUpdateInput
+        $discussionWhere: DiscussionWhere
       ) {
-        createDiscussions(input: $createDiscussionInput) {
+        updateDiscussions(
+          update: $updateDiscussionInput
+          where: $discussionWhere
+        ) {
           discussions {
             id
             title
@@ -176,84 +210,32 @@ export default defineComponent({
     `;
 
     const {
-      mutate: createDiscussion,
-      error: createDiscussionError,
+      mutate: updateDiscussion,
+      error: updateDiscussionError,
       onDone,
-    } = useMutation(CREATE_DISCUSSION, () => ({
+    } = useMutation(UPDATE_DISCUSSION, () => ({
       variables: {
-        createDiscussionInput: createDiscussionInput.value,
-      },
-      update: (cache: any, result: any) => {
-        // const createDiscussion: any = result.data.createDiscussion;
-        console.log({ updateResult: result });
+        discussionWhere: {
+          id: discussionId,
+        },
+        updateDiscussionInput: updateDiscussionInput.value,
       },
     }));
 
-    // const discussions: DiscussionData[] = data.discussions
-    //   const newDiscussionId = discussions[0].id;
-    //   console.log({discussions, newDiscussionId})
-    //   alert(newDiscussionId)
-    //   debugger
-
-    //   //   // Add a new comment section for each selected channel.
-    //   //   // createCommentSections({
-    //   //   //   variables: {
-    //   //   //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
-    //   //   //   },
-    //   //   // });
-
-    //   // }
-    //   // const newDiscussion = discussions[0];
-    //   // cache.modify({
-    //   //   fields: {
-    //   //     discussions(existingDiscussionRefs = [], fieldInfo: any) {
-    //   //       const readField = fieldInfo.readField
-    //   //       const newDiscussionRef = cache.writeFragment({
-    //   //         data: newDiscussion,
-    //   //         fragment: gql`
-    //   //           fragment NewDiscussion on Discussions {
-    //   //             id
-    //   //           }
-    //   //         `,
-    //   //       });
-
-    //   //       // Quick safety check - if the new discussion is already
-    //   //       // present in the cache, we don't need to add it again.
-    //   //       if (
-    //   //         existingDiscussionRefs.some(
-    //   //           (ref: any) => readField("id", ref) === newDiscussion.id
-    //   //         )
-    //   //       ) {
-    //   //         return existingDiscussionRefs;
-    //   //       }
-    //   //       return [newDiscussionRef, ...existingDiscussionRefs];
-    //   //     },
-    //   //   },
-    //   // });
-    // },
-    //  }
-    // }
-
-    onDone((response: any) => {
-      console.log({
-        response
-      })
-      const newDiscussionId = response.data.createDiscussions.discussions[0].id;
-      
-
+    onDone(() => {
       /*
-        If the discussion was created in the context
+        If the discussion is edited in the context
         of a channel, redirect to the discussion detail page in
         the channel.
       */
-      
+
       if (channelId) {
         router.push({
           name: "DiscussionDetail",
           params: {
             channelId,
-            discussionId: newDiscussionId
-          }
+            discussionId,
+          },
         });
       } else {
         /*
@@ -266,8 +248,8 @@ export default defineComponent({
           name: "DiscussionDetail",
           params: {
             channelId: selectedChannels.value[0],
-            discussionId: newDiscussionId
-          }
+            discussionId,
+          },
         });
       }
     });
@@ -277,9 +259,10 @@ export default defineComponent({
       channelData,
       channelError,
       channelLoading,
-      createDiscussion,
-      createDiscussionError,
-      createDiscussionInput,
+      discussionLoading,
+      updateDiscussion,
+      updateDiscussionError,
+      updateDiscussionInput,
       body,
       selectedChannels,
       selectedTags,
@@ -289,12 +272,6 @@ export default defineComponent({
       title,
       username,
     };
-  },
-  props: {
-    mode: {
-      type: String,
-      default: "create",
-    },
   },
   computed: {
     changesRequired() {
@@ -306,9 +283,20 @@ export default defineComponent({
       //   selectedChannels
       // })
       const needsChanges = !(
-        this.selectedChannels.length > 0 && this.title.length > 0
+        this.selectedChannels &&
+        this.selectedChannels.length > 0 &&
+        this.title.length > 0
       );
       return needsChanges;
+    },
+    saveButtonTooltip() {
+      if (!this.selectedChannels || this.selectedChannels.length === 0) {
+        return "At least one channel is required.";
+      }
+      if (!this.title) {
+        return "A title is required.";
+      }
+      return "Save";
     },
   },
   methods: {
@@ -321,11 +309,17 @@ export default defineComponent({
     updateBody(updated: string) {
       this.body = updated;
     },
-    updateText(updated: string) {
+    updateTitle(updated: string) {
       this.title = updated;
     },
+    setSelectedChannels(updated: string) {
+      this.selectedChannels = updated;
+    },
+    setSelectedTags(updated: string) {
+      this.selectedTags = updated;
+    },
     async submit() {
-      this.createDiscussion();
+      this.updateDiscussion();
     },
   },
 });
@@ -333,40 +327,50 @@ export default defineComponent({
 <template>
   <div>
     <Form>
-      <div v-if="channelLoading || tagsLoading">Loading...</div>
-      <div v-if="createDiscussionError">{{ createDiscussionError }}</div>
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+      <div v-if="channelLoading || tagsLoading || discussionLoading">
+        Loading...
+      </div>
+      <ErrorBanner
+        v-if="updateDiscussionError"
+        :text="updateDiscussionError.message"
+      />
+      <div class="space-y-8 divide-y pt-2 divide-gray-200 sm:space-y-5">
         <div>
-          <FormTitle> Create Discussion </FormTitle>
+          <FormTitle>Edit Discussion</FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
               <TextInput
-                :value="title"
+                :initial-value="title"
                 :full-width="true"
-                @update="updateText"
+                @update="updateTitle"
               />
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
               <ChannelPicker
                 v-if="channelData && channelData.channels"
-                v-model="selectedChannels"
+                :initial-value="selectedChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
-                :selected-channels="selectedChannels"
+                @setSelectedChannels="setSelectedChannels"
               />
             </FormRow>
 
             <FormRow :section-title="'Body'">
-              <TextEditor class="mb-3" :value="body" @update="updateBody" />
+              <TextEditor
+                class="mb-3"
+                :initial-value="body"
+                @update="updateBody"
+              />
             </FormRow>
+
             <FormRow :section-title="'Tags'">
               <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
-                v-model="selectedTags"
+                :initial-value="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
-                :selected-tags="selectedTags"
+                @setSelectedTags="setSelectedTags"
               />
             </FormRow>
           </div>
@@ -376,7 +380,11 @@ export default defineComponent({
       <div class="pt-5">
         <div class="flex justify-end">
           <CancelButton />
-          <SaveButton @click.prevent="submit" :disabled="changesRequired" />
+          <SaveButton
+            @click.prevent="submit"
+            :disabled="changesRequired"
+            :title="saveButtonTooltip"
+          />
         </div>
       </div>
     </Form>
