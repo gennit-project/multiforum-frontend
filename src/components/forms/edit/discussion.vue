@@ -85,10 +85,10 @@ export default defineComponent({
     // The form fields in the edit form are initialized
     // with the existing values.
 
-    const body = ref(existingBody.value);
-    const title = ref(existingTitle.value);
-    const selectedChannels = ref(existingChannels.value);
-    const selectedTags = ref(existingTags.value);
+    const body = ref('');
+    const title = ref('');
+    const selectedChannels = ref([]);
+    const selectedTags = ref([]);
 
     const username = "cluse";
 
@@ -259,6 +259,10 @@ export default defineComponent({
       channelData,
       channelError,
       channelLoading,
+      existingBody,
+      existingChannels,
+      existingTags,
+      existingTitle,
       discussionLoading,
       updateDiscussion,
       updateDiscussionError,
@@ -327,21 +331,21 @@ export default defineComponent({
 <template>
   <div>
     <Form>
-      <div v-if="channelLoading || tagsLoading || discussionLoading">
-        Loading...
-      </div>
       <ErrorBanner
         v-if="updateDiscussionError"
         :text="updateDiscussionError.message"
       />
-      <div class="space-y-8 divide-y pt-2 divide-gray-200 sm:space-y-5">
+      <div v-if="channelLoading || tagsLoading || discussionLoading">
+        Loading...
+      </div>
+      <div v-else class="space-y-8 divide-y pt-2 divide-gray-200 sm:space-y-5">
         <div>
           <FormTitle>Edit Discussion</FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
               <TextInput
-                :initial-value="title"
+                :initial-value="existingTitle"
                 :full-width="true"
                 @update="updateTitle"
               />
@@ -350,7 +354,7 @@ export default defineComponent({
             <FormRow :section-title="'Channel(s)'">
               <ChannelPicker
                 v-if="channelData && channelData.channels"
-                :initial-value="selectedChannels"
+                :initial-value="existingChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 @setSelectedChannels="setSelectedChannels"
               />
@@ -359,7 +363,7 @@ export default defineComponent({
             <FormRow :section-title="'Body'">
               <TextEditor
                 class="mb-3"
-                :initial-value="body"
+                :initial-value="existingBody"
                 @update="updateBody"
               />
             </FormRow>
@@ -368,7 +372,7 @@ export default defineComponent({
               <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
-                :initial-value="selectedTags"
+                :initial-value="existingTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 @setSelectedTags="setSelectedTags"
               />
