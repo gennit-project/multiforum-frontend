@@ -83,7 +83,9 @@ export default defineComponent({
 <template>
   <div class="container mx-auto">
     <div class="pb-5 border-b border-gray-200">
-      <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">{{ title }}</h1>
+      <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">
+        {{ title }}
+      </h1>
       <div class="prose w-full text-xs mt-4">
         <router-link :to="`/u/${authorUsername}`">
           {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
@@ -110,26 +112,52 @@ export default defineComponent({
 
     <div v-if="loading">Loading...</div>
 
-    <div class="mt-6 prose text-gray-500">
-      <Markdown v-if="body" :source="body" linkify html />
-    </div>
-    <Tag
-      v-for="tag in tags"
-      :tag="tag.text"
-      :key="tag.text"
-      :discussionId="discussionId"
-    />
+    <div class="grid md:grid-cols-12 ">
+      <div class="prose text-gray-500 md:col-span-9 sm:col-span-12">
+        <Markdown v-if="body" :source="body" linkify html />
+      </div>
 
-    <div>
-      <div v-if="channelsExceptCurrent.length > 0" class="space-x-1">
-        Crossposted to
-        <router-link
-          v-for="channel in channelsExceptCurrent"
-          :key="channel.uniqueName"
-          :to="`/channels/${channel.uniqueName}/discussions/${discussionId}`"
+      <div class="md:col-span-3 mt-6">
+        <h2
+          class="
+            text-md
+            leading-6
+            mb-2
+            font-medium
+            text-gray-700
+            border-b border-gray-200
+          "
         >
-          {{ `${channel.uniqueName}` }}
-        </router-link>
+          Tags
+        </h2>
+        <Tag
+          v-for="tag in tags"
+          :tag="tag.text"
+          :key="tag.text"
+          :discussionId="discussionId"
+        />
+        <div v-if="channelsExceptCurrent.length > 0" class="space-x-1">
+          <h2
+            class="
+              text-md
+              leading-6
+              mb-2
+              mt-6
+              font-medium
+              text-gray-700
+              border-b border-gray-200
+            "
+          >
+            Crossposted To
+          </h2>
+          <router-link
+            v-for="channel in channelsExceptCurrent"
+            :key="channel.uniqueName"
+            :to="`/channels/${channel.uniqueName}/discussions/${discussionId}`"
+          >
+            {{ `${channel.uniqueName}` }}
+          </router-link>
+        </div>
       </div>
     </div>
   </div>
