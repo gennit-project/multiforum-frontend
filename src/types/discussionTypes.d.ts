@@ -11,5 +11,7 @@ export type DiscussionData = {
     Author: UserData;
     Tags: [TagData];
     CommentSections: [CommentSectionData];
-    createdDate: string;
+    createdAt: string;
+    updatedAt?: string;
+    __typename?: string;
 }

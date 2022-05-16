@@ -8,7 +8,6 @@ import Tag from "../buttons/Tag.vue";
 import { relativeTime } from "../../dateTimeUtils";
 import Comment from "../comments/Comment.vue";
 
-
 export default defineComponent({
   components: {
     Comment,
@@ -27,17 +26,17 @@ export default defineComponent({
 
     const body = useResult(
       result,
-      null,
+      '',
       (data: any) => data.discussions[0]?.body || ""
     );
     const title = useResult(
       result,
-      null,
+      '',
       (data: any) => data.discussions[0]?.title || ""
     );
     const tags = useResult(
       result,
-      null,
+      [],
       (data: any) => data.discussions[0]?.Tags || []
     );
     const channelsExceptCurrent = useResult(result, [], (data: any) => {
@@ -50,17 +49,17 @@ export default defineComponent({
         }) || []
       );
     });
-    const authorUsername = useResult(result, null, (data: any) => {
+    const authorUsername = useResult(result, '', (data: any) => {
       return data.discussions[0]?.Author?.username || "[deleted]";
     });
     const createdAt = useResult(
       result,
-      null,
+      '',
       (data: any) => data.discussions[0]?.createdAt || ""
     );
     const updatedAt = useResult(
       result,
-      null,
+      '',
       (data: any) => data.discussions[0]?.updatedAt || ""
     );
     return {
@@ -88,7 +87,7 @@ export default defineComponent({
         {{ title }}
       </h1>
       <div class="prose w-full text-xs mt-4">
-        <router-link :to="`/u/${authorUsername}`">
+        <router-link v-if="authorUsername" :to="`/u/${authorUsername}`">
           {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
         </router-link>
         {{
@@ -114,31 +113,34 @@ export default defineComponent({
     <div v-if="loading">Loading...</div>
 
     <div class="grid md:grid-cols-12">
-      <Comment 
-        :author-username="authorUsername || 'null'"
-        :created-at="createdAt || 'null'"
-        :content="body || 'null'"
+      <Comment
+        v-if="body"
+        :author-username="authorUsername"
+        :created-at="createdAt || ''"
+        :content="body"
       />
 
       <div class="md:col-span-3 mt-6">
-        <h2
-          class="
-            text-md
-            leading-6
-            mb-2
-            font-medium
-            text-gray-700
-            border-b border-gray-200
-          "
-        >
-          Tags
-        </h2>
-        <Tag
-          v-for="tag in tags"
-          :tag="tag.text"
-          :key="tag.text"
-          :discussionId="discussionId"
-        />
+        <div v-if="tags.length > 0">
+          <h2
+            class="
+              text-md
+              leading-6
+              mb-2
+              font-medium
+              text-gray-700
+              border-b border-gray-200
+            "
+          >
+            Tags
+          </h2>
+          <Tag
+            v-for="tag in tags"
+            :tag="tag.text"
+            :key="tag.text"
+            :discussionId="discussionId"
+          />
+        </div>
         <div v-if="channelsExceptCurrent.length > 0" class="space-x-1">
           <h2
             class="

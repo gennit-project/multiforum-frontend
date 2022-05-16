@@ -85,10 +85,10 @@ export default defineComponent({
     // The form fields in the edit form are initialized
     // with the existing values.
 
-    const body = ref('');
-    const title = ref('');
-    const selectedChannels = ref([]);
-    const selectedTags = ref([]);
+    const body = ref(existingBody.value);
+    const title = ref(existingTitle.value);
+    const selectedChannels = ref(existingChannels.value);
+    const selectedTags = ref(existingTags.value);
 
     watch(result, value => {
       const discussionData = value.discussions[0]

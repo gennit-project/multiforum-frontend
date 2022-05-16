@@ -21,6 +21,7 @@ import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "../ChannelPicker.vue";
 import TagPicker from "../TagPicker.vue";
 import { apolloClient } from "@/main";
+import { DiscussionData } from "@/types/discussionTypes";
 
 export default defineComponent({
   name: "CreateDiscussion",
@@ -187,14 +188,37 @@ export default defineComponent({
       update: (cache: any, result: any) => {
         // const createDiscussion: any = result.data.createDiscussion;
         console.log({ updateResult: result });
+
+        const newDiscussion: DiscussionData = result.data?.createDiscussions?.discussions[0]
+
+        cache.modify({
+          fields: {
+            discussions(existingDiscussionRefs = [], fieldInfo: any) {
+              const readField = fieldInfo.readField
+              const newDiscussionRef = cache.writeFragment({
+                data: newDiscussion,
+                fragment: gql`
+                  fragment NewDiscussion on Discussions {
+                    id
+                  }
+                `,
+              });
+
+              // Quick safety check - if the new discussion is already
+              // present in the cache, we don't need to add it again.
+              if (
+                existingDiscussionRefs.some(
+                  (ref: any) => readField("id", ref) === newDiscussion.id
+                )
+              ) {
+                return existingDiscussionRefs;
+              }
+              return [newDiscussionRef, ...existingDiscussionRefs];
+            },
+          },
+        });
       },
     }));
-
-    // const discussions: DiscussionData[] = data.discussions
-    //   const newDiscussionId = discussions[0].id;
-    //   console.log({discussions, newDiscussionId})
-    //   alert(newDiscussionId)
-    //   debugger
 
     //   //   // Add a new comment section for each selected channel.
     //   //   // createCommentSections({
@@ -202,38 +226,6 @@ export default defineComponent({
     //   //   //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
     //   //   //   },
     //   //   // });
-
-    //   // }
-    //   // const newDiscussion = discussions[0];
-    //   // cache.modify({
-    //   //   fields: {
-    //   //     discussions(existingDiscussionRefs = [], fieldInfo: any) {
-    //   //       const readField = fieldInfo.readField
-    //   //       const newDiscussionRef = cache.writeFragment({
-    //   //         data: newDiscussion,
-    //   //         fragment: gql`
-    //   //           fragment NewDiscussion on Discussions {
-    //   //             id
-    //   //           }
-    //   //         `,
-    //   //       });
-
-    //   //       // Quick safety check - if the new discussion is already
-    //   //       // present in the cache, we don't need to add it again.
-    //   //       if (
-    //   //         existingDiscussionRefs.some(
-    //   //           (ref: any) => readField("id", ref) === newDiscussion.id
-    //   //         )
-    //   //       ) {
-    //   //         return existingDiscussionRefs;
-    //   //       }
-    //   //       return [newDiscussionRef, ...existingDiscussionRefs];
-    //   //     },
-    //   //   },
-    //   // });
-    // },
-    //  }
-    // }
 
     onDone((response: any) => {
       console.log({

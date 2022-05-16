@@ -18,11 +18,11 @@ export default defineComponent({
   props: {
     authorUsername: {
       type: String,
-      required: true,
+      default: '',
     },
     createdAt: {
       type: String,
-      required: true,
+      default: '',
     },
     content: {
       type: String,
@@ -44,18 +44,19 @@ export default defineComponent({
     "
   >
     <ProfileAvatar
+      v-if="authorUsername"
       :username="authorUsername"
       colorType="pastel"
     ></ProfileAvatar>
 
-    <div class="tip left w-3/4 rounded">
-      <div class="header text-sm p-1">
-        <router-link :to="`/u/${authorUsername}`">
+    <div class="tip left w-4/5 rounded">
+      <div class="header text-xs p-2 text-gray-800">
+        <router-link v-if="authorUsername" class="underline font-bold" :to="`/u/${authorUsername}`">
           {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
         </router-link>
         {{ `commented ${relativeTime("" + createdAt)}` }}
       </div>
-      <div class="body prose prose-sm ">
+      <div class="body prose prose-sm min-height-min">
         <Markdown v-if="content" :source="content" linkify html />
       </div>
     </div>
@@ -83,7 +84,7 @@ export default defineComponent({
 .tip {
   background: #fff;
   border: 1px solid #ccc;
-  font-size: 1.2em;
+  font-size: 1em;
   position: relative;
 }
 
