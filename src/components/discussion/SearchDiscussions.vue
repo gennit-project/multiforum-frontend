@@ -224,12 +224,15 @@ export default defineComponent({
       return getTagLabel(selectedTags.value);
     });
 
+    const createDiscussionPath = channelId.value ? `/channels/${channelId.value}/discussions/create` : '/discussions/create'
+
     return {
       channelId,
       channelLabel,
       channelOptions,
       closeModal,
       compareDate,
+      createDiscussionPath,
       defaultLabels,
       discussionLoading,
       discussionQuery,
@@ -343,7 +346,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <CreateButton :to="'/discussions/create'" :label="'Create Discussion'" />
+      <CreateButton :to="createDiscussionPath" :label="'Create Discussion'" />
     </div>
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList

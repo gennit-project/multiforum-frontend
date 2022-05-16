@@ -95,11 +95,6 @@ export const router = createRouter({
       },
       children: [
         {
-          name: "Channel.about",
-          path: "about",
-          component: About,
-        },
-        {
           name: "About",
           path: "about",
           component: About,
@@ -115,13 +110,18 @@ export const router = createRouter({
               component: SearchDiscussions,
             },
             {
+              name: "CreateDiscussionInChannel",
+              path: "create",
+              component: CreateDiscussion
+            },
+            {
               name: "DiscussionDetail",
-              path: ":discussionId",
+              path: "d/:discussionId",
               component: DiscussionDetail,
             },
             {
               name: "EditDiscussion",
-              path: ":discussionId/edit",
+              path: "d/:discussionId/edit",
               component: EditDiscussion,
             },
           ],

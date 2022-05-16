@@ -105,7 +105,7 @@ export default defineComponent({
                     </div>
                     <div class="mt-3 text-sm">
                       <router-link
-                        :to="`/channels/${discussion.Channels[0].uniqueName}/discussions/${discussion.id}`"
+                        :to="`/channels/${discussion.Channels[0].uniqueName}/discussions/d/${discussion.id}`"
                         class="
                           font-medium
                           text-indigo-600

@@ -84,7 +84,7 @@ export default defineComponent({
   <div class="container mx-auto">
     <div class="pb-5 border-b border-gray-200">
       <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">
-        {{ title }}
+        {{ title || "[Deleted]" }}
       </h1>
       <div class="prose w-full text-xs mt-4">
         <router-link v-if="authorUsername" :to="`/u/${authorUsername}`">
@@ -102,7 +102,7 @@ export default defineComponent({
         <span>
           &#8226;
           <router-link
-            :to="`/channels/${channelId}/discussions/${discussionId}/edit`"
+            :to="`/channels/${channelId}/discussions/d/${discussionId}/edit`"
             >Edit</router-link
           >
         </span>
@@ -158,7 +158,7 @@ export default defineComponent({
           <router-link
             v-for="channel in channelsExceptCurrent"
             :key="channel.uniqueName"
-            :to="`/channels/${channel.uniqueName}/discussions/${discussionId}`"
+            :to="`/channels/${channel.uniqueName}/discussions/d/${discussionId}`"
           >
             {{ `${channel.uniqueName}` }}
           </router-link>

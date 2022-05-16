@@ -1,13 +1,11 @@
 <script lang="ts">
 import ChannelTabs from "./ChannelTabs.vue";
 import Breadcrumbs from "../nav/Breadcrumbs.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   components: {
-    ChannelIcon,
     ChannelTabs,
     Breadcrumbs,
   },
@@ -57,7 +55,7 @@ export default defineComponent({
       if (discussionId) {
         channelBreadcrumbs.push({
           label: "Discussion",
-          path: `channels/${channelId}/discussions/${discussionId}`,
+          path: `channels/${channelId}/discussions/d/${discussionId}`,
         });
       }
 
@@ -86,7 +84,7 @@ export default defineComponent({
   </div>
   <div v-if="!discussionId || !eventId">
     <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
-      <ChannelIcon :wide="true" />{{ channelId }}
+      {{ channelId }}
     </h1>
     <ChannelTabs />
   </div>
