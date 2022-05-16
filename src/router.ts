@@ -6,6 +6,8 @@ import EventDetail from "./components/event/EventDetail.vue";
 import SearchEvents from "./components/event/SearchEvents.vue";
 import Feed from "./components/feed/Feed.vue";
 import SearchFeeds from "./components/feed/SearchFeeds.vue";
+import DiscussionTab from "./components/discussion/DiscussionTab.vue";
+import EventTab from "./components/event/EventTab.vue";
 import DiscussionDetail from "./components/discussion/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
@@ -51,7 +53,7 @@ export const router = createRouter({
     {
       path: "/events/create",
       name: "CreateEvent",
-      component: CreateEvent
+      component: CreateEvent,
     },
     {
       path: "/discussions",
@@ -70,7 +72,7 @@ export const router = createRouter({
     {
       path: "/discussions/create",
       name: "CreateDiscussion",
-      component: CreateDiscussion
+      component: CreateDiscussion,
     },
     {
       path: "/channels/",
@@ -89,13 +91,13 @@ export const router = createRouter({
       name: "Channel",
       component: Channel,
       redirect: {
-        name: "Channel.about"
+        name: "Channel.about",
       },
       children: [
-        { 
-          path: "about", 
-          name: "Channel.about", 
-          component: About 
+        {
+          name: "Channel.about",
+          path: "about",
+          component: About,
         },
         {
           name: "About",
@@ -103,30 +105,49 @@ export const router = createRouter({
           component: About,
         },
         {
+          name: "Discussions",
           path: "discussions",
-          component: SearchDiscussions
+          component: DiscussionTab,
+          children: [
+            {
+              name: "SearchDiscussions",
+              path: "",
+              component: SearchDiscussions,
+            },
+            {
+              name: "DiscussionDetail",
+              path: ":discussionId",
+              component: DiscussionDetail,
+            },
+            {
+              name: "EditDiscussion",
+              path: ":discussionId/edit",
+              component: EditDiscussion,
+            },
+          ],
         },
         {
-          path: "discussions/:discussionId/edit",
-          component: EditDiscussion
-        },
-        {
-          name: "DiscussionDetail",
-          path: "discussions/:discussionId",
-          component: DiscussionDetail
-        },
-        {
+          name: "Events",
           path: "events",
-          component: SearchEvents
+          component: EventTab,
+          children: [
+            {
+              name: "SearchEvents",
+              path: "",
+              component: SearchEvents,
+            },
+            {
+              name: "EventDetail",
+              path: ":eventId",
+              component: EventDetail,
+            },
+            {
+              name: "EditEvent",
+              path: ":eventId/edit",
+              component: EditEvent,
+            },
+          ],
         },
-        {
-          path: "events/:eventId/edit",
-          component: EditEvent
-        },
-        {
-          path: "events/:eventId",
-          component: EventDetail
-        }
       ],
     },
     { path: "/feeds", component: SearchFeeds },

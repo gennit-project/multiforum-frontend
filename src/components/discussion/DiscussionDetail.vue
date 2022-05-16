@@ -6,7 +6,7 @@ import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { ChannelData } from "@/types/channelTypes";
 import Tag from "../buttons/Tag.vue";
 import { relativeTime } from "../../dateTimeUtils";
-const Markdown = require("vue3-markdown-it").default
+const Markdown = require("vue3-markdown-it").default;
 
 export default defineComponent({
   components: {
@@ -81,36 +81,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="p-8 mx-auto max-w-4xl">
+  <div class="container mx-auto">
     <div class="pb-5 border-b border-gray-200">
-      <h1 class="text-xl leading-6 font-medium text-gray-900">{{ title }}</h1>
-    </div>
-
-    <div v-if="loading">Loading...</div>
-
-    <div class="mt-6 prose text-gray-500">
-      <Markdown
-        v-if="body"
-        :source="body"
-        linkify
-        html
-      />
-    </div>
-    <Tag
-      v-for="tag in tags"
-      :tag="tag.text"
-      :key="tag.text"
-      :discussionId="discussionId"
-    />
-    <div class="prose w-full text-xs mt-4">
-      
-        Posted by
+      <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">{{ title }}</h1>
+      <div class="prose w-full text-xs mt-4">
         <router-link :to="`/u/${authorUsername}`">
-          {{ `/u/${authorUsername ? authorUsername : "[deleted]"}` }}
+          {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
         </router-link>
         {{
           `${
-            createdAt ? `&#8226; Created ${relativeTime("" + createdAt)}` : ""
+            createdAt
+              ? `opened this discussion ${relativeTime("" + createdAt)}`
+              : ""
           }`
         }}
         <span v-if="updatedAt"> &#8226; </span>
@@ -123,7 +105,22 @@ export default defineComponent({
           >
         </span>
         <span> &#8226; Delete</span>
-      
+      </div>
+    </div>
+
+    <div v-if="loading">Loading...</div>
+
+    <div class="mt-6 prose text-gray-500">
+      <Markdown v-if="body" :source="body" linkify html />
+    </div>
+    <Tag
+      v-for="tag in tags"
+      :tag="tag.text"
+      :key="tag.text"
+      :discussionId="discussionId"
+    />
+
+    <div>
       <div v-if="channelsExceptCurrent.length > 0" class="space-x-1">
         Crossposted to
         <router-link

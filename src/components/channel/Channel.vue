@@ -84,7 +84,7 @@ export default defineComponent({
   <div class="flex-1 px-10">
     <Breadcrumbs :links="links" />
   </div>
-  <div v-if="!discussionId && !eventId">
+  <div v-if="!discussionId || !eventId">
     <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
       <ChannelIcon :wide="true" />{{ channelId }}
     </h1>
