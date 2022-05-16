@@ -68,8 +68,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="['bg-white', 'sm:rounded-md']" class="mx-auto
-        max-w-5xl">
+  <div :class="['bg-white', 'sm:rounded-md']">
     <p v-if="events.length === 0 && !showMap">
       Could not find any events.
     </p>

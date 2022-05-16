@@ -67,7 +67,7 @@ export default defineComponent({
 <template>
 <div :class="['bg-white sm:rounded-md divide-y divide-gray-200 max-w-5xl']">
     <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
-    <ul v-else role="list" class="px-8 divide-y divide-gray-200 relative">
+    <ul v-else role="list" class="divide-y divide-gray-200 relative">
       <DiscussionListItem
         v-for="discussion in discussions"
         :key="discussion.id"

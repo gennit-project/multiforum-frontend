@@ -1055,8 +1055,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <div class="items-center mt-2 mx-2 space-x-2">
+  <div class="container">
+    <div class="items-center mt-2 space-x-2">
       <LocationSearchBar
         :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
@@ -1071,7 +1071,7 @@ export default defineComponent({
       <AddToFeed v-if="channelId" />
       <CreateButton :to="'/events/create'" :label="'Create Event'"/>
     </div>
-    <div class="items-center mt-1 mx-2 space-x-2">
+    <div class="items-center mt-1 space-x-2">
       <FilterChip
         :label="dateLabel"
         :highlighted="dateLabel !== defaultFilterLabels.date"
@@ -1213,7 +1213,7 @@ export default defineComponent({
       id="listView"
       v-if="!showMap && eventResult && eventResult.events"
       :class="[!channelId ? '' : '']"
-      class="relative text-lg max-w-6xl"
+      class="relative text-lg"
       :events="eventResult.events"
       :channel-id="channelId"
       :search-input="searchInput"

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useQuery, useResult } from "@vue/apollo-composable";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
@@ -7,10 +7,12 @@ import { ChannelData } from "@/types/channelTypes";
 import Tag from "../buttons/Tag.vue";
 import { relativeTime } from "../../dateTimeUtils";
 import Comment from "../comments/Comment.vue";
+import ConfirmDelete from "../ConfirmDelete.vue";
 
 export default defineComponent({
   components: {
     Comment,
+    ConfirmDelete,
     Tag,
   },
   setup() {
@@ -62,10 +64,13 @@ export default defineComponent({
       '',
       (data: any) => data.discussions[0]?.updatedAt || ""
     );
+    const confirmDeleteIsOpen = ref(false)
+
     return {
       authorUsername,
       body,
       channelsExceptCurrent,
+      confirmDeleteIsOpen,
       createdAt,
       tags,
       title,
@@ -105,8 +110,8 @@ export default defineComponent({
             :to="`/channels/${channelId}/discussions/d/${discussionId}/edit`"
             >Edit</router-link
           >
-        </span>
-        <span> &#8226; Delete</span>
+        </span>&#8226; 
+        <span class="underline font-medium text-gray-900 cursor-pointer" @click="confirmDeleteIsOpen = true">Delete</span>
       </div>
     </div>
 
@@ -165,5 +170,9 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <ConfirmDelete
+      :open="confirmDeleteIsOpen"
+      @close="confirmDeleteIsOpen = false"
+    />
   </div>
 </template>

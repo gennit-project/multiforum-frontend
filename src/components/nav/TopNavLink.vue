@@ -24,7 +24,7 @@ export default defineComponent({
         items-center
         hover:bg-gray-700 hover:text-white
         px-3
-        py-1
+        py-2
         rounded-md
         text-xs
         font-medium
@@ -35,7 +35,7 @@ export default defineComponent({
         bg-gray-900
         text-white
         px-3
-        py-1
+        py-2
         rounded-md
         text-smxs
         font-medium
