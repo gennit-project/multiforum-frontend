@@ -1,7 +1,7 @@
 <script lang="ts">
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
@@ -89,6 +89,21 @@ export default defineComponent({
     const title = ref('');
     const selectedChannels = ref([]);
     const selectedTags = ref([]);
+
+    watch(result, value => {
+      const discussionData = value.discussions[0]
+
+      if (discussionData) {
+        title.value = discussionData.title;
+        body.value = discussionData.body;
+        selectedChannels.value = discussionData.Channels.map((channel: ChannelData) => {
+          return channel.uniqueName
+        })
+        selectedTags.value = discussionData.Tags.map((tag: TagData) => {
+          return tag.text
+        })
+      }
+    })
 
     const username = "cluse";
 
