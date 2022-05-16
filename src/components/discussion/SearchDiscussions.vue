@@ -17,6 +17,8 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import CreateButton from "@/components/buttons/CreateButton.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
+import { DiscussionData } from "@/types/discussionTypes";
+import { compareDate } from "@/dateTimeUtils";
 
 interface Ref<T> {
   value: T;
@@ -78,9 +80,9 @@ export default defineComponent({
 						uniqueName_MATCHES: "(?i${channel}"
 					},`;
           })
-          .join("")
-          
-          return `ChannelsConnection: {
+          .join("");
+
+        return `ChannelsConnection: {
                 node: {
                   OR: [${channelFilterString}]
                 }
@@ -227,6 +229,7 @@ export default defineComponent({
       channelLabel,
       channelOptions,
       closeModal,
+      compareDate,
       defaultLabels,
       discussionLoading,
       discussionQuery,
@@ -281,6 +284,20 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
     },
+    sortRecentFirst(discussions: DiscussionData[]) {
+      try {
+        let arrayForSort = [...discussions]
+        const sorted = arrayForSort.sort(
+          (a: DiscussionData, b: DiscussionData) => {
+            const comparison = this.compareDate(a.createdAt, b.createdAt);
+            return comparison;
+          }
+        );
+        return sorted.reverse();
+      } catch (err: any) {
+        throw new Error(err.message);
+      }
+    },
   },
 });
 </script>
@@ -331,7 +348,7 @@ export default defineComponent({
     <div v-if="discussionLoading">Loading...</div>
     <DiscussionList
       v-else-if="discussionResult && discussionResult.discussions"
-      :discussions="discussionResult.discussions"
+      :discussions="sortRecentFirst(discussionResult.discussions)"
       :channel-id="channelId"
       :search-input="searchInput"
       :selected-tags="selectedTags"

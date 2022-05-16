@@ -148,9 +148,6 @@ export default defineComponent({
         },
       ];
     });
-    console.log({
-      createDiscussionInput: createDiscussionInput.value,
-    });
 
     const CREATE_DISCUSSION = gql`
       mutation createDiscussion(
@@ -186,9 +183,6 @@ export default defineComponent({
         createDiscussionInput: createDiscussionInput.value,
       },
       update: (cache: any, result: any) => {
-        // const createDiscussion: any = result.data.createDiscussion;
-        console.log({ updateResult: result });
-
         const newDiscussion: DiscussionData = result.data?.createDiscussions?.discussions[0]
 
         cache.modify({
@@ -220,17 +214,16 @@ export default defineComponent({
       },
     }));
 
-    //   //   // Add a new comment section for each selected channel.
-    //   //   // createCommentSections({
-    //   //   //   variables: {
-    //   //   //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
-    //   //   //   },
-    //   //   // });
+
 
     onDone((response: any) => {
-      console.log({
-        response,
-      });
+
+        // Add a new comment section for each selected channel.
+        // createCommentSections({
+        //   variables: {
+        //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
+        //   },
+        // });
       const newDiscussionId = response.data.createDiscussions.discussions[0].id;
 
       /*

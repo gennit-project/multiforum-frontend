@@ -93,8 +93,8 @@ const getDurationObj = (startTime: string, endTime: string) => {
 // This function allows events to be
 // sorted in chronological order.
 const compareDate = (e1: any, e2: any) => {
-  const start1 = DateTime.fromISO(e1.startTime);
-  const start2 = DateTime.fromISO(e2.startTime);
+  const start1 = DateTime.fromISO(e1);
+  const start2 = DateTime.fromISO(e2);
   if (start1 < start2) {
     return -1;
   }

@@ -44,8 +44,8 @@ export default defineComponent({
       defaultUniqueName: props.currentChannelId , //props.discussion.CommentSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body,
-      createdDate: props.discussion.createdDate,
-      relativeTime: relativeTime(props.discussion.createdDate),
+      createdAt: props.discussion.createdAt,
+      relativeTime: relativeTime(props.discussion.createdAt),
       authorUsername: props.discussion.Author.username,
       // If we are already within the channel, don't show
       // links to cost channels and don't specify which
@@ -123,7 +123,7 @@ export default defineComponent({
       </div>
       <div class="col-span-1">
         <time
-          :datetime="createdDate"
+          :datetime="createdAt"
           class="
             float-right
             flex-shrink-0

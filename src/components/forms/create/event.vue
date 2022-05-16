@@ -400,12 +400,6 @@ export default defineComponent({
         errorPolicy: "all",
       });
       await createEvent()
-        .then((d) => {
-          console.log(d);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
       // {
       //   errorPolicy: "all",
       //   update(cache, { data: { events } }) {
