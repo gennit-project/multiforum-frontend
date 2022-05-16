@@ -6,11 +6,12 @@ import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { ChannelData } from "@/types/channelTypes";
 import Tag from "../buttons/Tag.vue";
 import { relativeTime } from "../../dateTimeUtils";
-const Markdown = require("vue3-markdown-it").default;
+import Comment from "../comments/Comment.vue";
+
 
 export default defineComponent({
   components: {
-    Markdown,
+    Comment,
     Tag,
   },
   setup() {
@@ -112,10 +113,12 @@ export default defineComponent({
 
     <div v-if="loading">Loading...</div>
 
-    <div class="grid md:grid-cols-12 ">
-      <div class="prose text-gray-500 md:col-span-9 sm:col-span-12">
-        <Markdown v-if="body" :source="body" linkify html />
-      </div>
+    <div class="grid md:grid-cols-12">
+      <Comment 
+        :author-username="authorUsername || 'null'"
+        :created-at="createdAt || 'null'"
+        :content="body || 'null'"
+      />
 
       <div class="md:col-span-3 mt-6">
         <h2
