@@ -154,6 +154,7 @@ export default defineComponent({
     // });
 
     const updateDiscussionInput = computed(() => {
+
       const tagConnections = selectedTags.value
         ? selectedTags.value.map((tag: string) => {
             return {
@@ -171,6 +172,20 @@ export default defineComponent({
           })
         : [];
 
+      const tagDisconnections = existingTags.value
+        .filter((tag: string) => {
+          return !selectedTags.value.includes(tag)
+        })
+        .map((tag: string) => {
+          return {
+            where: {
+              node: {
+                text: tag
+              }
+            }
+          }
+        })
+
       const channelConnections = selectedChannels.value
         ? selectedChannels.value.map((channel: string) => {
             return {
@@ -183,14 +198,30 @@ export default defineComponent({
           })
         : [];
 
+      const channelDisconnections = existingChannels.value
+        .filter((channel: string) => {
+          return !selectedChannels.value.includes(channel)
+        })
+        .map((channel: string) => {
+          return {
+            where: {
+              node: {
+                uniqueName: channel
+              }
+            }
+          }
+        })
+
       return {
         title: title.value,
         body: body.value,
         Channels: {
           connect: channelConnections,
+          disconnect: channelDisconnections
         },
         Tags: {
           connectOrCreate: tagConnections,
+          disconnect: tagDisconnections,
         },
       };
     });
@@ -238,27 +269,7 @@ export default defineComponent({
     }));
 
     onDone(() => {
-      /*
-        If the discussion is edited in the context
-        of a channel, redirect to the discussion detail page in
-        the channel.
-      */
 
-      if (channelId) {
-        router.push({
-          name: "DiscussionDetail",
-          params: {
-            channelId,
-            discussionId,
-          },
-        });
-      } else {
-        /*
-        If the discussion was created in the context
-        of the server-wide discussions page,
-        redirect to the discussion detail page in the first
-        channel that the discussion was submitted to.
-      */
         router.push({
           name: "DiscussionDetail",
           params: {
@@ -266,7 +277,6 @@ export default defineComponent({
             discussionId,
           },
         });
-      }
     });
 
     return {

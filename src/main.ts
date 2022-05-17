@@ -11,6 +11,7 @@ import VueGoogleMaps from "@fawmi/vue-google-maps";
 import '@github/markdown-toolbar-element'
 import 'highlight.js/styles/github-dark-dimmed.css'
 
+
 const VTooltipPlugin = require("v-tooltip");
 
 // Cache implementation
@@ -24,7 +25,16 @@ const cache = new InMemoryCache({
     },
     Discussion: {
       keyFields: ["id"],
+      fields: {
+        Tags: {
+          merge: false
+        },
+        Channels: {
+          merge: false
+        }
+      }
     },
+
     Event: {
       keyFields: ["id"],
     },
