@@ -42,35 +42,19 @@ export const UPDATE_DISCUSSION = gql`
 `;
 
 
-export const DELETE_DISCUSSIONS = gql`
-  mutation deleteDiscussion($id: [ID!]) {
-    deleteDiscussion(filter: { id: $id }) {
-      discussion {
-        id
-        title
-        body
-        Author {
-          username
+export const DELETE_DISCUSSION = gql`
+  mutation deleteDiscussion($id: ID!) {
+      deleteDiscussions(
+        where: {
+          id: $id
         }
-      }
+    ) {
+      nodesDeleted
+      relationshipsDeleted    
     }
   }
 `;
 
-export const DELETE_DISCUSSION = gql`
-  mutation deleteDiscussion($id: ID!) {
-    deleteDiscussion(filter: { id: [$id] }) {
-      discussion {
-        id
-        title
-        body
-        Author {
-          username
-        }
-      }
-    }
-  }
-`;
 
 export const ADD_DISCUSSION_TAG = gql`
   mutation updateDiscussion(

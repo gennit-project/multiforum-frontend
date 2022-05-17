@@ -1,46 +1,91 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import { useRoute } from "vue-router";
-import { useQuery, useResult } from "@vue/apollo-composable";
+import { useRoute, useRouter } from "vue-router";
+import { useMutation, useQuery, useResult } from "@vue/apollo-composable";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { ChannelData } from "@/types/channelTypes";
 import Tag from "../buttons/Tag.vue";
 import { relativeTime } from "../../dateTimeUtils";
 import Comment from "../comments/Comment.vue";
 import ConfirmDelete from "../ConfirmDelete.vue";
+import ErrorBanner from "../forms/ErrorBanner.vue";
 
 export default defineComponent({
   components: {
     Comment,
     ConfirmDelete,
+    ErrorBanner,
     Tag,
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const discussionId = computed(() => {
-      return route.params.discussionId;
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
     });
     const channelId = computed(() => {
       return route.params.channelId;
+    });
+
+    const {
+      mutate: deleteDiscussion,
+      error: deleteDiscussionError,
+      onDone: onDoneDeleting,
+      // @ts-ignore
+    } = useMutation(DELETE_DISCUSSION, {
+      variables: {
+        id: discussionId.value,
+      },
+      update: (cache: any) => {
+        cache.modify({
+          fields: {
+            discussions(existingDiscussionRefs = [], fieldInfo: any) {
+              const readField = fieldInfo.readField;
+
+              return existingDiscussionRefs.filter((ref) => {
+                return readField("id", ref) !== discussionId.value;
+              });
+            },
+          },
+        });
+      },
+    });
+
+    onDoneDeleting(() => {
+      if (channelId.value) {
+        router.push({
+          name: "SearchDiscussionsInChannel",
+          params: {
+            channelId: channelId.value,
+          },
+        });
+      }
     });
 
     const { result, loading } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const body = useResult(
       result,
-      '',
+      "",
       (data: any) => data.discussions[0]?.body || ""
     );
+
     const title = useResult(
       result,
-      '',
+      "",
       (data: any) => data.discussions[0]?.title || ""
     );
+
     const tags = useResult(
       result,
       [],
       (data: any) => data.discussions[0]?.Tags || []
     );
+
     const channelsExceptCurrent = useResult(result, [], (data: any) => {
       if (!data.discussions[0] || data.discussions[0].Channels.length < 2) {
         return [];
@@ -51,20 +96,24 @@ export default defineComponent({
         }) || []
       );
     });
-    const authorUsername = useResult(result, '', (data: any) => {
+
+    const authorUsername = useResult(result, "", (data: any) => {
       return data.discussions[0]?.Author?.username || "[deleted]";
     });
+
     const createdAt = useResult(
       result,
-      '',
+      "",
       (data: any) => data.discussions[0]?.createdAt || ""
     );
+
     const updatedAt = useResult(
       result,
-      '',
+      "",
       (data: any) => data.discussions[0]?.updatedAt || ""
     );
-    const confirmDeleteIsOpen = ref(false)
+
+    const confirmDeleteIsOpen = ref(false);
 
     return {
       authorUsername,
@@ -72,6 +121,8 @@ export default defineComponent({
       channelsExceptCurrent,
       confirmDeleteIsOpen,
       createdAt,
+      deleteDiscussion,
+      deleteDiscussionError,
       tags,
       title,
       channelId,
@@ -87,6 +138,11 @@ export default defineComponent({
 
 <template>
   <div class="container mx-auto">
+    <ErrorBanner
+      class="mt-2"
+      v-if="deleteDiscussionError"
+      :text="deleteDiscussionError.message"
+    />
     <div class="pb-5 border-b border-gray-200">
       <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">
         {{ title || "[Deleted]" }}
@@ -109,9 +165,13 @@ export default defineComponent({
           <router-link
             :to="`/channels/${channelId}/discussions/d/${discussionId}/edit`"
             >Edit</router-link
-          >
-        </span>&#8226; 
-        <span class="underline font-medium text-gray-900 cursor-pointer" @click="confirmDeleteIsOpen = true">Delete</span>
+          > </span
+        >&#8226;
+        <span
+          class="underline font-medium text-gray-900 cursor-pointer"
+          @click="confirmDeleteIsOpen = true"
+          >Delete</span
+        >
       </div>
     </div>
 
@@ -173,6 +233,7 @@ export default defineComponent({
     <ConfirmDelete
       :open="confirmDeleteIsOpen"
       @close="confirmDeleteIsOpen = false"
+      @delete="deleteDiscussion"
     />
   </div>
 </template>

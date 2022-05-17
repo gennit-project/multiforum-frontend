@@ -12,10 +12,10 @@ import DiscussionDetail from "./components/discussion/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
 import SiteSettings from "./components/SiteSettings.vue";
-import CreateEvent from "@/components/forms/create/event.vue";
-import EditEvent from "@/components/forms/edit/event.vue";
-import CreateDiscussion from "@/components/forms/create/discussion.vue";
-import EditDiscussion from "@/components/forms/edit/discussion.vue";
+import CreateEvent from "@/components/event/CreateEvent.vue";
+import EditEvent from "@/components/event/EditEvent.vue";
+import CreateDiscussion from "@/components/discussion/CreateDiscussion.vue";
+import EditDiscussion from "@/components/discussion/EditDiscussion.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -36,6 +36,7 @@ export const router = createRouter({
       },
     },
     {
+      name: 'SearchEvents',
       path: "/events",
       component: SearchEvents,
       props(route) {
@@ -56,6 +57,7 @@ export const router = createRouter({
       component: CreateEvent,
     },
     {
+      name: 'SearchDiscussions',
       path: "/discussions",
       component: SearchDiscussions,
       props(route) {
@@ -105,7 +107,7 @@ export const router = createRouter({
           component: DiscussionTab,
           children: [
             {
-              name: "SearchDiscussions",
+              name: "SearchDiscussionsInChannel",
               path: "",
               component: SearchDiscussions,
             },
@@ -132,7 +134,7 @@ export const router = createRouter({
           component: EventTab,
           children: [
             {
-              name: "SearchEvents",
+              name: "SearchEventsInChannel",
               path: "",
               component: SearchEvents,
             },

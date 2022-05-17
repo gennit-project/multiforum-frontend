@@ -21,8 +21,8 @@ import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import ErrorBanner from "@/components/forms/ErrorBanner.vue";
 import TextInput from "@/components/forms/TextInput.vue";
-import ChannelPicker from "../ChannelPicker.vue";
-import TagPicker from "../TagPicker.vue";
+import ChannelPicker from "@/components/forms/ChannelPicker.vue";
+import TagPicker from "@/components/forms/TagPicker.vue";
 import { apolloClient } from "@/main";
 
 export default defineComponent({

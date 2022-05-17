@@ -141,9 +141,12 @@ export default defineComponent({
                     focus:ring-red-500
                     sm:ml-3 sm:w-auto sm:text-sm
                   "
-                  @click="$emit('close')"
+                  @click="() => {
+                    $emit('close')
+                    $emit('delete')
+                  }"
                 >
-                  Deactivate
+                  Delete
                 </button>
                 <button
                   type="button"
