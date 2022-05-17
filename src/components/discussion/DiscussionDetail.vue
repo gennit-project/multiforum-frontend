@@ -199,12 +199,15 @@ export default defineComponent({
           >
             Tags
           </h2>
-          <Tag
-            v-for="tag in tags"
-            :tag="tag.text"
-            :key="tag.text"
-            :discussionId="discussionId"
-          />
+          <div class="flex flex-wrap">
+            <Tag
+              class="mb-1"
+              v-for="tag in tags"
+              :tag="tag.text"
+              :key="tag.text"
+              :discussionId="discussionId"
+            />
+          </div>
         </div>
         <div v-if="channelsExceptCurrent.length > 0" class="space-x-1">
           <h2
@@ -220,13 +223,16 @@ export default defineComponent({
           >
             Crossposted To
           </h2>
-          <router-link
-            v-for="channel in channelsExceptCurrent"
-            :key="channel.uniqueName"
-            :to="`/channels/${channel.uniqueName}/discussions/d/${discussionId}`"
-          >
-            {{ `${channel.uniqueName}` }}
-          </router-link>
+          <div class="flex flex-wrap">
+            <router-link
+              class="mb-1"
+              v-for="channel in channelsExceptCurrent"
+              :key="channel.uniqueName"
+              :to="`/channels/${channel.uniqueName}/discussions/d/${discussionId}`"
+            >
+              {{ `${channel.uniqueName}` }}
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
