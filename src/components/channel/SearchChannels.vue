@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref, PropType } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import ChannelList from "./ChannelList.vue";
 import { gql } from "@apollo/client/core";
@@ -25,7 +25,7 @@ export default defineComponent({
     SearchBar,
     TagIcon,
   },
-  setup(props) {
+  setup() {
     const links = computed(() => {
       return [
         {
@@ -37,8 +37,8 @@ export default defineComponent({
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
-    const selectedTags: Ref<Array<string>> = ref(props.routerTags);
-    const searchInput: Ref<string> = ref(props.routerSearchTerms);
+    const selectedTags: Ref<Array<string>> = ref([]);
+    const searchInput: Ref<string> = ref('');
 
     let textFilters = computed((): string => {
       if (!searchInput.value) {
@@ -215,19 +215,6 @@ export default defineComponent({
     return {
       queryChannel: [],
     };
-  },
-
-  props: {
-    routerTags: {
-      type: Array as PropType<Array<string>>,
-      default: () => {
-        return [];
-      },
-    },
-    routerSearchTerms: {
-      type: String,
-      default: "",
-    },
   },
   methods: {
     getTagOptionLabels(options: Array<TagData>) {

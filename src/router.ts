@@ -23,33 +23,11 @@ export const router = createRouter({
     {
       path: "/",
       component: SearchEvents,
-      props(route) {
-        const tagStringArray = route.query.tag?.toString().split(",");
-        const channelStringArray = route.query.channel?.toString().split(",");
-
-        return {
-          routerSearchTerms: route.query.search,
-          routerTags: route.query.tag ? tagStringArray : [],
-          routerChannels: route.query.channel ? channelStringArray : [],
-          routerView: route.query.view,
-        };
-      },
     },
     {
       name: 'SearchEvents',
       path: "/events",
       component: SearchEvents,
-      props(route) {
-        const tagStringArray = route.query.tag?.toString().split(",");
-        const channelStringArray = route.query.channel?.toString().split(",");
-
-        return {
-          routerSearchTerms: route.query.search,
-          routerTags: route.query.tag ? tagStringArray : [],
-          routerChannels: route.query.channel ? channelStringArray : [],
-          routerView: route.query.view,
-        };
-      },
     },
     {
       path: "/events/create",
@@ -60,16 +38,6 @@ export const router = createRouter({
       name: 'SearchDiscussions',
       path: "/discussions",
       component: SearchDiscussions,
-      props(route) {
-        const tagStringArray = route.query.tag?.toString().split(",");
-        const channelStringArray = route.query.channel?.toString().split(",");
-
-        return {
-          routerSearchTerms: route.query.search,
-          routerTags: route.query.tag ? tagStringArray : [],
-          routerChannels: route.query.channel ? channelStringArray : [],
-        };
-      },
     },
     {
       path: "/discussions/create",
@@ -79,14 +47,6 @@ export const router = createRouter({
     {
       path: "/channels/",
       component: SearchChannels,
-      props(route) {
-        const tagStringArray = route.query.tag?.toString().split(",");
-
-        return {
-          routerSearchTerms: route.query.search,
-          routerTags: route.query.tag ? tagStringArray : [],
-        };
-      },
     },
     {
       path: "/channels/:channelId",

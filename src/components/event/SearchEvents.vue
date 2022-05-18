@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from "vue";
+import { defineComponent, computed, ref } from "vue";
 
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
@@ -90,20 +90,20 @@ export default defineComponent({
     SearchBar,
     WeeklyTimePicker,
   },
-  setup(props) {
+  setup() {
     const route = useRoute();
 
     const channelId = computed(() => {
       return route.params.channelId;
     });
 
-    const selectedTags: Ref<Array<string>> = ref(props.routerTags);
+    const selectedTags: Ref<Array<string>> = ref([]);
 
     const getDefaultSelectedChannels = () => {
       if (channelId.value) {
         return [channelId.value];
       }
-      return props.routerChannels;
+      return [];
     };
 
     const selectedChannels: any = ref(getDefaultSelectedChannels());
@@ -183,7 +183,7 @@ export default defineComponent({
 
     let selectedLocationFilter = ref(locationFilterOptions[0].value);
 
-    let showMap = ref(props.routerView === "map" ? true : false);
+    let showMap = ref(false);
 
     let locationFilter = computed(() => {
       switch (selectedLocationFilter.value) {
@@ -668,28 +668,6 @@ export default defineComponent({
       markerMap: {} as any,
       map: {} as any,
     };
-  },
-  props: {
-    routerTags: {
-      type: Array as PropType<Array<string>>,
-      default: () => {
-        return [];
-      },
-    },
-    routerChannels: {
-      type: Array as PropType<Array<string>>,
-      default: () => {
-        return [];
-      },
-    },
-    routerSearchTerms: {
-      type: String,
-      default: "",
-    },
-    routerView: {
-      type: String,
-      default: "",
-    },
   },
   methods: {
     highlightEvent(
