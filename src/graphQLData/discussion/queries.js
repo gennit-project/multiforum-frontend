@@ -5,7 +5,7 @@ export const GET_DISCUSSION = gql`
   query getDiscussion($id: ID!) {
     discussions (
       where: { 
-        unike: $id
+        id: $id
       }
     ) {
       id
