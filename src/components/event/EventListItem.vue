@@ -124,7 +124,7 @@ export default defineComponent({
             class="ml-1 text-indigo-600 underline"
             :key="channel.uniqueName"
             v-for="channel in event?.Channels"
-            :to="`/channels/${channel.uniqueName}/events/${event?.id}`"
+            :to="`/channels/c/${channel.uniqueName}/events/${event?.id}`"
           >
             {{ channel.uniqueName }}
           </router-link>
@@ -155,7 +155,7 @@ export default defineComponent({
         <div class="text-sm">
           <router-link
             v-if="isWithinChannel && event.CommentSections[0]"
-            :to="`/channels/${defaultUniqueName}/events/${event.id}`"
+            :to="`/channels/c/${defaultUniqueName}/events/${event.id}`"
             class="font-medium text-gray-500"
           >
             {{ getCommentCount(event.CommentSections[0]) }}
@@ -166,7 +166,7 @@ export default defineComponent({
             v-else
             :key="getChannel(commentSection)"
             v-for="(commentSection, i) in event.CommentSections"
-            :to="`/channels/${getChannel(commentSection)}/events/${event.id}`"
+            :to="`/channels/c/${getChannel(commentSection)}/events/${event.id}`"
             class="font-medium"
           >
             {{ getCommentCount(commentSection) }} in

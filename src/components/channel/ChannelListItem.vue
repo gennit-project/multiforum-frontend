@@ -64,7 +64,7 @@ export default defineComponent({
     <div class="flex-1 min-w-0">
       <p class="font-large text-gray-900">
         <router-link
-          :to="`/channels/${channel.uniqueName}`"
+          :to="`/channels/c/${channel.uniqueName}`"
           class="focus:outline-none cursor-pointer"
         >
           <HighlightedSearchTerms
@@ -82,13 +82,13 @@ export default defineComponent({
       <p class="text-sm truncate">
         <router-link
           class="underline"
-          :to="`/channels/${channel.uniqueName}/discussions`"
+          :to="`/channels/c/${channel.uniqueName}/discussions`"
           >{{ channel.DiscussionsAggregate.count }} Discussions</router-link
         >,
 
         <router-link
           class="underline"
-          :to="`/channels/${channel.uniqueName}/events`"
+          :to="`/channels/c/${channel.uniqueName}/events`"
         >
           {{ channel.EventsAggregate.count }} Events</router-link
         >

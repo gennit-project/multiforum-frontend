@@ -174,7 +174,7 @@ export default defineComponent({
         <span>
           &#8226;
           <router-link
-            :to="`/channels/${channelId}/discussions/d/${discussionId}/edit`"
+            :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
             >Edit</router-link
           > </span
         >&#8226;

@@ -34,35 +34,35 @@ export default defineComponent({
         },
         {
           label: channelId,
-          path: `channels/${channelId}`,
+          path: `channels/c/${channelId}`,
         },
       ];
 
       if (route.path.includes("events")) {
         channelBreadcrumbs.push({
           label: "Events",
-          path: `channels/${channelId}/events`,
+          path: `channels/c/${channelId}/events`,
         });
       }
 
       if (route.path.includes("discussions")) {
         channelBreadcrumbs.push({
           label: "Discussions",
-          path: `channels/${channelId}/discussions`,
+          path: `channels/c/${channelId}/discussions`,
         });
       }
 
       if (discussionId) {
         channelBreadcrumbs.push({
           label: "Discussion",
-          path: `channels/${channelId}/discussions/d/${discussionId}`,
+          path: `channels/c/${channelId}/discussions/d/${discussionId}`,
         });
       }
 
       if (eventId) {
         channelBreadcrumbs.push({
           label: "Event",
-          path: `channels/${channelId}/events/${eventId}`,
+          path: `channels/c/${channelId}/events/${eventId}`,
         });
       }
       return channelBreadcrumbs;

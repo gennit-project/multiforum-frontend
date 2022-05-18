@@ -162,7 +162,7 @@ export default defineComponent({
 
     <!-- <div v-if="!eventData">
       <p>Could not find the event.</p>
-      <router-link :to="`/channels/${channelId}/events`">
+      <router-link :to="`/channels/c/${channelId}/events`">
         <p>
           <i className="fas fa-arrow-left"></i> Go back to
           {{ `c/${channelId}/events` }}

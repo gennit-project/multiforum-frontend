@@ -19,7 +19,7 @@ export default defineComponent({
     const { result, loading } = useQuery(GET_CHANNEL, { uniqueName: channelId });
 
     const channelDescription = useResult(result, '', () => {
-      return result.value.channels[0].uniqueName
+      return result.value.channels[0].description
     })
 
     const tags = useResult(result, [], () => {

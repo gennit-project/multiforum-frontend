@@ -10,6 +10,7 @@ import SearchBar from "@/components/forms/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
+import CreateButton from "@/components/buttons/CreateButton.vue";
 import { getTagLabel } from "@/components/forms/utils";
 import { useRoute } from "vue-router";
 
@@ -20,6 +21,7 @@ interface Ref<T> {
 export default defineComponent({
   components: {
     ChannelList,
+    CreateButton,
     FilterChip,
     TagPicker,
     SearchBar,
@@ -159,6 +161,7 @@ export default defineComponent({
   data() {
     return {
       queryChannel: [],
+      createChannelPath: "/channels/create"
     };
   },
   methods: {
@@ -200,6 +203,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
+      <CreateButton :to="createChannelPath" :label="'Create Channel'" />
     </div>
     <div v-if="channelLoading">Loading...</div>
     <ChannelList

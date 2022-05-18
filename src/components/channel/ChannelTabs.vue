@@ -18,9 +18,9 @@ export default defineComponent({
     return {
       channelId,
       tabRoutes: {
-        discussions: `/channels/${channelId.value}/discussions/`,
-        events: `/channels/${channelId.value}/events`,
-        about: `/channels/${channelId.value}/about`
+        discussions: `/channels/c/${channelId.value}/discussions/`,
+        events: `/channels/c/${channelId.value}/events`,
+        about: `/channels/c/${channelId.value}/about`
       } as any,
     };
   },
