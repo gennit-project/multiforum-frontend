@@ -137,7 +137,7 @@ export default defineComponent({
         <p class="float-right text-sm font-medium text-gray-500 truncate">
           Posted by
           <router-link class="text-gray-800" :to="`/u/${authorUsername}`">
-            {{ `u/${authorUsername}` }}
+            {{ `@${authorUsername}` }}
           </router-link>
         </p>
       </div>

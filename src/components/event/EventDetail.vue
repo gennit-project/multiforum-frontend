@@ -203,7 +203,7 @@ export default defineComponent({
               className='organizerLink'
               to={`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
             >
-              {`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
+              {`@${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
             </Link> -->
               <!-- {isAuthenticated && isCreatorOfEvent() ? (
               <>

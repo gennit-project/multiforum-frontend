@@ -12,6 +12,9 @@ export const GET_CHANNEL = gql`
       Tags {
         text
       }
+      Admins {
+        username
+      }
     }
   }
 `;
