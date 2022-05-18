@@ -191,6 +191,6 @@ export default defineComponent({
 </template>
 <style>
 .highlighted {
-  background-color: #feff00;
+  background-color: #f9f95d;
 }
 </style>
