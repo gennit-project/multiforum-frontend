@@ -56,47 +56,7 @@ export default defineComponent({
     const selectedChannels: any = ref(getDefaultSelectedChannels());
     const searchInput: Ref<string> = ref(props.routerSearchTerms);
 
-    let textFilters = computed((): string => {
-      if (!searchInput.value) {
-        return "";
-      }
-      let textFilterString = `, filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}}`;
-      return textFilterString;
-    });
 
-    let channelFilter = computed(() => {
-      if (selectedChannels.value.length === 1) {
-        return ` ChannelsConnection: {
-                  node: {
-                    uniqueName_MATCHES: "(?i)${selectedChannels.value[0]}"
-                  }
-                }`;
-      }
-
-      if (selectedChannels.value.length > 1) {
-        const channelFilterString = selectedChannels.value
-          .map((channel: string) => {
-            return `{
-						uniqueName_MATCHES: "(?i${channel}"
-					},`;
-          })
-          .join("");
-
-        return `ChannelsConnection: {
-                node: {
-                  OR: [${channelFilterString}]
-                }
-              }`;
-      }
-
-      return "";
-    });
-
-    let tagFilter = computed(() => {
-      return `(filter: { text: { anyofterms: "${selectedTags.value.join(
-        " "
-      )}" }})`;
-    });
     const updateRouterQueryParams = () => {
       const path = channelId.value
         ? `/channels/${channelId.value}/discussions`
@@ -124,67 +84,81 @@ export default defineComponent({
       updateRouterQueryParams();
     };
 
-    let discussionQueryString = computed(() => {
-      return `
-        query getDiscussions {
-          discussions  (where: {
-            ${selectedChannels.value.length > 0 ? channelFilter.value : ""}
-            ${selectedTags.value.length > 0 ? tagFilter.value : ""}
-          }){
+    const discussionWhere = computed(() => {
+      return {
+        Tags: {
+          OR: selectedTags.value.map((tag: string) => {
+            return { text: tag };
+          }),
+        },
+        Channels: {
+          OR: selectedChannels.value.map((channel: string) => {
+            return { uniqueName: channel };
+          }),
+        },
+        // filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}}`;
+      };
+    });
+
+    const discussionOptions = {
+        sort: {
+          createdAt: "DESC",
+        },
+      }
+
+    let GET_DISCUSSIONS = gql`
+      query getDiscussions(
+        $where: DiscussionWhere
+        $options: DiscussionOptions
+      ) {
+        discussions(where: $where, options: $options) {
+          id
+          Channels {
+            uniqueName
+          }
+          title
+          body
+          createdAt
+          Author {
+            username
+          }
+          Tags {
+            text
+          }
+          ChannelsAggregate {
+            count
+          }
+          CommentSections {
             id
-            Channels {
-              uniqueName
-            }
-            title
-            body
-            createdAt
-            Author {
-              username
-            }
-            Tags {
-              text
-            }
-            ChannelsAggregate {
-              count
-            }
-            CommentSections {
-              id
-              __typename
-              OriginalPost {
-                ... on Discussion {
-                  id
-                  title
-                }
+            __typename
+            OriginalPost {
+              ... on Discussion {
+                id
+                title
               }
             }
           }
         }
-        `;
-    });
-
-    let discussionQuery = computed(() => {
-      try {
-        return gql`
-          ${discussionQueryString.value}
-        `;
-      } catch (err) {
-        throw new Error(`Invalid query string: ${discussionQueryString.value}`);
       }
-    });
+    `;
 
     const {
       result: discussionResult,
       loading: discussionLoading,
       refetch: refetchDiscussions,
       fetchMore,
-    } = useQuery(discussionQuery, { first: 20, offset: 0 });
+    } = useQuery(GET_DISCUSSIONS, {
+      where: discussionWhere,
+      options: discussionOptions,
+    });
 
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: discussionResult.value.discussions.length,
+          where: discussionWhere,
+          options: discussionOptions
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (fetchMoreResult.discussions.length === 0) {
@@ -224,7 +198,9 @@ export default defineComponent({
       return getTagLabel(selectedTags.value);
     });
 
-    const createDiscussionPath = channelId.value ? `/channels/${channelId.value}/discussions/create` : '/discussions/create'
+    const createDiscussionPath = channelId.value
+      ? `/channels/${channelId.value}/discussions/create`
+      : "/discussions/create";
 
     return {
       channelId,
@@ -235,8 +211,6 @@ export default defineComponent({
       createDiscussionPath,
       defaultLabels,
       discussionLoading,
-      discussionQuery,
-      discussionQueryString,
       discussionResult,
       loadMore,
       openModal,
@@ -252,7 +226,6 @@ export default defineComponent({
       selectedTags,
       tagLabel,
       tagOptions,
-      textFilters,
     };
   },
 
@@ -289,7 +262,7 @@ export default defineComponent({
     },
     sortRecentFirst(discussions: DiscussionData[]) {
       try {
-        let arrayForSort = [...discussions]
+        let arrayForSort = [...discussions];
         const sorted = arrayForSort.sort(
           (a: DiscussionData, b: DiscussionData) => {
             const comparison = this.compareDate(a.createdAt, b.createdAt);
@@ -323,9 +296,8 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <ChannelPicker
-            v-model="selectedChannels"
             :channel-options="getChannelOptionLabels(channelOptions.channels)"
-            :selected-channels="selectedChannels"
+            :initial-value="selectedChannels"
             @setSelectedChannels="setSelectedChannels"
           />
         </template>
@@ -341,7 +313,7 @@ export default defineComponent({
         <template v-slot:content>
           <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
-            :selected-tags="selectedTags"
+            :initial-value="selectedTags"
             @setSelectedTags="setSelectedTags"
           />
         </template>

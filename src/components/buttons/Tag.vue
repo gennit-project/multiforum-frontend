@@ -35,8 +35,3 @@ export default defineComponent({
   >
 </template>
 
-<style>
-.highlighted {
-  background-color: #feff00;
-}
-</style>
