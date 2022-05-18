@@ -11,14 +11,13 @@ export default defineComponent({
     const caseInsensitiveTag = computed(() => {
       return props.tag.toLowerCase();
     });
-    const tagIsHighlightedByFilter =
-      caseInsensitiveTags.value.indexOf(caseInsensitiveTag.value) !== -1
-        ? true
-        : false;
+    const tagIsHighlightedByFilter = computed(() => {
+      return caseInsensitiveTags.value.includes(caseInsensitiveTag.value)
+    })
     const tagIsHighlightedByMouse = ref(false)
 
     const tagIsHighlighted = computed(() => {
-      return tagIsHighlightedByFilter || tagIsHighlightedByMouse.value
+      return tagIsHighlightedByFilter.value || tagIsHighlightedByMouse.value
     })
 
     return { 

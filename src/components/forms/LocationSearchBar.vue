@@ -13,10 +13,6 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    routerSearchTerms: {
-      type: String,
-      default: "",
-    },
     fullWidth: {
       type: Boolean,
       default: false,

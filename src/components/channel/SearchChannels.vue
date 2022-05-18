@@ -6,7 +6,6 @@ import { gql } from "@apollo/client/core";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
-import { router } from "@/router";
 import SearchBar from "@/components/forms/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
@@ -40,99 +39,49 @@ export default defineComponent({
     const selectedTags: Ref<Array<string>> = ref([]);
     const searchInput: Ref<string> = ref('');
 
-    let textFilters = computed((): string => {
-      if (!searchInput.value) {
-        return "";
-      }
-      let textFilterString = `, filter: { 
-        name: { 
-          alloftext: "${searchInput.value}"
-        }, 
-        or: { 
-          uniqueName: { 
-            alloftext: "${searchInput.value}"
-          }
-        }, }`;
-      return textFilterString;
-    });
-
-    let needsCascade = computed(() => {
-      return selectedTags.value.length > 0;
-    });
-
-    let cascadeText = computed(() => {
-      // Adding parameters to @cascade makes it so that
-      // even when we are filtering by tags, we can still see the
-      // channels that don't have all the fields that we want. Normally,
-      // @cascade would filter out all items that don't have
-      // all of the described output fields.
-      // If we are filtering by channel but not by tag,
-      // we include only the channel field in the cascade parameters.
-      // If the tags parameter was included, channels in the
-      // selected channel would be excluded for not having tags.
-      return selectedTags.value.length > 0 ? `@cascade(fields: ["Tags"])` : "";
-    });
-
-    let tagFilter = computed(() => {
-      return `(filter: { text: { anyofterms: "${selectedTags.value.join(
-        " "
-      )}" }})`;
-    });
-    const updateRouterQueryParams = () => {
-      router.push({
-        path: "/channels",
-        query: {
-          search: searchInput.value,
-          tag: selectedTags.value,
-        },
-      });
-    };
-
     const setSearchInput = (input: string) => {
       searchInput.value = input;
-      updateRouterQueryParams();
     };
     const setSelectedTags = (tag: Array<string>) => {
       selectedTags.value = tag;
-      updateRouterQueryParams();
     };
-    let channelQueryString = computed(() => {
-      return `
-        query queryChannel ($first: Int, $offset: Int){
-          queryChannel (
-            offset: $offset, 
-            first: $first
-            ${textFilters.value}
-          ) ${needsCascade.value ? cascadeText.value : ""}{
-            name
-            uniqueName
-            description
-            Admins {
-              username
-            }
-            DiscussionsAggregate {
-              count
-            }
-            EventsAggregate {
-              count
-            }
-            Tags ${selectedTags.value.length > 0 ? tagFilter.value : ""}{
-              text
-            }
+    
+    const GET_CHANNELS = gql`
+      query getChannels( $where: ChannelWhere ){
+        channels( where: $where ){
+          uniqueName
+          description
+          Tags {
+            text
+          }
+          EventsAggregate {
+            count
+          }
+          DiscussionsAggregate {
+            count
           }
         }
-        `;
+      }
+    `
+
+    const channelWhere = computed(() => {
+      return {
+        Tags: {
+          OR: selectedTags.value.map((tag: string) => {
+            return { text: tag };
+          }),
+        },
+        OR: [
+          {
+            uniqueName_CONTAINS: searchInput.value
+          },
+          {
+            description_CONTAINS: searchInput.value
+          }
+        ]
+      };
     });
 
-    let channelQuery = computed(() => {
-      try {
-        return gql`
-          ${channelQueryString.value}
-        `;
-      } catch (err) {
-        throw new Error(`Invalid query string: ${channelQueryString.value}`);
-      }
-    });
 
     const {
       result: channelResult,
@@ -140,7 +89,7 @@ export default defineComponent({
       refetch: refetchChannels,
       fetchMore,
       error,
-    } = useQuery(channelQuery, { first: 20, offset: 0 });
+    } = useQuery(GET_CHANNELS, { where: channelWhere });
 
     if (error.value) {
       alert(JSON.stringify(error.value));
@@ -150,9 +99,6 @@ export default defineComponent({
 
     const loadMore = () => {
       fetchMore({
-        variables: {
-          offset: channelResult.value.queryChannel.length,
-        },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (fetchMoreResult.queryChannel.length === 0) {
             reachedEndOfResults.value = true;
@@ -191,8 +137,6 @@ export default defineComponent({
     return {
       closeModal,
       channelLoading,
-      channelQuery,
-      channelQueryString,
       channelResult,
       defaultLabels,
       links,
@@ -208,7 +152,6 @@ export default defineComponent({
       selectedTags,
       tagLabel,
       tagOptions,
-      textFilters,
     };
   },
   data() {
@@ -237,7 +180,6 @@ export default defineComponent({
   <div class="mx-auto max-w-4xl">
     <div class="items-center inline-flex mt-1 space-x-2 px-8">
       <SearchBar
-        :router-search-terms="routerSearchTerms"
         :search-placeholder="'Search channels'"
         @updateSearchInput="updateSearchResult"
       />
@@ -251,7 +193,7 @@ export default defineComponent({
         <template v-slot:content>
           <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
-            :selected-tags="selectedTags"
+            :initial-value="selectedTags"
             @setSelectedTags="setSelectedTags"
           />
         </template>
@@ -260,8 +202,8 @@ export default defineComponent({
     <div v-if="channelLoading">Loading...</div>
     <ChannelList
       class="px-8 flex-1 text-xl font-bold"
-      v-else-if="channelResult && channelResult.queryChannel"
-      :channels="channelResult.queryChannel"
+      v-else-if="channelResult && channelResult.channels"
+      :channels="channelResult.channels"
       :search-input="searchInput"
       :selected-tags="selectedTags"
       @filterByTag="filterByTag"

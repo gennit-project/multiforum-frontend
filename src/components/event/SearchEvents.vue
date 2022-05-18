@@ -1036,7 +1036,6 @@ export default defineComponent({
   <div class="container">
     <div class="items-center mt-2 space-x-2">
       <LocationSearchBar
-        :router-search-terms="routerSearchTerms"
         :search-placeholder="'Location'"
         :reference-point-address-name="referencePointName"
         @updateLocationInput="updateLocationInput"
@@ -1155,7 +1154,6 @@ export default defineComponent({
             >
 
             <SearchBar
-              :router-search-terms="routerSearchTerms"
               :search-placeholder="'Search'"
               @updateSearchInput="updateSearchResult"
             />

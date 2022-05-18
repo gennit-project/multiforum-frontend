@@ -6,16 +6,12 @@ interface Ref<T> {
 }
 
 export default defineComponent({
-  setup(props) {
-    const input: Ref<string> = ref(props.routerSearchTerms);
+  setup() {
+    const input: Ref<string> = ref('');
     return { input };
   },
   props: {
     searchPlaceholder: {
-      type: String,
-      default: "",
-    },
-    routerSearchTerms: {
       type: String,
       default: "",
     },
