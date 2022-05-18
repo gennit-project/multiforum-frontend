@@ -50,6 +50,11 @@ export const router = createRouter({
       component: CreateDiscussion,
     },
     {
+      name: 'FilterChannelsByTag',
+      path: "/channels/tag/:tag",
+      component: SearchChannels
+    },
+    {
       path: "/channels/",
       component: SearchChannels,
     },

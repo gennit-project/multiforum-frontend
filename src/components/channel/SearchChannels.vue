@@ -11,6 +11,7 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { getTagLabel } from "@/components/forms/utils";
+import { useRoute } from "vue-router";
 
 interface Ref<T> {
   value: T;
@@ -25,6 +26,7 @@ export default defineComponent({
     TagIcon,
   },
   setup() {
+    const route = useRoute()
     const links = computed(() => {
       return [
         {
@@ -36,7 +38,7 @@ export default defineComponent({
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
-    const selectedTags: Ref<Array<string>> = ref([]);
+    const selectedTags: Ref<Array<string>> = ref(route.params.tag && typeof route.params.tag === 'string' ? [route.params.tag] : []);
     const searchInput: Ref<string> = ref('');
 
     const setSearchInput = (input: string) => {
