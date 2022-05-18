@@ -81,12 +81,12 @@ export default defineComponent({
           <p class="line-clamp-2 text-sm font-medium text-gray-500 space-x-1">
             <HighlightedSearchTerms :text="body" :search-input="searchInput" />
             <Tag
-            :highlighted-tags="selectedTags"
-            :key="tag"
-            v-for="tag in tags"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
-          />
+              :highlighted-tags="selectedTags"
+              :key="tag"
+              v-for="tag in tags"
+              :tag="tag"
+              @click="$emit('filterByTag', tag)"
+            />
           </p>
 
           <div class="text-sm">

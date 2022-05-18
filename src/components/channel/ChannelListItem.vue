@@ -56,10 +56,10 @@ export default defineComponent({
     "
   >
     <div class="flex-shrink-0">
-          <ProfileAvatar
+    <ProfileAvatar
       :username="channel.uniqueName"
       colorType="pastel"
-    ></ProfileAvatar>
+    />
     </div>
     <div class="flex-1 min-w-0">
       <p class="font-large text-gray-900">

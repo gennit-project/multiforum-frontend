@@ -58,7 +58,7 @@ export const router = createRouter({
       name: "Channel",
       component: Channel,
       redirect: {
-        name: "Channel.about",
+        name: "About",
       },
       children: [
         {
