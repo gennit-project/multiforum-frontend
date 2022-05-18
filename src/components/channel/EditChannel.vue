@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
   useMutation,
-  // useResult,
+  useResult,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
@@ -17,6 +17,8 @@ import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
+import ErrorBanner from "../forms/ErrorBanner.vue";
+import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { apolloClient } from "@/main";
 import { ChannelData } from "@/types/channelTypes";
 
@@ -24,6 +26,7 @@ export default defineComponent({
   name: "CreateChannel",
   components: {
     CancelButton,
+    ErrorBanner,
     Form,
     FormRow,
     FormTitle,
@@ -41,26 +44,42 @@ export default defineComponent({
 
     const channelId: string | string[] = route.params.channelId;
 
-    const uniqueName = ref("");
-    const description = ref("");
-    const selectedChannels = ref(channelId ? [channelId] : []);
-    const selectedTags = ref([]);
+    const { result, loading: channelLoading } = useQuery(GET_CHANNEL, {
+      uniqueName: channelId,
+    });
+
+    const existingDescription = useResult(result, "", (data: any) => {
+      console.log({ data });
+      return data.channels[0]?.description;
+    });
+
+    const existingTags = useResult(result, [], (data: any) => {
+      if (data.channels[0]?.Tags) {
+        return data.channels[0].Tags.map((tag: TagData) => {
+          return tag.text;
+        });
+      }
+      return [];
+    });
+
+    const uniqueName = ref(
+      channelId && typeof channelId === "string" ? channelId : ""
+    );
+    const description = ref(existingDescription.value);
+    const selectedTags = ref(existingTags.value);
 
     const username = "cluse";
 
-    const GET_CHANNEL_NAMES = gql`
-      query getChannelNames {
-        channels {
-          uniqueName
-        }
-      }
-    `;
+    watch(result, (value) => {
+      const channelData = value.channels[0];
 
-    const {
-      loading: channelLoading,
-      error: channelError,
-      result: channelData,
-    } = useQuery(GET_CHANNEL_NAMES);
+      if (channelData) {
+        description.value = channelData.description;
+        selectedTags.value = channelData.Tags.map((tag: TagData) => {
+          return tag.text;
+        });
+      }
+    });
 
     const GET_TAGS = gql`
       query {
@@ -76,7 +95,7 @@ export default defineComponent({
       result: tagsData,
     } = useQuery(GET_TAGS);
 
-    const createChannelInput = computed(() => {
+    const channelUpdateInput = computed(() => {
       const tagConnections = selectedTags.value.map((tag: string) => {
         return {
           onCreate: {
@@ -92,29 +111,44 @@ export default defineComponent({
         };
       });
 
-      return [
-        {
-          uniqueName: uniqueName.value,
-          description: description.value,
-          Tags: {
-            connectOrCreate: tagConnections,
-          },
-          Admins: {
-            connect: {
-              where: {
-                node: {
-                  username: "cluse",
-                },
+      const tagDisconnections = existingTags.value
+        .filter((tag: string) => {
+          return !selectedTags.value.includes(tag);
+        })
+        .map((tag: string) => {
+          return {
+            where: {
+              node: {
+                text: tag,
+              },
+            },
+          };
+        });
+
+      return {
+        description: description.value,
+        Tags: {
+          connectOrCreate: tagConnections,
+          disconnect: tagDisconnections,
+        },
+        Admins: {
+          connect: {
+            where: {
+              node: {
+                username: "cluse",
               },
             },
           },
         },
-      ];
+      };
     });
 
-    const CREATE_CHANNEL = gql`
-      mutation createChannel($createChannelInput: [ChannelCreateInput!]!) {
-        createChannels(input: $createChannelInput) {
+    const UPDATE_CHANNEL = gql`
+      mutation updateChannel(
+        $where: ChannelWhere
+        $update: ChannelUpdateInput
+      ) {
+        updateChannels(where: $where, update: $update) {
           channels {
             uniqueName
             description
@@ -131,68 +165,37 @@ export default defineComponent({
     `;
 
     const {
-      mutate: createChannel,
-      error: createChannelError,
+      mutate: updateChannel,
+      error: updateChannelError,
       onDone,
-    } = useMutation(CREATE_CHANNEL, () => ({
+    } = useMutation(UPDATE_CHANNEL, () => ({
       variables: {
-        createChannelInput: createChannelInput.value,
-      },
-      update: (cache: any, result: any) => {
-        const newChannel: ChannelData =
-          result.data?.createChannels?.channels[0];
-
-        cache.modify({
-          fields: {
-            channels(existingChannelRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField;
-              const newChannelRef = cache.writeFragment({
-                data: newChannel,
-                fragment: gql`
-                  fragment NewChannel on Channels {
-                    uniqueName
-                  }
-                `,
-              });
-
-              // Quick safety check - if the new channel is already
-              // present in the cache, we don't need to add it again.
-              if (
-                existingChannelRefs.some(
-                  (ref: any) =>
-                    readField("uniqueName", ref) === newChannel.uniqueName
-                )
-              ) {
-                return existingChannelRefs;
-              }
-              return [newChannelRef, ...existingChannelRefs];
-            },
-          },
-        });
+        where: {
+          uniqueName: channelId,
+        },
+        update: channelUpdateInput.value,
       },
     }));
 
     onDone((response: any) => {
-      const newChannelId = response.data.createChannels.channels[0].uniqueName;
+      const channelId = response.data.updateChannels.channels[0].uniqueName;
 
       router.push({
         name: "Channel",
         params: {
-          channelId: newChannelId,
+          channelId: channelId,
         },
       });
     });
 
     return {
       channelId,
-      channelData,
-      channelError,
+      updateChannelError,
       channelLoading,
-      createChannel,
-      createChannelError,
-      createChannelInput,
+      updateChannel,
       description,
-      selectedChannels,
+      existingDescription,
+      existingTags,
       selectedTags,
       tagsData,
       tagsLoading,
@@ -200,15 +203,6 @@ export default defineComponent({
       uniqueName,
       username,
     };
-  },
-  computed: {
-    changesRequired() {
-      // We do these checks:
-      // - UniqueName is included
-
-      const needsChanges = !this.uniqueName;
-      return needsChanges;
-    },
   },
   methods: {
     getChannelOptionLabels(options: Array<ChannelData>) {
@@ -220,11 +214,22 @@ export default defineComponent({
     updateDescription(updated: string) {
       this.description = updated;
     },
-    updateText(updated: string) {
+    updateChannelName(updated: string) {
       this.uniqueName = updated;
     },
+    setSelectedTags(updated: string[]) {
+      this.selectedTags = updated;
+    },
     async submit() {
-      this.createChannel();
+      this.updateChannel();
+    },
+    cancel() {
+      this.router.push({
+        name: "Channel",
+        params: {
+          channelId: this.channelId,
+        },
+      });
     },
   },
 });
@@ -232,25 +237,32 @@ export default defineComponent({
 <template>
   <div>
     <Form>
+      <ErrorBanner
+        class="mt-2"
+        v-if="updateChannelError"
+        :text="updateChannelError.message"
+      />
       <div v-if="channelLoading || tagsLoading">Loading...</div>
-      <div v-if="createChannelError">{{ createChannelError }}</div>
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+
+      <div v-else class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div>
-          <FormTitle>Create Channel</FormTitle>
+          <FormTitle v-if="channelId">Edit Channel</FormTitle>
+          <FormTitle v-else>Create Channel</FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Unique Name'">
               <TextInput
                 :initial-value="uniqueName"
                 :full-width="true"
-                @update="updateText"
+                :disabled="!!channelId"
+                @update="updateChannelName"
               />
             </FormRow>
 
             <FormRow :section-title="'Description'">
               <TextEditor
                 class="mb-3"
-                :initial-value="description"
+                :initial-value="existingDescription"
                 @update="updateDescription"
               />
             </FormRow>
@@ -259,9 +271,9 @@ export default defineComponent({
               <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
-                v-model="selectedTags"
+                :initial-value="existingTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
-                :selected-tags="selectedTags"
+                @setSelectedTags="setSelectedTags"
               />
             </FormRow>
           </div>
@@ -270,18 +282,11 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton />
-          <SaveButton @click.prevent="submit" :disabled="changesRequired" />
+          <CancelButton @click="cancel" />
+          <SaveButton @click.prevent="submit" />
         </div>
       </div>
     </Form>
-
-    <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-    <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
   </div>
 </template>
 

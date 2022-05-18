@@ -16,7 +16,8 @@ import CreateEvent from "@/components/event/CreateEvent.vue";
 import EditEvent from "@/components/event/EditEvent.vue";
 import CreateDiscussion from "@/components/discussion/CreateDiscussion.vue";
 import EditDiscussion from "@/components/discussion/EditDiscussion.vue";
-import CreateChannel from "@/components/channel/CreateChannel.vue"
+import CreateChannel from "@/components/channel/CreateChannel.vue";
+import EditChannel from "@/components/channel/EditChannel.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -76,6 +77,11 @@ export const router = createRouter({
           name: "About",
           path: "about",
           component: About,
+        },
+        {
+          name: "EditChannel",
+          path: "edit",
+          component: EditChannel
         },
         {
           name: "Discussions",

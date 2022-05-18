@@ -4,6 +4,10 @@ import { defineComponent } from "vue";
 export default defineComponent({
   setup() {},
   props: {
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     initialValue: {
       type: String,
       default: "",
@@ -26,7 +30,9 @@ export default defineComponent({
       v-model="text"
       @keyup="$emit('update', text)"
       :placeholder="placeholder"
+      disabled
       type="text"
+      :class="[disabled ? 'text-gray-600 bg-gray-100 bg-clip-padding' : '']"
       class="
         flex-1
         block

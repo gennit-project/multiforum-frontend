@@ -22,6 +22,11 @@ const cache = new InMemoryCache({
     },
     Channel: {
       keyFields: ["uniqueName"],
+      fields: {
+        Tags: {
+          merge: false
+        }
+      }
     },
     Discussion: {
       keyFields: ["id"],
@@ -34,7 +39,6 @@ const cache = new InMemoryCache({
         }
       }
     },
-
     Event: {
       keyFields: ["id"],
     },

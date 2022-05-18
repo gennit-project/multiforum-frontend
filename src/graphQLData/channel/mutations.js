@@ -1,34 +1,5 @@
 import { gql } from "@apollo/client/core";
 
-export const ADD_CHANNEL = gql`
-  mutation addChannel(
-    $url: String!
-    $name: String!
-    $description: String
-    $username: String!
-  ) {
-    addChannel(
-      input: [
-        {
-          description: $description
-          name: $name
-          url: $url
-          Posters: [{ username: $username }]
-        }
-      ]
-    ) {
-      channel {
-        description
-        name
-        url
-        Posters {
-          username
-        }
-      }
-    }
-  }
-`;
-
 
 export const DELETE_CHANNEL = gql`
   mutation deleteChannel($url: String!) {

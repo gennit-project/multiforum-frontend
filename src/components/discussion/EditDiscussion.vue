@@ -91,6 +91,8 @@ export default defineComponent({
     const selectedTags = ref(existingTags.value);
 
     watch(result, value => {
+      // Used so that some form validation can occur as
+      // soon as the page is loaded
       const discussionData = value.discussions[0]
 
       if (discussionData) {
@@ -343,10 +345,10 @@ export default defineComponent({
     updateTitle(updated: string) {
       this.title = updated;
     },
-    setSelectedChannels(updated: string) {
+    setSelectedChannels(updated: string[]) {
       this.selectedChannels = updated;
     },
-    setSelectedTags(updated: string) {
+    setSelectedTags(updated: string[]) {
       this.selectedTags = updated;
     },
     async submit() {
