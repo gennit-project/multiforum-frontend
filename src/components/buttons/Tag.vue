@@ -1,17 +1,15 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType } from "vue";
 
 export default defineComponent({
-  setup(props) {
-    const tagIsHighlighted = computed(() => {
+  data(props) {
       const caseInsensitiveTags = props.highlightedTags.map((tag: String) => {
         return tag.toLowerCase();
       });
       const caseInsensitiveTag = props.tag.toLowerCase();
-      return caseInsensitiveTags.indexOf(caseInsensitiveTag) !== -1
+      const tagIsHighlighted = caseInsensitiveTags.indexOf(caseInsensitiveTag) !== -1
         ? true
         : false;
-    });
 
     return { tagIsHighlighted };
   },
@@ -30,8 +28,10 @@ export default defineComponent({
 <template>
   <span
     :class="[tagIsHighlighted ? 'highlighted' : 'bg-gray-200 ']"
+    @mouseenter="tagIsHighlighted = true"
+    @mouseleave="tagIsHighlighted = false"
     class="rounded-full px-2 py-1 mr-1 text-xs font-medium text-gray-900 cursor-pointer"
-    >{{ tag }}</span
-  >
+    >{{ tag }}
+  </span>
 </template>
 

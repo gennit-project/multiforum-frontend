@@ -130,9 +130,20 @@ export default defineComponent({
       loading,
       relativeTime,
       result,
+      router,
       updatedAt,
     };
   },
+  methods: {
+    filterDiscussionsByTag(tag: string) {
+      this.router.push({
+        name: "FilterDiscussionsByTag",
+        params: {
+          tag
+        }
+      })
+    }
+  }
 });
 </script>
 
@@ -206,6 +217,7 @@ export default defineComponent({
               :tag="tag.text"
               :key="tag.text"
               :discussionId="discussionId"
+              @click="filterDiscussionsByTag(tag.text)"
             />
           </div>
         </div>

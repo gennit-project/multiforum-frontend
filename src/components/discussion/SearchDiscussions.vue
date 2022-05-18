@@ -42,7 +42,7 @@ export default defineComponent({
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
-    const selectedTags: Ref<Array<string>> = ref([]);
+    const selectedTags: Ref<Array<string>> = ref(route.params.tag && typeof route.params.tag === 'string' ? [route.params.tag] : []);
 
     const getDefaultSelectedChannels = () => {
       if (channelId.value) {

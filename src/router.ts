@@ -40,6 +40,11 @@ export const router = createRouter({
       component: SearchDiscussions,
     },
     {
+      name: 'FilterDiscussionsByTag',
+      path: "/discussions/tag/:tag",
+      component: SearchDiscussions
+    },
+    {
       path: "/discussions/create",
       name: "CreateDiscussion",
       component: CreateDiscussion,
