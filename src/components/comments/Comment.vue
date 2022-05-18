@@ -34,7 +34,6 @@ export default defineComponent({
 <template>
   <div
     class="
-      
       text-gray-500
       md:col-span-9
       sm:col-span-12

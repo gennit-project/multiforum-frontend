@@ -5,7 +5,7 @@ export const GET_DISCUSSION = gql`
   query getDiscussion($id: ID!) {
     discussions (
       where: { 
-        id: $id
+        unike: $id
       }
     ) {
       id
@@ -34,8 +34,6 @@ export const GET_DISCUSSION = gql`
       }
     }
   }
-
-  
 `;
 
 // Get all discussion IDs in channel

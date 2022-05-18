@@ -1,17 +1,14 @@
 import { gql } from '@apollo/client/core';
 
 export const GET_CHANNEL = gql`
-  query getChannel($url: String!) {
-    getChannel(url: $url) {
-      name
-      url
+  query getDiscussion($uniqueName: String!) {
+    channels (
+      where: { 
+        uniqueName: $uniqueName
+      }
+    ) {
+      uniqueName
       description
-      Posters {
-        username
-      }
-      Moderators {
-        username
-      }
       Tags {
         text
       }
