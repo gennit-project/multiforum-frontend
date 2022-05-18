@@ -77,7 +77,14 @@ export default defineComponent({
             return { uniqueName: channel };
           }),
         },
-        // filter: { title: { alloftext: "${searchInput.value}"}, or: { body: { alloftext: "${searchInput.value}"}}}`;
+        OR: [
+          {
+            title_CONTAINS: searchInput.value
+          },
+          {
+            body_CONTAINS: searchInput.value
+          }
+        ]
       };
     });
 
