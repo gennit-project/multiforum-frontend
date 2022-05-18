@@ -19,6 +19,7 @@ import TextInput from "@/components/forms/TextInput.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { apolloClient } from "@/main";
 import { ChannelData } from "@/types/channelTypes";
+import { isAlphaNumeric } from "@/utils/formValidation";
 
 export default defineComponent({
   name: "CreateChannel",
@@ -184,6 +185,7 @@ export default defineComponent({
     });
 
     return {
+      isAlphaNumeric,
       channelId,
       channelData,
       channelError,
@@ -202,11 +204,20 @@ export default defineComponent({
     };
   },
   computed: {
+    uniqueNameIsAlphanumeric(){
+      return this.isAlphaNumeric(this.uniqueName)
+    },
+    uniqueNameErrorMessage() {
+      if (!this.isAlphaNumeric(this.uniqueName)) {
+        return "Must contain only alphanumeric characters."
+      }
+      return ''
+    },
     changesRequired() {
       // We do these checks:
       // - UniqueName is included
 
-      const needsChanges = !this.uniqueName;
+      const needsChanges = !this.uniqueName || !this.uniqueNameIsAlphanumeric;
       return needsChanges;
     },
   },
@@ -238,11 +249,13 @@ export default defineComponent({
         <div>
           <FormTitle>Create Channel</FormTitle>
 
-          <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
+          <div class="mt-6 sm:mt-5 space-y-4 sm:space-y-5">
             <FormRow :section-title="'Unique Name'">
               <TextInput
                 :initial-value="uniqueName"
                 :full-width="true"
+                :invalid="!uniqueNameIsAlphanumeric"
+                :error-message="uniqueNameErrorMessage"
                 @update="updateText"
               />
             </FormRow>

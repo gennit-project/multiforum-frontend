@@ -49,7 +49,6 @@ export default defineComponent({
     });
 
     const existingDescription = useResult(result, "", (data: any) => {
-      console.log({ data });
       return data.channels[0]?.description;
     });
 
@@ -254,7 +253,7 @@ export default defineComponent({
               <TextInput
                 :initial-value="uniqueName"
                 :full-width="true"
-                :disabled="!!channelId"
+                :disabled="true"
                 @update="updateChannelName"
               />
             </FormRow>
