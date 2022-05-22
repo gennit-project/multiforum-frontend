@@ -600,6 +600,8 @@ export default defineComponent({
       return `Other Filters: ${labelString}`;
     });
 
+    const createEventPath = channelId.value ? `/channels/c/${channelId.value}/events/create` : '/events/create'
+
     return {
       channelId,
       beginningOfDateRange,
@@ -607,6 +609,7 @@ export default defineComponent({
       channelLabel,
       channelOptions,
       chronologicalOrder,
+      createEventPath,
       dateLabel,
       dateRange,
       defaultEndDateRangeISO,
@@ -1046,7 +1049,7 @@ export default defineComponent({
         @showList="setShowList"
       />
       <AddToFeed v-if="channelId" />
-      <CreateButton :to="'/events/create'" :label="'Create Event'"/>
+      <CreateButton :to="createEventPath" :label="'Create Event'"/>
     </div>
     <div class="items-center mt-1 space-x-2">
       <FilterChip

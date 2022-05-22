@@ -121,13 +121,18 @@ export const router = createRouter({
               component: SearchEvents,
             },
             {
+              name: "CreateEventInChannel",
+              path: "create",
+              component: CreateEvent
+            },
+            {
               name: "EventDetail",
-              path: ":eventId",
+              path: "e/:eventId",
               component: EventDetail,
             },
             {
               name: "EditEvent",
-              path: ":eventId/edit",
+              path: "e/:eventId/edit",
               component: EditEvent,
             },
           ],

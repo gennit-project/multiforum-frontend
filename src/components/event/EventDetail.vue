@@ -188,7 +188,7 @@ export default defineComponent({
             <router-link
               key="{channel.uniqueName}"
               className="understatedLink"
-              :to="`/channels/${channel.uniqueName}/events/${eventId}`"
+              :to="`/channels/c/${channel.uniqueName}/events/${eventId}`"
             >
               {{ `c/${channel.uniqueName}` }}
             </router-link>
@@ -210,7 +210,7 @@ export default defineComponent({
                 <span> &#8226; </span>
                 <Link
                   className='organizerLink'
-                  to={`/c/${channelId}/event/${eventId}/edit`}
+                  to={`/c/${channelId}/events/e/${eventId}/edit`}
                 >
                   Edit
                 </Link>

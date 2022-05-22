@@ -6,7 +6,7 @@ import {
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
 import CancelButton from "@/components/buttons/CancelButton.vue";
@@ -52,6 +52,7 @@ export default defineComponent({
     const now = DateTime.now();
 
     const route = useRoute();
+    const router = useRouter();
 
     const channelId = route.params.channelId as string;
 
@@ -168,6 +169,7 @@ export default defineComponent({
       minStartTimeISO,
       now,
       placeId,
+      router,
       selectedChannels,
       selectedTags,
       startTime,
@@ -312,7 +314,7 @@ export default defineComponent({
       }
       return `description: "${this.description}""`;
     },
-    async onSubmit1() {
+    async onSubmit() {
       let CREATE_EVENT;
       let createEventMutationString;
 
@@ -399,7 +401,7 @@ export default defineComponent({
       const { mutate: createEvent } = useMutation(CREATE_EVENT, {
         errorPolicy: "all",
       });
-      await createEvent()
+      await createEvent();
       // {
       //   errorPolicy: "all",
       //   update(cache, { data: { events } }) {
@@ -501,6 +503,20 @@ export default defineComponent({
     setSelectedChannels(channel: Array<string>) {
       this.selectedChannels = channel;
     },
+    cancel() {
+      if (this.channelId) {
+        this.router.push({
+          name: "SearchEventsInChannel",
+          params: {
+            channelId: this.channelId,
+          },
+        });
+      } else {
+        this.router.push({
+          name: "SearchEvents",
+        });
+      }
+    },
   },
 });
 </script>
@@ -601,8 +617,8 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton />
-          <SaveButton @click="onSubmit1" />
+          <CancelButton @click="cancel" />
+          <SaveButton @click="onSubmit" />
         </div>
       </div>
     </Form>
