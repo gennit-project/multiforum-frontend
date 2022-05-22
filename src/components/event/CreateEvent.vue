@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import {
   useQuery,
   useMutation,
@@ -29,6 +29,7 @@ import {
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import CheckBox from "@/components/forms/CheckBox.vue";
+import { EventData } from "@/types/eventTypes";
 const { DateTime } = require("luxon");
 
 export default defineComponent({
@@ -130,6 +131,209 @@ export default defineComponent({
       result: tagsData,
     } = useQuery(GET_TAGS);
 
+    const createEventInput = computed(() => {
+      const tagConnections = selectedTags.value.map((tag: string) => {
+        return {
+          onCreate: {
+            node: {
+              text: tag,
+            },
+          },
+          where: {
+            node: {
+              text: tag,
+            },
+          },
+        };
+      });
+
+      const channelConnections = selectedChannels.value.map(
+        (channel: string | string[]) => {
+          return {
+            where: {
+              node: {
+                uniqueName: channel,
+              },
+            },
+          };
+        }
+      );
+
+      let input = {
+        /*
+          Using null values by default for required fields such as the
+          title prevents the empty string from being created on the back
+          end if the title is not provided.
+        */
+        title: title.value || null,
+        description: description.value || null,
+        startTime: startTime.value || null,
+        startTimeYear: startTimePieces.value.startTimeYear || null,
+        startTimeMonth: startTimePieces.value.startTimeMonth || null,
+        startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth || null,
+        startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek || null,
+        startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || null,
+        endTime: endTime.value || null,
+        canceled: false,
+        cost: cost.value || null,
+        virtualEventUrl: virtualEventUrl.value || null,
+        Channels: {
+          connect: channelConnections,
+        },
+        Tags: {
+          connectOrCreate: tagConnections,
+        },
+        Poster: {
+          connect: {
+            where: {
+              node: {
+                username: "cluse",
+              },
+            },
+          },
+        },
+      };
+
+      if (latitude.value && longitude.value) {
+        const locationValues = {
+          locationName: locationName.value,
+          location: {
+            latitude: latitude.value,
+            longitude: longitude.value,
+          },
+          address: address.value,
+          placeId: placeId.value,
+          isInPrivateResidence: isInPrivateResidence.value,
+        };
+        input = { ...input, ...locationValues };
+      }
+
+      return [input];
+    }); // End of createEventInput
+
+    const CREATE_EVENT = gql`
+      mutation ($createEventInput: [EventCreateInput!]!) {
+        createEvents(input: $createEventInput) {
+          events {
+            id
+            title
+            description
+            Channels {
+              uniqueName
+            }
+            Poster {
+              username
+            }
+            locationName
+            address
+            startTime
+            startTimeYear
+            startTimeMonth
+            startTimeDayOfMonth
+            startTimeDayOfWeek
+            startTimeHourOfDay
+            endTime
+            virtualEventUrl
+            createdAt
+            isInPrivateResidence
+            cost
+            placeId
+            location {
+              latitude
+              longitude
+            }
+            canceled
+            Tags {
+              text
+            }
+          }
+        }
+      }
+    `;
+
+    const {
+      mutate: createEvent,
+      error: createEventError,
+      onDone,
+    } = useMutation(CREATE_EVENT, () => {
+      return {
+        errorPolicy: "all",
+        variables: {
+          createEventInput: createEventInput.value,
+        },
+        update: (cache: any, result: any) => {
+          const newEvent: EventData = result.data?.createEvents?.events[0]
+
+          cache.modify({
+            fields: {
+              events(existingEventRefs = [], fieldInfo: any) {
+                const readField = fieldInfo.readField
+                const newEventRef = cache.writeFragment({
+                  data: newEvent,
+                  fragment: gql`
+                    fragment NewEvent on Events {
+                      id
+                    }
+                  `,
+                });
+
+                // Quick safety check - if the new event is already
+                // present in the cache, we don't need to add it again.
+                if (
+                  existingEventRefs.some(
+                    (ref: any) => readField("id", ref) === newEventRef.id
+                  )
+                ) {
+                  return existingEventRefs;
+                }
+                return [newEventRef, ...existingEventRefs];
+              },
+            },
+          });
+        },
+      };
+    });
+
+    onDone((response: any) => {
+      // Add a new comment section for each selected channel.
+      // createCommentSections({
+      //   variables: {
+      //     commentSectionObjects: getCommentSectionObjects(newEventId),
+      //   },
+      // });
+      const newEventId = response.data.createEvents.events[0].id;
+
+      /*
+        If the event was created in the context
+        of a channel, redirect to the event detail page in
+        the channel.
+      */
+
+      if (channelId) {
+        router.push({
+          name: "EventDetail",
+          params: {
+            channelId,
+            eventId: newEventId,
+          },
+        });
+      } else {
+        /*
+        If the event was created in the context
+        of the server-wide events page,
+        redirect to the event detail page in the first
+        channel that the event was submitted to.
+      */
+        router.push({
+          name: "EventDetail",
+          params: {
+            channelId: selectedChannels.value[0],
+            eventId: newEventId,
+          },
+        });
+      }
+    });
+
     // const getCommentSectionObjects = (newEventId: string) => {
     //   return selectedChannels.value.map((c) => {
     //     return {
@@ -159,6 +363,9 @@ export default defineComponent({
       channelData,
       channelError,
       channelLoading,
+      createEvent,
+      createEventError,
+      createEventInput,
       cost,
       description,
       durationHoursAndMinutes,
@@ -202,13 +409,13 @@ export default defineComponent({
       // - Title is included
       // - Start date and time are in the future
       // - Either a valid event URL or an address is included
-      console.log('Debug changes required', {
-        title: this.title,
-        startTime: this.startTime,
-        address: this.address,
-        virtualEventUrl: this.virtualEventUrl,
-        selectedChannels: this.selectedChannels
-      })
+      // console.log("Debug changes required", {
+      //   title: this.title,
+      //   startTime: this.startTime,
+      //   address: this.address,
+      //   virtualEventUrl: this.virtualEventUrl,
+      //   selectedChannels: this.selectedChannels,
+      // });
       let now = DateTime.now().toISO();
       const needsChanges = !(
         this.selectedChannels.length > 0 &&
@@ -225,25 +432,25 @@ export default defineComponent({
     changesRequiredMessage() {
       let now = DateTime.now().toISO();
       if (this.selectedChannels.length === 0) {
-        return "At least one channel must be selected."
+        return "At least one channel must be selected.";
       }
       if (!this.title) {
-        return "A title is required."
+        return "A title is required.";
       }
       if (this.startTime <= now) {
-        return "The start time must be in the future."
+        return "The start time must be in the future.";
       }
       if (this.address && !this.placeId) {
-        return "Could not find this location on Google Maps."
+        return "Could not find this location on Google Maps.";
       }
       if (!this.address && !this.virtualEventUrl) {
-        return "Needs an address or a virtual event URL."
+        return "Needs an address or a virtual event URL.";
       }
       if (this.virtualEventUrl && !this.urlIsValid(this.virtualEventUrl)) {
-        return "The virtual event URL is invalid."
+        return "The virtual event URL is invalid.";
       }
-      return ''
-    }
+      return "";
+    },
   },
   methods: {
     urlIsValid(str: string) {
@@ -262,228 +469,8 @@ export default defineComponent({
       ); // fragment locator
       return !!pattern.test(str);
     },
-    getVirtualEventInfo() {
-      if (this.virtualEventUrl) {
-        return `virtualEventUrl: "${this.virtualEventUrl}"`;
-      }
-      return "";
-    },
-    getLocationInfo() {
-      if (this.latitude && this.longitude) {
-        return `
-          locationName: ${this.locationName}
-          location: {
-            latitude: ${this.latitude}
-            longitude: ${this.longitude}
-          }
-          address: ${this.address}
-          placeId: ${this.placeId}
-          isInPrivateResidence: ${this.isInPrivateResidence}
-        `;
-      }
-      return "";
-    },
-    buildChannelString() {
-      if (this.selectedChannels.length === 0) {
-        throw new Error(
-          "Cannot create an event without selecting at least one channel."
-        );
-      }
-      let channelString = "";
-
-      this.selectedChannels.forEach((channel: ChannelData) => {
-        channelString += `
-        {
-          where: {
-            node: {
-              uniqueName: "${channel}"
-            }
-          }
-        },`;
-      });
-
-      return `Channels: {
-        connect: [${channelString}]
-      }`;
-    },
-    buildTagString() {
-      if (this.selectedTags.length === 0) {
-        return "";
-      }
-      let tagString = "";
-
-      this.selectedTags.forEach((tag: TagData) => {
-        tagString += `
-        {
-          onCreate: {
-            node: {
-              text: ${tag}
-            }
-          }
-          where: {
-            node: {
-              text: ${tag}
-            }
-          }
-        },
-        `;
-      });
-      return `Tags: {
-        connectOrCreate: [${tagString}]
-      }`;
-    },
-    buildDescriptionString() {
-      if (!this.description) {
-        return "";
-      }
-      return `description: "${this.description}""`;
-    },
     async submit() {
-      let CREATE_EVENT;
-      let createEventMutationString;
-
-      try {
-        createEventMutationString = `
-          mutation {
-            createEvents(
-              input: [
-                {
-                  title: "${this.title}"
-                  ${this.buildDescriptionString()}
-                  startTime: "${this.startTime}"
-                  startTimeYear: "${this.startTimePieces.startTimeYear}"
-                  startTimeMonth: "${this.startTimePieces.startTimeMonth}"
-                  startTimeDayOfMonth: "${
-                    this.startTimePieces.startTimeDayOfMonth
-                  }"
-                  startTimeDayOfWeek: "${
-                    this.startTimePieces.startTimeDayOfWeek
-                  }"
-                  startTimeHourOfDay: ${this.startTimePieces.startTimeHourOfDay}
-                  endTime: "${this.endTime}"
-                  ${this.buildChannelString()}
-                  ${this.buildTagString()}
-                  ${this.getLocationInfo()}
-                  ${this.getVirtualEventInfo()}
-                  Poster: {
-                    connect: {
-                      where: {
-                        node: {
-                          username: "${this.username}"
-                        }
-                      }
-                    }
-                  }
-                  cost: "${this.cost}"
-                  canceled: false
-                }
-              ]
-            ) {
-              events {
-                id
-                title
-                description
-                Channels {
-                  uniqueName
-                }
-                Poster {
-                  username
-                }
-                locationName
-                address
-                startTime
-                startTimeYear
-                startTimeMonth
-                startTimeDayOfMonth
-                startTimeDayOfWeek
-                startTimeHourOfDay
-                endTime
-                virtualEventUrl
-                createdAt
-                isInPrivateResidence
-                cost
-                placeId
-                location {
-                  latitude
-                  longitude
-                }
-                canceled
-                Tags {
-                  text
-                }
-              }
-            }
-          }
-        `;
-        CREATE_EVENT = gql`
-          ${createEventMutationString}
-        `;
-      } catch (err) {
-        throw new Error(err + createEventMutationString);
-      }
-
-      const { mutate: createEvent } = useMutation(CREATE_EVENT, {
-        errorPolicy: "all",
-      });
-      await createEvent();
-      // {
-      //   errorPolicy: "all",
-      //   update(cache, { data: { events } }) {
-      //     const newEventId = events.event[0].id;
-
-      //     // Add a new comment section for each selected channel.
-      //     // createCommentSections({
-      //     //   variables: {
-      //     //     commentSectionObjects: getCommentSectionObjects(newEventId),
-      //     //   },
-      //     // });
-
-      //     // If the event was created in the context
-      //     // of a channel, redirect to the event detail page in
-      //     // the channel.
-      //     if (this.channelId) {
-      //       this.$router.push(`/c/${this.channelId}/event/${newEventId}`);
-      //     } else {
-      //       // If the event was created in the context
-      //       // of the server-wide events page,
-      //       // redirect to the event detail page in the first
-      //       // channel that the event was submitted to.
-      //       this.$router.push(
-      //         `/c/${this.selectedChannels.value[0]}/event/${newEventId}`
-      //       );
-      //     }
-      //     const newEvent = events.event[0];
-      //     cache.modify({
-      //       fields: {
-      //         events(existingEventRefs = [], { readField }) {
-      //           const newEventRef = cache.writeFragment({
-      //             data: newEvent,
-      //             fragment: gql`
-      //               fragment NewEvent on Events {
-      //                 id
-      //               }
-      //             `,
-      //           });
-
-      //           // Quick safety check - if the new event is already
-      //           // present in the cache, we don't need to add it again.
-      //           if (
-      //             existingEventRefs.some(
-      //               (ref: any) => readField("id", ref) === newEvent.id
-      //             )
-      //           ) {
-      //             return existingEventRefs;
-      //           }
-      //           return [newEventRef, ...existingEventRefs];
-      //         },
-      //       },
-      //     });
-      //   },
-      // }
-      // );
-      // if (createEventError) {
-      //   throw new Error(createEventError.toString())
-      // }
+      this.createEvent();
     },
     updateTitle(updated: String) {
       this.title = updated;
@@ -638,8 +625,8 @@ export default defineComponent({
           </div>
         </div>
       </div>
-          <ErrorBanner v-if="changesRequired" :text="changesRequiredMessage"/>
-
+      <ErrorBanner v-if="changesRequired" :text="changesRequiredMessage" />
+      <ErrorBanner v-if="createEventError" :text="createEventError.message" />
 
       <div class="pt-5">
         <div class="flex justify-end">
