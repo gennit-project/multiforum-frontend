@@ -195,6 +195,7 @@ export default defineComponent({
       description,
       existingDescription,
       existingTags,
+      router,
       selectedTags,
       tagsData,
       tagsLoading,

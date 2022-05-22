@@ -21,7 +21,7 @@ export default defineComponent({
     });
 
     const channelDescription = useResult(result, "This channel has no description.", () => {
-      return result.value.channels[0].description;
+      return result.value.channels[0].description || "This channel has no description.";
     });
 
     const tags = useResult(result, [], () => {

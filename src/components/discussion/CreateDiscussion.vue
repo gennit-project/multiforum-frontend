@@ -266,6 +266,7 @@ export default defineComponent({
       createDiscussionError,
       createDiscussionInput,
       body,
+      router,
       selectedChannels,
       selectedTags,
       tagsData,
@@ -306,6 +307,20 @@ export default defineComponent({
     async submit() {
       this.createDiscussion();
     },
+    cancel() {
+      if (this.channelId) {
+        this.router.push({
+          name: "SearchDiscussionsInChannel",
+          params: {
+            channelId: this.channelId,
+          },
+        });
+      } else {
+        this.router.push({
+          name: "SearchDiscussions",
+        });
+      }
+    }
   },
 });
 </script>
@@ -361,7 +376,7 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton />
+          <CancelButton @click="cancel"/>
           <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>

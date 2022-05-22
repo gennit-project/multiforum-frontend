@@ -6,7 +6,7 @@ import {
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
 import CancelButton from "@/components/buttons/CancelButton.vue";
@@ -52,8 +52,10 @@ export default defineComponent({
     const now = DateTime.now();
 
     const route = useRoute();
+    const router = useRouter();
 
-    const channelId = route.params.channelId as string;
+    const channelId: string | string[] = route.params.channelId;
+    const eventId: string | string[] = route.params.eventId;
 
     const username = "cluse";
 
@@ -160,6 +162,7 @@ export default defineComponent({
       description,
       durationHoursAndMinutes,
       endTime,
+      eventId,
       getReadableTimeFromISO,
       isInPrivateResidence,
       latitude,
@@ -168,6 +171,7 @@ export default defineComponent({
       minStartTimeISO,
       now,
       placeId,
+      router,
       selectedChannels,
       selectedTags,
       startTime,
@@ -507,6 +511,15 @@ export default defineComponent({
     setSelectedChannels(channel: Array<string>) {
       this.selectedChannels = channel;
     },
+    cancel() {
+        this.router.push({
+          name: "EventDetail",
+          params: {
+            channelId: this.channelId,
+            eventId: this.eventId,
+          },
+        });
+    }
   },
 });
 </script>
@@ -607,7 +620,7 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton />
+          <CancelButton @click="cancel"/>
           <SaveButton @click="onSubmit1" />
         </div>
       </div>

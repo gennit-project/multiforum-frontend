@@ -165,7 +165,7 @@ export default defineComponent({
         {{
           `${
             createdAt
-              ? `opened this discussion ${relativeTime("" + createdAt)}`
+              ? `posted this discussion ${relativeTime("" + createdAt)}`
               : ""
           }`
         }}
@@ -240,7 +240,7 @@ export default defineComponent({
               class="mb-1"
               v-for="channel in channelsExceptCurrent"
               :key="channel.uniqueName"
-              :to="`/channels/${channel.uniqueName}/discussions/d/${discussionId}`"
+              :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`"
             >
               {{ `${channel.uniqueName}` }}
             </router-link>

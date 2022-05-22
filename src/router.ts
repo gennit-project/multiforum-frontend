@@ -57,6 +57,7 @@ export const router = createRouter({
       component: SearchChannels
     },
     {
+      name: "SearchChannels",
       path: "/channels/",
       component: SearchChannels,
     },

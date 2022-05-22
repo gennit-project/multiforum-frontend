@@ -187,7 +187,7 @@ export default defineComponent({
     });
 
     const createDiscussionPath = channelId.value
-      ? `/channels/${channelId.value}/discussions/create`
+      ? `/channels/c/${channelId.value}/discussions/create`
       : "/discussions/create";
 
     return {

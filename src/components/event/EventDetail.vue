@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
 import { gql } from "@apollo/client/core";
@@ -13,11 +13,13 @@ import {
   formatDuration,
   getDurationObj,
 } from "../../dateTimeUtils";
+import ConfirmDelete from "../ConfirmDelete.vue";
 const { DateTime } = require("luxon");
 
 export default defineComponent({
   components: {
     Back,
+    ConfirmDelete,
     Tag,
   },
   setup() {
@@ -33,6 +35,8 @@ export default defineComponent({
         events(where: { id: $eventId }) {
           id
           title
+          createdAt
+          updatedAt
           description
           startTime
           endTime
@@ -97,7 +101,10 @@ export default defineComponent({
     //   return username === organizerOfEvent
     // }
 
+    const confirmDeleteIsOpen = ref(false);
+
     return {
+      confirmDeleteIsOpen,
       eventResult,
       eventError,
       eventLoading,
@@ -171,10 +178,12 @@ export default defineComponent({
     </div> -->
 
     <div v-else-if="eventResult && eventResult.events">
-      <div class="grid grid-cols-3 gap-4 ">
-        <div class="col-start-1 col-span-2 ">
+      <div class="grid grid-cols-3 gap-4">
+        <div class="col-start-1 col-span-2">
           <h2 class="text-lg mb-2 text-gray-700">{{ eventData.title }}</h2>
-          <p class="mb-4" v-if="eventData.description">{{ eventData.description }}</p>
+          <p class="mb-4" v-if="eventData.description">
+            {{ eventData.description }}
+          </p>
           <Tag
             v-for="tag in eventData.Tags"
             :tag="tag.text"
@@ -195,10 +204,36 @@ export default defineComponent({
           </p>
           <div className="text-xs text-gray-600 mt-4">
             <div className="organizer">
-              Posted by 
-              <router-link class="text-indigo-800 underline" :to="`/u/${eventData.Poster.username}`">
-              {{ eventData.Poster.username }}
+              <router-link
+                class="text-indigo-800 underline"
+                :to="`/u/${eventData.Poster.username}`"
+              >
+                {{ eventData.Poster.username }}
               </router-link>
+              {{
+                `${
+                  eventData.createdAt
+                    ? `posted this discussion ${relativeTime(
+                        "" + eventData.createdAt
+                      )}`
+                    : ""
+                }`
+              }}
+              <span v-if="eventData.updatedAt"> &#8226; </span>
+              {{ eventData.updatedAt ? `Edited ${relativeTime("" + eventData.updatedAt)}` : "" }}
+              <span>
+                &#8226;
+                <router-link
+                  class="underline font-medium text-gray-900 cursor-pointer"
+                  :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+                  >Edit</router-link
+                > </span
+              >&#8226;
+              <span
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmDeleteIsOpen = true"
+                >Delete</span
+              >
               <!-- <Link
               className='organizerLink'
               to={`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
@@ -308,7 +343,10 @@ export default defineComponent({
         </div>
 
         <!-- <AddToCalendar :event="getCalendarData" /> -->
-
+        <ConfirmDelete
+          :open="confirmDeleteIsOpen"
+          @close="confirmDeleteIsOpen = false"
+        />
       </div>
     </div>
   </div>

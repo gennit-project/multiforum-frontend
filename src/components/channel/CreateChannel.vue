@@ -194,6 +194,7 @@ export default defineComponent({
       createChannelError,
       createChannelInput,
       description,
+      router,
       selectedChannels,
       selectedTags,
       tagsData,
@@ -237,6 +238,11 @@ export default defineComponent({
     async submit() {
       this.createChannel();
     },
+    cancel() {
+      this.router.push({
+          name: "SearchChannels",
+      })
+    }
   },
 });
 </script>
@@ -283,7 +289,7 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton />
+          <CancelButton @click="cancel"/>
           <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>
