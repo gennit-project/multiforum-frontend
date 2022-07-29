@@ -396,12 +396,6 @@ export default defineComponent({
       showCostField: false,
     };
   },
-  props: {
-    mode: {
-      type: String,
-      default: "create",
-    },
-  },
   computed: {
     changesRequired() {
       // We do these checks:
