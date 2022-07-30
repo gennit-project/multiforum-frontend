@@ -57,7 +57,7 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-@import "@vueform/multiselect/themes/tailwind.scss";
+
 </style>
 <style>
 .wide {

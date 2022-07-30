@@ -32,7 +32,7 @@ import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import CheckBox from "@/components/forms/CheckBox.vue";
 import { EventData } from "@/types/eventTypes";
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
 
 export default defineComponent({
   name: "EditEvent",

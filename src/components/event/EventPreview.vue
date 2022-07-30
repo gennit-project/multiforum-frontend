@@ -7,8 +7,7 @@ import {
   getDatePieces,
 } from "@/utils/dateTimeUtils";
 import Tag from "../buttons/Tag.vue";
-
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
 
 export default defineComponent({
   name: "EventPreview",

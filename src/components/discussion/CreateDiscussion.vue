@@ -23,6 +23,8 @@ import TagPicker from "@/components/forms/TagPicker.vue";
 import { apolloClient } from "@/main";
 import { DiscussionData } from "@/types/discussionTypes";
 
+import 'md-editor-v3/lib/style.css';
+
 export default defineComponent({
   name: "CreateDiscussion",
   components: {
@@ -349,26 +351,27 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <ChannelPicker
+              <!-- <ChannelPicker
                 v-if="channelData && channelData.channels"
                 v-model="selectedChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 :selected-channels="selectedChannels"
-              />
+              /> -->
             </FormRow>
 
             <FormRow :section-title="'Body'">
-              <TextEditor class="mb-3" :value="body" @update="updateBody" />
+              <!-- <TextEditor class="mb-3" :value="body" @update="updateBody" />-->
+              
             </FormRow>
             
             <FormRow :section-title="'Tags'">
-              <TagPicker
+              <!-- <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
-              />
+              /> -->
             </FormRow>
           </div>
         </div>

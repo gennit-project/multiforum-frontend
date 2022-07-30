@@ -58,7 +58,8 @@ import {
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
 
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
+
 
 interface Ref<T> {
   value: T;
@@ -511,8 +512,10 @@ export default defineComponent({
     });
 
     const dateLabel = computed(() => {
-      const startDateObject = new DateTime.fromISO(beginningOfDateRange.value);
-      const endDateObject = new DateTime.fromISO(endOfDateRange.value);
+      // eslint-disable-next-line
+      const startDateObject = DateTime.fromISO(beginningOfDateRange.value);
+      // eslint-disable-next-line
+      const endDateObject = DateTime.fromISO(endOfDateRange.value);
       const formattedStartDate = startDateObject.toLocaleString(
         DateTime.DATE_MED
       );

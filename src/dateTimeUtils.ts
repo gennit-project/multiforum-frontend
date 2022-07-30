@@ -1,4 +1,4 @@
-const { DateTime, Interval } = require("luxon");
+import { DateTime, Interval } from 'luxon';
 
 const relativeTime = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);

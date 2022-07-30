@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-const Markdown = require("vue3-markdown-it").default;
+import Markdown from "vue3-markdown-it";
 import { useQuery, useResult } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";

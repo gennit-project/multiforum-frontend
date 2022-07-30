@@ -1,18 +1,25 @@
 import { createApp, h, provide } from "vue";
 import App from "./App.vue";
 import { router } from "./router";
-import "./index.css";
-import "v-tooltip/dist/v-tooltip.css";
+import "./index.css"
 import { ApolloClient, InMemoryCache } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { createApolloProvider } from '@vue/apollo-option'
 import config from "./config";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
+import 'v-tooltip/dist/v-tooltip.css';
+// import {
+// Directives
+//   VTooltip
+  // VClosePopper,
+// Components
+  // Dropdown,
+  // Tooltip,
+  // Menu
+// } from 'v-tooltip'
+import VTooltipPlugin from 'v-tooltip'
 import '@github/markdown-toolbar-element'
 import 'highlight.js/styles/github-dark-dimmed.css'
-
-
-const VTooltipPlugin = require("v-tooltip");
 
 // Cache implementation
 const cache = new InMemoryCache({

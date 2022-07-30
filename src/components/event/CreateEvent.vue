@@ -30,7 +30,7 @@ import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import CheckBox from "@/components/forms/CheckBox.vue";
 import { EventData } from "@/types/eventTypes";
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
 
 export default defineComponent({
   name: "CreateEvent",
@@ -543,13 +543,13 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <ChannelPicker
+              <!-- <ChannelPicker
                 v-if="channelData && channelData.channels"
                 v-model="selectedChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 :selected-channels="selectedChannels"
                 @setSelectedChannels="setSelectedChannels"
-              />
+              /> -->
             </FormRow>
 
             <FormRow :section-title="'Start Time'">
@@ -597,14 +597,14 @@ export default defineComponent({
                 @update="updateDescription"
               />
 
-              <TagPicker
+              <!-- <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
                 @setSelectedTags="setSelectedTags"
-              />
+              /> -->
               <CheckBox :checked="!showCostField" @input="toggleCostField" />
               <span class="ml-2">This event is free</span>
             </FormRow>

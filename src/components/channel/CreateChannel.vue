@@ -275,13 +275,13 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Tags'">
-              <TagPicker
+              <!-- <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
-              />
+              /> -->
             </FormRow>
           </div>
         </div>

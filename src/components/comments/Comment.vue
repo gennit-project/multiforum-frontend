@@ -1,6 +1,6 @@
 <script>
 import { defineComponent } from "vue";
-const Markdown = require("vue3-markdown-it").default;
+import Markdown from "vue3-markdown-it";
 // @ts-ignore
 import ProfileAvatar from "vue-profile-avatar";
 import { relativeTime } from "../../dateTimeUtils";

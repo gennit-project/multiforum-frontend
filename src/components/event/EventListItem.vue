@@ -5,7 +5,7 @@ import { getDatePieces } from "@/utils/dateTimeUtils";
 import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "../buttons/Tag.vue";
 import HighlightedSearchTerms from "../forms/HighlightedSearchTerms.vue";
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
 
 export default defineComponent({
   setup(props) {

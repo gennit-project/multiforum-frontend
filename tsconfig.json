@@ -12,11 +12,16 @@
     "esModuleInterop": true,
     "noImplicitThis": false,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "sourceMap": true,
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "@types/google.maps"
+      "@types/google.maps",
+      "@types/luxon",
+      "@types/markdown-it",
+      "@types/node",
+      "vite/client",
     ],
     "paths": {
       "@/*": [
@@ -32,6 +37,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "src/**/.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
     "tests/**/*.ts",

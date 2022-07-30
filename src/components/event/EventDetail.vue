@@ -14,7 +14,7 @@ import {
   getDurationObj,
 } from "../../dateTimeUtils";
 import ConfirmDelete from "../ConfirmDelete.vue";
-const { DateTime } = require("luxon");
+import { DateTime } from "luxon";
 
 export default defineComponent({
   components: {

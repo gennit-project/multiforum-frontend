@@ -4,7 +4,7 @@ import UserData from './userTypes';
 export type ChannelData = {
     uniqueName: string;
     name: string;
-    description: string?;
+    description?: string;
     Admins: [UserData];
     DiscussionsAggregate: {
         count: string;

@@ -7,7 +7,7 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-const Markdown = require("vue3-markdown-it").default
+import Markdown from "vue3-markdown-it";
 import { XIcon } from "@heroicons/vue/outline";
 import { DiscussionData } from "../../types/discussionTypes";
 
