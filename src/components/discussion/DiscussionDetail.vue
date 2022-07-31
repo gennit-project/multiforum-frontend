@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { useMutation, useQuery, useResult } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { ChannelData } from "@/types/channelTypes";
@@ -68,50 +68,70 @@ export default defineComponent({
 
     const { result, loading } = useQuery(GET_DISCUSSION, { id: discussionId });
 
-    const body = useResult(
-      result,
-      "",
-      (data: any) => data.discussions[0]?.body || ""
-    );
+    const body = computed(() => {
+      if (!result.value || !result.value.discussions) {
+        return "";
+      }
+      return result.value.discussions[0]?.body;
+    });
 
-    const title = useResult(
-      result,
-      "",
-      (data: any) => data.discussions[0]?.title || ""
-    );
+    const title = computed(() => {
+      if (!result.value || !result.value.discussions) {
+        return "[Deleted]";
+      }
+      return result.value.discussions[0]?.title;
+    });
 
-    const tags = useResult(
-      result,
-      [],
-      (data: any) => data.discussions[0]?.Tags || []
-    );
+    const tags = computed(() => {
+      if (!result.value || !result.value.discussions) {
+        return [];
+      }
+      return result.value.discussions[0]?.Tags;
+    });
 
-    const channelsExceptCurrent = useResult(result, [], (data: any) => {
-      if (!data.discussions[0] || data.discussions[0].Channels.length < 2) {
+    const channelsExceptCurrent = computed(() => {
+      if (
+        !result.value ||
+        !result.value.discussions ||
+        !result.value.discussions[0] ||
+        result.value.discussions[0].Channels?.length < 2
+      ) {
         return [];
       }
       return (
-        data.discussions[0]?.Channels.filter((channel: ChannelData) => {
+        result.value.discussions[0]?.Channels.filter((channel: ChannelData) => {
           return channel.uniqueName !== channelId.value;
         }) || []
       );
     });
 
-    const authorUsername = useResult(result, "", (data: any) => {
-      return data.discussions[0]?.Author?.username || "[deleted]";
+    const authorUsername = computed(() => {
+      const defaultValue = "[deleted]";
+      if (!result.value || !result.value.discussions) {
+        return defaultValue;
+      }
+      return result.value.discussions[0]?.Author?.username || defaultValue;
     });
 
-    const createdAt = useResult(
-      result,
-      "",
-      (data: any) => data.discussions[0]?.createdAt || ""
-    );
+    const createdAt = computed(() => {
+      if (!result.value || !result.value.discussions) {
+        return "";
+      }
+      const time = result.value.discussions[0]?.createdAt || "";
+      return `posted this discussion ${relativeTime("" + time)}`;
+    });
 
-    const updatedAt = useResult(
-      result,
-      "",
-      (data: any) => data.discussions[0]?.updatedAt || ""
-    );
+    const updatedAt = computed(() => {
+      if (!result.value || !result.value.discussions) {
+        return "";
+      }
+      const time = result.value.discussions[0]?.updatedAt || "";
+
+      if (time) {
+        return `Edited ${relativeTime("" + time)}`;
+      }
+      return "";
+    });
 
     const confirmDeleteIsOpen = ref(false);
 
@@ -139,11 +159,11 @@ export default defineComponent({
       this.router.push({
         name: "FilterDiscussionsByTag",
         params: {
-          tag
-        }
-      })
-    }
-  }
+          tag,
+        },
+      });
+    },
+  },
 });
 </script>
 
@@ -156,21 +176,15 @@ export default defineComponent({
     />
     <div class="pb-5 border-b border-gray-200">
       <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">
-        {{ title || "[Deleted]" }}
+        {{ title }}
       </h1>
       <div class="prose w-full text-xs mt-4">
         <router-link v-if="authorUsername" :to="`/u/${authorUsername}`">
-          {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
+          {{ authorUsername }}
         </router-link>
-        {{
-          `${
-            createdAt
-              ? `posted this discussion ${relativeTime("" + createdAt)}`
-              : ""
-          }`
-        }}
+        {{ createdAt }}
         <span v-if="updatedAt"> &#8226; </span>
-        {{ updatedAt ? `Edited ${relativeTime("" + updatedAt)}` : "" }}
+        {{ updatedAt }}
         <span>
           &#8226;
           <router-link

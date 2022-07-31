@@ -6,7 +6,6 @@ import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
   useMutation,
-  useResult,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
@@ -51,33 +50,37 @@ export default defineComponent({
       id: discussionId,
     });
 
-    const existingBody = useResult(
-      result,
-      "",
-      (data: any) => data.discussions[0]?.body
-    );
-
-    const existingTitle = useResult(
-      result,
-      "",
-      (data: any) => data.discussions[0]?.title
-    );
-    const existingTags = useResult(result, [], (data: any) => {
-      if (data.discussions[0]?.Tags) {
-        return data.discussions[0].Tags.map((tag: TagData) => {
-          return tag.text;
-        });
+    const existingBody = computed(() => {
+      if (!result.value) {
+        return "";
       }
-      return [];
+      return result.value.data.discussions[0]?.body || "";
     });
 
-    const existingChannels = useResult(result, [], (data: any) => {
-      if (data.discussions[0]?.Channels) {
-        return data.discussions[0].Channels.map((channel: ChannelData) => {
-          return channel.uniqueName;
-        });
+    const existingTitle = computed(() => {
+      if (!result.value) {
+        return "";
       }
-      return [];
+      return result.value.data.discussions[0]?.title;
+    });
+    const existingTags = computed(() => {
+      if (!result.value) {
+        return [];
+      }
+      return result.value.data.discussions[0].Tags.map((tag: TagData) => {
+        return tag.text;
+      });
+    });
+
+    const existingChannels = computed(() => {
+      if (!result.value || !result.value.data.discussions[0].Channels) {
+        return [];
+      }
+      return result.value.data.discussions[0].Channels.map(
+        (channel: ChannelData) => {
+          return channel.uniqueName;
+        }
+      );
     });
 
     // The form fields in the edit form are initialized
@@ -88,22 +91,24 @@ export default defineComponent({
     const selectedChannels = ref(existingChannels.value);
     const selectedTags = ref(existingTags.value);
 
-    watch(result, value => {
+    watch(result, (value) => {
       // Used so that some form validation can occur as
       // soon as the page is loaded
-      const discussionData = value.discussions[0]
+      const discussionData = value.discussions[0];
 
       if (discussionData) {
         title.value = discussionData.title;
         body.value = discussionData.body;
-        selectedChannels.value = discussionData.Channels.map((channel: ChannelData) => {
-          return channel.uniqueName
-        })
+        selectedChannels.value = discussionData.Channels.map(
+          (channel: ChannelData) => {
+            return channel.uniqueName;
+          }
+        );
         selectedTags.value = discussionData.Tags.map((tag: TagData) => {
-          return tag.text
-        })
+          return tag.text;
+        });
       }
-    })
+    });
 
     const username = "cluse";
 
@@ -154,7 +159,6 @@ export default defineComponent({
     // });
 
     const updateDiscussionInput = computed(() => {
-
       const tagConnections = selectedTags.value
         ? selectedTags.value.map((tag: string) => {
             return {
@@ -174,17 +178,17 @@ export default defineComponent({
 
       const tagDisconnections = existingTags.value
         .filter((tag: string) => {
-          return !selectedTags.value.includes(tag)
+          return !selectedTags.value.includes(tag);
         })
         .map((tag: string) => {
           return {
             where: {
               node: {
-                text: tag
-              }
-            }
-          }
-        })
+                text: tag,
+              },
+            },
+          };
+        });
 
       const channelConnections = selectedChannels.value
         ? selectedChannels.value.map((channel: string) => {
@@ -200,24 +204,24 @@ export default defineComponent({
 
       const channelDisconnections = existingChannels.value
         .filter((channel: string) => {
-          return !selectedChannels.value.includes(channel)
+          return !selectedChannels.value.includes(channel);
         })
         .map((channel: string) => {
           return {
             where: {
               node: {
-                uniqueName: channel
-              }
-            }
-          }
-        })
+                uniqueName: channel,
+              },
+            },
+          };
+        });
 
       return {
         title: title.value,
         body: body.value,
         Channels: {
           connect: channelConnections,
-          disconnect: channelDisconnections
+          disconnect: channelDisconnections,
         },
         Tags: {
           connectOrCreate: tagConnections,
@@ -269,14 +273,13 @@ export default defineComponent({
     }));
 
     onDone(() => {
-
-        router.push({
-          name: "DiscussionDetail",
-          params: {
-            channelId: selectedChannels.value[0],
-            discussionId,
-          },
-        });
+      router.push({
+        name: "DiscussionDetail",
+        params: {
+          channelId: selectedChannels.value[0],
+          discussionId,
+        },
+      });
     });
 
     return {
@@ -353,14 +356,14 @@ export default defineComponent({
       this.updateDiscussion();
     },
     cancel() {
-        this.router.push({
-          name: "DiscussionDetail",
-          params: {
-            channelId: this.channelId,
-            discussionId: this.discussionId,
-          },
-        });
-    }
+      this.router.push({
+        name: "DiscussionDetail",
+        params: {
+          channelId: this.channelId,
+          discussionId: this.discussionId,
+        },
+      });
+    },
   },
 });
 </script>
@@ -419,7 +422,7 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton @click="cancel"/>
+          <CancelButton @click="cancel" />
           <SaveButton
             @click.prevent="submit"
             :disabled="changesRequired"

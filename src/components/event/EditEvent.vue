@@ -4,7 +4,6 @@ import { GET_EVENT } from "@/graphQLData/event/queries";
 import {
   useQuery,
   useMutation,
-  useResult,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
@@ -63,42 +62,55 @@ export default defineComponent({
       id: eventId,
     });
 
-    const existingTitle = useResult(
-      result,
-      "",
-      (data: any) => data.events[0]?.title
-    );
-
-    const existingDescription = useResult(
-      result,
-      "",
-      (data: any) => data.events[0]?.description
-    );
-
-    const existingTags = useResult(result, [], (data: any) => {
-      if (data.events[0]?.Tags) {
-        return data.events[0].Tags.map((tag: TagData) => {
-          return tag.text;
-        });
+    const existingTitle = computed(() => {
+      if (!result.value || !result.value.events) {
+        return "[Deleted]";
       }
-      return [];
+      return result.value.events[0]?.title;
     });
 
-    const existingChannels = useResult(result, [], (data: any) => {
-      if (data.events[0]?.Channels) {
-        return data.events[0].Channels.map((channel: ChannelData) => {
-          return channel.uniqueName;
-        });
+    const existingDescription = computed(() => {
+      if (!result.value || !result.value.events) {
+        return "";
       }
-      return [];
+      return result.value.events[0]?.description;
     });
 
-    const existingStartTime = useResult(result, "", (data: any) => {
-      return data.events[0]?.startTime;
+    const existingTags = computed(() => {
+      if (!result.value || !result.value.events) {
+        return [];
+      }
+      return result.value.events[0]?.Tags.map((tag: TagData) => {
+        return tag.text;
+      });
     });
-    const existingEndTime = useResult(result, "", (data: any) => {
-      return data.events[0]?.endTime;
+
+    const existingChannels = computed(() => {
+      if (
+        !result.value ||
+        !result.value.events ||
+        !result.value.events[0]?.Channels
+      ) {
+        return [];
+      }
+      return result.value.events[0].Channels.map((channel: ChannelData) => {
+        return channel.uniqueName;
+      });
     });
+
+    const existingStartTime = computed(() => {
+      if (!result.value || !result.value.events || !result.value.events[0].startTime) {
+        return ""
+      }
+      return result.value.events[0]?.startTime;
+    })
+    const existingEndTime = computed(() => {
+      if (!result.value || !result.value.events || !result.value.events[0].endTime) {
+        return ""
+      }
+      return result.value.events[0]?.endTime;
+    })
+
 
     // The form fields in the edit form are initialized
     // with the existing values.

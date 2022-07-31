@@ -3,7 +3,7 @@ import { defineComponent, computed, ref } from "vue";
 import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
 import { gql } from "@apollo/client/core";
-import { useQuery, useResult } from "@vue/apollo-composable";
+import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 // import { TagData } from "@/types/tagTypes.d";
@@ -69,13 +69,18 @@ export default defineComponent({
       loading: eventLoading,
     } = useQuery(GET_EVENT, { eventId });
 
-    const eventData = useResult(eventResult, null, (data) => {
-      const event = data.events[0];
-      return event;
+    const eventData = computed(() => {
+      if (!eventResult.value || !eventResult.value.events[0]) {
+        return null;
+      }
+      return eventResult.value.events[0];
     });
 
-    const channelsExceptCurrent = useResult(eventResult, null, (data) => {
-      const event: EventData = data.events[0];
+    const channelsExceptCurrent = computed(() => {
+      if (!eventResult.value || !eventResult.value.events[0]) {
+        return [];
+      }
+      const event: EventData = eventResult.value.events[0];
       const channels = event.Channels;
       const channelsExceptCurrent = channels.filter((channel: ChannelData) => {
         return channel.uniqueName !== channelId.value;
@@ -220,7 +225,11 @@ export default defineComponent({
                 }`
               }}
               <span v-if="eventData.updatedAt"> &#8226; </span>
-              {{ eventData.updatedAt ? `Edited ${relativeTime("" + eventData.updatedAt)}` : "" }}
+              {{
+                eventData.updatedAt
+                  ? `Edited ${relativeTime("" + eventData.updatedAt)}`
+                  : ""
+              }}
               <span>
                 &#8226;
                 <router-link

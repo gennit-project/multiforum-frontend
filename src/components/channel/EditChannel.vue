@@ -4,7 +4,6 @@ import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
   useMutation,
-  useResult,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
@@ -48,13 +47,16 @@ export default defineComponent({
       uniqueName: channelId,
     });
 
-    const existingDescription = useResult(result, "", (data: any) => {
-      return data.channels[0]?.description;
+    const existingDescription = computed(() => {
+      if (result.value) {
+        return result.value.data?.channels[0]?.description;
+      }
+      return []
     });
 
-    const existingTags = useResult(result, [], (data: any) => {
-      if (data.channels[0]?.Tags) {
-        return data.channels[0].Tags.map((tag: TagData) => {
+    const existingTags = computed(() => {
+      if (result.value) {
+        return result.value.data.channels[0].Tags.map((tag: TagData) => {
           return tag.text;
         });
       }

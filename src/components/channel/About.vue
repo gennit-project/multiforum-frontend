@@ -1,12 +1,13 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import Markdown from "vue3-markdown-it";
-import { useQuery, useResult } from "@vue/apollo-composable";
+import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/buttons/Tag.vue";
 
 export default defineComponent({
+  name: "OverviewPage",
   components: {
     Markdown,
     Tag,
@@ -20,16 +21,27 @@ export default defineComponent({
       uniqueName: channelId,
     });
 
-    const channelDescription = useResult(result, "This channel has no description.", () => {
-      return result.value.channels[0].description || "This channel has no description.";
+    const channelDescription = computed(() => {
+      const defaultResult = "This channel has no description."
+      if (result.value){
+        return result.value.channels[0].description || defaultResult;
+      }
+      return defaultResult;
+    })
+
+
+    const tags = computed(() => {
+      if (result.value) {
+       return result.value.channels[0].Tags;
+      }
+      return []
     });
 
-    const tags = useResult(result, [], () => {
-      return result.value.channels[0].Tags;
-    });
-
-    const admins = useResult(result, [], () => {
-      return result.value.channels[0].Admins;
+    const admins = computed(() => {
+      if (result.value){
+        return result.value.channels[0].Admins;
+      } 
+      return []
     });
 
     return {
@@ -42,7 +54,7 @@ export default defineComponent({
       tags,
     };
   },
-  name: "Overview",
+  
   methods: {
     filterChannelsByTag(tag: string) {
       this.router.push({
@@ -110,7 +122,9 @@ export default defineComponent({
           </router-link>
         </div>
 
-        <p class="text-sm mb-6" v-else>This channel does not have any admins.</p>
+        <p class="text-sm mb-6" v-else>
+          This channel does not have any admins.
+        </p>
 
         <h2
           class="
@@ -129,12 +143,14 @@ export default defineComponent({
           <span>
             <router-link :to="`/channels/c/${channelId}/edit`"
               >Edit</router-link
-            > </span
-          > &#8226;
+            >
+          </span>
+          &#8226;
           <span
             class="underline font-medium text-gray-900 cursor-pointer"
             @click="confirmDeleteIsOpen = true"
-            > Delete
+          >
+            Delete
           </span>
         </div>
       </div>

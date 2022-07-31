@@ -4,7 +4,6 @@ import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
   useMutation,
-  // useResult,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
