@@ -24,7 +24,7 @@ export default defineComponent({
   <div class="inline-block">
     <VDropdown>
       <button
-        :class="[highlighted ? 'ring-1 ring-indigo-500 border-indigo-500' : '']"
+        :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
         class="
           inline-flex
           items-center
@@ -40,7 +40,7 @@ export default defineComponent({
           text-gray-700
           bg-white
           hover:bg-gray-200
-          focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500
+          focus:ring-1 focus:ring-blue-500 focus:border-blue-500
         "
       >
         <slot name="icon"></slot>

@@ -43,10 +43,10 @@ export default defineComponent({
             }
           "
           class="
-            focus:ring-indigo-500
+            focus:ring-blue-500
             h-4
             w-4
-            text-indigo-600
+            text-blue-600
             border border-gray-300
           "
         />

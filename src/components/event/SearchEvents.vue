@@ -1173,10 +1173,10 @@ export default defineComponent({
               <div class="flex items-center h-5">
                 <input
                   class="
-                    focus:ring-indigo-500
+                    focus:ring-blue-500
                     h-4
                     w-4
-                    text-indigo-600
+                    text-blue-600
                     border-gray-300
                     rounded
                   "

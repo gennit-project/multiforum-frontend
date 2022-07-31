@@ -205,7 +205,7 @@ export default defineComponent({
           <div className="text-xs text-gray-600 mt-4">
             <div className="organizer">
               <router-link
-                class="text-indigo-800 underline"
+                class="text-blue-800 underline"
                 :to="`/u/${eventData.Poster.username}`"
               >
                 {{ eventData.Poster.username }}

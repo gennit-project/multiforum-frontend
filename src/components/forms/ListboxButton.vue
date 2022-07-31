@@ -33,8 +33,8 @@ export default defineComponent({
       cursor-default
       focus:outline-none
       focus:ring-1
-      focus:ring-indigo-500
-      focus:border-indigo-500
+      focus:ring-blue-500
+      focus:border-blue-500
       sm:text-sm
     "
   >

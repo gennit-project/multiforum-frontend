@@ -137,7 +137,7 @@ export default defineComponent({
       <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
         Posted by
         <router-link
-          className="text-indigo-600 underline ml-1"
+          className="text-blue-600 underline ml-1"
           :to="`/u/${event?.Poster.username}`"
         >
           {{ event?.Poster.username }}
@@ -146,7 +146,7 @@ export default defineComponent({
       <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
         {{ `Posted in: ` }}
         <router-link
-          class="ml-1 text-indigo-600 underline"
+          class="ml-1 text-blue-600 underline"
           :key="channel.uniqueName"
           v-for="channel in event?.Channels"
           :to="`/channels/c/${channel.uniqueName}/events/e/${event?.id}`"
@@ -159,7 +159,7 @@ export default defineComponent({
       <div v-if="event" class="mt-3 text-sm">
         <router-link
           :to="`/channels/c/${event.Channels[0].uniqueName}/events/e/${event.id}`"
-          class="font-medium text-indigo-600 hover:text-indigo-500"
+          class="font-medium text-blue-600 hover:text-blue-500"
         >
           View Comments
           <span aria-hidden="true">&rarr;</span>
@@ -183,7 +183,7 @@ export default defineComponent({
           focus:outline-none
           focus:ring-2
           focus:ring-offset-2
-          focus:ring-indigo-500
+          focus:ring-blue-500
         "
         @click="$emit('closePreview')"
       >

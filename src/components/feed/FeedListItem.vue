@@ -33,7 +33,7 @@ export default defineComponent({
         @click="$emit('openFeedPreview', feed)"
       >
         
-        <p class="text-md font-medium text-indigo-600 truncate">
+        <p class="text-md font-medium text-blue-600 truncate">
           <span>{{ feed.title }}</span>
         </p>
         <p class="text-sm font-medium text-gray-500 truncate">
@@ -59,7 +59,7 @@ export default defineComponent({
     </div>
     <div class="mt-3 text-sm">
       <router-link
-        :to="`/feeds/${feed.id}`" class=" font-medium text-indigo-600 hover:text-indigo-500 "
+        :to="`/feeds/${feed.id}`" class=" font-medium text-blue-600 hover:text-blue-500 "
       >
         View Comments
         <span aria-hidden="true">&rarr;</span>

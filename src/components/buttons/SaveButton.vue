@@ -17,7 +17,7 @@ export default defineComponent({
     :class="[
       disabled
         ? 'bg-gray-200 cursor-default text-gray-600'
-        : 'text-white hover:bg-indigo-700 bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500',
+        : 'text-white hover:bg-blue-700 bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
     ]"
     class="
       ml-3

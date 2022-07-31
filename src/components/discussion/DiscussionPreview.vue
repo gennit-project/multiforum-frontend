@@ -83,7 +83,7 @@ export default defineComponent({
                             text-gray-400
                             hover:text-gray-500
                             focus:outline-none
-                            focus:ring-2 focus:ring-indigo-500
+                            focus:ring-2 focus:ring-blue-500
                           "
                           @click="$emit('closePreview')"
                         >
@@ -108,8 +108,8 @@ export default defineComponent({
                         :to="`/channels/c/${discussion.Channels[0].uniqueName}/discussions/d/${discussion.id}`"
                         class="
                           font-medium
-                          text-indigo-600
-                          hover:text-indigo-500
+                          text-blue-600
+                          hover:text-blue-500
                         "
                       >
                         View Comments
@@ -140,8 +140,8 @@ export default defineComponent({
                               w-full
                               shadow-sm
                               sm:text-sm
-                              focus:ring-indigo-500
-                              focus:border-indigo-500
+                              focus:ring-blue-500
+                              focus:border-blue-500
                               border border-gray-300
                               rounded-md
                             "
@@ -166,7 +166,7 @@ export default defineComponent({
                       text-gray-700
                       hover:bg-gray-50
                       focus:outline-none
-                      focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                     "
                     @click="$emit('closePreview')"
                   >
@@ -186,10 +186,10 @@ export default defineComponent({
                       font-medium
                       rounded-md
                       text-white
-                      bg-indigo-600
-                      hover:bg-indigo-700
+                      bg-blue-600
+                      hover:bg-blue-700
                       focus:outline-none
-                      focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
                     "
                   >
                     Save

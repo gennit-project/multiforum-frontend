@@ -86,7 +86,7 @@ export default defineComponent({
             class="
               text-sm
               font-medium
-              text-indigo-600
+              text-blue-600
               truncate
               cursor-pointer
               underline
@@ -121,7 +121,7 @@ export default defineComponent({
             :class="[
               selectedChannels.indexOf(channel.uniqueName) !== -1 ? 'highlighted' : '',
             ]"
-            class="ml-1 text-indigo-600 underline"
+            class="ml-1 text-blue-600 underline"
             :key="channel.uniqueName"
             v-for="channel in event?.Channels"
             :to="`/channels/c/${channel.uniqueName}/events/e/${event?.id}`"

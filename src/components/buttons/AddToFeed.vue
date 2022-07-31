@@ -30,13 +30,13 @@ export default defineComponent({
           text-xs
           font-medium
           rounded
-          text-indigo-700
-          bg-indigo-100
-          hover:bg-indigo-200
+          text-blue-700
+          bg-blue-100
+          hover:bg-blue-200
           focus:outline-none
           focus:ring-offset-2
           focus:ring-offset-gray-100
-          focus:ring-indigo-500
+          focus:ring-blue-500
         "
       >
         Add to Feed

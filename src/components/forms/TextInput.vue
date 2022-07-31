@@ -49,7 +49,7 @@ export default defineComponent({
           disabled ? 'text-gray-600 bg-gray-100 bg-clip-padding' : '',
           invalid
             ? 'border-red-300 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500'
-            : 'focus:ring-indigo-500 focus:border-indigo-500',
+            : 'focus:ring-blue-500 focus:border-blue-500',
         ]"
         class="flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
       />

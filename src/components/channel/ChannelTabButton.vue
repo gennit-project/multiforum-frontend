@@ -24,7 +24,7 @@ export default defineComponent({
     class="
       border-transparent
       text-gray-500
-      hover:text-indigo-600 hover:border-indigo-500
+      hover:text-blue-600 hover:border-blue-500
       group
       inline-flex
       items-center
@@ -33,7 +33,7 @@ export default defineComponent({
       font-medium
       text-sm
     "
-    active-class="border-indigo-500 text-indigo-600"
+    active-class="border-blue-500 text-blue-600"
   >
     <span>{{ label }}</span>
   </router-link>

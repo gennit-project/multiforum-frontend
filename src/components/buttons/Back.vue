@@ -18,7 +18,7 @@
       bg-white
       hover:text-gray-800
       focus:outline-none
-      focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
     "
   >
     ← Back

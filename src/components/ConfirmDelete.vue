@@ -168,7 +168,7 @@ export default defineComponent({
                     focus:outline-none
                     focus:ring-2
                     focus:ring-offset-2
-                    focus:ring-indigo-500
+                    focus:ring-blue-500
                     sm:mt-0 sm:w-auto sm:text-sm
                   "
                   @click="$emit('close')"
