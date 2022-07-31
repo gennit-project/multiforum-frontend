@@ -18,18 +18,16 @@ import FormTitle from "@/components/forms/FormTitle.vue";
 import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
-import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { apolloClient } from "@/main";
 import { DiscussionData } from "@/types/discussionTypes";
 
-import 'md-editor-v3/lib/style.css';
+import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   name: "CreateDiscussion",
   components: {
     CancelButton,
-    ChannelPicker,
     Form,
     FormRow,
     FormTitle,
@@ -185,12 +183,13 @@ export default defineComponent({
         createDiscussionInput: createDiscussionInput.value,
       },
       update: (cache: any, result: any) => {
-        const newDiscussion: DiscussionData = result.data?.createDiscussions?.discussions[0]
+        const newDiscussion: DiscussionData =
+          result.data?.createDiscussions?.discussions[0];
 
         cache.modify({
           fields: {
             discussions(existingDiscussionRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField
+              const readField = fieldInfo.readField;
               const newDiscussionRef = cache.writeFragment({
                 data: newDiscussion,
                 fragment: gql`
@@ -216,16 +215,13 @@ export default defineComponent({
       },
     }));
 
-
-
     onDone((response: any) => {
-
-        // Add a new comment section for each selected channel.
-        // createCommentSections({
-        //   variables: {
-        //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
-        //   },
-        // });
+      // Add a new comment section for each selected channel.
+      // createCommentSections({
+      //   variables: {
+      //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
+      //   },
+      // });
       const newDiscussionId = response.data.createDiscussions.discussions[0].id;
 
       /*
@@ -294,6 +290,12 @@ export default defineComponent({
     },
   },
   methods: {
+    setSelectedTags(tags: Array<string>){
+      this.selectedTags.value = tags;
+    },
+    setSelectedChannels (channels: Array<string>) {
+      this.selectedChannels.value = channels;
+    },
     getChannelOptionLabels(options: Array<ChannelData>) {
       return options.map((channel) => channel.uniqueName);
     },
@@ -322,20 +324,14 @@ export default defineComponent({
           name: "SearchDiscussions",
         });
       }
-    }
+    },
   },
 });
 </script>
 <template>
   <div>
     <Form>
-      <div
-        v-if="
-          channelLoading || tagsLoading
-        "
-      >
-        Loading...
-      </div>
+      <div v-if="channelLoading || tagsLoading">Loading...</div>
       <div v-if="createDiscussionError">{{ createDiscussionError }}</div>
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div>
@@ -351,27 +347,26 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <!-- <ChannelPicker
+              <TagPicker
                 v-if="channelData && channelData.channels"
-                v-model="selectedChannels"
-                :channel-options="getChannelOptionLabels(channelData.channels)"
-                :selected-channels="selectedChannels"
-              /> -->
+                :tag-options="getChannelOptionLabels(channelData.channels)"
+                :initial-value="selectedChannels"
+                @setSelectedTags="setSelectedChannels"
+              />
             </FormRow>
 
             <FormRow :section-title="'Body'">
-              <!-- <TextEditor class="mb-3" :value="body" @update="updateBody" />-->
-              
+              <TextEditor class="mb-3" :value="body" @update="updateBody" />
             </FormRow>
-            
+
             <FormRow :section-title="'Tags'">
-              <!-- <TagPicker
-                class="mt-3 mb-3"
+         
+              <TagPicker
                 v-if="tagsData && tagsData"
-                v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
-                :selected-tags="selectedTags"
-              /> -->
+                :initial-value="selectedTags"
+                @setSelectedTags="setSelectedTags"
+              />
             </FormRow>
           </div>
         </div>
@@ -379,7 +374,7 @@ export default defineComponent({
 
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton @click="cancel"/>
+          <CancelButton @click="cancel" />
           <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>

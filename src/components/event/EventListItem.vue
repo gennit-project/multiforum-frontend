@@ -82,7 +82,7 @@ export default defineComponent({
       <div class="py-2">
         <div class="flex items-center">
           <p
-            @click="$emit('openEventPreview')"
+            @click="$emit('clickedEventListItem')"
             class="
               text-sm
               font-medium

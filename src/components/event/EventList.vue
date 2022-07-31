@@ -1,17 +1,19 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
 import EventListItem from "./EventListItem.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { EventData } from "@/types/eventTypes";
 
 export default defineComponent({
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const channelId = computed(() => {
       return JSON.stringify(route.params.channelId) || "";
     });
     return {
       channelId,
+      router,
     };
   },
   props: {
@@ -21,7 +23,7 @@ export default defineComponent({
     },
     highlightedEventId: {
       type: String,
-      default: ""
+      default: "",
     },
     events: {
       type: Array as PropType<EventData[]>,
@@ -58,20 +60,47 @@ export default defineComponent({
       this.$emit("filterByTag", tag);
     },
     getEventLocationId(event: EventData) {
-      if (event.location){
-        return (event.location.latitude.toString() || '') + (event.location?.longitude.toString() || '')
+      if (event.location) {
+        return (
+          (event.location.latitude.toString() || "") +
+          (event.location?.longitude.toString() || "")
+        );
       }
-      return "no_location"
-    }
-  }
+      return "no_location";
+    },
+    handleClickEventListItem(event: EventData) {
+      if (this.showMap) {
+        this.$emit("openPreview", event.id);
+      } else {
+        console.log("go to ", {
+          eventId: event.id,
+        });
+
+        if (this.channelId) {
+          return this.router.push({
+            name: "EventDetail",
+            params: {
+              eventId: event.id,
+              channelId: this.channelId,
+            },
+          });
+        }
+        return this.router.push({
+          name: "EventDetail",
+          params: {
+            eventId: event.id,
+            channelId: event.Channels[0].uniqueName
+          }
+        })
+      }
+    },
+  },
 });
 </script>
 
 <template>
   <div :class="['bg-white', 'sm:rounded-md']">
-    <p v-if="events.length === 0 && !showMap">
-      Could not find any events.
-    </p>
+    <p v-if="events.length === 0 && !showMap">Could not find any events.</p>
     <ul role="list" class="divide-y divide-gray-200">
       <EventListItem
         :ref="`#${event.id}`"
@@ -83,12 +112,21 @@ export default defineComponent({
         :search-input="searchInput"
         :current-channel-id="channelId"
         :class="[
-          ( event.id === highlightedEventId ) || (!highlightedEventId && highlightedEventLocationId === getEventLocationId(event)) ? 'bg-gray-100' : ''
+          event.id === highlightedEventId ||
+          (!highlightedEventId &&
+            highlightedEventLocationId === getEventLocationId(event))
+            ? 'bg-gray-100'
+            : '',
         ]"
         @mouseover="
           () => {
-            if (showMap){
-              $emit('highlightEvent', getEventLocationId(event), event.id, event);
+            if (showMap) {
+              $emit(
+                'highlightEvent',
+                getEventLocationId(event),
+                event.id,
+                event
+              );
             }
           }
         "
@@ -99,7 +137,7 @@ export default defineComponent({
             }
           }
         "
-        @openEventPreview="() => { $emit('openPreview', event) }"
+        @clickedEventListItem="handleClickEventListItem(event)"
         @filterByTag="filterByTag"
       />
     </ul>

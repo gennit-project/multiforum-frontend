@@ -7,7 +7,6 @@ import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 
 import AddToFeed from "../buttons/AddToFeed.vue";
-import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import DatePicker from "@/components/forms/DatePicker.vue";
 import EventList from "./EventList.vue";
 import EventPreview from "./EventPreview.vue";
@@ -71,7 +70,6 @@ export default defineComponent({
     AddToFeed,
     CalendarIcon,
     ChannelIcon,
-    ChannelPicker,
     CloseButton,
     CreateButton,
     DatePicker,
@@ -462,8 +460,22 @@ export default defineComponent({
       });
     };
 
-    const { result: tagOptions } = useQuery(GET_TAGS);
-    const { result: channelOptions } = useQuery(GET_CHANNEL_NAMES);
+    const { result: tagResult } = useQuery(GET_TAGS);
+    const { result: channelResult } = useQuery(GET_CHANNEL_NAMES);
+
+    const tagOptionLabels = computed(() => {
+      if (tagResult.value) {
+        return tagResult.value.tags.map((tag: TagData) => tag.text);
+      }
+      return []
+    })
+
+    const channelOptionLabels = computed(() => {
+      if (channelResult.value) {
+        return channelResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+      }
+      return []
+    })
 
     const defaultFilterLabels = {
       date: "Future Events",
@@ -610,7 +622,7 @@ export default defineComponent({
       beginningOfDateRange,
       betweenDateTimesFilter,
       channelLabel,
-      channelOptions,
+      channelOptionLabels,
       chronologicalOrder,
       createEventPath,
       dateLabel,
@@ -656,7 +668,7 @@ export default defineComponent({
       selectedTags,
       startTimeFilter,
       tagLabel,
-      tagOptions,
+      tagOptionLabels,
       weeklyTimeLabel,
       weeklyTimeRangeFilter,
     };
@@ -829,12 +841,6 @@ export default defineComponent({
       this.selectedEvent = event;
       this.colorLocked = true;
     },
-    getTagOptionLabels(options: Array<TagData>) {
-      return options.map((tag) => tag.text);
-    },
-    getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.uniqueName);
-    },
     updateSearchResult(input: string) {
       this.setSearchInput(input);
     },
@@ -859,7 +865,7 @@ export default defineComponent({
     setShowMap() {
       this.showMap = true;
       const path = this.channelId
-        ? `/channels/${this.channelId}/events`
+        ? `/channels/c/${this.channelId}/events`
         : "events";
       router.push({
         path,
@@ -1119,12 +1125,11 @@ export default defineComponent({
           <ChannelIcon />
         </template>
         <template v-slot:content>
-          <!-- <ChannelPicker
-            v-model="selectedChannels"
-            :channel-options="getChannelOptionLabels(channelOptions.channels)"
-            :selected-channels="selectedChannels"
-            @setSelectedChannels="setSelectedChannels"
-          /> -->
+          <TagPicker
+            :tag-options="channelOptionLabels"
+            :selected-tags="selectedChannels"
+            @setSelectedTags="setSelectedChannels"
+          />
         </template>
       </FilterChip>
 
@@ -1136,11 +1141,11 @@ export default defineComponent({
           <TagIcon />
         </template>
         <template v-slot:content>
-          <!-- <TagPicker
-            :tag-options="getTagOptionLabels(tagOptions.tags)"
+          <TagPicker
+            :tag-options="tagOptionLabels"
             :selected-tags="selectedTags"
             @setSelectedTags="setSelectedTags"
-          /> -->
+          />
         </template>
       </FilterChip>
 

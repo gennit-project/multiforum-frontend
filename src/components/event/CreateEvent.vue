@@ -16,7 +16,6 @@ import FormTitle from "@/components/forms/FormTitle.vue";
 import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
-import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 
 import ErrorBanner from "../forms/ErrorBanner.vue";
@@ -35,7 +34,6 @@ export default defineComponent({
   name: "CreateEvent",
   components: {
     CancelButton,
-    ChannelPicker,
     CheckBox,
     ErrorBanner,
     Form,

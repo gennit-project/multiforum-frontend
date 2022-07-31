@@ -4,7 +4,6 @@ import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
-import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
@@ -25,7 +24,6 @@ interface Ref<T> {
 export default defineComponent({
   components: {
     ChannelIcon,
-    ChannelPicker,
     CreateButton,
     DiscussionList,
     FilterChip,
@@ -161,8 +159,22 @@ export default defineComponent({
       });
     };
 
-    const { result: tagOptions } = useQuery(GET_TAGS);
-    const { result: channelOptions } = useQuery(GET_CHANNEL_NAMES);
+    const { result: tagResult } = useQuery(GET_TAGS);
+    const { result: channelResult } = useQuery(GET_CHANNEL_NAMES);
+
+    const tagOptionLabels = computed(() => {
+      if (tagResult.value) {
+        return tagResult.value.tags.map((tag: TagData) => tag.text);
+      }
+      return []
+    })
+
+    const channelOptionLabels = computed(() => {
+      if (channelResult.value) {
+        return channelResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+      }
+      return []
+    })
 
     const openModal = (selectedFilter: string) => {
       showModal.value = true;
@@ -193,7 +205,7 @@ export default defineComponent({
     return {
       channelId,
       channelLabel,
-      channelOptions,
+      channelOptionLabels,
       closeModal,
       compareDate,
       createDiscussionPath,
@@ -213,23 +225,16 @@ export default defineComponent({
       selectedFilterOptions,
       selectedTags,
       tagLabel,
-      tagOptions,
+      tagOptionLabels,
     };
   },
   methods: {
-    getTagOptionLabels(options: Array<TagData>) {
-      return options.map((tag) => tag.text);
-    },
-    getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.uniqueName);
-    },
     updateSearchResult(input: string) {
       this.setSearchInput(input);
     },
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
     },
-
   },
 });
 </script>
@@ -250,11 +255,11 @@ export default defineComponent({
           <ChannelIcon />
         </template>
         <template v-slot:content>
-          <!-- <ChannelPicker
-            :channel-options="getChannelOptionLabels(channelOptions.channels)"
+          <TagPicker
+            :tag-options="channelOptionLabels"
             :initial-value="selectedChannels"
-            @setSelectedChannels="setSelectedChannels"
-          /> -->
+            @setSelectedTags="setSelectedChannels"
+          />
         </template>
       </FilterChip>
 
@@ -266,11 +271,11 @@ export default defineComponent({
           <TagIcon />
         </template>
         <template v-slot:content>
-          <!-- <TagPicker
-            :tag-options="getTagOptionLabels(tagOptions.tags)"
+          <TagPicker
+            :tag-options="tagOptionLabels"
             :initial-value="selectedTags"
             @setSelectedTags="setSelectedTags"
-          /> -->
+          />
         </template>
       </FilterChip>
       <CreateButton :to="createDiscussionPath" :label="'Create Discussion'" />
