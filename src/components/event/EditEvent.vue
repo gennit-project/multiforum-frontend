@@ -104,6 +104,7 @@ export default defineComponent({
       }
       return result.value.events[0]?.startTime;
     })
+
     const existingEndTime = computed(() => {
       if (!result.value || !result.value.events || !result.value.events[0].endTime) {
         return ""

@@ -9,7 +9,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     const channelId = computed(() => {
-      return JSON.stringify(route.params.channelId) || "";
+      return route.params.channelId || "";
     });
     return {
       channelId,
@@ -72,9 +72,6 @@ export default defineComponent({
       if (this.showMap) {
         this.$emit("openPreview", event.id);
       } else {
-        console.log("go to ", {
-          eventId: event.id,
-        });
 
         if (this.channelId) {
           return this.router.push({

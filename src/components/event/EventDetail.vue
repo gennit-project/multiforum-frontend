@@ -3,9 +3,10 @@ import { defineComponent, computed, ref } from "vue";
 import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
 import { gql } from "@apollo/client/core";
-import { useQuery } from "@vue/apollo-composable";
-import { useRoute } from "vue-router";
+import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
+import { DELETE_EVENT } from "@/graphQLData/event/mutations";
 // import { TagData } from "@/types/tagTypes.d";
 import { EventData } from "@/types/eventTypes";
 import {
@@ -15,15 +16,18 @@ import {
 } from "../../dateTimeUtils";
 import ConfirmDelete from "../ConfirmDelete.vue";
 import { DateTime } from "luxon";
+import ErrorBanner from "../forms/ErrorBanner.vue";
 
 export default defineComponent({
   components: {
     Back,
     ConfirmDelete,
+    ErrorBanner,
     Tag,
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const eventId = computed(() => {
       return route.params.eventId;
     });
@@ -70,12 +74,15 @@ export default defineComponent({
     } = useQuery(GET_EVENT, { eventId });
 
     const eventData = computed(() => {
-      if (!eventResult.value || !eventResult.value.events[0]) {
-        return null;
+      if (
+        !eventResult.value ||
+        !eventResult.value.events ||
+        !eventResult.value.events[0]
+      ) {
+        return "[Deleted]";
       }
       return eventResult.value.events[0];
     });
-
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
         return [];
@@ -108,16 +115,53 @@ export default defineComponent({
 
     const confirmDeleteIsOpen = ref(false);
 
+    const {
+      mutate: deleteEvent,
+      error: deleteEventError,
+      onDone: onDoneDeleting,
+      // @ts-ignore
+    } = useMutation(DELETE_EVENT, {
+      variables: {
+        id: eventId.value,
+      },
+      update: (cache: any) => {
+        cache.modify({
+          fields: {
+            events(existingEventRefs = [], fieldInfo: any) {
+              const readField = fieldInfo.readField;
+
+              return existingEventRefs.filter((ref) => {
+                return readField("id", ref) !== eventId.value;
+              });
+            },
+          },
+        });
+      },
+    });
+
+    onDoneDeleting(() => {
+      if (channelId.value) {
+        router.push({
+          name: "SearchEventsInChannel",
+          params: {
+            channelId: channelId.value,
+          },
+        });
+      }
+    });
+
     return {
       confirmDeleteIsOpen,
+      eventData,
       eventResult,
       eventError,
       eventLoading,
       eventId,
       channelId,
-      eventData,
       channelsExceptCurrent,
       commentSectionId,
+      deleteEvent,
+      deleteEventError,
       relativeTime,
     };
   },
@@ -183,6 +227,11 @@ export default defineComponent({
     </div> -->
 
     <div v-else-if="eventResult && eventResult.events">
+      <ErrorBanner
+        class="mt-2"
+        v-if="deleteEventError"
+        :text="deleteEventError.message"
+      />
       <div class="grid grid-cols-3 gap-4">
         <div class="col-start-1 col-span-2">
           <h2 class="text-lg mb-2 text-gray-700">{{ eventData.title }}</h2>
@@ -190,7 +239,7 @@ export default defineComponent({
             {{ eventData.description }}
           </p>
           <Tag
-            v-for="tag in eventData.Tags"
+            v-for="tag in eventData.tags"
             :tag="tag.text"
             :key="tag.text"
             :eventId="eventId"
@@ -202,7 +251,7 @@ export default defineComponent({
             <router-link
               key="{channel.uniqueName}"
               className="understatedLink"
-              :to="`/channels/c/${channel.uniqueName}/events/${eventId}`"
+              :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
             >
               {{ `c/${channel.uniqueName}` }}
             </router-link>
@@ -210,6 +259,7 @@ export default defineComponent({
           <div className="text-xs text-gray-600 mt-4">
             <div className="organizer">
               <router-link
+                v-if="eventData.Poster"
                 class="text-blue-800 underline"
                 :to="`/u/${eventData.Poster.username}`"
               >
@@ -353,8 +403,11 @@ export default defineComponent({
 
         <!-- <AddToCalendar :event="getCalendarData" /> -->
         <ConfirmDelete
+          :title="'Delete Event'"
+          :body="'Are you sure you want to delete this event?'"
           :open="confirmDeleteIsOpen"
           @close="confirmDeleteIsOpen = false"
+          @delete="deleteEvent"
         />
       </div>
     </div>

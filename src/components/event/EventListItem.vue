@@ -155,7 +155,7 @@ export default defineComponent({
         <div class="text-sm">
           <router-link
             v-if="isWithinChannel && event.CommentSections[0]"
-            :to="`/channels/c/${defaultUniqueName}/events/${event.id}`"
+            :to="`/channels/c/${defaultUniqueName}/events/e/${event.id}`"
             class="font-medium text-gray-500"
           >
             {{ getCommentCount(event.CommentSections[0]) }}

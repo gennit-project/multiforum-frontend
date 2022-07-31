@@ -19,6 +19,14 @@ export default defineComponent({
     ExclamationIcon,
   },
   props: {
+    title: {
+      type: String,
+      required: true
+    },
+    body: {
+      type: String,
+      required: true
+    },
     open: {
         type: Boolean,
         default: false
@@ -107,13 +115,11 @@ export default defineComponent({
                     as="h3"
                     class="text-lg leading-6 font-medium text-gray-900"
                   >
-                    Deactivate account
+                    {{ title }}
                   </DialogTitle>
                   <div class="mt-2">
                     <p class="text-sm text-gray-500">
-                      Are you sure you want to deactivate your account? All of
-                      your data will be permanently removed from our servers
-                      forever. This action cannot be undone.
+                      {{ body }}
                     </p>
                   </div>
                 </div>

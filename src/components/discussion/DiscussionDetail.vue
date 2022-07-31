@@ -94,6 +94,7 @@ export default defineComponent({
         !result.value ||
         !result.value.discussions ||
         !result.value.discussions[0] ||
+        !result.value.discussions[0].Channels ||
         result.value.discussions[0].Channels?.length < 2
       ) {
         return [];
@@ -211,7 +212,7 @@ export default defineComponent({
       />
 
       <div class="md:col-span-3 mt-6">
-        <div v-if="tags.length > 0">
+        <div v-if="tags && tags.length > 0">
           <h2
             class="
               text-md
@@ -264,6 +265,8 @@ export default defineComponent({
     </div>
     <ConfirmDelete
       :open="confirmDeleteIsOpen"
+      :title="'Delete Discussion'"
+      :body="'Are you sure you want to delete this discussion?'"
       @close="confirmDeleteIsOpen = false"
       @delete="deleteDiscussion"
     />

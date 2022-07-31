@@ -110,10 +110,13 @@ export const DELETE_EVENTS = gql`
 
 export const DELETE_EVENT = gql`
   mutation deleteEvent($id: ID!) {
-    deleteEvent(filter: { id: [$id] }) {
-      event {
-        id
-      }
+      deleteEvents(
+        where: {
+          id: $id
+        }
+    ) {
+      nodesDeleted
+      relationshipsDeleted    
     }
   }
 `;
