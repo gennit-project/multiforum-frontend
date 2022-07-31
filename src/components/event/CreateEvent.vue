@@ -9,6 +9,8 @@ import { gql } from "@apollo/client/core";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
+import ClockIcon from "@/components/icons/ClockIcon.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import CancelButton from "@/components/buttons/CancelButton.vue";
 import SaveButton from "@/components/buttons/SaveButton.vue";
 import TextEditor from "@/components/forms/TextEditor.vue";
@@ -17,6 +19,7 @@ import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
+import PencilIcon from "@/components/icons/PencilIcon.vue"
 
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import { apolloClient } from "@/main";
@@ -34,12 +37,15 @@ export default defineComponent({
   name: "CreateEvent",
   components: {
     CancelButton,
+    ChannelIcon,
     CheckBox,
+    ClockIcon,
     ErrorBanner,
-    Form,
+    TailwindForm: Form,
     FormRow,
     FormTitle,
     LocationSearchBar,
+    PencilIcon,
     SaveButton,
     TagPicker,
     TextEditor,
@@ -258,12 +264,12 @@ export default defineComponent({
           createEventInput: createEventInput.value,
         },
         update: (cache: any, result: any) => {
-          const newEvent: EventData = result.data?.createEvents?.events[0]
+          const newEvent: EventData = result.data?.createEvents?.events[0];
 
           cache.modify({
             fields: {
               events(existingEventRefs = [], fieldInfo: any) {
-                const readField = fieldInfo.readField
+                const readField = fieldInfo.readField;
                 const newEventRef = cache.writeFragment({
                   data: newEvent,
                   fragment: gql`
@@ -523,50 +529,59 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <Form>
+    <TailwindForm>
       <div v-if="channelLoading || tagsLoading"></div>
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+      <div class="divide-y divide-gray-200 sm:space-y-5">
         <div>
           <FormTitle> Create Event </FormTitle>
-
-          <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-            <FormRow :section-title="'Title'">
-              <TextInput
-                :value="title"
-                :full-width="true"
-                @update="updateTitle"
-              />
+          <div>
+            <FormRow>
+              <template v-slot:icon>
+                <PencilIcon class="float-right" />
+              </template>
+              <template v-slot:content>
+                <TextInput
+                  :value="title"
+                  :full-width="true"
+                  :placeholder="'Add title'"
+                  @update="updateTitle"
+                />
+              </template>
             </FormRow>
 
-            <FormRow :section-title="'Channel(s)'">
-              <!-- <ChannelPicker
-                v-if="channelData && channelData.channels"
-                v-model="selectedChannels"
-                :channel-options="getChannelOptionLabels(channelData.channels)"
-                :selected-channels="selectedChannels"
-                @setSelectedChannels="setSelectedChannels"
-              /> -->
+            <FormRow>
+              <template v-slot:icon>
+                <ChannelIcon :wide="true" class="float-right" />
+              </template>
+              <template v-slot:content>
+                <TextInput
+                  :full-width="true"
+                  :placeholder="'Add channel(s)'"
+                  @update="updateTitle"
+                />
+                <TagPicker
+                  v-if="channelData && channelData.channels"
+                  :tag-options="getChannelOptionLabels(channelData.channels)"
+                  :initial-value="selectedChannels"
+                  @setSelectedTags="setSelectedChannels"
+                />
+              </template>
             </FormRow>
 
-            <FormRow :section-title="'Start Time'">
-              <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <!-- <DatePicker
-                  v-model="startTime"
-                  :is-24="false"
-                  :minutesIncrement="30"
-                  :minDate="minStartTimeISO"
-                /> -->
-              </div>
-            </FormRow>
-            <FormRow :section-title="'End Time'">
-              <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <!-- <DatePicker
-                  v-model="endTime"
-                  :is-24="false"
-                  :minutesIncrement="30"
-                  @update:modelValue="updateStartTime"
-                /> -->
-              </div>
+            <FormRow>
+              <template v-slot:icon>
+                <ClockIcon class="float-right" />
+              </template>
+              <template v-slot:content>
+                <div class="sm:inline-block md:flex items-center md:space-x-2">
+                  <!-- <DatePicker
+                    v-model="startTime"
+                    :is-24="false"
+                    :minutesIncrement="30"
+                    :minDate="minStartTimeISO"
+                  /> -->
+                </div>
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Virtual Event URL'">
@@ -624,7 +639,7 @@ export default defineComponent({
           <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>
-    </Form>
+    </TailwindForm>
 
     <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
       {{ error.message }}

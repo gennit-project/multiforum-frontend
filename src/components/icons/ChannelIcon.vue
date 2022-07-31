@@ -13,7 +13,7 @@ export default defineComponent({
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    :class="[wide ? 'w-6' : 'w-4']"
+    :class="[wide ? 'w-5' : 'w-4']"
     class="-ml-0.5 mr-2"
     fill="none"
     viewBox="0 0 24 24"

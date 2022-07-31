@@ -23,6 +23,7 @@ export default defineComponent({
     "
   >
     <label
+      v-if="sectionTitle"
       for="title"
       class="
         block
@@ -35,8 +36,21 @@ export default defineComponent({
     >
       {{ sectionTitle }}
     </label>
-    <div class="mt-1 sm:col-span-3">
-      <slot />
+    <div
+      v-else
+      for="title"
+      class="
+        text-sm
+        font-medium
+        text-gray-700
+        sm:mt-px sm:pt-2
+        align-right
+      "
+    >
+      <slot name="icon" ></slot>
+    </div>
+    <div class="sm:col-span-3">
+       <slot name="content"></slot>
     </div>
   </div>
 </template>
