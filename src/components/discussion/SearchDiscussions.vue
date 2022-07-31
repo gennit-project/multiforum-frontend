@@ -250,11 +250,11 @@ export default defineComponent({
           <ChannelIcon />
         </template>
         <template v-slot:content>
-          <ChannelPicker
+          <!-- <ChannelPicker
             :channel-options="getChannelOptionLabels(channelOptions.channels)"
             :initial-value="selectedChannels"
             @setSelectedChannels="setSelectedChannels"
-          />
+          /> -->
         </template>
       </FilterChip>
 
@@ -266,11 +266,11 @@ export default defineComponent({
           <TagIcon />
         </template>
         <template v-slot:content>
-          <TagPicker
+          <!-- <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
             :initial-value="selectedTags"
             @setSelectedTags="setSelectedTags"
-          />
+          /> -->
         </template>
       </FilterChip>
       <CreateButton :to="createDiscussionPath" :label="'Create Discussion'" />

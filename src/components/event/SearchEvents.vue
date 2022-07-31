@@ -1119,12 +1119,12 @@ export default defineComponent({
           <ChannelIcon />
         </template>
         <template v-slot:content>
-          <ChannelPicker
+          <!-- <ChannelPicker
             v-model="selectedChannels"
             :channel-options="getChannelOptionLabels(channelOptions.channels)"
             :selected-channels="selectedChannels"
             @setSelectedChannels="setSelectedChannels"
-          />
+          /> -->
         </template>
       </FilterChip>
 
@@ -1136,11 +1136,11 @@ export default defineComponent({
           <TagIcon />
         </template>
         <template v-slot:content>
-          <TagPicker
+          <!-- <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
             :selected-tags="selectedTags"
             @setSelectedTags="setSelectedTags"
-          />
+          /> -->
         </template>
       </FilterChip>
 

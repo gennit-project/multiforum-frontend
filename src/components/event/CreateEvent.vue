@@ -18,9 +18,8 @@ import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
-import DatePicker from "vue3-date-time-picker";
+
 import ErrorBanner from "../forms/ErrorBanner.vue";
-import "vue3-date-time-picker/dist/main.css";
 import { apolloClient } from "@/main";
 import {
   getReadableTimeFromISO,
@@ -38,7 +37,6 @@ export default defineComponent({
     CancelButton,
     ChannelPicker,
     CheckBox,
-    DatePicker,
     ErrorBanner,
     Form,
     FormRow,
@@ -554,22 +552,22 @@ export default defineComponent({
 
             <FormRow :section-title="'Start Time'">
               <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <DatePicker
+                <!-- <DatePicker
                   v-model="startTime"
                   :is-24="false"
                   :minutesIncrement="30"
                   :minDate="minStartTimeISO"
-                />
+                /> -->
               </div>
             </FormRow>
             <FormRow :section-title="'End Time'">
               <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <DatePicker
+                <!-- <DatePicker
                   v-model="endTime"
                   :is-24="false"
                   :minutesIncrement="30"
                   @update:modelValue="updateStartTime"
-                />
+                /> -->
               </div>
             </FormRow>
 

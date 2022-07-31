@@ -20,9 +20,7 @@ import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import ChannelPicker from "@/components/forms/ChannelPicker.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
-import DatePicker from "vue3-date-time-picker";
 import ErrorBanner from "../forms/ErrorBanner.vue";
-import "vue3-date-time-picker/dist/main.css";
 import { apolloClient } from "@/main";
 import {
   getReadableTimeFromISO,
@@ -40,7 +38,6 @@ export default defineComponent({
     CancelButton,
     ChannelPicker,
     CheckBox,
-    DatePicker,
     ErrorBanner,
     Form,
     FormRow,
@@ -593,32 +590,32 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <ChannelPicker
+              <!-- <ChannelPicker
                 v-if="channelData && channelData.channels"
                 v-model="selectedChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 :selected-channels="selectedChannels"
                 @setSelectedChannels="setSelectedChannels"
-              />
+              /> -->
             </FormRow>
 
             <FormRow :section-title="'Start Time'">
               <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <DatePicker
+                <!-- <DatePicker
                   v-model="startTime"
                   :is-24="false"
                   :minutesIncrement="30"
-                />
+                /> -->
               </div>
             </FormRow>
             <FormRow :section-title="'End Time'">
               <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <DatePicker
+                <!-- <DatePicker
                   v-model="endTime"
                   :is-24="false"
                   :minutesIncrement="30"
                   @update:modelValue="updateStartTime"
-                />
+                /> -->
               </div>
             </FormRow>
 
@@ -646,14 +643,14 @@ export default defineComponent({
                 @update="updateDescription"
               />
 
-              <TagPicker
+              <!-- <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
                 v-model="selectedTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 :selected-tags="selectedTags"
                 @setSelectedTags="setSelectedTags"
-              />
+              /> -->
               <CheckBox :checked="!showCostField" @input="toggleCostField" />
               <span class="ml-2">This event is free</span>
             </FormRow>

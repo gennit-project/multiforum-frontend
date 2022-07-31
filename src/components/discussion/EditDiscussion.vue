@@ -390,12 +390,12 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <ChannelPicker
+              <!-- <ChannelPicker
                 v-if="channelData && channelData.channels"
                 :initial-value="existingChannels"
                 :channel-options="getChannelOptionLabels(channelData.channels)"
                 @setSelectedChannels="setSelectedChannels"
-              />
+              /> -->
             </FormRow>
 
             <FormRow :section-title="'Body'">
@@ -407,13 +407,13 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Tags'">
-              <TagPicker
+              <!-- <TagPicker
                 class="mt-3 mb-3"
                 v-if="tagsData && tagsData"
                 :initial-value="existingTags"
                 :tag-options="getTagOptionLabels(tagsData.tags)"
                 @setSelectedTags="setSelectedTags"
-              />
+              /> -->
             </FormRow>
           </div>
         </div>
