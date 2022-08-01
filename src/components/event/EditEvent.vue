@@ -10,43 +10,21 @@ import { gql } from "@apollo/client/core";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
-import CancelButton from "@/components/buttons/CancelButton.vue";
-import SaveButton from "@/components/buttons/SaveButton.vue";
-import TextEditor from "@/components/forms/TextEditor.vue";
-import FormTitle from "@/components/forms/FormTitle.vue";
-import FormRow from "@/components/forms/FormRow.vue";
-import Form from "@/components/forms/Form.vue";
-import TextInput from "@/components/forms/TextInput.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
-import ErrorBanner from "../forms/ErrorBanner.vue";
-import ErrorMessage from "../forms/ErrorMessage.vue";
 import { apolloClient } from "@/main";
 import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
-import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-// import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-import CheckBox from "@/components/forms/CheckBox.vue";
+
 import { EventData } from "@/types/eventTypes";
 import { DateTime } from "luxon";
 import { checkUrl } from "@/utils/formValidation";
+import CreateEditFormFields from "./CreateEditFormFields.vue";
 
 export default defineComponent({
   name: "EditEvent",
   components: {
-    CancelButton,
-    CheckBox,
-    ErrorBanner,
-    ErrorMessage,
-    TailwindForm: Form,
-    FormRow,
-    FormTitle,
-    LocationSearchBar,
-    SaveButton,
-    TagPicker,
-    TextEditor,
-    TextInput,
+    CreateEditFormFields,
   },
   apollo: {},
   setup() {
@@ -148,7 +126,7 @@ export default defineComponent({
     const {
       loading: channelLoading,
       error: channelError,
-      result: channelData,
+      result: channelResult,
     } = useQuery(GET_CHANNEL_NAMES);
 
     const GET_TAGS = gql`
@@ -162,8 +140,24 @@ export default defineComponent({
     const {
       loading: tagsLoading,
       error: tagsError,
-      result: tagsData,
+      result: tagsResult,
     } = useQuery(GET_TAGS);
+
+    const channelOptionLabels = computed(() => {
+      if (!channelResult.value || !channelResult.value.channels) {
+        return [];
+      }
+      return channelResult.value.channels.map(
+        (channel: ChannelData) => channel.uniqueName
+      );
+    });
+
+    const tagOptionLabels = computed(() => {
+      if (!channelResult.value || !channelResult.value.tags) {
+        return [];
+      }
+      return tagsResult.value.tags.map((tag: TagData) => tag.text);
+    });
 
     const updateEventInput = computed(() => {
       const tagConnections = selectedTags.value.map((tag: string) => {
@@ -181,13 +175,27 @@ export default defineComponent({
         };
       });
 
+      const tagDisconnections = existingTags.value
+        .filter((tag: string) => {
+          return !selectedTags.value.includes(tag);
+        })
+        .map((tag: string) => {
+          return {
+            where: {
+              node: {
+                text: tag,
+              },
+            },
+          };
+        });
+
       const channelConnections = selectedChannels.value.map(
         (channel: string | string[]) => {
           return {
             onCreate: {
               node: {
                 uniqueName: channel,
-              }
+              },
             },
             where: {
               node: {
@@ -197,6 +205,20 @@ export default defineComponent({
           };
         }
       );
+
+      const channelDisconnections = existingChannels.value
+        .filter((channel: string) => {
+          return !selectedChannels.value.includes(channel);
+        })
+        .map((channel: string) => {
+          return {
+            where: {
+              node: {
+                uniqueName: channel,
+              },
+            },
+          };
+        });
 
       let input = {
         /*
@@ -218,28 +240,27 @@ export default defineComponent({
         virtualEventUrl: virtualEventUrl.value || null,
         Channels: {
           connectOrCreate: channelConnections,
+          disconnect: channelDisconnections,
         },
         Tags: {
           connectOrCreate: tagConnections,
+          disconnect: tagDisconnections,
         },
       };
 
-      
-        const inputKeys = Object.keys(input)
+      const inputKeys = Object.keys(input);
 
-        // Don't send empty values in call to update event
-        for (let i = 0; i < inputKeys.length; i++) {
-          
-          const key = inputKeys[i]
+      // Don't send empty values in call to update event
+      for (let i = 0; i < inputKeys.length; i++) {
+        const key = inputKeys[i];
+        // eslint-disable-next-line
+        let data = input[key];
+
+        if (data === null) {
           // eslint-disable-next-line
-          let data = input[key]
-
-          if (data === null) {
-            // eslint-disable-next-line
-            delete input[key]
-          }
+          delete input[key];
         }
-      
+      }
 
       if (latitude.value && longitude.value) {
         const locationValues = {
@@ -257,7 +278,6 @@ export default defineComponent({
 
       return input;
     }); // End of updateEventInput
-
 
     const UPDATE_EVENT = gql`
       mutation ($updateEventInput: EventUpdateInput, $eventWhere: EventWhere) {
@@ -309,8 +329,8 @@ export default defineComponent({
         variables: {
           updateEventInput: updateEventInput.value,
           eventWhere: {
-            id: eventData.value.id
-          }
+            id: eventData.value.id,
+          },
         },
         update: (cache: any, result: any) => {
           const newEvent: EventData = result.data?.updateEvents?.events[0];
@@ -355,34 +375,16 @@ export default defineComponent({
       const newEventId = response.data.updateEvents.events[0].id;
 
       /*
-        If the event was updated in the context
-        of a channel, redirect to the event detail page in
-        the channel.
-      */
-
-      if (channelId) {
-        router.push({
-          name: "EventDetail",
-          params: {
-            channelId,
-            eventId: newEventId,
-          },
-        });
-      } else {
-        /*
-        If the event was updated in the context
-        of the server-wide events page,
-        redirect to the event detail page in the first
+        Redirect to the event detail page in the first
         channel that the event was submitted to.
       */
-        router.push({
-          name: "EventDetail",
-          params: {
-            channelId: selectedChannels.value[0],
-            eventId: newEventId,
-          },
-        });
-      }
+      router.push({
+        name: "EventDetail",
+        params: {
+          channelId: selectedChannels.value[0],
+          eventId: newEventId,
+        },
+      });
     });
 
     watch(result, (value: any) => {
@@ -391,8 +393,19 @@ export default defineComponent({
       const eventData = value.events[0];
       if (eventData) {
         title.value = eventData.title;
-        description.value = eventData.body;
-        virtualEventUrl.value = eventData.virtualEventUrl;
+
+        if (eventData.description) {
+          description.value = eventData.description;
+        }
+
+        if (eventData.virtualEventUrl) {
+          virtualEventUrl.value = eventData.virtualEventUrl;
+        }
+
+        if (eventData.address) {
+          address.value = eventData.address;
+        }
+
         startTime.value = eventData.startTime;
         selectedChannels.value = eventData.Channels.map(
           (channel: ChannelData) => {
@@ -403,6 +416,7 @@ export default defineComponent({
           return tag.text;
         });
       }
+      console.log("watcher updated ", eventData);
     });
 
     // const getCommentSectionObjects = (newEventId: string) => {
@@ -431,12 +445,11 @@ export default defineComponent({
     return {
       channelId,
       address,
-      channelData,
       channelError,
       channelLoading,
+      channelOptionLabels,
       eventData,
       eventLoading,
-      existingStartTime,
       description,
       cost,
       durationHoursAndMinutes,
@@ -453,9 +466,9 @@ export default defineComponent({
       selectedTags,
       startTime,
       startTimePieces,
-      tagsData,
       tagsLoading,
       tagsError,
+      tagOptionLabels,
       title,
       touched: false,
       updateEvent,
@@ -471,64 +484,8 @@ export default defineComponent({
     };
   },
   computed: {
-    changesRequired() {
-      // We do these checks:
-      // - At least one channel is selected
-      // - Title is included
-      // - Start date and time are in the future
-      // - Either a valid event URL or an address is included
-      // console.log("Debug changes required", {
-      //   title: this.title,
-      //   startTime: this.startTime,
-      //   address: this.address,
-      //   virtualEventUrl: this.virtualEventUrl,
-      //   selectedChannels: this.selectedChannels,
-      // });
-      // let now = DateTime.now().toISO();
-      const needsChanges = !(
-        this.selectedChannels.length > 0 &&
-        this.title.length > 0 &&
-        // this.startTime > now &&
-        ((this.address.length > 0 &&
-          this.placeId &&
-          this.latitude &&
-          this.longitude) || this.urlIsValid)  
-      );
-      return needsChanges;
-    },
-    changesRequiredMessage() {
-      // let now = DateTime.now().toISO();
-      if (this.selectedChannels.length === 0) {
-        return "At least one channel must be selected.";
-      }
-      if (!this.title) {
-        return "A title is required.";
-      }
-      // if (this.startTime <= now ) {
-      //   return "The start time must be in the future.";
-      // }
-      if (this.address && !this.placeId) {
-        return "Could not find this location on Google Maps.";
-      }
-      if (!this.address && !this.virtualEventUrl) {
-        return "Needs an address or a virtual event URL.";
-      }
-      if (
-        this.virtualEventUrl &&
-        !this.urlIsValid
-      ) {
-        return "The virtual event URL is invalid.";
-      }
-      return "Changes required";
-    },
     urlIsValid() {
-      return checkUrl(this.virtualEventUrl)
-    },
-    channelOptionLabels() {
-      return this.channelData.value.map((channel: ChannelData) => channel.uniqueName);
-    },
-    tagOptionLabels() {
-      return this.tagsData.value.map((tag: TagData) => tag.text);
+      return checkUrl(this.virtualEventUrl);
     },
   },
   methods: {
@@ -555,6 +512,7 @@ export default defineComponent({
       this.startTime = time.toISOString();
     },
     updateLocationInput(placeData: any) {
+      console.log("updated location input ", placeData);
       try {
         this.placeId = placeData.place_id;
         this.latitude = placeData.geometry.location.lat();
@@ -569,6 +527,7 @@ export default defineComponent({
       this.selectedTags = tag;
     },
     setSelectedChannels(channel: Array<string>) {
+      console.log("set channels", channel);
       this.selectedChannels = channel;
     },
     cancel() {
@@ -589,10 +548,8 @@ export default defineComponent({
 });
 </script>
 <template>
- <CreateEditFormFields
-    :changes-required="changesRequired"
-    :changes-required-message="changesRequiredMessage"
-    :channel-data="channelData"
+  <CreateEditFormFields
+    :address="address"
     :channel-error="channelError"
     :channel-loading="channelLoading"
     :channel-option-labels="channelOptionLabels"
@@ -603,7 +560,6 @@ export default defineComponent({
     :show-cost-field="showCostField"
     :selected-channels="selectedChannels"
     :selected-tags="selectedTags"
-    :tags-data="tagsData"
     :tag-option-labels="tagOptionLabels"
     :tags-error="tagsError"
     :tags-loading="tagsLoading"

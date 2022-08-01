@@ -16,7 +16,7 @@ export default defineComponent({
       type: String,
       default: "",
     },
-    initialValue: {
+    value: {
       type: String,
       default: "",
     },
@@ -31,7 +31,7 @@ export default defineComponent({
   },
   data(props) {
     return {
-      text: props.initialValue,
+      text: props.value,
     };
   },
 });

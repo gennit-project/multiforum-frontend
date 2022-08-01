@@ -37,7 +37,7 @@ export default defineComponent({
     };
   },
   methods: {
-    reset() {
+    resetTags() {
       this.selectedTags = [];
       this.$emit("setSelectedTags", this.selectedTags);
     },
@@ -104,7 +104,7 @@ export default defineComponent({
           focus:ring-offset-2
           focus:ring-blue-500
         "
-        @click="reset"
+        @click.prevent="resetTags"
       >
         <RefreshIcon class="mr-2 h-5" />Reset
       </button>

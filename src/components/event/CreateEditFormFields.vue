@@ -1,9 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { TagData } from "@/types/tagTypes";
 import { ApolloError } from "@apollo/client/errors";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+import UserAddIcon from "@/components/icons/UserAddIcon.vue";
 import CancelButton from "@/components/buttons/CancelButton.vue";
 import SaveButton from "@/components/buttons/SaveButton.vue";
 import TextEditor from "@/components/forms/TextEditor.vue";
@@ -18,21 +17,21 @@ import ErrorMessage from "@/components/forms/ErrorMessage.vue";
 import CheckBox from "@/components/forms/CheckBox.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import ErrorBanner from "@/components/forms/ErrorBanner.vue";
+import LinkIcon from "../icons/LinkIcon.vue";
+import TagIcon from "../icons/TagIcon.vue";
+import InfoIcon from "../icons/InfoIcon.vue";
 import { EventData } from "@/types/eventTypes";
+import { DateTime } from "luxon";
 
 export default defineComponent({
   props: {
-    changesRequired: {
-      type: Boolean,
-      required: true,
-    },
-    changesRequiredMessage: {
+    address: {
       type: String,
-      required: true,
+      default: ''
     },
     channelError: {
       type: Object as PropType<ApolloError>,
-      required: false,
+      default: null,
     },
     channelLoading: {
       type: Boolean,
@@ -40,7 +39,9 @@ export default defineComponent({
     },
     channelOptionLabels: {
       type: Array as PropType<Array<string>>,
-      default: () => {return []},
+      default: () => {
+        return [];
+      },
     },
     cost: {
       type: String,
@@ -48,7 +49,9 @@ export default defineComponent({
     },
     createEventError: {
       type: Object as PropType<ApolloError | null>,
-      default: () => {return null}
+      default: () => {
+        return null;
+      },
     },
     description: {
       type: String,
@@ -61,6 +64,10 @@ export default defineComponent({
     eventData: {
       type: Object as PropType<EventData>,
       required: false,
+    },
+    eventLoading: {
+      type: Boolean,
+      default: false,
     },
     showCostField: {
       type: Boolean,
@@ -101,18 +108,21 @@ export default defineComponent({
   },
   components: {
     CancelButton,
-    ChannelIcon,
+    UserAddIcon,
     CheckBox,
     ClockIcon,
     ErrorBanner,
     ErrorMessage,
+    InfoIcon,
     TailwindForm: Form,
     FormRow,
     FormTitle,
+    LinkIcon,
     LocationIcon,
     LocationSearchBar,
     PencilIcon,
     SaveButton,
+    TagIcon,
     TagPicker,
     TextEditor,
     TextInput,
@@ -124,19 +134,77 @@ export default defineComponent({
   },
   data(props) {
     return {
-      formTitle: props.editMode ? "Edit" : "Create"
-    }
-  }
+      formTitle: props.editMode ? "Edit Event" : "Create Event",
+      channelInputValue: props.selectedChannels.join(", "),
+    };
+  },
+  computed: {
+    changesRequired() {
+      // We do these checks:
+      // - At least one channel is selected
+      // - Title is included
+      // - Start date and time are in the future
+      // - Either a valid event URL or an address is included
+      // console.log("Debug changes required", {
+      //   title: this.title,
+      //   startTime: this.startTime,
+      //   address: this.address,
+      //   virtualEventUrl: this.virtualEventUrl,
+      //   selectedChannels: this.selectedChannels,
+      // });
+      // let now = DateTime.now().toISO();
+      const needsChanges = !(
+        (this.selectedChannels.length > 0 && this.title.length > 0)
+        // && this.startTime > now &&
+        // ((this.address.length > 0 &&
+        //   this.placeId &&
+        //   this.latitude &&
+        //   this.longitude) ||
+        //   this.urlIsValid)
+      );
+      return needsChanges;
+    },
+    changesRequiredMessage() {
+      let now = DateTime.now().toISO();
+      if (this.selectedChannels.length === 0) {
+        return "At least one channel must be selected.";
+      }
+      if (!this.title) {
+        return "A title is required.";
+      }
+      if (this.startTime <= now) {
+        return "The start time must be in the future.";
+      }
+      if (this.address && !this.placeId) {
+        return "Could not find this location on Google Maps.";
+      }
+      // if (!this.address && !this.virtualEventUrl) {
+      //   return "Needs an address or a virtual event URL.";
+      // }
+      if (this.virtualEventUrl && !this.urlIsValid) {
+        return "The virtual event URL is invalid.";
+      }
+      return "";
+    },
+  },
+  methods: {
+    setSelectedChannels(event: any) {
+      this.$emit("setSelectedChannels", event);
+      console.log(event);
+      this.channelInputValue = event.join(", ");
+    },
+  },
 });
 </script>
 
 <template>
   <div>
     <TailwindForm @input="touched = true">
-      <div v-if="channelLoading || tagsLoading || (editMode && !eventData)">
-        Loading...
-      </div>
-      <div v-if="!editMode || editMode && !eventData" class="divide-y divide-gray-200 sm:space-y-5">
+      <div v-if="channelLoading || tagsLoading || eventLoading">Loading...</div>
+      <div
+        v-else-if="!editMode || (editMode && !eventData)"
+        class="divide-y divide-gray-200 sm:space-y-5"
+      >
         <div>
           <FormTitle> {{ formTitle }} </FormTitle>
           <div>
@@ -149,25 +217,25 @@ export default defineComponent({
                   :value="title"
                   :full-width="true"
                   :placeholder="'Add title'"
-                  @update="$emit('updateTitle')"
+                  @update="$emit('updateTitle', $event)"
                 />
               </template>
             </FormRow>
 
             <FormRow>
               <template v-slot:icon>
-                <ChannelIcon :wide="true" class="float-right" />
+                <UserAddIcon :wide="true" class="float-right" />
               </template>
               <template v-slot:content>
                 <TextInput
                   :full-width="true"
                   :placeholder="'Add channel(s)'"
-                  @update="$emit('updateTitle')"
+                  :value="channelInputValue"
                 />
                 <TagPicker
                   :tag-options="channelOptionLabels"
                   :initial-value="selectedChannels"
-                  @setSelectedTags="$emit('setSelectedChannels')"
+                  @setSelectedTags="setSelectedChannels"
                 />
               </template>
             </FormRow>
@@ -191,14 +259,15 @@ export default defineComponent({
 
             <FormRow>
               <template v-slot:icon>
-                <LocationIcon :wide="true" class="float-right" />
+                <LinkIcon class="float-right" />
               </template>
               <template v-slot:content>
                 <TextInput
                   :value="virtualEventUrl"
+                  :use-v-model="true"
                   :full-width="true"
                   :placeholder="'Add a virtual event URL'"
-                  @update="$emit('updateVirtualEventUrl')"
+                  @update="$emit('updateVirtualEventUrl', $event)"
                 />
                 <ErrorMessage
                   :text="touched && !urlIsValid ? 'URL is invalid.' : ''"
@@ -206,33 +275,35 @@ export default defineComponent({
               </template>
             </FormRow>
 
-            <FormRow :section-title="'Address'">
+            <FormRow>
+              <template v-slot:icon>
+                <LocationIcon :wide="true" class="float-right" />
+              </template>
               <template v-slot:content>
                 <LocationSearchBar
-                  :search-placeholder="'Location'"
+                  :search-placeholder="'Add an address'"
                   :full-width="true"
-                  @updateLocationInput="$emit('updateLocationInput')"
+                  :reference-point-address-name="address"
+                  @updateLocationInput="$emit('updateLocationInput', $event)"
                 />
               </template>
             </FormRow>
 
-            <FormRow :section-title="'More Info'">
+            <FormRow>
+              <template v-slot:icon>
+                <TagIcon class="float-right" />
+              </template>
               <template v-slot:content>
-                <TextEditor
-                  class="mb-3"
-                  :value="description"
-                  @update="$emit('updateDescription')"
-                />
                 <TagPicker
                   class="mt-3 mb-3"
                   :initial-value="selectedTags"
                   :tag-options="tagOptionLabels"
                   :selected-tags="selectedTags"
-                  @setSelectedTags="$emit('setSelectedTags')"
+                  @setSelectedTags="$emit('setSelectedTags', $event)"
                 />
                 <CheckBox
                   :checked="!showCostField"
-                  @input="$emit('toggleCostField')"
+                  @input="$emit('toggleCostField', $event)"
                 />
                 <span class="ml-2">This event is free</span>
               </template>
@@ -243,7 +314,20 @@ export default defineComponent({
                 <TextInput
                   :value="cost"
                   :full-width="true"
-                  @update="$emit('updateCost')"
+                  @update="$emit('updateCost', $event)"
+                />
+              </template>
+            </FormRow>
+
+            <FormRow>
+              <template v-slot:icon>
+                <InfoIcon class="float-right" />
+              </template>
+              <template v-slot:content>
+                <TextEditor
+                  class="mb-3"
+                  :initial-value="description"
+                  @update="$emit('updateDescription', $event)"
                 />
               </template>
             </FormRow>

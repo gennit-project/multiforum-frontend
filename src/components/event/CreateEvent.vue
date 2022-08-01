@@ -392,13 +392,13 @@ export default defineComponent({
       // - Title is included
       // - Start date and time are in the future
       // - Either a valid event URL or an address is included
-      // console.log("Debug changes required", {
-      //   title: this.title,
-      //   startTime: this.startTime,
-      //   address: this.address,
-      //   virtualEventUrl: this.virtualEventUrl,
-      //   selectedChannels: this.selectedChannels,
-      // });
+      console.log("Debug changes required", {
+        title: this.title,
+        startTime: this.startTime,
+        address: this.address,
+        virtualEventUrl: this.virtualEventUrl,
+        selectedChannels: this.selectedChannels,
+      });
       let now = DateTime.now().toISO();
       const needsChanges = !(
         this.selectedChannels.length > 0 &&
@@ -415,28 +415,7 @@ export default defineComponent({
     urlIsValid() {
       return checkUrl(this.virtualEventUrl);
     },
-    changesRequiredMessage() {
-      let now = DateTime.now().toISO();
-      if (this.selectedChannels.length === 0) {
-        return "At least one channel must be selected.";
-      }
-      if (!this.title) {
-        return "A title is required.";
-      }
-      if (this.startTime <= now) {
-        return "The start time must be in the future.";
-      }
-      if (this.address && !this.placeId) {
-        return "Could not find this location on Google Maps.";
-      }
-      if (!this.address && !this.virtualEventUrl) {
-        return "Needs an address or a virtual event URL.";
-      }
-      if (this.virtualEventUrl && !this.urlIsValid) {
-        return "The virtual event URL is invalid.";
-      }
-      return "";
-    }
+    
   },
   methods: {
     async submit() {
@@ -498,8 +477,6 @@ export default defineComponent({
 </script>
 <template>
   <CreateEditFormFields
-    :changes-required="changesRequired"
-    :changes-required-message="changesRequiredMessage"
     :channel-error="channelError"
     :channel-loading="channelLoading"
     :channel-option-labels="channelOptionLabels"

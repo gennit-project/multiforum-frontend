@@ -17,12 +17,14 @@ import {
 import ConfirmDelete from "../ConfirmDelete.vue";
 import { DateTime } from "luxon";
 import ErrorBanner from "../forms/ErrorBanner.vue";
+import GenericButton from "../buttons/GenericButton.vue";
 
 export default defineComponent({
   components: {
     Back,
     ConfirmDelete,
     ErrorBanner,
+    GenericButton,
     Tag,
   },
   setup() {
@@ -280,14 +282,7 @@ export default defineComponent({
                   ? `Edited ${relativeTime("" + eventData.updatedAt)}`
                   : ""
               }}
-              <span>
-                &#8226;
-                <router-link
-                  class="underline font-medium text-gray-900 cursor-pointer"
-                  :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-                  >Edit</router-link
-                > </span
-              >&#8226;
+              &#8226;
               <span
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="confirmDeleteIsOpen = true"
@@ -340,9 +335,16 @@ export default defineComponent({
                   : ""
               }}
             </div>
+            <span>
+            <router-link
+              :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+              ><GenericButton :text="'Edit'"
+            /></router-link>
+          </span>
           </div>
         </div>
         <div class="col-start-3 col-span-1 text-sm text-gray-700 space-y-2">
+          
           <p className="hanging-indent">
             <i className="far fa-calendar"></i>
             {{ getFormattedDateString(eventData.startTime) }}
