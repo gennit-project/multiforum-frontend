@@ -19,6 +19,7 @@ import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
+import ErrorMessage from "../forms/ErrorMessage.vue";
 import { apolloClient } from "@/main";
 import {
   getReadableTimeFromISO,
@@ -36,7 +37,8 @@ export default defineComponent({
     CancelButton,
     CheckBox,
     ErrorBanner,
-    Form,
+    ErrorMessage,
+    TailwindForm: Form,
     FormRow,
     FormTitle,
     LocationSearchBar,
@@ -62,87 +64,57 @@ export default defineComponent({
       id: eventId,
     });
 
-    const existingTitle = computed(() => {
-      if (!result.value || !result.value.events) {
-        return "[Deleted]";
+    const eventData = computed(() => {
+      if (!result.value || !result.value.events || !result.value.events[0]) {
+        return null;
       }
-      return result.value.events[0]?.title;
-    });
-
-    const existingDescription = computed(() => {
-      if (!result.value || !result.value.events) {
-        return "";
-      }
-      return result.value.events[0]?.description;
+      return result.value.events[0];
     });
 
     const existingTags = computed(() => {
-      if (!result.value || !result.value.events) {
+      if (!eventData.value || !eventData.value.Tags) {
         return [];
       }
-      return result.value.events[0]?.Tags.map((tag: TagData) => {
+      return eventData.value.Tags.map((tag: TagData) => {
         return tag.text;
       });
     });
 
     const existingChannels = computed(() => {
-      if (
-        !result.value ||
-        !result.value.events ||
-        !result.value.events[0]?.Channels
-      ) {
+      if (!eventData.value || !eventData.value.Channels) {
         return [];
       }
-      return result.value.events[0].Channels.map((channel: ChannelData) => {
+      return eventData.value.Channels.map((channel: ChannelData) => {
         return channel.uniqueName;
       });
     });
 
     const existingStartTime = computed(() => {
-      if (!result.value || !result.value.events || !result.value.events[0].startTime) {
-        return ""
+      if (!eventData.value || !eventData.value.startTime) {
+        return "";
       }
-      return result.value.events[0]?.startTime;
-    })
+      return eventData.value.startTime;
+    });
 
-    const existingEndTime = computed(() => {
-      if (!result.value || !result.value.events || !result.value.events[0].endTime) {
-        return ""
-      }
-      return result.value.events[0]?.endTime;
-    })
-
+    // const existingEndTime = computed(() => {
+    //   if (!eventData.value || !eventData.value.endTime) {
+    //     return "";
+    //   }
+    //   return eventData.value.endTime;
+    // });
 
     // The form fields in the edit form are initialized
     // with the existing values.
-    const title = ref(existingTitle.value);
-    const description = ref(existingDescription.value);
+    const title = ref(eventData.value?.title || "");
+    const description = ref(eventData.value?.description || "");
     const selectedChannels = ref(existingChannels.value);
     const selectedTags = ref(existingTags.value);
     const startTime = ref(existingStartTime.value);
+    const endTime = ref(existingStartTime.value);
 
-    watch(result, (value: any) => {
-      // Used so that some form validation can occur as
-      // soon as the page is loaded
-      const eventData = value.events[0];
-
-      if (eventData) {
-        title.value = eventData.title;
-        description.value = eventData.body;
-        startTime.value = eventData.startTime;
-        selectedChannels.value = eventData.Channels.map(
-          (channel: ChannelData) => {
-            return channel.uniqueName;
-          }
-        );
-        selectedTags.value = eventData.Tags.map((tag: TagData) => {
-          return tag.text;
-        });
-      }
-    });
-
-    const getStartTimePieces = (defaultStartTimeObj: typeof DateTime) => {
-      const { year, month, day, weekday, hour } = defaultStartTimeObj;
+    const startTimePieces = computed(() => {
+      const startTimeObj = DateTime.fromISO(startTime.value);
+      const { year, month, day, weekday, hour } = startTimeObj;
 
       return {
         startTimeYear: year.toString(),
@@ -151,24 +123,18 @@ export default defineComponent({
         startTimeDayOfWeek: weekday.toString(),
         startTimeHourOfDay: hour,
       };
-    };
+    });
 
-    const startTimePieces = ref(getStartTimePieces(startTime.value));
-
-    const endTime = ref(existingEndTime.value);
-
-    const locationName = ref("");
-    const address = ref("");
-    const placeId = ref("");
-
-    const virtualEventUrl = ref("");
-
-    const isInPrivateResidence = ref("false");
-
-    const cost = ref("0");
-
-    const latitude = ref("");
-    const longitude = ref("");
+    const locationName = ref(eventData.value?.locationName || "");
+    const address = ref(eventData.value?.address || "");
+    const placeId = ref(eventData.value?.placeId || "");
+    const virtualEventUrl = ref(eventData.value?.virtualEventUrl || "");
+    const isInPrivateResidence = ref(
+      eventData.value?.isInPrivateResidence || false
+    );
+    const cost = ref(eventData.value?.cost || "0");
+    const latitude = ref(eventData.value?.latitude);
+    const longitude = ref(eventData.value?.longitude);
 
     const GET_CHANNEL_NAMES = gql`
       query getChannelNames {
@@ -201,7 +167,7 @@ export default defineComponent({
     const updateEventInput = computed(() => {
       const tagConnections = selectedTags.value.map((tag: string) => {
         return {
-          onUpdate: {
+          onCreate: {
             node: {
               text: tag,
             },
@@ -217,6 +183,11 @@ export default defineComponent({
       const channelConnections = selectedChannels.value.map(
         (channel: string | string[]) => {
           return {
+            onCreate: {
+              node: {
+                uniqueName: channel,
+              }
+            },
             where: {
               node: {
                 uniqueName: channel,
@@ -245,12 +216,29 @@ export default defineComponent({
         cost: cost.value || null,
         virtualEventUrl: virtualEventUrl.value || null,
         Channels: {
-          connect: channelConnections,
+          connectOrCreate: channelConnections,
         },
         Tags: {
           connectOrCreate: tagConnections,
         },
       };
+
+      
+        const inputKeys = Object.keys(input)
+
+        // Don't send empty values in call to update event
+        for (let i = 0; i < inputKeys.length; i++) {
+          
+          const key = inputKeys[i]
+          // eslint-disable-next-line
+          let data = input[key]
+
+          if (data === null) {
+            // eslint-disable-next-line
+            delete input[key]
+          }
+        }
+      
 
       if (latitude.value && longitude.value) {
         const locationValues = {
@@ -266,12 +254,13 @@ export default defineComponent({
         input = { ...input, ...locationValues };
       }
 
-      return [input];
+      return input;
     }); // End of updateEventInput
 
+
     const UPDATE_EVENT = gql`
-      mutation ($updateEventInput: [EventUpdateInput!]!) {
-        updateEvents(input: $updateEventInput) {
+      mutation ($updateEventInput: EventUpdateInput, $eventWhere: EventWhere) {
+        updateEvents(update: $updateEventInput, where: $eventWhere) {
           events {
             id
             title
@@ -318,6 +307,9 @@ export default defineComponent({
         errorPolicy: "all",
         variables: {
           updateEventInput: updateEventInput.value,
+          eventWhere: {
+            id: eventData.value.id
+          }
         },
         update: (cache: any, result: any) => {
           const newEvent: EventData = result.data?.updateEvents?.events[0];
@@ -392,6 +384,26 @@ export default defineComponent({
       }
     });
 
+    watch(result, (value: any) => {
+      // Used so that some form validation can occur as
+      // soon as the page is loaded
+      const eventData = value.events[0];
+      if (eventData) {
+        title.value = eventData.title;
+        description.value = eventData.body;
+        virtualEventUrl.value = eventData.virtualEventUrl;
+        startTime.value = eventData.startTime;
+        selectedChannels.value = eventData.Channels.map(
+          (channel: ChannelData) => {
+            return channel.uniqueName;
+          }
+        );
+        selectedTags.value = eventData.Tags.map((tag: TagData) => {
+          return tag.text;
+        });
+      }
+    });
+
     // const getCommentSectionObjects = (newEventId: string) => {
     //   return selectedChannels.value.map((c) => {
     //     return {
@@ -421,12 +433,11 @@ export default defineComponent({
       channelData,
       channelError,
       channelLoading,
+      eventData,
       eventLoading,
-      updateEvent,
-      updateEventError,
-      updateEventInput,
-      cost,
+      existingStartTime,
       description,
+      cost,
       durationHoursAndMinutes,
       endTime,
       getReadableTimeFromISO,
@@ -445,6 +456,10 @@ export default defineComponent({
       tagsLoading,
       tagsError,
       title,
+      touched: false,
+      updateEvent,
+      updateEventError,
+      updateEventInput,
       username,
       virtualEventUrl,
     };
@@ -468,44 +483,50 @@ export default defineComponent({
       //   virtualEventUrl: this.virtualEventUrl,
       //   selectedChannels: this.selectedChannels,
       // });
-      let now = DateTime.now().toISO();
+      // let now = DateTime.now().toISO();
       const needsChanges = !(
         this.selectedChannels.length > 0 &&
         this.title.length > 0 &&
-        this.startTime > now &&
+        // this.startTime > now &&
         ((this.address.length > 0 &&
           this.placeId &&
           this.latitude &&
-          this.longitude) ||
-          this.urlIsValid(this.virtualEventUrl))
+          this.longitude) || this.urlIsValid)  
       );
       return needsChanges;
     },
     changesRequiredMessage() {
-      let now = DateTime.now().toISO();
+      // let now = DateTime.now().toISO();
       if (this.selectedChannels.length === 0) {
         return "At least one channel must be selected.";
       }
       if (!this.title) {
         return "A title is required.";
       }
-      if (this.startTime <= now) {
-        return "The start time must be in the future.";
-      }
+      // if (this.startTime <= now ) {
+      //   return "The start time must be in the future.";
+      // }
       if (this.address && !this.placeId) {
         return "Could not find this location on Google Maps.";
       }
       if (!this.address && !this.virtualEventUrl) {
         return "Needs an address or a virtual event URL.";
       }
-      if (this.virtualEventUrl && !this.urlIsValid(this.virtualEventUrl)) {
+      if (
+        this.virtualEventUrl &&
+        !this.urlIsValid
+      ) {
         return "The virtual event URL is invalid.";
       }
-      return "";
+      return "Changes required";
     },
+    urlIsValid() {
+      return this.checkUrl(this.virtualEventUrl)
+    }
   },
   methods: {
-    urlIsValid(str: string) {
+    
+    checkUrl(str: string) {
       // Valid URL checker from Devshed
       // Sources:
       // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
@@ -585,93 +606,102 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <Form>
-      <div v-if="channelLoading || tagsLoading || eventLoading">Loading...</div>
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+    <TailwindForm @input="touched=true">
+      <div v-if="channelLoading || tagsLoading || !eventData">Loading...</div>
+      <div
+        v-if="eventData"
+        class="space-y-8 divide-y divide-gray-200 sm:space-y-5"
+      >
         <div>
           <FormTitle> Edit Event </FormTitle>
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <TextInput
-                :value="title"
-                :full-width="true"
-                @update="updateTitle"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :initial-value="title"
+                  :full-width="true"
+                  @update="updateTitle"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <!-- <ChannelPicker
-                v-if="channelData && channelData.channels"
-                v-model="selectedChannels"
-                :channel-options="getChannelOptionLabels(channelData.channels)"
-                :selected-channels="selectedChannels"
-                @setSelectedChannels="setSelectedChannels"
-              /> -->
+              <template v-slot:content>
+                <TagPicker
+                  class="mt-3 mb-3"
+                  v-if="channelData && channelData.channels"
+                  :initial-value="selectedChannels"
+                  :tag-options="getChannelOptionLabels(channelData.channels)"
+                  :selected-tags="selectedChannels"
+                  @setSelectedTags="setSelectedChannels"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Start Time'">
-              <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <!-- <DatePicker
+              <template v-slot:content>
+                <div class="sm:inline-block md:flex items-center md:space-x-2">
+                  <!-- <DatePicker
                   v-model="startTime"
                   :is-24="false"
                   :minutesIncrement="30"
                 /> -->
-              </div>
-            </FormRow>
-            <FormRow :section-title="'End Time'">
-              <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <!-- <DatePicker
-                  v-model="endTime"
-                  :is-24="false"
-                  :minutesIncrement="30"
-                  @update:modelValue="updateStartTime"
-                /> -->
-              </div>
+                </div>
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Virtual Event URL'">
-              <TextInput
-                :value="virtualEventUrl"
-                :full-width="true"
-                :placeholder="'www.example.com'"
-                @update="updateVirtualEventUrl"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :initial-value="virtualEventUrl"
+                  :placeholder="'www.example.com'"
+                  :full-width="true"
+                  @update="updateVirtualEventUrl"
+                />
+               <ErrorMessage :text="touched && !urlIsValid ? 'URL is invalid.' : ''"/>
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Address'">
-              <LocationSearchBar
-                :search-placeholder="'Location'"
-                :full-width="true"
-                @updateLocationInput="updateLocationInput"
-              />
+              <template v-slot:content>
+                <LocationSearchBar
+                  :search-placeholder="'Location'"
+                  :full-width="true"
+                  @updateLocationInput="updateLocationInput"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'More Info'">
-              <TextEditor
-                class="mb-3"
-                :value="description"
-                @update="updateDescription"
-              />
+              <template v-slot:content>
+                <TextEditor
+                  class="mb-3"
+                  :value="description"
+                  @update="updateDescription"
+                />
 
-              <!-- <TagPicker
-                class="mt-3 mb-3"
-                v-if="tagsData && tagsData"
-                v-model="selectedTags"
-                :tag-options="getTagOptionLabels(tagsData.tags)"
-                :selected-tags="selectedTags"
-                @setSelectedTags="setSelectedTags"
-              /> -->
-              <CheckBox :checked="!showCostField" @input="toggleCostField" />
-              <span class="ml-2">This event is free</span>
+                <TagPicker
+                  class="mt-3 mb-3"
+                  v-if="tagsData && tagsData"
+                  :initial-value="selectedTags"
+                  :tag-options="getTagOptionLabels(tagsData.tags)"
+                  :selected-tags="selectedTags"
+                  @setSelectedTags="setSelectedTags"
+                />
+                <CheckBox :checked="!showCostField" @input="toggleCostField" />
+                <span class="ml-2">This event is free</span>
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Cost'" v-show="showCostField">
-              <TextInput
-                :value="cost"
-                :full-width="true"
-                @update="updateCost"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :initial-value="cost"
+                  :full-width="true"
+                  @update="updateCost"
+                />
+              </template>
             </FormRow>
           </div>
         </div>
@@ -685,7 +715,7 @@ export default defineComponent({
           <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>
-    </Form>
+    </TailwindForm>
 
     <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
       {{ error.message }}

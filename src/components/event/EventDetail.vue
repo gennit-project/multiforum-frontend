@@ -79,7 +79,7 @@ export default defineComponent({
         !eventResult.value.events ||
         !eventResult.value.events[0]
       ) {
-        return "[Deleted]";
+        return null;
       }
       return eventResult.value.events[0];
     });
@@ -239,13 +239,13 @@ export default defineComponent({
             {{ eventData.description }}
           </p>
           <Tag
-            v-for="tag in eventData.tags"
+            v-for="tag in eventData.Tags"
             :tag="tag.text"
             :key="tag.text"
             :eventId="eventId"
           />
           <div v-if="channelId && channelsExceptCurrent.length > 0">
-            Crossposted To
+            Crossposted To Channels
           </div>
           <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
             <router-link

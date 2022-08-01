@@ -196,11 +196,11 @@ export default defineComponent({
           <TagIcon />
         </template>
         <template v-slot:content>
-          <!-- <TagPicker
+          <TagPicker
             :tag-options="getTagOptionLabels(tagOptions.tags)"
-            :initial-value="selectedTags"
+            :selected-tags="selectedTags"
             @setSelectedTags="setSelectedTags"
-          /> -->
+          />
         </template>
       </FilterChip>
       <CreateButton :to="createChannelPath" :label="'Create Channel'" />

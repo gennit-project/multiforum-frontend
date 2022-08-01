@@ -248,11 +248,11 @@ export default defineComponent({
               border-b border-gray-200
             "
           >
-            Crossposted To
+            Crossposted To Channels
           </h2>
           <div class="flex flex-wrap">
             <router-link
-              class="mb-1"
+              class="mb-1 mr-2 underline"
               v-for="channel in channelsExceptCurrent"
               :key="channel.uniqueName"
               :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`"

@@ -24,7 +24,7 @@ export default defineComponent({
   name: "CreateChannel",
   components: {
     CancelButton,
-    Form,
+    TailwindForm: Form,
     FormRow,
     FormTitle,
     SaveButton,
@@ -204,14 +204,14 @@ export default defineComponent({
     };
   },
   computed: {
-    uniqueNameIsAlphanumeric(){
-      return this.isAlphaNumeric(this.uniqueName)
+    uniqueNameIsAlphanumeric() {
+      return this.isAlphaNumeric(this.uniqueName);
     },
     uniqueNameErrorMessage() {
       if (!this.isAlphaNumeric(this.uniqueName)) {
-        return "Must contain only alphanumeric characters."
+        return "Must contain only alphanumeric characters.";
       }
-      return ''
+      return "";
     },
     changesRequired() {
       // We do these checks:
@@ -234,64 +234,69 @@ export default defineComponent({
     updateText(updated: string) {
       this.uniqueName = updated;
     },
+    setSelectedTags(tags: Array<string>) {
+      this.selectedTags.value = tags;
+    },
     async submit() {
       this.createChannel();
     },
     cancel() {
       this.router.push({
-          name: "SearchChannels",
-      })
-    }
+        name: "SearchChannels",
+      });
+    },
   },
 });
 </script>
 <template>
   <div>
-    <Form>
+    <TailwindForm>
       <div v-if="channelLoading || tagsLoading">Loading...</div>
       <div v-if="createChannelError">{{ createChannelError }}</div>
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div>
           <FormTitle>Create Channel</FormTitle>
-
           <div class="mt-6 sm:mt-5 space-y-4 sm:space-y-5">
             <FormRow :section-title="'Unique Name'">
-              <TextInput
-                :initial-value="uniqueName"
-                :full-width="true"
-                :invalid="!uniqueNameIsAlphanumeric"
-                :error-message="uniqueNameErrorMessage"
-                @update="updateText"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :initial-value="uniqueName"
+                  :full-width="true"
+                  :invalid="!uniqueNameIsAlphanumeric"
+                  :error-message="uniqueNameErrorMessage"
+                  @update="updateText"
+                />
+              </template>
             </FormRow>
-
             <FormRow :section-title="'Description'">
-              <TextEditor
-                class="mb-3"
-                :initial-value="description"
-                @update="updateDescription"
-              />
+              <template v-slot:content>
+                <TextEditor
+                  class="mb-3"
+                  :initial-value="description"
+                  @update="updateDescription"
+                />
+              </template>
             </FormRow>
-
             <FormRow :section-title="'Tags'">
-              <!-- <TagPicker
-                class="mt-3 mb-3"
-                v-if="tagsData && tagsData"
-                v-model="selectedTags"
-                :tag-options="getTagOptionLabels(tagsData.tags)"
-                :selected-tags="selectedTags"
-              /> -->
+              <template v-slot:content>
+                <TagPicker
+                  v-if="tagsData && tagsData.tags"
+                  :tag-options="getTagOptionLabels(tagsData.tags)"
+                  :initial-value="selectedTags"
+                  @setSelectedTags="setSelectedTags"
+                />
+              </template>
             </FormRow>
           </div>
         </div>
       </div>
       <div class="pt-5">
         <div class="flex justify-end">
-          <CancelButton @click="cancel"/>
+          <CancelButton @click="cancel" />
           <SaveButton @click.prevent="submit" :disabled="changesRequired" />
         </div>
       </div>
-    </Form>
+    </TailwindForm>
 
     <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
       {{ error.message }}

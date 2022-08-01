@@ -71,14 +71,8 @@ export default defineComponent({
         />
       </div>
     </div>
-    <p class="mt-2 text-sm text-red-600 space" id="errorMessage">
-      {{errorMessage}}
-    </p>
   </div>
 </template>
 
 <style scoped>
-.space {
-  min-height: 1.4em;
-}
 </style>

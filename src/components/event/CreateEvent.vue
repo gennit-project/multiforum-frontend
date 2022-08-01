@@ -19,9 +19,10 @@ import FormRow from "@/components/forms/FormRow.vue";
 import Form from "@/components/forms/Form.vue";
 import TextInput from "@/components/forms/TextInput.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
-import PencilIcon from "@/components/icons/PencilIcon.vue"
+import PencilIcon from "@/components/icons/PencilIcon.vue";
+import ErrorMessage from "@/components/forms/ErrorMessage.vue";
 
-import ErrorBanner from "../forms/ErrorBanner.vue";
+// import ErrorBanner from "../forms/ErrorBanner.vue";
 import { apolloClient } from "@/main";
 import {
   getReadableTimeFromISO,
@@ -40,7 +41,8 @@ export default defineComponent({
     ChannelIcon,
     CheckBox,
     ClockIcon,
-    ErrorBanner,
+    // ErrorBanner,
+    ErrorMessage,
     TailwindForm: Form,
     FormRow,
     FormTitle,
@@ -389,6 +391,7 @@ export default defineComponent({
       tagsLoading,
       tagsError,
       title,
+      touched: false,
       username,
       virtualEventUrl,
     };
@@ -421,9 +424,12 @@ export default defineComponent({
           this.placeId &&
           this.latitude &&
           this.longitude) ||
-          this.urlIsValid(this.virtualEventUrl))
+          this.urlIsValid)
       );
       return needsChanges;
+    },
+    urlIsValid(){
+      return this.checkUrl(this.virtualEventUrl)
     },
     changesRequiredMessage() {
       let now = DateTime.now().toISO();
@@ -442,14 +448,14 @@ export default defineComponent({
       if (!this.address && !this.virtualEventUrl) {
         return "Needs an address or a virtual event URL.";
       }
-      if (this.virtualEventUrl && !this.urlIsValid(this.virtualEventUrl)) {
+      if (this.virtualEventUrl && !this.urlIsValid) {
         return "The virtual event URL is invalid.";
       }
       return "";
     },
   },
   methods: {
-    urlIsValid(str: string) {
+    checkUrl(str: string) {
       // Valid URL checker from Devshed
       // Sources:
       // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
@@ -529,7 +535,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <TailwindForm>
+    <TailwindForm @input="touched = true">
       <div v-if="channelLoading || tagsLoading"></div>
       <div class="divide-y divide-gray-200 sm:space-y-5">
         <div>
@@ -585,47 +591,55 @@ export default defineComponent({
             </FormRow>
 
             <FormRow :section-title="'Virtual Event URL'">
-              <TextInput
-                :value="virtualEventUrl"
-                :full-width="true"
-                :placeholder="'www.example.com'"
-                @update="updateVirtualEventUrl"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :value="virtualEventUrl"
+                  :full-width="true"
+                  :placeholder="'www.example.com'"
+                  @update="updateVirtualEventUrl"
+                />
+                <ErrorMessage :text="touched && !urlIsValid ? 'URL is invalid.' : ''"/>
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Address'">
-              <LocationSearchBar
-                :search-placeholder="'Location'"
-                :full-width="true"
-                @updateLocationInput="updateLocationInput"
-              />
+              <template v-slot:content>
+                <LocationSearchBar
+                  :search-placeholder="'Location'"
+                  :full-width="true"
+                  @updateLocationInput="updateLocationInput"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'More Info'">
-              <TextEditor
-                class="mb-3"
-                :value="description"
-                @update="updateDescription"
-              />
-
-              <!-- <TagPicker
-                class="mt-3 mb-3"
-                v-if="tagsData && tagsData"
-                v-model="selectedTags"
-                :tag-options="getTagOptionLabels(tagsData.tags)"
-                :selected-tags="selectedTags"
-                @setSelectedTags="setSelectedTags"
-              /> -->
-              <CheckBox :checked="!showCostField" @input="toggleCostField" />
-              <span class="ml-2">This event is free</span>
+              <template v-slot:content>
+                <TextEditor
+                  class="mb-3"
+                  :value="description"
+                  @update="updateDescription"
+                />
+                <TagPicker
+                  class="mt-3 mb-3"
+                  v-if="tagsData && tagsData"
+                  :initial-value="selectedTags"
+                  :tag-options="getTagOptionLabels(tagsData.tags)"
+                  :selected-tags="selectedTags"
+                  @setSelectedTags="setSelectedTags"
+                />
+                <CheckBox :checked="!showCostField" @input="toggleCostField" />
+                <span class="ml-2">This event is free</span>
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Cost'" v-show="showCostField">
-              <TextInput
-                :value="cost"
-                :full-width="true"
-                @update="updateCost"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :value="cost"
+                  :full-width="true"
+                  @update="updateCost"
+                />
+              </template>
             </FormRow>
           </div>
         </div>

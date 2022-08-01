@@ -4,7 +4,7 @@ import { gql } from "@apollo/client/core";
 // get event by ID
 export const GET_EVENT = gql`
   query getEvent($id: ID!) {
-    getEvent(id: $id) {
+    events(where: {id: $id}) {
       id
       title
       description
@@ -20,7 +20,7 @@ export const GET_EVENT = gql`
       address
       cost
       Channels {
-        url
+        uniqueName
       }
       Poster {
         username

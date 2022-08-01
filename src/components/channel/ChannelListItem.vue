@@ -4,11 +4,10 @@ import { ChannelData } from "@/types/channelTypes";
 import HighlightedSearchTerms from "../forms/HighlightedSearchTerms.vue";
 import Tag from "../buttons/Tag.vue";
 // @ts-ignore
-import ProfileAvatar from 'vue-profile-avatar'
+import ProfileAvatar from "vue-profile-avatar";
 
 export default defineComponent({
-  setup() {
-  },
+  setup() {},
   props: {
     channel: {
       type: Object as PropType<ChannelData>,
@@ -56,10 +55,7 @@ export default defineComponent({
     "
   >
     <div class="flex-shrink-0">
-    <ProfileAvatar
-      :username="channel.uniqueName"
-      colorType="pastel"
-    />
+      <ProfileAvatar :username="channel.uniqueName" colorType="pastel" />
     </div>
     <div class="flex-1 min-w-0">
       <p class="font-large text-gray-900">
@@ -94,7 +90,7 @@ export default defineComponent({
         >
       </p>
       <Tag
-        :highlighted-tags="selectedTags"
+        :selected-tags="selectedTags"
         :key="tag"
         v-for="tag in tags"
         :tag="tag"

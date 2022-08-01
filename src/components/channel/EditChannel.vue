@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
   useQuery,
@@ -26,7 +26,7 @@ export default defineComponent({
   components: {
     CancelButton,
     ErrorBanner,
-    Form,
+    TailwindForm: Form,
     FormRow,
     FormTitle,
     SaveButton,
@@ -48,19 +48,19 @@ export default defineComponent({
     });
 
     const existingDescription = computed(() => {
-      if (result.value) {
-        return result.value.data?.channels[0]?.description;
+      if (!result.value ||  !result.value.channels) {
+        return ""
       }
-      return []
+      return result.value.channels[0]?.description;
     });
 
     const existingTags = computed(() => {
-      if (result.value) {
-        return result.value.data.channels[0].Tags.map((tag: TagData) => {
-          return tag.text;
-        });
+      if (!result.value || !result.value.channels || !result.value.channels[0].Tags) {
+        return [];
       }
-      return [];
+      return result.value.channels[0].Tags.map((tag: TagData) => {
+        return tag.text;
+      });
     });
 
     const uniqueName = ref(
@@ -70,17 +70,6 @@ export default defineComponent({
     const selectedTags = ref(existingTags.value);
 
     const username = "cluse";
-
-    watch(result, (value) => {
-      const channelData = value.channels[0];
-
-      if (channelData) {
-        description.value = channelData.description;
-        selectedTags.value = channelData.Tags.map((tag: TagData) => {
-          return tag.text;
-        });
-      }
-    });
 
     const GET_TAGS = gql`
       query {
@@ -238,7 +227,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <Form>
+    <TailwindForm>
       <ErrorBanner
         class="mt-2"
         v-if="updateChannelError"
@@ -253,30 +242,35 @@ export default defineComponent({
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Unique Name'">
-              <TextInput
-                :initial-value="uniqueName"
-                :full-width="true"
-                :disabled="true"
-                @update="updateChannelName"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :initial-value="uniqueName"
+                  :full-width="true"
+                  :disabled="true"
+                  @update="updateChannelName"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Description'">
-              <TextEditor
-                class="mb-3"
-                :initial-value="existingDescription"
-                @update="updateDescription"
-              />
+              <template v-slot:content>
+                <TextEditor
+                  class="mb-3"
+                  :initial-value="existingDescription"
+                  @update="updateDescription"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Tags'">
-              <!-- <TagPicker
-                class="mt-3 mb-3"
-                v-if="tagsData && tagsData"
-                :initial-value="existingTags"
-                :tag-options="getTagOptionLabels(tagsData.tags)"
-                @setSelectedTags="setSelectedTags"
-              /> -->
+              <template v-slot:content>
+                <TagPicker
+                  class="mt-3 mb-3"
+                  v-if="tagsData && tagsData.tags"
+                  :initial-value="existingTags"
+                  :tag-options="getTagOptionLabels(tagsData.tags)"
+                  @setSelectedTags="setSelectedTags"
+              /></template>
             </FormRow>
           </div>
         </div>
@@ -288,7 +282,7 @@ export default defineComponent({
           <SaveButton @click.prevent="submit" />
         </div>
       </div>
-    </Form>
+    </TailwindForm>
   </div>
 </template>
 

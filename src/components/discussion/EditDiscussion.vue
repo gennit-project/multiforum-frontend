@@ -54,29 +54,29 @@ export default defineComponent({
       if (!result.value) {
         return "";
       }
-      return result.value.data.discussions[0]?.body || "";
+      return result.value.discussions[0]?.body || "";
     });
 
     const existingTitle = computed(() => {
       if (!result.value) {
         return "";
       }
-      return result.value.data.discussions[0]?.title;
+      return result.value.discussions[0]?.title;
     });
     const existingTags = computed(() => {
       if (!result.value) {
         return [];
       }
-      return result.value.data.discussions[0].Tags.map((tag: TagData) => {
+      return result.value.discussions[0].Tags.map((tag: TagData) => {
         return tag.text;
       });
     });
 
     const existingChannels = computed(() => {
-      if (!result.value || !result.value.data.discussions[0].Channels) {
+      if (!result.value || !result.value.discussions[0].Channels) {
         return [];
       }
-      return result.value.data.discussions[0].Channels.map(
+      return result.value.discussions[0].Channels.map(
         (channel: ChannelData) => {
           return channel.uniqueName;
         }
@@ -383,38 +383,47 @@ export default defineComponent({
 
           <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
             <FormRow :section-title="'Title'">
-              <TextInput
-                :initial-value="existingTitle"
-                :full-width="true"
-                @update="updateTitle"
-              />
+              <template v-slot:content>
+                <TextInput
+                  :initial-value="existingTitle"
+                  :full-width="true"
+                  @update="updateTitle"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Channel(s)'">
-              <!-- <ChannelPicker
-                v-if="channelData && channelData.channels"
-                :initial-value="existingChannels"
-                :channel-options="getChannelOptionLabels(channelData.channels)"
-                @setSelectedChannels="setSelectedChannels"
-              /> -->
+              <template v-slot:content>
+                <TagPicker
+                  class="mt-3 mb-3"
+                  v-if="channelData && channelData.channels"
+                  :initial-value="existingChannels"
+                  :tag-options="getChannelOptionLabels(channelData.channels)"
+                  @setSelectedTags="setSelectedChannels"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Body'">
-              <TextEditor
-                class="mb-3"
-                :initial-value="existingBody"
-                @update="updateBody"
-              />
+              <template v-slot:content>
+                <TextEditor
+                  class="mb-3"
+                  :initial-value="existingBody"
+                  @update="updateBody"
+                />
+              </template>
             </FormRow>
 
             <FormRow :section-title="'Tags'">
-              <!-- <TagPicker
-                class="mt-3 mb-3"
-                v-if="tagsData && tagsData"
-                :initial-value="existingTags"
-                :tag-options="getTagOptionLabels(tagsData.tags)"
-                @setSelectedTags="setSelectedTags"
-              /> -->
+              <template v-slot:content>
+                <TagPicker
+                  class="mt-3 mb-3"
+                  v-if="tagsData && tagsData"
+                  :initial-value="existingTags"
+                  :tag-options="getTagOptionLabels(tagsData.tags)"
+                  @setSelectedTags="setSelectedTags"
+                />
+              </template>
             </FormRow>
           </div>
         </div>
