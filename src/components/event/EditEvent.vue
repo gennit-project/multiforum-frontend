@@ -30,6 +30,7 @@ import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import CheckBox from "@/components/forms/CheckBox.vue";
 import { EventData } from "@/types/eventTypes";
 import { DateTime } from "luxon";
+import { checkUrl } from "@/utils/formValidation";
 
 export default defineComponent({
   name: "EditEvent",
@@ -521,38 +522,21 @@ export default defineComponent({
       return "Changes required";
     },
     urlIsValid() {
-      return this.checkUrl(this.virtualEventUrl)
-    }
+      return checkUrl(this.virtualEventUrl)
+    },
+    channelOptionLabels() {
+      return this.channelData.value.map((channel: ChannelData) => channel.uniqueName);
+    },
+    tagOptionLabels() {
+      return this.tagsData.value.map((tag: TagData) => tag.text);
+    },
   },
   methods: {
-    
-    checkUrl(str: string) {
-      // Valid URL checker from Devshed
-      // Sources:
-      // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-      // http://forums.devshed.com/javascript-development-115/regexp-to-match-url-pattern-493764.html
-      var pattern = new RegExp(
-        "^(https?:\\/\\/)?" + // protocol
-          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-          "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-          "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-          "(\\#[-a-z\\d_]*)?$",
-        "i"
-      ); // fragment locator
-      return !!pattern.test(str);
-    },
     async submit() {
       this.updateEvent();
     },
     updateTitle(updated: String) {
       this.title = updated;
-    },
-    getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.uniqueName);
-    },
-    getTagOptionLabels(options: Array<TagData>) {
-      return options.map((tag) => tag.text);
     },
     updateDescription(updated: string) {
       this.description = updated;
@@ -605,126 +589,37 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <TailwindForm @input="touched=true">
-      <div v-if="channelLoading || tagsLoading || !eventData">Loading...</div>
-      <div
-        v-if="eventData"
-        class="space-y-8 divide-y divide-gray-200 sm:space-y-5"
-      >
-        <div>
-          <FormTitle> Edit Event </FormTitle>
-
-          <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-            <FormRow :section-title="'Title'">
-              <template v-slot:content>
-                <TextInput
-                  :initial-value="title"
-                  :full-width="true"
-                  @update="updateTitle"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Channel(s)'">
-              <template v-slot:content>
-                <TagPicker
-                  class="mt-3 mb-3"
-                  v-if="channelData && channelData.channels"
-                  :initial-value="selectedChannels"
-                  :tag-options="getChannelOptionLabels(channelData.channels)"
-                  :selected-tags="selectedChannels"
-                  @setSelectedTags="setSelectedChannels"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Start Time'">
-              <template v-slot:content>
-                <div class="sm:inline-block md:flex items-center md:space-x-2">
-                  <!-- <DatePicker
-                  v-model="startTime"
-                  :is-24="false"
-                  :minutesIncrement="30"
-                /> -->
-                </div>
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Virtual Event URL'">
-              <template v-slot:content>
-                <TextInput
-                  :initial-value="virtualEventUrl"
-                  :placeholder="'www.example.com'"
-                  :full-width="true"
-                  @update="updateVirtualEventUrl"
-                />
-               <ErrorMessage :text="touched && !urlIsValid ? 'URL is invalid.' : ''"/>
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Address'">
-              <template v-slot:content>
-                <LocationSearchBar
-                  :search-placeholder="'Location'"
-                  :full-width="true"
-                  @updateLocationInput="updateLocationInput"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'More Info'">
-              <template v-slot:content>
-                <TextEditor
-                  class="mb-3"
-                  :value="description"
-                  @update="updateDescription"
-                />
-
-                <TagPicker
-                  class="mt-3 mb-3"
-                  v-if="tagsData && tagsData"
-                  :initial-value="selectedTags"
-                  :tag-options="getTagOptionLabels(tagsData.tags)"
-                  :selected-tags="selectedTags"
-                  @setSelectedTags="setSelectedTags"
-                />
-                <CheckBox :checked="!showCostField" @input="toggleCostField" />
-                <span class="ml-2">This event is free</span>
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Cost'" v-show="showCostField">
-              <template v-slot:content>
-                <TextInput
-                  :initial-value="cost"
-                  :full-width="true"
-                  @update="updateCost"
-                />
-              </template>
-            </FormRow>
-          </div>
-        </div>
-      </div>
-      <ErrorBanner v-if="changesRequired" :text="changesRequiredMessage" />
-      <ErrorBanner v-if="updateEventError" :text="updateEventError.message" />
-
-      <div class="pt-5">
-        <div class="flex justify-end">
-          <CancelButton @click="cancel" />
-          <SaveButton @click.prevent="submit" :disabled="changesRequired" />
-        </div>
-      </div>
-    </TailwindForm>
-
-    <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-    <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-  </div>
+ <CreateEditFormFields
+    :changes-required="changesRequired"
+    :changes-required-message="changesRequiredMessage"
+    :channel-data="channelData"
+    :channel-error="channelError"
+    :channel-loading="channelLoading"
+    :channel-option-labels="channelOptionLabels"
+    :cost="cost"
+    :create-event-error="null"
+    :description="description"
+    :edit-mode="true"
+    :show-cost-field="showCostField"
+    :selected-channels="selectedChannels"
+    :selected-tags="selectedTags"
+    :tags-data="tagsData"
+    :tag-option-labels="tagOptionLabels"
+    :tags-error="tagsError"
+    :tags-loading="tagsLoading"
+    :title="title"
+    :url-is-valid="urlIsValid"
+    :virtual-event-url="virtualEventUrl"
+    @cancel="cancel"
+    @setSelectedChannels="setSelectedChannels"
+    @setSelectedTags="setSelectedTags"
+    @submit="submit"
+    @toggleCostField="toggleCostField"
+    @updateCost="updateCost"
+    @updateDescription="updateDescription"
+    @updateLocationInput="updateLocationInput"
+    @updateStartTime="updateStartTime"
+    @updateTitle="updateTitle"
+    @updateVirtualEventUrl="updateVirtualEventUrl"
+  />
 </template>
-
-<style>
-</style>

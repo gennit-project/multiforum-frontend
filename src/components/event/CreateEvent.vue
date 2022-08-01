@@ -9,18 +9,8 @@ import { gql } from "@apollo/client/core";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
-import ClockIcon from "@/components/icons/ClockIcon.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import CancelButton from "@/components/buttons/CancelButton.vue";
-import SaveButton from "@/components/buttons/SaveButton.vue";
-import TextEditor from "@/components/forms/TextEditor.vue";
-import FormTitle from "@/components/forms/FormTitle.vue";
-import FormRow from "@/components/forms/FormRow.vue";
-import Form from "@/components/forms/Form.vue";
-import TextInput from "@/components/forms/TextInput.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
-import PencilIcon from "@/components/icons/PencilIcon.vue";
-import ErrorMessage from "@/components/forms/ErrorMessage.vue";
+import CreateEditFormFields from "./CreateEditFormFields.vue";
+import { checkUrl } from "@/utils/formValidation";
 
 // import ErrorBanner from "../forms/ErrorBanner.vue";
 import { apolloClient } from "@/main";
@@ -28,30 +18,16 @@ import {
   getReadableTimeFromISO,
   durationHoursAndMinutes,
 } from "@/dateTimeUtils";
-import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
+
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-import CheckBox from "@/components/forms/CheckBox.vue";
+
 import { EventData } from "@/types/eventTypes";
 import { DateTime } from "luxon";
 
 export default defineComponent({
   name: "CreateEvent",
   components: {
-    CancelButton,
-    ChannelIcon,
-    CheckBox,
-    ClockIcon,
-    // ErrorBanner,
-    ErrorMessage,
-    TailwindForm: Form,
-    FormRow,
-    FormTitle,
-    LocationSearchBar,
-    PencilIcon,
-    SaveButton,
-    TagPicker,
-    TextEditor,
-    TextInput,
+    CreateEditFormFields,
   },
   apollo: {},
   setup() {
@@ -75,7 +51,7 @@ export default defineComponent({
     const minStartTimeISO = minStartTimeObj.toISO();
     const startTime = ref(defaultStartTimeISO);
 
-    const getStartTimePieces = (defaultStartTimeObj: typeof DateTime) => {
+    const getStartTimePieces = (defaultStartTimeObj: DateTime) => {
       const { year, month, day, weekday, hour } = defaultStartTimeObj;
 
       return {
@@ -88,20 +64,14 @@ export default defineComponent({
     };
 
     const startTimePieces = ref(getStartTimePieces(defaultStartTimeObj));
-
     const defaultEndTimeISO = defaultStartTimeObj.plus({ minutes: 30 }).toISO();
     const endTime = ref(defaultEndTimeISO);
-
     const locationName = ref("");
     const address = ref("");
     const placeId = ref("");
-
     const virtualEventUrl = ref("");
-
     const isInPrivateResidence = ref("false");
-
     const cost = ref("0");
-
     const latitude = ref("");
     const longitude = ref("");
     const selectedChannels = ref(channelId ? [channelId] : []);
@@ -118,7 +88,7 @@ export default defineComponent({
     const {
       loading: channelLoading,
       error: channelError,
-      result: channelData,
+      result: channelResult,
     } = useQuery(GET_CHANNEL_NAMES);
 
     const GET_TAGS = gql`
@@ -132,7 +102,7 @@ export default defineComponent({
     const {
       loading: tagsLoading,
       error: tagsError,
-      result: tagsData,
+      result: tagResult,
     } = useQuery(GET_TAGS);
 
     const createEventInput = computed(() => {
@@ -361,12 +331,26 @@ export default defineComponent({
     //   address: false,
     // });
 
+    const channelOptionLabels = computed(() => {
+      if (!channelResult.value) {
+        return []
+      }
+      return channelResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+    })
+
+    const tagOptionLabels = computed(() => {
+      if (!tagResult.value){
+        return []
+      }
+      return tagResult.value.tags.map((tag: TagData) => tag.text);
+    })
+
     return {
       channelId,
       address,
-      channelData,
       channelError,
       channelLoading,
+      channelOptionLabels,
       createEvent,
       createEventError,
       createEventInput,
@@ -387,11 +371,11 @@ export default defineComponent({
       selectedTags,
       startTime,
       startTimePieces,
-      tagsData,
+      tagResult,
       tagsLoading,
+      tagOptionLabels,
       tagsError,
       title,
-      touched: false,
       username,
       virtualEventUrl,
     };
@@ -428,8 +412,8 @@ export default defineComponent({
       );
       return needsChanges;
     },
-    urlIsValid(){
-      return this.checkUrl(this.virtualEventUrl)
+    urlIsValid() {
+      return checkUrl(this.virtualEventUrl);
     },
     changesRequiredMessage() {
       let now = DateTime.now().toISO();
@@ -452,36 +436,14 @@ export default defineComponent({
         return "The virtual event URL is invalid.";
       }
       return "";
-    },
+    }
   },
   methods: {
-    checkUrl(str: string) {
-      // Valid URL checker from Devshed
-      // Sources:
-      // https://stackoverflow.com/questions/5717093/check-if-a-javascript-string-is-a-url
-      // http://forums.devshed.com/javascript-development-115/regexp-to-match-url-pattern-493764.html
-      var pattern = new RegExp(
-        "^(https?:\\/\\/)?" + // protocol
-          "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-          "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-          "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-          "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-          "(\\#[-a-z\\d_]*)?$",
-        "i"
-      ); // fragment locator
-      return !!pattern.test(str);
-    },
     async submit() {
       this.createEvent();
     },
     updateTitle(updated: String) {
       this.title = updated;
-    },
-    getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.uniqueName);
-    },
-    getTagOptionLabels(options: Array<TagData>) {
-      return options.map((tag) => tag.text);
     },
     updateDescription(updated: string) {
       this.description = updated;
@@ -514,6 +476,7 @@ export default defineComponent({
       this.selectedTags = tag;
     },
     setSelectedChannels(channel: Array<string>) {
+      console.log('set selected channels' ,channel)
       this.selectedChannels = channel;
     },
     cancel() {
@@ -534,135 +497,36 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <TailwindForm @input="touched = true">
-      <div v-if="channelLoading || tagsLoading"></div>
-      <div class="divide-y divide-gray-200 sm:space-y-5">
-        <div>
-          <FormTitle> Create Event </FormTitle>
-          <div>
-            <FormRow>
-              <template v-slot:icon>
-                <PencilIcon class="float-right" />
-              </template>
-              <template v-slot:content>
-                <TextInput
-                  :value="title"
-                  :full-width="true"
-                  :placeholder="'Add title'"
-                  @update="updateTitle"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow>
-              <template v-slot:icon>
-                <ChannelIcon :wide="true" class="float-right" />
-              </template>
-              <template v-slot:content>
-                <TextInput
-                  :full-width="true"
-                  :placeholder="'Add channel(s)'"
-                  @update="updateTitle"
-                />
-                <TagPicker
-                  v-if="channelData && channelData.channels"
-                  :tag-options="getChannelOptionLabels(channelData.channels)"
-                  :initial-value="selectedChannels"
-                  @setSelectedTags="setSelectedChannels"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow>
-              <template v-slot:icon>
-                <ClockIcon class="float-right" />
-              </template>
-              <template v-slot:content>
-                <div class="sm:inline-block md:flex items-center md:space-x-2">
-                  <!-- <DatePicker
-                    v-model="startTime"
-                    :is-24="false"
-                    :minutesIncrement="30"
-                    :minDate="minStartTimeISO"
-                  /> -->
-                </div>
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Virtual Event URL'">
-              <template v-slot:content>
-                <TextInput
-                  :value="virtualEventUrl"
-                  :full-width="true"
-                  :placeholder="'www.example.com'"
-                  @update="updateVirtualEventUrl"
-                />
-                <ErrorMessage :text="touched && !urlIsValid ? 'URL is invalid.' : ''"/>
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Address'">
-              <template v-slot:content>
-                <LocationSearchBar
-                  :search-placeholder="'Location'"
-                  :full-width="true"
-                  @updateLocationInput="updateLocationInput"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'More Info'">
-              <template v-slot:content>
-                <TextEditor
-                  class="mb-3"
-                  :value="description"
-                  @update="updateDescription"
-                />
-                <TagPicker
-                  class="mt-3 mb-3"
-                  v-if="tagsData && tagsData"
-                  :initial-value="selectedTags"
-                  :tag-options="getTagOptionLabels(tagsData.tags)"
-                  :selected-tags="selectedTags"
-                  @setSelectedTags="setSelectedTags"
-                />
-                <CheckBox :checked="!showCostField" @input="toggleCostField" />
-                <span class="ml-2">This event is free</span>
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Cost'" v-show="showCostField">
-              <template v-slot:content>
-                <TextInput
-                  :value="cost"
-                  :full-width="true"
-                  @update="updateCost"
-                />
-              </template>
-            </FormRow>
-          </div>
-        </div>
-      </div>
-      <ErrorBanner v-if="changesRequired" :text="changesRequiredMessage" />
-      <ErrorBanner v-if="createEventError" :text="createEventError.message" />
-
-      <div class="pt-5">
-        <div class="flex justify-end">
-          <CancelButton @click="cancel" />
-          <SaveButton @click.prevent="submit" :disabled="changesRequired" />
-        </div>
-      </div>
-    </TailwindForm>
-
-    <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-    <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-  </div>
+  <CreateEditFormFields
+    :changes-required="changesRequired"
+    :changes-required-message="changesRequiredMessage"
+    :channel-error="channelError"
+    :channel-loading="channelLoading"
+    :channel-option-labels="channelOptionLabels"
+    :cost="cost"
+    :create-event-error="createEventError"
+    :description="description"
+    :edit-mode="false"
+    :show-cost-field="showCostField"
+    :selected-channels="selectedChannels"
+    :selected-tags="selectedTags"
+    :tag-result="tagResult"
+    :tag-option-labels="tagOptionLabels"
+    :tags-error="tagsError"
+    :tags-loading="tagsLoading"
+    :title="title"
+    :url-is-valid="urlIsValid"
+    :virtual-event-url="virtualEventUrl"
+    @cancel="cancel"
+    @setSelectedChannels="setSelectedChannels"
+    @setSelectedTags="setSelectedTags"
+    @submit="submit"
+    @toggleCostField="toggleCostField"
+    @updateCost="updateCost"
+    @updateDescription="updateDescription"
+    @updateLocationInput="updateLocationInput"
+    @updateStartTime="updateStartTime"
+    @updateTitle="updateTitle"
+    @updateVirtualEventUrl="updateVirtualEventUrl"
+  />
 </template>
-
-<style>
-</style>
