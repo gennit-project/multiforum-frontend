@@ -7,9 +7,33 @@ export type Point = {
   latitude: number;
   longitude: number;
 };
+export interface CreateEditEventFormValues {
+  title: string;
+  description: string;
+  selectedTags: Array[string];
+  selectedChannels: Array[string];
+  poster: string;
 
-export type EventData = {
-  id: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  placeId: string;
+  locationName?: string;
+  isInPrivateResidence: boolean;
+  virtualEventUrl?: string;
+  startTime: string;
+  startTimeYear: string;
+  startTimeMonth: string;
+  startTimeDayOfMonth: string;
+  startTimeDayOfWeek: string;
+  startTimeHourOfDay: number;
+  endTime: string;
+  canceled: boolean;
+  deleted: boolean;
+  cost: string;
+}
+export interface EventData {
+  id: string?;
   title: string;
   description: string;
   address?: string;
@@ -34,7 +58,7 @@ export type EventData = {
   CommentSections: [CommentSectionData];
   updatedAt: string;
   createdAt: string;
-};
+}
 
 export type WeekdayData = {
   number: string;

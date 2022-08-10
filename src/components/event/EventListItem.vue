@@ -53,6 +53,16 @@ export default defineComponent({
       default: "",
     },
   },
+  computed: {
+    selectedTagsMap(){
+      let obj = {}
+      for (let i = 0; i < this.selectedTags.length; i++) {
+        const tag = this.selectedTags[i]
+        obj[tag] = true;
+      }
+      return obj
+    }
+  },
   methods: {
     getCommentCount(commentSection: CommentSectionData) {
       const count = commentSection.CommentsAggregate.count;
@@ -179,8 +189,8 @@ export default defineComponent({
           </router-link>
         </div>
         <Tag
-          :highlighted-tags="selectedTags"
           :key="tag"
+          :active="!!selectedTagsMap[tag.text]"
           v-for="tag in event.Tags"
           :tag="tag.text"
           @click="$emit('filterByTag', tag.text)"

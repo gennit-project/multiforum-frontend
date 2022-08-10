@@ -1,12 +1,15 @@
-import { gql } from '@apollo/client/core';
+import { gql } from "@apollo/client/core";
+export const GET_CHANNEL_NAMES = gql`
+  query getChannelNames {
+    channels {
+      uniqueName
+    }
+  }
+`;
 
 export const GET_CHANNEL = gql`
-  query getDiscussion($uniqueName: String!) {
-    channels (
-      where: { 
-        uniqueName: $uniqueName
-      }
-    ) {
+  query getChannel($uniqueName: String!) {
+    channels(where: { uniqueName: $uniqueName }) {
       uniqueName
       description
       Tags {
@@ -19,7 +22,7 @@ export const GET_CHANNEL = gql`
   }
 `;
 export const GET_DISCUSSIONS = gql`
-  query queryDiscussion{
+  query queryDiscussion {
     discussions {
       id
       title
@@ -54,13 +57,10 @@ export const GET_DISCUSSIONS = gql`
 `;
 export const GET_CHANNELS = gql`
   query queryChannel {
-    queryChannel {
+    channels {
       name
-      url
+      uniqueName
       description
-      Posters {
-        username
-      }
       DiscussionsAggregate {
         count
       }
@@ -73,10 +73,3 @@ export const GET_CHANNELS = gql`
     }
   }
 `;
-export const GET_CHANNEL_NAMES = gql`
-query getChannelNames {
-    channels {
-      uniqueName
-    }
-}
-`

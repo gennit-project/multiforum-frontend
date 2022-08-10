@@ -15,6 +15,7 @@ export default defineComponent({
 
 <template>
   <button
+    v-on:keydown.enter.prevent
     class="
       mt-2
       inline-flex

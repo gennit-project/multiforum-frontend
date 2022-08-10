@@ -1,41 +1,92 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { useMutation, useQuery } from "@vue/apollo-composable";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
-import { ChannelData } from "@/types/channelTypes";
+import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
+import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useRoute, useRouter } from "vue-router";
+import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+// import { ChannelData } from "@/types/channelTypes";
+// import Comment from "../comments/Comment.vue";
 import { relativeTime } from "../../dateTimeUtils";
-import Comment from "../comments/Comment.vue";
 import ConfirmDelete from "../ConfirmDelete.vue";
+import { DateTime } from "luxon";
+import { DiscussionData } from "@/types/discussionTypes";
+import { ChannelData } from "@/types/channelTypes";
 import ErrorBanner from "../forms/ErrorBanner.vue";
+import CreateButton from "../buttons/CreateButton.vue";
+import GenericButton from "../buttons/GenericButton.vue";
+import MdEditor from "md-editor-v3";
+import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
-    Comment,
+    Back,
+    // Comment,
     ConfirmDelete,
+    CreateButton,
     ErrorBanner,
+    GenericButton,
+    MdEditor,
     Tag,
   },
   setup() {
     const route = useRoute();
     const router = useRouter();
+
     const discussionId = computed(() => {
-      if (typeof route.params.discussionId === "string") {
-        return route.params.discussionId;
-      }
-      return "";
+      return route.params.discussionId;
     });
+
     const channelId = computed(() => {
       return route.params.channelId;
+    });
+
+    const {
+      result: getDiscussionResult,
+      error: getDiscussionError,
+      loading: getDiscussionLoading,
+    } = useQuery(GET_DISCUSSION, { id: discussionId });
+
+    const discussion = computed<DiscussionData>(() => {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
+        return null;
+      }
+      return getDiscussionResult.value.discussions[0];
+    });
+
+    const editedAt = computed(() => {
+      if (
+        getDiscussionError.value ||
+        getDiscussionLoading.value ||
+        !discussion.value.updatedAt
+      ) {
+        return "";
+      }
+      return `Edited ${relativeTime(discussion.value.updatedAt)}`;
+    });
+
+    const createdAt = computed(() => {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
+        return "";
+      }
+      return `posted ${relativeTime(discussion.value.createdAt)}`;
+    });
+
+    const channelsExceptCurrent = computed(() => {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
+        return [];
+      }
+
+      return discussion.value.Channels.filter((channel: ChannelData) => {
+        return channel.uniqueName !== channelId.value;
+      });
     });
 
     const {
       mutate: deleteDiscussion,
       error: deleteDiscussionError,
       onDone: onDoneDeleting,
-      // @ts-ignore
     } = useMutation(DELETE_DISCUSSION, {
       variables: {
         id: discussionId.value,
@@ -66,93 +117,22 @@ export default defineComponent({
       }
     });
 
-    const { result, loading } = useQuery(GET_DISCUSSION, { id: discussionId });
-
-    const body = computed(() => {
-      if (!result.value || !result.value.discussions) {
-        return "";
-      }
-      return result.value.discussions[0]?.body;
-    });
-
-    const title = computed(() => {
-      if (!result.value || !result.value.discussions) {
-        return "[Deleted]";
-      }
-      return result.value.discussions[0]?.title;
-    });
-
-    const tags = computed(() => {
-      if (!result.value || !result.value.discussions) {
-        return [];
-      }
-      return result.value.discussions[0]?.Tags;
-    });
-
-    const channelsExceptCurrent = computed(() => {
-      if (
-        !result.value ||
-        !result.value.discussions ||
-        !result.value.discussions[0] ||
-        !result.value.discussions[0].Channels ||
-        result.value.discussions[0].Channels?.length < 2
-      ) {
-        return [];
-      }
-      return (
-        result.value.discussions[0]?.Channels.filter((channel: ChannelData) => {
-          return channel.uniqueName !== channelId.value;
-        }) || []
-      );
-    });
-
-    const authorUsername = computed(() => {
-      const defaultValue = "[deleted]";
-      if (!result.value || !result.value.discussions) {
-        return defaultValue;
-      }
-      return result.value.discussions[0]?.Author?.username || defaultValue;
-    });
-
-    const createdAt = computed(() => {
-      if (!result.value || !result.value.discussions) {
-        return "";
-      }
-      const time = result.value.discussions[0]?.createdAt || "";
-      return `posted this discussion ${relativeTime("" + time)}`;
-    });
-
-    const updatedAt = computed(() => {
-      if (!result.value || !result.value.discussions) {
-        return "";
-      }
-      const time = result.value.discussions[0]?.updatedAt || "";
-
-      if (time) {
-        return `Edited ${relativeTime("" + time)}`;
-      }
-      return "";
-    });
-
-    const confirmDeleteIsOpen = ref(false);
+    const deleteModalIsOpen = ref(false);
 
     return {
-      authorUsername,
-      body,
+      channelId,
       channelsExceptCurrent,
-      confirmDeleteIsOpen,
       createdAt,
+      deleteModalIsOpen,
+      getDiscussionResult,
+      getDiscussionError,
+      getDiscussionLoading,
+      discussionId,
       deleteDiscussion,
       deleteDiscussionError,
-      tags,
-      title,
-      channelId,
-      discussionId,
-      loading,
+      editedAt,
+      discussion,
       relativeTime,
-      result,
-      router,
-      updatedAt,
     };
   },
   methods: {
@@ -164,111 +144,108 @@ export default defineComponent({
         },
       });
     },
+    getFormattedDateString(startTime: string) {
+      const startTimeObj = DateTime.fromISO(startTime);
+
+      return startTimeObj.toFormat("cccc LLLL d yyyy");
+    },
   },
 });
 </script>
 
 <template>
-  <div class="container mx-auto">
+  <div class="px-10">
+    <Back />
+    <p v-if="getDiscussionLoading">Loading...</p>
+    <ErrorBanner
+      class="mt-2"
+      v-else-if="getDiscussionError"
+      :text="getDiscussionError.message"
+    />
+    <div v-else class="mx-auto max-w-6xl divide-y bg-white rounded">
+      <div class="flow-root mb-1 flex items-center">
+        <h2 class="text-xl py-2 float-left">{{ discussion.title }}</h2>
+        <span class="float-right space-x-2">
+          <router-link
+            :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+          >
+            <GenericButton :text="'Edit'" />
+          </router-link>
+          <CreateButton
+            :to="`/channels/c/${channelId}/discussions/create`"
+            :label="'Create Discussion'"
+          />
+        </span>
+      </div>
+      <div class="grid grid-cols-3 pt-8">
+        <div class="col-start-1 col-span-2">
+          <div v-if="discussion.body" class="body min-height-min">
+            <md-editor
+              v-model="discussion.body"
+              language="en-US"
+              previewTheme="github"
+              preview-only
+            />
+          </div>
+          <Tag
+            v-for="tag in discussion.Tags"
+            :tag="tag.text"
+            :key="tag.text"
+            :discussionId="discussionId"
+          />
+          <div className="text-xs text-gray-600 mt-4">
+            <div className="organizer">
+              <router-link
+                v-if="discussion.Author"
+                class="text-blue-800 underline"
+                :to="`/u/${discussion.Author.username}`"
+              >
+                {{ discussion.Author.username }}
+              </router-link>
+              {{ createdAt }}
+              <span v-if="discussion.updatedAt"> &#8226; </span>
+              {{ editedAt }}
+              &#8226;
+              <span
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="deleteModalIsOpen = true"
+                >Delete</span
+              >
+            </div>
+            <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
+              Crossposted To Channels:
+            </div>
+            <ul>
+              <li
+                v-for="channel in channelsExceptCurrent"
+                :key="channel.uniqueName"
+              >
+                <router-link
+                  :key="channel.uniqueName"
+                  className="understatedLink underline"
+                  :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`"
+                >
+                  {{ `c/${channel.uniqueName}` }}
+                </router-link>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <ConfirmDelete
+          :title="'Delete Discussion'"
+          :body="'Are you sure you want to delete this discussion?'"
+          :open="deleteModalIsOpen"
+          @close="deleteModalIsOpen = false"
+          @delete="deleteDiscussion"
+        />
+      </div>
+    </div>
     <ErrorBanner
       class="mt-2"
       v-if="deleteDiscussionError"
       :text="deleteDiscussionError.message"
     />
-    <div class="pb-5 border-b border-gray-200">
-      <h1 class="text-2xl mt-8 leading-6 font-medium text-gray-900">
-        {{ title }}
-      </h1>
-      <div class="prose w-full text-xs mt-4">
-        <router-link v-if="authorUsername" :to="`/u/${authorUsername}`">
-          {{ authorUsername }}
-        </router-link>
-        {{ createdAt }}
-        <span v-if="updatedAt"> &#8226; </span>
-        {{ updatedAt }}
-        <span>
-          &#8226;
-          <router-link
-            :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
-            >Edit</router-link
-          > </span
-        >&#8226;
-        <span
-          class="underline font-medium text-gray-900 cursor-pointer"
-          @click="confirmDeleteIsOpen = true"
-          >Delete</span
-        >
-      </div>
-    </div>
-
-    <div v-if="loading">Loading...</div>
-
-    <div class="grid md:grid-cols-12">
-      <Comment
-        v-if="body"
-        :author-username="authorUsername"
-        :created-at="createdAt || ''"
-        :content="body"
-      />
-
-      <div class="md:col-span-3 mt-6">
-        <div v-if="tags && tags.length > 0">
-          <h2
-            class="
-              text-md
-              leading-6
-              mb-2
-              font-medium
-              text-gray-700
-              border-b border-gray-200
-            "
-          >
-            Tags
-          </h2>
-          <div class="flex flex-wrap">
-            <Tag
-              class="mb-1"
-              v-for="tag in tags"
-              :tag="tag.text"
-              :key="tag.text"
-              :discussionId="discussionId"
-              @click="filterDiscussionsByTag(tag.text)"
-            />
-          </div>
-        </div>
-        <div v-if="channelsExceptCurrent.length > 0" class="space-x-1">
-          <h2
-            class="
-              text-md
-              leading-6
-              mb-2
-              mt-6
-              font-medium
-              text-gray-700
-              border-b border-gray-200
-            "
-          >
-            Crossposted To Channels
-          </h2>
-          <div class="flex flex-wrap">
-            <router-link
-              class="mb-1 mr-2 underline"
-              v-for="channel in channelsExceptCurrent"
-              :key="channel.uniqueName"
-              :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`"
-            >
-              {{ `${channel.uniqueName}` }}
-            </router-link>
-          </div>
-        </div>
-      </div>
-    </div>
-    <ConfirmDelete
-      :open="confirmDeleteIsOpen"
-      :title="'Delete Discussion'"
-      :body="'Are you sure you want to delete this discussion?'"
-      @close="confirmDeleteIsOpen = false"
-      @delete="deleteDiscussion"
-    />
   </div>
 </template>
+
+

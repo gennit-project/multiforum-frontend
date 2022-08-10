@@ -3,7 +3,7 @@ import TagData from './tagTypes';
 import CommentSectionData from './commentTypes';
 import { ChannelData } from './channelTypes';
 
-export type DiscussionData = {
+export interface DiscussionData {
     id: number;
     title: string;
     body: string;
@@ -14,4 +14,12 @@ export type DiscussionData = {
     createdAt: string;
     updatedAt?: string;
     __typename?: string;
+}
+
+export interface CreateEditDiscussionFormValues {
+    title: string;
+    body: string;
+    author: string;
+    selectedTags: Array[string];
+    selectedChannels: Array[string];
 }

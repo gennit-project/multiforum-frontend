@@ -10,6 +10,7 @@ export default defineComponent({
 <template>
   <button
     type="button"
+    v-on:keydown.enter.prevent
     class="
       bg-white
       py-2

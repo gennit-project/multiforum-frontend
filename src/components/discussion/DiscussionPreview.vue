@@ -7,16 +7,16 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import Markdown from "vue3-markdown-it";
 import { XIcon } from "@heroicons/vue/outline";
 import { DiscussionData } from "../../types/discussionTypes";
+import TextEditor from "@/components/forms/TextEditor.vue";
 
 export default defineComponent({
   components: {
     Dialog,
     DialogOverlay,
     DialogTitle,
-    Markdown,
+    TextEditor,
     TransitionChild,
     TransitionRoot,
     XIcon,
@@ -31,8 +31,11 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {},
-  
+  setup() {
+    return {
+      discussionBody: "",
+    };
+  },
 });
 </script>
 
@@ -82,8 +85,7 @@ export default defineComponent({
                             rounded-md
                             text-gray-400
                             hover:text-gray-500
-                            focus:outline-none
-                            focus:ring-2 focus:ring-blue-500
+                            focus:outline-none focus:ring-2 focus:ring-blue-500
                           "
                           @click="$emit('closePreview')"
                         >
@@ -94,23 +96,20 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="mt-6 relative flex-1 px-4 sm:px-6">
-        
                     <div class="mt-6 prose text-gray-500">
-                      <Markdown
-                        v-if="discussion.body"
-                        :source="discussion.body"
-                        linkify
-                        html
-                      />
+                      <div v-if="discussion.body" class="body min-height-min">
+                        <TextEditor
+                          class="mb-3"
+                          :initial-value="discussion.body || ''"
+                          :placeholder="'Add details'"
+                          previewOnly
+                        />
+                      </div>
                     </div>
                     <div class="mt-3 text-sm">
                       <router-link
                         :to="`/channels/c/${discussion.Channels[0].uniqueName}/discussions/d/${discussion.id}`"
-                        class="
-                          font-medium
-                          text-blue-600
-                          hover:text-blue-500
-                        "
+                        class="font-medium text-blue-600 hover:text-blue-500"
                       >
                         View Comments
                         <span aria-hidden="true">&rarr;</span>
@@ -140,8 +139,7 @@ export default defineComponent({
                               w-full
                               shadow-sm
                               sm:text-sm
-                              focus:ring-blue-500
-                              focus:border-blue-500
+                              focus:ring-blue-500 focus:border-blue-500
                               border border-gray-300
                               rounded-md
                             "
@@ -166,7 +164,9 @@ export default defineComponent({
                       text-gray-700
                       hover:bg-gray-50
                       focus:outline-none
-                      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                      focus:ring-2
+                      focus:ring-offset-2
+                      focus:ring-blue-500
                     "
                     @click="$emit('closePreview')"
                   >
@@ -189,7 +189,9 @@ export default defineComponent({
                       bg-blue-600
                       hover:bg-blue-700
                       focus:outline-none
-                      focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
+                      focus:ring-2
+                      focus:ring-offset-2
+                      focus:ring-blue-500
                     "
                   >
                     Save

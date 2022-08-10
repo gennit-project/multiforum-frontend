@@ -1,15 +1,16 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Markdown from "vue3-markdown-it";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/buttons/Tag.vue";
+import MdEditor from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 
 export default defineComponent({
   name: "OverviewPage",
   components: {
-    Markdown,
+    MdEditor,
     Tag,
   },
   setup() {
@@ -74,7 +75,14 @@ export default defineComponent({
 
     <div class="grid md:grid-cols-12">
       <div class="prose md:col-span-9">
-        <Markdown :source="channelDescription" linkify html />
+        <div v-if="channelDescription" class="body min-height-min">
+            <md-editor
+              v-model="channelDescription"
+              language='en-US'
+              previewTheme='github'
+              preview-only
+            /> 
+          </div>
       </div>
       <div class="md:col-span-3 mt-6">
         <div v-if="tags.length > 0">

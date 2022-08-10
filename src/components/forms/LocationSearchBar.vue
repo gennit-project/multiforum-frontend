@@ -56,7 +56,7 @@ export default defineComponent({
           />
         </svg>
       </div>
-      <GMapAutocomplete
+      <!-- <GMapAutocomplete
         :class="[fullWidth ? 'w-full' : '']"
         class="
           pl-10
@@ -82,7 +82,7 @@ export default defineComponent({
         disablePortal
         @place_changed="updateLocationInput"
       >
-      </GMapAutocomplete>
+      </GMapAutocomplete> -->
     </div>
   </div>
 </template>

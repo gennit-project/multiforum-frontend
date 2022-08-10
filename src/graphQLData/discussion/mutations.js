@@ -1,38 +1,22 @@
 import { gql } from "@apollo/client/core";
 
-// Update discussion
-export const UPDATE_DISCUSSION = gql`
-  mutation updateDiscussion(
-    $id: ID!, 
-    $title: String, 
-    $body: String,
-    $editedDate: DateTime
-    $Channels: [ChannelRef!]
-    $Tags: [TagRef!]
+export const CREATE_DISCUSSION = gql`
+  mutation createDiscussion(
+    $createDiscussionInput: [DiscussionCreateInput!]!
   ) {
-    updateDiscussion(
-      input: { 
-        filter: { 
-          id: [$id] 
-        }, 
-        set: { 
-          title: $title, 
-          body: $body 
-          editedDate: $editedDate
-          Channels: $Channels
-          Tags: $Tags
-        }
-      }
-    ) {
-      discussion {
+    createDiscussions(input: $createDiscussionInput) {
+      discussions {
         id
         title
         body
-        createdDate
-        editedDate
         Channels {
-          url
+          uniqueName
         }
+        Author {
+          username
+        }
+        createdAt
+        updatedAt
         Tags {
           text
         }
@@ -40,6 +24,35 @@ export const UPDATE_DISCUSSION = gql`
     }
   }
 `;
+
+export const UPDATE_DISCUSSION = gql`
+  mutation updateDiscussion(
+    $updateDiscussionInput: DiscussionUpdateInput
+    $discussionWhere: DiscussionWhere
+  ) {
+    updateDiscussions(
+      update: $updateDiscussionInput
+      where: $discussionWhere
+    ) {
+      discussions {
+        id
+        title
+        body
+        Channels {
+          uniqueName
+        }
+        Author {
+          username
+        }
+        createdAt
+        updatedAt
+        Tags {
+          text
+        }
+      }
+    }
+  }
+  `;
 
 
 export const DELETE_DISCUSSION = gql`
@@ -56,58 +69,3 @@ export const DELETE_DISCUSSION = gql`
 `;
 
 
-export const ADD_DISCUSSION_TAG = gql`
-  mutation updateDiscussion(
-      $id: ID!,       # Discussion ID
-      $text: String!, # text of the tag
-    ) {
-    updateDiscussion(
-      input: { 
-        filter: { 
-          id: [$id] 
-        }, 
-        set: { 
-          Tags: [{
-            text: $text,
-          }]
-        }
-      }
-    ) {
-      discussion {
-        id
-        title
-        Tags {
-          text
-        }
-      }
-    }
-}`;
-
-
-
-export const REMOVE_DISCUSSION_TAG = gql`
-  mutation updateDiscussion (
-      $id: ID!,
-      $text: String!
-    ) {
-      updateDiscussion(
-        input: {
-          filter: {
-            id: [$id]
-          }
-          remove: { 
-            Tags: {
-              text: $text
-            } 
-          }
-      }){
-        discussion {
-          id
-          title
-          Tags {
-            text
-          }
-        }
-      }
-  }
-`

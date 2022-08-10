@@ -1,18 +1,19 @@
 <script>
 import { defineComponent } from "vue";
-import Markdown from "vue3-markdown-it";
-// @ts-ignore
+import MdEditor from 'md-editor-v3';
+import 'md-editor-v3/lib/style.css';
 import ProfileAvatar from "vue-profile-avatar";
 import { relativeTime } from "../../dateTimeUtils";
 
 export default defineComponent({
   components: {
-    Markdown,
+    MdEditor,
     ProfileAvatar,
   },
-  setup() {
+  setup(props) {
     return {
       relativeTime,
+      contentCopy: props.content
     };
   },
   props: {
@@ -56,7 +57,14 @@ export default defineComponent({
         {{ `commented ${relativeTime("" + createdAt)}` }}
       </div>
       <div class="body prose prose-sm min-height-min">
-        <Markdown v-if="content" :source="content" linkify html />
+        <div v-if="content" class="body min-height-min">
+            <md-editor
+              v-model="contentCopy"
+              language='en-US'
+              previewTheme='github'
+              preview-only
+            /> 
+          </div>
       </div>
     </div>
   </div>

@@ -14,6 +14,7 @@ export default defineComponent({
 <template>
   <button
     :disabled="disabled"
+    v-on:keydown.enter.prevent
     :class="[
       disabled
         ? 'bg-gray-200 cursor-default text-gray-600'

@@ -9,6 +9,18 @@ const relativeTime = (dateISO: string) => {
   return time;
 };
 
+const getTimePieces = (timeObj: DateTime) => {
+  const { year, month, day, weekday, hour } = timeObj;
+
+  return {
+    startTimeYear: year.toString(),
+    startTimeMonth: month.toString(),
+    startTimeDayOfMonth: day.toString(),
+    startTimeDayOfWeek: weekday.toString(),
+    startTimeHourOfDay: hour,
+  };
+};
+
 const relativeTimeHoursAndMinutes = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);
   const time = dateObj.toRelative(["hours", "minutes"]);
@@ -132,5 +144,6 @@ export {
   durationHoursAndMinutes,
   getDurationObj,
   compareDate,
-  getDatePieces
+  getDatePieces,
+  getTimePieces
 };

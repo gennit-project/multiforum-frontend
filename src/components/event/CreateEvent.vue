@@ -1,33 +1,26 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import {
-  useQuery,
   useMutation,
   provideApolloClient,
 } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import { useRoute, useRouter } from "vue-router";
-import { ChannelData } from "@/types/channelTypes";
-import { TagData } from "@/types/tagTypes";
-import CreateEditFormFields from "./CreateEditFormFields.vue";
-import { checkUrl } from "@/utils/formValidation";
-
-// import ErrorBanner from "../forms/ErrorBanner.vue";
+import { CreateEditEventFormValues } from "@/types/eventTypes";
+import CreateEditEventFields from "./CreateEditEventFields.vue";
+import { CREATE_EVENT } from "@/graphQLData/event/queries"
 import { apolloClient } from "@/main";
-import {
-  getReadableTimeFromISO,
-  durationHoursAndMinutes,
-} from "@/dateTimeUtils";
-
-// import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-
-import { EventData } from "@/types/eventTypes";
+import { getTimePieces } from "@/utils/dateTimeUtils";
 import { DateTime } from "luxon";
+import { EventData } from "@/types/eventTypes";
+import { TagData } from "@/types/tagTypes";
+import { gql } from "@apollo/client/core";
+import defaultEventFormValues from "./defaultEventFormValues";
+// import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
   name: "CreateEvent",
   components: {
-    CreateEditFormFields,
+    CreateEditEventFields,
   },
   apollo: {},
   setup() {
@@ -39,74 +32,16 @@ export default defineComponent({
 
     const channelId = route.params.channelId as string;
 
-    const username = "cluse";
+    const createEventDefaultValues: CreateEditEventFormValues = defaultEventFormValues
 
-    const title = ref("");
-    const description = ref("");
-
+    const formValues = ref(createEventDefaultValues)
     const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
-    const minStartTimeObj = defaultStartTimeObj.minus({ days: 1 });
 
-    const defaultStartTimeISO = defaultStartTimeObj.toISO();
-    const minStartTimeISO = minStartTimeObj.toISO();
-    const startTime = ref(defaultStartTimeISO);
-
-    const getStartTimePieces = (defaultStartTimeObj: DateTime) => {
-      const { year, month, day, weekday, hour } = defaultStartTimeObj;
-
-      return {
-        startTimeYear: year.toString(),
-        startTimeMonth: month.toString(),
-        startTimeDayOfMonth: day.toString(),
-        startTimeDayOfWeek: weekday.toString(),
-        startTimeHourOfDay: hour,
-      };
-    };
-
-    const startTimePieces = ref(getStartTimePieces(defaultStartTimeObj));
-    const defaultEndTimeISO = defaultStartTimeObj.plus({ minutes: 30 }).toISO();
-    const endTime = ref(defaultEndTimeISO);
-    const locationName = ref("");
-    const address = ref("");
-    const placeId = ref("");
-    const virtualEventUrl = ref("");
-    const isInPrivateResidence = ref("false");
-    const cost = ref("0");
-    const latitude = ref("");
-    const longitude = ref("");
-    const selectedChannels = ref(channelId ? [channelId] : []);
-    const selectedTags = ref([]);
-
-    const GET_CHANNEL_NAMES = gql`
-      query getChannelNames {
-        channels {
-          uniqueName
-        }
-      }
-    `;
-
-    const {
-      loading: channelLoading,
-      error: channelError,
-      result: channelResult,
-    } = useQuery(GET_CHANNEL_NAMES);
-
-    const GET_TAGS = gql`
-      query {
-        tags {
-          text
-        }
-      }
-    `;
-
-    const {
-      loading: tagsLoading,
-      error: tagsError,
-      result: tagResult,
-    } = useQuery(GET_TAGS);
+    const startTimePieces = ref(getTimePieces(defaultStartTimeObj));
+    // const defaultEndTimeISO = defaultStartTimeObj.plus({ minutes: 30 }).toISO();
 
     const createEventInput = computed(() => {
-      const tagConnections = selectedTags.value.map((tag: string) => {
+      const tagConnections = formValues.value.selectedTags.map((tag: string) => {
         return {
           onCreate: {
             node: {
@@ -121,7 +56,7 @@ export default defineComponent({
         };
       });
 
-      const channelConnections = selectedChannels.value.map(
+      const channelConnections = formValues.value.selectedChannels.map(
         (channel: string | string[]) => {
           return {
             where: {
@@ -139,18 +74,18 @@ export default defineComponent({
           title prevents the empty string from being created on the back
           end if the title is not provided.
         */
-        title: title.value || null,
-        description: description.value || null,
-        startTime: startTime.value || null,
+        title: formValues.value.title || null,
+        description: formValues.value.description || null,
+        startTime: formValues.value.startTime || null,
         startTimeYear: startTimePieces.value.startTimeYear || null,
         startTimeMonth: startTimePieces.value.startTimeMonth || null,
         startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth || null,
         startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek || null,
         startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || null,
-        endTime: endTime.value || null,
+        endTime: formValues.value.endTime || null,
         canceled: false,
-        cost: cost.value || null,
-        virtualEventUrl: virtualEventUrl.value || null,
+        cost: formValues.value.cost || "0",
+        virtualEventUrl: formValues.value.virtualEventUrl || null,
         Channels: {
           connect: channelConnections,
         },
@@ -168,62 +103,22 @@ export default defineComponent({
         },
       };
 
-      if (latitude.value && longitude.value) {
+      if (formValues.value.latitude && formValues.value.longitude) {
         const locationValues = {
-          locationName: locationName.value,
+          locationName: formValues.value.locationName,
           location: {
-            latitude: latitude.value,
-            longitude: longitude.value,
+            latitude: formValues.value.latitude,
+            longitude: formValues.value.longitude,
           },
-          address: address.value,
-          placeId: placeId.value,
-          isInPrivateResidence: isInPrivateResidence.value,
+          address: formValues.value.address,
+          placeId: formValues.value.placeId,
+          isInPrivateResidence: formValues.value.isInPrivateResidence,
         };
         input = { ...input, ...locationValues };
       }
 
       return [input];
     }); // End of createEventInput
-
-    const CREATE_EVENT = gql`
-      mutation ($createEventInput: [EventCreateInput!]!) {
-        createEvents(input: $createEventInput) {
-          events {
-            id
-            title
-            description
-            Channels {
-              uniqueName
-            }
-            Poster {
-              username
-            }
-            locationName
-            address
-            startTime
-            startTimeYear
-            startTimeMonth
-            startTimeDayOfMonth
-            startTimeDayOfWeek
-            startTimeHourOfDay
-            endTime
-            virtualEventUrl
-            createdAt
-            isInPrivateResidence
-            cost
-            placeId
-            location {
-              latitude
-              longitude
-            }
-            canceled
-            Tags {
-              text
-            }
-          }
-        }
-      }
-    `;
 
     const {
       mutate: createEvent,
@@ -301,7 +196,7 @@ export default defineComponent({
         router.push({
           name: "EventDetail",
           params: {
-            channelId: selectedChannels.value[0],
+            channelId: formValues.value.selectedChannels[0],
             eventId: newEventId,
           },
         });
@@ -322,62 +217,13 @@ export default defineComponent({
     //   });
     // };
 
-    // let touched = ref({
-    //   title: false,
-    //   startDate: false,
-    //   startTime: false,
-    //   endTime: false,
-    //   virtualEventUrl: false,
-    //   address: false,
-    // });
-
-    const channelOptionLabels = computed(() => {
-      if (!channelResult.value) {
-        return []
-      }
-      return channelResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
-    })
-
-    const tagOptionLabels = computed(() => {
-      if (!tagResult.value){
-        return []
-      }
-      return tagResult.value.tags.map((tag: TagData) => tag.text);
-    })
-
     return {
       channelId,
-      address,
-      channelError,
-      channelLoading,
-      channelOptionLabels,
       createEvent,
       createEventError,
       createEventInput,
-      cost,
-      description,
-      durationHoursAndMinutes,
-      endTime,
-      getReadableTimeFromISO,
-      isInPrivateResidence,
-      latitude,
-      locationName,
-      longitude,
-      minStartTimeISO,
-      now,
-      placeId,
-      router,
-      selectedChannels,
-      selectedTags,
-      startTime,
-      startTimePieces,
-      tagResult,
-      tagsLoading,
-      tagOptionLabels,
-      tagsError,
-      title,
-      username,
-      virtualEventUrl,
+      formValues,
+      router
     };
   },
   data() {
@@ -385,125 +231,27 @@ export default defineComponent({
       showCostField: false,
     };
   },
-  computed: {
-    changesRequired() {
-      // We do these checks:
-      // - At least one channel is selected
-      // - Title is included
-      // - Start date and time are in the future
-      // - Either a valid event URL or an address is included
-      console.log("Debug changes required", {
-        title: this.title,
-        startTime: this.startTime,
-        address: this.address,
-        virtualEventUrl: this.virtualEventUrl,
-        selectedChannels: this.selectedChannels,
-      });
-      let now = DateTime.now().toISO();
-      const needsChanges = !(
-        this.selectedChannels.length > 0 &&
-        this.title.length > 0 &&
-        this.startTime > now &&
-        ((this.address.length > 0 &&
-          this.placeId &&
-          this.latitude &&
-          this.longitude) ||
-          this.urlIsValid)
-      );
-      return needsChanges;
-    },
-    urlIsValid() {
-      return checkUrl(this.virtualEventUrl);
-    },
-    
-  },
   methods: {
     async submit() {
       this.createEvent();
     },
-    updateTitle(updated: String) {
-      this.title = updated;
-    },
-    updateDescription(updated: string) {
-      this.description = updated;
-    },
-    updateVirtualEventUrl(updated: string) {
-      this.virtualEventUrl = updated;
-    },
-    updateCost(updated: string) {
-      this.cost = updated;
-    },
-    toggleCostField() {
-      this.showCostField = !this.showCostField;
-    },
-    updateStartTime(time: Date) {
-      // Sat Jan 01 2022 18:30:00 GMT-0700 (Mountain Standard Time)
-      this.startTime = time.toISOString();
-    },
-    updateLocationInput(placeData: any) {
-      try {
-        this.placeId = placeData.place_id;
-        this.latitude = placeData.geometry.location.lat();
-        this.longitude = placeData.geometry.location.lat();
-        this.address = placeData.formatted_address;
-        this.locationName = placeData.name;
-      } catch (e: any) {
-        throw new Error(e);
-      }
-    },
-    setSelectedTags(tag: Array<string>) {
-      this.selectedTags = tag;
-    },
-    setSelectedChannels(channel: Array<string>) {
-      console.log('set selected channels' ,channel)
-      this.selectedChannels = channel;
-    },
-    cancel() {
-      if (this.channelId) {
-        this.router.push({
-          name: "SearchEventsInChannel",
-          params: {
-            channelId: this.channelId,
-          },
-        });
-      } else {
-        this.router.push({
-          name: "SearchEvents",
-        });
-      }
+    updateFormValues(data: CreateEditEventFormValues) {
+      const existingValues = this.formValues;
+
+      this.formValues = {
+        ...existingValues,
+        ...data,
+      };
     },
   },
 });
 </script>
 <template>
-  <CreateEditFormFields
-    :channel-error="channelError"
-    :channel-loading="channelLoading"
-    :channel-option-labels="channelOptionLabels"
-    :cost="cost"
+  <CreateEditEventFields
     :create-event-error="createEventError"
-    :description="description"
     :edit-mode="false"
-    :show-cost-field="showCostField"
-    :selected-channels="selectedChannels"
-    :selected-tags="selectedTags"
-    :tag-result="tagResult"
-    :tag-option-labels="tagOptionLabels"
-    :tags-error="tagsError"
-    :tags-loading="tagsLoading"
-    :title="title"
-    :url-is-valid="urlIsValid"
-    :virtual-event-url="virtualEventUrl"
-    @cancel="cancel"
-    @setSelectedChannels="setSelectedChannels"
-    @setSelectedTags="setSelectedTags"
+    :form-values="formValues"
     @submit="submit"
-    @toggleCostField="toggleCostField"
-    @updateCost="updateCost"
-    @updateDescription="updateDescription"
-    @updateLocationInput="updateLocationInput"
-    @updateStartTime="updateStartTime"
-    @updateTitle="updateTitle"
-    @updateVirtualEventUrl="updateVirtualEventUrl"
+    @updateFormValues="updateFormValues"
   />
 </template>

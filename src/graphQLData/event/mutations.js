@@ -4,98 +4,44 @@ import { gql } from "@apollo/client/core";
 
 // Update event
 export const UPDATE_EVENT = gql`
-  mutation updateEvent(
-    $id: ID!
-    $title: String
-    $Channels: [ChannelRef!]
-    $Tags: [TagRef!]
-    $description: String
-    $startTime: DateTime
-    $startTimeYear: String
-    $startTimeMonth: String
-    $startTimeDayOfMonth: String
-    $startTimeDayOfWeek: String
-    $startTimeHourOfDay: Int
-    $endTime: DateTime
-    $locationName: String
-    $address: String
-    $howToFindLocation: String
-    $virtualEventUrl: String
-    $editedDate: DateTime
-    $isInPrivateResidence: Boolean
-    $cost: String
-    $placeId: String
-    $latitude: Float!
-    $longitude: Float!
-    $canceled: Boolean
-  ) {
-    updateEvent(
-      input: {
-        filter: { id: [$id] }
-        set: {
-          Channels: $Channels
-          Tags: $Tags
-          title: $title
-          description: $description
-          startTime: $startTime
-          startTimeYear: $startTimeYear
-          startTimeMonth: $startTimeMonth
-          startTimeDayOfMonth: $startTimeDayOfMonth
-          startTimeDayOfWeek: $startTimeDayOfWeek
-          startTimeHourOfDay: $startTimeHourOfDay
-          endTime: $endTime
-          locationName: $locationName
-          address: $address
-          howToFindLocation: $howToFindLocation
-          virtualEventUrl: $virtualEventUrl
-          editedDate: $editedDate
-          isInPrivateResidence: $isInPrivateResidence
-          cost: $cost
-          placeId: $placeId
-          location: {
-            latitude: $latitude
-            longitude: $longitude
+      mutation ($updateEventInput: EventUpdateInput, $eventWhere: EventWhere) {
+        updateEvents(update: $updateEventInput, where: $eventWhere) {
+          events {
+            id
+            title
+            description
+            Channels {
+              uniqueName
+            }
+            Poster {
+              username
+            }
+            locationName
+            address
+            startTime
+            startTimeYear
+            startTimeMonth
+            startTimeDayOfMonth
+            startTimeDayOfWeek
+            startTimeHourOfDay
+            endTime
+            virtualEventUrl
+            createdAt
+            isInPrivateResidence
+            cost
+            placeId
+            location {
+              latitude
+              longitude
+            }
+            canceled
+            Tags {
+              text
+            }
           }
-          canceled: $canceled
         }
       }
-    ) {
-      event {
-        id
-        title
-        description
-        Channels {
-          url
-        }
-        Tags {
-          text
-        }
-        startTime
-        startTimeYear
-        startTimeMonth
-        startTimeDayOfMonth
-        startTimeDayOfWeek
-        startTimeHourOfDay
-        endTime
-        locationName
-        address
-        howToFindLocation
-        virtualEventUrl
-        createdDate
-        editedDate
-        placeId
-        isInPrivateResidence
-        cost
-        placeId
-        location {
-          latitude
-          longitude
-        }
-        canceled
-      }
-    }
-  }
-`;
+    `;
 
 
 export const DELETE_EVENTS = gql`

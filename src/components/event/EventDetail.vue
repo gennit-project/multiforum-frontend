@@ -18,13 +18,18 @@ import ConfirmDelete from "../ConfirmDelete.vue";
 import { DateTime } from "luxon";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import GenericButton from "../buttons/GenericButton.vue";
+import CreateButton from "../buttons/CreateButton.vue";
+import MdEditor from "md-editor-v3";
+import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     Back,
     ConfirmDelete,
+    CreateButton,
     ErrorBanner,
     GenericButton,
+    MdEditor,
     Tag,
   },
   setup() {
@@ -228,36 +233,43 @@ export default defineComponent({
       </router-link>
     </div> -->
 
-    <div v-else-if="eventResult && eventResult.events">
+    <div
+      v-else-if="eventResult && eventResult.events"
+      class="mx-auto max-w-4xl bg-white p-8 rounded"
+    >
       <ErrorBanner
         class="mt-2"
         v-if="deleteEventError"
         :text="deleteEventError.message"
       />
+      <div class="flow-root mb-4">
+          <h1 class="float-left text-xl">{{ eventData.title }}</h1>
+          <div class="float-right">
+            <span>
+              <router-link
+                :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+                >
+                <GenericButton :text="'Edit'" class="mr-2"/>
+              </router-link>
+              <CreateButton :to="`/channels/c/${channelId}/events/create`" :label="'Create Event'"/>
+            </span>
+          </div>
+        </div>
       <div class="grid grid-cols-3 gap-4">
         <div class="col-start-1 col-span-2">
-          <h2 class="text-lg mb-2 text-gray-700">{{ eventData.title }}</h2>
-          <p class="mb-4" v-if="eventData.description">
-            {{ eventData.description }}
-          </p>
+          <md-editor
+            v-model="eventData.description"
+            language="en-US"
+            previewTheme="github"
+            preview-only
+          />
           <Tag
             v-for="tag in eventData.Tags"
             :tag="tag.text"
             :key="tag.text"
             :eventId="eventId"
           />
-          <div v-if="channelId && channelsExceptCurrent.length > 0">
-            Crossposted To Channels
-          </div>
-          <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
-            <router-link
-              key="{channel.uniqueName}"
-              className="understatedLink"
-              :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
-            >
-              {{ `c/${channel.uniqueName}` }}
-            </router-link>
-          </p>
+
           <div className="text-xs text-gray-600 mt-4">
             <div className="organizer">
               <router-link
@@ -270,7 +282,7 @@ export default defineComponent({
               {{
                 `${
                   eventData.createdAt
-                    ? `posted this discussion ${relativeTime(
+                    ? `posted this event ${relativeTime(
                         "" + eventData.createdAt
                       )}`
                     : ""
@@ -335,16 +347,10 @@ export default defineComponent({
                   : ""
               }}
             </div>
-            <span>
-            <router-link
-              :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-              ><GenericButton :text="'Edit'"
-            /></router-link>
-          </span>
+            
           </div>
         </div>
         <div class="col-start-3 col-span-1 text-sm text-gray-700 space-y-2">
-          
           <p className="hanging-indent">
             <i className="far fa-calendar"></i>
             {{ getFormattedDateString(eventData.startTime) }}
@@ -400,6 +406,19 @@ export default defineComponent({
           <p v-if="eventData.cost">
             <i className="fa fa-ticket" aria-hidden="true"></i>
             {{ eventData.cost }}
+          </p>
+
+          <div v-if="channelId && channelsExceptCurrent.length > 0">
+            Crossposted To Channels
+          </div>
+          <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
+            <router-link
+              key="{channel.uniqueName}"
+              className="understatedLink"
+              :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+            >
+              {{ `c/${channel.uniqueName}` }}
+            </router-link>
           </p>
         </div>
 
