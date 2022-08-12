@@ -271,10 +271,11 @@ export default defineComponent({
           </template>
           <template v-slot:content>
             <TextEditor
-              class="mb-3"
-              :selected-tags="formValues.description || ''"
-              @update="$emit('updateFormValues', { description: $event })"
-            />
+                class="mb-3"
+                :initial-value="formValues.description"
+                :placeholder="'Add details'"
+                @update="$emit('updateFormValues', { description: $event })"
+              />
           </template>
         </FormRow>
       </div>
