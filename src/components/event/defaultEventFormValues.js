@@ -10,7 +10,7 @@ export default (channelId) => {
     title: "",
     description: "",
     selectedTags: [],
-    selectedChannels: [channelId],
+    selectedChannels: channelId ? [channelId] : [],
     address: "",
     latitude: 0,
     longitude: 0,
