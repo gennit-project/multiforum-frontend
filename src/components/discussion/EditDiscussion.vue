@@ -263,9 +263,6 @@ export default defineComponent({
       this.updateDiscussion();
     },
     updateFormValues(data: CreateEditDiscussionFormValues) {
-      // Update all form values at once because it makes cleaner
-      // code than passing each form individual value as a prop to
-      // CreateEditFormFields or writing separate methods to update each value.
       const existingValues = this.formValues;
       this.formValues = {
         ...existingValues,

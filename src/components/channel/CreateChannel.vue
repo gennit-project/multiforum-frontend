@@ -1,83 +1,40 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { ChannelData, CreateEditChannelFormValues } from "@/types/channelTypes";
+import { CREATE_CHANNEL } from "@/graphQLData/channel/mutations";
 import {
-  useQuery,
   useMutation,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
-import { TagData } from "@/types/tagTypes";
-import CancelButton from "@/components/buttons/CancelButton.vue";
-import SaveButton from "@/components/buttons/SaveButton.vue";
-import TextEditor from "@/components/forms/TextEditor.vue";
-import FormTitle from "@/components/forms/FormTitle.vue";
-import FormRow from "@/components/forms/FormRow.vue";
-import Form from "@/components/forms/Form.vue";
-import TextInput from "@/components/forms/TextInput.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
 import { apolloClient } from "@/main";
-import { ChannelData } from "@/types/channelTypes";
-import { isAlphaNumeric } from "@/utils/formValidation";
+import CreateEditChannelFields from "./CreateEditChannelFields.vue";
 
 export default defineComponent({
   name: "CreateChannel",
   components: {
-    CancelButton,
-    TailwindForm: Form,
-    FormRow,
-    FormTitle,
-    SaveButton,
-    TagPicker,
-    TextEditor,
-    TextInput,
+    CreateEditChannelFields
   },
   apollo: {},
   setup() {
     provideApolloClient(apolloClient);
-
     const route = useRoute();
     const router = useRouter();
 
     const channelId: string | string[] = route.params.channelId;
 
-    const uniqueName = ref("");
-    const description = ref("");
-    const selectedChannels = ref(channelId ? [channelId] : []);
-    const selectedTags = ref([]);
-
-    const username = "cluse";
-
-    const GET_CHANNEL_NAMES = gql`
-      query getChannelNames {
-        channels {
-          uniqueName
-        }
-      }
-    `;
-
-    const {
-      loading: channelLoading,
-      error: channelError,
-      result: channelData,
-    } = useQuery(GET_CHANNEL_NAMES);
-
-    const GET_TAGS = gql`
-      query {
-        tags {
-          text
-        }
-      }
-    `;
-
-    const {
-      loading: tagsLoading,
-      error: tagsError,
-      result: tagsData,
-    } = useQuery(GET_TAGS);
+    const createChannelDefaultValues: CreateEditChannelFormValues = {
+      uniqueName: "",
+      description: "",
+      selectedTags: [],
+      username: "cluse"
+    }
+   
+    const formValues = ref(createChannelDefaultValues)
 
     const createChannelInput = computed(() => {
-      const tagConnections = selectedTags.value.map((tag: string) => {
+      const tagConnections = formValues.value.selectedTags.map((tag: string) => {
         return {
           onCreate: {
             node: {
@@ -94,8 +51,8 @@ export default defineComponent({
 
       return [
         {
-          uniqueName: uniqueName.value,
-          description: description.value,
+          uniqueName: formValues.value.uniqueName,
+          description: formValues.value.description,
           Tags: {
             connectOrCreate: tagConnections,
           },
@@ -103,7 +60,7 @@ export default defineComponent({
             connect: {
               where: {
                 node: {
-                  username: "cluse",
+                  username: formValues.value.username,
                 },
               },
             },
@@ -111,24 +68,6 @@ export default defineComponent({
         },
       ];
     });
-
-    const CREATE_CHANNEL = gql`
-      mutation createChannel($createChannelInput: [ChannelCreateInput!]!) {
-        createChannels(input: $createChannelInput) {
-          channels {
-            uniqueName
-            description
-            Admins {
-              username
-            }
-            createdAt
-            Tags {
-              text
-            }
-          }
-        }
-      }
-    `;
 
     const {
       mutate: createChannel,
@@ -184,128 +123,35 @@ export default defineComponent({
     });
 
     return {
-      isAlphaNumeric,
       channelId,
-      channelData,
-      channelError,
-      channelLoading,
       createChannel,
       createChannelError,
       createChannelInput,
-      description,
+      formValues,
       router,
-      selectedChannels,
-      selectedTags,
-      tagsData,
-      tagsLoading,
-      tagsError,
-      uniqueName,
-      username,
     };
   },
-  computed: {
-    uniqueNameIsAlphanumeric() {
-      return this.isAlphaNumeric(this.uniqueName);
-    },
-    uniqueNameErrorMessage() {
-      if (!this.isAlphaNumeric(this.uniqueName)) {
-        return "Must contain only alphanumeric characters.";
-      }
-      return "";
-    },
-    changesRequired() {
-      // We do these checks:
-      // - UniqueName is included
-
-      const needsChanges = !this.uniqueName || !this.uniqueNameIsAlphanumeric;
-      return needsChanges;
-    },
-  },
   methods: {
-    getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.uniqueName);
-    },
-    getTagOptionLabels(options: Array<TagData>) {
-      return options.map((tag) => tag.text);
-    },
-    updateDescription(updated: string) {
-      this.description = updated;
-    },
-    updateText(updated: string) {
-      this.uniqueName = updated;
-    },
-    setSelectedTags(tags: Array<string>) {
-      this.selectedTags.value = tags;
-    },
     async submit() {
       this.createChannel();
     },
-    cancel() {
-      this.router.push({
-        name: "SearchChannels",
-      });
+    updateFormValues(data: CreateEditChannelFormValues) {
+      const existingValues = this.formValues;
+
+      this.formValues = {
+        ...existingValues,
+        ...data,
+      };
     },
   },
 });
 </script>
 <template>
-  <div>
-    <TailwindForm>
-      <div v-if="channelLoading || tagsLoading">Loading...</div>
-      <div v-if="createChannelError">{{ createChannelError }}</div>
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div>
-          <FormTitle>Create Channel</FormTitle>
-          <div class="mt-6 sm:mt-5 space-y-4 sm:space-y-5">
-            <FormRow :section-title="'Unique Name'">
-              <template v-slot:content>
-                <TextInput
-                  :initial-value="uniqueName"
-                  :full-width="true"
-                  :invalid="!uniqueNameIsAlphanumeric"
-                  :error-message="uniqueNameErrorMessage"
-                  @update="updateText"
-                />
-              </template>
-            </FormRow>
-            <FormRow :section-title="'Description'">
-              <template v-slot:content>
-                <TextEditor
-                  class="mb-3"
-                  :initial-value="description"
-                  @update="updateDescription"
-                />
-              </template>
-            </FormRow>
-            <FormRow :section-title="'Tags'">
-              <template v-slot:content>
-                <TagPicker
-                  v-if="tagsData && tagsData.tags"
-                  :tag-options="getTagOptionLabels(tagsData.tags)"
-                  :initial-value="selectedTags"
-                  @setSelectedTags="setSelectedTags"
-                />
-              </template>
-            </FormRow>
-          </div>
-        </div>
-      </div>
-      <div class="pt-5">
-        <div class="flex justify-end">
-          <CancelButton @click="cancel" />
-          <SaveButton @click.prevent="submit" :disabled="changesRequired" />
-        </div>
-      </div>
-    </TailwindForm>
-
-    <div v-for="(error, i) of channelError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-    <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
-      {{ error.message }}
-    </div>
-  </div>
+  <CreateEditChannelFields
+    :create-channel-error="createChannelError"
+    :edit-mode="false"
+    :form-values="formValues"
+    @submit="submit"
+    @updateFormValues="updateFormValues"
+  />
 </template>
-
-<style>
-</style>

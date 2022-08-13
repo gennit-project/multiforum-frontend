@@ -3,7 +3,6 @@ import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMutation, provideApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
-import { updateDiscussionInCache, updateTagsInCache } from "../utils";
 import { apolloClient } from "@/main";
 import { CREATE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { DiscussionData } from "@/types/discussionTypes";
@@ -23,12 +22,12 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
-    const channelId: string | string[] = route.params.channelId;
+    const channelId: string = `${route.params.channelId ? route.params.channelId : ''}`;
 
     const createDiscussionDefaultValues: CreateEditDiscussionFormValues = {
       title: "",
       body: "",
-      selectedChannels: [],
+      selectedChannels: channelId ? [channelId] : [],
       selectedTags: [],
       author: "cluse",
     };

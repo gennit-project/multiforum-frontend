@@ -118,14 +118,12 @@ export default defineComponent({
   methods: {
     setSelectedChannels(event: any) {
       this.$emit("setSelectedChannels", event);
-      console.log(event);
     },
     updateStartTime(time: Date) {
       // Sat Jan 01 2022 18:30:00 GMT-0700 (Mountain Standard Time)
       this.startTime = time.toISOString();
     },
     updateLocationInput(placeData: any) {
-      console.log("updated location input ", placeData);
       try {
         this.placeId = placeData.place_id;
         this.latitude = placeData.geometry.location.lat();
@@ -149,7 +147,7 @@ export default defineComponent({
       </div>
     </div>
     <TailwindForm
-      v-else-if="!editMode || (editMode && formValues)"
+      v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"
       @input="touched = true"
@@ -214,7 +212,7 @@ export default defineComponent({
             <ErrorMessage
               :text="
                 touched &&
-                formValues?.virtualEventUrl?.length > 0 &&
+                formValues.virtualEventUrl.length > 0 &&
                 !urlIsValid
                   ? 'URL is invalid.'
                   : ''

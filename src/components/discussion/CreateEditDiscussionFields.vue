@@ -101,13 +101,13 @@ export default defineComponent({
       </div>
     </div>
     <TailwindForm
-      v-else-if="!editMode || (editMode && formValues)"
+      v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"
       @input="touched = true"
       @submit="$emit('submit')"
     >
-      <div class="divide-y divide-gray-200 ">
+      <div class="divide-y divide-gray-200">
         <div class="mt-6">
           <FormRow>
             <template v-slot:icon>

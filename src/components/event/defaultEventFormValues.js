@@ -4,12 +4,13 @@ const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
 const defaultStartTimeISO = defaultStartTimeObj.toISO();
 const defaultEndTimeISO = now.startOf("hour").plus({ hours: 2 }).toISO();
 
-export default {
+export default (channelId) => {
+  return {
     poster: "cluse",
     title: "",
     description: "",
     selectedTags: [],
-    selectedChannels: [],
+    selectedChannels: [channelId],
     address: "",
     latitude: 0,
     longitude: 0,
@@ -28,3 +29,4 @@ export default {
     deleted: false,
     cost: "0",
   }
+}

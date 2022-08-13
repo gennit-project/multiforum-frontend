@@ -20,7 +20,6 @@ export default defineComponent({
   },
   methods: {
     updateLocationInput(placeData: any) {
-      console.log('update location input ,', placeData)
       this.$emit("updateLocationInput", placeData);
     },
   },

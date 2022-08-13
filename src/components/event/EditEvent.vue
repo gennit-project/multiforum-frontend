@@ -13,7 +13,7 @@ import { TagData } from "@/types/tagTypes";
 import { apolloClient } from "@/main";
 import { EventData, CreateEditEventFormValues } from "@/types/eventTypes";
 import { DateTime } from "luxon";
-import defaultEventFormValues from "./defaultEventFormValues";
+import getDefaultEventFormValues from "./defaultEventFormValues";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
 
 export default defineComponent({
@@ -74,7 +74,7 @@ export default defineComponent({
       return {
         poster: "cluse",
         title: event.title,
-        description: event.description,
+        description: event.description || '',
         selectedTags: event.Tags.map((tag: TagData) => {
           return tag.text;
         }),
@@ -86,7 +86,7 @@ export default defineComponent({
         placeId: event.placeId,
         locationName: event.locationName,
         isInPrivateResidence: event.isInPrivateResidence,
-        virtualEventUrl: event.virtualEventUrl,
+        virtualEventUrl: event.virtualEventUrl || '',
         startTime: event.startTime,
         startTimeYear: event.startTimeYear,
         startTimeMonth: event.startTimeMonth,
@@ -110,7 +110,7 @@ export default defineComponent({
       // If the event data is loading, start with empty values. These
       // will be overwritten by onGetEventResult function when the post
       // data is loaded.
-      return defaultEventFormValues;
+      return getDefaultEventFormValues(channelId);
     };
 
     const formValues = ref<CreateEditEventFormValues>(getDefaultFormValues());
@@ -122,7 +122,7 @@ export default defineComponent({
     });
 
     const startTimePieces = computed(() => {
-      const startTimeObj = DateTime.fromISO(formValues.value.startTime.value);
+      const startTimeObj = DateTime.fromISO(formValues.value.startTime);
       const { year, month, day, weekday, hour } = startTimeObj;
 
       return {

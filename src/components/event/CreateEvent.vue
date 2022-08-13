@@ -12,9 +12,8 @@ import { apolloClient } from "@/main";
 import { getTimePieces } from "@/utils/dateTimeUtils";
 import { DateTime } from "luxon";
 import { EventData } from "@/types/eventTypes";
-import { TagData } from "@/types/tagTypes";
 import { gql } from "@apollo/client/core";
-import defaultEventFormValues from "./defaultEventFormValues";
+import getDefaultEventFormValues from "./defaultEventFormValues";
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
@@ -30,9 +29,9 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
-    const channelId = route.params.channelId as string;
+    const channelId: string = `${route.params.channelId ? route.params.channelId : ''}`;
 
-    const createEventDefaultValues: CreateEditEventFormValues = defaultEventFormValues
+    const createEventDefaultValues: CreateEditEventFormValues = getDefaultEventFormValues(channelId)
 
     const formValues = ref(createEventDefaultValues)
     const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });

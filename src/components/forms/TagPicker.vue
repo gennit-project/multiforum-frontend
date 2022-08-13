@@ -23,12 +23,6 @@ export default defineComponent({
         return [];
       },
     },
-    tagOptions: {
-      type: Array as PropType<string[]>,
-      default: () => {
-        return [];
-      },
-    },
   },
   setup() {
     const {

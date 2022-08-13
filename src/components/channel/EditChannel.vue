@@ -6,104 +6,114 @@ import {
   useMutation,
   provideApolloClient,
 } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import { TagData } from "@/types/tagTypes";
-import CancelButton from "@/components/buttons/CancelButton.vue";
-import SaveButton from "@/components/buttons/SaveButton.vue";
-import TextEditor from "@/components/forms/TextEditor.vue";
-import FormTitle from "@/components/forms/FormTitle.vue";
-import FormRow from "@/components/forms/FormRow.vue";
-import Form from "@/components/forms/Form.vue";
-import TextInput from "@/components/forms/TextInput.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
-import ErrorBanner from "../forms/ErrorBanner.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
+import { UPDATE_CHANNEL } from "@/graphQLData/channel/mutations";
 import { apolloClient } from "@/main";
-import { ChannelData } from "@/types/channelTypes";
+import { CreateEditChannelFormValues } from "@/types/channelTypes";
+import CreateEditChannelFields from "./CreateEditChannelFields.vue";
 
 export default defineComponent({
-  name: "CreateChannel",
+  name: "EditChannel",
   components: {
-    CancelButton,
-    ErrorBanner,
-    TailwindForm: Form,
-    FormRow,
-    FormTitle,
-    SaveButton,
-    TagPicker,
-    TextEditor,
-    TextInput,
+    CreateEditChannelFields,
   },
   apollo: {},
   setup() {
     provideApolloClient(apolloClient);
-
     const route = useRoute();
     const router = useRouter();
 
     const channelId: string | string[] = route.params.channelId;
 
-    const { result, loading: channelLoading } = useQuery(GET_CHANNEL, {
+    const {
+      error: getChannelError,
+      result: getChannelResult,
+      onResult: onGetChannelResult,
+      loading: getChannelLoading,
+    } = useQuery(GET_CHANNEL, {
       uniqueName: channelId,
     });
 
-    const existingDescription = computed(() => {
-      if (!result.value ||  !result.value.channels) {
-        return ""
+    const channel = computed(() => {
+      if (getChannelLoading.value || getChannelError.value) {
+        return null;
       }
-      return result.value.channels[0]?.description;
+      return getChannelResult.value.channels[0];
     });
 
     const existingTags = computed(() => {
-      if (!result.value || !result.value.channels || !result.value.channels[0].Tags) {
+      if (
+        !getChannelLoading.value ||
+        !getChannelError.value ||
+        !getChannelResult.value.channels ||
+        !getChannelResult.value.channels[0].Tags
+      ) {
         return [];
       }
-      return result.value.channels[0].Tags.map((tag: TagData) => {
+      return channel.value.Tags.map((tag: TagData) => {
         return tag.text;
       });
     });
 
-    const uniqueName = ref(
-      channelId && typeof channelId === "string" ? channelId : ""
-    );
-    const description = ref(existingDescription.value);
-    const selectedTags = ref(existingTags.value);
-
-    const username = "cluse";
-
-    const GET_TAGS = gql`
-      query {
-        tags {
-          text
-        }
+    const getDefaultChannelValues = () => {
+      if (channel.value) {
+        return {
+          uniqueName: channel.value.uniqueName,
+          description: channel.value.description,
+          selectedTags: channel.value.Tags.map((tag: TagData) => {
+            return tag.text;
+          }),
+          username: 'cluse'
+        };
       }
-    `;
 
-    const {
-      loading: tagsLoading,
-      error: tagsError,
-      result: tagsData,
-    } = useQuery(GET_TAGS);
+      return {
+        uniqueName: "",
+        description: "",
+        selectedTags: [],
+        username: "",
+      };
+    };
+
+    const formValues = ref<CreateEditChannelFormValues>(
+      getDefaultChannelValues()
+    );
+
+    onGetChannelResult((value) => {
+      const channel = value.data.channels[0];
+
+      formValues.value = {
+        uniqueName: channel.uniqueName,
+        description: channel.description,
+        selectedTags: channel.Tags.map((tag: TagData) => {
+          return tag.text;
+        }),
+        username: channel.Admins[0]?.username || "",
+      };
+    });
 
     const channelUpdateInput = computed(() => {
-      const tagConnections = selectedTags.value.map((tag: string) => {
-        return {
-          onCreate: {
-            node: {
-              text: tag,
+      const tagConnections = formValues.value.selectedTags.map(
+        (tag: string) => {
+          return {
+            onCreate: {
+              node: {
+                text: tag,
+              },
             },
-          },
-          where: {
-            node: {
-              text: tag,
+            where: {
+              node: {
+                text: tag,
+              },
             },
-          },
-        };
-      });
+          };
+        }
+      );
 
       const tagDisconnections = existingTags.value
         .filter((tag: string) => {
-          return !selectedTags.value.includes(tag);
+          return !formValues.value.selectedTags.includes(tag);
         })
         .map((tag: string) => {
           return {
@@ -116,7 +126,7 @@ export default defineComponent({
         });
 
       return {
-        description: description.value,
+        description: formValues.value.description,
         Tags: {
           connectOrCreate: tagConnections,
           disconnect: tagDisconnections,
@@ -132,27 +142,6 @@ export default defineComponent({
         },
       };
     });
-
-    const UPDATE_CHANNEL = gql`
-      mutation updateChannel(
-        $where: ChannelWhere
-        $update: ChannelUpdateInput
-      ) {
-        updateChannels(where: $where, update: $update) {
-          channels {
-            uniqueName
-            description
-            Admins {
-              username
-            }
-            createdAt
-            Tags {
-              text
-            }
-          }
-        }
-      }
-    `;
 
     const {
       mutate: updateChannel,
@@ -180,110 +169,43 @@ export default defineComponent({
 
     return {
       channelId,
-      updateChannelError,
-      channelLoading,
-      updateChannel,
-      description,
-      existingDescription,
       existingTags,
+      formValues,
+      getChannelError,
+      getChannelLoading,
+      getChannelResult,
       router,
-      selectedTags,
-      tagsData,
-      tagsLoading,
-      tagsError,
-      uniqueName,
-      username,
+      updateChannelError,
+      updateChannel,
     };
   },
   methods: {
-    getChannelOptionLabels(options: Array<ChannelData>) {
-      return options.map((channel) => channel.uniqueName);
-    },
-    getTagOptionLabels(options: Array<TagData>) {
-      return options.map((tag) => tag.text);
-    },
-    updateDescription(updated: string) {
-      this.description = updated;
-    },
-    updateChannelName(updated: string) {
-      this.uniqueName = updated;
-    },
-    setSelectedTags(updated: string[]) {
-      this.selectedTags = updated;
-    },
     async submit() {
       this.updateChannel();
     },
-    cancel() {
-      this.router.push({
-        name: "Channel",
-        params: {
-          channelId: this.channelId,
-        },
-      });
+    updateFormValues(data: CreateEditChannelFormValues) {
+      // Update all form values at once because it makes cleaner
+      // code than passing each form individual value as a prop
+      // or writing separate methods to update each value.
+      const existingValues = this.formValues;
+      this.formValues = {
+        ...existingValues,
+        ...data,
+      };
     },
   },
 });
 </script>
 <template>
-  <div>
-    <TailwindForm>
-      <ErrorBanner
-        class="mt-2"
-        v-if="updateChannelError"
-        :text="updateChannelError.message"
-      />
-      <div v-if="channelLoading || tagsLoading">Loading...</div>
-
-      <div v-else class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div>
-          <FormTitle v-if="channelId">Edit Channel</FormTitle>
-          <FormTitle v-else>Create Channel</FormTitle>
-
-          <div class="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
-            <FormRow :section-title="'Unique Name'">
-              <template v-slot:content>
-                <TextInput
-                  :initial-value="uniqueName"
-                  :full-width="true"
-                  :disabled="true"
-                  @update="updateChannelName"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Description'">
-              <template v-slot:content>
-                <TextEditor
-                  class="mb-3"
-                  :initial-value="existingDescription"
-                  @update="updateDescription"
-                />
-              </template>
-            </FormRow>
-
-            <FormRow :section-title="'Tags'">
-              <template v-slot:content>
-                <TagPicker
-                  class="mt-3 mb-3"
-                  v-if="tagsData && tagsData.tags"
-                  :initial-value="existingTags"
-                  :tag-options="getTagOptionLabels(tagsData.tags)"
-                  @setSelectedTags="setSelectedTags"
-              /></template>
-            </FormRow>
-          </div>
-        </div>
-      </div>
-
-      <div class="pt-5">
-        <div class="flex justify-end">
-          <CancelButton @click="cancel" />
-          <SaveButton @click.prevent="submit" />
-        </div>
-      </div>
-    </TailwindForm>
-  </div>
+  <CreateEditChannelFields
+    :edit-mode="true"
+    :channel-loading="getChannelLoading"
+    :get-channel-error="getChannelError"
+    :update-channel-error="updateChannelError"
+    :form-values="formValues"
+    @submit="submit"
+    @updateFormValues="updateFormValues"
+  />
 </template>
 
 <style>

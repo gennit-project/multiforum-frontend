@@ -49,7 +49,6 @@ export default defineComponent({
       this.$emit("setSelectedTags", [...this.tags]);
     },
     setSelectedTags(tags: Array<string>) {
-      console.log('selected tags ', tags)
       this.tags = tags;
       this.$emit("setSelectedTags", [...this.tags]);
     },

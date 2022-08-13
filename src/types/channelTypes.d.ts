@@ -5,12 +5,19 @@ export type ChannelData = {
     uniqueName: string;
     name: string;
     description?: string;
-    Admins: [UserData];
+    Admins: Array[UserData];
     DiscussionsAggregate: {
         count: string;
     };
     EventsAggregate: {
         count: string;
     };
-    Tags: [TagData];
+    Tags: Array[TagData];
+}
+
+export type CreateEditChannelFormValues = {
+    uniqueName: string;
+    description: string;
+    selectedTags: Array[string]
+    username: string;
 }
