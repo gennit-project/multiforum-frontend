@@ -16,6 +16,7 @@ import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import ErrorBanner from "@/components/forms/ErrorBanner.vue";
 import LinkIcon from "../icons/LinkIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
+import TicketIcon from "../icons/TicketIcon.vue";
 import AnnotationIcon from "../icons/AnnotationIcon.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
@@ -69,13 +70,13 @@ export default defineComponent({
     TagInput,
     TextEditor,
     TextInput,
+    TicketIcon,
     AnnotationIcon,
   },
-  setup(props) {
+  data(props) {
     return {
       touched: false,
       formTitle: props.editMode ? "Edit Event" : "Create Event",
-      showCostField: false,
     };
   },
 
@@ -116,6 +117,19 @@ export default defineComponent({
     },
   },
   methods: {
+    toggleCostField() {
+      if (this.formValues?.free) {
+        this.$emit("updateFormValues", {
+          cost: "This event is not free.",
+          free: false,
+        });
+      } else {
+        this.$emit("updateFormValues", {
+          cost: "",
+          free: true,
+        });
+      }
+    },
     setSelectedChannels(event: any) {
       this.$emit("setSelectedChannels", event);
     },
@@ -212,6 +226,7 @@ export default defineComponent({
             <ErrorMessage
               :text="
                 touched &&
+                formValues.virtualEventUrl &&
                 formValues.virtualEventUrl.length > 0 &&
                 !urlIsValid
                   ? 'URL is invalid.'
@@ -233,7 +248,19 @@ export default defineComponent({
             />
           </template>
         </FormRow>
-
+        <FormRow>
+          <template v-slot:icon>
+            <AnnotationIcon class="float-right" />
+          </template>
+          <template v-slot:content>
+            <TextEditor
+              class="mb-3"
+              :initial-value="formValues.description"
+              :placeholder="'Add details'"
+              @update="$emit('updateFormValues', { description: $event })"
+            />
+          </template>
+        </FormRow>
         <FormRow>
           <template v-slot:icon>
             <TagIcon class="float-right" />
@@ -241,43 +268,39 @@ export default defineComponent({
 
           <template v-slot:content>
             <TagInput
-              :selected-tags="formValues?.selectedTags"
+              :selected-tags="formValues.selectedTags"
               @setSelectedTags="
                 $emit('updateFormValues', { selectedTags: $event })
               "
             />
           </template>
         </FormRow>
-        <FormRow :section-title="'Cost'" v-show="showCostField">
-          <template v-slot:content>
-            <TextInput
-              :value="formValues.cost"
-              :full-width="true"
-              @update="$emit('updateCost', $event)"
-            />
-            <CheckBox
-              :checked="!showCostField"
-              @input="$emit('toggleCostField', $event)"
-            />
-            <span class="ml-2">This event is free</span>
-          </template>
-        </FormRow>
 
         <FormRow>
           <template v-slot:icon>
-            <AnnotationIcon class="float-right" />
+            <TicketIcon class="float-right" />
           </template>
           <template v-slot:content>
-            <TextEditor
-                class="mb-3"
-                :initial-value="formValues.description"
-                :placeholder="'Add details'"
-                @update="$emit('updateFormValues', { description: $event })"
-              />
+            <CheckBox
+              class="align-middle"
+              :checked="formValues.free"
+              @input="toggleCostField"
+            />
+            <span class="ml-2 align-middle">This event is free</span>
+            <TextInput
+              v-show="!formValues.free"
+              :value="formValues.cost"
+              :full-width="true"
+              :placeholder="'Add cost details'"
+              @update="$emit('updateFormValues', { cost: $event })"
+            />
           </template>
         </FormRow>
       </div>
-      <ErrorBanner v-if="needsChanges" :text="changesRequiredMessage" />
+      <ErrorBanner
+        v-if="needsChanges && touched"
+        :text="changesRequiredMessage"
+      />
       <ErrorBanner v-if="createEventError" :text="createEventError.message" />
       <ErrorBanner v-if="updateEventError" :text="updateEventError.message" />
     </TailwindForm>

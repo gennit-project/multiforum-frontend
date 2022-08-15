@@ -116,7 +116,7 @@ export default defineComponent({
             />
           </p>
           <p
-            v-if="event.cost === '0'"
+            v-if="event.free"
             class="text-sm font-medium text-gray-600 truncate"
           >
             Free

@@ -7,7 +7,7 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
-import { CREATE_EVENT } from "@/graphQLData/event/queries"
+import { CREATE_EVENT } from "@/graphQLData/event/mutations"
 import { apolloClient } from "@/main";
 import { getTimePieces } from "@/utils/dateTimeUtils";
 import { DateTime } from "luxon";
@@ -83,7 +83,8 @@ export default defineComponent({
         startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || null,
         endTime: formValues.value.endTime || null,
         canceled: false,
-        cost: formValues.value.cost || "0",
+        cost: formValues.value.cost || '',
+        free: formValues.value.free || false,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         Channels: {
           connect: channelConnections,
@@ -223,11 +224,6 @@ export default defineComponent({
       createEventInput,
       formValues,
       router
-    };
-  },
-  data() {
-    return {
-      showCostField: false,
     };
   },
   methods: {

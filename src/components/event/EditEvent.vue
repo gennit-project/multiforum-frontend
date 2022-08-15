@@ -97,6 +97,7 @@ export default defineComponent({
         canceled: event.canceled,
         deleted: event.deleted,
         cost: event.cost,
+        free: event.free
       };
     };
 
@@ -214,6 +215,7 @@ export default defineComponent({
         endTime: formValues.value.endTime || null,
         canceled: formValues.value.canceled,
         cost: formValues.value.cost,
+        free: formValues.value.free,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         Channels: {
           connectOrCreate: channelConnections,
@@ -224,20 +226,6 @@ export default defineComponent({
           disconnect: tagDisconnections,
         },
       };
-
-      const inputKeys = Object.keys(input);
-
-      // Don't send empty values in call to update event
-      for (let i = 0; i < inputKeys.length; i++) {
-        const key = inputKeys[i];
-        // eslint-disable-next-line
-        let data = input[key];
-
-        if (data === null) {
-          // eslint-disable-next-line
-          delete input[key];
-        }
-      }
 
       if (formValues.value.latitude && formValues.value.longitude) {
         const locationValues = {
@@ -310,6 +298,7 @@ export default defineComponent({
     return {
       getEventError,
       getEventLoading,
+      getEventResult,
       formValues,
       channelId,
       router,

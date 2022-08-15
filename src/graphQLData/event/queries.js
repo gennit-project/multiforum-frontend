@@ -1,76 +1,33 @@
 import { gql } from "@apollo/client/core";
 
-export const CREATE_EVENT = gql`
-mutation ($createEventInput: [EventCreateInput!]!) {
-  createEvents(input: $createEventInput) {
-    events {
-      id
-      title
-      description
-      Channels {
-        uniqueName
-      }
-      Poster {
-        username
-      }
-      locationName
-      address
-      startTime
-      startTimeYear
-      startTimeMonth
-      startTimeDayOfMonth
-      startTimeDayOfWeek
-      startTimeHourOfDay
-      endTime
-      virtualEventUrl
-      createdAt
-      isInPrivateResidence
-      cost
-      placeId
-      location {
-        latitude
-        longitude
-      }
-      canceled
-      Tags {
-        text
-      }
-    }
-  }
-}
-`;
-
-
 // get event by ID
 export const GET_EVENT = gql`
   query getEvent($id: ID!) {
     events(where: {id: $id}) {
       id
       title
+      createdAt
+      updatedAt
       description
       startTime
-      startTimeYear
-      startTimeMonth
-      startTimeDayOfMonth
-      startTimeDayOfWeek
-      startTimeHourOfDay
       endTime
       locationName
-      virtualEventUrl
       address
-      cost
-      Channels {
-        uniqueName
-      }
+      placeId
       Poster {
         username
       }
-      placeId
       location {
-        latitude
         longitude
+        latitude
       }
+      cost
+      free
+      virtualEventUrl
       canceled
+      Channels {
+        uniqueName
+      }
       Tags {
         text
       }
@@ -112,6 +69,7 @@ export const GET_EVENTS_IN_CHANNEL = gql`
         locationName
         address
         cost
+        free
         placeId
         canceled
         location {

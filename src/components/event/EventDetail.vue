@@ -2,10 +2,10 @@
 import { defineComponent, computed, ref } from "vue";
 import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
-import { gql } from "@apollo/client/core";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
+import { GET_EVENT } from "@/graphQLData/event/queries";
 import { DELETE_EVENT } from "@/graphQLData/event/mutations";
 // import { TagData } from "@/types/tagTypes.d";
 import { EventData } from "@/types/eventTypes";
@@ -41,44 +41,12 @@ export default defineComponent({
     const channelId = computed(() => {
       return route.params.channelId;
     });
-    const GET_EVENT = gql`
-      query getEvent($eventId: ID!) {
-        events(where: { id: $eventId }) {
-          id
-          title
-          createdAt
-          updatedAt
-          description
-          startTime
-          endTime
-          locationName
-          address
-          placeId
-          Poster {
-            username
-          }
-          location {
-            longitude
-            latitude
-          }
-          cost
-          virtualEventUrl
-          canceled
-          Channels {
-            uniqueName
-          }
-          Tags {
-            text
-          }
-        }
-      }
-    `;
 
     const {
       result: eventResult,
       error: eventError,
       loading: eventLoading,
-    } = useQuery(GET_EVENT, { eventId });
+    } = useQuery(GET_EVENT, { id: eventId });
 
     const eventData = computed(() => {
       if (
@@ -220,8 +188,10 @@ export default defineComponent({
   <div class="px-10">
     <Back />
     <p v-if="eventLoading">Loading...</p>
-
-    <p v-else-if="eventError">{{ `GET_EVENT error: ${eventError.message}` }}</p>
+    <ErrorBanner
+        v-else-if="eventError"
+        :text="eventError.message"
+      />
 
     <!-- <div v-if="!eventData">
       <p>Could not find the event.</p>
@@ -403,7 +373,7 @@ export default defineComponent({
           <p v-if="eventData.isInPrivateResidence" className="event-note">
             This location is a private residence.
           </p>
-          <p v-if="eventData.cost">
+          <p v-if="!eventData.free">
             <i className="fa fa-ticket" aria-hidden="true"></i>
             {{ eventData.cost }}
           </p>

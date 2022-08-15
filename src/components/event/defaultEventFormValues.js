@@ -27,6 +27,7 @@ export default (channelId) => {
     endTime: defaultEndTimeISO,
     canceled: false,
     deleted: false,
-    cost: "0",
+    free: true,
+    cost: "",
   }
 }

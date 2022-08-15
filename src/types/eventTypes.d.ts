@@ -31,6 +31,7 @@ export interface CreateEditEventFormValues {
   canceled: boolean;
   deleted: boolean;
   cost: string;
+  free: boolean;
 }
 export interface EventData {
   id: string?;
@@ -52,6 +53,7 @@ export interface EventData {
   canceled: boolean;
   deleted: boolean;
   cost: string;
+  free: boolean;
   Channels: Array[ChannelData];
   Poster?: UserData;
   Tags: Array[TagData];

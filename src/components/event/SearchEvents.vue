@@ -158,7 +158,7 @@ export default defineComponent({
       if (!showOnlyFreeEvents.value) {
         return "";
       }
-      return `{ cost: "0" },`;
+      return `{ free: true },`;
     });
 
     let textFilter = computed(() => {
