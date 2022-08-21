@@ -18,19 +18,27 @@ import ConfirmDelete from "../ConfirmDelete.vue";
 import { DateTime } from "luxon";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import GenericButton from "../buttons/GenericButton.vue";
+import CalendarIcon from "../icons/CalendarIcon.vue";
+import ClockIcon from "../icons/ClockIcon.vue";
 import CreateButton from "../buttons/CreateButton.vue";
 import MdEditor from "md-editor-v3";
+import HomeIcon from "../icons/HomeIcon.vue";
+import TicketIcon from "../icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     Back,
+    CalendarIcon,
+    ClockIcon,
     ConfirmDelete,
     CreateButton,
     ErrorBanner,
     GenericButton,
+    HomeIcon,
     MdEditor,
     Tag,
+    TicketIcon
   },
   setup() {
     const route = useRoute();
@@ -188,10 +196,7 @@ export default defineComponent({
   <div class="px-10">
     <Back />
     <p v-if="eventLoading">Loading...</p>
-    <ErrorBanner
-        v-else-if="eventError"
-        :text="eventError.message"
-      />
+    <ErrorBanner v-else-if="eventError" :text="eventError.message" />
 
     <!-- <div v-if="!eventData">
       <p>Could not find the event.</p>
@@ -213,18 +218,21 @@ export default defineComponent({
         :text="deleteEventError.message"
       />
       <div class="flow-root mb-4">
-          <h1 class="float-left text-xl">{{ eventData.title }}</h1>
-          <div class="float-right">
-            <span>
-              <router-link
-                :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-                >
-                <GenericButton :text="'Edit'" class="mr-2"/>
-              </router-link>
-              <CreateButton :to="`/channels/c/${channelId}/events/create`" :label="'Create Event'"/>
-            </span>
-          </div>
+        <h1 class="float-left text-xl">{{ eventData.title }}</h1>
+        <div class="float-right">
+          <span>
+            <router-link
+              :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+            >
+              <GenericButton :text="'Edit'" class="mr-2" />
+            </router-link>
+            <CreateButton
+              :to="`/channels/c/${channelId}/events/create`"
+              :label="'Create Event'"
+            />
+          </span>
         </div>
+      </div>
       <div class="grid grid-cols-3 gap-4">
         <div class="col-start-1 col-span-2">
           <md-editor
@@ -317,49 +325,48 @@ export default defineComponent({
                   : ""
               }}
             </div>
-            
           </div>
         </div>
-        <div class="col-start-3 col-span-1 text-sm text-gray-700 space-y-2">
-          <p className="hanging-indent">
-            <i className="far fa-calendar"></i>
-            {{ getFormattedDateString(eventData.startTime) }}
-          </p>
-          <p className="hanging-indent">
-            <i className="far fa-clock"></i>
-            {{ getFormattedTimeString(eventData.startTime, eventData.endTime) }}
-          </p>
-          <div v-if="eventData.virtualEventUrl" class="row">
-            <p className="hanging-indent">
+        <div
+          class="col-start-3 col-span-1 text-sm text-gray-700 space-y-2 ml-4"
+        >
+          <ul>
+            <li>
+              <CalendarIcon class="inline" />{{
+                getFormattedDateString(eventData.startTime)
+              }}
+            </li>
+            <li>
+              <ClockIcon class="inline" />
+              {{
+                getFormattedTimeString(eventData.startTime, eventData.endTime)
+              }}
+            </li>
+            <li v-if="eventData.isInPrivateResidence">
+              <HomeIcon class="inline" /> This event is in a private residence.
+            </li>
+
+            <li className="hanging-indent" v-if="eventData.virtualEventUrl">
               <i className="fas fa-globe"></i>This is a virtual event. Go to:
               {{ eventData.virtualEventUrl }}
-            </p>
-          </div>
+            </li>
 
-          <p v-if="eventData.placeId">
-            <i className="fas fa-map-marker-alt"></i>
-            <a
-              className="placeLink"
-              target="_blank"
-              rel="noreferrer"
-              :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
-            >
-              {{
-                `${eventData.locationName ? eventData.locationName : ""}${
-                  eventData.address ? `, ${eventData.address}` : ""
-                }`
-              }}
-            </a>
-          </p>
-          <p v-else>
-            <i className="fas fa-map-marker-alt"></i>
-            {{
-              `${eventData.locationName ? eventData.locationName : ""}${
-                eventData.address ? `, ${eventData.address}` : ""
-              }`
-            }}
-          </p>
-          <!-- <CopyToClipboard
+            <li v-if="eventData.placeId">
+              <i className="fas fa-map-marker-alt"></i>
+              <a
+                className="placeLink"
+                target="_blank"
+                rel="noreferrer"
+                :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
+              >
+                {{
+                  `${eventData.locationName ? eventData.locationName : ""}${
+                    eventData.address ? `, ${eventData.address}` : ""
+                  }`
+                }}
+              </a>
+            </li>
+            <!-- <CopyToClipboard
               text={address}
               onCopy={() => setCopiedAddress(true)}
             >
@@ -369,14 +376,20 @@ export default defineComponent({
                 {copiedAddress && 'Copied!'}
               </span>
             </CopyToClipboard> -->
-
-          <p v-if="eventData.isInPrivateResidence" className="event-note">
-            This location is a private residence.
-          </p>
-          <p v-if="!eventData.free">
-            <i className="fa fa-ticket" aria-hidden="true"></i>
+            <li v-else>
+              <i className="fas fa-map-marker-alt"></i>
+              {{
+                `${eventData.locationName ? eventData.locationName : ""}${
+                  eventData.address ? `, ${eventData.address}` : ""
+                }`
+              }}
+            </li>
+            <li v-if="!eventData.free">
+            <TicketIcon class="inline" />
             {{ eventData.cost }}
-          </p>
+          </li>
+          </ul>
+          
 
           <div v-if="channelId && channelsExceptCurrent.length > 0">
             Crossposted To Channels
@@ -404,3 +417,9 @@ export default defineComponent({
     </div>
   </div>
 </template>
+<style scoped>
+li {
+  margin-top: 0.5em;
+  text-indent: -2.1em;
+}
+</style>

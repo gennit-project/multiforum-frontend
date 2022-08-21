@@ -86,6 +86,7 @@ export default defineComponent({
         cost: formValues.value.cost || '',
         free: formValues.value.free || false,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
+        isInPrivateResidence: formValues.value.isInPrivateResidence || null,
         Channels: {
           connect: channelConnections,
         },
@@ -112,7 +113,6 @@ export default defineComponent({
           },
           address: formValues.value.address,
           placeId: formValues.value.placeId,
-          isInPrivateResidence: formValues.value.isInPrivateResidence,
         };
         input = { ...input, ...locationValues };
       }

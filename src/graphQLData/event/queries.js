@@ -14,6 +14,7 @@ export const GET_EVENT = gql`
       locationName
       address
       placeId
+      isInPrivateResidence
       Poster {
         username
       }
@@ -71,6 +72,7 @@ export const GET_EVENTS_IN_CHANNEL = gql`
         cost
         free
         placeId
+        isInPrivateResidence
         canceled
         location {
           latitude

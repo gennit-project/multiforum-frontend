@@ -18,6 +18,7 @@ import LinkIcon from "../icons/LinkIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
 import TicketIcon from "../icons/TicketIcon.vue";
 import AnnotationIcon from "../icons/AnnotationIcon.vue";
+import HomeIcon from "../icons/HomeIcon.vue"
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 
@@ -60,6 +61,7 @@ export default defineComponent({
     ClockIcon,
     ErrorBanner,
     ErrorMessage,
+    HomeIcon,
     TailwindForm: Form,
     FormRow,
     LinkIcon,
@@ -129,6 +131,11 @@ export default defineComponent({
           free: true,
         });
       }
+    },
+    togglePrivateResidenceField(){
+      this.$emit("updateFormValues", {
+        isInPrivateResidence: !this.formValues.isInPrivateResidence
+      })
     },
     setSelectedChannels(event: any) {
       this.$emit("setSelectedChannels", event);
@@ -265,7 +272,6 @@ export default defineComponent({
           <template v-slot:icon>
             <TagIcon class="float-right" />
           </template>
-
           <template v-slot:content>
             <TagInput
               :selected-tags="formValues.selectedTags"
@@ -275,7 +281,19 @@ export default defineComponent({
             />
           </template>
         </FormRow>
-
+        <FormRow>
+          <template v-slot:icon>
+            <HomeIcon class="float-right" />
+          </template>
+          <template v-slot:content>
+            <CheckBox
+              class="align-middle"
+              :checked="formValues.isInPrivateResidence"
+              @input="togglePrivateResidenceField"
+            />
+            <span class="ml-2 align-middle">This event is in a private residence</span>
+          </template>
+        </FormRow>
         <FormRow>
           <template v-slot:icon>
             <TicketIcon class="float-right" />
