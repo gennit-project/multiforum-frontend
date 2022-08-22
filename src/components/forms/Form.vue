@@ -27,12 +27,12 @@ export default defineComponent({
 </script>
 <template>
   <div class="pb-8 h-full">
-    <form class="mx-auto max-w-6xl space-y-8 divide-y bg-white p-8 rounded">
+    <form class="mx-auto max-w-6xl space-y-2 divide-y bg-white p-8 rounded">
       <FormRow>
         <template v-slot:content>
           <div class="flow-root">
             <FormTitle class="float-left"> {{ formTitle }} </FormTitle>
-            <div class="float-right">
+            <div class="float-right pr-8">
               <CancelButton @click="$router.go(-1)" />
               <SaveButton
                 @click.prevent="$emit('submit')"
