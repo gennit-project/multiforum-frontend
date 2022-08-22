@@ -19,6 +19,7 @@ import TagIcon from "../icons/TagIcon.vue";
 import TicketIcon from "../icons/TicketIcon.vue";
 import AnnotationIcon from "../icons/AnnotationIcon.vue";
 import HomeIcon from "../icons/HomeIcon.vue"
+import DatePicker from 'vue3-datepicker'
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 
@@ -59,6 +60,7 @@ export default defineComponent({
     UserAddIcon,
     CheckBox,
     ClockIcon,
+    DatePicker,
     ErrorBanner,
     ErrorMessage,
     HomeIcon,
@@ -74,11 +76,13 @@ export default defineComponent({
     TextInput,
     TicketIcon,
     AnnotationIcon,
-  },
+    DatePicker
+},
   data(props) {
     return {
       touched: false,
       formTitle: props.editMode ? "Edit Event" : "Create Event",
+      startTime: new Date(props.formValues?.startTime || '')
     };
   },
 
@@ -208,13 +212,12 @@ export default defineComponent({
           </template>
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
-              <!-- <DatePicker
-                    v-model="startTime"
-                    :is-24="false"
-                    :minutesIncrement="30"
-                    :minDate="minStartTimeISO"
-                    @update="updateStartTime"
-                  /> -->
+                <DatePicker
+                  class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
+                  v-model="startTime"
+                  :input-format="'MM/dd/yyyy'"
+                  @update:modelValue="$emit('updateFormValues', { startTime: $event.toISOString() })"
+                />
             </div>
           </template>
         </FormRow>

@@ -10,6 +10,10 @@ export const GET_EVENT = gql`
       updatedAt
       description
       startTime
+      startTimeYear
+      startTimeMonth
+      startTimeDayOfMonth
+      startTimeDayOfWeek
       endTime
       locationName
       address

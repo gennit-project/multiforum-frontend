@@ -43,6 +43,7 @@
     "vue-profile-avatar": "^1.2.0",
     "vue-router": "^4.1.3",
     "vue-tsc": "^0.39.2",
+    "vue3-datepicker": "^0.3.4",
     "webpack": "^5.74.0"
   },
   "devDependencies": {

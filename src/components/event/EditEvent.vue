@@ -74,7 +74,7 @@ export default defineComponent({
       return {
         poster: "cluse",
         title: event.title,
-        description: event.description || '',
+        description: event.description || "",
         selectedTags: event.Tags.map((tag: TagData) => {
           return tag.text;
         }),
@@ -86,7 +86,7 @@ export default defineComponent({
         placeId: event.placeId,
         locationName: event.locationName,
         isInPrivateResidence: event.isInPrivateResidence,
-        virtualEventUrl: event.virtualEventUrl || '',
+        virtualEventUrl: event.virtualEventUrl || "",
         startTime: event.startTime,
         startTimeYear: event.startTimeYear,
         startTimeMonth: event.startTimeMonth,
@@ -97,7 +97,7 @@ export default defineComponent({
         canceled: event.canceled,
         deleted: event.deleted,
         cost: event.cost,
-        free: event.free
+        free: event.free,
       };
     };
 
@@ -120,19 +120,6 @@ export default defineComponent({
       const event = value.data.events[0];
 
       formValues.value = getFormValuesFromEventData(event);
-    });
-
-    const startTimePieces = computed(() => {
-      const startTimeObj = DateTime.fromISO(formValues.value.startTime);
-      const { year, month, day, weekday, hour } = startTimeObj;
-
-      return {
-        startTimeYear: year.toString(),
-        startTimeMonth: month.toString(),
-        startTimeDayOfMonth: day.toString(),
-        startTimeDayOfWeek: weekday.toString(),
-        startTimeHourOfDay: hour,
-      };
     });
 
     const updateEventInput = computed(() => {
@@ -198,6 +185,21 @@ export default defineComponent({
           };
         });
 
+      const getStartTimePieces = () => {
+        const startTimeObj = DateTime.fromISO(formValues.value.startTime);
+        const { year, month, day, weekday, hour } = startTimeObj;
+
+        return {
+          startTimeYear: year.toString(),
+          startTimeMonth: month.toString(),
+          startTimeDayOfMonth: day.toString(),
+          startTimeDayOfWeek: weekday.toString(),
+          startTimeHourOfDay: hour,
+        };
+      };
+
+      const startTimePieces = getStartTimePieces();
+
       let input = {
         /*
           Using null values by default for required fields such as the
@@ -207,11 +209,11 @@ export default defineComponent({
         title: formValues.value.title || null,
         description: formValues.value.description || null,
         startTime: formValues.value.startTime || null,
-        startTimeYear: startTimePieces.value.startTimeYear || null,
-        startTimeMonth: startTimePieces.value.startTimeMonth || null,
-        startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth || null,
-        startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek || null,
-        startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || null,
+        startTimeYear: startTimePieces.startTimeYear || null,
+        startTimeMonth: startTimePieces.startTimeMonth || null,
+        startTimeDayOfMonth: startTimePieces.startTimeDayOfMonth || null,
+        startTimeDayOfWeek: startTimePieces.startTimeDayOfWeek || null,
+        startTimeHourOfDay: startTimePieces.startTimeHourOfDay,
         endTime: formValues.value.endTime || null,
         canceled: formValues.value.canceled,
         cost: formValues.value.cost,
