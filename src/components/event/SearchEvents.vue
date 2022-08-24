@@ -1066,7 +1066,7 @@ export default defineComponent({
         :highlighted="dateLabel !== defaultFilterLabels.date"
       >
         <template v-slot:icon>
-          <CalendarIcon />
+          <CalendarIcon class="-ml-0.5 w-4 h-4 mr-2"/>
         </template>
         <template v-slot:content>
           <DatePicker
@@ -1122,7 +1122,7 @@ export default defineComponent({
         :highlighted="channelLabel !== defaultFilterLabels.channels"
       >
         <template v-slot:icon>
-          <ChannelIcon />
+          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2"/>
         </template>
         <template v-slot:content>
           <TagPicker
@@ -1138,7 +1138,7 @@ export default defineComponent({
         :highlighted="tagLabel !== defaultFilterLabels.tags"
       >
         <template v-slot:icon>
-          <TagIcon />
+          <TagIcon class="-ml-0.5 w-4 h-4 mr-2"/>
         </template>
         <template v-slot:content>
           <TagPicker

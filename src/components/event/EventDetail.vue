@@ -332,12 +332,12 @@ export default defineComponent({
         >
           <ul>
             <li>
-              <CalendarIcon class="inline" />{{
+              <CalendarIcon class="inline h-5 w-5 mr-1" />{{
                 getFormattedDateString(eventData.startTime)
               }}
             </li>
             <li>
-              <ClockIcon class="inline" />
+              <ClockIcon class="inline h-5 w-5 mr-1" />
               {{
                 getFormattedTimeString(eventData.startTime, eventData.endTime)
               }}

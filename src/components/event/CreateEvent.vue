@@ -80,7 +80,7 @@ export default defineComponent({
         startTimeMonth: startTimePieces.value.startTimeMonth || null,
         startTimeDayOfMonth: startTimePieces.value.startTimeDayOfMonth || null,
         startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek || null,
-        startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || null,
+        startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || 0,
         endTime: formValues.value.endTime || null,
         canceled: false,
         cost: formValues.value.cost || '',

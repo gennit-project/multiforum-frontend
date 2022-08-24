@@ -18,10 +18,13 @@ import LinkIcon from "../icons/LinkIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
 import TicketIcon from "../icons/TicketIcon.vue";
 import AnnotationIcon from "../icons/AnnotationIcon.vue";
-import HomeIcon from "../icons/HomeIcon.vue"
-import DatePicker from 'vue3-datepicker'
+import HomeIcon from "../icons/HomeIcon.vue";
+import DatePicker from "vue3-datepicker";
+import Select from "../forms/Select.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
+import RightArrowIcon from "../icons/RightArrowIcon.vue";
+import { DateTime } from "luxon";
 
 export default defineComponent({
   props: {
@@ -57,7 +60,7 @@ export default defineComponent({
     },
   },
   components: {
-    UserAddIcon,
+    AnnotationIcon,
     CheckBox,
     ClockIcon,
     DatePicker,
@@ -70,23 +73,69 @@ export default defineComponent({
     LocationIcon,
     LocationSearchBar,
     PencilIcon,
+    RightArrowIcon,
+    Dropdown: Select,
     TagIcon,
     TagInput,
     TextEditor,
     TextInput,
     TicketIcon,
-    AnnotationIcon,
-    DatePicker
-},
+    UserAddIcon,
+  },
   data(props) {
+    const startTimeISO = props.formValues?.startTime || "";
+    const startTime = new Date(startTimeISO);
+    let endTimeISO = props.formValues?.endTime || ""
+
+    if (!endTimeISO) {
+      endTimeISO = DateTime.fromISO(startTimeISO).plus({ minutes: 30 }).toISO()
+    }
+    const endTime = new Date(endTimeISO);
+
+    // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
+    // TIME_SIMPLE yields the time in this format: 1:30 PM
+    const timeFormat = DateTime.TIME_SIMPLE;
     return {
-      touched: false,
+      // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
+      dateFormat: "MM/dd/yyyy",
+      defaultStartTimeOption: {
+        label: DateTime.fromISO(startTimeISO).toLocaleString(timeFormat),
+        value: startTimeISO,
+      },
+      defaultEndTimeOption: {
+        label: DateTime.fromISO(endTimeISO).toLocaleString(timeFormat),
+        value: endTimeISO,
+      },
       formTitle: props.editMode ? "Edit Event" : "Create Event",
-      startTime: new Date(props.formValues?.startTime || '')
+      startTime, // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
+      startTimeDay: new Date(startTimeISO), // Create separate values for the start day and time because they can be changed separately
+      endTime,
+      endTimeDay: new Date(endTimeISO),
+      touched: false,
+      timeFormat,
     };
   },
 
   computed: {
+    timeOptions() {
+      const options = [];
+      const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
+      const beginningOfDay = startTimeObj.startOf("day");
+      let currentOption = beginningOfDay;
+      const MINUTES_IN_A_DAY = 1440;
+      let i = 0;
+
+      while (i < MINUTES_IN_A_DAY) {
+        const optionAsISO = currentOption.toISO();
+        options.push({
+          label: currentOption.toLocaleString(this.timeFormat),
+          value: optionAsISO,
+        });
+        currentOption = currentOption.plus({ minutes: 30 });
+        i += 30;
+      }
+      return options;
+    },
     needsChanges() {
       // We do these checks:
       // - Title is included
@@ -136,10 +185,10 @@ export default defineComponent({
         });
       }
     },
-    togglePrivateResidenceField(){
+    togglePrivateResidenceField() {
       this.$emit("updateFormValues", {
-        isInPrivateResidence: !this.formValues.isInPrivateResidence
-      })
+        isInPrivateResidence: !this.formValues.isInPrivateResidence,
+      });
     },
     setSelectedChannels(event: any) {
       this.$emit("setSelectedChannels", event);
@@ -158,6 +207,52 @@ export default defineComponent({
       } catch (e: any) {
         throw new Error(e);
       }
+    },
+    handleStartDateChange(event: any) {
+      const startTimeISO = this.startTime.toISOString();
+      const existingStartTimeObject = DateTime.fromISO(startTimeISO);
+      const newStartTimeObject = DateTime.fromISO(
+        event.toISOString()
+      ).toObject();
+      const { day, month, year } = newStartTimeObject;
+      // Only change the day/month/year so that we still keep the hours and minutes set by the time picker.
+      // Convert the date back to a Javascript date for compatibility with the calendar date picker.
+      const newStartTime = existingStartTimeObject
+        .set({ day, month, year })
+        .toJSDate();
+      this.startTime = newStartTime;
+      this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
+    },
+    handleEndDateChange(event: any) {
+      const endTimeISO = this.endTime.toISOString();
+      const existingEndTimeObject = DateTime.fromISO(endTimeISO);
+      const newEndTimeObject = DateTime.fromISO(event.toISOString()).toObject();
+      const { day, month, year } = newEndTimeObject;
+      const newEndTime = existingEndTimeObject
+        .set({ day, month, year })
+        .toJSDate();
+      this.endTime = newEndTime;
+      this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
+    },
+    handleStartTimeChange(event: any) {
+      const startTimeISO = this.startTime.toISOString();
+      const existingStartTimeObject = DateTime.fromISO(startTimeISO);
+      const newStartTimeObject = DateTime.fromISO(event).toObject();
+      const { hour, minute } = newStartTimeObject;
+      const newStartTime = existingStartTimeObject
+        .set({ hour, minute })
+        .toJSDate();
+      this.startTime = newStartTime;
+      this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
+    },
+    handleEndTimeChange(event: any) {
+      const endTimeISO = this.endTime.toISOString();
+      const existingEndTimeObject = DateTime.fromISO(endTimeISO);
+      const newEndTimeObject = DateTime.fromISO(event).toObject();
+      const { hour, minute } = newEndTimeObject;
+      const newEndTime = existingEndTimeObject.set({ hour, minute }).toJSDate();
+      this.endTime = newEndTime;
+      this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
     },
   },
 });
@@ -212,12 +307,53 @@ export default defineComponent({
           </template>
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
-                <DatePicker
-                  class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
-                  v-model="startTime"
-                  :input-format="'MM/dd/yyyy'"
-                  @update:modelValue="$emit('updateFormValues', { startTime: $event.toISOString() })"
-                />
+              <DatePicker
+                class="
+                  focus:ring-blue-500 focus:border-blue-500
+                  mt-1
+                  pt-2.5
+                  pb-2.5
+                  flex-1
+                  block
+                  min-w-0
+                  rounded
+                  sm:text-sm
+                  border-gray-300
+                "
+                v-model="startTimeDay"
+                :input-format="dateFormat"
+                @update:modelValue="handleStartDateChange"
+              />
+              <Dropdown
+                class="w-40"
+                :options="timeOptions"
+                :default-option="defaultStartTimeOption"
+                @selected="handleStartTimeChange"
+              />
+              <RightArrowIcon />
+              <DatePicker
+                class="
+                  focus:ring-blue-500 focus:border-blue-500
+                  mt-1
+                  pt-2.5
+                  pb-2.5
+                  flex-1
+                  block
+                  min-w-0
+                  rounded
+                  sm:text-sm
+                  border-gray-300
+                "
+                v-model="endTimeDay"
+                :input-format="dateFormat"
+                @update:modelValue="handleEndDateChange"
+              />
+              <Dropdown
+                class="w-40"
+                :options="timeOptions"
+                :default-option="defaultEndTimeOption"
+                @selected="handleEndTimeChange"
+              />
             </div>
           </template>
         </FormRow>
@@ -294,7 +430,9 @@ export default defineComponent({
               :checked="formValues.isInPrivateResidence"
               @input="togglePrivateResidenceField"
             />
-            <span class="ml-2 align-middle">This event is in a private residence</span>
+            <span class="ml-2 align-middle"
+              >This event is in a private residence</span
+            >
           </template>
         </FormRow>
         <FormRow>

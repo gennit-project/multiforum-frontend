@@ -46,13 +46,13 @@ export default defineComponent({
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4 text-gray-300">
             <TopNavLink :to="'/'" :label="'Events'">
-              <CalendarIcon />
+              <CalendarIcon class="-ml-0.5 h-6 w-4 mr-1"/>
             </TopNavLink>
             <TopNavLink :to="'/discussions'" :label="'Discussions'">
               <DiscussionIcon />
             </TopNavLink>
             <TopNavLink :to="'/channels'" :label="'Channels'">
-              <ChannelIcon />
+              <ChannelIcon class="-ml-0.5 h-6 w-4 mr-1"/>
             </TopNavLink>
             <TopNavLink :to="'/feeds'" :label="'Feeds'">
               <FeedIcon />

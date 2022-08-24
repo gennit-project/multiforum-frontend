@@ -1,11 +1,13 @@
 <script lang="ts">
 import ChannelTabs from "./ChannelTabs.vue";
 import Breadcrumbs from "../nav/Breadcrumbs.vue";
+import ChannelIcon from "../icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   components: {
+    ChannelIcon,
     ChannelTabs,
     Breadcrumbs,
   },
@@ -84,7 +86,7 @@ export default defineComponent({
   </div>
   <div v-if="!discussionId || !eventId">
     <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
-      {{ channelId }}
+       <ChannelIcon class="h-6 w-6 mr-1" />{{ channelId }}
     </h1>
     <ChannelTabs />
   </div>
