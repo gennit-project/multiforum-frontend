@@ -25,6 +25,8 @@ import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import { DateTime, Interval } from "luxon";
+import { SelectOptionData } from "@/types/genericFormTypes";
+import { SelectorIcon } from "@heroicons/vue/solid";
 
 export default defineComponent({
   props: {
@@ -127,24 +129,9 @@ export default defineComponent({
       return ''
     },
     duration(){
-      if (this.startTime >= this.endTime){
-        return ''
-      }
-      // Format time as "1h 30m"
-      const obj = Interval
-        .fromDateTimes(DateTime.fromISO(this.startTime.toISOString()), DateTime.fromISO(this.endTime.toISOString()))
-        .toDuration()
-        .shiftTo('hours', 'minutes')
-        .toObject()
-      if (!obj.hours){
-        return `${obj.minutes}m`
-      }
-      if (!obj.minutes){
-        return `${obj.hours}h`
-      }
-      return `${obj.hours}h ${obj.minutes}m`
+      return this.getDuration(this.startTime.toISOString(), this.endTime.toISOString())
     },
-    timeOptions() {
+    startTimeOptions() {
       const options = [];
       const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
       const beginningOfDay = startTimeObj.startOf("day");
@@ -162,6 +149,23 @@ export default defineComponent({
         i += 30;
       }
       return options;
+    },
+    endTimeOptions() {
+      const options = []
+      const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
+      let currentOption = startTimeObj
+      const end = startTimeObj.plus({days: 1})
+
+      while(currentOption < end) {
+        const optionAsISO = currentOption.toISO()
+        const duration = this.getDuration(this.startTime.toISOString(), optionAsISO)
+        options.push({
+          label: `${currentOption.toLocaleString(this.timeFormat)} ${duration ? `(${duration})`: ''}`,
+          value: optionAsISO
+        })
+        currentOption = currentOption.plus({ minutes: 30 })
+      }
+      return options
     },
     needsChanges() {
       // We do these checks:
@@ -200,6 +204,25 @@ export default defineComponent({
     },
   },
   methods: {
+    getDuration(startTime: string, endTime: string){
+      if (DateTime.fromISO(startTime) >= DateTime.fromISO(endTime)){
+        return ''
+      }
+      // Format time as "1h 30m"
+      const obj = Interval
+        .fromDateTimes(DateTime.fromISO(startTime), DateTime.fromISO(endTime))
+        .toDuration()
+        .shiftTo('hours', 'minutes')
+        .toObject()
+
+      if (!obj.hours){
+        return `${obj.minutes}m`
+      }
+      if (!obj.minutes){
+        return `${obj.hours}h`
+      }
+      return `${obj.hours}h ${obj.minutes}m`
+    },
     toggleCostField() {
       if (this.formValues?.free) {
         this.$emit("updateFormValues", {
@@ -357,8 +380,8 @@ export default defineComponent({
                 @update:modelValue="handleStartDateChange"
               />
               <Dropdown
-                class="w-40"
-                :options="timeOptions"
+                class="w-52"
+                :options="startTimeOptions"
                 :default-option="defaultStartTimeOption"
                 @selected="handleStartTimeChange"
               />
@@ -382,8 +405,8 @@ export default defineComponent({
                 @update:modelValue="handleEndDateChange"
               />
               <Dropdown
-                class="w-40"
-                :options="timeOptions"
+                class="w-52"
+                :options="endTimeOptions"
                 :default-option="defaultEndTimeOption"
                 @selected="handleEndTimeChange"
               />
