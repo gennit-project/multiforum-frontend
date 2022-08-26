@@ -230,6 +230,11 @@ export default defineComponent({
         v-if="eventIsInThePast"
         :text="'This event is in the past.'"
       />
+      <ErrorBanner
+        class="mt-2 mb-2"
+        v-if="eventData.canceled"
+        :text="'This event is canceled.'"
+      />
       <div class="flow-root mb-4">
         <h1 class="float-left text-xl">{{ eventData.title }}</h1>
         <div class="float-right">
