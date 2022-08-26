@@ -38,7 +38,7 @@ export default defineComponent({
     HomeIcon,
     MdEditor,
     Tag,
-    TicketIcon
+    TicketIcon,
   },
   setup() {
     const route = useRoute();
@@ -133,11 +133,19 @@ export default defineComponent({
       }
     });
 
+    const eventIsInThePast = computed(() => {
+      if (!eventData.value) {
+         return false
+      }
+      return DateTime.fromISO(eventData.value.startTime) < DateTime.fromISO(new Date().toISOString())
+    })
+
     return {
       confirmDeleteIsOpen,
       eventData,
       eventResult,
       eventError,
+      eventIsInThePast,
       eventLoading,
       eventId,
       channelId,
@@ -210,12 +218,17 @@ export default defineComponent({
 
     <div
       v-else-if="eventResult && eventResult.events"
-      class="mx-auto max-w-4xl bg-white p-8 rounded"
+      class="mx-auto max-w-4xl bg-white rounded"
     >
       <ErrorBanner
-        class="mt-2"
+        class="mt-2 mb-2"
         v-if="deleteEventError"
         :text="deleteEventError.message"
+      />
+      <ErrorBanner
+        class="mt-2 mb-2"
+        v-if="eventIsInThePast"
+        :text="'This event is in the past.'"
       />
       <div class="flow-root mb-4">
         <h1 class="float-left text-xl">{{ eventData.title }}</h1>
@@ -385,11 +398,10 @@ export default defineComponent({
               }}
             </li>
             <li v-if="!eventData.free">
-            <TicketIcon class="inline" />
-            {{ eventData.cost }}
-          </li>
+              <TicketIcon class="inline" />
+              {{ eventData.cost }}
+            </li>
           </ul>
-          
 
           <div v-if="channelId && channelsExceptCurrent.length > 0">
             Crossposted To Channels
