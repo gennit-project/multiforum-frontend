@@ -117,7 +117,19 @@ export default defineComponent({
   },
 
   computed: {
+    datePickerErrorMessage(){
+      if (this.startTime < new Date()){
+        return 'Are you sure you want the start time to be in the past?'
+      }
+      if (this.startTime >= this.endTime) {
+        return 'The start time is after the end time.'
+      }
+      return ''
+    },
     duration(){
+      if (this.startTime >= this.endTime){
+        return ''
+      }
       // Format time as "1h 30m"
       const obj = Interval
         .fromDateTimes(DateTime.fromISO(this.startTime.toISOString()), DateTime.fromISO(this.endTime.toISOString()))
@@ -161,7 +173,8 @@ export default defineComponent({
       const needsChanges = !(
         (
           this.formValues.selectedChannels.length > 0 &&
-          this.formValues.title.length > 0
+          this.formValues.title.length > 0 &&
+          this.startTime < this.endTime
         )
         // && this.startTime > now &&
         // ((this.address.length > 0 &&
@@ -365,6 +378,7 @@ export default defineComponent({
                 "
                 v-model="endTimeDay"
                 :input-format="dateFormat"
+                :lower-limit="startTime"
                 @update:modelValue="handleEndDateChange"
               />
               <Dropdown
@@ -378,11 +392,7 @@ export default defineComponent({
               </div>
             </div>
             <ErrorMessage
-              :text="
-                this.startTime < new Date()
-                  ? 'Are you sure you want the start time to be in the past?'
-                  : ''
-              "
+              :text="datePickerErrorMessage"
             />
           </template>
         </FormRow>
