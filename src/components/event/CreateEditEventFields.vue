@@ -24,7 +24,7 @@ import Select from "../forms/Select.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
-import { DateTime } from "luxon";
+import { DateTime, Interval } from "luxon";
 
 export default defineComponent({
   props: {
@@ -117,6 +117,21 @@ export default defineComponent({
   },
 
   computed: {
+    duration(){
+      // Format time as "1h 30m"
+      const obj = Interval
+        .fromDateTimes(DateTime.fromISO(this.startTime.toISOString()), DateTime.fromISO(this.endTime.toISOString()))
+        .toDuration()
+        .shiftTo('hours', 'minutes')
+        .toObject()
+      if (!obj.hours){
+        return `${obj.minutes}m`
+      }
+      if (!obj.minutes){
+        return `${obj.hours}h`
+      }
+      return `${obj.hours}h ${obj.minutes}m`
+    },
     timeOptions() {
       const options = [];
       const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
@@ -222,6 +237,7 @@ export default defineComponent({
         .toJSDate();
       this.startTime = newStartTime;
       this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
+      this.touched = true
     },
     handleEndDateChange(event: any) {
       const endTimeISO = this.endTime.toISOString();
@@ -233,6 +249,7 @@ export default defineComponent({
         .toJSDate();
       this.endTime = newEndTime;
       this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
+      this.touched = true
     },
     handleStartTimeChange(event: any) {
       const startTimeISO = this.startTime.toISOString();
@@ -244,6 +261,7 @@ export default defineComponent({
         .toJSDate();
       this.startTime = newStartTime;
       this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
+      this.touched = true
     },
     handleEndTimeChange(event: any) {
       const endTimeISO = this.endTime.toISOString();
@@ -253,6 +271,7 @@ export default defineComponent({
       const newEndTime = existingEndTimeObject.set({ hour, minute }).toJSDate();
       this.endTime = newEndTime;
       this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
+      this.touched = true
     },
   },
 });
@@ -354,6 +373,9 @@ export default defineComponent({
                 :default-option="defaultEndTimeOption"
                 @selected="handleEndTimeChange"
               />
+              <div class="ml-2 mr-2">
+                {{ duration }}
+              </div>
             </div>
           </template>
         </FormRow>
