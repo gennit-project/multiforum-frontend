@@ -377,6 +377,13 @@ export default defineComponent({
                 {{ duration }}
               </div>
             </div>
+            <ErrorMessage
+              :text="
+                this.startTime < new Date()
+                  ? 'Are you sure you want the start time to be in the past?'
+                  : ''
+              "
+            />
           </template>
         </FormRow>
         <FormRow>
