@@ -160,20 +160,38 @@ export default defineComponent({
       :text="getDiscussionError.message"
     />
     <div v-else class="mx-auto max-w-6xl divide-y bg-white rounded">
-      <div class="flow-root mb-1 flex items-center">
-        <h2 class="text-xl py-2 float-left">{{ discussion.title }}</h2>
-        <span class="float-right space-x-2">
-          <router-link
-            :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+      <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+          <h2
+            class="
+              text-2xl
+              font-bold
+              leading-7
+              text-gray-900
+              sm:text-3xl sm:tracking-tight sm:truncate
+            "
           >
-            <GenericButton :text="'Edit'" />
-          </router-link>
-          <CreateButton
-            :to="`/channels/c/${channelId}/discussions/create`"
-            :label="'Create Discussion'"
-          />
-        </span>
+            {{ discussion.title }}
+          </h2>
+        </div>
+        <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+          <div class="float-right">
+            <span>
+              <router-link
+                :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+              >
+                <GenericButton :text="'Edit'" />
+              </router-link>
+              <CreateButton
+                class="ml-2"
+                :to="`/channels/c/${channelId}/discussions/create`"
+                :label="'Create Discussion'"
+              />
+            </span>
+          </div>
+        </div>
       </div>
+
       <div class="grid grid-cols-3 pt-8">
         <div class="col-start-1 col-span-2">
           <div v-if="discussion.body" class="body min-height-min">

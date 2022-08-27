@@ -306,20 +306,34 @@ export default defineComponent({
         v-if="eventData.canceled"
         :text="'This event is canceled.'"
       />
-      <div class="flow-root mb-4">
-        <h1 class="float-left text-xl">{{ eventData.title }}</h1>
-        <div class="float-right">
-          <span>
-            <router-link
-              :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-            >
-              <GenericButton :text="'Edit'" class="mr-2" />
-            </router-link>
-            <CreateButton
-              :to="`/channels/c/${channelId}/events/create`"
-              :label="'Create Event'"
-            />
-          </span>
+      <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+          <h2
+            class="
+              text-2xl
+              font-bold
+              leading-7
+              text-gray-900
+              sm:text-3xl sm:tracking-tight sm:truncate
+            "
+          >
+            {{ eventData.title }}
+          </h2>
+        </div>
+        <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+          <div class="float-right">
+            <span>
+              <router-link
+                :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+              >
+                <GenericButton :text="'Edit'" class="mr-2" />
+              </router-link>
+              <CreateButton
+                :to="`/channels/c/${channelId}/events/create`"
+                :label="'Create Event'"
+              />
+            </span>
+          </div>
         </div>
       </div>
       <div class="grid grid-cols-3 gap-4">

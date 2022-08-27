@@ -59,10 +59,10 @@ export default defineComponent({
         </router-link>
       </h3>
       <p>
-        {{ `commented ${relativeTime("" + createdAt)} ${editedAt ? `&#8226; ${editedAt}` : ''}` }}
+        {{ `Commented ${relativeTime("" + createdAt)} ${editedAt ? `&#8226; ${editedAt}` : ''}` }}
       </p>
       <md-editor
-        class="mt-4"
+        class="mt-1"
         v-if="content"
         v-model="contentCopy"
         language="en-US"
