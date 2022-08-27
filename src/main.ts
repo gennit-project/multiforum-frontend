@@ -12,7 +12,7 @@ import { DefaultApolloClient } from "@vue/apollo-composable";
 import { createApolloProvider } from "@vue/apollo-option";
 import { onError } from "@apollo/client/link/error";
 import { logErrorMessages } from "@vue/apollo-util";
-// import VueGoogleMaps from "@fawmi/vue-google-maps";
+import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
 // import 'v-tooltip/dist/v-tooltip.css';
 // import {
@@ -124,11 +124,11 @@ const app = createApp({
 app
   .use(router)
   .use(FloatingVue)
-  // .use(VueGoogleMaps, {
-  //   load: {
-  //     key: config.googleMapsApiKey,
-  //     libraries: "places",
-  //   },
-  // })
+  .use(VueGoogleMaps, {
+    load: {
+      key: config.googleMapsApiKey,
+      libraries: "places",
+    },
+  })
   .use(apolloProvider)
   .mount("#app");

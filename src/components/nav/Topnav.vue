@@ -54,9 +54,9 @@ export default defineComponent({
             <TopNavLink :to="'/channels'" :label="'Channels'">
               <ChannelIcon class="-ml-0.5 h-6 w-4 mr-1"/>
             </TopNavLink>
-            <TopNavLink :to="'/feeds'" :label="'Feeds'">
+            <!-- <TopNavLink :to="'/feeds'" :label="'Feeds'">
               <FeedIcon />
-            </TopNavLink>
+            </TopNavLink> -->
           </div>
         </div>
       </div>

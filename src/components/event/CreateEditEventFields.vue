@@ -133,7 +133,7 @@ export default defineComponent({
         return 'Are you sure you want the start time to be in the past?'
       }
       if (this.startTime >= this.endTime) {
-        return 'The start time is after the end time.'
+        return 'The start time must be before the end time.'
       }
       return ''
     },
@@ -318,6 +318,25 @@ export default defineComponent({
       this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
       this.touched = true
     },
+    handleUpdateLocation(event: any){
+      if (!event.place_id){
+        throw new Error('Could not find a Google place ID based on the form input.')
+      }
+      const { place_id, name, formatted_address, geometry: {
+          location: {
+            lat,
+            lng
+          }
+        } 
+      } = event
+      this.$emit('updateFormValues', { 
+        placeId: place_id,
+        locationName: name,
+        address: formatted_address,
+        latitude: lat(),
+        longitude: lng()
+      })
+    }
   },
 });
 </script>
@@ -446,7 +465,7 @@ export default defineComponent({
                 formValues.virtualEventUrl &&
                 formValues.virtualEventUrl.length > 0 &&
                 !urlIsValid
-                  ? 'URL is invalid.'
+                  ? 'Must be a valid URL starting with https://'
                   : ''
               "
             />
@@ -460,8 +479,8 @@ export default defineComponent({
             <LocationSearchBar
               :search-placeholder="'Add an address'"
               :full-width="true"
-              :reference-point-address-name="formValues.address"
-              @updateLocationInput="$emit('updateLocationInput', $event)"
+              :reference-point-address-name="`${formValues.locationName ? `${formValues.locationName}, `: ''}${formValues.address}`"
+              @updateLocationInput="handleUpdateLocation"
             />
           </template>
         </FormRow>

@@ -193,8 +193,8 @@ export default defineComponent({
             :key="tag.text"
             :discussionId="discussionId"
           />
-          <div className="text-xs text-gray-600 mt-4">
-            <div className="organizer">
+          <div class="text-xs text-gray-600 mt-4">
+            <div class="organizer">
               <router-link
                 v-if="discussion.Author"
                 class="text-blue-800 underline"
@@ -222,7 +222,7 @@ export default defineComponent({
               >
                 <router-link
                   :key="channel.uniqueName"
-                  className="understatedLink underline"
+                  class="understatedLink underline"
                   :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`"
                 >
                   {{ `c/${channel.uniqueName}` }}

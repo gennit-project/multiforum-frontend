@@ -137,7 +137,7 @@ export default defineComponent({
       <p class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6">
         Posted by
         <router-link
-          className="text-blue-600 underline ml-1"
+          class="text-blue-600 underline ml-1"
           :to="`/u/${event?.Poster.username}`"
         >
           {{ event?.Poster.username }}

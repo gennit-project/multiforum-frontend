@@ -12,9 +12,8 @@ export default defineComponent({
 </script>
 <template>
   <svg
-  :class="[wide ? 'h-6 w-7' : 'w-4']"
+    class="-ml-0.5 h-6 w-6"
     xmlns="http://www.w3.org/2000/svg"
-    class="-ml-0.5 w-4"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"

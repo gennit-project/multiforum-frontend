@@ -25,6 +25,8 @@ import MdEditor from "md-editor-v3";
 import HomeIcon from "../icons/HomeIcon.vue";
 import TicketIcon from "../icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
+import LocationIcon from "../icons/LocationIcon.vue";
+import LinkIcon from "../icons/LinkIcon.vue";
 
 export default defineComponent({
   components: {
@@ -39,7 +41,9 @@ export default defineComponent({
     MdEditor,
     Tag,
     TicketIcon,
-  },
+    LocationIcon,
+    LinkIcon
+},
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -153,6 +157,16 @@ export default defineComponent({
       return DateTime.fromISO(eventData.value.startTime) < DateTime.fromISO(new Date().toISOString())
     })
 
+    const locationText = computed(() => {
+      if (!eventData.value || !eventData.value.address) {
+        return ''
+      }
+      if (eventData.value.locationName) {
+        return `${eventData.value.locationName}, ${eventData.value.address}`
+      }
+      return eventData.value.address
+    })
+
     return {
       cancelEvent,
       cancelEventError,
@@ -169,6 +183,7 @@ export default defineComponent({
       commentSectionId,
       deleteEvent,
       deleteEventError,
+      locationText,
       relativeTime,
     };
   },
@@ -212,6 +227,9 @@ export default defineComponent({
         endsAt: endTime,
       };
     },
+    openLink(){
+      window.open(this.eventData.virtualEventUrl, '_blank')
+    }
   },
 });
 </script>
@@ -226,7 +244,7 @@ export default defineComponent({
       <p>Could not find the event.</p>
       <router-link :to="`/channels/c/${channelId}/events`">
         <p>
-          <i className="fas fa-arrow-left"></i> Go back to
+          <i class="fas fa-arrow-left"></i> Go back to
           {{ `c/${channelId}/events` }}
         </p>
       </router-link>
@@ -287,8 +305,8 @@ export default defineComponent({
             :eventId="eventId"
           />
 
-          <div className="text-xs text-gray-600 mt-4">
-            <div className="organizer">
+          <div class="text-xs text-gray-600 mt-4">
+            <div class="organizer">
               <router-link
                 v-if="eventData.Poster"
                 class="text-blue-800 underline"
@@ -324,37 +342,11 @@ export default defineComponent({
                 @click="confirmCancelIsOpen = true"
                 >Cancel</span
               >
-              <!-- <Link
-              className='organizerLink'
-              to={`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
-            >
-              {`@${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
-            </Link> -->
-              <!-- {isAuthenticated && isCreatorOfEvent() ? (
-              <>
-                <span> &#8226; </span>
-                <Link
-                  className='organizerLink'
-                  to={`/c/${channelId}/events/e/${eventId}/edit`}
-                >
-                  Edit
-                </Link>
-                <span> &#8226; </span>
-                <span
-                  className='organizerLink'
-                  onClick={() => {
-                    setShowDeleteEventModal(true)
-                  }}
-                >
-                  Delete
-                </span>
-              </>
-            ) : null} -->
             </div>
-            <div className="time-zone">
+            <div class="time-zone">
               {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
             </div>
-            <div className="created-date">
+            <div class="created-date">
               {{ `Created ${relativeTime(eventData.createdAt)}` }}
               <span v-if="eventData.updatedAt"> &#8226; </span>
               {{
@@ -386,43 +378,22 @@ export default defineComponent({
               <HomeIcon class="inline" /> This event is in a private residence.
             </li>
 
-            <li className="hanging-indent" v-if="eventData.virtualEventUrl">
-              <i className="fas fa-globe"></i>This is a virtual event. Go to:
-              {{ eventData.virtualEventUrl }}
+            <li class="hanging-indent" v-if="eventData.virtualEventUrl">
+              <LinkIcon class="inline h-5 w-5 mr-1"/>
+              <span class="underline cursor-pointer" @click="openLink">
+                {{ eventData.virtualEventUrl }}
+              </span>
             </li>
-
-            <li v-if="eventData.placeId">
-              <i className="fas fa-map-marker-alt"></i>
+            <li v-if="eventData.address">
+              <LocationIcon class="inline h-5 w-5 mr-1"></LocationIcon>
               <a
-                className="placeLink"
+                class="underline"
                 target="_blank"
                 rel="noreferrer"
                 :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
               >
-                {{
-                  `${eventData.locationName ? eventData.locationName : ""}${
-                    eventData.address ? `, ${eventData.address}` : ""
-                  }`
-                }}
+                {{ locationText }}
               </a>
-            </li>
-            <!-- <CopyToClipboard
-              text={address}
-              onCopy={() => setCopiedAddress(true)}
-            >
-              <span>
-                {' '}
-                <i className='far fa-copy copy-button'></i>{' '}
-                {copiedAddress && 'Copied!'}
-              </span>
-            </CopyToClipboard> -->
-            <li v-else>
-              <i className="fas fa-map-marker-alt"></i>
-              {{
-                `${eventData.locationName ? eventData.locationName : ""}${
-                  eventData.address ? `, ${eventData.address}` : ""
-                }`
-              }}
             </li>
             <li v-if="!eventData.free">
               <TicketIcon class="inline" />
@@ -436,7 +407,7 @@ export default defineComponent({
           <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
             <router-link
               key="{channel.uniqueName}"
-              className="understatedLink"
+              class="understatedLink"
               :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
             >
               {{ `c/${channel.uniqueName}` }}

@@ -26,7 +26,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div :class="[fullWidth ? 'w-full' : '', 'inline-block']" class="inline-block">
+  <div
+    :class="[fullWidth ? 'w-full' : '', 'inline-block']"
+    class="inline-block"
+  >
     <label for="search" class="sr-only">Search Location</label>
     <div class="relative">
       <div
@@ -55,8 +58,9 @@ export default defineComponent({
           />
         </svg>
       </div>
-      <!-- <GMapAutocomplete
+      <GMapAutocomplete
         :class="[fullWidth ? 'w-full' : '']"
+        autocomplete="false"
         class="
           pl-10
           pr-3
@@ -81,7 +85,7 @@ export default defineComponent({
         disablePortal
         @place_changed="updateLocationInput"
       >
-      </GMapAutocomplete> -->
+      </GMapAutocomplete>
     </div>
   </div>
 </template>
