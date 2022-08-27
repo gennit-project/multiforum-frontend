@@ -6,8 +6,7 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-// import { ChannelData } from "@/types/channelTypes";
-// import Comment from "../comments/Comment.vue";
+import Comment from "../comments/Comment.vue";
 import { relativeTime } from "../../dateTimeUtils";
 import WarningModal from "../WarningModal.vue";
 import { DateTime } from "luxon";
@@ -16,18 +15,16 @@ import { ChannelData } from "@/types/channelTypes";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import CreateButton from "../buttons/CreateButton.vue";
 import GenericButton from "../buttons/GenericButton.vue";
-import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     Back,
-    // Comment,
+    Comment,
     WarningModal,
     CreateButton,
     ErrorBanner,
     GenericButton,
-    MdEditor,
     Tag,
   },
   setup() {
@@ -180,11 +177,13 @@ export default defineComponent({
       <div class="grid grid-cols-3 pt-8">
         <div class="col-start-1 col-span-2">
           <div v-if="discussion.body" class="body min-height-min">
-            <md-editor
-              v-model="discussion.body"
-              language="en-US"
-              previewTheme="github"
-              preview-only
+            <Comment
+              :author-username="
+                discussion.Author ? discussion.Author.username : ''
+              "
+              :created-at="discussion.createdAt"
+              :edited-at="editedAt"
+              :content="discussion.body"
             />
           </div>
           <Tag
@@ -212,7 +211,10 @@ export default defineComponent({
                 >Delete</span
               >
             </div>
-            <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
+            <div
+              v-if="channelId && channelsExceptCurrent.length > 0"
+              class="mt-2"
+            >
               Crossposted To Channels:
             </div>
             <ul>

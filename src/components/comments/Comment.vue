@@ -1,7 +1,7 @@
 <script>
 import { defineComponent } from "vue";
-import MdEditor from 'md-editor-v3';
-import 'md-editor-v3/lib/style.css';
+import MdEditor from "md-editor-v3";
+import "md-editor-v3/lib/style.css";
 import ProfileAvatar from "vue-profile-avatar";
 import { relativeTime } from "../../dateTimeUtils";
 
@@ -13,138 +13,62 @@ export default defineComponent({
   setup(props) {
     return {
       relativeTime,
-      contentCopy: props.content
+      contentCopy: props.content,
     };
   },
   props: {
     authorUsername: {
       type: String,
-      default: '',
+      default: "",
     },
     createdAt: {
       type: String,
-      default: '',
+      default: "",
     },
     content: {
       type: String,
       default: "",
     },
+    editedAt: {
+      type: String,
+      default: ''
+    }
   },
 });
 </script>
 <template>
   <div
-    class="
-      text-gray-500
-      md:col-span-9
-      sm:col-span-12
-      flex
-      space-x-4
-      mt-2
-    "
+    class="flex text-sm text-gray-500 space-x-4"
   >
-    <ProfileAvatar
-      v-if="authorUsername"
-      :username="authorUsername"
-      colorType="pastel"
-    ></ProfileAvatar>
-
-    <div class="tip left w-4/5 rounded">
-      <div class="header text-xs p-2 text-gray-800">
-        <router-link v-if="authorUsername" class="underline font-bold" :to="`/u/${authorUsername}`">
+    <div class="flex-none">
+      <ProfileAvatar
+        class="w-10 h-10"
+        v-if="authorUsername"
+        :username="authorUsername"
+        colorType="pastel"
+      ></ProfileAvatar>
+    </div>
+    <div>
+      <h3 class="font-medium text-gray-900">
+        <router-link
+          v-if="authorUsername"
+          class="underline font-bold"
+          :to="`/u/${authorUsername}`"
+        >
           {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
         </router-link>
-        {{ `commented ${relativeTime("" + createdAt)}` }}
-      </div>
-      <div class="body prose prose-sm min-height-min">
-        <div v-if="content" class="body min-height-min">
-            <md-editor
-              v-model="contentCopy"
-              language='en-US'
-              previewTheme='github'
-              preview-only
-            /> 
-          </div>
-      </div>
+      </h3>
+      <p>
+        {{ `commented ${relativeTime("" + createdAt)} ${editedAt ? `&#8226; ${editedAt}` : ''}` }}
+      </p>
+      <md-editor
+        class="mt-4"
+        v-if="content"
+        v-model="contentCopy"
+        language="en-US"
+        previewTheme="github"
+        preview-only
+      />
     </div>
   </div>
 </template>
-
-
-
-<style>
-</style>
-
-
-<style scoped>
-.left {
-  min-height: auto !important;
-  float: left;
-}
-
-.left > p:first-of-type {
-  background: #ffd987;
-  font-style: italic;
-  margin-bottom: 40px;
-}
-
-.tip {
-  background: #fff;
-  border: 1px solid #ccc;
-  font-size: 1em;
-  position: relative;
-}
-
-.tip:before {
-  position: absolute;
-
-  left: 98px;
-  display: inline-block;
-  border-right: 14px solid transparent;
-  border-bottom: 14px solid #fff;
-  border-left: 14px solid transparent;
-  border-bottom-color: rgba(0, 0, 0, 0.2);
-  content: "";
-}
-
-.tip:after {
-  position: absolute;
-  left: 99px;
-  display: inline-block;
-  border-right: 12px solid transparent;
-  border-bottom: 12px solid #fff;
-  border-left: 12px solid transparent;
-  content: "";
-}
-
-.tip.left:before {
-  border-top: 14px solid transparent;
-  border-right: 14px solid #fff;
-  border-bottom: 14px solid transparent;
-  border-right-color: rgba(0, 0, 0, 0.2);
-  left: -28px;
-  top: 0;
-}
-
-.tip.left:after {
-  border-top: 12px solid transparent;
-  border-right: 12px solid #f5f8fa;
-  border-bottom: 12px solid transparent;
-  left: -24px;
-  top: 2px;
-}
-.body {
-  padding-left: 1em;
-  padding-right: 1em;
-}
-
-.header {
-  align-items: center;
-  padding-right: 16px;
-  padding-left: 16px;
-  background-color: #f5f8fa;
-  border-bottom: 1px solid lightgray;
-  border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
-}
-</style>

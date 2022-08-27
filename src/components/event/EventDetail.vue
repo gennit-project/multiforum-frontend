@@ -21,7 +21,6 @@ import GenericButton from "../buttons/GenericButton.vue";
 import CalendarIcon from "../icons/CalendarIcon.vue";
 import ClockIcon from "../icons/ClockIcon.vue";
 import CreateButton from "../buttons/CreateButton.vue";
-import MdEditor from "md-editor-v3";
 import HomeIcon from "../icons/HomeIcon.vue";
 import TicketIcon from "../icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
@@ -30,25 +29,26 @@ import LinkIcon from "../icons/LinkIcon.vue";
 import useClipboard from "vue-clipboard3";
 import ClipboardIcon from "../icons/ClipboardIcon.vue";
 import Notification from "../Notification.vue";
+import Comment from "../comments/Comment.vue";
 
 export default defineComponent({
   components: {
     Back,
     CalendarIcon,
     ClockIcon,
+    Comment,
     WarningModal,
     CreateButton,
     ErrorBanner,
     GenericButton,
     HomeIcon,
-    MdEditor,
     Tag,
     TicketIcon,
     LocationIcon,
     LinkIcon,
     ClipboardIcon,
-    Notification
-},
+    Notification,
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -78,7 +78,7 @@ export default defineComponent({
       return eventResult.value.events[0];
     });
 
-    const showAddressCopiedNotification = ref(false)
+    const showAddressCopiedNotification = ref(false);
     const copyAddress = async () => {
       try {
         await toClipboard(
@@ -190,12 +190,19 @@ export default defineComponent({
       return eventData.value.address;
     });
 
+    const editedAt = computed(() => {
+      return eventData.value.updatedAt
+        ? `Edited ${relativeTime(eventData.value.updatedAt)}`
+        : "";
+    });
+
     return {
       cancelEvent,
       cancelEventError,
       confirmCancelIsOpen,
       confirmDeleteIsOpen,
       copyAddress,
+      editedAt,
       eventData,
       eventResult,
       eventError,
@@ -209,7 +216,7 @@ export default defineComponent({
       deleteEventError,
       locationText,
       relativeTime,
-      showAddressCopiedNotification
+      showAddressCopiedNotification,
     };
   },
   methods: {
@@ -260,8 +267,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-10">
-    <Back />
+  <div>
+    <Back class="px-10" />
     <p v-if="eventLoading">Loading...</p>
     <ErrorBanner v-else-if="eventError" :text="eventError.message" />
 
@@ -277,7 +284,7 @@ export default defineComponent({
 
     <div
       v-else-if="eventResult && eventResult.events"
-      class="mx-auto max-w-4xl bg-white rounded"
+      class="mx-auto max-w-6xl bg-white rounded"
     >
       <ErrorBanner
         class="mt-2 mb-2"
@@ -316,12 +323,12 @@ export default defineComponent({
         </div>
       </div>
       <div class="grid grid-cols-3 gap-4">
-        <div class="col-start-1 col-span-2">
-          <md-editor
-            v-model="eventData.description"
-            language="en-US"
-            previewTheme="github"
-            preview-only
+        <div class="col-start-1 col-span-2 mr-4">
+          <Comment
+            :author-username="eventData.Poster ? eventData.Poster.username : ''"
+            :created-at="eventData.createdAt"
+            :edited-at="editedAt"
+            :content="eventData.description"
           />
           <Tag
             v-for="tag in eventData.Tags"
@@ -374,16 +381,18 @@ export default defineComponent({
             <div class="created-date">
               {{ `Created ${relativeTime(eventData.createdAt)}` }}
               <span v-if="eventData.updatedAt"> &#8226; </span>
-              {{
-                eventData.updatedAt
-                  ? `Edited ${relativeTime(eventData.updatedAt)}`
-                  : ""
-              }}
+              {{ editedAt }}
             </div>
           </div>
         </div>
         <div
-          class="col-start-3 col-span-1 text-sm text-gray-700 space-y-2 ml-4"
+          class="
+            pl-8
+            col-start-3 col-span-1
+            text-sm text-gray-700
+            space-y-2
+            ml-4
+          "
         >
           <ul>
             <li>
