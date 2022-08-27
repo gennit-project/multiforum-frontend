@@ -13,7 +13,7 @@ import EventPreview from "./EventPreview.vue";
 import LocationIcon from "../icons/LocationIcon.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import LocationPicker from "@/components/forms/LocationPicker.vue";
-import Map from "./Map.vue";
+import EventMap from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import ToggleMap from "../buttons/ToggleMap.vue";
@@ -80,7 +80,7 @@ export default defineComponent({
     LocationIcon,
     LocationSearchBar,
     LocationPicker,
-    Map,
+    EventMap,
     PreviewContainer,
     TagIcon,
     TagPicker,
@@ -1086,7 +1086,7 @@ export default defineComponent({
         :highlighted="locationLabel !== defaultFilterLabels.location"
       >
         <template v-slot:icon>
-          <LocationIcon />
+          <LocationIcon class="h-4 w-4 mr-2"/>
         </template>
         <template v-slot:content>
           <LocationPicker
@@ -1254,7 +1254,7 @@ export default defineComponent({
       class="overflow-y-scroll"
     >
       <div style="position: fixed; width: 66vw; height: calc(100vh - 130px)">
-        <Map
+        <EventMap
           :events="eventResult.events"
           :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
           :color-locked="colorLocked"
