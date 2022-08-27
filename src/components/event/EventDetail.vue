@@ -6,7 +6,7 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { GET_EVENT } from "@/graphQLData/event/queries";
-import { DELETE_EVENT } from "@/graphQLData/event/mutations";
+import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
 // import { TagData } from "@/types/tagTypes.d";
 import { EventData } from "@/types/eventTypes";
 import {
@@ -14,7 +14,7 @@ import {
   formatDuration,
   getDurationObj,
 } from "../../dateTimeUtils";
-import ConfirmDelete from "../ConfirmDelete.vue";
+import WarningModal from "../WarningModal.vue";
 import { DateTime } from "luxon";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import GenericButton from "../buttons/GenericButton.vue";
@@ -31,7 +31,7 @@ export default defineComponent({
     Back,
     CalendarIcon,
     ClockIcon,
-    ConfirmDelete,
+    WarningModal,
     CreateButton,
     ErrorBanner,
     GenericButton,
@@ -97,6 +97,7 @@ export default defineComponent({
     // }
 
     const confirmDeleteIsOpen = ref(false);
+    const confirmCancelIsOpen = ref(false);
 
     const {
       mutate: deleteEvent,
@@ -122,6 +123,18 @@ export default defineComponent({
       },
     });
 
+    const {
+      mutate: cancelEvent,
+      error: cancelEventError,
+    } = useMutation(CANCEL_EVENT, {
+      variables: {
+        id: eventId.value,
+        updateEventInput: {
+          canceled: true
+        }
+      },
+    });
+
     onDoneDeleting(() => {
       if (channelId.value) {
         router.push({
@@ -141,6 +154,9 @@ export default defineComponent({
     })
 
     return {
+      cancelEvent,
+      cancelEventError,
+      confirmCancelIsOpen,
       confirmDeleteIsOpen,
       eventData,
       eventResult,
@@ -227,6 +243,11 @@ export default defineComponent({
       />
       <ErrorBanner
         class="mt-2 mb-2"
+        v-if="cancelEventError"
+        :text="cancelEventError.message"
+      />
+      <ErrorBanner
+        class="mt-2 mb-2"
         v-if="eventIsInThePast"
         :text="'This event is in the past.'"
       />
@@ -296,6 +317,13 @@ export default defineComponent({
                 @click="confirmDeleteIsOpen = true"
                 >Delete</span
               >
+              <span class="ml-1 mr-1" v-if="!eventData.canceled">&#8226;</span>
+              <span
+                v-if="!eventData.canceled"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmCancelIsOpen = true"
+                >Cancel</span
+              >
               <!-- <Link
               className='organizerLink'
               to={`/u/${organizerOfEvent ? organizerOfEvent : '[deleted]'}`}
@@ -327,17 +355,11 @@ export default defineComponent({
               {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
             </div>
             <div className="created-date">
-              {{
-                `${
-                  eventData.createdAt
-                    ? `Created ${relativeTime(eventData.createdAt)}`
-                    : ""
-                }`
-              }}
+              {{ `Created ${relativeTime(eventData.createdAt)}` }}
               <span v-if="eventData.updatedAt"> &#8226; </span>
               {{
                 eventData.updatedAt
-                  ? `${eventData.updatedAt} Edited ${relativeTime(
+                  ? `Edited ${relativeTime(
                       eventData.updatedAt
                     )}`
                   : ""
@@ -421,14 +443,19 @@ export default defineComponent({
             </router-link>
           </p>
         </div>
-
-        <!-- <AddToCalendar :event="getCalendarData" /> -->
-        <ConfirmDelete
+        <WarningModal
           :title="'Delete Event'"
           :body="'Are you sure you want to delete this event?'"
           :open="confirmDeleteIsOpen"
           @close="confirmDeleteIsOpen = false"
           @delete="deleteEvent"
+        />
+        <WarningModal
+          :title="'Cancel Event'"
+          :body="'Are you sure you want to cancel this event?'"
+          :open="confirmCancelIsOpen"
+          @close="confirmCancelIsOpen = false"
+          @delete="cancelEvent"
         />
       </div>
     </div>

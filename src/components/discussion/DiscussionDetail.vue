@@ -9,7 +9,7 @@ import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 // import { ChannelData } from "@/types/channelTypes";
 // import Comment from "../comments/Comment.vue";
 import { relativeTime } from "../../dateTimeUtils";
-import ConfirmDelete from "../ConfirmDelete.vue";
+import WarningModal from "../WarningModal.vue";
 import { DateTime } from "luxon";
 import { DiscussionData } from "@/types/discussionTypes";
 import { ChannelData } from "@/types/channelTypes";
@@ -23,7 +23,7 @@ export default defineComponent({
   components: {
     Back,
     // Comment,
-    ConfirmDelete,
+    WarningModal,
     CreateButton,
     ErrorBanner,
     GenericButton,
@@ -231,7 +231,7 @@ export default defineComponent({
             </ul>
           </div>
         </div>
-        <ConfirmDelete
+        <WarningModal
           :title="'Delete Discussion'"
           :body="'Are you sure you want to delete this discussion?'"
           :open="deleteModalIsOpen"

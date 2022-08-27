@@ -84,6 +84,17 @@ export const UPDATE_EVENT = gql`
   }
 `;
 
+export const CANCEL_EVENT = gql`
+  mutation ($updateEventInput: EventUpdateInput, $eventWhere: EventWhere) {
+    updateEvents(update: $updateEventInput, where: $eventWhere) {
+      events {
+        id
+        canceled
+      }
+    }
+  }
+`;
+
 
 export const DELETE_EVENTS = gql`
   mutation deleteEvent($id: [ID!]) {

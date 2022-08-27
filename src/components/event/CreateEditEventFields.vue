@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, computed } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import UserAddIcon from "@/components/icons/UserAddIcon.vue";
@@ -25,10 +25,53 @@ import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import { DateTime, Interval } from "luxon";
-import { SelectOptionData } from "@/types/genericFormTypes";
-import { SelectorIcon } from "@heroicons/vue/solid";
 
 export default defineComponent({
+  setup(props){
+
+    const startTimeISO = computed(() => {
+      return props.formValues?.startTime || "";
+    })
+
+    const startTime = computed(() => {
+      return new Date(startTimeISO.value);
+    })
+
+    const endTimeISO = computed(() => {
+      if (props.formValues?.endTime){
+        return props.formValues.endTime;
+      }
+      return DateTime.fromISO(startTimeISO.value).plus({ minutes: 30 }).toISO()
+    })
+
+    const endTime = computed(() => {
+      return new Date(endTimeISO.value);
+    })
+
+    // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
+    // TIME_SIMPLE yields the time in this format: 1:30 PM
+    const timeFormat = DateTime.TIME_SIMPLE;
+
+    return {
+      // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
+      dateFormat: "MM/dd/yyyy",
+      defaultStartTimeOption: {
+        label: DateTime.fromISO(startTimeISO.value).toLocaleString(timeFormat),
+        value: startTimeISO,
+      },
+      defaultEndTimeOption: {
+        label: DateTime.fromISO(endTimeISO.value).toLocaleString(timeFormat),
+        value: endTimeISO,
+      },
+      formTitle: props.editMode ? "Edit Event" : "Create Event",
+      startTime, // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
+      startTimeDay: startTime, // Create separate values for the start day and time because they can be changed separately
+      endTime,
+      endTimeDay: endTime,
+      touched: false,
+      timeFormat,
+    };
+  },
   props: {
     editMode: {
       type: Boolean,
@@ -84,40 +127,6 @@ export default defineComponent({
     TicketIcon,
     UserAddIcon,
   },
-  data(props) {
-    const startTimeISO = props.formValues?.startTime || "";
-    const startTime = new Date(startTimeISO);
-    let endTimeISO = props.formValues?.endTime || ""
-
-    if (!endTimeISO) {
-      endTimeISO = DateTime.fromISO(startTimeISO).plus({ minutes: 30 }).toISO()
-    }
-    const endTime = new Date(endTimeISO);
-
-    // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
-    // TIME_SIMPLE yields the time in this format: 1:30 PM
-    const timeFormat = DateTime.TIME_SIMPLE;
-    return {
-      // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
-      dateFormat: "MM/dd/yyyy",
-      defaultStartTimeOption: {
-        label: DateTime.fromISO(startTimeISO).toLocaleString(timeFormat),
-        value: startTimeISO,
-      },
-      defaultEndTimeOption: {
-        label: DateTime.fromISO(endTimeISO).toLocaleString(timeFormat),
-        value: endTimeISO,
-      },
-      formTitle: props.editMode ? "Edit Event" : "Create Event",
-      startTime, // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
-      startTimeDay: new Date(startTimeISO), // Create separate values for the start day and time because they can be changed separately
-      endTime,
-      endTimeDay: new Date(endTimeISO),
-      touched: false,
-      timeFormat,
-    };
-  },
-
   computed: {
     datePickerErrorMessage(){
       if (this.startTime < new Date()){
