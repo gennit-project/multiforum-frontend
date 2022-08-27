@@ -27,6 +27,9 @@ import TicketIcon from "../icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
 import LocationIcon from "../icons/LocationIcon.vue";
 import LinkIcon from "../icons/LinkIcon.vue";
+import useClipboard from "vue-clipboard3";
+import ClipboardIcon from "../icons/ClipboardIcon.vue";
+import Notification from "../Notification.vue";
 
 export default defineComponent({
   components: {
@@ -42,11 +45,15 @@ export default defineComponent({
     Tag,
     TicketIcon,
     LocationIcon,
-    LinkIcon
+    LinkIcon,
+    ClipboardIcon,
+    Notification
 },
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const { toClipboard } = useClipboard();
+
     const eventId = computed(() => {
       return route.params.eventId;
     });
@@ -70,6 +77,19 @@ export default defineComponent({
       }
       return eventResult.value.events[0];
     });
+
+    const showAddressCopiedNotification = ref(false)
+    const copyAddress = async () => {
+      try {
+        await toClipboard(
+          eventData.value?.address ? eventData.value.address : ""
+        );
+        showAddressCopiedNotification.value = true;
+        console.log("Copied to clipboard");
+      } catch (e) {
+        console.error(e);
+      }
+    };
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
         return [];
@@ -127,17 +147,17 @@ export default defineComponent({
       },
     });
 
-    const {
-      mutate: cancelEvent,
-      error: cancelEventError,
-    } = useMutation(CANCEL_EVENT, {
-      variables: {
-        id: eventId.value,
-        updateEventInput: {
-          canceled: true
-        }
-      },
-    });
+    const { mutate: cancelEvent, error: cancelEventError } = useMutation(
+      CANCEL_EVENT,
+      {
+        variables: {
+          id: eventId.value,
+          updateEventInput: {
+            canceled: true,
+          },
+        },
+      }
+    );
 
     onDoneDeleting(() => {
       if (channelId.value) {
@@ -152,26 +172,30 @@ export default defineComponent({
 
     const eventIsInThePast = computed(() => {
       if (!eventData.value) {
-         return false
+        return false;
       }
-      return DateTime.fromISO(eventData.value.startTime) < DateTime.fromISO(new Date().toISOString())
-    })
+      return (
+        DateTime.fromISO(eventData.value.startTime) <
+        DateTime.fromISO(new Date().toISOString())
+      );
+    });
 
     const locationText = computed(() => {
       if (!eventData.value || !eventData.value.address) {
-        return ''
+        return "";
       }
       if (eventData.value.locationName) {
-        return `${eventData.value.locationName}, ${eventData.value.address}`
+        return `${eventData.value.locationName}, ${eventData.value.address}`;
       }
-      return eventData.value.address
-    })
+      return eventData.value.address;
+    });
 
     return {
       cancelEvent,
       cancelEventError,
       confirmCancelIsOpen,
       confirmDeleteIsOpen,
+      copyAddress,
       eventData,
       eventResult,
       eventError,
@@ -185,6 +209,7 @@ export default defineComponent({
       deleteEventError,
       locationText,
       relativeTime,
+      showAddressCopiedNotification
     };
   },
   methods: {
@@ -227,9 +252,9 @@ export default defineComponent({
         endsAt: endTime,
       };
     },
-    openLink(){
-      window.open(this.eventData.virtualEventUrl, '_blank')
-    }
+    openLink() {
+      window.open(this.eventData.virtualEventUrl, "_blank");
+    },
   },
 });
 </script>
@@ -351,9 +376,7 @@ export default defineComponent({
               <span v-if="eventData.updatedAt"> &#8226; </span>
               {{
                 eventData.updatedAt
-                  ? `Edited ${relativeTime(
-                      eventData.updatedAt
-                    )}`
+                  ? `Edited ${relativeTime(eventData.updatedAt)}`
                   : ""
               }}
             </div>
@@ -379,21 +402,33 @@ export default defineComponent({
             </li>
 
             <li class="hanging-indent" v-if="eventData.virtualEventUrl">
-              <LinkIcon class="inline h-5 w-5 mr-1"/>
+              <LinkIcon class="inline h-5 w-5 mr-1" />
               <span class="underline cursor-pointer" @click="openLink">
                 {{ eventData.virtualEventUrl }}
               </span>
             </li>
             <li v-if="eventData.address">
               <LocationIcon class="inline h-5 w-5 mr-1"></LocationIcon>
-              <a
-                class="underline"
-                target="_blank"
-                rel="noreferrer"
-                :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
-              >
-                {{ locationText }}
-              </a>
+
+              {{ `${eventData.locationName}, ` }}
+              <span class="flex"
+                ><a
+                  class="underline"
+                  target="_blank"
+                  rel="noreferrer"
+                  :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
+                >
+                  {{ eventData.address }}
+                </a>
+
+                <VTooltip>
+                  <ClipboardIcon
+                    class="ml-1 h-4 w-4 cursor-pointer"
+                    @click="copyAddress"
+                  />
+                  <template #popper> Copy </template>
+                </VTooltip>
+              </span>
             </li>
             <li v-if="!eventData.free">
               <TicketIcon class="inline" />
@@ -427,6 +462,11 @@ export default defineComponent({
           :open="confirmCancelIsOpen"
           @close="confirmCancelIsOpen = false"
           @delete="cancelEvent"
+        />
+        <Notification
+          :show="showAddressCopiedNotification"
+          :title="'Copied to clipboard!'"
+          @closeNotification="showAddressCopiedNotification = false"
         />
       </div>
     </div>
