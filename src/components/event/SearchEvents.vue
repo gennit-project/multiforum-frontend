@@ -153,6 +153,7 @@ export default defineComponent({
     const referencePointName = ref("");
 
     let showOnlyFreeEvents = ref(false);
+    let showCanceledEvents = ref(false);
 
     let freeEventFilter = computed(() => {
       if (!showOnlyFreeEvents.value) {
@@ -329,6 +330,7 @@ export default defineComponent({
                 }
                 where: {
                   AND: [
+                    { canceled: ${showCanceledEvents.value} },
                     {
 											ChannelsAggregate: {
 												count_GT: 0
@@ -654,6 +656,7 @@ export default defineComponent({
       router,
       pastEventsFilter,
       placeData: null,
+      showCanceledEvents,
       showOnlyFreeEvents,
       showMap,
       searchInput,
@@ -1188,6 +1191,29 @@ export default defineComponent({
               <div class="ml-3 text-sm">
                 <label for="comments" class="font-medium text-gray-700"
                   >Show Only Free Events</label
+                >
+              </div>
+            </div>
+
+             <div class="relative flex items-start mt-4">
+              <div class="flex items-center h-5">
+                <input
+                  class="
+                    focus:ring-blue-500
+                    h-4
+                    w-4
+                    text-blue-600
+                    border-gray-300
+                    rounded
+                  "
+                  type="checkbox"
+                  id="onlyFreeEvents"
+                  v-model="showCanceledEvents"
+                />
+              </div>
+              <div class="ml-3 text-sm">
+                <label for="comments" class="font-medium text-gray-700"
+                  >Show Canceled Events</label
                 >
               </div>
             </div>

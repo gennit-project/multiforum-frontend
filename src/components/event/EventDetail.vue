@@ -341,6 +341,7 @@ export default defineComponent({
       <div class="grid grid-cols-3 gap-4">
         <div class="col-start-1 col-span-2 mr-4">
           <Comment
+            v-if="eventData.description"
             :author-username="eventData.Poster ? eventData.Poster.username : ''"
             :created-at="eventData.createdAt"
             :edited-at="editedAt"
