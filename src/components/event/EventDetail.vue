@@ -30,6 +30,7 @@ import useClipboard from "vue-clipboard3";
 import ClipboardIcon from "../icons/ClipboardIcon.vue";
 import Notification from "../Notification.vue";
 import Comment from "../comments/Comment.vue";
+import ChannelIcon from "../icons/ChannelIcon.vue";
 
 export default defineComponent({
   components: {
@@ -48,6 +49,7 @@ export default defineComponent({
     LinkIcon,
     ClipboardIcon,
     Notification,
+    ChannelIcon,
   },
   setup() {
     const route = useRoute();
@@ -267,8 +269,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <Back class="px-10" />
+  <div class="px-10" >
+    <Back />
     <p v-if="eventLoading">Loading...</p>
     <ErrorBanner v-else-if="eventError" :text="eventError.message" />
 
@@ -410,12 +412,12 @@ export default defineComponent({
         >
           <ul>
             <li>
-              <CalendarIcon class="inline h-5 w-5 mr-1" />{{
+              <CalendarIcon class="inline h-5 w-5 mr-3 text-blue-700" />{{
                 getFormattedDateString(eventData.startTime)
               }}
             </li>
             <li>
-              <ClockIcon class="inline h-5 w-5 mr-1" />
+              <ClockIcon class="inline h-5 w-5 mr-2 text-blue-700" />
               {{
                 getFormattedTimeString(eventData.startTime, eventData.endTime)
               }}
@@ -425,13 +427,13 @@ export default defineComponent({
             </li>
 
             <li class="hanging-indent" v-if="eventData.virtualEventUrl">
-              <LinkIcon class="inline h-5 w-5 mr-1" />
+              <LinkIcon class="inline h-5 w-5 mr-2 text-blue-700" />
               <span class="underline cursor-pointer" @click="openLink">
                 {{ eventData.virtualEventUrl }}
               </span>
             </li>
             <li v-if="eventData.address">
-              <LocationIcon class="inline h-5 w-5 mr-1"></LocationIcon>
+              <LocationIcon class="inline h-5 w-5 mr-2 text-blue-700"></LocationIcon>
 
               {{ `${eventData.locationName}, ` }}
               <span class="flex"
@@ -457,20 +459,26 @@ export default defineComponent({
               <TicketIcon class="inline" />
               {{ eventData.cost }}
             </li>
-          </ul>
+            <li v-if="channelId && channelsExceptCurrent.length > 0">
+              <ChannelIcon class="inline h-5 w-5 mr-3 text-blue-700" />Crossposted to
+              Channels:
 
-          <div v-if="channelId && channelsExceptCurrent.length > 0">
-            Crossposted To Channels
-          </div>
-          <p v-for="channel in channelsExceptCurrent" :key="channel.uniqueName">
-            <router-link
-              key="{channel.uniqueName}"
-              class="understatedLink"
-              :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
-            >
-              {{ `c/${channel.uniqueName}` }}
-            </router-link>
-          </p>
+              <ul>
+                <li
+                  v-for="channel in channelsExceptCurrent"
+                  :key="channel.uniqueName"
+                >
+                  <router-link
+                    key="{channel.uniqueName}"
+                    class="understatedLink"
+                    :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+                  >
+                    {{ `c/${channel.uniqueName}` }}
+                  </router-link>
+                </li>
+              </ul>
+            </li>
+          </ul>
         </div>
         <WarningModal
           :title="'Delete Event'"
