@@ -1051,27 +1051,36 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="container">
-    <div>
-      <h2
-        class="
-        flex-1 min-w-0
-          mt-8
-          text-2xl
-          font-bold
-          leading-7
-          text-gray-900
-          sm:text-3xl sm:tracking-tight sm:truncate
-        "
-      >
-        Search Events
-      </h2>
-      <!-- <AddToFeed v-if="channelId" /> -->
-      <CreateButton
-        class="flex-shrink-0 flex float-right"
-        :to="createEventPath"
-        :label="'Create Event'"
-      />
+  <div class="mx-auto max-w-6xl bg-white rounded pl-8 pr-8">
+    <div class="mt-8 mb-4 md:flex md:items-center md:justify-between">
+      <div class="flex-1 min-w-0">
+        <h2
+          class="
+            text-2xl
+            font-bold
+            leading-7
+            text-gray-900
+            sm:text-3xl sm:tracking-tight sm:truncate
+          "
+        >
+          Search Events
+        </h2>
+      </div>
+      <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+        <div class="float-right">
+          <span class="flex-shrink-0 space-x-2 flex float-right">
+           <ToggleMap
+              :show-map="showMap"
+              @showMap="setShowMap"
+              @showList="setShowList"
+            />
+            <CreateButton
+              :to="createEventPath"
+              :label="'Create Event'"
+            />
+          </span>
+        </div>
+      </div>
     </div>
 
     <div class="items-center mt-2 space-x-2">
@@ -1079,11 +1088,6 @@ export default defineComponent({
         :search-placeholder="'Location'"
         :reference-point-address-name="referencePointName"
         @updateLocationInput="updateLocationInput"
-      />
-      <ToggleMap
-        :show-map="showMap"
-        @showMap="setShowMap"
-        @showList="setShowList"
       />
     </div>
     <div class="items-center mt-1 space-x-2">

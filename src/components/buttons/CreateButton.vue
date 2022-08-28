@@ -27,8 +27,6 @@ export default defineComponent({
       inline-flex
       whitespace-nowrap
       items-center
-      mt-1
-      mb-1
       max-height-4
       px-4
       py-2
