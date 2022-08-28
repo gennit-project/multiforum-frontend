@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { ExclamationCircleIcon } from "@heroicons/vue/solid";
+import ExclamationTriangleIcon from "../icons/ExclamationIcon.vue"
 
 export default defineComponent({
   components: {
-    ExclamationCircleIcon,
+    ExclamationTriangleIcon,
   },
   setup() {},
   props: {
@@ -65,7 +65,7 @@ export default defineComponent({
           pointer-posts-none
         "
       >
-        <ExclamationCircleIcon
+        <ExclamationTriangleIcon
           class="h-5 w-5 text-red-500"
           aria-hidden="true"
         />

@@ -7,7 +7,7 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import { XIcon } from "@heroicons/vue/outline";
+import XIcon from "../icons/XmarkIcon.vue";
 import { FeedData } from "../../types/feedTypes";
 
 export default defineComponent({

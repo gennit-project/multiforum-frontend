@@ -59,7 +59,6 @@ import { ChannelData } from "@/types/channelTypes.d";
 
 import { DateTime } from "luxon";
 
-
 interface Ref<T> {
   value: T;
 }
@@ -469,15 +468,17 @@ export default defineComponent({
       if (tagResult.value) {
         return tagResult.value.tags.map((tag: TagData) => tag.text);
       }
-      return []
-    })
+      return [];
+    });
 
     const channelOptionLabels = computed(() => {
       if (channelResult.value) {
-        return channelResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+        return channelResult.value.channels.map(
+          (channel: ChannelData) => channel.uniqueName
+        );
       }
-      return []
-    })
+      return [];
+    });
 
     const defaultFilterLabels = {
       date: "Future Events",
@@ -617,7 +618,9 @@ export default defineComponent({
       return `Other Filters: ${labelString}`;
     });
 
-    const createEventPath = channelId.value ? `/channels/c/${channelId.value}/events/create` : '/events/create'
+    const createEventPath = channelId.value
+      ? `/channels/c/${channelId.value}/events/create`
+      : "/events/create";
 
     return {
       channelId,
@@ -1049,6 +1052,28 @@ export default defineComponent({
 </script>
 <template>
   <div class="container">
+    <div>
+      <h2
+        class="
+        flex-1 min-w-0
+          mt-8
+          text-2xl
+          font-bold
+          leading-7
+          text-gray-900
+          sm:text-3xl sm:tracking-tight sm:truncate
+        "
+      >
+        Search Events
+      </h2>
+      <!-- <AddToFeed v-if="channelId" /> -->
+      <CreateButton
+        class="flex-shrink-0 flex float-right"
+        :to="createEventPath"
+        :label="'Create Event'"
+      />
+    </div>
+
     <div class="items-center mt-2 space-x-2">
       <LocationSearchBar
         :search-placeholder="'Location'"
@@ -1060,8 +1085,6 @@ export default defineComponent({
         @showMap="setShowMap"
         @showList="setShowList"
       />
-      <AddToFeed v-if="channelId" />
-      <CreateButton :to="createEventPath" :label="'Create Event'"/>
     </div>
     <div class="items-center mt-1 space-x-2">
       <FilterChip
@@ -1069,7 +1092,7 @@ export default defineComponent({
         :highlighted="dateLabel !== defaultFilterLabels.date"
       >
         <template v-slot:icon>
-          <CalendarIcon class="-ml-0.5 w-4 h-4 mr-2"/>
+          <CalendarIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
           <DatePicker
@@ -1086,7 +1109,7 @@ export default defineComponent({
         :highlighted="locationLabel !== defaultFilterLabels.location"
       >
         <template v-slot:icon>
-          <LocationIcon class="h-4 w-4 mr-2"/>
+          <LocationIcon class="h-4 w-4 mr-2" />
         </template>
         <template v-slot:content>
           <LocationPicker
@@ -1125,7 +1148,7 @@ export default defineComponent({
         :highlighted="channelLabel !== defaultFilterLabels.channels"
       >
         <template v-slot:icon>
-          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2"/>
+          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
           <TagPicker
@@ -1141,7 +1164,7 @@ export default defineComponent({
         :highlighted="tagLabel !== defaultFilterLabels.tags"
       >
         <template v-slot:icon>
-          <TagIcon class="-ml-0.5 w-4 h-4 mr-2"/>
+          <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
           <TagPicker
@@ -1195,7 +1218,7 @@ export default defineComponent({
               </div>
             </div>
 
-             <div class="relative flex items-start mt-4">
+            <div class="relative flex items-start mt-4">
               <div class="flex items-center h-5">
                 <input
                   class="

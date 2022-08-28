@@ -1,12 +1,15 @@
 <script lang="ts">
+import MapIcon from '../icons/MapIcon.vue';
+import ListIcon from '../icons/ListIcon.vue';
 export default {
-  setup() {},
-  props: {
-      showMap: {
-          type: Boolean,
-          required: true
-      }
-  }
+    setup() { },
+    props: {
+        showMap: {
+            type: Boolean,
+            required: true
+        }
+    },
+    components: { MapIcon, ListIcon }
 };
 </script>
 <template>
@@ -32,6 +35,7 @@ export default {
         focus:outline-none
       "
     >
+      <MapIcon class="mr-1"/>
       Map
     </button>
     <button
@@ -56,7 +60,8 @@ export default {
         focus:outline-none
       "
     >
-      List Only
+      <ListIcon class="mr-1"/>
+      List
     </button>
   </span>
 </template>

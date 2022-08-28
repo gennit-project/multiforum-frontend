@@ -7,7 +7,7 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import { ExclamationIcon } from "@heroicons/vue/outline";
+import ExclamationIcon from "./icons/ExclamationIcon.vue";
 
 export default defineComponent({
   components: {

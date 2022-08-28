@@ -2,7 +2,7 @@
 import { defineComponent, ref, PropType } from "vue";
 import ListboxButton from "@/components/forms/ListboxButton.vue";
 import { Listbox, ListboxOption, ListboxOptions } from "@headlessui/vue";
-import { CheckIcon } from "@heroicons/vue/solid";
+import CheckIcon from '../icons/CheckIcon.vue'
 import { SelectOptionData } from "@/types/genericFormTypes";
 
 export default defineComponent({
