@@ -91,6 +91,9 @@ export default defineComponent({
       } catch (e) {
         console.error(e);
       }
+      setTimeout(() => {
+        showAddressCopiedNotification.value = false
+      },2000)
     };
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
