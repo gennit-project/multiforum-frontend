@@ -3,6 +3,24 @@ import UserData from "./userTypes";
 import TagData from "./tagTypes";
 import CommentSectionData from "./commentTypes";
 
+enum DateRangeTypes {
+  FUTURE = "FUTURE",
+  PAST = "PAST",
+  BETWEEN_TWO_DATES = "BETWEEN_TWO_DATES",
+}
+
+enum DistanceUnits {
+  km = "km",
+  mi = "mi",
+}
+
+enum LocationFilterTypes {
+  ONLY_VIRTUAL = "ONLY_VIRTUAL",
+  ONLY_WITH_ADDRESS = "ONLY_WITH_ADDRESS",
+  WITHIN_RADIUS = "WITHIN_RADIUS",
+  NONE = "NONE",
+}
+
 export type Point = {
   latitude: number;
   longitude: number;
@@ -13,7 +31,6 @@ export interface CreateEditEventFormValues {
   selectedTags: Array[string];
   selectedChannels: Array[string];
   poster: string;
-
   address?: string;
   latitude?: number;
   longitude?: number;
@@ -62,6 +79,7 @@ export interface EventData {
   createdAt: string;
 }
 
+
 export type WeekdayData = {
   number: string;
   name: string;
@@ -105,3 +123,15 @@ export type DistanceUnit = {
 };
 
 export type Distance = any;
+
+export type SearchEventValues = {
+  resultsOrder: string;
+  showCanceledEvents: boolean;
+  startTimeFilter: string;
+  freeEventFilter: string;
+  textFilter: string;
+  weeklyTimeRangeFilter: string;
+  locationFilter: string;
+  tagFilter: string;
+  channelFilter: string;
+};

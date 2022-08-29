@@ -159,23 +159,6 @@ export default defineComponent({
       });
     };
 
-    const { result: tagResult } = useQuery(GET_TAGS);
-    const { result: channelResult } = useQuery(GET_CHANNEL_NAMES);
-
-    const tagOptionLabels = computed(() => {
-      if (tagResult.value) {
-        return tagResult.value.tags.map((tag: TagData) => tag.text);
-      }
-      return []
-    })
-
-    const channelOptionLabels = computed(() => {
-      if (channelResult.value) {
-        return channelResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
-      }
-      return []
-    })
-
     const openModal = (selectedFilter: string) => {
       showModal.value = true;
       selectedFilterOptions.value = selectedFilter;
@@ -272,8 +255,7 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <TagPicker
-            :tag-options="tagOptionLabels"
-            :initial-value="selectedTags"
+            :selected-tags="selectedTags"
             @setSelectedTags="setSelectedTags"
           />
         </template>

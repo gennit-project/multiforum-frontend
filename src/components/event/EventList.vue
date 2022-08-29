@@ -138,5 +138,8 @@ export default defineComponent({
         @filterByTag="filterByTag"
       />
     </ul>
+    <button class="justify-self-center" @click="loadMore">
+        {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
+      </button>
   </div>
 </template>
