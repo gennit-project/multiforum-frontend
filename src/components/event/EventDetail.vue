@@ -7,7 +7,6 @@ import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { GET_EVENT } from "@/graphQLData/event/queries";
 import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
-// import { TagData } from "@/types/tagTypes.d";
 import { EventData } from "@/types/eventTypes";
 import {
   relativeTime,

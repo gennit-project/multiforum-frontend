@@ -3,22 +3,9 @@ import UserData from "./userTypes";
 import TagData from "./tagTypes";
 import CommentSectionData from "./commentTypes";
 
-enum DateRangeTypes {
-  FUTURE = "FUTURE",
-  PAST = "PAST",
-  BETWEEN_TWO_DATES = "BETWEEN_TWO_DATES",
-}
-
-enum DistanceUnits {
-  km = "km",
-  mi = "mi",
-}
-
-enum LocationFilterTypes {
-  ONLY_VIRTUAL = "ONLY_VIRTUAL",
-  ONLY_WITH_ADDRESS = "ONLY_WITH_ADDRESS",
-  WITHIN_RADIUS = "WITHIN_RADIUS",
-  NONE = "NONE",
+export type SetEventTimeRangeOptions = {
+  beginningOfDateRangeISO: string;
+  endOfDateRangeISO: string;
 }
 
 export type Point = {
@@ -125,13 +112,21 @@ export type DistanceUnit = {
 export type Distance = any;
 
 export type SearchEventValues = {
+  beginningOfDateRangeISO: string;
+  distanceUnit: string;
+  endOfDateRangeISO: string;
+  radius: number;
+  referencePoint: ReferencePoint;
+  referencePointAddress: string;
+  referencePointName: string;
   resultsOrder: string;
+  selectedTags: Array[string];
+  selectedChannels: Array[string];
+  selectedWeekdays: Array[SelectedWeekdays];
+  selectedHourRanges: Array[SelectedHourRanges];
+  selectedWeeklyHourRanges: Array[SelectedWeeklyHourRanges]
+  searchInput: string;
   showCanceledEvents: boolean;
-  startTimeFilter: string;
-  freeEventFilter: string;
-  textFilter: string;
-  weeklyTimeRangeFilter: string;
-  locationFilter: string;
-  tagFilter: string;
-  channelFilter: string;
+  showOnlyFreeEvents: boolean;
+  startOfDateRangeISO: string;
 };

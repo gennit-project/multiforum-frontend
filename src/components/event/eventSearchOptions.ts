@@ -5,11 +5,11 @@ import {
   SelectedHourRangeObject,
   SelectedWeekdayObject,
   DistanceUnit,
-  Distance
+  Distance,
 } from "@/types/eventTypes";
-import locationFilterTypes from "@/components/event/locationFilterTypes";
 
 export const weekdays = [
+  // Note: Luxon uses 1-7 to mark weekdays instead of 0-6.
   { number: "0", name: "Sunday", shortName: "Sun" },
   { number: "1", name: "Monday", shortName: "Mon" },
   { number: "2", name: "Tuesday", shortName: "Tue" },
@@ -104,7 +104,8 @@ const createDefaultSelectedWeeklyHourRanges = () => {
   return weeklyTimeSlots;
 };
 
-export const defaultSelectedWeeklyHourRanges = createDefaultSelectedWeeklyHourRanges();
+export const defaultSelectedWeeklyHourRanges =
+  createDefaultSelectedWeeklyHourRanges();
 
 const createHourRangesObject = () => {
   // Used as a reference to build graphQL query from selected time slots
@@ -146,7 +147,7 @@ export const distanceOptions: Array<Distance> = [
     km: 20,
   },
   {
-    mi: 48.280,
+    mi: 48.28,
     km: 30,
   },
   {
@@ -168,47 +169,13 @@ export const distanceUnitOptions: Array<DistanceUnit> = [
   { label: "mi", value: "mi" },
 ];
 
-export const locationFilterOptions = [
-  {
-    value: locationFilterTypes.NONE,
-    label: "Both virtual and in-person events",
-  },
-  {
-    value: locationFilterTypes.ONLY_VIRTUAL,
-    label: "Virtual only",
-  },
-  {
-    value: locationFilterTypes.ONLY_WITH_ADDRESS,
-    label: "In-person only",
-  },
-  {
-    value: locationFilterTypes.WITHIN_RADIUS,
-    label: "Within a radius of an address",
-  },
-];
-
-const getLocationFilterMap = () => {
-  const filterMap = {} as any;
-  for (let i = 0; i < locationFilterOptions.length; i++) {
-    const filterType = locationFilterOptions[i].value;
-    const filterLabel = locationFilterOptions[i].label;
-    filterMap[filterType] = {
-      value: filterType,
-      label: filterLabel
-    };
-  }
-  return filterMap;
-}
-
-export const locationFilterMap = getLocationFilterMap()
-
 const createWeekdayMap = () => {
   const weekdayMap = {} as any;
   for (let i = 0; i < weekdays.length; i++) {
     const weekdayData = weekdays[i];
-   weekdayMap[weekdayData.number] = weekdayData.name;
+    weekdayMap[weekdayData.number] = weekdayData.name;
   }
   return weekdayMap;
-}
+};
 
-export const weekdayMap = createWeekdayMap()
+export const weekdayMap = createWeekdayMap();

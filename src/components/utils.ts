@@ -1,5 +1,3 @@
-import { DiscussionData } from "@/types/discussionTypes";
-import { EventData } from "@/types/eventTypes";
 import { TagData } from "@/types/tagTypes";
 import { gql } from "@apollo/client/core";
 

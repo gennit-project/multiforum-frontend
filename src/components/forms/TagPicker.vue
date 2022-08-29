@@ -24,7 +24,7 @@ export default defineComponent({
       },
     },
   },
-  setup() {
+  setup(props) {
     const {
       loading: tagsLoading,
       error: tagsError,

@@ -1,39 +1,33 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import { WeekdayData, HourRangeData } from "@/types/eventTypes";
-import LocationPicker from "@/components/forms/LocationPicker.vue";
-import SearchBar from "../forms/SearchBar.vue";
+import { defineComponent, PropType } from "vue";
+import { WeekdayData, HourRangeData, SearchEventValues } from "@/types/eventTypes";
+// import LocationPicker from "@/components/forms/LocationPicker.vue";
+// import SearchBar from "../forms/SearchBar.vue";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
-import FilterIcon from "../icons/FilterIcon.vue";
-import CalendarIcon from "../icons/CalendarIcon.vue";
-import TimeIcon from "../icons/TimeIcon.vue";
+// import FilterIcon from "../icons/FilterIcon.vue";
+// import CalendarIcon from "../icons/CalendarIcon.vue";
+// import TimeIcon from "../icons/TimeIcon.vue";
 import DatePicker from "@/components/forms/DatePicker.vue";
-import LocationIcon from "../icons/LocationIcon.vue";
-import EventFilterModal from "./EventFilterModal.vue";
-import {
-  SelectedWeekdays,
-  SelectedHourRanges,
-  SelectedWeeklyHourRanges,
-} from "@/types/eventTypes";
 
 export default defineComponent({
   components: {
-    EventFilterModal,
-    CalendarIcon,
+    // CalendarIcon,
     DatePicker,
-    FilterIcon,
-    LocationIcon,
-    LocationPicker,
-    TimeIcon,
-    SearchBar,
+    // FilterIcon,
+    // LocationIcon,
+    // TimeIcon,
     WeeklyTimePicker,
   },
   props: {
-    // updateSearchResult
-    // showOnlyFreeEvents
-    // showCanceledEvents
+    filterValues: {
+      type: Object as PropType<SearchEventValues>,
+      required: true
+    }
   },
-  setup() {},
+  setup() {
+    
+    return {}
+  },
   methods: {
     filterByRadius(placeData: any) {
       const lat = placeData.geometry.location.lat();
@@ -60,7 +54,7 @@ export default defineComponent({
       this.updateMapCenter(placeData);
       this.filterByRadius(placeData);
       this.placeData = placeData; // Use for debugging
-      this.selectedLocationFilter = locationFilterTypes.WITHIN_RADIUS;
+      this.selectedLocationFilter = LocationFilterTypes.WITHIN_RADIUS;
     },
     updateLocationFilter(selectedLocationFilter: string) {
       this.selectedLocationFilter = selectedLocationFilter;
@@ -161,15 +155,13 @@ export default defineComponent({
 <template>
   <div>
     <DatePicker
-      :end-iso="endOfDateRange"
-      :start-iso="beginningOfDateRange"
-      :date-range="dateRange"
+      :end-iso="filterValues.endOfDateRangeISO"
+      :start-iso="filterValues.startOfDateRangeISO"
       @updateDateFilter="updateDateFilter"
     />
 
     <LocationPicker
-      :selected-location-filter="selectedLocationFilter"
-      :reference-point-address-name="referencePointName"
+      :reference-point-address-name="filterValues.referencePointName"
       @updateLocationFilter="updateLocationFilter"
       @updateLocationInput="updateLocationInput"
       @updateDistanceUnit="updateDistanceUnit"
@@ -177,9 +169,9 @@ export default defineComponent({
     />
 
     <WeeklyTimePicker
-      :selected-weekdays="selectedWeekdays"
-      :selected-hour-ranges="selectedHourRanges"
-      :selected-weekly-hour-ranges="selectedWeeklyHourRanges"
+      :selected-weekdays="filterValues.selectedWeekdays"
+      :selected-hour-ranges="filterValues.selectedHourRanges"
+      :selected-weekly-hour-ranges="filterValues.selectedWeeklyHourRanges"
       @toggleSelectWeekday="toggleSelectWeekday"
       @toggleSelectTimeRange="toggleSelectTimeRange"
       @toggleWeeklyTimeRange="toggleWeeklyTimeRange"
@@ -188,11 +180,6 @@ export default defineComponent({
     <label for="location" class="block text-sm font-medium text-gray-700"
       >Search Event Titles and Descriptions</label
     >
-
-    <SearchBar
-      :search-placeholder="'Search'"
-      @updateSearchInput="updateSearchResult"
-    />
 
     <div class="relative flex items-start mt-4">
       <div class="flex items-center h-5">
@@ -207,7 +194,7 @@ export default defineComponent({
           "
           type="checkbox"
           id="onlyFreeEvents"
-          v-model="showOnlyFreeEvents"
+          :value="filterValues.showOnlyFreeEvents"
         />
       </div>
       <div class="ml-3 text-sm">
@@ -230,7 +217,7 @@ export default defineComponent({
           "
           type="checkbox"
           id="onlyFreeEvents"
-          v-model="showCanceledEvents"
+          :value="filterValues.showCanceledEvents"
         />
       </div>
       <div class="ml-3 text-sm">

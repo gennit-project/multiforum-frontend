@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import EventPreview from "./EventPreview.vue";
 import EventMap from "./Map.vue";

@@ -31,6 +31,10 @@ export default defineComponent({
         return [];
       },
     },
+    reachedEndOfResults: {
+      type: Boolean,
+      default: true
+    },
     selectedTags: {
       type: Array as PropType<String[]>,
       default: () => {

@@ -1,12 +1,44 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import locationFilterTypes from "@/components/event/locationFilterTypes";
 import { distanceOptions, distanceUnitOptions } from "@/components/event/eventSearchOptions";
 import Select from "@/components/forms/Select.vue";
 import RadioButtons from "@/components/forms/RadioButtons.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-import { locationFilterOptions, locationFilterMap } from "@/components/event/eventSearchOptions";
+import { LocationFilterTypes  } from "@/types/eventTypes"
 import { DistanceUnit, Distance } from "@/types/eventTypes";
+
+const locationFilterMap = LocationFilterTypes
+
+export const locationFilterOptions = [
+  {
+    value: LocationFilterTypes.NONE,
+    label: "Both virtual and in-person events",
+  },
+  {
+    value: LocationFilterTypes.ONLY_VIRTUAL,
+    label: "Virtual only",
+  },
+  {
+    value: LocationFilterTypes.ONLY_WITH_ADDRESS,
+    label: "In-person only",
+  },
+  {
+    value: LocationFilterTypes.WITHIN_RADIUS,
+    label: "Within a radius of an address",
+  },
+];
+// const getLocationFilterMap = () => {
+//   const filterMap = {} as any;
+//   for (let i = 0; i < locationFilterOptions.length; i++) {
+//     const filterType = locationFilterOptions[i].value;
+//     const filterLabel = locationFilterOptions[i].label;
+//     filterMap[filterType] = {
+//       value: filterType,
+//       label: filterLabel
+//     };
+//   }
+//   return filterMap;
+// }
 
 export default defineComponent({
   components: {
@@ -42,7 +74,7 @@ export default defineComponent({
     return {
       getDistanceOptions,
       locationFilterOptions,
-      locationFilterTypes,
+      LocationFilterTypes,
       locationFilter,
       locationFilterMap,
       distanceOptions,
@@ -67,7 +99,7 @@ export default defineComponent({
   methods: {
     updateLocationInput(placeData: any) {
       this.$emit("updateLocationInput", placeData);
-      this.selectedLocationFilterString = locationFilterTypes.WITHIN_RADIUS;
+      this.selectedLocationFilterString = LocationFilterTypes.WITHIN_RADIUS;
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit) {
       this.selectedDistanceUnit = unitOption;
