@@ -76,7 +76,7 @@ export default defineComponent({
     return {
       previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
-      defaultUniqueName: props.event.Channels[0].uniqueName,
+      defaultUniqueName: props.event.Channels[0] ? props.event.Channels[0].uniqueName : 'cluse',
     };
   },
   components: {

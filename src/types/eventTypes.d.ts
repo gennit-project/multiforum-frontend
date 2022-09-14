@@ -119,7 +119,7 @@ export type SearchEventValues = {
   referencePoint: ReferencePoint;
   referencePointAddress: string;
   referencePointName: string;
-  resultsOrder: string;
+  resultsOrder: { startTime: string };
   selectedTags: Array[string];
   selectedChannels: Array[string];
   selectedWeekdays: Array[SelectedWeekdays];

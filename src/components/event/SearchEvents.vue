@@ -71,86 +71,7 @@ export default defineComponent({
     //   - end of date range
     //   - selectedWeeklyHourRanges
 
-    const textFilter = computed(() => {
-      if (searchInput.value) {
-        return "";
-      }
-
-      // Match a case-insensitive regex for the search term
-      return `,
-      {
-        OR: [
-			    {
-		        title_MATCHES: "(?i).*${searchInput.value}.*"
-			    },{
-			    	description_MATCHES: "(?i).*${searchInput.value}.*"
-			    }
-		    ]
-      },
-      `;
-    });
-
-    const dateRangeFilter = computed(() => {
-      return `
-          {
-            startTime_GT: "${filterValues.value.beginningOfDateRangeISO}"
-          },
-          {
-            startTime_LT: "${filterValues.value.endOfDateRangeISO}"
-          },`;
-    });
-
-    const weeklyTimeRangeFilter = computed(() => {
-      // The selected weekly time windows are in the
-      // piece of state called selectedWeeklyHourRanges.
-      // That data structure is an object where the keys
-      // are weekdays and the values are objects where the
-      // key is the time slot and the value is a boolean.
-
-      // But to create a GraphQL query filter out of that,
-      // this function flattens the structure.
-
-      let flattened = "";
-      for (let dayNumber in filterValues.value.selectedWeeklyHourRanges) {
-        const selectedSlotsInDay =
-          filterValues.value.selectedWeeklyHourRanges[dayNumber];
-
-        for (let timeSlot in selectedSlotsInDay) {
-          const slotIsSelected = selectedSlotsInDay[timeSlot];
-
-          if (slotIsSelected) {
-            flattened = flattened.concat(`
-              {
-                AND: [
-                  {
-                    startTimeHourOfDay_LTE: ${hourRangesObject[timeSlot].max}
-                  },
-                  {
-                    startTimeHourOfDay_GTE: ${hourRangesObject[timeSlot].min}
-                  },
-                  {
-                    startTimeDayOfWeek: "${weekdayObject[dayNumber]}"
-                  }
-                ]
-              },
-            `);
-          }
-        }
-      }
-
-      if (flattened === "") {
-        return "";
-      }
-      let timeSlotFilter = `{
-          OR: [
-            ${flattened}
-          ]
-        },`;
-      return timeSlotFilter;
-    });
-
     const selectedTags = ref([]);
-    const selectedChannels = ref(channelId.value ? [channelId] : []);
 
     const getDefaultSelectedChannels = () => {
       if (channelId.value) {
@@ -159,12 +80,6 @@ export default defineComponent({
       return [];
     };
     const showOnlyFreeEvents = ref(false);
-    const freeEventFilter = computed(() => {
-      if (!showOnlyFreeEvents.value) {
-        return "";
-      }
-      return `{ free: true },`;
-    });
 
     const getDefaultFilterValues = () => {
       const defaultStartDateObj = now.startOf("day");
@@ -204,17 +119,40 @@ export default defineComponent({
     const selectedLocationFilter = ref(LocationFilterTypes.WITHIN_RADIUS);
     const showMap = ref(false);
 
-    const locationFilter = computed(() => {
+    const eventWhere = computed(() => {
+      let conditions = [];
+
+      // Free event filter
+      if (showOnlyFreeEvents.value) {
+        conditions.push({ free: true });
+      }
+
+      // Text filter
+      if (searchInput.value) {
+        conditions.push({
+          OR: [
+            {
+              title_MATCHES: `"(?i).*${searchInput.value}.*"`,
+            },
+            {
+              description_MATCHES: `"(?i).*${searchInput.value}.*"`,
+            },
+          ],
+        });
+      }
+
+      // Location filter
       switch (selectedLocationFilter.value) {
         case LocationFilterTypes.NONE:
           if (showMap.value) {
-            return "{ location_NOT: null },";
+            conditions.push({ location_NOT: null });
           }
-          return "";
+          break;
         case LocationFilterTypes.ONLY_WITH_ADDRESS:
           // Filter by events that have a location
           // with coordinates
-          return "{ location_NOT: null },";
+          conditions.push({ location_NOT: null });
+          break;
 
         case LocationFilterTypes.ONLY_VIRTUAL:
           // Filter by events that have a virtual event URL
@@ -222,10 +160,10 @@ export default defineComponent({
             // If map view is shown, only include
             // events with both a physical location
             // and a virtual event url
-            return `{ location_NOT: null },
-            { virtualEventUrl_NOT: null },`;
+            conditions.push({ location_NOT: null });
           }
-          return "{ virtualEventUrl_NOT: null },";
+          conditions.push({ virtualEventUrl_NOT: null });
+          break;
 
         case LocationFilterTypes.WITHIN_RADIUS:
           if (
@@ -234,148 +172,171 @@ export default defineComponent({
             filterValues.value.referencePointAddress
           ) {
             // Filter for events within a radius of a reference point
-            return `{
+            conditions.push({
               location_LTE: {
                 point: {
-                  latitude: ${filterValues.value.referencePoint.lat},
-                  longitude: ${filterValues.value.referencePoint.lng},
+                  latitude: filterValues.value.referencePoint.lat,
+                  longitude: filterValues.value.referencePoint.lng,
                 },
-                distance: ${filterValues.value.radius * 1000}
-              }
-            },`;
+                distance: filterValues.value.radius * 1000,
+              },
+            });
           }
-          return "";
-        default:
-          return "";
       }
-    });
 
-
-    const getTagFilter = (selectedTags: Array<string>) => {
-      if (selectedTags.length > 0) {
-        let matchTags = selectedTags.reduce(
-          (prev: string, curr: string) => {
-            return prev + `{ text_MATCHES: "(?i)${curr}" },`;
+      // Tag filter
+      if (filterValues.value.selectedTags.length > 0) {
+        let matchTags = filterValues.value.selectedTags.reduce(
+          (prev: any, curr: any) => {
+            return prev.concat({ text_MATCHES: `"(?i)${curr}"` });
           },
-          ""
+          []
         );
-        return `{
+        conditions.push({
           TagsConnection: {
             node: {
-              OR: [${matchTags}]
-            }
-          }
-        }`;
+              OR: matchTags,
+            },
+          },
+        });
       }
-      return "";
-    }
-    const getChannelFilter = (selectedChannels: any) => {
-      if (selectedChannels.length > 0) {
-        let matchChannels = selectedChannels.reduce(
+      
+
+      // Channel filter
+      if (filterValues.value.selectedChannels.length > 0) {
+        let matchChannels = filterValues.value.selectedChannels.reduce(
           // Technically a selected channel could be an array
           // of strings, but we expect it to always be a string.
           (prev: any, curr: any) => {
-            return prev + `{ uniqueName_MATCHES: "(?i)${curr}" },`;
+            return prev.concat({ uniqueName_MATCHES: `"(?i)${curr}"` });
           },
-          ""
+          []
         );
-        return `{
+        conditions.push({
           ChannelsConnection: {
             node: {
-              OR: [${matchChannels}]
-            }
-          }
-        }`;
+              OR: matchChannels,
+            },
+          },
+        });
       }
-      return "";
-    }
 
-    const eventFilterString = computed(() => {
-      return `(
-                options: {
-                  sort: ${filterValues.value.resultsOrder}
-                }
-                where: {
-                  AND: [
-                    { canceled: ${filterValues.value.showCanceledEvents} },
-                    {
-                        ChannelsAggregate: {
-                            count_GT: 0
-                        }
-                    },
-                    ${dateRangeFilter.value}
-                    ${freeEventFilter.value}
-                    ${textFilter.value}
-                    ${weeklyTimeRangeFilter.value}
-                    ${locationFilter.value}
-                    ${getChannelFilter(filterValues.value.selectedChannels)}
-                    ${getTagFilter(filterValues.value.selectedTags)}
-                  ]
-                }
-              ) `;
+      
+
+      // Weekly time filter
+
+      // The selected weekly time windows are in the
+      // piece of state called selectedWeeklyHourRanges.
+      // That data structure is an object where the keys
+      // are weekdays and the values are objects where the
+      // key is the time slot and the value is a boolean.
+
+      // But to create a GraphQL query filter out of that,
+      // this function flattens the structure.
+
+      let flattenedTimeFilters = [];
+      for (let dayNumber in filterValues.value.selectedWeeklyHourRanges) {
+        const selectedSlotsInDay =
+          filterValues.value.selectedWeeklyHourRanges[dayNumber];
+
+        for (let timeSlot in selectedSlotsInDay) {
+          const slotIsSelected = selectedSlotsInDay[timeSlot];
+
+          if (slotIsSelected) {
+            flattenedTimeFilters.push({
+              AND: [
+                {
+                  startTimeHourOfDay_LTE: hourRangesObject[timeSlot].max,
+                },
+                {
+                  startTimeHourOfDay_GTE: hourRangesObject[timeSlot].min,
+                },
+                {
+                  startTimeDayOfWeek: `"${weekdayObject[dayNumber]}"`,
+                },
+              ],
+            });
+          }
+        }
+      }
+
+      if (flattenedTimeFilters.length > 0) {
+        conditions.push({
+          OR: flattenedTimeFilters,
+        });
+      }
+
+      return {
+        AND: (conditions = [
+          ...conditions,
+          { canceled: filterValues.value.showCanceledEvents },
+          {
+            ChannelsAggregate: {
+              count_GT: 0,
+            },
+          },
+          {
+            startTime_GT: `${filterValues.value.beginningOfDateRangeISO}`,
+          },
+          {
+            startTime_LT: `${filterValues.value.endOfDateRangeISO}`,
+          },
+        ]),
+      };
+    }); // End of EventWhere computed property
+
+    const eventOptions = computed(() => {
+      return { sort: filterValues.value.resultsOrder };
     });
-    let eventQueryString = computed(() => {
-      let str = `
-        query {
-          events ${eventFilterString.value}{
+
+    let eventQueryString = gql`
+      query ($where: EventWhere, $options: EventOptions) {
+        events(where: $where, options: $options) {
+          id
+          Channels {
+            uniqueName
+          }
+          title
+          description
+          startTime
+          endTime
+          locationName
+          address
+          virtualEventUrl
+          location {
+            latitude
+            longitude
+          }
+          cost
+          Poster {
+            username
+          }
+          Tags {
+            text
+          }
+          CommentSections {
             id
-            Channels {
+            CommentsAggregate {
+              count
+            }
+            OriginalPost {
+              __typename
+              ... on Discussion {
+                id
+                title
+              }
+              ... on Event {
+                id
+                title
+              }
+            }
+            Channel {
               uniqueName
             }
-            title
-            description
-            startTime
-            endTime
-            locationName
-            address
-            virtualEventUrl
-            location {
-              latitude
-              longitude
-            }
-            cost
-            Poster {
-              username
-            }
-            Tags {
-              text
-            }
-            CommentSections {
-              id
-              CommentsAggregate {
-                count
-              }
-              OriginalPost {
-                __typename
-                ... on Discussion {
-                  id
-                  title
-                }
-                ... on Event {
-                  id
-                  title
-                }
-              }
-              Channel {
-                uniqueName
-              }
-            }
           }
-        }`;
-      return str;
-    });
-
-    // Turn the query string into an actual GraphQL
-    // query. Any GraphQL syntax errors will be thrown here.
-    let eventQuery = computed(() => {
-      try {
-        return gql`
-          ${eventQueryString.value}
-        `;
-      } catch (err) {
-        throw new Error(`Invalid query string: ${eventQueryString.value}`);
+        }
       }
-    });
+    `;
 
     const {
       error: eventError,
@@ -383,7 +344,12 @@ export default defineComponent({
       loading: eventLoading,
       refetch: refetchEvents,
       fetchMore,
-    } = useQuery(eventQuery, { first: 20, offset: 0 });
+    } = useQuery(eventQueryString, {
+      first: 20,
+      offset: 0,
+      where: eventWhere,
+      options: eventOptions,
+    });
 
     const reachedEndOfResults = ref(false);
 
@@ -410,11 +376,10 @@ export default defineComponent({
       createEventPath,
       defaultSelectedHourRanges,
       eventError,
-      eventFilterString,
       eventLoading,
-      eventQuery,
       eventQueryString,
       eventResult,
+      eventWhere, // Return for debugging in dev tools
       filterValues,
       loadMore,
       reachedEndOfResults,
@@ -439,7 +404,6 @@ export default defineComponent({
     };
   },
   methods: {
-    
     updateLocationInput(placeData: any) {
       try {
         this.filterValues.referencePoint.lat =
@@ -535,7 +499,6 @@ export default defineComponent({
       </div>
     </div>
     <EventFilterBar
-      :event-filter-string="eventFilterString"
       :filter-values="filterValues"
       @updateLocationInput="updateLocationInput"
       @setSelectedChannels="setSelectedChannels"
