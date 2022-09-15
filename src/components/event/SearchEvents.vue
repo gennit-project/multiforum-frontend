@@ -221,8 +221,6 @@ export default defineComponent({
         });
       }
 
-      
-
       // Weekly time filter
 
       // The selected weekly time windows are in the
@@ -291,6 +289,7 @@ export default defineComponent({
 
     let eventQueryString = gql`
       query ($where: EventWhere, $options: EventOptions) {
+        eventsCount(where: $where)
         events(where: $where, options: $options) {
           id
           Channels {
@@ -499,6 +498,7 @@ export default defineComponent({
       </div>
     </div>
     <EventFilterBar
+      :result-count="eventResult.eventsCount"
       :filter-values="filterValues"
       @updateLocationInput="updateLocationInput"
       @setSelectedChannels="setSelectedChannels"

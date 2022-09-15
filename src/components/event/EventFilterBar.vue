@@ -40,6 +40,10 @@ export default defineComponent({
       type: Object as PropType<SearchEventValues>,
       required: true,
     },
+    resultCount: {
+      type: Number,
+      required: true
+    }
   },
 
   setup(props) {
@@ -190,7 +194,7 @@ export default defineComponent({
 <template>
   <div>
     <div class="items-center mt-2 space-x-2">
-      Showing events within {{ filterValues.radius }}
+      Showing {{ resultCount }} events within {{ filterValues.radius }}
       {{ filterValues.distanceUnit }} of
       <LocationSearchBar
         :search-placeholder="filterValues.referencePointAddress"
