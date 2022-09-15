@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, PropType } from "vue";
+import { defineComponent, computed, PropType, ref } from "vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
@@ -117,7 +117,7 @@ export default defineComponent({
     ];
 
     return {
-      activeDateShortcut: "none",
+      activeDateShortcut: ref("none"),
       channelLabel,
       defaultFilterLabels,
       reverseChronologicalOrder,
