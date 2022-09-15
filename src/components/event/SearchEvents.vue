@@ -188,7 +188,7 @@ export default defineComponent({
       if (filterValues.value.selectedTags.length > 0) {
         let matchTags = filterValues.value.selectedTags.reduce(
           (prev: any, curr: any) => {
-            return prev.concat({ text_MATCHES: `"(?i)${curr}"` });
+            return prev.concat({ text_MATCHES: `(?i)${curr}` });
           },
           []
         );
@@ -208,7 +208,7 @@ export default defineComponent({
           // Technically a selected channel could be an array
           // of strings, but we expect it to always be a string.
           (prev: any, curr: any) => {
-            return prev.concat({ uniqueName_MATCHES: `"(?i)${curr}"` });
+            return prev.concat({ uniqueName_MATCHES: `(?i)${curr}` });
           },
           []
         );
