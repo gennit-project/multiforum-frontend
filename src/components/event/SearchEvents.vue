@@ -22,13 +22,7 @@ import {
 import EventFilterBar from "./EventFilterBar.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import MapView from "./MapView.vue";
-
-const LocationFilterTypes = {
-  ONLY_VIRTUAL: "ONLY_VIRTUAL",
-  ONLY_WITH_ADDRESS: "ONLY_WITH_ADDRESS",
-  WITHIN_RADIUS: "WITHIN_RADIUS",
-  NONE: "NONE",
-};
+import LocationFilterTypes from "./locationFilterTypes";
 
 export default defineComponent({
   name: "SearchEvents",
@@ -430,6 +424,18 @@ export default defineComponent({
     updateSearchResult(input: string) {
       this.setSearchInput(input);
     },
+    updateEventTypeFilter(input: string){
+      if (input === LocationFilterTypes.ONLY_VIRTUAL) {
+        this.filterValues.selectedLocationFilter = input
+      } else if (input === LocationFilterTypes.NONE) {
+        if (this.filterValues.radius === 0) {
+          // If 0 is the radius, assume you should be able to see any events that have an address
+          this.filterValues.selectedLocationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS
+        } else {
+          this.filterValues.selectedLocationFilter = LocationFilterTypes.WITHIN_RADIUS
+        }
+      }
+    },
     updateSelectedDistance(e: any) {
       if (this.filterValues.distanceUnit === "km") {
         this.filterValues.radius = e.km;
@@ -514,6 +520,7 @@ export default defineComponent({
       @setSelectedTags="setSelectedTags"
       @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
       @updateSearchInput="updateSearchResult"
+      @updateEventTypeFilter="updateEventTypeFilter"
     />
     <div v-if="eventLoading">Loading...</div>
     <ErrorBanner v-else-if="eventError" :text="eventError.message" />

@@ -10,10 +10,11 @@ import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import { DateTime } from "luxon";
 import ModalButton from "../ModalButton.vue";
 import Tag from "../buttons/Tag.vue";
-import Select from "../forms/Select.vue";
+import SelectMenu from "../forms/Select.vue";
 import { DistanceUnit } from "@/types/eventTypes";
-import { distanceOptions, distanceUnitOptions } from "@/components/event/eventSearchOptions";
+import { distanceOptions, /* distanceUnitOptions */ } from "@/components/event/eventSearchOptions";
 import { SearchEventValues } from "@/types/eventTypes";
+import LocationFilterTypes from "./locationFilterTypes";
 
 const DateRangeTypes = {
   FUTURE: "FUTURE",
@@ -26,7 +27,7 @@ export default defineComponent({
     FilterChip,
     LocationSearchBar,
     ModalButton,
-    Select,
+    SelectMenu,
     Tag,
     TagIcon,
     TagPicker,
@@ -80,6 +81,13 @@ export default defineComponent({
     const startOfThisWeekend = getStartOfThisWeekend();
     const startOfNextWeek = getStartOfNextWeek();
     const startOfThisMonth = now.startOf("month");
+
+    const eventFilterTypeShortcuts = [
+      {
+        label: "Online events",
+        locationFilterType: LocationFilterTypes.ONLY_VIRTUAL
+      }
+    ]
 
     const timeFilterShortcuts = [
       {
@@ -141,9 +149,12 @@ export default defineComponent({
 
     return {
       activeDateShortcut: ref("none"),
+      activeEventFilterTypeShortcut: ref(props.filterValues.selectedLocationFilter),
       channelLabel,
       defaultFilterLabels,
       distanceOptionsWithLabel,
+      eventFilterTypeShortcuts,
+      LocationFilterTypes,
       reverseChronologicalOrder,
       tagLabel,
       timeFilterShortcuts,
@@ -182,7 +193,6 @@ export default defineComponent({
           break;
       }
     },
-
     updateRouterParams() {
       this.$emit("updateRouterParams", {
         path: "/events",
@@ -213,15 +223,34 @@ export default defineComponent({
     },
     updateSelectedDistance(e: any){
       this.$emit("updateSelectedDistance", e)
+    },
+    updateEventTypeFilter(e: any) {
+      if (this.activeEventFilterTypeShortcut === LocationFilterTypes.ONLY_VIRTUAL) {
+        // If the online-only filter was already selected, clear it.
+        this.$emit("updateEventTypeFilter", LocationFilterTypes.NONE)
+        this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE
+      } else {
+        this.activeEventFilterTypeShortcut = e.locationFilterType
+        this.$emit("updateEventTypeFilter", e.locationFilterType)
+      }
     }
   },
 });
 </script>
 <template>
   <div>
-    <div class="items-center mt-2 space-x-2 flex">
+    <div
+      v-if="filterValues.selectedLocationFilter === LocationFilterTypes.ONLY_VIRTUAL"
+      class="items-center mt-2 h-10 space-x-2 flex"
+    >
+      Showing {{ resultCount }} online events
+    </div>
+    <div
+      v-else
+      class="items-center mt-2 h-10 space-x-2 flex"
+    >
       Showing {{ resultCount }} events within 
-      <Select class="mx-2 w-36"
+      <SelectMenu class="mx-2 w-36"
         :options="distanceOptionsWithLabel"
         @selected="updateSelectedDistance"
       />
@@ -232,7 +261,23 @@ export default defineComponent({
         @updateLocationInput="updateLocationInput"
       />
     </div>
-    <div class="items-center mt-1 space-x-2">
+    <div class="items-center mt-3 space-x-2">
+      <Tag
+        v-for="shortcut in timeFilterShortcuts"
+        :key="shortcut.label"
+        :tag="shortcut.label"
+        :active="shortcut.label === activeDateShortcut"
+        @click="handleTimeFilterShortcutClick(shortcut)"
+      />
+      <Tag
+        v-for="shortcut in eventFilterTypeShortcuts"
+        :key="shortcut.label"
+        :tag="shortcut.label"
+        :active="shortcut.locationFilterType === activeEventFilterTypeShortcut"
+        @click="updateEventTypeFilter(shortcut)"
+      />
+    </div>
+    <div class="items-center mt-3 space-x-2">
       <FilterChip
         v-if="!channelId"
         :label="channelLabel"
@@ -262,15 +307,9 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <Tag
-        v-for="shortcut in timeFilterShortcuts"
-        :key="shortcut.label"
-        :tag="shortcut.label"
-        :active="shortcut.label === activeDateShortcut"
-        @click="handleTimeFilterShortcutClick(shortcut)"
-      />
       More filters
       <ModalButton :show="false" :title="'title'">button</ModalButton>
     </div>
+   
   </div>
 </template>

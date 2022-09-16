@@ -4,7 +4,7 @@ import { distanceOptions, distanceUnitOptions } from "@/components/event/eventSe
 import Select from "@/components/forms/Select.vue";
 import RadioButtons from "@/components/forms/RadioButtons.vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-import { LocationFilterTypes  } from "@/types/eventTypes"
+import LocationFilterTypes from "../event/locationFilterTypes";
 import { DistanceUnit, Distance } from "@/types/eventTypes";
 
 const locationFilterMap = LocationFilterTypes
