@@ -86,7 +86,6 @@ export default defineComponent({
           eventData.value?.address ? eventData.value.address : ""
         );
         showAddressCopiedNotification.value = true;
-        console.log("Copied to clipboard");
       } catch (e) {
         console.error(e);
       }

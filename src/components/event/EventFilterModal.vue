@@ -50,12 +50,13 @@ export default defineComponent({
     updateDistanceUnit(unit: String) {
       this.distanceUnit = unit;
     },
-    updateLocationInput(placeData: any) {
-      this.updateMapCenter(placeData);
-      this.filterByRadius(placeData);
-      this.placeData = placeData; // Use for debugging
-      this.selectedLocationFilter = LocationFilterTypes.WITHIN_RADIUS;
-    },
+    // updateLocationInput(placeData: any) {
+    //   console.log('place data in event filter modal ', placeData)
+    //   this.updateMapCenter(placeData);
+    //   this.filterByRadius(placeData);
+    //   this.placeData = placeData; // Use for debugging
+    //   this.selectedLocationFilter = LocationFilterOptions.WITHIN_RADIUS;
+    // },
     updateLocationFilter(selectedLocationFilter: string) {
       this.selectedLocationFilter = selectedLocationFilter;
     },

@@ -118,6 +118,7 @@ export type SearchEventValues = {
   radius: number;
   referencePoint: ReferencePoint;
   referencePointAddress: string;
+  referencePointPlaceId: string;
   referencePointName: string;
   resultsOrder: { startTime: string };
   selectedTags: Array[string];
@@ -125,6 +126,7 @@ export type SearchEventValues = {
   selectedWeekdays: Array[SelectedWeekdays];
   selectedHourRanges: Array[SelectedHourRanges];
   selectedWeeklyHourRanges: Array[SelectedWeeklyHourRanges]
+  selectedLocationFilter: string;
   searchInput: string;
   showCanceledEvents: boolean;
   showOnlyFreeEvents: boolean;

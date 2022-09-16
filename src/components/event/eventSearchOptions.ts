@@ -155,12 +155,12 @@ export const distanceOptions: Array<Distance> = [
     km: 50,
   },
   {
-    mi: 160.934,
+    mi: 155.343,
     km: 100,
   },
   {
     mi: 321.869,
-    km: 200,
+    km: 240,
   },
 ];
 

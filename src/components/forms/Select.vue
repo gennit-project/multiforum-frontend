@@ -6,6 +6,7 @@ import CheckIcon from '../icons/CheckIcon.vue'
 import { SelectOptionData } from "@/types/genericFormTypes";
 
 export default defineComponent({
+  name: "SelectMenu",
   components: {
     CheckIcon,
     Listbox,
@@ -31,7 +32,7 @@ export default defineComponent({
   },
   methods: {
     handleSelect(event: any){
-      this.$emit('selected', event.value)
+      this.$emit('selected', event)
     }
   }
 });

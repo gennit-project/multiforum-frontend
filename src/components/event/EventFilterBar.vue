@@ -10,6 +10,9 @@ import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import { DateTime } from "luxon";
 import ModalButton from "../ModalButton.vue";
 import Tag from "../buttons/Tag.vue";
+import Select from "../forms/Select.vue";
+import { DistanceUnit } from "@/types/eventTypes";
+import { distanceOptions, distanceUnitOptions } from "@/components/event/eventSearchOptions";
 import { SearchEventValues } from "@/types/eventTypes";
 
 const DateRangeTypes = {
@@ -23,6 +26,7 @@ export default defineComponent({
     FilterChip,
     LocationSearchBar,
     ModalButton,
+    Select,
     Tag,
     TagIcon,
     TagPicker,
@@ -42,7 +46,7 @@ export default defineComponent({
     },
     resultCount: {
       type: Number,
-      required: true
+      default: 0
     }
   },
 
@@ -119,11 +123,27 @@ export default defineComponent({
         endOfDateRangeISO: now.startOf("day").toISO(),
       },
     ];
+    
+
+    const defaultDistanceUnit: DistanceUnit = { label: "km", value: "km" };
+    const getDistanceOptions = (label: string) => {
+      return distanceOptions.map((option) => {
+        return {
+          ...option,
+          label: `${option[label].toLocaleString()} ${label}`,
+        };
+      });
+    };
+    const selectedDistanceUnit = ref(defaultDistanceUnit);
+    const unitLabel = selectedDistanceUnit.value.label.toString();
+
+    const distanceOptionsWithLabel: any = ref(getDistanceOptions(unitLabel));
 
     return {
       activeDateShortcut: ref("none"),
       channelLabel,
       defaultFilterLabels,
+      distanceOptionsWithLabel,
       reverseChronologicalOrder,
       tagLabel,
       timeFilterShortcuts,
@@ -188,18 +208,28 @@ export default defineComponent({
         });
       }
     },
+    updateLocationInput(e: any){
+      this.$emit('updateLocationInput', e)
+    },
+    updateSelectedDistance(e: any){
+      this.$emit("updateSelectedDistance", e)
+    }
   },
 });
 </script>
 <template>
   <div>
-    <div class="items-center mt-2 space-x-2">
-      Showing {{ resultCount }} events within {{ filterValues.radius }}
-      {{ filterValues.distanceUnit }} of
+    <div class="items-center mt-2 space-x-2 flex">
+      Showing {{ resultCount }} events within 
+      <Select class="mx-2 w-36"
+        :options="distanceOptionsWithLabel"
+        @selected="updateSelectedDistance"
+      />
+       of
       <LocationSearchBar
         :search-placeholder="filterValues.referencePointAddress"
         :reference-point-address-name="filterValues.referencePointName"
-        @updateLocationInput="$emit('updateLocationInput')"
+        @updateLocationInput="updateLocationInput"
       />
     </div>
     <div class="items-center mt-1 space-x-2">

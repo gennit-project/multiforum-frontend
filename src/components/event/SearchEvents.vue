@@ -96,16 +96,18 @@ export default defineComponent({
         radius: 5,
         distanceUnit: DistanceUnits.km,
         referencePoint: {
-          // Default map center is Tempe, AZ
-          lat: 33.4484,
-          lng: 112.074,
+          // Default map center is Tempe Public Library
+          lat: 33.39131450000001,
+          lng: -111.9280626,
         },
-        referencePointAddress: "",
-        referencePointName: "Tempe, AZ",
+        referencePointAddress: "3500 S Rural Rd, Tempe, AZ 85282, USA",
+        referencePointName: "Tempe Public Library",
+        referencePointPlaceId: "ChIJR35tTZ8IK4cR2D0p0AxOqbg",
         showCanceledEvents: false,
         searchInput: searchInput.value,
         selectedWeekdays: [],
         selectedHourRanges: [],
+        selectedLocationFilter: LocationFilterTypes.WITHIN_RADIUS,
         selectedWeeklyHourRanges: defaultSelectedHourRanges,
         selectedChannels: getDefaultSelectedChannels(),
         selectedTags: selectedTags.value,
@@ -116,7 +118,6 @@ export default defineComponent({
 
     const filterValues = ref(getDefaultFilterValues());
 
-    const selectedLocationFilter = ref(LocationFilterTypes.WITHIN_RADIUS);
     const showMap = ref(false);
 
     const eventWhere = computed(() => {
@@ -142,7 +143,7 @@ export default defineComponent({
       }
 
       // Location filter
-      switch (selectedLocationFilter.value) {
+      switch (filterValues.value.selectedLocationFilter) {
         case LocationFilterTypes.NONE:
           if (showMap.value) {
             conditions.push({ location_NOT: null });
@@ -289,7 +290,7 @@ export default defineComponent({
 
     let eventQueryString = gql`
       query ($where: EventWhere, $options: EventOptions) {
-        eventsCount(where: $where)
+        eventsCount(where: $where) 
         events(where: $where, options: $options) {
           id
           Channels {
@@ -408,7 +409,7 @@ export default defineComponent({
         this.filterValues.referencePoint.lat =
           placeData.geometry.location.lat();
         this.filterValues.referencePoint.lng =
-          placeData.geometry.location.lat();
+          placeData.geometry.location.lng();
         this.filterValues.referencePointAddress = placeData.formatted_address;
         this.filterValues.referencePointName = placeData.name;
       } catch (e: any) {
@@ -428,6 +429,13 @@ export default defineComponent({
     },
     updateSearchResult(input: string) {
       this.setSearchInput(input);
+    },
+    updateSelectedDistance(e: any) {
+      if (this.filterValues.distanceUnit === "km") {
+        this.filterValues.radius = e.km;
+      } else if (this.filterValues.distanceUnit === "mi") {
+        this.filterValues.radius = e.mi;
+      }
     },
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
@@ -498,8 +506,9 @@ export default defineComponent({
       </div>
     </div>
     <EventFilterBar
-      :result-count="eventResult.eventsCount"
+      :result-count="eventResult ? eventResult.eventsCount : 0"
       :filter-values="filterValues"
+      @updateSelectedDistance="updateSelectedDistance"
       @updateLocationInput="updateLocationInput"
       @setSelectedChannels="setSelectedChannels"
       @setSelectedTags="setSelectedTags"
