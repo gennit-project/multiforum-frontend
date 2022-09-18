@@ -8,9 +8,9 @@ import ChannelIcon from "../icons/ChannelIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 import { DateTime } from "luxon";
-import ModalButton from "../ModalButton.vue";
 import Tag from "../buttons/Tag.vue";
 import SelectMenu from "../forms/Select.vue";
+import SearchBar from "../forms/SearchBar.vue";
 import { DistanceUnit } from "@/types/eventTypes";
 import { distanceOptionsForKilometers, distanceOptionsForMiles, MilesOrKm } from "@/components/event/eventSearchOptions";
 import { SearchEventValues } from "@/types/eventTypes";
@@ -22,7 +22,7 @@ export default defineComponent({
     ChannelPicker,
     FilterChip,
     LocationSearchBar,
-    ModalButton,
+    SearchBar,
     SelectMenu,
     Tag,
     TagIcon,
@@ -282,8 +282,8 @@ export default defineComponent({
         @click="updateEventTypeFilter(shortcut)"
       />
     </div>
-    <div class="items-center mt-3 space-x-2">
-      <FilterChip
+    <div class="items-center mt-3 space-x-2 mb-3">
+      <FilterChip class="align-middle"
         v-if="!channelId"
         :label="channelLabel"
         :highlighted="channelLabel !== defaultFilterLabels.channels"
@@ -298,7 +298,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <FilterChip
+      <FilterChip class="align-middle"
         :label="tagLabel"
         :highlighted="tagLabel !== defaultFilterLabels.tags"
       >
@@ -312,8 +312,10 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      More filters
-      <ModalButton :show="false" :title="'title'">button</ModalButton>
+      <SearchBar class="inline-flex align-middle"
+        :search-placeholder="'Search events'"
+        @updateSearchInput="$emit('updateSearchInput', $event)"
+      />
     </div>
    
   </div>

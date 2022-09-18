@@ -425,8 +425,8 @@ export default defineComponent({
         this.filterValues.resultsOrder = chronologicalOrder
       }
     },
-    updateSearchResult(input: string) {
-      this.setSearchInput(input);
+    updateSearchInput(input: string) {
+      this.filterValues.searchInput = input;
     },
     updateEventTypeFilter(input: string){
       if (input === LocationFilterTypes.ONLY_VIRTUAL || input === LocationFilterTypes.ONLY_WITH_ADDRESS) {
@@ -538,7 +538,7 @@ export default defineComponent({
       @setSelectedChannels="setSelectedChannels"
       @setSelectedTags="setSelectedTags"
       @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
-      @updateSearchInput="updateSearchResult"
+      @updateSearchInput="updateSearchInput"
       @updateEventTypeFilter="updateEventTypeFilter"
     />
     <div v-if="eventLoading">Loading...</div>

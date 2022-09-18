@@ -21,22 +21,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="inline-block">
+  <div class="inline-flex items-center">
     <VDropdown>
       <button
         :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
         class="
           inline-flex
-          items-center
-          mt-1
-          mb-2
           max-height-4
           px-2.5
-          py-1.5
+          py-2.5
           border
           text-xs
           font-medium
-          rounded
+          rounded-md
           text-gray-700
           bg-white
           hover:bg-gray-200

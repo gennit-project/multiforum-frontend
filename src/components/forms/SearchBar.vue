@@ -38,11 +38,11 @@ export default defineComponent({
 <template>
   <div class="max-w-lg w-full lg:max-w-xs">
     <label for="search" class="sr-only">Search</label>
-    <div class="relative">
+    <div class="relative items-center">
       <div
         class="
           absolute
-          inset-y-0
+          inset-y-1
           left-0
           pl-3
           flex
@@ -72,7 +72,6 @@ export default defineComponent({
         class="
           pl-10
           pr-3
-          py-1.5
           border border-gray-300
           rounded-md
           leading-5
@@ -83,7 +82,7 @@ export default defineComponent({
           focus:ring-1
           focus:ring-blue-500
           focus:border-blue-500
-          text-xs
+          text-sm
         "
         :placeholder="searchPlaceholder"
         @keyup="updateSearchInput"
