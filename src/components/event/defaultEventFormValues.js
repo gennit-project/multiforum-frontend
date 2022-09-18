@@ -2,7 +2,6 @@ import { DateTime } from "luxon";
 const now = DateTime.now();
 const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
 const defaultStartTimeISO = defaultStartTimeObj.toISO();
-const defaultEndTimeISO = now.startOf("hour").plus({ hours: 2 }).toISO();
 
 export default (channelId) => {
   return {
@@ -24,7 +23,7 @@ export default (channelId) => {
     startTimeDayOfMonth: "",
     startTimeDayOfWeek: "",
     startTimeHourOfDay: 0,
-    endTime: defaultEndTimeISO,
+    endTime: DateTime.fromISO(defaultStartTimeISO).plus({ hours: 2 }).toISO(),
     canceled: false,
     deleted: false,
     free: true,

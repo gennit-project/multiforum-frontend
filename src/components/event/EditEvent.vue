@@ -109,7 +109,7 @@ export default defineComponent({
         return getFormValuesFromEventData(event.value);
       }
       // If the event data is loading, start with empty values. These
-      // will be overwritten by onGetEventResult function when the post
+      // will be overwritten by onGetEventResult function when the event
       // data is loaded.
       return getDefaultEventFormValues(channelId);
     };

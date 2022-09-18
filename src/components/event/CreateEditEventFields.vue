@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType, computed, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import UserAddIcon from "@/components/icons/UserAddIcon.vue";
@@ -29,25 +29,6 @@ import { DateTime, Interval } from "luxon";
 export default defineComponent({
   setup(props){
 
-    const startTimeISO = computed(() => {
-      return props.formValues?.startTime || "";
-    })
-
-    const startTime = computed(() => {
-      return new Date(startTimeISO.value);
-    })
-
-    const endTimeISO = computed(() => {
-      if (props.formValues?.endTime){
-        return props.formValues.endTime;
-      }
-      return DateTime.fromISO(startTimeISO.value).plus({ minutes: 30 }).toISO()
-    })
-
-    const endTime = computed(() => {
-      return new Date(endTimeISO.value);
-    })
-
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
     // TIME_SIMPLE yields the time in this format: 1:30 PM
     const timeFormat = DateTime.TIME_SIMPLE;
@@ -56,18 +37,22 @@ export default defineComponent({
       // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
       dateFormat: "MM/dd/yyyy",
       defaultStartTimeOption: {
-        label: DateTime.fromISO(startTimeISO.value).toLocaleString(timeFormat),
-        value: startTimeISO,
+        label: DateTime.fromISO(props.formValues.startTime).toLocaleString(timeFormat),
+        value: props.formValues.startTime,
       },
       defaultEndTimeOption: {
-        label: DateTime.fromISO(endTimeISO.value).toLocaleString(timeFormat),
-        value: endTimeISO,
+        label: DateTime.fromISO(props.formValues.endTime).toLocaleString(timeFormat),
+        value: props.formValues.endTime,
       },
       formTitle: props.editMode ? "Edit Event" : "Create Event",
-      startTime, // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
-      startTimeDay: startTime, // Create separate values for the start day and time because they can be changed separately
-      endTime,
-      endTimeDay: endTime,
+      startTime: computed(()=>{
+        return new Date(props.formValues.startTime)
+      }), // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
+      startTimeDay: ref(new Date(props.formValues.startTime)), // Create separate values for the start day and time because they can be changed separately
+      endTime: computed(() => {
+        return new Date(props.formValues.endTime)
+      }),
+      endTimeDay: ref(new Date(props.formValues.endTime)),
       touched: false,
       timeFormat,
     };
@@ -85,7 +70,7 @@ export default defineComponent({
     },
     formValues: {
       type: Object as PropType<CreateEditEventFormValues>,
-      required: false,
+      required: true,
     },
     getEventError: {
       type: Object as PropType<ApolloError | null>,
@@ -279,9 +264,8 @@ export default defineComponent({
       // Convert the date back to a Javascript date for compatibility with the calendar date picker.
       const newStartTime = existingStartTimeObject
         .set({ day, month, year })
-        .toJSDate();
-      this.startTime = newStartTime;
-      this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
+        .toISO()
+      this.$emit("updateFormValues", { startTime: newStartTime });
       this.touched = true
     },
     handleEndDateChange(event: any) {
@@ -291,9 +275,9 @@ export default defineComponent({
       const { day, month, year } = newEndTimeObject;
       const newEndTime = existingEndTimeObject
         .set({ day, month, year })
-        .toJSDate();
-      this.endTime = newEndTime;
-      this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
+        .toISO();
+      
+      this.$emit("updateFormValues", { endTime: newEndTime });
       this.touched = true
     },
     handleStartTimeChange(event: any) {
@@ -304,7 +288,6 @@ export default defineComponent({
       const newStartTime = existingStartTimeObject
         .set({ hour, minute })
         .toJSDate();
-      this.startTime = newStartTime;
       this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
       this.touched = true
     },
@@ -313,9 +296,8 @@ export default defineComponent({
       const existingEndTimeObject = DateTime.fromISO(endTimeISO);
       const newEndTimeObject = DateTime.fromISO(event).toObject();
       const { hour, minute } = newEndTimeObject;
-      const newEndTime = existingEndTimeObject.set({ hour, minute }).toJSDate();
-      this.endTime = newEndTime;
-      this.$emit("updateFormValues", { endTime: newEndTime.toISOString() });
+      const newEndTime = existingEndTimeObject.set({ hour, minute });
+      this.$emit("updateFormValues", { endTime: newEndTime.toISO() });
       this.touched = true
     },
     handleUpdateLocation(event: any){
@@ -411,7 +393,7 @@ export default defineComponent({
                 class="w-52"
                 :options="startTimeOptions"
                 :default-option="defaultStartTimeOption"
-                @selected="handleStartTimeChange"
+                @selected="handleStartTimeChange($event.value)"
               />
               <RightArrowIcon />
               <DatePicker
@@ -436,7 +418,7 @@ export default defineComponent({
                 class="w-52"
                 :options="endTimeOptions"
                 :default-option="defaultEndTimeOption"
-                @selected="handleEndTimeChange"
+                @selected="handleEndTimeChange($event.value)"
               />
               <div class="ml-2 mr-2">
                 {{ duration }}
