@@ -356,6 +356,7 @@ export default defineComponent({
           />
 
           <div class="text-xs text-gray-600 mt-4">
+            <p v-if="!eventData.virtualEventUrl && !eventData.address">This event won't show in search results because it doesn't have a location or a virtual event URL.</p>
             <div class="organizer">
               <router-link
                 v-if="eventData.Poster"
