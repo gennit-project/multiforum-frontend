@@ -424,9 +424,10 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     updateEventTypeFilter(input: string){
-      if (input === LocationFilterTypes.ONLY_VIRTUAL) {
+      if (input === LocationFilterTypes.ONLY_VIRTUAL || input === LocationFilterTypes.ONLY_WITH_ADDRESS) {
         this.filterValues.selectedLocationFilter = input
-      } else if (input === LocationFilterTypes.NONE) {
+      }
+      if (input === LocationFilterTypes.NONE) {
         if (this.filterValues.radius === 0) {
           // If 0 is the radius, assume you should be able to see any events that have an address
           this.filterValues.selectedLocationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS

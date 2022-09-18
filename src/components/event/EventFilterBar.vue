@@ -222,6 +222,13 @@ export default defineComponent({
     },
     updateSelectedDistance(distanceOption: DistanceUnit){
       this.$emit("updateSelectedDistance", distanceOption.value)
+
+      if (distanceOption.value === 0) {
+        // If the radius is 0, don't use a radius when filtering events,
+        // but the results should still be limited to events with in-person
+        // locations.
+        this.$emit("updateEventTypeFilter", LocationFilterTypes.ONLY_WITH_ADDRESS)
+      }
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit){
       if (unitOption.value !== MilesOrKm.MI && unitOption.value !== MilesOrKm.KM) {
