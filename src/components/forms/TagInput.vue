@@ -40,7 +40,8 @@ export default defineComponent({
     };
   },
   methods: {
-    saveTag() {
+    saveTag(e: any) {
+      e.preventDefault()
       const { tags, currentInput, set } = this;
       if ((set && tags.indexOf(currentInput) === -1) || !set) {
         tags.push(currentInput);
