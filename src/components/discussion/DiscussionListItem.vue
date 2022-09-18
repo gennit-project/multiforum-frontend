@@ -43,7 +43,7 @@ export default defineComponent({
       previewIsOpen: false,
       defaultUniqueName: props.discussion.Channels[0].uniqueName , //props.discussion.CommentSections[0].Channel.uniqueName,
       title: props.discussion.title,
-      body: props.discussion.body,
+      body: props.discussion.body || '',
       createdAt: props.discussion.createdAt,
       relativeTime: relativeTime(props.discussion.createdAt),
       authorUsername: props.discussion.Author.username,
@@ -81,7 +81,7 @@ export default defineComponent({
           <p class="line-clamp-2 text-sm font-medium text-gray-500 space-x-1">
             <HighlightedSearchTerms :text="body" :search-input="searchInput" />
             <Tag
-              :selected-tags="selectedTags"
+              :active="selectedTags.includes(tag)"
               :key="tag"
               v-for="tag in tags"
               :tag="tag"
@@ -109,12 +109,7 @@ export default defineComponent({
               }`"
               class="font-medium"
             >
-              {{ 'comment count goes here' }} in
-
-              <HighlightedSearchTerms
-                :text="channel.uniqueName"
-                :search-input="selectedChannels.join(' ')"
-              />
+              {{ 'comment count ' }} in <span :class="selectedChannels.includes(channel.uniqueName) ? 'highlighted' : ''">{{ channel.uniqueName }}</span>
               
               {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
             </router-link>
@@ -144,3 +139,8 @@ export default defineComponent({
     </div>
   </li>
 </template>
+<style>
+  .highlighted {
+    background-color: #f9f95d;
+  }
+  </style>

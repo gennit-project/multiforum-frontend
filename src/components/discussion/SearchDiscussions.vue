@@ -39,13 +39,14 @@ export default defineComponent({
     const selectedTags: Ref<Array<string>> = ref(route.params.tag && typeof route.params.tag === 'string' ? [route.params.tag] : []);
 
     const getDefaultSelectedChannels = () => {
-      if (channelId.value) {
-        return [channelId.value];
+      let selectedChannels = []
+      if (typeof channelId.value === 'string') {
+        selectedChannels.push([channelId.value])
       }
       return [];
     };
 
-    const selectedChannels: any = ref(getDefaultSelectedChannels());
+    const selectedChannels: Ref<Array<string>> = ref(getDefaultSelectedChannels());
     const searchInput: Ref<string> = ref('');
 
 
@@ -184,7 +185,6 @@ export default defineComponent({
     return {
       channelId,
       channelLabel,
-      channelOptionLabels,
       closeModal,
       compareDate,
       createDiscussionPath,
@@ -204,7 +204,6 @@ export default defineComponent({
       selectedFilterOptions,
       selectedTags,
       tagLabel,
-      tagOptionLabels,
     };
   },
   methods: {
@@ -220,23 +219,23 @@ export default defineComponent({
 
 <template>
   <div class="mx-auto max-w-4xl">
-    <div class="items-center inline-flex mt-2 space-x-2">
+    <div class="items-center mt-2 space-x-2 flex">
       <SearchBar
         :search-placeholder="'Search discussions'"
         @updateSearchInput="updateSearchResult"
       />
+    
       <FilterChip
         v-if="!channelId"
         :label="channelLabel"
         :highlighted="channelLabel !== defaultLabels.channels"
       >
         <template v-slot:icon>
-          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2"/>
+          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
           <TagPicker
-            :tag-options="channelOptionLabels"
-            :initial-value="selectedChannels"
+            :selected-tags="selectedChannels"
             @setSelectedTags="setSelectedChannels"
           />
         </template>
