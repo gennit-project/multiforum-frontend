@@ -513,7 +513,7 @@ export default defineComponent({
             sm:text-3xl sm:tracking-tight sm:truncate
           "
         >
-          Search Events
+          {{ channelId ? `Events in ${channelId}` : 'Search Events' }}
         </h2>
       </div>
       <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
