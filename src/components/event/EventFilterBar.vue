@@ -274,12 +274,12 @@ export default defineComponent({
       class="items-center mt-2 h-10 space-x-2 flex"
     >
       Showing {{ resultCount }} events within 
-      <SelectMenu v-if="selectedDistanceUnit === MilesOrKm.KM" class="ml-2 w-24"
+      <SelectMenu v-if="selectedDistanceUnit === MilesOrKm.KM" class="ml-2 w-44"
         :options="distanceOptionsForKilometers"
         :default-option="defaultKilometerSelection"
         @selected="updateSelectedDistance"
       />
-      <SelectMenu v-if="selectedDistanceUnit === MilesOrKm.MI" class="ml-2 w-24"
+      <SelectMenu v-if="selectedDistanceUnit === MilesOrKm.MI" class="ml-2 w-44"
         :options="distanceOptionsForMiles"
         :default-option="defaultMileSelection"
         @selected="updateSelectedDistance"

@@ -163,7 +163,7 @@ export const distanceOptionsForMiles: Array<DistanceUnit> = [
     value: 804.672,
   },
   {
-    label: "Anywhere",
+    label: "Any distance",
     value: 0,
   },
 ]
@@ -198,7 +198,7 @@ export const distanceOptionsForKilometers: Array<DistanceUnit> = [
     value: 500,
   },
   {
-    label: "Anywhere",
+    label: "Any distance",
     value: 0,
   },
 ];
