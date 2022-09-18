@@ -97,7 +97,7 @@ export default defineComponent({
           @deselect="deselect"
         />
       </div>
-      <div class="h-20 p-2">
+      <div class="h-14 p-2">
         <button
           class="
             float-right
