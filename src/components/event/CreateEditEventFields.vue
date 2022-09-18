@@ -479,7 +479,7 @@ export default defineComponent({
             <LocationSearchBar
               :search-placeholder="'Add an address'"
               :full-width="true"
-              :reference-point-address-name="`${formValues.locationName ? `${formValues.locationName}, `: ''}${formValues.address}`"
+              :reference-point-address-name="`${formValues.locationName ? `${formValues.locationName}, `: ''}${formValues.address ? formValues.address : ''}`"
               @updateLocationInput="handleUpdateLocation"
             />
           </template>
