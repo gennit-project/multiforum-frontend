@@ -339,8 +339,8 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-4 gap-1">
-        <div class="col-start-1 col-span-3 mr-4">
+      <div class="grid grid-cols-8 gap-1">
+        <div class="col-start-1 col-span-5 mr-4">
           <Comment
             v-if="eventData.description"
             :author-username="eventData.Poster ? eventData.Poster.username : ''"
@@ -406,7 +406,7 @@ export default defineComponent({
         <div
           class="
             pl-8
-            col-span-1
+            col-span-3
             text-sm text-gray-700
             space-y-2
             ml-4
@@ -438,7 +438,7 @@ export default defineComponent({
               <LocationIcon class="inline h-5 w-5 mr-2 text-blue-700"></LocationIcon>
 
               {{ `${eventData.locationName}, ` }}
-              <span class="flex"
+              <span 
                 ><a
                   class="underline"
                   target="_blank"
@@ -448,7 +448,7 @@ export default defineComponent({
                   {{ eventData.address }}
                 </a>
 
-                <VTooltip>
+                <VTooltip class="inline-flex">
                   <ClipboardIcon
                     class="ml-1 h-4 w-4 cursor-pointer"
                     @click="copyAddress"
@@ -458,7 +458,7 @@ export default defineComponent({
               </span>
             </li>
             <li v-if="!eventData.free">
-              <TicketIcon class="inline" />
+              <TicketIcon class="inline h-5 w-5 mr-2 text-blue-700" />
               {{ eventData.cost }}
             </li>
             <li v-if="channelId && channelsExceptCurrent.length > 0">
@@ -509,5 +509,6 @@ export default defineComponent({
 li {
   margin-top: 0.5em;
   text-indent: -2.1em;
+  padding-left: 2.1em;
 }
 </style>
