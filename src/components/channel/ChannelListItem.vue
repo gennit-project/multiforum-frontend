@@ -90,7 +90,7 @@ export default defineComponent({
         >
       </p>
       <Tag
-        :selected-tags="selectedTags"
+        :active="selectedTags.includes(tag)"
         :key="tag"
         v-for="tag in tags"
         :tag="tag"
