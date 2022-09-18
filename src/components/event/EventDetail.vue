@@ -339,8 +339,8 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-3 gap-4">
-        <div class="col-start-1 col-span-2 mr-4">
+      <div class="grid grid-cols-4 gap-1">
+        <div class="col-start-1 col-span-3 mr-4">
           <Comment
             v-if="eventData.description"
             :author-username="eventData.Poster ? eventData.Poster.username : ''"
@@ -406,7 +406,7 @@ export default defineComponent({
         <div
           class="
             pl-8
-            col-start-3 col-span-1
+            col-span-1
             text-sm text-gray-700
             space-y-2
             ml-4

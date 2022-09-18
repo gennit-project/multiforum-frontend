@@ -6,7 +6,6 @@ import FilterChip from "@/components/forms/FilterChip.vue";
 import ChannelIcon from "../icons/ChannelIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import { DateTime } from "luxon";
 import ModalButton from "../ModalButton.vue";
 import Tag from "../buttons/Tag.vue";
@@ -16,11 +15,6 @@ import { distanceOptionsForKilometers, distanceOptionsForMiles, MilesOrKm } from
 import { SearchEventValues } from "@/types/eventTypes";
 import LocationFilterTypes from "./locationFilterTypes";
 
-const DateRangeTypes = {
-  FUTURE: "FUTURE",
-  PAST: "PAST",
-  BETWEEN_TWO_DATES: "BETWEEN_TWO_DATES",
-};
 export default defineComponent({
   components: {
     ChannelIcon,
@@ -153,45 +147,12 @@ export default defineComponent({
       eventFilterTypeShortcuts,
       LocationFilterTypes,
       MilesOrKm,
-      reverseChronologicalOrder,
       selectedDistanceUnit,
       tagLabel,
       timeFilterShortcuts,
     };
   },
   methods: {
-    updateDateFilter(selectedDateRange: string, range: any) {
-      this.dateRange = selectedDateRange;
-
-      switch (selectedDateRange) {
-        case DateRangeTypes.FUTURE:
-          this.resultsOrder = this.chronologicalOrder;
-          this.startTimeFilter = this.futureEventsFilter;
-          this.$emit("updateFormValues", {
-            resultsOrder: chronologicalOrder,
-          });
-          break;
-
-        case DateRangeTypes.PAST:
-          this.resultsOrder = this.reverseChronologicalOrder;
-          this.startTimeFilter = this.pastEventsFilter;
-          break;
-
-        case DateRangeTypes.BETWEEN_TWO_DATES:
-          this.resultsOrder = this.chronologicalOrder;
-          this.startTimeFilter = this.betweenDateTimesFilter.value;
-          if (range) {
-            const start = new Date(range.start).toISOString();
-            this.beginningOfDateRange = start;
-
-            const end = new Date(range.end).toISOString();
-            this.endOfDateRange = end;
-          }
-          break;
-        default:
-          break;
-      }
-    },
     updateRouterParams() {
       this.$emit("updateRouterParams", {
         path: "/events",

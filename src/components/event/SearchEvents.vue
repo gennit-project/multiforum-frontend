@@ -10,7 +10,7 @@ import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import { EventData } from "@/types/eventTypes";
 import { defaultSelectedHourRanges } from "@/components/event/eventSearchOptions";
-import { chronologicalOrder } from "./filterStrings";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import {
   hourRangesObject,
   MilesOrKm,
@@ -374,6 +374,7 @@ export default defineComponent({
       eventWhere, // Return for debugging in dev tools
       filterValues,
       loadMore,
+      now,
       reachedEndOfResults,
       refetchEvents,
       router,
@@ -419,6 +420,12 @@ export default defineComponent({
       const { beginningOfDateRangeISO, endOfDateRangeISO } = event;
       this.filterValues.beginningOfDateRangeISO = beginningOfDateRangeISO;
       this.filterValues.endOfDateRangeISO = endOfDateRangeISO;
+
+      if (DateTime.fromISO(endOfDateRangeISO) <= this.now.startOf("day") ){
+        this.filterValues.resultsOrder = reverseChronologicalOrder
+      } else {
+        this.filterValues.resultsOrder = chronologicalOrder
+      }
     },
     updateSearchResult(input: string) {
       this.setSearchInput(input);
