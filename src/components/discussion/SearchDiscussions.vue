@@ -94,6 +94,7 @@ export default defineComponent({
         $where: DiscussionWhere
         $options: DiscussionOptions
       ) {
+        discussionsCount(where: $where)
         discussions(where: $where, options: $options) {
           id
           Channels {
@@ -261,6 +262,7 @@ export default defineComponent({
     <DiscussionList
       v-else-if="discussionResult && discussionResult.discussions"
       :discussions="discussionResult.discussions"
+      :discussion-count="discussionResult.discussionsCount"
       :channel-id="channelId"
       :search-input="searchInput"
       :selected-tags="selectedTags"

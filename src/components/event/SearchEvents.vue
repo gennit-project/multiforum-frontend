@@ -47,8 +47,6 @@ export default defineComponent({
       ? `/channels/c/${channelId.value}/events/create`
       : "/events/create";
 
-    
-
     const searchInput = ref("");
 
     // values to take from params, fall back to default if not found

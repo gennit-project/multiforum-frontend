@@ -23,6 +23,10 @@ export default defineComponent({
         return [];
       },
     },
+    discussionCount: {
+      type: Number,
+      default: 0
+    },
     searchInput: {
       type: String,
       default: "",
@@ -67,7 +71,8 @@ export default defineComponent({
 <template>
 <div :class="['bg-white sm:rounded-md divide-y divide-gray-200 max-w-5xl']">
     <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
-    <ul v-else role="list" class="divide-y divide-gray-200 relative">
+    <p v-else>Showing {{ discussionCount }} {{ discussionCount === 1 ? ' result': ' results'}}</p>
+    <ul v-if="discussions.length > 0" role="list" class="divide-y divide-gray-200 relative">
       <DiscussionListItem
         v-for="discussion in discussions"
         :key="discussion.id"
