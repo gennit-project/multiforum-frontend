@@ -12,7 +12,7 @@ import ModalButton from "../ModalButton.vue";
 import Tag from "../buttons/Tag.vue";
 import SelectMenu from "../forms/Select.vue";
 import { DistanceUnit } from "@/types/eventTypes";
-import { distanceOptions, /* distanceUnitOptions */ } from "@/components/event/eventSearchOptions";
+import { distanceOptionsForKilometers, distanceOptionsForMiles, MilesOrKm } from "@/components/event/eventSearchOptions";
 import { SearchEventValues } from "@/types/eventTypes";
 import LocationFilterTypes from "./locationFilterTypes";
 
@@ -132,30 +132,29 @@ export default defineComponent({
       },
     ];
     
-
-    const defaultDistanceUnit: DistanceUnit = { label: "km", value: "km" };
-    const getDistanceOptions = (label: string) => {
-      return distanceOptions.map((option) => {
-        return {
-          ...option,
-          label: `${option[label].toLocaleString()} ${label}`,
-        };
-      });
-    };
-    const selectedDistanceUnit = ref(defaultDistanceUnit);
-    const unitLabel = selectedDistanceUnit.value.label.toString();
-
-    const distanceOptionsWithLabel: any = ref(getDistanceOptions(unitLabel));
+    const distanceUnitOptions = [
+      { label: "mi", value: "mi" },
+      { label: "km", value: "km" }
+    ]
+    const selectedDistanceUnit = ref(props.filterValues.distanceUnit);
+    const defaultMileSelection = ref(distanceOptionsForMiles[0])
+    const defaultKilometerSelection = ref(distanceOptionsForKilometers[0])
 
     return {
       activeDateShortcut: ref("none"),
       activeEventFilterTypeShortcut: ref(props.filterValues.selectedLocationFilter),
       channelLabel,
       defaultFilterLabels,
-      distanceOptionsWithLabel,
+      defaultKilometerSelection,
+      defaultMileSelection,
+      distanceOptionsForKilometers,
+      distanceOptionsForMiles,
+      distanceUnitOptions,
       eventFilterTypeShortcuts,
       LocationFilterTypes,
+      MilesOrKm,
       reverseChronologicalOrder,
+      selectedDistanceUnit,
       tagLabel,
       timeFilterShortcuts,
     };
@@ -221,8 +220,33 @@ export default defineComponent({
     updateLocationInput(e: any){
       this.$emit('updateLocationInput', e)
     },
-    updateSelectedDistance(e: any){
-      this.$emit("updateSelectedDistance", e)
+    updateSelectedDistance(distanceOption: DistanceUnit){
+      this.$emit("updateSelectedDistance", distanceOption.value)
+    },
+    updateSelectedDistanceUnit(unitOption: DistanceUnit){
+      if (unitOption.value !== MilesOrKm.MI && unitOption.value !== MilesOrKm.KM) {
+        throw new Error("Unit must be in miles or kilometers.")
+      }
+
+      if (this.selectedDistanceUnit === MilesOrKm.MI && unitOption.value === MilesOrKm.KM) {
+        // Switch from miles to kilometers
+        const currentDistanceIndex = distanceOptionsForMiles.findIndex(( val: DistanceUnit ) => {
+          return this.filterValues.radius === val.value
+        })
+        this.$emit("updateSelectedDistance", distanceOptionsForKilometers[currentDistanceIndex].value )
+        this.defaultKilometerSelection = distanceOptionsForKilometers[currentDistanceIndex]
+      }
+
+      if (this.selectedDistanceUnit === MilesOrKm.KM && unitOption.value === MilesOrKm.MI) {
+        // Switch from kilometers to miles
+        const currentDistanceIndex = distanceOptionsForKilometers.findIndex(( val: DistanceUnit ) => {
+          return this.filterValues.radius === val.value
+        })
+        this.$emit("updateSelectedDistance", distanceOptionsForMiles[currentDistanceIndex].value)
+        this.defaultMileSelection = distanceOptionsForMiles[currentDistanceIndex]
+      }
+      
+      this.selectedDistanceUnit = unitOption.value;
     },
     updateEventTypeFilter(e: any) {
       if (this.activeEventFilterTypeShortcut === LocationFilterTypes.ONLY_VIRTUAL) {
@@ -250,11 +274,22 @@ export default defineComponent({
       class="items-center mt-2 h-10 space-x-2 flex"
     >
       Showing {{ resultCount }} events within 
-      <SelectMenu class="mx-2 w-36"
-        :options="distanceOptionsWithLabel"
+      <SelectMenu v-if="selectedDistanceUnit === MilesOrKm.KM" class="ml-2 w-24"
+        :options="distanceOptionsForKilometers"
+        :default-option="defaultKilometerSelection"
         @selected="updateSelectedDistance"
       />
-       of
+      <SelectMenu v-if="selectedDistanceUnit === MilesOrKm.MI" class="ml-2 w-24"
+        :options="distanceOptionsForMiles"
+        :default-option="defaultMileSelection"
+        @selected="updateSelectedDistance"
+      />
+      <SelectMenu class="mr-4 w-18"
+        :options="distanceUnitOptions"
+        :default-option="{ label: filterValues.distanceUnit, value: filterValues.distanceUnit}"
+        @selected="updateSelectedDistanceUnit"
+      />
+       <span>of</span>
       <LocationSearchBar
         :search-placeholder="filterValues.referencePointAddress"
         :reference-point-address-name="filterValues.referencePointName"

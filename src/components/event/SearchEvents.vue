@@ -13,6 +13,7 @@ import { defaultSelectedHourRanges } from "@/components/event/eventSearchOptions
 import { chronologicalOrder } from "./filterStrings";
 import {
   hourRangesObject,
+  MilesOrKm,
   weekdayObject,
 } from "@/components/event/eventSearchOptions";
 import {
@@ -46,10 +47,7 @@ export default defineComponent({
       ? `/channels/c/${channelId.value}/events/create`
       : "/events/create";
 
-    const DistanceUnits = {
-      km: "km",
-      mi: "mi",
-    };
+    
 
     const searchInput = ref("");
 
@@ -88,7 +86,7 @@ export default defineComponent({
         endOfDateRangeISO: defaultEndDateRangeISO,
         resultsOrder: chronologicalOrder,
         radius: 5,
-        distanceUnit: DistanceUnits.km,
+        distanceUnit: MilesOrKm.KM,
         referencePoint: {
           // Default map center is Tempe Public Library
           lat: 33.39131450000001,
@@ -395,6 +393,7 @@ export default defineComponent({
       colorLocked: false,
       markerMap: {} as any,
       map: {} as any,
+      MI_KM_RATIO: 1.609
     };
   },
   methods: {
@@ -436,12 +435,25 @@ export default defineComponent({
         }
       }
     },
-    updateSelectedDistance(e: any) {
+    updateSelectedDistance(distance: number) {
       if (this.filterValues.distanceUnit === "km") {
-        this.filterValues.radius = e.km;
+        this.filterValues.radius = distance;
       } else if (this.filterValues.distanceUnit === "mi") {
-        this.filterValues.radius = e.mi;
+        // For filtering purposes, convert the distance in miles to the same distance
+        // in kilometers because the backend measures distance in kilometers
+        this.filterValues.radius = distance * this.MI_KM_RATIO;
       }
+    },
+    updateSelectedDistanceUnit(unit: string) {
+      if (unit === MilesOrKm.KM) {
+        // Convert mi to km
+        this.filterValues.radius = Math.round(this.filterValues.radius / this.MI_KM_RATIO)
+      }
+      if (unit === MilesOrKm.MI) {
+        // Convert km to mi
+        this.filterValues.radius = Math.round(this.filterValues.radius * this.MI_KM_RATIO)
+      }
+      this.filterValues.distanceUnit = unit;
     },
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
@@ -515,6 +527,7 @@ export default defineComponent({
       :result-count="eventResult ? eventResult.eventsCount : 0"
       :filter-values="filterValues"
       @updateSelectedDistance="updateSelectedDistance"
+      @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
       @updateLocationInput="updateLocationInput"
       @setSelectedChannels="setSelectedChannels"
       @setSelectedTags="setSelectedTags"

@@ -101,12 +101,13 @@ export type SelectedWeeklyHourRanges = {
 };
 
 export type ReferencePoint = {
-  lat: Number;
-  lng: Number;
+  lat: number;
+  lng: number;
 };
 
 export type DistanceUnit = {
-  [index: string]: string;
+  label: string,
+  value: string | number
 };
 
 export type Distance = any;

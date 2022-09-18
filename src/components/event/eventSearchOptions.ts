@@ -133,36 +133,80 @@ const createWeekdayObject = () => {
 
 export const weekdayObject = createWeekdayObject();
 
-export const distanceOptions: Array<Distance> = [
+export const distanceOptionsForMiles: Array<DistanceUnit> = [
   {
-    mi: 8.046,
-    km: 5,
+    label: "5",
+    value: 8.04672 // Miles converted to kilometers for querying the database
   },
   {
-    mi: 16.093,
-    km: 10,
+    label: "10",
+    value: 16.0934,
   },
   {
-    mi: 32.187,
-    km: 20,
+    label: "20",
+    value: 32.1869,
   },
   {
-    mi: 48.28,
-    km: 30,
+    label: "50",
+    value: 80.4672,
   },
   {
-    mi: 80.467,
-    km: 50,
+    label: "100",
+    value: 160.934,
   },
   {
-    mi: 155.343,
-    km: 100,
+    label: "250",
+    value: 402.336,
   },
   {
-    mi: 321.869,
-    km: 240,
+    label: "500",
+    value: 804.672,
+  },
+  {
+    label: "Anywhere",
+    value: 0,
+  },
+]
+
+export const distanceOptionsForKilometers: Array<DistanceUnit> = [
+  {
+    label: "5",
+    value: 5,
+  },
+  {
+    label: "10",
+    value: 10,
+  },
+  {
+    label: "20",
+    value: 20,
+  },
+  {
+    label: "50",
+    value: 50,
+  },
+  {
+    label: "100",
+    value: 100,
+  },
+  {
+    label: "250",
+    value: 250,
+  },
+  {
+    label: "500",
+    value: 500,
+  },
+  {
+    label: "Anywhere",
+    value: 0,
   },
 ];
+
+export const MilesOrKm = {
+  MI: "mi",
+  KM: "km"
+}
 
 export const distanceUnitOptions: Array<DistanceUnit> = [
   { label: "km", value: "km" },
