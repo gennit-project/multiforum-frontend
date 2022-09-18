@@ -28,7 +28,7 @@ export default defineComponent({
     TagIcon,
   },
   setup() {
-    const route = useRoute()
+    const route = useRoute();
     const links = computed(() => {
       return [
         {
@@ -40,8 +40,12 @@ export default defineComponent({
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
-    const selectedTags: Ref<Array<string>> = ref(route.params.tag && typeof route.params.tag === 'string' ? [route.params.tag] : []);
-    const searchInput: Ref<string> = ref('');
+    const selectedTags: Ref<Array<string>> = ref(
+      route.params.tag && typeof route.params.tag === "string"
+        ? [route.params.tag]
+        : []
+    );
+    const searchInput: Ref<string> = ref("");
 
     const setSearchInput = (input: string) => {
       searchInput.value = input;
@@ -49,16 +53,16 @@ export default defineComponent({
     const setSelectedTags = (tag: Array<string>) => {
       selectedTags.value = tag;
     };
-    
+
     const GET_CHANNELS = gql`
-      query getChannels( $where: ChannelWhere ){
-        channels( where: $where ){
+      query getChannels($channelWhere: ChannelWhere, $eventWhere: EventWhere) {
+        channels(where: $channelWhere) {
           uniqueName
           description
           Tags {
             text
           }
-          EventsAggregate {
+          EventsAggregate(where: $eventWhere) {
             count
           }
           DiscussionsAggregate {
@@ -66,7 +70,7 @@ export default defineComponent({
           }
         }
       }
-    `
+    `;
 
     const channelWhere = computed(() => {
       return {
@@ -77,15 +81,14 @@ export default defineComponent({
         },
         OR: [
           {
-            uniqueName_CONTAINS: searchInput.value
+            uniqueName_CONTAINS: searchInput.value,
           },
           {
-            description_CONTAINS: searchInput.value
-          }
-        ]
+            description_CONTAINS: searchInput.value,
+          },
+        ],
       };
     });
-
 
     const {
       result: channelResult,
@@ -93,7 +96,12 @@ export default defineComponent({
       refetch: refetchChannels,
       fetchMore,
       error,
-    } = useQuery(GET_CHANNELS, { where: channelWhere });
+    } = useQuery(GET_CHANNELS, {
+      channelWhere: channelWhere,
+      eventWhere: {
+        startTime_GT: new Date().toISOString(),
+      },
+    });
 
     if (error.value) {
       alert(JSON.stringify(error.value));
@@ -161,7 +169,7 @@ export default defineComponent({
   data() {
     return {
       queryChannel: [],
-      createChannelPath: "/channels/create"
+      createChannelPath: "/channels/create",
     };
   },
   methods: {
