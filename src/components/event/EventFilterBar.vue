@@ -2,6 +2,7 @@
 import { defineComponent, computed, PropType, ref } from "vue";
 import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
+import ChannelPicker from "@/components/forms/ChannelPicker.vue"
 import FilterChip from "@/components/forms/FilterChip.vue";
 import ChannelIcon from "../icons/ChannelIcon.vue";
 import TagIcon from "../icons/TagIcon.vue";
@@ -18,6 +19,7 @@ import LocationFilterTypes from "./locationFilterTypes";
 export default defineComponent({
   components: {
     ChannelIcon,
+    ChannelPicker,
     FilterChip,
     LocationSearchBar,
     ModalButton,
@@ -290,9 +292,9 @@ export default defineComponent({
           <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
-          <TagPicker
-            :selected-tags="filterValues.selectedChannels"
-            @setSelectedTags="$emit('setSelectedChannels', $event)"
+          <ChannelPicker
+            :selected-channels="filterValues.selectedChannels"
+            @setSelectedChannels="$emit('setSelectedChannels', $event)"
           />
         </template>
       </FilterChip>

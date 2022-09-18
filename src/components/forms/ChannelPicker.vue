@@ -103,30 +103,29 @@ export default defineComponent({
           @deselect="deselect"
         />
       </div>
-      <div class="h-12">
+      <div class="h-14 p-2">
         <button
           class="
-            mt-2
-            float-right
-            inline-flex
-            bg-white
-            py-2
-            px-4
-            border border-gray-300
-            rounded-md
-            shadow-sm
-            text-sm
-            font-medium
-            text-gray-700
-            hover:bg-gray-50
-            focus:outline-none
-            focus:ring-2
-            focus:ring-offset-2
-            focus:ring-blue-500
+          float-right
+          inline-flex
+          bg-white
+          py-2
+          px-4
+          border border-gray-300
+          rounded-md
+          shadow-sm
+          text-sm
+          font-medium
+          text-gray-700
+          hover:bg-gray-50
+          focus:outline-none
+          focus:ring-2
+          focus:ring-offset-2
+          focus:ring-blue-500
           "
           @click.prevent="resetChannels"
         >
-          <RefreshIcon class="mr-2 h-5" @click="resetChannels"/>Reset
+          <RefreshIcon class="h-5" @click="resetChannels"/>Reset
         </button>
       </div>
     </div>

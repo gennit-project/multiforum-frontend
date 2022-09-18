@@ -5,6 +5,7 @@ import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute } from "vue-router";
 import TagPicker from "@/components/forms/TagPicker.vue";
+import ChannelPicker from "../forms/ChannelPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import SearchBar from "@/components/forms/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
@@ -20,6 +21,7 @@ interface Ref<T> {
 export default defineComponent({
   components: {
     ChannelIcon,
+    ChannelPicker,
     CreateButton,
     DiscussionList,
     FilterChip,
@@ -30,23 +32,20 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
-    const channelId = computed(() => {
-      return route.params.channelId;
+    const channelId = ref(route.params.channelId)
+
+    const defaultSelectedChannels = computed(() => {
+      if (typeof route.params.channelId === 'string'){
+        return [route.params.channelId]
+      }
+      return []
     });
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(route.params.tag && typeof route.params.tag === 'string' ? [route.params.tag] : []);
 
-    const getDefaultSelectedChannels = () => {
-      let selectedChannels = []
-      if (typeof channelId.value === 'string') {
-        selectedChannels.push([channelId.value])
-      }
-      return [];
-    };
-
-    const selectedChannels: Ref<Array<string>> = ref(getDefaultSelectedChannels());
+    const selectedChannels: Ref<Array<string>> = ref(defaultSelectedChannels);
     const searchInput: Ref<string> = ref('');
 
 
@@ -235,9 +234,9 @@ export default defineComponent({
           <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
-          <TagPicker
-            :selected-tags="selectedChannels"
-            @setSelectedTags="setSelectedChannels"
+          <ChannelPicker
+            :selected-channels="selectedChannels"
+            @setSelectedChannels="setSelectedChannels"
           />
         </template>
       </FilterChip>
