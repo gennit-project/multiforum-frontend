@@ -191,7 +191,6 @@ export default defineComponent({
           },
         });
       }
-      
 
       // Channel filter
       if (filterValues.value.selectedChannels.length > 0) {
@@ -280,7 +279,7 @@ export default defineComponent({
 
     let eventQueryString = gql`
       query ($where: EventWhere, $options: EventOptions) {
-        eventsCount(where: $where) 
+        eventsCount(where: $where)
         events(where: $where, options: $options) {
           id
           Channels {
@@ -392,7 +391,7 @@ export default defineComponent({
       colorLocked: false,
       markerMap: {} as any,
       map: {} as any,
-      MI_KM_RATIO: 1.609
+      MI_KM_RATIO: 1.609,
     };
   },
   methods: {
@@ -419,27 +418,17 @@ export default defineComponent({
       this.filterValues.beginningOfDateRangeISO = beginningOfDateRangeISO;
       this.filterValues.endOfDateRangeISO = endOfDateRangeISO;
 
-      if (DateTime.fromISO(endOfDateRangeISO) <= this.now.startOf("day") ){
-        this.filterValues.resultsOrder = reverseChronologicalOrder
+      if (DateTime.fromISO(endOfDateRangeISO) <= this.now.startOf("day")) {
+        this.filterValues.resultsOrder = reverseChronologicalOrder;
       } else {
-        this.filterValues.resultsOrder = chronologicalOrder
+        this.filterValues.resultsOrder = chronologicalOrder;
       }
     },
     updateSearchInput(input: string) {
       this.filterValues.searchInput = input;
     },
-    updateEventTypeFilter(input: string){
-      if (input === LocationFilterTypes.ONLY_VIRTUAL || input === LocationFilterTypes.ONLY_WITH_ADDRESS) {
-        this.filterValues.selectedLocationFilter = input
-      }
-      if (input === LocationFilterTypes.NONE) {
-        if (this.filterValues.radius === 0) {
-          // If 0 is the radius, assume you should be able to see any events that have an address
-          this.filterValues.selectedLocationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS
-        } else {
-          this.filterValues.selectedLocationFilter = LocationFilterTypes.WITHIN_RADIUS
-        }
-      }
+    updateEventTypeFilter(input: string) {
+      this.filterValues.selectedLocationFilter = input;
     },
     updateSelectedDistance(distance: number) {
       if (this.filterValues.distanceUnit === "km") {
@@ -453,11 +442,15 @@ export default defineComponent({
     updateSelectedDistanceUnit(unit: string) {
       if (unit === MilesOrKm.KM) {
         // Convert mi to km
-        this.filterValues.radius = Math.round(this.filterValues.radius / this.MI_KM_RATIO)
+        this.filterValues.radius = Math.round(
+          this.filterValues.radius / this.MI_KM_RATIO
+        );
       }
       if (unit === MilesOrKm.MI) {
         // Convert km to mi
-        this.filterValues.radius = Math.round(this.filterValues.radius * this.MI_KM_RATIO)
+        this.filterValues.radius = Math.round(
+          this.filterValues.radius * this.MI_KM_RATIO
+        );
       }
       this.filterValues.distanceUnit = unit;
     },
@@ -513,7 +506,7 @@ export default defineComponent({
             sm:text-3xl sm:tracking-tight sm:truncate
           "
         >
-          {{ channelId ? `Events in ${channelId}` : 'Search Events' }}
+          {{ channelId ? `Events in ${channelId}` : "Search Events" }}
         </h2>
       </div>
       <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">

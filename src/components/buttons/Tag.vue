@@ -3,20 +3,20 @@ import { defineComponent } from "vue";
 import XmarkIcon from "../icons/XmarkIcon.vue";
 export default defineComponent({
   components: {
-    XmarkIcon
+    XmarkIcon,
   },
   props: {
     active: {
       type: Boolean,
-      default: false
+      default: false,
     },
     clearable: {
       type: Boolean,
-      default: false
+      default: false,
     },
     index: {
       type: Number,
-      default: 0
+      default: 0,
     },
     tag: {
       type: String,
@@ -26,31 +26,31 @@ export default defineComponent({
   computed: {
     color() {
       if (this.active && !this.highlightedByMouse) {
-        return 'active-tag'
+        return "active-tag";
       }
       if (this.active && this.highlightedByMouse) {
-        return 'active-mouseover'
+        return "active-mouseover";
       }
       if (!this.active && !this.highlightedByMouse) {
-        return 'inactive-tag'
+        return "inactive-tag";
       }
-      return 'inactive-mouseover'
-    }
+      return "inactive-mouseover";
+    },
   },
   data() {
-    return { 
-      highlightedByMouse: false
+    return {
+      highlightedByMouse: false,
     };
   },
   methods: {
-    handleTagClick(tag: string, active: boolean){
-     if (active) {
-      this.$emit('deselect', tag)
-     } else {
-      this.$emit('select', tag)
-     }
-  }
-  }
+    handleTagClick(tag: string, active: boolean) {
+      if (active) {
+        this.$emit("deselect", tag);
+      } else {
+        this.$emit("select", tag);
+      }
+    },
+  },
 });
 </script>
 <template>
@@ -58,11 +58,15 @@ export default defineComponent({
     @mouseenter="highlightedByMouse = true"
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
-    :class="[clearable ? 'pr-1': 'cursor-pointer mr-1 pr-3', color, 'rounded-full pl-3  py-1 text-sm font-medium text-gray-900 tag']"
+    :class="[
+      clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
+      color,
+      'rounded-full pl-3  py-1 text-sm font-medium text-gray-900 tag',
+    ]"
     >{{ tag }}
     <XmarkIcon
       class="h-4 cursor-pointer"
-      v-if="clearable" 
+      v-if="clearable"
       @click="$emit('delete', index)"
     />
   </span>
@@ -84,11 +88,11 @@ export default defineComponent({
 
 .inactive-tag {
   background-color: #f2f2f4;
-  color: #545455
+  color: #545455;
 }
 
 .inactive-mouseover {
   background-color: #e1e1e3;
-  color: #545455
+  color: #545455;
 }
 </style>
