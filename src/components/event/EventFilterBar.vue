@@ -183,6 +183,9 @@ export default defineComponent({
     updateLocationInput(e: any){
       this.$emit('updateLocationInput', e)
     },
+    updateSearchInput(e: any){
+      this.$emit('updateSearchInput', e)
+    },
     updateSelectedDistance(distanceOption: DistanceUnit){
       this.$emit("updateSelectedDistance", distanceOption.value)
 
@@ -314,7 +317,7 @@ export default defineComponent({
       </FilterChip>
       <SearchBar class="inline-flex align-middle"
         :search-placeholder="'Search events'"
-        @updateSearchInput="$emit('updateSearchInput', $event)"
+        @updateSearchInput="updateSearchInput"
       />
     </div>
    

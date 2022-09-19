@@ -119,14 +119,14 @@ export default defineComponent({
       }
 
       // Text filter
-      if (searchInput.value) {
+      if (filterValues.value.searchInput) {
         conditions.push({
           OR: [
             {
-              title_MATCHES: `"(?i).*${searchInput.value}.*"`,
+              title_MATCHES: `(?i).*${filterValues.value.searchInput}.*`,
             },
             {
-              description_MATCHES: `"(?i).*${searchInput.value}.*"`,
+              description_MATCHES: `(?i).*${filterValues.value.searchInput}.*`,
             },
           ],
         });

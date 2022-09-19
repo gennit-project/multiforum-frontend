@@ -1,14 +1,18 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 // Split on highlight term and divide term into parts, ignore case
 // Used help from https://stackoverflow.com/questions/29652862/highlight-text-using-reactjs
 
 export default defineComponent({
   setup(props) {
-    let parts = [props.text];
-    if (props.searchInput) {
-      parts = props.text.split(new RegExp(`(${props.searchInput})`, "gi"));
-    }
+
+    const parts = computed(() => {
+      let p = [props.text];
+      if (props.searchInput) {
+        p = props.text.split(new RegExp(`(${props.searchInput})`, "gi"));
+      }
+      return p
+    })
    
     return {
       parts,

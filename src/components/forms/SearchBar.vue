@@ -7,7 +7,7 @@ interface Ref<T> {
 
 export default defineComponent({
   setup() {
-    const input: Ref<string> = ref('');
+    const input: Ref<string> = ref("");
     return { input };
   },
   props: {
@@ -20,17 +20,13 @@ export default defineComponent({
     removeQuotationMarks(input: String) {
       // Prevent errors when quotation marks are added
       // to GraphQL query
-      return input
-        .split("'")
-        .join("")
-        .split('"')
-        .join("");
+      return input.split("'").join("").split('"').join("");
     },
     updateSearchInput(e: any) {
-      this.$emit(
-        "updateSearchInput",
-        this.removeQuotationMarks(e.target.value)
-      );
+      if (this.timeout) clearTimeout(this.timeout)
+      this.timeout = setTimeout(() => {
+        this.$emit("updateSearchInput",this.removeQuotationMarks(e.target.value));
+      }, 500)
     },
   },
 });
