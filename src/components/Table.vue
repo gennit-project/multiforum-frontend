@@ -6,7 +6,7 @@ export default defineComponent({
 })
 </script>
 <template>
-  <table class="min-w-full divide-y divide-gray-200">
+  <table class="table-auto min-w-full divide-y divide-gray-200">
     <thead class="bg-gray-50">
       <slot name="head" />
     </thead>

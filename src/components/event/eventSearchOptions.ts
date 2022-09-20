@@ -70,7 +70,7 @@ export const hourRangesData = [
   },
 ];
 
-const createDefaultSelectedWeekdays = () => {
+export const createDefaultSelectedWeekdays = () => {
   const weekdaysObj = {} as SelectedWeekdays;
 
   for (let i = 0; i < weekdays.length; i++) {
@@ -82,7 +82,7 @@ const createDefaultSelectedWeekdays = () => {
 
 export const defaultSelectedWeekdays = createDefaultSelectedWeekdays();
 
-const createDefaultSelectedHourRanges = () => {
+export const createDefaultSelectedHourRanges = () => {
   const ranges = {} as SelectedHourRanges;
 
   for (let i = 0; i < hourRangesData.length; i++) {
@@ -94,7 +94,7 @@ const createDefaultSelectedHourRanges = () => {
 
 export const defaultSelectedHourRanges = createDefaultSelectedHourRanges();
 
-const createDefaultSelectedWeeklyHourRanges = () => {
+export const createDefaultSelectedWeeklyHourRanges = () => {
   const weeklyTimeSlots = {} as SelectedWeeklyHourRanges;
 
   for (let i = 0; i < weekdays.length; i++) {

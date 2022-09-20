@@ -11,26 +11,33 @@ import { DateTime } from "luxon";
 import Tag from "../buttons/Tag.vue";
 import SelectMenu from "../forms/Select.vue";
 import SearchBar from "../forms/SearchBar.vue";
-import { DistanceUnit } from "@/types/eventTypes";
+import { SearchEventValues, DistanceUnit } from "@/types/eventTypes";
 import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
   MilesOrKm,
 } from "@/components/event/eventSearchOptions";
-import { SearchEventValues } from "@/types/eventTypes";
 import LocationFilterTypes from "./locationFilterTypes";
+import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
+import ClockIcon from "../icons/ClockIcon.vue";
+import Modal from "../Modal.vue";
+import RefreshIcon from "../icons/RefreshIcon.vue";
 
 export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
+    ClockIcon,
     FilterChip,
     LocationSearchBar,
+    Modal,
     SearchBar,
     SelectMenu,
     Tag,
     TagIcon,
     TagPicker,
+    WeeklyTimePicker,
+    RefreshIcon,
   },
   props: {
     channelId: {
@@ -49,6 +56,10 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    timeSlotFiltersActive: {
+      type: Boolean,
+      default: false
+    }
   },
 
   setup(props) {
@@ -160,6 +171,7 @@ export default defineComponent({
       LocationFilterTypes,
       MilesOrKm,
       selectedDistanceUnit,
+      showTimeSlotPicker: ref(false),
       tagLabel,
       timeFilterShortcuts,
     };
@@ -174,6 +186,12 @@ export default defineComponent({
           tag: this.filterValues.selectedTags,
         },
       });
+    },
+    updateTimeSlots(e: any) {
+      this.$emit("updateTimeSlots", e);
+    },
+    resetTimeSlots(){
+      this.$emit("resetTimeSlots")
     },
     handleTimeFilterShortcutClick(shortcut: any) {
       if (shortcut.label === this.activeDateShortcut) {
@@ -254,6 +272,9 @@ export default defineComponent({
       }
 
       this.selectedDistanceUnit = unitOption.value;
+    },
+    toggleTimeSlotPicker() {
+      this.showTimeSlotPicker = !this.showTimeSlotPicker;
     },
     updateEventTypeFilter(e: any) {
       if (e.locationFilterType === LocationFilterTypes.ONLY_VIRTUAL) {
@@ -370,11 +391,17 @@ export default defineComponent({
         v-for="shortcut in eventFilterTypeShortcuts"
         :key="shortcut.label"
         :tag="shortcut.label"
-        :active="shortcut.locationFilterType === activeEventFilterTypeShortcut"
+        :active="
+          shortcut.locationFilterType === activeEventFilterTypeShortcut ||
+          (shortcut.locationFilterType ===
+            LocationFilterTypes.ONLY_WITH_ADDRESS &&
+            filterValues.selectedLocationFilter ===
+              LocationFilterTypes.WITHIN_RADIUS)
+        "
         @click="updateEventTypeFilter(shortcut)"
       />
     </div>
-    <div class="items-center mt-3 space-x-2 mb-3">
+    <div class="mt-3 space-x-2 mb-3">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -406,6 +433,81 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
+      <button
+        @click="toggleTimeSlotPicker"
+        :class="['align-middle',
+          timeSlotFiltersActive
+            ? 'ring-1 ring-blue-500 border-blue-500'
+            : '',
+        ]"
+        class="
+          inline-flex
+          max-height-4
+          pl-2.5
+          pr-3.5
+          py-2.5
+          border
+          text-xs
+          font-medium
+          rounded-md
+          text-gray-700
+          bg-white
+          hover:bg-gray-200
+          focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+        "
+      >
+        <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
+
+        Time Slots
+      </button>
+      <Modal
+        :title="'Select Weekly Time Slots'"
+        :show="showTimeSlotPicker"
+        @close="toggleTimeSlotPicker"
+      >
+        <template v-slot:icon>
+          <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
+        </template>
+        <template v-slot:secondaryButton>
+          <button
+            type="button"
+            class="
+              mt-3
+              w-full
+              inline-flex
+              justify-center
+              rounded-md
+              border border-gray-300
+              shadow-sm
+              px-4
+              py-2
+              bg-white
+              text-base
+              font-medium
+              text-gray-700
+              hover:bg-gray-50
+              focus:outline-none
+              focus:ring-2
+              focus:ring-offset-2
+              focus:ring-indigo-500
+              sm:mt-0 sm:col-start-1 sm:text-sm
+            "
+            @click="resetTimeSlots"
+          >
+          <RefreshIcon class="h-5"/>
+            Reset
+          </button>
+        </template>
+        <template v-slot:content>
+          <WeeklyTimePicker
+            class="py-3 px-8"
+            :selected-weekdays="filterValues.selectedWeekdays"
+            :selected-hour-ranges="filterValues.selectedHourRanges"
+            :selected-weekly-hour-ranges="filterValues.selectedWeeklyHourRanges"
+            @updateTimeSlots="updateTimeSlots"
+          />
+        </template>
+      </Modal>
       <SearchBar
         class="inline-flex align-middle"
         :search-placeholder="'Search events'"

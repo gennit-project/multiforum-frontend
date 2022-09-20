@@ -9,12 +9,11 @@ import { router } from "@/router";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import { EventData } from "@/types/eventTypes";
-import { defaultSelectedHourRanges } from "@/components/event/eventSearchOptions";
+import { createDefaultSelectedWeeklyHourRanges, createDefaultSelectedHourRanges, createDefaultSelectedWeekdays } from "@/components/event/eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import {
   hourRangesObject,
   MilesOrKm,
-  weekdayObject,
 } from "@/components/event/eventSearchOptions";
 import {
   SearchEventValues,
@@ -95,10 +94,10 @@ export default defineComponent({
         referencePointPlaceId: "ChIJR35tTZ8IK4cR2D0p0AxOqbg",
         showCanceledEvents: false,
         searchInput: searchInput.value,
-        selectedWeekdays: [],
-        selectedHourRanges: [],
+        selectedWeekdays: createDefaultSelectedWeekdays(),
+        selectedHourRanges: createDefaultSelectedHourRanges(),
         selectedLocationFilter: LocationFilterTypes.WITHIN_RADIUS,
-        selectedWeeklyHourRanges: defaultSelectedHourRanges,
+        selectedWeeklyHourRanges: createDefaultSelectedWeeklyHourRanges(),
         selectedChannels: getDefaultSelectedChannels(),
         selectedTags: selectedTags.value,
         showOnlyFreeEvents: showOnlyFreeEvents.value,
@@ -109,6 +108,42 @@ export default defineComponent({
     const filterValues = ref(getDefaultFilterValues());
 
     const showMap = ref(false);
+
+    const flattenedTimeFilters = computed(() => {
+      let flattenedTimeFilters = [];
+      for (let dayNumber in filterValues.value.selectedWeeklyHourRanges) {
+        const selectedSlotsInDay =
+          filterValues.value.selectedWeeklyHourRanges[dayNumber];
+
+        for (let timeSlot in selectedSlotsInDay) {
+          const slotIsSelected = selectedSlotsInDay[timeSlot];
+          
+
+          if (slotIsSelected) {
+            const min = hourRangesObject[timeSlot].min
+            const max = hourRangesObject[timeSlot].max
+
+            for (let i = min; i < max; i++) {
+              flattenedTimeFilters.push({
+                AND: [
+                  {
+                    startTimeHourOfDay: i,
+                  },
+                  {
+                    startTimeDayOfWeek: dayNumber,
+                  },
+                ],
+              });
+            }
+          }
+        }
+      }
+      return flattenedTimeFilters
+    })
+
+    const timeSlotFiltersActive = computed(() => {
+      return flattenedTimeFilters.value.length > 0
+    })
 
     const eventWhere = computed(() => {
       let conditions = [];
@@ -222,35 +257,9 @@ export default defineComponent({
       // But to create a GraphQL query filter out of that,
       // this function flattens the structure.
 
-      let flattenedTimeFilters = [];
-      for (let dayNumber in filterValues.value.selectedWeeklyHourRanges) {
-        const selectedSlotsInDay =
-          filterValues.value.selectedWeeklyHourRanges[dayNumber];
-
-        for (let timeSlot in selectedSlotsInDay) {
-          const slotIsSelected = selectedSlotsInDay[timeSlot];
-
-          if (slotIsSelected) {
-            flattenedTimeFilters.push({
-              AND: [
-                {
-                  startTimeHourOfDay_LTE: hourRangesObject[timeSlot].max,
-                },
-                {
-                  startTimeHourOfDay_GTE: hourRangesObject[timeSlot].min,
-                },
-                {
-                  startTimeDayOfWeek: `"${weekdayObject[dayNumber]}"`,
-                },
-              ],
-            });
-          }
-        }
-      }
-
-      if (flattenedTimeFilters.length > 0) {
+      if (flattenedTimeFilters.value.length > 0) {
         conditions.push({
-          OR: flattenedTimeFilters,
+          OR: flattenedTimeFilters.value,
         });
       }
 
@@ -292,6 +301,7 @@ export default defineComponent({
           locationName
           address
           virtualEventUrl
+          startTimeDayOfWeek
           location {
             latitude
             longitude
@@ -363,7 +373,6 @@ export default defineComponent({
     return {
       channelId,
       createEventPath,
-      defaultSelectedHourRanges,
       eventError,
       eventLoading,
       eventQueryString,
@@ -372,11 +381,12 @@ export default defineComponent({
       filterValues,
       loadMore,
       now,
+      placeData: null,
       reachedEndOfResults,
       refetchEvents,
       router,
-      placeData: null,
       showMap,
+      timeSlotFiltersActive
     };
   },
   data() {
@@ -490,6 +500,14 @@ export default defineComponent({
     updateRouterQueryParams(e: any) {
       router.push(e);
     },
+    updateTimeSlots(e: any){
+      this.filterValues.selectedWeeklyHourRanges = e;
+    },
+    resetTimeSlots(){
+      this.filterValues.selectedHourRanges = createDefaultSelectedWeeklyHourRanges();
+      this.filterValues.selectedWeekdays = createDefaultSelectedWeekdays();
+      this.filterValues.selectedWeeklyHourRanges = createDefaultSelectedWeeklyHourRanges()
+    }
   },
 });
 </script>
@@ -525,6 +543,7 @@ export default defineComponent({
     <EventFilterBar
       :result-count="eventResult ? eventResult.eventsCount : 0"
       :filter-values="filterValues"
+      :time-slot-filters-active="timeSlotFiltersActive"
       @updateSelectedDistance="updateSelectedDistance"
       @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
       @updateLocationInput="updateLocationInput"
@@ -533,6 +552,8 @@ export default defineComponent({
       @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
       @updateSearchInput="updateSearchInput"
       @updateEventTypeFilter="updateEventTypeFilter"
+      @updateTimeSlots="updateTimeSlots"
+      @resetTimeSlots="resetTimeSlots"
     />
     <div v-if="eventLoading">Loading...</div>
     <ErrorBanner v-else-if="eventError" :text="eventError.message" />

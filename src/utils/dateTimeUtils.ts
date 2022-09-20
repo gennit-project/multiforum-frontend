@@ -1,6 +1,6 @@
 import { EventData } from "@/types/eventTypes";
 import { Duration } from "luxon"
-import { DateTime, Interval } from "luxon";;
+import { DateTime, Interval } from "luxon";
 
 const relativeTime = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);

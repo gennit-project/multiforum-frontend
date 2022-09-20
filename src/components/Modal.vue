@@ -1,5 +1,5 @@
 <script>
-import { ref, defineComponent } from "vue";
+import { defineComponent } from "vue";
 import {
   Dialog,
   DialogPanel,
@@ -15,28 +15,25 @@ export default defineComponent({
     Dialog,
     DialogPanel,
     DialogTitle,
+
     TransitionChild,
     TransitionRoot,
   },
   props: {
     title: {
       type: String,
-      required: true
+      required: true,
     },
     show: {
       type: Boolean,
-      required: true
-    }
-  },
-  setup(props) {
-    const open = ref(props.true);
-    return { open };
+      required: true,
+    },
   },
 });
 </script>
 <template>
   <TransitionRoot as="template" :show="show">
-    <Dialog as="div" class="relative z-10" @close="open = false">
+    <Dialog as="div" class="relative z-10" @close="$emit('close')">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -86,7 +83,6 @@ export default defineComponent({
                 shadow-xl
                 transform
                 transition-all
-                sm:my-8 sm:max-w-lg sm:w-full sm:p-6
               "
             >
               <div>
@@ -102,10 +98,12 @@ export default defineComponent({
                     bg-green-100
                   "
                 >
-                  <CheckIcon
-                    class="h-6 w-6 text-green-600"
-                    aria-hidden="true"
-                  />
+                  <slot name="icon">
+                    <CheckIcon
+                      class="h-6 w-6 text-green-600"
+                      aria-hidden="true"
+                    />
+                  </slot>
                 </div>
                 <div class="mt-3 text-center sm:mt-5">
                   <DialogTitle
@@ -147,38 +145,39 @@ export default defineComponent({
                     focus:ring-indigo-500
                     sm:col-start-2 sm:text-sm
                   "
-                  @click="open = false"
+                  @click="$emit('close')"
                 >
-                  Deactivate
+                  Close
                 </button>
-                <button
-                  type="button"
-                  class="
-                    mt-3
-                    w-full
-                    inline-flex
-                    justify-center
-                    rounded-md
-                    border border-gray-300
-                    shadow-sm
-                    px-4
-                    py-2
-                    bg-white
-                    text-base
-                    font-medium
-                    text-gray-700
-                    hover:bg-gray-50
-                    focus:outline-none
-                    focus:ring-2
-                    focus:ring-offset-2
-                    focus:ring-indigo-500
-                    sm:mt-0 sm:col-start-1 sm:text-sm
-                  "
-                  @click="open = false"
-                  ref="cancelButtonRef"
-                >
-                  Cancel
-                </button>
+                <slot name="secondaryButton">
+                  <button
+                    type="button"
+                    class="
+                      mt-3
+                      w-full
+                      inline-flex
+                      justify-center
+                      rounded-md
+                      border border-gray-300
+                      shadow-sm
+                      px-4
+                      py-2
+                      bg-white
+                      text-base
+                      font-medium
+                      text-gray-700
+                      hover:bg-gray-50
+                      focus:outline-none
+                      focus:ring-2
+                      focus:ring-offset-2
+                      focus:ring-indigo-500
+                      sm:mt-0 sm:col-start-1 sm:text-sm
+                    "
+                    @click="$emit('close')"
+                  >
+                    Cancel
+                  </button>
+                </slot>
               </div>
             </DialogPanel>
           </TransitionChild>
