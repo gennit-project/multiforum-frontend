@@ -40,62 +40,65 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="
-      relative
-      rounded-lg
-      border border-gray-300
-      bg-white
-      px-6
-      py-5
-      shadow-sm
-      flex
-      items-center
-      space-x-3
-    "
-  >
-    <div class="flex-shrink-0">
-      <ProfileAvatar :username="channel.uniqueName" colorType="pastel" />
-    </div>
-    <div class="flex-1 min-w-0">
-      <p class="font-large text-gray-900">
-        <router-link
-          :to="`/channels/c/${channel.uniqueName}`"
-          class="focus:outline-none cursor-pointer"
-        >
+  <div class="grid grid-cols-12">
+    <div
+      class="
+        relative
+        rounded-lg
+        border border-gray-300
+        bg-white
+        px-6
+        py-5
+        shadow-sm
+        col-span-12
+        space-x-3
+      "
+    >
+      <div class="flex items-center">
+        <ProfileAvatar class="ml-2" :username="channel.uniqueName" colorType="pastel" />
+        <div class="min-w-0">
+          <p class="font-large text-gray-900 ml-2">
+            <router-link
+              :to="`/channels/c/${channel.uniqueName}`"
+              class="focus:outline-none cursor-pointer"
+            >
+              <HighlightedSearchTerms
+                :text="channel.uniqueName"
+                :search-input="searchInput"
+              />
+            </router-link>
+          </p>
+        </div>
+      </div>
+      <div class="mt-1">
+        <p v-if="channel.description" class="text-sm truncate font-normal">
           <HighlightedSearchTerms
-            :text="channel.uniqueName"
+            :text="channel.description"
             :search-input="searchInput"
           />
-        </router-link>
-      </p>
-      <p v-if="channel.description" class="text-sm truncate">
-        <HighlightedSearchTerms
-          :text="channel.description"
-          :search-input="searchInput"
-        />
-      </p>
-      <p class="text-sm truncate">
-        <router-link
-          class="underline"
-          :to="`/channels/c/${channel.uniqueName}/discussions`"
-          >{{ channel.DiscussionsAggregate.count }} Discussions</router-link
-        >,
+        </p>
+        <p class="text-sm truncate font-normal">
+          <router-link
+            class="underline"
+            :to="`/channels/c/${channel.uniqueName}/discussions`"
+            >{{ channel.DiscussionsAggregate.count }} Discussions</router-link
+          >,
 
-        <router-link
-          class="underline"
-          :to="`/channels/c/${channel.uniqueName}/events`"
-        >
-          {{ channel.EventsAggregate.count }} Upcoming Events</router-link
-        >
-      </p>
-      <Tag
-        :active="selectedTags.includes(tag)"
-        :key="tag"
-        v-for="tag in tags"
-        :tag="tag"
-        @click="$emit('filterByTag', tag)"
-      />
+          <router-link
+            class="underline"
+            :to="`/channels/c/${channel.uniqueName}/events`"
+          >
+            {{ channel.EventsAggregate.count }} Upcoming Events</router-link
+          >
+        </p>
+        <Tag
+          :active="selectedTags.includes(tag)"
+          :key="tag"
+          v-for="tag in tags"
+          :tag="tag"
+          @click="$emit('filterByTag', tag)"
+        />
+      </div>
     </div>
   </div>
 </template>
