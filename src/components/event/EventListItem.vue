@@ -93,19 +93,21 @@ export default defineComponent({
         <div class="flex items-center">
           <p
             @click="$emit('clickedEventListItem')"
-            class="
-              text-sm
-              font-medium
-              text-blue-600
-              truncate
-              cursor-pointer
-              underline
-            "
+           class="space-x-2"
           >
-            <HighlightedSearchTerms
-              :text="event.title"
-              :search-input="searchInput"
-            />
+           <span  class="
+           text-sm
+           font-medium
+           text-blue-600
+           truncate
+           cursor-pointer
+           underline
+         "> <HighlightedSearchTerms
+         :text="event.title"
+         :search-input="searchInput"
+       /></span>
+           
+            <span class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3" v-if="event.canceled">Canceled</span>
           </p>
         </div>
         <div v-if="event.description" class="items-center">

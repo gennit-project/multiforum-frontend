@@ -343,6 +343,9 @@ export default defineComponent({
       Showing {{ resultCount }} online
       {{ resultCount === 1 ? "event" : "events" }}
     </div>
+    <div v-else-if="filterValues.selectedLocationFilter === LocationFilterTypes.NONE">
+      Showing {{ resultCount }} {{ resultCount === 1 ? "event" : "events" }}
+    </div>
     <div v-else class="items-center mt-2 mb-2 space-x-2 flex flex-wrap">
       <div class="inline-block">
         Showing {{ resultCount }}

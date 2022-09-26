@@ -129,7 +129,7 @@ export type SearchEventValues = {
   selectedWeeklyHourRanges: Array[SelectedWeeklyHourRanges]
   selectedLocationFilter: string;
   searchInput: string;
-  showCanceledEvents: boolean;
+  showCanceledEvents?: boolean;
   showOnlyFreeEvents: boolean;
   startOfDateRangeISO: string;
 };

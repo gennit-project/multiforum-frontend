@@ -48,18 +48,6 @@ export default defineComponent({
 
     const searchInput = ref("");
 
-    // values to take from params, fall back to default if not found
-
-    // - show only free events
-    // - text search
-    // - location
-    //   - radius
-    //   - reference point latitude and longitude
-    // - time
-    //   - beginning of date range
-    //   - end of date range
-    //   - selectedWeeklyHourRanges
-
     const selectedTags = ref([]);
 
     const getDefaultSelectedChannels = () => {
@@ -77,7 +65,7 @@ export default defineComponent({
       const defaultStartDateISO = defaultStartDateObj.toISO();
       const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
 
-      const res: SearchEventValues = {
+      let res: SearchEventValues = {
         beginningOfDateRangeISO: defaultStartDateISO,
         startOfDateRangeISO: defaultEndDateRangeISO,
         endOfDateRangeISO: defaultEndDateRangeISO,
@@ -92,16 +80,18 @@ export default defineComponent({
         referencePointAddress: "3500 S Rural Rd, Tempe, AZ 85282, USA",
         referencePointName: "Tempe Public Library",
         referencePointPlaceId: "ChIJR35tTZ8IK4cR2D0p0AxOqbg",
-        showCanceledEvents: false,
         searchInput: searchInput.value,
         selectedWeekdays: createDefaultSelectedWeekdays(),
         selectedHourRanges: createDefaultSelectedHourRanges(),
-        selectedLocationFilter: LocationFilterTypes.WITHIN_RADIUS,
+        selectedLocationFilter: channelId.value ? LocationFilterTypes.NONE : LocationFilterTypes.WITHIN_RADIUS,
         selectedWeeklyHourRanges: createDefaultSelectedWeeklyHourRanges(),
         selectedChannels: getDefaultSelectedChannels(),
         selectedTags: selectedTags.value,
         showOnlyFreeEvents: showOnlyFreeEvents.value,
       };
+      if (!channelId.value) {
+        res.showCanceledEvents = false
+      }
       return res;
     };
 
@@ -123,11 +113,11 @@ export default defineComponent({
             const min = hourRangesObject[timeSlot].min
             const max = hourRangesObject[timeSlot].max
 
-            for (let i = min; i < max; i++) {
+            for (let hour = min; hour < max; hour++) {
               flattenedTimeFilters.push({
                 AND: [
                   {
-                    startTimeHourOfDay: i,
+                    startTimeHourOfDay: hour,
                   },
                   {
                     startTimeDayOfWeek: dayNumber,
@@ -302,6 +292,7 @@ export default defineComponent({
           address
           virtualEventUrl
           startTimeDayOfWeek
+          canceled
           location {
             latitude
             longitude
@@ -541,6 +532,7 @@ export default defineComponent({
       </div>
     </div>
     <EventFilterBar
+      :channel-id="channelId"
       :result-count="eventResult ? eventResult.eventsCount : 0"
       :filter-values="filterValues"
       :time-slot-filters-active="timeSlotFiltersActive"
