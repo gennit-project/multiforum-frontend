@@ -324,7 +324,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="pt-8">
     <div v-if="eventLoading">Loading...</div>
     <div v-else-if="getEventError">
       <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">

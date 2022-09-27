@@ -102,7 +102,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="sm:rounded-md mx-auto max-w-6xl bg-gray-100 pl-8 pr-8 pt-4">
+  <div class="sm:rounded-md mx-auto max-w-5xl bg-gray-100 pt-4">
     <p class="prose mt-3" v-if="events.length === 0 && !showMap">Could not find any events.</p>
     <ul role="list" class="rounded bg-white divide-y divide-gray-200 px-8 mb-4">
       <EventListItem

@@ -26,13 +26,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="pb-8 h-full">
-    <form class="mx-auto max-w-6xl space-y-2 divide-y bg-white p-8 rounded" autocomplete="off">
+  <div class="pb-8 h-full bg-gray-100">
+    <form class="mx-auto max-w-5xl space-y-2 divide-y bg-white pt-4 pr-8 pl-8 rounded" autocomplete="off">
       <FormRow>
         <template v-slot:content>
           <div class="flow-root">
             <FormTitle class="float-left"> {{ formTitle }} </FormTitle>
-            <div class="float-right pr-8">
+            <div class="float-right">
               <CancelButton @click="$router.go(-1)" />
               <SaveButton
                 @click.prevent="$emit('submit')"
@@ -45,7 +45,7 @@ export default defineComponent({
       <slot />
       <FormRow>
         <template v-slot:content>
-          <div class="pt-5">
+          <div class="pt-5 pb-5">
             <div class="flex justify-end">
               <CancelButton @click="$router.go(-1)" />
               <SaveButton

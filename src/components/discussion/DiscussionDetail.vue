@@ -159,7 +159,7 @@ export default defineComponent({
       v-else-if="getDiscussionError"
       :text="getDiscussionError.message"
     />
-    <div v-else class="mx-auto max-w-6xl divide-y bg-white rounded">
+    <div v-else class="mx-auto max-w-5xl divide-y bg-white rounded">
       <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
           <h2

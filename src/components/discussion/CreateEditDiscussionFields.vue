@@ -93,7 +93,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="pt-8">
     <div v-if="discussionLoading">Loading...</div>
     <div v-else-if="getDiscussionError">
       <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">

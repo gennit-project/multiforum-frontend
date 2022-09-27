@@ -87,7 +87,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :ref="`#${event.id}`" class="px-3">
+  <li :ref="`#${event.id}`" class="px-4 py-2">
     <div class="block">
       <div class="py-2">
         <div class="flex items-center">

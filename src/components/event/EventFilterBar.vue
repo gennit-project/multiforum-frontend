@@ -333,7 +333,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="max-w-5xl mx-auto">
     <div
       v-if="
         filterValues.selectedLocationFilter === LocationFilterTypes.ONLY_VIRTUAL

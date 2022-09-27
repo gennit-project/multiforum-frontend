@@ -511,8 +511,8 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white">
-    <div class="mx-auto max-w-6xl bg-white rounded pl-8 pr-8">
-      <div class="mb-4 pt-8 md:flex md:items-center md:justify-between">
+    <div class="bg-white rounded pl-16 pr-16">
+      <div class="mb-4 max-w-5xl mx-auto pt-8 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
           <h2
             class="
@@ -556,8 +556,8 @@ export default defineComponent({
         @resetTimeSlots="resetTimeSlots"
       />
     </div>
-    <div class="bg-gray-100 rounded pl-6 pr-6">
-      <div class="mx-auto max-w-6xl p-8" v-if="eventLoading">Loading...</div>
+    <div class="bg-gray-100 rounded pt-30">
+      <div class="mx-auto max-w-5xl" v-if="eventLoading">Loading...</div>
       <ErrorBanner v-else-if="eventError" :text="eventError.message" />
       <EventList
         id="listView"

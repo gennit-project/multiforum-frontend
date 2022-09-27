@@ -223,57 +223,74 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-100">
-    <div class="mx-auto max-w-4xl">
-      <div class="items-center flex justify-between">
-        <SearchBar
-          class="flex"
-          :search-placeholder="'Search discussions'"
-          @updateSearchInput="updateSearchResult"
-        />
-        <div class="flex justify-end items-center space-x-2">
-          <FilterChip
-            class="align-middle"
-            v-if="!channelId"
-            :label="channelLabel"
-            :highlighted="channelLabel !== defaultLabels.channels"
+  <div class="bg-white">
+    <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
+      <div class="mb-4 pt-8">
+        <div class="flex-1 min-w-0">
+          <h2
+            class="
+              text-2xl
+              font-bold
+              leading-7
+              text-gray-900
+              sm:text-3xl sm:tracking-tight sm:truncate
+            "
           >
-            <template v-slot:icon>
-              <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </template>
-            <template v-slot:content>
-              <ChannelPicker
-                :selected-channels="selectedChannels"
-                @setSelectedChannels="setSelectedChannels"
-              />
-            </template>
-          </FilterChip>
-
-          <FilterChip
-            class="align-middle"
-            :label="tagLabel"
-            :highlighted="tagLabel !== defaultLabels.tags"
-          >
-            <template v-slot:icon>
-              <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </template>
-            <template v-slot:content>
-              <TagPicker
-                :selected-tags="selectedTags"
-                @setSelectedTags="setSelectedTags"
-              />
-            </template>
-          </FilterChip>
-          <CreateButton
-            class="align-middle"
-            :to="createDiscussionPath"
-            :label="'Create Discussion'"
+            {{
+              channelId ? `Discussions in ${channelId}` : "Search Discussions"
+            }}
+          </h2>
+        </div>
+        <div class="items-center flex justify-between">
+          <SearchBar
+            class="flex"
+            :search-placeholder="'Search discussions'"
+            @updateSearchInput="updateSearchResult"
           />
+          <div class="flex justify-end items-center space-x-2">
+            <FilterChip
+              class="align-middle"
+              v-if="!channelId"
+              :label="channelLabel"
+              :highlighted="channelLabel !== defaultLabels.channels"
+            >
+              <template v-slot:icon>
+                <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+              </template>
+              <template v-slot:content>
+                <ChannelPicker
+                  :selected-channels="selectedChannels"
+                  @setSelectedChannels="setSelectedChannels"
+                />
+              </template>
+            </FilterChip>
+
+            <FilterChip
+              class="align-middle"
+              :label="tagLabel"
+              :highlighted="tagLabel !== defaultLabels.tags"
+            >
+              <template v-slot:icon>
+                <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+              </template>
+              <template v-slot:content>
+                <TagPicker
+                  :selected-tags="selectedTags"
+                  @setSelectedTags="setSelectedTags"
+                />
+              </template>
+            </FilterChip>
+            <CreateButton
+              class="align-middle"
+              :to="createDiscussionPath"
+              :label="'Create Discussion'"
+            />
+          </div>
         </div>
       </div>
     </div>
-    <div class="mx-auto max-w-4xl">
-      <div v-if="discussionLoading">Loading...</div>
+    <div class="bg-gray-100">
+      <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">Loading...</div>
       <DiscussionList
         v-else-if="discussionResult && discussionResult.discussions"
         :discussions="discussionResult.discussions"

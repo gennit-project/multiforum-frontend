@@ -72,7 +72,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="mt-8">
     <div v-if="channelLoading">Loading...</div>
     <div v-else-if="getChannelError">
       <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
@@ -87,7 +87,7 @@ export default defineComponent({
       @submit="$emit('submit')"
     >
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div class="mt-6 sm:mt-5 space-y-4 sm:space-y-5">
+        <div class="sm:mt-5 space-y-4 sm:space-y-5">
           <FormRow>
             <template v-slot:icon>
               <PencilIcon class="float-right" />
