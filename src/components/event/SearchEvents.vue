@@ -42,7 +42,10 @@ export default defineComponent({
     const route = useRoute();
 
     const channelId = computed(() => {
-      return route.params.channelId;
+      if (typeof route.params.channelId === "string"){
+        return route.params.channelId
+      }
+      return ""
     });
     const now = DateTime.now();
 
@@ -277,14 +280,14 @@ export default defineComponent({
       };
     }); // End of EventWhere computed property
 
-    const eventOptions = computed(() => {
-      return { sort: filterValues.value.resultsOrder };
-    });
-
     let eventQueryString = gql`
-      query ($where: EventWhere, $options: EventOptions) {
+      query getEvents ($where: EventWhere, $resultsOrder: [EventSort], $offset: Int, $limit: Int) {
         eventsCount(where: $where)
-        events(where: $where, options: $options) {
+        events(where: $where, options: {
+          sort: $resultsOrder,
+          offset: $offset,
+          limit: $limit
+        }) {
           id
           Channels {
             uniqueName
@@ -340,10 +343,10 @@ export default defineComponent({
       refetch: refetchEvents,
       fetchMore,
     } = useQuery(eventQueryString, {
-      first: 20,
+      limit: 5,
       offset: 0,
       where: eventWhere,
-      options: eventOptions,
+      resultsOrder: filterValues.value.resultsOrder,
     });
 
     const reachedEndOfResults = ref(false);
@@ -351,19 +354,20 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: eventResult.value.events.length,
+          offset: eventResult.value.events.length
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.events.length === 0) {
-            reachedEndOfResults.value = true;
-            return prev;
-          }
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult
+
           return {
-            ...prev,
-            events: [...prev.events, ...fetchMoreResult.events],
-          };
-        },
-      });
+            ...previousResult,
+            events: [
+              ...previousResult.events,
+              ...fetchMoreResult.events,
+            ],
+          }
+        }
+      })
     };
 
     return {
@@ -557,23 +561,26 @@ export default defineComponent({
       />
     </div>
     <div class="bg-gray-100 rounded pt-30">
-      <div class="mx-auto max-w-5xl" v-if="eventLoading">Loading...</div>
-      <ErrorBanner v-else-if="eventError" :text="eventError.message" />
+      
+      <ErrorBanner class="mx-auto max-w-5xl" v-if="eventError" :text="eventError.message" />
       <EventList
         id="listView"
-        v-else-if="!showMap && eventResult && eventResult.events"
+        v-if="!showMap && eventResult && eventResult.events"
         :class="[!channelId ? '' : '']"
         class="relative text-lg"
+        :result-count="eventResult ? eventResult.eventsCount : 0"
         :events="eventResult.events"
         :channel-id="channelId"
         :search-input="filterValues.searchInput"
         :selected-tags="filterValues.selectedTags"
         :selected-channels="filterValues.selectedChannels"
         :show-map="showMap"
-        :reached-end-of-results="false"
         @filterByTag="filterByTag"
+        @loadMore="loadMore"
       />
-      <MapView v-else-if="showMap && eventResult && eventResult.events" />
+      
+      <MapView v-if="showMap && eventResult && eventResult.events" />
+      <div class="mx-auto max-w-5xl" v-if="eventLoading">Loading...</div>
     </div>
   </div>
 </template>

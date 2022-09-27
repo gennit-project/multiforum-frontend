@@ -32,9 +32,9 @@ export default defineComponent({
         return [];
       },
     },
-    reachedEndOfResults: {
-      type: Boolean,
-      default: true
+    resultCount: {
+      type: Number,
+      default: 0
     },
     selectedTags: {
       type: Array as PropType<String[]>,
@@ -102,9 +102,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="sm:rounded-md mx-auto max-w-5xl bg-gray-100 pt-4">
+  <div
+    class="sm:rounded-md mx-auto max-w-5xl bg-gray-100 pt-4"
+
+
+  >
     <p class="prose mt-3" v-if="events.length === 0 && !showMap">Could not find any events.</p>
-    <ul role="list" class="rounded bg-white divide-y divide-gray-200 px-8 mb-4">
+    <ul
+      role="list" 
+      class="rounded bg-white divide-y divide-gray-200 px-8 mb-4"
+    >
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"
@@ -146,8 +153,8 @@ export default defineComponent({
     </ul>
 
       <LoadMore
-        :reached-end-of-results="reachedEndOfResults"
-        @loadMore="loadMore"
+        :reached-end-of-results="resultCount === events.length"
+        @loadMore="$emit('loadMore')"
       />
   </div>
 </template>
