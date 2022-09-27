@@ -73,7 +73,7 @@ export default defineComponent({
         <div class="block">
           <p
             @click="$emit('openDiscussionPreview', discussion)"
-            class="cursor-pointer text-md font-medium text-blue-600 truncate"
+            class="cursor-pointer text-md font-medium text-blue-600 underline truncate"
           >
             <HighlightedSearchTerms :text="title" :search-input="searchInput" />
           </p>

@@ -3,6 +3,7 @@ import { defineComponent, PropType, computed } from "vue";
 import EventListItem from "./EventListItem.vue";
 import { useRoute, useRouter } from "vue-router";
 import { EventData } from "@/types/eventTypes";
+import LoadMore from "../buttons/LoadMore.vue";
 
 export default defineComponent({
   setup() {
@@ -58,6 +59,7 @@ export default defineComponent({
   },
   components: {
     EventListItem,
+    LoadMore,
   },
   methods: {
     filterByTag(tag: string) {
@@ -100,9 +102,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="['bg-white', 'sm:rounded-md']">
-    <p v-if="events.length === 0 && !showMap">Could not find any events.</p>
-    <ul role="list" class="divide-y divide-gray-200">
+  <div class="sm:rounded-md mx-auto max-w-6xl bg-gray-100 pl-8 pr-8 pt-4">
+    <p class="prose mt-3" v-if="events.length === 0 && !showMap">Could not find any events.</p>
+    <ul role="list" class="rounded bg-white divide-y divide-gray-200 px-8 mb-4">
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"
@@ -142,8 +144,10 @@ export default defineComponent({
         @filterByTag="filterByTag"
       />
     </ul>
-    <button class="justify-self-center" @click="loadMore">
-        {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
-      </button>
+
+      <LoadMore
+        :reached-end-of-results="reachedEndOfResults"
+        @loadMore="loadMore"
+      />
   </div>
 </template>

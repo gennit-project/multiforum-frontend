@@ -55,7 +55,11 @@ export default defineComponent({
       "
     >
       <div class="flex items-center">
-        <ProfileAvatar class="ml-2" :username="channel.uniqueName" colorType="pastel" />
+        <ProfileAvatar
+          class="ml-2"
+          :username="channel.uniqueName"
+          colorType="pastel"
+        />
         <div class="min-w-0">
           <p class="font-large text-gray-900 ml-2">
             <router-link
@@ -77,12 +81,17 @@ export default defineComponent({
             :search-input="searchInput"
           />
         </p>
-        <p class="text-sm truncate font-normal">
+        <p class="text-sm truncate font-normal space-x-2">
           <router-link
             class="underline"
             :to="`/channels/c/${channel.uniqueName}/discussions`"
-            >{{ channel.DiscussionsAggregate.count }} Discussions</router-link
-          >,
+            >{{ channel.DiscussionsAggregate.count }}
+            {{
+              channel.DiscussionsAggregate.count === 1
+                ? "Discussion"
+                : "Discussions"
+            }}</router-link
+          >
 
           <router-link
             class="underline"

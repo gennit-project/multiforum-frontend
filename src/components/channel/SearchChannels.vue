@@ -11,6 +11,7 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import CreateButton from "@/components/buttons/CreateButton.vue";
+import LoadMore from "../buttons/LoadMore.vue";
 import { getTagLabel } from "@/components/forms/utils";
 import { useRoute } from "vue-router";
 
@@ -23,6 +24,7 @@ export default defineComponent({
     ChannelList,
     CreateButton,
     FilterChip,
+    LoadMore,
     TagPicker,
     SearchBar,
     TagIcon,
@@ -190,42 +192,51 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mx-auto max-w-4xl">
-    <div class="items-center flex mt-1 space-x-2 px-8">
-      <SearchBar
-        :search-placeholder="'Search channels'"
-        @updateSearchInput="updateSearchResult"
-      />
-      <FilterChip
-        :label="tagLabel"
-        :highlighted="tagLabel !== defaultLabels.tags"
-      >
-        <template v-slot:icon>
-          <TagIcon />
-        </template>
-        <template v-slot:content>
-          <TagPicker
-            :tag-options="getTagOptionLabels(tagOptions.tags)"
-            :selected-tags="selectedTags"
-            @setSelectedTags="setSelectedTags"
-          />
-        </template>
-      </FilterChip>
-      <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+  <div>
+    <div>
+      <div class="mx-auto max-w-5xl items-center flex mt-1 space-x-2 px-8">
+        <SearchBar
+          :search-placeholder="'Search channels'"
+          @updateSearchInput="updateSearchResult"
+        />
+        
+
+
+        <FilterChip
+            class="align-middle"
+            :label="tagLabel"
+            :highlighted="tagLabel !== defaultLabels.tags"
+          >
+            <template v-slot:icon>
+              <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            </template>
+            <template v-slot:content>
+              <TagPicker
+                :selected-tags="selectedTags"
+                @setSelectedTags="setSelectedTags"
+              />
+            </template>
+          </FilterChip>
+        <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+      </div>
     </div>
-    <div v-if="channelLoading">Loading...</div>
-    <ChannelList
-      class="px-8 flex-1 text-xl font-bold"
-      v-else-if="channelResult && channelResult.channels"
-      :channels="channelResult.channels"
-      :search-input="searchInput"
-      :selected-tags="selectedTags"
-      @filterByTag="filterByTag"
-    />
-    <div class="grid justify-items-stretch">
-      <button class="justify-self-center" @click="loadMore">
-        {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
-      </button>
+    <div class="bg-gray-100 pt-1">
+      <div class="px-8 flex-1  mx-auto max-w-5xl" v-if="channelLoading">Loading...</div>
+      <ChannelList
+        class="px-8 flex-1 text-xl font-bold mx-auto max-w-5xl"
+        v-else-if="channelResult && channelResult.channels"
+        :channels="channelResult.channels"
+        :search-input="searchInput"
+        :selected-tags="selectedTags"
+        @filterByTag="filterByTag"
+      />
+      <div class="grid justify-items-stretch m-10">
+        <LoadMore
+          class="justify-self-center"
+          :reached-end-of-results="reachedEndOfResults"
+          @loadMore="loadMore"
+        />
+      </div>
     </div>
   </div>
 </template>

@@ -32,7 +32,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="max-w-lg w-full lg:max-w-xs mt-1 mb-1 pt-1 pb-1">
+  <div class="mt-1 mb-1 pt-1 pb-1">
     <label for="search" class="sr-only">Search</label>
     <div class="relative items-center">
       <div
@@ -68,6 +68,7 @@ export default defineComponent({
         class="
           pl-10
           pr-3
+          w-96
           border border-gray-300
           rounded-md
           leading-5

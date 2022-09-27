@@ -4,12 +4,14 @@ import EventPreview from "./EventPreview.vue";
 import EventMap from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import CloseButton from "@/components/buttons/CloseButton.vue";
+import LoadMore from "../buttons/LoadMore.vue";
 
 export default defineComponent({
   components: {
     CloseButton,
     EventPreview,
     EventMap,
+    LoadMore,
     PreviewContainer,
   },
   setup() {},
@@ -216,9 +218,11 @@ export default defineComponent({
         @unhighlight="unhighlight"
       />
       <div class="grid justify-items-stretch">
-        <button class="justify-self-center" @click="loadMore">
-          {{ reachedEndOfResults ? "There are no more results." : "Load more" }}
-        </button>
+        <LoadMore
+          class="justify-self-center"
+          :reached-end-of-results="reachedEndOfResults"
+          @loadMore="loadMore"
+        />
       </div>
     </div>
   </div>

@@ -9,7 +9,11 @@ import { router } from "@/router";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import { EventData } from "@/types/eventTypes";
-import { createDefaultSelectedWeeklyHourRanges, createDefaultSelectedHourRanges, createDefaultSelectedWeekdays } from "@/components/event/eventSearchOptions";
+import {
+  createDefaultSelectedWeeklyHourRanges,
+  createDefaultSelectedHourRanges,
+  createDefaultSelectedWeekdays,
+} from "@/components/event/eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import {
   hourRangesObject,
@@ -83,14 +87,16 @@ export default defineComponent({
         searchInput: searchInput.value,
         selectedWeekdays: createDefaultSelectedWeekdays(),
         selectedHourRanges: createDefaultSelectedHourRanges(),
-        selectedLocationFilter: channelId.value ? LocationFilterTypes.NONE : LocationFilterTypes.WITHIN_RADIUS,
+        selectedLocationFilter: channelId.value
+          ? LocationFilterTypes.NONE
+          : LocationFilterTypes.WITHIN_RADIUS,
         selectedWeeklyHourRanges: createDefaultSelectedWeeklyHourRanges(),
         selectedChannels: getDefaultSelectedChannels(),
         selectedTags: selectedTags.value,
         showOnlyFreeEvents: showOnlyFreeEvents.value,
       };
       if (!channelId.value) {
-        res.showCanceledEvents = false
+        res.showCanceledEvents = false;
       }
       return res;
     };
@@ -107,11 +113,10 @@ export default defineComponent({
 
         for (let timeSlot in selectedSlotsInDay) {
           const slotIsSelected = selectedSlotsInDay[timeSlot];
-          
 
           if (slotIsSelected) {
-            const min = hourRangesObject[timeSlot].min
-            const max = hourRangesObject[timeSlot].max
+            const min = hourRangesObject[timeSlot].min;
+            const max = hourRangesObject[timeSlot].max;
 
             for (let hour = min; hour < max; hour++) {
               flattenedTimeFilters.push({
@@ -128,12 +133,12 @@ export default defineComponent({
           }
         }
       }
-      return flattenedTimeFilters
-    })
+      return flattenedTimeFilters;
+    });
 
     const timeSlotFiltersActive = computed(() => {
-      return flattenedTimeFilters.value.length > 0
-    })
+      return flattenedTimeFilters.value.length > 0;
+    });
 
     const eventWhere = computed(() => {
       let conditions = [];
@@ -377,7 +382,7 @@ export default defineComponent({
       refetchEvents,
       router,
       showMap,
-      timeSlotFiltersActive
+      timeSlotFiltersActive,
     };
   },
   data() {
@@ -491,79 +496,85 @@ export default defineComponent({
     updateRouterQueryParams(e: any) {
       router.push(e);
     },
-    updateTimeSlots(e: any){
+    updateTimeSlots(e: any) {
       this.filterValues.selectedWeeklyHourRanges = e;
     },
-    resetTimeSlots(){
-      this.filterValues.selectedHourRanges = createDefaultSelectedWeeklyHourRanges();
+    resetTimeSlots() {
+      this.filterValues.selectedHourRanges =
+        createDefaultSelectedWeeklyHourRanges();
       this.filterValues.selectedWeekdays = createDefaultSelectedWeekdays();
-      this.filterValues.selectedWeeklyHourRanges = createDefaultSelectedWeeklyHourRanges()
-    }
+      this.filterValues.selectedWeeklyHourRanges =
+        createDefaultSelectedWeeklyHourRanges();
+    },
   },
 });
 </script>
 <template>
-  <div class="mx-auto max-w-6xl bg-white rounded pl-8 pr-8">
-    <div class="mt-8 mb-4 md:flex md:items-center md:justify-between">
-      <div class="flex-1 min-w-0">
-        <h2
-          class="
-            text-2xl
-            font-bold
-            leading-7
-            text-gray-900
-            sm:text-3xl sm:tracking-tight sm:truncate
-          "
-        >
-          {{ channelId ? `Events in ${channelId}` : "Search Events" }}
-        </h2>
-      </div>
-      <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
-        <div class="float-right">
-          <span class="flex-shrink-0 space-x-2 flex float-right">
-            <ToggleMap
-              :show-map="showMap"
-              @showMap="setShowMap"
-              @showList="setShowList"
-            />
-            <CreateButton :to="createEventPath" :label="'Create Event'" />
-          </span>
+  <div class="bg-white">
+    <div class="mx-auto max-w-6xl bg-white rounded pl-8 pr-8">
+      <div class="mb-4 pt-8 md:flex md:items-center md:justify-between">
+        <div class="flex-1 min-w-0">
+          <h2
+            class="
+              text-2xl
+              font-bold
+              leading-7
+              text-gray-900
+              sm:text-3xl sm:tracking-tight sm:truncate
+            "
+          >
+            {{ channelId ? `Events in ${channelId}` : "Search Events" }}
+          </h2>
+        </div>
+        <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+          <div class="float-right">
+            <span class="flex-shrink-0 space-x-2 flex float-right">
+              <ToggleMap
+                :show-map="showMap"
+                @showMap="setShowMap"
+                @showList="setShowList"
+              />
+              <CreateButton :to="createEventPath" :label="'Create Event'" />
+            </span>
+          </div>
         </div>
       </div>
+      <EventFilterBar
+        :channel-id="channelId"
+        :result-count="eventResult ? eventResult.eventsCount : 0"
+        :filter-values="filterValues"
+        :time-slot-filters-active="timeSlotFiltersActive"
+        @updateSelectedDistance="updateSelectedDistance"
+        @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
+        @updateLocationInput="updateLocationInput"
+        @setSelectedChannels="setSelectedChannels"
+        @setSelectedTags="setSelectedTags"
+        @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
+        @updateSearchInput="updateSearchInput"
+        @updateEventTypeFilter="updateEventTypeFilter"
+        @updateTimeSlots="updateTimeSlots"
+        @resetTimeSlots="resetTimeSlots"
+      />
     </div>
-    <EventFilterBar
-      :channel-id="channelId"
-      :result-count="eventResult ? eventResult.eventsCount : 0"
-      :filter-values="filterValues"
-      :time-slot-filters-active="timeSlotFiltersActive"
-      @updateSelectedDistance="updateSelectedDistance"
-      @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
-      @updateLocationInput="updateLocationInput"
-      @setSelectedChannels="setSelectedChannels"
-      @setSelectedTags="setSelectedTags"
-      @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
-      @updateSearchInput="updateSearchInput"
-      @updateEventTypeFilter="updateEventTypeFilter"
-      @updateTimeSlots="updateTimeSlots"
-      @resetTimeSlots="resetTimeSlots"
-    />
-    <div v-if="eventLoading">Loading...</div>
-    <ErrorBanner v-else-if="eventError" :text="eventError.message" />
-    <EventList
-      id="listView"
-      v-else-if="!showMap && eventResult && eventResult.events"
-      :class="[!channelId ? '' : '']"
-      class="relative text-lg"
-      :events="eventResult.events"
-      :channel-id="channelId"
-      :search-input="filterValues.searchInput"
-      :selected-tags="filterValues.selectedTags"
-      :selected-channels="filterValues.selectedChannels"
-      :show-map="showMap"
-      :reached-end-of-results="false"
-      @filterByTag="filterByTag"
-    />
-    <MapView v-else-if="showMap && eventResult && eventResult.events" />
+    <div class="bg-gray-100 rounded pl-6 pr-6">
+      <div class="mx-auto max-w-6xl p-8" v-if="eventLoading">Loading...</div>
+      <ErrorBanner v-else-if="eventError" :text="eventError.message" />
+      <EventList
+        id="listView"
+        v-else-if="!showMap && eventResult && eventResult.events"
+        :class="[!channelId ? '' : '']"
+        class="relative text-lg"
+        :events="eventResult.events"
+        :channel-id="channelId"
+        :search-input="filterValues.searchInput"
+        :selected-tags="filterValues.selectedTags"
+        :selected-channels="filterValues.selectedChannels"
+        :show-map="showMap"
+        :reached-end-of-results="false"
+        @filterByTag="filterByTag"
+      />
+      <MapView v-else-if="showMap && eventResult && eventResult.events" />
+    </div>
   </div>
 </template>
 

@@ -333,12 +333,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="space-y-3">
+  <div>
     <div
       v-if="
         filterValues.selectedLocationFilter === LocationFilterTypes.ONLY_VIRTUAL
       "
-      class="items-center mt-2 space-x-2 flex flex-wrap"
+      class="items-center space-x-2 flex flex-wrap"
     >
       Showing {{ resultCount }} online
       {{ resultCount === 1 ? "event" : "events" }}
@@ -346,7 +346,7 @@ export default defineComponent({
     <div v-else-if="filterValues.selectedLocationFilter === LocationFilterTypes.NONE">
       Showing {{ resultCount }} {{ resultCount === 1 ? "event" : "events" }}
     </div>
-    <div v-else class="items-center mt-2 mb-2 space-x-2 flex flex-wrap">
+    <div v-else class="items-center space-x-2 flex flex-wrap">
       <div class="inline-block">
         Showing {{ resultCount }}
         {{ resultCount === 1 ? "event" : "events" }} within
@@ -382,7 +382,7 @@ export default defineComponent({
         @updateLocationInput="updateLocationInput"
       />
     </div>
-    <div class="items-center mt-3 flex flex-wrap">
+    <div class="items-center flex flex-wrap mt-2">
       <Tag
         v-for="shortcut in timeFilterShortcuts"
         :key="shortcut.label"
@@ -404,7 +404,7 @@ export default defineComponent({
         @click="updateEventTypeFilter(shortcut)"
       />
     </div>
-    <div class="mt-3 space-x-2 mb-3">
+    <div class="space-x-2 mb-3">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -475,7 +475,6 @@ export default defineComponent({
           <button
             type="button"
             class="
-              mt-3
               w-full
               inline-flex
               justify-center
