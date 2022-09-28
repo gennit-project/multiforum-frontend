@@ -343,7 +343,7 @@ export default defineComponent({
       refetch: refetchEvents,
       fetchMore,
     } = useQuery(eventQueryString, {
-      limit: 5,
+      limit: 25,
       offset: 0,
       where: eventWhere,
       resultsOrder: filterValues.value.resultsOrder,
