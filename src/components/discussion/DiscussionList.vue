@@ -2,6 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
+import LoadMore from "../buttons/LoadMore.vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute } from "vue-router";
 
@@ -23,9 +24,9 @@ export default defineComponent({
         return [];
       },
     },
-    discussionCount: {
+    resultCount: {
       type: Number,
-      default: 0,
+      default: 0
     },
     searchInput: {
       type: String,
@@ -52,6 +53,7 @@ export default defineComponent({
   components: {
     DiscussionPreview,
     DiscussionListItem,
+    LoadMore
   },
   methods: {
     openPreview(data: DiscussionData) {
@@ -72,8 +74,8 @@ export default defineComponent({
   <div class="sm:rounded-md mx-auto max-w-5xl bg-gray-100 pl-8 pr-8 pt-4">
     <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
     <p v-else>
-      Showing {{ discussionCount }}
-      {{ discussionCount === 1 ? " result" : " results" }}
+      Showing {{ discussions.length }}
+      {{ discussions.length === 1 ? " result" : " results" }}
     </p>
     <ul
       v-if="discussions.length > 0"
@@ -97,5 +99,12 @@ export default defineComponent({
         @closePreview="closePreview"
       />
     </ul>
+    <div class="grid justify-items-stretch m-10">
+      <LoadMore
+        class="justify-self-center"
+        :reached-end-of-results="resultCount === discussions.length"
+        @loadMore="$emit('loadMore')"
+      />
+    </div>
   </div>
 </template>

@@ -91,7 +91,8 @@ const cache = new InMemoryCache({
       fields: {
         events: {
           // Don't cache separate results based on
-          // any of this field's arguments.
+          // any of this field's arguments, because we expect
+          // the offset argument to change due to pagination.
           keyArgs: false,
 
           // Concatenate the incoming list items with
@@ -99,7 +100,7 @@ const cache = new InMemoryCache({
           // More info: https://www.apollographql.com/docs/react/pagination/core-api/
           merge(existing, incoming, { args: { offset = 0 }}) {
             // Slicing is necessary because the existing data is
-            // immutable, and frozen in development.
+            // immutable.
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
               merged[offset + i] = incoming[i];
@@ -108,7 +109,14 @@ const cache = new InMemoryCache({
           },
         },
         discussions: {
-          merge: false,
+          keyArgs: false,
+          merge(existing, incoming, { args: { offset = 0 }}) {
+            const merged = existing ? existing.slice(0) : [];
+            for (let i = 0; i < incoming.length; ++i) {
+              merged[offset + i] = incoming[i];
+            }
+            return merged;
+          },
         },
         channels: {
           merge: false,

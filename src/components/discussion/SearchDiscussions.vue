@@ -11,7 +11,7 @@ import SearchBar from "@/components/forms/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
 import CreateButton from "@/components/buttons/CreateButton.vue";
-import LoadMore from "../buttons/LoadMore.vue";
+import ErrorBanner from "../forms/ErrorBanner.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 import { compareDate } from "@/dateTimeUtils";
 
@@ -25,8 +25,8 @@ export default defineComponent({
     ChannelPicker,
     CreateButton,
     DiscussionList,
+    ErrorBanner,
     FilterChip,
-    LoadMore,
     SearchBar,
     TagPicker,
     TagIcon,
@@ -34,7 +34,12 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
-    const channelId = ref(route.params.channelId);
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string"){
+        return route.params.channelId
+      }
+      return ""
+    });
 
     const defaultSelectedChannels = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -87,19 +92,20 @@ export default defineComponent({
       };
     });
 
-    const discussionOptions = {
-      sort: {
-        createdAt: "DESC",
-      },
-    };
 
     let GET_DISCUSSIONS = gql`
       query getDiscussions(
         $where: DiscussionWhere
-        $options: DiscussionOptions
+        $resultsOrder: [DiscussionSort]
+        $offset: Int
+        $limit: Int
       ) {
         discussionsCount(where: $where)
-        discussions(where: $where, options: $options) {
+        discussions(where: $where, options: {
+          sort: $resultsOrder,
+          offset: $offset,
+          limit: $limit
+        }) {
           id
           Channels {
             uniqueName
@@ -132,12 +138,17 @@ export default defineComponent({
 
     const {
       result: discussionResult,
+      error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
       fetchMore,
     } = useQuery(GET_DISCUSSIONS, {
       where: discussionWhere,
-      options: discussionOptions,
+      limit: 25,
+      offset: 0,
+      resultsOrder: {
+        createdAt: "DESC",
+      },
     });
 
     const reachedEndOfResults = ref(false);
@@ -145,20 +156,20 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          where: discussionWhere,
-          options: discussionOptions,
+          offset: discussionResult.value.discussions.length
         },
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.discussions.length === 0) {
-            reachedEndOfResults.value = true;
-            return prev;
-          }
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult
+
           return {
-            ...prev,
-            discussions: [...prev.discussions, ...fetchMoreResult.discussions],
-          };
-        },
-      });
+            ...previousResult,
+            discussions: [
+              ...previousResult.discussions,
+              ...fetchMoreResult.discussions,
+            ],
+          }
+        }
+      })
     };
 
     const openModal = (selectedFilter: string) => {
@@ -194,6 +205,7 @@ export default defineComponent({
       compareDate,
       createDiscussionPath,
       defaultLabels,
+      discussionError,
       discussionLoading,
       discussionResult,
       loadMore,
@@ -290,24 +302,19 @@ export default defineComponent({
       </div>
     </div>
     <div class="bg-gray-100">
-      <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">Loading...</div>
+      <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
       <DiscussionList
-        v-else-if="discussionResult && discussionResult.discussions"
+        v-if="discussionResult && discussionResult.discussions"
         :discussions="discussionResult.discussions"
-        :discussion-count="discussionResult.discussionsCount"
         :channel-id="channelId"
+        :result-count="discussionResult.discussionsCount"
         :search-input="searchInput"
         :selected-tags="selectedTags"
         :selected-channels="selectedChannels"
         @filterByTag="filterByTag"
+        @loadMore="loadMore"
       />
-      <div class="grid justify-items-stretch m-10">
-        <LoadMore
-          class="justify-self-center"
-          :reached-end-of-results="reachedEndOfResults"
-          @loadMore="loadMore"
-        />
-      </div>
+      <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">Loading...</div>
     </div>
   </div>
 </template>
