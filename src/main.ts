@@ -93,7 +93,7 @@ const cache = new InMemoryCache({
           // Only consider it a different query if
           // the filters have changed, because we expect
           // the offset argument to change due to pagination.
-          keyArgs: ['where'],
+          keyArgs: ['where', 'resultsOrder'],
 
           // Concatenate the incoming list items with
           // the existing list items.
@@ -109,22 +109,25 @@ const cache = new InMemoryCache({
           },
         },
         discussions: {
-          keyArgs: ['where'],
+          keyArgs: ['where', 'resultsOrder'],
           merge(existing, incoming, { args: { offset = 0 }}) {
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
               merged[offset + i] = incoming[i];
             }
+            console.log('merged discussions' , merged)
             return merged;
           },
         },
         channels: {
-          keyArgs: ['where'],
+          keyArgs: ['channelWhere', 'eventWhere', 'limit'],
           merge(existing, incoming, { args: { offset = 0 }}) {
+            console.log('merge ',{existing,incoming})
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
               merged[offset + i] = incoming[i];
             }
+            console.log('merged channels' , merged)
             return merged;
           },
         },
