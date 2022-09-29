@@ -34,7 +34,7 @@ export default defineComponent({
     },
     resultCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     selectedTags: {
       type: Array as PropType<String[]>,
@@ -78,7 +78,6 @@ export default defineComponent({
       if (this.showMap) {
         this.$emit("openPreview", event.id);
       } else {
-
         if (this.channelId) {
           return this.router.push({
             name: "EventDetail",
@@ -92,9 +91,9 @@ export default defineComponent({
           name: "EventDetail",
           params: {
             eventId: event.id,
-            channelId: event.Channels[0].uniqueName
-          }
-        })
+            channelId: event.Channels[0].uniqueName,
+          },
+        });
       }
     },
   },
@@ -102,12 +101,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="sm:rounded-md mx-auto max-w-5xl bg-gray-100 pt-4">
-    <p class="prose mt-3" v-if="events.length === 0 && !showMap">Could not find any events.</p>
-    <ul
-      role="list" 
-      class="rounded bg-white divide-y divide-gray-200 px-8 mb-4"
-    >
+  <div class="sm:rounded-md mx-auto max-w-5xl pt-4">
+    <p class="prose mt-3" v-if="events.length === 0 && !showMap">
+      Could not find any events.
+    </p>
+    <ul role="list" class="rounded bg-white divide-y divide-gray-200 px-8 mb-4">
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"
@@ -148,9 +146,9 @@ export default defineComponent({
       />
     </ul>
 
-      <LoadMore
-        :reached-end-of-results="resultCount === events.length"
-        @loadMore="$emit('loadMore')"
-      />
+    <LoadMore
+      :reached-end-of-results="resultCount === events.length"
+      @loadMore="$emit('loadMore')"
+    />
   </div>
 </template>

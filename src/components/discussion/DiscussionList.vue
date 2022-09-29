@@ -71,11 +71,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="sm:rounded-md mx-auto max-w-5xl bg-gray-100 pl-8 pr-8 pt-4">
+  <div class="sm:rounded-md mx-auto max-w-5xl pl-8 pr-8 pt-4">
     <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
     <p v-else>
-      Showing {{ discussions.length }}
-      {{ discussions.length === 1 ? " result" : " results" }}
+      Showing {{ discussions.length }} of {{ resultCount }} results
     </p>
     <ul
       v-if="discussions.length > 0"

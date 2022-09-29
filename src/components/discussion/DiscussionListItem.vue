@@ -67,7 +67,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative bg-white p-4">
+  <li class="relative bg-white py-4">
     <div class="grid grid-cols-4">
       <div class="col-span-3">
         <div class="block">

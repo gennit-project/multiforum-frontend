@@ -16,6 +16,8 @@
       rounded
       text-gray-500
       bg-white
+      p-4
+      shadow
       hover:text-gray-800
       focus:outline-none
       focus:ring-2 focus:ring-offset-2 focus:ring-blue-500

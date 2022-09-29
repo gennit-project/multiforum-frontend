@@ -238,7 +238,7 @@ export default defineComponent({
   <div class="bg-white">
     <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
       <div class="mb-4 pt-8">
-        <div class="flex-1 min-w-0">
+        <div v-if="!channelId" class="flex-1 min-w-0">
           <h2
             class="
               text-2xl
@@ -301,7 +301,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="bg-gray-100">
+    <div>
       <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
       <DiscussionList
         v-if="discussionResult && discussionResult.discussions"

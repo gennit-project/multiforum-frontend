@@ -81,14 +81,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-1 px-10">
-    <Breadcrumbs :links="links" />
+  <div class="flex-1">
+    <div class="bg-white">
+      <Breadcrumbs class="pl-10" :links="links" />
+      <div v-if="!discussionId || !eventId">
+        <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
+          <ChannelIcon class="h-6 w-6 mr-1" />{{ channelId }}
+        </h1>
+        <ChannelTabs />
+      </div>
+    </div>
+    <router-view></router-view>
   </div>
-  <div v-if="!discussionId || !eventId">
-    <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
-       <ChannelIcon class="h-6 w-6 mr-1" />{{ channelId }}
-    </h1>
-    <ChannelTabs />
-  </div>
-  <router-view></router-view>
 </template>

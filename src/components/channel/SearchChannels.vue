@@ -247,7 +247,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div class="bg-gray-100 pt-1">
+    <div class="pt-1">
       <ErrorBanner class="mx-auto max-w-5xl" v-if="channelError" :text="channelError.message" />
       <ChannelList
         class="px-8 flex-1 text-xl font-bold mx-auto max-w-5xl"

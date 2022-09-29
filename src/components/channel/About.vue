@@ -74,7 +74,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container mt-4 mx-auto">
+  <div class="container">
     <p v-if="getChannelLoading">Loading...</p>
     <div v-else-if="getChannelError">
       <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
@@ -83,15 +83,19 @@ export default defineComponent({
     </div>
     <div v-else-if="channel" class="grid md:grid-cols-12">
       <div class="prose md:col-span-9">
-        <div v-if="channel.description" class="body min-height-min">
-          <md-editor
-            v-model="channel.description"
-            language="en-US"
-            previewTheme="github"
-            preview-only
-          />
+        <div>
+          <div v-if="channel.description" class="body min-height-min">
+            <md-editor
+              class="mt-4 pt-4 pb-4 pr-8 pl-8 rounded"
+              v-model="channel.description"
+              language="en-US"
+              previewTheme="github"
+              preview-only
+            />
+          </div>
         </div>
       </div>
+
       <div class="md:col-span-3 mt-6">
         <div v-if="channel.Tags.length > 0">
           <h2

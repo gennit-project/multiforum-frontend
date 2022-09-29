@@ -44,8 +44,7 @@ export default defineComponent({
   <div>
     <p class="text-sm font-normal mt-2" v-if="channels.length === 0">There are no results.</p>
     <p class="text-sm font-normal mt-2" v-else>
-      Showing {{ channels.length }}
-      {{ channels.length === 1 ? " result" : " results" }}
+      Showing {{ channels.length }} of {{ resultCount }} results
     </p>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
       <ChannelListItem

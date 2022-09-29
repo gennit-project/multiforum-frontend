@@ -3,8 +3,6 @@ import { defineComponent, computed, ref } from "vue";
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import EventList from "./EventList.vue";
-import ToggleMap from "../buttons/ToggleMap.vue";
-import CreateButton from "@/components/buttons/CreateButton.vue";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
@@ -31,21 +29,19 @@ import LocationFilterTypes from "./locationFilterTypes";
 export default defineComponent({
   name: "SearchEvents",
   components: {
-    CreateButton,
     ErrorBanner,
     EventFilterBar,
     EventList,
     MapView,
-    ToggleMap,
   },
   setup() {
     const route = useRoute();
 
     const channelId = computed(() => {
-      if (typeof route.params.channelId === "string"){
-        return route.params.channelId
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
       }
-      return ""
+      return "";
     });
     const now = DateTime.now();
 
@@ -281,13 +277,17 @@ export default defineComponent({
     }); // End of EventWhere computed property
 
     let eventQueryString = gql`
-      query getEvents ($where: EventWhere, $resultsOrder: [EventSort], $offset: Int, $limit: Int) {
+      query getEvents(
+        $where: EventWhere
+        $resultsOrder: [EventSort]
+        $offset: Int
+        $limit: Int
+      ) {
         eventsCount(where: $where)
-        events(where: $where, options: {
-          sort: $resultsOrder,
-          offset: $offset,
-          limit: $limit
-        }) {
+        events(
+          where: $where
+          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+        ) {
           id
           Channels {
             uniqueName
@@ -354,20 +354,17 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: eventResult.value.events.length
+          offset: eventResult.value.events.length,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return previousResult
+          if (!fetchMoreResult) return previousResult;
 
           return {
             ...previousResult,
-            events: [
-              ...previousResult.events,
-              ...fetchMoreResult.events,
-            ],
-          }
-        }
-      })
+            events: [...previousResult.events, ...fetchMoreResult.events],
+          };
+        },
+      });
     };
 
     return {
@@ -515,11 +512,17 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white">
-    <div class="bg-white rounded pl-16 pr-16">
-      <div class="mb-4 max-w-5xl mx-auto pt-8 md:flex md:items-center md:justify-between">
-        <div class="flex-1 min-w-0">
+    <div class="rounded pl-16 pr-16">
+      <div
+        class="
+          mb-4
+          md:flex md:items-center md:justify-between
+        "
+      >
+        <div class="flex-1 min-w-0" v-if="!channelId">
           <h2
             class="
+              mt-8
               text-2xl
               font-bold
               leading-7
@@ -527,27 +530,17 @@ export default defineComponent({
               sm:text-3xl sm:tracking-tight sm:truncate
             "
           >
-            {{ channelId ? `Events in ${channelId}` : "Search Events" }}
+            Search Events
           </h2>
-        </div>
-        <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
-          <div class="float-right">
-            <span class="flex-shrink-0 space-x-2 flex float-right">
-              <ToggleMap
-                :show-map="showMap"
-                @showMap="setShowMap"
-                @showList="setShowList"
-              />
-              <CreateButton :to="createEventPath" :label="'Create Event'" />
-            </span>
-          </div>
         </div>
       </div>
       <EventFilterBar
         :channel-id="channelId"
         :result-count="eventResult ? eventResult.eventsCount : 0"
         :filter-values="filterValues"
+        :loaded-event-count="eventResult ? eventResult.events.length : 0"
         :time-slot-filters-active="timeSlotFiltersActive"
+        :create-event-path="createEventPath"
         @updateSelectedDistance="updateSelectedDistance"
         @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
         @updateLocationInput="updateLocationInput"
@@ -558,11 +551,15 @@ export default defineComponent({
         @updateEventTypeFilter="updateEventTypeFilter"
         @updateTimeSlots="updateTimeSlots"
         @resetTimeSlots="resetTimeSlots"
+        @showMap="setShowMap"
+        @showList="setShowList"
       />
     </div>
-    <div class="bg-gray-100 rounded pt-30">
-      
-      <ErrorBanner class="mx-auto max-w-5xl" v-if="eventError" :text="eventError.message" />
+    <div class="rounded mx-auto max-w-5xl">
+      <ErrorBanner
+        v-if="eventError"
+        :text="eventError.message"
+      />
       <EventList
         id="listView"
         v-if="!showMap && eventResult && eventResult.events"
@@ -578,9 +575,8 @@ export default defineComponent({
         @filterByTag="filterByTag"
         @loadMore="loadMore"
       />
-      
       <MapView v-if="showMap && eventResult && eventResult.events" />
-      <div class="mx-auto max-w-5xl" v-if="eventLoading">Loading...</div>
+      <div v-if="eventLoading">Loading...</div>
     </div>
   </div>
 </template>
