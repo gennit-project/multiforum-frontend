@@ -2,6 +2,7 @@
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
 import ChannelListItem from "@/components/channel/ChannelListItem.vue";
+import LoadMore from "../buttons/LoadMore.vue";
 
 export default defineComponent({
   setup() {},
@@ -11,6 +12,10 @@ export default defineComponent({
       default: () => {
         return [];
       },
+    },
+    resultCount: {
+      type: Number,
+      default: 0
     },
     searchInput: {
       type: String,
@@ -25,6 +30,7 @@ export default defineComponent({
   },
   components: {
     ChannelListItem,
+    LoadMore
   },
   methods: {
     filterByTag(tag: string) {
@@ -35,14 +41,30 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-8">
-    <ChannelListItem
-      v-for="channel in channels"
-      :key="channel.uniqueName"
-      :channel="channel"
-      :search-input="searchInput"
-      :selected-tags="selectedTags"
-      @filterByTag="filterByTag"
-    />
+  <div>
+    <p class="text-sm font-normal mt-2" v-if="channels.length === 0">There are no results.</p>
+    <p class="text-sm font-normal mt-2" v-else>
+      Showing {{ channels.length }}
+      {{ channels.length === 1 ? " result" : " results" }}
+    </p>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+      <ChannelListItem
+        v-for="channel in channels"
+        :key="channel.uniqueName"
+        :channel="channel"
+        :search-input="searchInput"
+        :selected-tags="selectedTags"
+        @filterByTag="filterByTag"
+      />
+    </div>
+    <div  class="grid justify-items-stretch m-10">
+      <LoadMore
+        class="justify-self-center font-normal"
+        :reached-end-of-results="resultCount === channels.length"
+        @loadMore="$emit('loadMore')"
+      />
+    </div>
+    
   </div>
+ 
 </template>

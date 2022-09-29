@@ -12,6 +12,7 @@ import FilterChip from "@/components/forms/FilterChip.vue";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import CreateButton from "@/components/buttons/CreateButton.vue";
 import LoadMore from "../buttons/LoadMore.vue";
+import ErrorBanner from "../forms/ErrorBanner.vue";
 import { getTagLabel } from "@/components/forms/utils";
 import { useRoute } from "vue-router";
 
@@ -23,6 +24,7 @@ export default defineComponent({
   components: {
     ChannelList,
     CreateButton,
+    ErrorBanner,
     FilterChip,
     LoadMore,
     TagPicker,
@@ -57,8 +59,12 @@ export default defineComponent({
     };
 
     const GET_CHANNELS = gql`
-      query getChannels($channelWhere: ChannelWhere, $eventWhere: EventWhere) {
-        channels(where: $channelWhere) {
+      query getChannels($channelWhere: ChannelWhere, $eventWhere: EventWhere, $limit: Int, $offset: Int) {
+        channelsCount(where: $channelWhere)
+        channels(where: $channelWhere, options: {
+          limit: $limit,
+          offset: $offset
+        }) {
           uniqueName
           description
           Tags {
@@ -93,6 +99,7 @@ export default defineComponent({
     });
 
     const {
+      error: channelError,
       result: channelResult,
       loading: channelLoading,
       refetch: refetchChannels,
@@ -103,6 +110,8 @@ export default defineComponent({
       eventWhere: {
         startTime_GT: new Date().toISOString(),
       },
+      limit: 5,
+      offset: 0,
     });
 
     if (error.value) {
@@ -113,20 +122,21 @@ export default defineComponent({
 
     const loadMore = () => {
       fetchMore({
-        updateQuery: (prev, { fetchMoreResult }) => {
-          if (fetchMoreResult.queryChannel.length === 0) {
-            reachedEndOfResults.value = true;
-            return prev;
-          }
-          return {
-            ...prev,
-            queryChannel: [
-              ...prev.queryChannel,
-              ...fetchMoreResult.queryChannel,
-            ],
-          };
+        variables: {
+          offset: channelResult.value.channels.length
         },
-      });
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult
+
+          return {
+            ...previousResult,
+            channels: [
+              ...previousResult.channels,
+              ...fetchMoreResult.channels,
+            ],
+          }
+        }
+      })
     };
 
     const { result: tagOptions } = useQuery(GET_TAGS);
@@ -150,6 +160,7 @@ export default defineComponent({
 
     return {
       closeModal,
+      channelError,
       channelLoading,
       channelResult,
       defaultLabels,
@@ -237,23 +248,19 @@ export default defineComponent({
     </div>
 
     <div class="bg-gray-100 pt-1">
-      <div class="px-8 flex-1 mx-auto max-w-5xl" v-if="channelLoading">
-        Loading...
-      </div>
+      <ErrorBanner class="mx-auto max-w-5xl" v-if="channelError" :text="channelError.message" />
       <ChannelList
         class="px-8 flex-1 text-xl font-bold mx-auto max-w-5xl"
-        v-else-if="channelResult && channelResult.channels"
+        v-if="channelResult && channelResult.channels"
         :channels="channelResult.channels"
+        :result-count="channelResult.channelsCount"
         :search-input="searchInput"
         :selected-tags="selectedTags"
         @filterByTag="filterByTag"
+        @loadMore="loadMore"
       />
-      <div class="grid justify-items-stretch m-10">
-        <LoadMore
-          class="justify-self-center"
-          :reached-end-of-results="reachedEndOfResults"
-          @loadMore="loadMore"
-        />
+      <div class="px-8 flex-1 mx-auto max-w-5xl" v-if="channelLoading">
+        Loading...
       </div>
     </div>
   </div>
