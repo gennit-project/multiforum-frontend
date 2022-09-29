@@ -28,7 +28,7 @@ import config from "./config";
 import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
-import "highlight.js/styles/github-dark-dimmed.css";
+// import "highlight.js/styles/github-dark-dimmed.css";
 
 const httpLink = createHttpLink({
   uri: config.graphqlUrl,

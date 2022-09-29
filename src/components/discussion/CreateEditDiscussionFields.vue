@@ -93,7 +93,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="pt-8">
+  <div>
     <div v-if="discussionLoading">Loading...</div>
     <div v-else-if="getDiscussionError">
       <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">
@@ -101,6 +101,7 @@ export default defineComponent({
       </div>
     </div>
     <TailwindForm
+      class="pt-8"
       v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"

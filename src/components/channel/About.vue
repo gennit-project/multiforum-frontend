@@ -82,7 +82,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-else-if="channel" class="grid md:grid-cols-12">
-      <div class="prose md:col-span-9">
+      <div class="md:col-span-9">
         <div>
           <div v-if="channel.description" class="body min-height-min">
             <md-editor
@@ -159,7 +159,7 @@ export default defineComponent({
         >
           Admin Actions
         </h2>
-        <div class="prose text-sm">
+        <div class="text-sm">
           <span>
             <router-link :to="`/channels/c/${channelId}/edit`"
               >Edit</router-link

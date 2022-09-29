@@ -4,7 +4,7 @@ import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
 import { useRoute, useRouter } from "vue-router";
-import TagPicker from "@/components/forms/TagPicker.vue";
+import TagPicker from "../forms/TagPicker.vue";
 import ChannelPicker from "../forms/ChannelPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import SearchBar from "@/components/forms/SearchBar.vue";
@@ -13,7 +13,6 @@ import FilterChip from "@/components/forms/FilterChip.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 import { compareDate } from "@/dateTimeUtils";
-import DiscussionDetail from "./DiscussionDetail.vue";
 
 interface Ref<T> {
   value: T;
@@ -29,7 +28,6 @@ export default defineComponent({
     SearchBar,
     TagPicker,
     TagIcon,
-    DiscussionDetail,
   },
   setup() {
     const route = useRoute();
@@ -38,13 +36,6 @@ export default defineComponent({
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
         return route.params.channelId;
-      }
-      return "";
-    });
-
-    const discussionId = computed(() => {
-      if (typeof route.params.discussionId === "string") {
-        return route.params.discussionId;
       }
       return "";
     });
@@ -267,11 +258,11 @@ export default defineComponent({
 
 <template>
   <div class="bg-white">
-    <div class="grid grid-cols-5 h-screen">
-      <div class="col-span-2">
+    <div class="flex flex-row">
+      <div class="w-2/5 h-full max-h-screen overflow-y-auto flex flex-col flex-grow">
         <div>
           <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
-            <div class="pt-4">
+            <div class="pt-8">
               <div v-if="!channelId" class="flex-1 min-w-0">
                 <h2
                   class="
@@ -355,7 +346,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="col-span-3 bg-gray-100 pt-8">
+      <div class="w-3/5 max-h-screen overflow-y-auto">
         <router-view></router-view>
       </div>
     </div>

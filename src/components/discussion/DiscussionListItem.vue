@@ -143,7 +143,7 @@ export default defineComponent({
           <p class="line-clamp-2 text-sm font-medium text-gray-500 mx-1 mt-1 ">
             <HighlightedSearchTerms :text="body" :search-input="searchInput" />
             <Tag
-              class="outline m-1"
+              class="border border-gray-600 m-1"
               :active="selectedTags.includes(tag)"
               :key="tag"
               v-for="tag in tags"

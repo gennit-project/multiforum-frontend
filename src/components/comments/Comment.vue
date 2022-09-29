@@ -45,7 +45,7 @@ export default defineComponent({
         :username="authorUsername"
         colorType="pastel"
       ></ProfileAvatar>
-      <div>
+      <div class="align-middle">
         <h3 class="font-medium text-gray-900">
           <router-link
             v-if="authorUsername"
@@ -65,7 +65,7 @@ export default defineComponent({
       </div>
     </div>
     <md-editor
-      class="mt-1 prose"
+      class="mt-4"
       v-if="content"
       v-model="contentCopy"
       language="en-US"
