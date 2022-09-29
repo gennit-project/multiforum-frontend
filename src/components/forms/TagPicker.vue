@@ -25,7 +25,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log('selected tags ', props.selectedTags)
     const {
       loading: tagsLoading,
       error: tagsError,

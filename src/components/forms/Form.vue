@@ -26,8 +26,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="pb-8 h-full bg-gray-100">
-    <form class="mx-auto max-w-5xl space-y-2 divide-y bg-white pt-4 pr-8 pl-8 rounded" autocomplete="off">
+  <div >
+    <form class="mx-auto max-w-7xl space-y-2 divide-y bg-white pr-8 pl-8 rounded" autocomplete="off">
       <FormRow>
         <template v-slot:content>
           <div class="flow-root">

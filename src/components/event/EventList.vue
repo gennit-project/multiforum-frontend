@@ -105,7 +105,7 @@ export default defineComponent({
     <p class="prose mt-3" v-if="events.length === 0 && !showMap">
       Could not find any events.
     </p>
-    <ul role="list" class="rounded bg-white divide-y divide-gray-200 px-8 mb-4">
+    <ul v-if="events.length > 0" role="list" class="rounded bg-white divide-y divide-gray-200 px-8 mb-4">
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"

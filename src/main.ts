@@ -115,19 +115,16 @@ const cache = new InMemoryCache({
             for (let i = 0; i < incoming.length; ++i) {
               merged[offset + i] = incoming[i];
             }
-            console.log('merged discussions' , merged)
             return merged;
           },
         },
         channels: {
           keyArgs: ['channelWhere', 'eventWhere', 'limit'],
           merge(existing, incoming, { args: { offset = 0 }}) {
-            console.log('merge ',{existing,incoming})
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
               merged[offset + i] = incoming[i];
             }
-            console.log('merged channels' , merged)
             return merged;
           },
         },
