@@ -4,7 +4,7 @@ import CommentSectionData from './commentTypes';
 import { ChannelData } from './channelTypes';
 
 export interface DiscussionData {
-    id: number;
+    id: string;
     title: string;
     body: string;
     Channels: [ChannelData];

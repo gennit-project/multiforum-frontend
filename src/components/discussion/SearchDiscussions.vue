@@ -3,17 +3,17 @@ import { computed, defineComponent, ref } from "vue";
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import TagPicker from "@/components/forms/TagPicker.vue";
 import ChannelPicker from "../forms/ChannelPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import SearchBar from "@/components/forms/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/forms/FilterChip.vue";
-import CreateButton from "@/components/buttons/CreateButton.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
 import { compareDate } from "@/dateTimeUtils";
+import DiscussionDetail from "./DiscussionDetail.vue";
 
 interface Ref<T> {
   value: T;
@@ -23,22 +23,30 @@ export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
-    CreateButton,
     DiscussionList,
     ErrorBanner,
     FilterChip,
     SearchBar,
     TagPicker,
     TagIcon,
+    DiscussionDetail,
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
 
     const channelId = computed(() => {
-      if (typeof route.params.channelId === "string"){
-        return route.params.channelId
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
       }
-      return ""
+      return "";
+    });
+
+    const discussionId = computed(() => {
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
     });
 
     const defaultSelectedChannels = computed(() => {
@@ -92,7 +100,6 @@ export default defineComponent({
       };
     });
 
-
     let GET_DISCUSSIONS = gql`
       query getDiscussions(
         $where: DiscussionWhere
@@ -101,11 +108,10 @@ export default defineComponent({
         $limit: Int
       ) {
         discussionsCount(where: $where)
-        discussions(where: $where, options: {
-          sort: $resultsOrder,
-          offset: $offset,
-          limit: $limit
-        }) {
+        discussions(
+          where: $where
+          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+        ) {
           id
           Channels {
             uniqueName
@@ -141,6 +147,7 @@ export default defineComponent({
       error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
+      onResult: onGetDiscussionResult,
       fetchMore,
     } = useQuery(GET_DISCUSSIONS, {
       where: discussionWhere,
@@ -156,10 +163,10 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: discussionResult.value.discussions.length
+          offset: discussionResult.value.discussions.length,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return previousResult
+          if (!fetchMoreResult) return previousResult;
 
           return {
             ...previousResult,
@@ -167,10 +174,33 @@ export default defineComponent({
               ...previousResult.discussions,
               ...fetchMoreResult.discussions,
             ],
-          }
-        }
-      })
+          };
+        },
+      });
     };
+
+    onGetDiscussionResult((value) => {
+      if (!value.data || value.data.discussions.length === 0) {
+        return;
+      }
+      const defaultSelectedDiscussion = value.data.discussions[0];
+
+      if (!channelId.value) {
+        router.push({
+          name: "SitewideSearchDiscussionPreview",
+          params: {
+            discussionId: defaultSelectedDiscussion.id,
+          },
+        });
+      } else {
+        router.push({
+          name: "SearchDiscussionPreview",
+          params: {
+            discussionId: defaultSelectedDiscussion.id,
+          },
+        });
+      }
+    });
 
     const openModal = (selectedFilter: string) => {
       showModal.value = true;
@@ -212,6 +242,7 @@ export default defineComponent({
       openModal,
       reachedEndOfResults,
       refetchDiscussions,
+      router,
       searchInput,
       setSearchInput,
       setSelectedChannels,
@@ -236,85 +267,97 @@ export default defineComponent({
 
 <template>
   <div class="bg-white">
-    <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
-      <div class="mb-4 pt-8">
-        <div v-if="!channelId" class="flex-1 min-w-0">
-          <h2
-            class="
-              text-2xl
-              font-bold
-              leading-7
-              text-gray-900
-              sm:text-3xl sm:tracking-tight sm:truncate
-            "
-          >
-            {{
-              channelId ? `Discussions in ${channelId}` : "Search Discussions"
-            }}
-          </h2>
-        </div>
-        <div class="items-center flex justify-between">
-          <SearchBar
-            class="flex"
-            :search-placeholder="'Search discussions'"
-            @updateSearchInput="updateSearchResult"
-          />
-          <div class="flex justify-end items-center space-x-2">
-            <FilterChip
-              class="align-middle"
-              v-if="!channelId"
-              :label="channelLabel"
-              :highlighted="channelLabel !== defaultLabels.channels"
-            >
-              <template v-slot:icon>
-                <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-              </template>
-              <template v-slot:content>
-                <ChannelPicker
-                  :selected-channels="selectedChannels"
-                  @setSelectedChannels="setSelectedChannels"
+    <div class="grid grid-cols-5 h-screen">
+      <div class="col-span-2">
+        <div>
+          <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
+            <div class="pt-4">
+              <div v-if="!channelId" class="flex-1 min-w-0">
+                <h2
+                  class="
+                    text-2xl
+                    font-bold
+                    leading-7
+                    text-gray-900
+                    sm:text-3xl sm:tracking-tight sm:truncate
+                  "
+                >
+                  {{
+                    channelId
+                      ? `Discussions in ${channelId}`
+                      : "Search Discussions"
+                  }}
+                </h2>
+              </div>
+              <div class="items-center flex justify-between">
+                <SearchBar
+                  class="flex"
+                  :search-placeholder="'Search discussions'"
+                  @updateSearchInput="updateSearchResult"
                 />
-              </template>
-            </FilterChip>
+                <div class="flex justify-end items-center space-x-2">
+                  <FilterChip
+                    class="align-middle"
+                    v-if="!channelId"
+                    :label="channelLabel"
+                    :highlighted="channelLabel !== defaultLabels.channels"
+                  >
+                    <template v-slot:icon>
+                      <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+                    </template>
+                    <template v-slot:content>
+                      <ChannelPicker
+                        :selected-channels="selectedChannels"
+                        @setSelectedChannels="setSelectedChannels"
+                      />
+                    </template>
+                  </FilterChip>
 
-            <FilterChip
-              class="align-middle"
-              :label="tagLabel"
-              :highlighted="tagLabel !== defaultLabels.tags"
-            >
-              <template v-slot:icon>
-                <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-              </template>
-              <template v-slot:content>
-                <TagPicker
-                  :selected-tags="selectedTags"
-                  @setSelectedTags="setSelectedTags"
-                />
-              </template>
-            </FilterChip>
-            <CreateButton
-              class="align-middle"
-              :to="createDiscussionPath"
-              :label="'Create Discussion'"
-            />
+                  <FilterChip
+                    class="align-middle"
+                    :label="tagLabel"
+                    :highlighted="tagLabel !== defaultLabels.tags"
+                  >
+                    <template v-slot:icon>
+                      <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+                    </template>
+                    <template v-slot:content>
+                      <TagPicker
+                        :selected-tags="selectedTags"
+                        @setSelectedTags="setSelectedTags"
+                      />
+                    </template>
+                  </FilterChip>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <ErrorBanner
+            class="mx-auto max-w-5xl"
+            v-if="discussionError"
+            :text="discussionError.message"
+          />
+          <DiscussionList
+            v-if="discussionResult && discussionResult.discussions"
+            :discussions="discussionResult.discussions"
+            :channel-id="channelId"
+            :result-count="discussionResult.discussionsCount"
+            :search-input="searchInput"
+            :selected-tags="selectedTags"
+            :selected-channels="selectedChannels"
+            @filterByTag="filterByTag"
+            @loadMore="loadMore"
+          />
+          <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">
+            Loading...
           </div>
         </div>
       </div>
-    </div>
-    <div>
-      <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
-      <DiscussionList
-        v-if="discussionResult && discussionResult.discussions"
-        :discussions="discussionResult.discussions"
-        :channel-id="channelId"
-        :result-count="discussionResult.discussionsCount"
-        :search-input="searchInput"
-        :selected-tags="selectedTags"
-        :selected-channels="selectedChannels"
-        @filterByTag="filterByTag"
-        @loadMore="loadMore"
-      />
-      <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">Loading...</div>
+      <div class="col-span-3 bg-gray-100 pt-8">
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>

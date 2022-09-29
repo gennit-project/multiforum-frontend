@@ -31,44 +31,46 @@ export default defineComponent({
     },
     editedAt: {
       type: String,
-      default: ''
-    }
+      default: "",
+    },
   },
 });
 </script>
 <template>
-  <div
-    class="flex text-sm text-gray-500 space-x-4"
-  >
-    <div class="flex-none">
+  <div class="text-sm text-gray-500 space-x-4">
+    <div class="flex space-x-4">
       <ProfileAvatar
-        class="w-10 h-10"
+        class="w-5 h-5"
         v-if="authorUsername"
         :username="authorUsername"
         colorType="pastel"
       ></ProfileAvatar>
+      <div>
+        <h3 class="font-medium text-gray-900">
+          <router-link
+            v-if="authorUsername"
+            class="underline font-bold"
+            :to="`/u/${authorUsername}`"
+          >
+            {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
+          </router-link>
+        </h3>
+        <p>
+          {{
+            `Commented ${relativeTime("" + createdAt)} ${
+              editedAt ? `&#8226; ${editedAt}` : ""
+            }`
+          }}
+        </p>
+      </div>
     </div>
-    <div>
-      <h3 class="font-medium text-gray-900">
-        <router-link
-          v-if="authorUsername"
-          class="underline font-bold"
-          :to="`/u/${authorUsername}`"
-        >
-          {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
-        </router-link>
-      </h3>
-      <p>
-        {{ `Commented ${relativeTime("" + createdAt)} ${editedAt ? `&#8226; ${editedAt}` : ''}` }}
-      </p>
-      <md-editor
-        class="mt-1"
-        v-if="content"
-        v-model="contentCopy"
-        language="en-US"
-        previewTheme="github"
-        preview-only
-      />
-    </div>
+    <md-editor
+      class="mt-1 prose"
+      v-if="content"
+      v-model="contentCopy"
+      language="en-US"
+      previewTheme="github"
+      preview-only
+    />
   </div>
 </template>

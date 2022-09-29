@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
@@ -19,7 +18,6 @@ import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
-    Back,
     Comment,
     WarningModal,
     CreateButton,
@@ -151,15 +149,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-10">
-    <Back />
+  <div class="px-10 sticky top-10">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
       v-else-if="getDiscussionError"
       :text="getDiscussionError.message"
     />
-    <div v-else class="mx-auto max-w-5xl space-y-2 divide-y bg-white pt-4 pb-4 pr-8 pl-8 rounded">
+    <div v-else class="mx-auto max-w-6xl space-y-2 divide-y bg-white pt-4 pb-4 pr-8 pl-8 rounded">
       <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
           <h2
@@ -192,8 +189,8 @@ export default defineComponent({
         </div>
       </div>
 
-      <div class="grid grid-cols-3 pt-8">
-        <div class="col-start-1 col-span-2">
+      <div class="grid grid-cols-4 pt-8">
+        <div class="col-start-1 col-span-3">
           <div v-if="discussion.body" class="body min-height-min">
             <Comment
               :author-username="

@@ -40,6 +40,13 @@ export const router = createRouter({
       name: 'SearchDiscussions',
       path: "/discussions",
       component: SearchDiscussions,
+      children: [
+        {
+          name: "SitewideSearchDiscussionPreview",
+          path: "search/:discussionId",
+          component: DiscussionDetail
+        }
+      ]
     },
     {
       name: 'FilterDiscussionsByTag',
@@ -93,6 +100,13 @@ export const router = createRouter({
               name: "SearchDiscussionsInChannel",
               path: "",
               component: SearchDiscussions,
+              children: [
+                {
+                  name: "SearchDiscussionPreview",
+                  path: "search/:discussionId",
+                  component: DiscussionDetail
+                }
+              ]
             },
             {
               name: "CreateDiscussionInChannel",
