@@ -90,10 +90,10 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         events: {
-          // Don't cache separate results based on
-          // any of this field's arguments, because we expect
+          // Only consider it a different query if
+          // the filters have changed, because we expect
           // the offset argument to change due to pagination.
-          keyArgs: false,
+          keyArgs: ['where'],
 
           // Concatenate the incoming list items with
           // the existing list items.
@@ -109,7 +109,7 @@ const cache = new InMemoryCache({
           },
         },
         discussions: {
-          keyArgs: false,
+          keyArgs: ['where'],
           merge(existing, incoming, { args: { offset = 0 }}) {
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
@@ -119,7 +119,7 @@ const cache = new InMemoryCache({
           },
         },
         channels: {
-          keyArgs: false,
+          keyArgs: ['where'],
           merge(existing, incoming, { args: { offset = 0 }}) {
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
