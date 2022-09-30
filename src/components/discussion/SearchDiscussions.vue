@@ -258,8 +258,8 @@ export default defineComponent({
 
 <template>
   <div class="bg-white">
-    <div class="flex flex-row">
-      <div class="w-2/5 h-full max-h-screen overflow-y-auto flex flex-col flex-grow">
+    <div class="lg:flex lg:flex-row">
+      <div class="lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto flex flex-col flex-grow">
         <div>
           <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
             <div class="pt-8">
@@ -346,7 +346,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="w-3/5 max-h-screen overflow-y-auto">
+      <div class="sm:invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
         <router-view></router-view>
       </div>
     </div>
