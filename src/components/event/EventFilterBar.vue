@@ -16,6 +16,10 @@ import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
   MilesOrKm,
+  timeFilterShortcuts,
+  timeShortcutValues,
+  distanceUnitOptions,
+  eventFilterTypeShortcuts
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
@@ -87,88 +91,12 @@ export default defineComponent({
       return getTagLabel(props.filterValues.selectedTags);
     });
 
-    const now = DateTime.now();
-
-    const getStartOfThisWeekend = () => {
-      let startOfWeek = now.startOf("week");
-      return startOfWeek.plus({ days: 5 });
-    };
-
-    const getStartOfNextWeek = () => {
-      let startOfThisWeek = now.startOf("week");
-      // If today is Sunday, look for events after
-      // the following Sunday
-      return startOfThisWeek.plus({ weeks: 1 });
-    };
-
-    const startOfThisWeekend = getStartOfThisWeekend();
-    const startOfNextWeek = getStartOfNextWeek();
-    const startOfThisMonth = now.startOf("month");
-
-    const eventFilterTypeShortcuts = [
-      {
-        label: "Online events",
-        locationFilterType: LocationFilterTypes.ONLY_VIRTUAL,
-      },
-      {
-        label: "In-person events",
-        locationFilterType: LocationFilterTypes.ONLY_WITH_ADDRESS,
-      },
-    ];
-
-    const timeFilterShortcuts = [
-      {
-        label: "Today",
-        beginningOfDateRangeISO: now.startOf("day").toISO(),
-        endOfDateRangeISO: now.endOf("day").toISO(),
-      },
-      {
-        label: "Tomorrow",
-        beginningOfDateRangeISO: now.startOf("day").plus({ days: 1 }).toISO(),
-        endOfDateRangeISO: now.endOf("day").plus({ days: 1 }).toISO(),
-      },
-      {
-        label: "This weekend",
-        beginningOfDateRangeISO: startOfThisWeekend.toISO(),
-        endOfDateRangeISO: startOfThisWeekend.plus({ days: 2 }).toISO(),
-      },
-      {
-        label: "Next week",
-        beginningOfDateRangeISO: startOfNextWeek.toISO(),
-        endOfDateRangeISO: startOfNextWeek.plus({ weeks: 1 }).toISO(),
-      },
-      {
-        label: "Next weekend",
-        beginningOfDateRangeISO: startOfNextWeek.plus({ days: 5 }).toISO(),
-        endOfDateRangeISO: startOfNextWeek.plus({ weeks: 1 }).toISO(),
-      },
-      {
-        label: "This month",
-        beginningOfDateRangeISO: startOfThisMonth.toISO(),
-        endOfDateRangeISO: startOfThisMonth.plus({ months: 1 }).toISO(),
-      },
-      {
-        label: "Next month",
-        beginningOfDateRangeISO: startOfThisMonth.plus({ months: 1 }).toISO(),
-        endOfDateRangeISO: startOfThisMonth.plus({ months: 2 }).toISO(),
-      },
-      {
-        label: "Past events",
-        beginningOfDateRangeISO: now.minus({ years: 2 }).toISO(),
-        endOfDateRangeISO: now.startOf("day").toISO(),
-      },
-    ];
-
-    const distanceUnitOptions = [
-      { label: "mi", value: "mi" },
-      { label: "km", value: "km" },
-    ];
     const selectedDistanceUnit = ref(props.filterValues.distanceUnit);
     const defaultMileSelection = ref(distanceOptionsForMiles[0]);
     const defaultKilometerSelection = ref(distanceOptionsForKilometers[0]);
 
     return {
-      activeDateShortcut: ref("none"),
+      activeDateShortcut: ref(timeShortcutValues.NONE),
       activeEventFilterTypeShortcut: ref(
         props.filterValues.selectedLocationFilter
       ),
@@ -186,6 +114,7 @@ export default defineComponent({
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeFilterShortcuts,
+      timeShortcutValues
     };
   },
   methods: {
@@ -206,17 +135,21 @@ export default defineComponent({
       this.$emit("resetTimeSlots");
     },
     handleTimeFilterShortcutClick(shortcut: any) {
-      if (shortcut.label === this.activeDateShortcut) {
-        this.activeDateShortcut = "none";
+      if (shortcut.value === this.activeDateShortcut) {
+        // If the filter is currently selected, clear it.
+        this.activeDateShortcut = this.timeFilterShortcuts.NONE;
         this.$emit("handleTimeFilterShortcutClick", {
           beginningOfDateRangeISO: DateTime.now().startOf("day").toISO(),
           endOfDateRangeISO: DateTime.now().plus({ years: 2 }).toISO(),
+          value: shortcut.value
         });
       } else {
-        this.activeDateShortcut = shortcut.label;
+        // If the filter is not selected, select it.
+        this.activeDateShortcut = shortcut.value;
         this.$emit("handleTimeFilterShortcutClick", {
           beginningOfDateRangeISO: shortcut.beginningOfDateRangeISO,
           endOfDateRangeISO: shortcut.endOfDateRangeISO,
+          value: shortcut.value
         });
       }
     },
@@ -473,7 +406,7 @@ export default defineComponent({
           v-for="shortcut in timeFilterShortcuts"
           :key="shortcut.label"
           :tag="shortcut.label"
-          :active="shortcut.label === activeDateShortcut"
+          :active="shortcut.value === activeDateShortcut"
           @click="handleTimeFilterShortcutClick(shortcut)"
         />
         <Tag

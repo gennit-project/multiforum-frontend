@@ -5,8 +5,103 @@ import {
   SelectedHourRangeObject,
   SelectedWeekdayObject,
   DistanceUnit,
-  Distance,
 } from "@/types/eventTypes";
+import LocationFilterTypes from "./locationFilterTypes";
+import { DateTime } from "luxon";
+
+export const timeShortcutValues = {
+  NONE: "NONE",
+  TODAY: "TODAY",
+  TOMORROW: "TOMORROW",
+  THIS_WEEKEND: "THIS_WEEKEND",
+  NEXT_WEEK: "NEXT_WEEK",
+  NEXT_WEEKEND: "NEXT_WEEKEND",
+  THIS_MONTH: "THIS_MONTH",
+  NEXT_MONTH: "NEXT_MONTH",
+  PAST_EVENTS: "PAST_EVENTS"
+}
+
+const now = DateTime.now();
+const getStartOfThisWeekend = () => {
+  const startOfWeek = now.startOf("week");
+  return startOfWeek.plus({ days: 5 });
+};
+
+const getStartOfNextWeek = () => {
+  const startOfThisWeek = now.startOf("week");
+  // If today is Sunday, look for events after
+  // the following Sunday
+  return startOfThisWeek.plus({ weeks: 1 });
+};
+
+const startOfThisWeekend = getStartOfThisWeekend();
+const startOfNextWeek = getStartOfNextWeek();
+const startOfThisMonth = now.startOf("month");
+
+
+
+
+export const timeFilterShortcuts = [
+  {
+    label: "Today",
+    value: timeShortcutValues.TODAY,
+    beginningOfDateRangeISO: now.startOf("day").toISO(),
+    endOfDateRangeISO: now.endOf("day").toISO(),
+  },
+  {
+    label: "Tomorrow",
+    value: timeShortcutValues.TOMORROW,
+    beginningOfDateRangeISO: now.startOf("day").plus({ days: 1 }).toISO(),
+    endOfDateRangeISO: now.endOf("day").plus({ days: 1 }).toISO(),
+  },
+  {
+    label: "This weekend",
+    value: timeShortcutValues.THIS_WEEKEND,
+    beginningOfDateRangeISO: startOfThisWeekend.toISO(),
+    endOfDateRangeISO: startOfThisWeekend.plus({ days: 2 }).toISO(),
+  },
+  {
+    label: "Next week",
+    value: timeShortcutValues.NEXT_WEEK,
+    beginningOfDateRangeISO: startOfNextWeek.toISO(),
+    endOfDateRangeISO: startOfNextWeek.plus({ weeks: 1 }).toISO(),
+  },
+  {
+    label: "Next weekend",
+    value: timeShortcutValues.NEXT_WEEKEND,
+    beginningOfDateRangeISO: startOfNextWeek.plus({ days: 5 }).toISO(),
+    endOfDateRangeISO: startOfNextWeek.plus({ weeks: 1 }).toISO(),
+  },
+  {
+    label: "This month",
+    value: timeShortcutValues.THIS_MONTH,
+    beginningOfDateRangeISO: startOfThisMonth.toISO(),
+    endOfDateRangeISO: startOfThisMonth.plus({ months: 1 }).toISO(),
+  },
+  {
+    label: "Next month",
+    value: timeShortcutValues.NEXT_MONTH,
+    beginningOfDateRangeISO: startOfThisMonth.plus({ months: 1 }).toISO(),
+    endOfDateRangeISO: startOfThisMonth.plus({ months: 2 }).toISO(),
+  },
+  {
+    label: "Past events",
+    value: timeShortcutValues.PAST_EVENTS,
+    beginningOfDateRangeISO: now.minus({ years: 2 }).toISO(),
+    endOfDateRangeISO: now.startOf("day").toISO(),
+  },
+];
+
+export const eventFilterTypeShortcuts = [
+  {
+    label: "Online events",
+    locationFilterType: LocationFilterTypes.ONLY_VIRTUAL,
+  },
+  {
+    label: "In-person events",
+    locationFilterType: LocationFilterTypes.ONLY_WITH_ADDRESS,
+  },
+];
 
 export const weekdays = [
   // Note: Luxon uses 1-7 to mark weekdays instead of 0-6.

@@ -6,6 +6,7 @@ import CommentSectionData from "./commentTypes";
 export type SetEventTimeRangeOptions = {
   beginningOfDateRangeISO: string;
   endOfDateRangeISO: string;
+  value: string;
 }
 
 export type Point = {

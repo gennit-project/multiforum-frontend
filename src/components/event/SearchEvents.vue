@@ -11,6 +11,7 @@ import {
   createDefaultSelectedWeeklyHourRanges,
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
+  timeShortcutValues,
 } from "@/components/event/eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import {
@@ -101,6 +102,13 @@ export default defineComponent({
     };
 
     const filterValues = ref(getDefaultFilterValues());
+    const resultsOrder = computed(() => {
+      // Keep track of results order separately so that query
+      // will be refetched when it changes. Otherwise the query
+      // would only be refetched when a value inside the eventWhere
+      // object is changed.
+      return filterValues.value.resultsOrder
+    })
 
     const showMap = ref(false);
 
@@ -346,7 +354,7 @@ export default defineComponent({
       limit: 25,
       offset: 0,
       where: eventWhere,
-      resultsOrder: filterValues.value.resultsOrder,
+      resultsOrder: resultsOrder
     });
 
     const reachedEndOfResults = ref(false);
@@ -425,7 +433,7 @@ export default defineComponent({
       this.filterValues.beginningOfDateRangeISO = beginningOfDateRangeISO;
       this.filterValues.endOfDateRangeISO = endOfDateRangeISO;
 
-      if (DateTime.fromISO(endOfDateRangeISO) <= this.now.startOf("day")) {
+      if (event.value === timeShortcutValues.PAST_EVENTS) {
         this.filterValues.resultsOrder = reverseChronologicalOrder;
       } else {
         this.filterValues.resultsOrder = chronologicalOrder;
