@@ -41,7 +41,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="text-sm text-gray-500">
+  <div class="text-sm">
     <div class="flex space-x-4 mt-2">
       <ProfileAvatar
         class="w-5 h-5"
@@ -59,7 +59,7 @@ export default defineComponent({
             {{ `${authorUsername ? authorUsername : "[deleted]"}` }}
           </router-link>
         </h3>
-        <p>
+        <p class="text-gray-500">
           {{
             `Commented ${relativeTime("" + createdAt)} ${
               editedAt ? `&#8226; ${editedAt}` : ""
