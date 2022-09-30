@@ -347,6 +347,7 @@ export default defineComponent({
             :created-at="eventData.createdAt"
             :edited-at="editedAt"
             :content="eventData.description"
+            :readonly="true"
           />
           <Tag
             v-for="tag in eventData.Tags"

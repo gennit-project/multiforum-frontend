@@ -57,7 +57,7 @@ export default defineComponent({
         : []
     );
 
-    const selectedChannels: Ref<Array<string>> = ref(defaultSelectedChannels);
+    const selectedChannels = ref(defaultSelectedChannels);
     const searchInput: Ref<string> = ref("");
 
     const setSearchInput = (input: string) => {
@@ -66,9 +66,9 @@ export default defineComponent({
     const setSelectedTags = (tag: Array<string>) => {
       selectedTags.value = tag;
     };
-    const setSelectedChannels = (channel: Array<string>) => {
-      selectedChannels.value = channel;
-    };
+    // const setSelectedChannels = (channel: Array<string>) => {
+    //   selectedChannels.value = channel;
+    // };
 
     const discussionWhere = computed(() => {
       return {
@@ -241,7 +241,6 @@ export default defineComponent({
       router,
       searchInput,
       setSearchInput,
-      setSelectedChannels,
       setSelectedTags,
       showModal,
       selectedChannels,
@@ -262,6 +261,9 @@ export default defineComponent({
     },
     openPreview(){
       this.previewIsOpen = true;
+    },
+    setSelectedChannels(channels: Array<string>){
+      this.selectedChannels = channels;
     }
   },
 });

@@ -80,11 +80,23 @@ export default defineComponent({
       }),
     };
   },
+  computed: {
+    previewLink(){
+      if (!this.discussion) {
+        return ''
+      }
+      if (this.isWithinChannel ) {
+        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`
+      }
+      return  `/discussions/search/${this.discussion.id}`
+    }
+  },
   // methods: {
-  //   getCommentCount(commentSection: CommentSectionData) {
-  //     const count = commentSection.CommentsAggregate.count;
-  //     return ` ${count} comment${count === 1 ? "" : "s"}`;
-  //   },
+    // getCommentCount(commentSection: CommentSectionData) {
+    //   const count = commentSection.CommentsAggregate.count;
+    //   return ` ${count} comment${count === 1 ? "" : "s"}`;
+    // },
+    
   // },
   inheritAttrs: false,
 });
@@ -93,26 +105,24 @@ export default defineComponent({
 <template>
   <li
     :class="[
-      discussion.id === discussionIdInParams ? 'bg-gray-200' : '',
+      discussion.id === discussionIdInParams
+        ? 'bg-gray-200'
+        : 'hover:bg-gray-100',
       channelIdInParams ? 'hover:bg-gray-100' : '',
     ]"
-    class="relative bg-white py-4 px-2"
+    class="relative bg-white py-4 px-8 cursor-pointer"
     @click="$emit('openPreview')"
   >
-    <div class="grid grid-cols-4">
-      <div class="col-span-3">
-        <div class="block">
-          <div v-if="isWithinChannel">
-            <router-link
-              :to="`/channels/c/${defaultUniqueName}/discussions/search/${discussion.id}`"
-            >
+    <router-link :to="previewLink">
+      <div class="grid grid-cols-4">
+        <div class="col-span-3">
+          <div class="block">
+            <div>
               <p
                 class="
                   cursor-pointer
                   text-md
                   font-medium
-                  text-blue-600
-                  underline
                   truncate
                   mr-2
                 "
@@ -122,84 +132,65 @@ export default defineComponent({
                   :search-input="searchInput"
                 />
               </p>
-            </router-link>
-          </div>
-          <div v-else>
-            <router-link :to="`/discussions/search/${discussion.id}`">
-              <p
-                class="
-                  cursor-pointer
-                  text-md
-                  font-medium
-                  text-blue-600
-                  underline
-                  truncate
-                  mr-2
-                "
+            </div>
+
+            <p class="line-clamp-2 text-sm font-medium text-gray-500 mx-1 mt-1">
+              <HighlightedSearchTerms
+                :text="body"
+                :search-input="searchInput"
+              />
+              <Tag
+                class="border border-gray-600 m-1"
+                :active="selectedTags.includes(tag)"
+                :key="tag"
+                v-for="tag in tags"
+                :tag="tag"
+                @click="$emit('filterByTag', tag)"
+              />
+            </p>
+
+            <div class="text-sm" v-if="!isWithinChannel">
+              <div
+                :key="i"
+                v-for="(channel, i) in discussion.Channels"
+                class="font-medium"
               >
-                <HighlightedSearchTerms
-                  :text="title"
-                  :search-input="searchInput"
-                />
-              </p>
-            </router-link>
-          </div>
+                {{ "comment count " }} in
+                <span
+                  :class="
+                    selectedChannels.includes(channel.uniqueName)
+                      ? 'highlighted'
+                      : ''
+                  "
+                  >{{ channel.uniqueName }}</span
+                >
 
-          <p class="line-clamp-2 text-sm font-medium text-gray-500 mx-1 mt-1">
-            <HighlightedSearchTerms :text="body" :search-input="searchInput" />
-            <Tag
-              class="border border-gray-600 m-1"
-              :active="selectedTags.includes(tag)"
-              :key="tag"
-              v-for="tag in tags"
-              :tag="tag"
-              @click="$emit('filterByTag', tag)"
-            />
-          </p>
-
-          <div class="text-sm" v-if="!isWithinChannel">
-            <router-link
-              :key="i"
-              v-for="(channel, i) in discussion.Channels"
-              :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussion.id}`"
-              class="font-medium"
-            >
-              {{ "comment count " }} in
-              <span
-                :class="
-                  selectedChannels.includes(channel.uniqueName)
-                    ? 'highlighted'
-                    : ''
-                "
-                >{{ channel.uniqueName }}</span
-              >
-
-              {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
-            </router-link>
+                {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="col-span-1">
-        <time
-          :datetime="createdAt"
-          class="
-            float-right
-            flex-shrink-0
-            whitespace-nowrap
-            font-medium
-            text-sm text-gray-500
-          "
-          >{{ relativeTime }}</time
-        >
-        <br />
-        <p class="float-right text-sm font-medium text-gray-500 truncate">
-          Posted by
-          <router-link class="text-gray-800" :to="`/u/${authorUsername}`">
+        <div class="col-span-1">
+          <time
+            :datetime="createdAt"
+            class="
+              float-right
+              flex-shrink-0
+              whitespace-nowrap
+              font-medium
+              text-sm text-gray-500
+            "
+            >{{ relativeTime }}</time
+          >
+          <br />
+          <p class="float-right text-sm font-medium text-gray-500 truncate">
+            Posted by
+
             {{ `@${authorUsername}` }}
-          </router-link>
-        </p>
+          </p>
+        </div>
       </div>
-    </div>
+    </router-link>
   </li>
 </template>
 <style>
