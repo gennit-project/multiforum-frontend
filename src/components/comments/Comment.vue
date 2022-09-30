@@ -37,8 +37,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="text-sm text-gray-500 space-x-4">
-    <div class="flex space-x-4">
+  <div class="text-sm text-gray-500">
+    <div class="flex space-x-4 mt-2">
       <ProfileAvatar
         class="w-5 h-5"
         v-if="authorUsername"

@@ -51,7 +51,6 @@ export default defineComponent({
     };
   },
   components: {
-    DiscussionPreview,
     DiscussionListItem,
     LoadMore
   },
@@ -59,9 +58,7 @@ export default defineComponent({
     openPreview(data: DiscussionData) {
       this.previewIsOpen = true;
       this.selectedDiscussion = data;
-    },
-    closePreview() {
-      this.previewIsOpen = false;
+      this.$emit("openPreview");
     },
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
@@ -89,13 +86,8 @@ export default defineComponent({
         :search-input="searchInput"
         :selected-tags="selectedTags"
         :selected-channels="selectedChannels"
-        @openDiscussionPreview="openPreview"
         @filterByTag="filterByTag"
-      />
-      <DiscussionPreview
-        :isOpen="previewIsOpen"
-        :discussion="selectedDiscussion"
-        @closePreview="closePreview"
+        @openPreview="openPreview"
       />
     </ul>
     <div class="grid justify-items-stretch m-10">

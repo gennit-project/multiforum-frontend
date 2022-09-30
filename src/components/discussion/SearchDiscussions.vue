@@ -3,6 +3,7 @@ import { computed, defineComponent, ref } from "vue";
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
+import DiscussionPreview from "./DiscussionPreview.vue";
 import { useRoute, useRouter } from "vue-router";
 import TagPicker from "../forms/TagPicker.vue";
 import ChannelPicker from "../forms/ChannelPicker.vue";
@@ -23,6 +24,7 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     DiscussionList,
+    DiscussionPreview,
     ErrorBanner,
     FilterChip,
     SearchBar,
@@ -219,6 +221,8 @@ export default defineComponent({
       ? `/channels/c/${channelId.value}/discussions/create`
       : "/discussions/create";
 
+    const previewIsOpen = ref(false)
+
     return {
       channelId,
       channelLabel,
@@ -231,6 +235,7 @@ export default defineComponent({
       discussionResult,
       loadMore,
       openModal,
+      previewIsOpen,
       reachedEndOfResults,
       refetchDiscussions,
       router,
@@ -252,6 +257,12 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
     },
+    closePreview(){
+      this.previewIsOpen = false;
+    },
+    openPreview(){
+      this.previewIsOpen = true;
+    }
   },
 });
 </script>
@@ -340,6 +351,12 @@ export default defineComponent({
             :selected-channels="selectedChannels"
             @filterByTag="filterByTag"
             @loadMore="loadMore"
+            @openPreview="openPreview"
+          />
+          <DiscussionPreview
+            class="lg:invisible"
+            :isOpen="previewIsOpen"
+            @closePreview="closePreview"
           />
           <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">
             Loading...

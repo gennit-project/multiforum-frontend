@@ -43,24 +43,24 @@ export default defineComponent({
     const route = useRoute();
 
     const channelIdInParams = computed(() => {
-      if (typeof route.params.channelId === 'string'){
-         return route.params.channelId
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
       }
-      return ''
+      return "";
     });
 
     const discussionIdInParams = computed(() => {
-      if (typeof route.params.discussionId === 'string'){
-         return route.params.discussionId
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
       }
-      return ''
+      return "";
     });
     const defaultUniqueName = computed(() => {
-      if (channelIdInParams.value){
-        return channelIdInParams.value
+      if (channelIdInParams.value) {
+        return channelIdInParams.value;
       }
-      return props.discussion.Channels[0].uniqueName
-    })
+      return props.discussion.Channels[0].uniqueName;
+    });
     return {
       previewIsOpen: false,
       defaultUniqueName, //props.discussion.CommentSections[0].Channel.uniqueName,
@@ -91,7 +91,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :class="[discussion.id === discussionIdInParams ? 'bg-gray-200' : '', channelIdInParams ? 'hover:bg-gray-100' : '']" class="relative bg-white py-4 px-2">
+  <li
+    :class="[
+      discussion.id === discussionIdInParams ? 'bg-gray-200' : '',
+      channelIdInParams ? 'hover:bg-gray-100' : '',
+    ]"
+    class="relative bg-white py-4 px-2"
+    @click="$emit('openPreview')"
+  >
     <div class="grid grid-cols-4">
       <div class="col-span-3">
         <div class="block">
@@ -118,9 +125,7 @@ export default defineComponent({
             </router-link>
           </div>
           <div v-else>
-            <router-link
-              :to="`/discussions/search/${discussion.id}`"
-            >
+            <router-link :to="`/discussions/search/${discussion.id}`">
               <p
                 class="
                   cursor-pointer
@@ -140,7 +145,7 @@ export default defineComponent({
             </router-link>
           </div>
 
-          <p class="line-clamp-2 text-sm font-medium text-gray-500 mx-1 mt-1 ">
+          <p class="line-clamp-2 text-sm font-medium text-gray-500 mx-1 mt-1">
             <HighlightedSearchTerms :text="body" :search-input="searchInput" />
             <Tag
               class="border border-gray-600 m-1"

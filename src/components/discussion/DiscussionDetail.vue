@@ -25,6 +25,12 @@ export default defineComponent({
     GenericButton,
     Tag,
   },
+  props: {
+    previewMode: {
+      type: Boolean,
+      default: false
+    }
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -149,7 +155,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-10 sticky top-10">
+  <div :class="!previewMode ? 'px-10' : ''" class="sticky top-10">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -171,7 +177,7 @@ export default defineComponent({
             {{ discussion.title }}
           </h2>
         </div>
-        <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+        <div v-if="!previewMode" class="mt-4 flex-shrink-0 flex md:mx-4">
           <div class="float-right">
             <span>
               <router-link
@@ -189,8 +195,8 @@ export default defineComponent({
         </div>
       </div>
 
-      <div class="grid grid-cols-4 pt-8">
-        <div class="col-start-1 col-span-3">
+      <div>
+        <div>
           <div v-if="discussion.body" class="body min-height-min">
             <Comment
               :author-username="
@@ -202,6 +208,7 @@ export default defineComponent({
             />
           </div>
           <Tag
+            class="mt-2"
             v-for="tag in discussion.Tags"
             :tag="tag.text"
             :key="tag.text"
@@ -221,6 +228,7 @@ export default defineComponent({
               {{ editedAt }}
               &#8226;
               <span
+                v-if="!previewMode"
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="deleteModalIsOpen = true"
                 >Delete</span

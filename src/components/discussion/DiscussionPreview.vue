@@ -1,22 +1,19 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent } from "vue";
 import {
   Dialog,
   DialogOverlay,
-  DialogTitle,
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
 import XIcon from "../icons/XmarkIcon.vue";
-import { DiscussionData } from "../../types/discussionTypes";
-import TextEditor from "@/components/forms/TextEditor.vue";
+import DiscussionDetail from "./DiscussionDetail.vue";
 
 export default defineComponent({
   components: {
-    Dialog,
+    TailwindDialog: Dialog,
     DialogOverlay,
-    DialogTitle,
-    TextEditor,
+    DiscussionDetail,
     TransitionChild,
     TransitionRoot,
     XIcon,
@@ -24,10 +21,6 @@ export default defineComponent({
   props: {
     isOpen: {
       type: Boolean,
-      required: true,
-    },
-    discussion: {
-      type: Object as PropType<DiscussionData>,
       required: true,
     },
   },
@@ -41,7 +34,7 @@ export default defineComponent({
 
 <template>
   <TransitionRoot as="template" :show="isOpen">
-    <Dialog
+    <TailwindDialog
       as="div"
       class="fixed inset-0 overflow-hidden z-20"
       @close="$emit('closePreview')"
@@ -72,16 +65,15 @@ export default defineComponent({
                 <div
                   class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
                 >
-                  <div class="px-4 sm:px-6">
+                  <div>
                     <div class="flex items-start justify-between">
-                      <DialogTitle class="text-lg font-medium text-gray-900">
-                        {{ discussion.title }}
-                      </DialogTitle>
-                      <div class="ml-3 h-7 flex items-center">
+                      
+                      <div class="h-7 flex items-center">
                         <button
                           type="button"
                           class="
                             bg-white
+                            ml-8
                             rounded-md
                             text-gray-400
                             hover:text-gray-500
@@ -95,58 +87,8 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-                  <div class="mt-6 relative flex-1 px-4 sm:px-6">
-                    <div class="mt-6 prose text-gray-500">
-                      <div v-if="discussion.body" class="body min-height-min">
-                        <TextEditor
-                          class="mb-3"
-                          :initial-value="discussion.body || ''"
-                          :placeholder="'Add details'"
-                          previewOnly
-                        />
-                      </div>
-                    </div>
-                    <div class="mt-3 text-sm">
-                      <router-link
-                        :to="`/channels/c/${discussion.Channels[0].uniqueName}/discussions/d/${discussion.id}`"
-                        class="font-medium text-blue-600 hover:text-blue-500"
-                      >
-                        View Comments
-                        <span aria-hidden="true">&rarr;</span>
-                      </router-link>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="flex-1 flex flex-col justify-end">
-                  <div class="px-4 divide-y divide-gray-200 sm:px-6">
-                    <div class="space-y-6 pt-6 pb-5">
-                      <div>
-                        <label
-                          for="description"
-                          class="block text-sm font-medium text-gray-900"
-                        >
-                          Comment
-                        </label>
-                        <div class="mt-1">
-                          <textarea
-                            id="description"
-                            name="description"
-                            placeholder="Resist the hivemind by commenting before reading other comments"
-                            rows="4"
-                            class="
-                              block
-                              w-full
-                              shadow-sm
-                              sm:text-sm
-                              focus:ring-blue-500 focus:border-blue-500
-                              border border-gray-300
-                              rounded-md
-                            "
-                          />
-                        </div>
-                      </div>
-                    </div>
+                  <div class="relative flex-1 mx-8">
+                    <DiscussionDetail :preview-mode="true"/>
                   </div>
                 </div>
                 <div class="flex-shrink-0 px-4 py-4 flex justify-end">
@@ -170,9 +112,9 @@ export default defineComponent({
                     "
                     @click="$emit('closePreview')"
                   >
-                    Cancel
+                    Close
                   </button>
-                  <button
+                  <!-- <button
                     type="submit"
                     class="
                       ml-4
@@ -195,13 +137,13 @@ export default defineComponent({
                     "
                   >
                     Save
-                  </button>
+                  </button> -->
                 </div>
               </div>
             </div>
           </TransitionChild>
         </div>
       </div>
-    </Dialog>
+    </TailwindDialog>
   </TransitionRoot>
 </template>
