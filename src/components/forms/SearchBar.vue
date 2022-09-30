@@ -68,7 +68,7 @@ export default defineComponent({
         class="
           pl-10
           pr-3
-          w-96
+          md:w-96
           border border-gray-300
           rounded-md
           leading-5

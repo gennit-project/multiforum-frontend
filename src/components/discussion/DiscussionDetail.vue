@@ -26,7 +26,7 @@ export default defineComponent({
     Tag,
   },
   props: {
-    previewMode: {
+    compactMode: {
       type: Boolean,
       default: false
     }
@@ -155,7 +155,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="!previewMode ? 'px-10' : ''" class="sticky top-10">
+  <div :class="!compactMode ? 'px-10' : ''" class="sticky top-10">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -177,7 +177,7 @@ export default defineComponent({
             {{ discussion.title }}
           </h2>
         </div>
-        <div v-if="!previewMode" class="mt-4 flex-shrink-0 flex md:mx-4">
+        <div v-if="!compactMode" class="mt-4 flex-shrink-0 flex md:mx-4">
           <div class="float-right">
             <span>
               <router-link
@@ -205,6 +205,7 @@ export default defineComponent({
               :created-at="discussion.createdAt"
               :edited-at="editedAt"
               :content="discussion.body"
+              :readonly="true"
             />
           </div>
           <Tag
@@ -228,7 +229,7 @@ export default defineComponent({
               {{ editedAt }}
               &#8226;
               <span
-                v-if="!previewMode"
+                v-if="!compactMode"
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="deleteModalIsOpen = true"
                 >Delete</span

@@ -1,5 +1,5 @@
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, readonly } from "vue";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import ProfileAvatar from "vue-profile-avatar";
@@ -33,6 +33,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    }
   },
 });
 </script>
@@ -66,11 +70,18 @@ export default defineComponent({
     </div>
     <md-editor
       class="mt-4"
-      v-if="content"
-      v-model="contentCopy"
+      v-if="content && readonly"
+      v-model="content"
       language="en-US"
       previewTheme="github"
       preview-only
+    />
+    <md-editor
+      class="mt-4"
+      v-if="content && !readonly"
+      v-model="contentCopy"
+      language="en-US"
+      previewTheme="github"
     />
   </div>
 </template>

@@ -291,7 +291,7 @@ export default defineComponent({
                   }}
                 </h2>
               </div>
-              <div class="items-center flex justify-between">
+              <div class="items-center flex flex-wrap justify-between">
                 <SearchBar
                   class="flex"
                   :search-placeholder="'Search discussions'"

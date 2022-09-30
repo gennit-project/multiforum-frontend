@@ -88,7 +88,7 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="relative flex-1 mx-8">
-                    <DiscussionDetail :preview-mode="true"/>
+                    <DiscussionDetail :compact-mode="true"/>
                   </div>
                 </div>
                 <div class="flex-shrink-0 px-4 py-4 flex justify-end">
