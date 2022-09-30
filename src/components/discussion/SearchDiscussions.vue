@@ -57,7 +57,7 @@ export default defineComponent({
         : []
     );
 
-    const selectedChannels = ref(defaultSelectedChannels);
+    const selectedChannels = ref(defaultSelectedChannels.value);
     const searchInput: Ref<string> = ref("");
 
     const setSearchInput = (input: string) => {
