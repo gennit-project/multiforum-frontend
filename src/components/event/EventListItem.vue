@@ -1,5 +1,6 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, computed } from "vue";
+import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
 import { getDatePieces } from "@/utils/dateTimeUtils";
 import { CommentSectionData } from "../../types/commentTypes";
@@ -9,11 +10,11 @@ import { DateTime } from "luxon";
 
 export default defineComponent({
   setup(props) {
+    const route = useRoute();
     const startTimeObj = DateTime.fromISO(props.event.startTime);
 
-    const { timeOfDay, weekday, month, day, year } = getDatePieces(
-      startTimeObj
-    );
+    const { timeOfDay, weekday, month, day, year } =
+      getDatePieces(startTimeObj);
 
     const now = DateTime.now();
     const currentYear = now.year;
@@ -22,7 +23,15 @@ export default defineComponent({
       year !== currentYear ? ", " + year : ""
     }`;
 
+    const eventIdInParams = computed(() => {
+      if (typeof route.params.eventId === "string") {
+        return route.params.eventId;
+      }
+      return "";
+    });
+
     return {
+      eventIdInParams,
       formattedDate,
       timeOfDay,
     };
@@ -54,14 +63,23 @@ export default defineComponent({
     },
   },
   computed: {
-    selectedTagsMap(){
-      let obj = {}
+    selectedTagsMap() {
+      let obj = {};
       for (let i = 0; i < this.selectedTags.length; i++) {
-        const tag = this.selectedTags[i]
+        const tag = this.selectedTags[i];
         obj[tag] = true;
       }
-      return obj
-    }
+      return obj;
+    },
+    previewLink() {
+      if (!this.event) {
+        return "";
+      }
+      if (this.isWithinChannel) {
+        return `/channels/c/${this.defaultUniqueName}/events/search/${this.event.id}`;
+      }
+      return `/events/search/${this.event.id}`;
+    },
   },
   methods: {
     getCommentCount(commentSection: CommentSectionData) {
@@ -76,7 +94,9 @@ export default defineComponent({
     return {
       previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
-      defaultUniqueName: props.event.Channels[0] ? props.event.Channels[0].uniqueName : 'cluse',
+      defaultUniqueName: props.event.Channels[0]
+        ? props.event.Channels[0].uniqueName
+        : "cluse",
     };
   },
   components: {
@@ -87,72 +107,75 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :ref="`#${event.id}`" class="py-2">
-    <div class="block">
-      <div class="py-2">
-        <div class="flex items-center">
-          <p
-            @click="$emit('clickedEventListItem')"
-           class="space-x-2"
-          >
-           <span  class="
-           text-sm
-           font-medium
-           text-blue-600
-           truncate
-           cursor-pointer
-           underline
-         "> <HighlightedSearchTerms
-         :text="event.title"
-         :search-input="searchInput"
-       /></span>
-           
-            <span class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3" v-if="event.canceled">Canceled</span>
-          </p>
-        </div>
-        <div v-if="event.description" class="items-center">
-          <p class="text-sm font-medium text-gray-600 truncate">
-            <HighlightedSearchTerms
-              :text="event.description"
-              :search-input="searchInput"
+  <li
+    :ref="`#${event.id}`"
+    :class="[
+      event.id === eventIdInParams ? 'bg-slate-200' : 'hover:bg-slate-100',
+    ]"
+    class="relative bg-white py-4 px-8 cursor-pointer"
+    @click="$emit('openPreview')"
+  >
+    <router-link :to="previewLink">
+      <div class="block">
+        <div class="py-2">
+          <div class="flex items-center">
+            <p @click="$emit('clickedEventListItem')" class="space-x-2">
+              <span
+                class="
+                  text-sm
+                  font-medium
+                  text-blue-600
+                  truncate
+                  cursor-pointer
+                  underline
+                "
+              >
+                <HighlightedSearchTerms
+                  :text="event.title"
+                  :search-input="searchInput"
+              /></span>
+
+              <span
+                class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3"
+                v-if="event.canceled"
+                >Canceled</span
+              >
+            </p>
+          </div>
+          <div v-if="event.description" class="items-center">
+            <p class="text-sm font-medium text-gray-600 truncate">
+              <HighlightedSearchTerms
+                :text="event.description"
+                :search-input="searchInput"
+              />
+            </p>
+            <p
+              v-if="event.free"
+              class="text-sm font-medium text-gray-600 truncate"
+            >
+              Free
+            </p>
+          </div>
+
+          <div class="text-sm" v-if="!isWithinChannel">
+            <Tag
+              class="m-1"
+              :active="selectedChannels.includes(channel.uniqueName)"
+              :key="channel.uniqueName"
+              :channel-mode="true"
+              v-for="channel in event.Channels"
+              :tag="channel.uniqueName"
             />
-          </p>
-          <p
-            v-if="event.free"
-            class="text-sm font-medium text-gray-600 truncate"
-          >
-            Free
-          </p>
-        </div>
-        
-
-        <div class="text-sm" v-if="!isWithinChannel">
-          <Tag
-            class="m-1"
-            :active="selectedChannels.includes(channel.uniqueName)"
-            :key="channel.uniqueName"
-            :channel-mode="true"
-            v-for="channel in event.Channels"
-            :tag="channel.uniqueName"
-          />
-        </div>
-
-
-
-
-        <div class="grid auto-cols-auto">
-          <div class="
-            mt-2
-            flex
-            text-sm text-gray-500
-            sm:mt-1 sm:mr-6
-            space-x-2
-          ">
+          </div>
+          <div class="grid auto-cols-auto">
+            <div
+              class="mt-2 flex text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2"
+            >
               <time :datetime="event.startTime">
                 {{ `${formattedDate}, ` }}
               </time>
               <div v-if="event.locationName" id="location">
-                {{`${event.locationName}, ` }}
+                {{ `${event.locationName}, ` }}
               </div>
               <div v-if="event.virtualEventUrl">
                 {{ ` ${event.virtualEventUrl}, ` }}
@@ -160,10 +183,10 @@ export default defineComponent({
               <time :datetime="event.startTime" class="ml-2">
                 {{ timeOfDay }}
               </time>
+            </div>
           </div>
-        </div>
 
-        <div class="text-sm">
+          <!-- <div class="text-sm">
           <router-link
             v-if="isWithinChannel && event.CommentSections[0]"
             :to="`/channels/c/${defaultUniqueName}/events/e/${event.id}`"
@@ -188,16 +211,16 @@ export default defineComponent({
             /></span>
             {{ i === event.CommentSections.length - 1 ? "" : "•" }}
           </router-link>
+        </div> -->
+          <Tag
+            :key="tag"
+            :active="!!selectedTagsMap[tag.text]"
+            v-for="tag in event.Tags"
+            :tag="tag.text"
+          />
         </div>
-        <Tag
-          :key="tag"
-          :active="!!selectedTagsMap[tag.text]"
-          v-for="tag in event.Tags"
-          :tag="tag.text"
-          @click="$emit('filterByTag', tag.text)"
-        />
       </div>
-    </div>
+    </router-link>
   </li>
 </template>
 <style>

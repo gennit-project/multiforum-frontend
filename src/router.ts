@@ -30,6 +30,13 @@ export const router = createRouter({
       name: 'SearchEvents',
       path: "/events",
       component: SearchEvents,
+      children: [
+        {
+          name: "SitewideSearchEventPreview",
+          path: "search/:eventId",
+          component: EventDetail
+        }
+      ]
     },
     {
       path: "/events/create",
@@ -134,6 +141,13 @@ export const router = createRouter({
               name: "SearchEventsInChannel",
               path: "",
               component: SearchEvents,
+              children: [
+                {
+                  name: "SearchEventPreview",
+                  path: "search/:eventId",
+                  component: EventDetail
+                }
+              ]
             },
             {
               name: "CreateEventInChannel",

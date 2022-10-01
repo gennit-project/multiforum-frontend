@@ -44,6 +44,12 @@ export default defineComponent({
       }
       return "";
     });
+    const eventId = computed(() => {
+      if (typeof route.params.eventId === "string") {
+        return route.params.eventId;
+      }
+      return "";
+    });
     const now = DateTime.now();
 
     const createEventPath = channelId.value
@@ -107,8 +113,8 @@ export default defineComponent({
       // will be refetched when it changes. Otherwise the query
       // would only be refetched when a value inside the eventWhere
       // object is changed.
-      return filterValues.value.resultsOrder
-    })
+      return filterValues.value.resultsOrder;
+    });
 
     const showMap = ref(false);
 
@@ -349,12 +355,13 @@ export default defineComponent({
       result: eventResult,
       loading: eventLoading,
       refetch: refetchEvents,
+      onResult: onGetEventResult,
       fetchMore,
     } = useQuery(eventQueryString, {
       limit: 25,
       offset: 0,
       where: eventWhere,
-      resultsOrder: resultsOrder
+      resultsOrder: resultsOrder,
     });
 
     const reachedEndOfResults = ref(false);
@@ -375,6 +382,41 @@ export default defineComponent({
       });
     };
 
+    const sendToPreview = (eventId: string) => {
+      if (eventId) {
+        if (!channelId.value) {
+          router.push({
+            name: "SitewideSearchEventPreview",
+            params: {
+              eventId,
+            },
+          });
+        } else {
+          router.push({
+            name: "SearchEventPreview",
+            params: {
+              eventId,
+            },
+          });
+        }
+      }
+    }
+
+    onGetEventResult((value) => {
+      // If the preview pane is blank, fill it with the details
+      // of the first result, if there is one.
+      if (
+        eventId.value ||
+        !value.data ||
+        value.data.events.length === 0
+      ) {
+        return;
+      }
+      const defaultSelectedEvent = value.data.events[0];
+
+      sendToPreview(defaultSelectedEvent.id);
+    });
+
     return {
       channelId,
       createEventPath,
@@ -390,6 +432,7 @@ export default defineComponent({
       reachedEndOfResults,
       refetchEvents,
       router,
+      sendToPreview,
       showMap,
       timeSlotFiltersActive,
     };
@@ -408,6 +451,16 @@ export default defineComponent({
       map: {} as any,
       MI_KM_RATIO: 1.609,
     };
+  },
+  created() {
+    if (
+      !this.eventId &&
+      this.eventResult &&
+      this.eventResult.events &&
+      this.eventResult.events.length > 0
+    ) {
+      this.sendToPreview(this.eventResult.events[0].id)
+    }
   },
   methods: {
     updateLocationInput(placeData: any) {
@@ -520,71 +573,80 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white">
-    <div class="rounded pl-16 pr-16">
+    <div class="lg:flex lg:flex-row">
       <div
         class="
-          mb-4
-          md:flex md:items-center md:justify-between
+          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
+          flex flex-col flex-grow
         "
       >
-        <div class="flex-1 min-w-0" v-if="!channelId">
-          <h2
-            class="
-              mt-8
-              text-2xl
-              font-bold
-              leading-7
-              text-gray-900
-              sm:text-3xl sm:tracking-tight sm:truncate
-            "
-          >
-            Search Events
-          </h2>
+        <div class="rounded pl-16 pr-16">
+          <div class="mb-4 md:flex md:items-center md:justify-between">
+            <div class="flex-1 min-w-0" v-if="!channelId">
+              <h2
+                class="
+                  mt-8
+                  text-2xl
+                  font-bold
+                  leading-7
+                  text-gray-900
+                  sm:text-3xl sm:tracking-tight sm:truncate
+                "
+              >
+                Search Events
+              </h2>
+            </div>
+          </div>
+          <EventFilterBar
+            :channel-id="channelId"
+            :result-count="eventResult ? eventResult.eventsCount : 0"
+            :filter-values="filterValues"
+            :loaded-event-count="eventResult ? eventResult.events.length : 0"
+            :time-slot-filters-active="timeSlotFiltersActive"
+            :create-event-path="createEventPath"
+            @updateSelectedDistance="updateSelectedDistance"
+            @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
+            @updateLocationInput="updateLocationInput"
+            @setSelectedChannels="setSelectedChannels"
+            @setSelectedTags="setSelectedTags"
+            @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
+            @updateSearchInput="updateSearchInput"
+            @updateEventTypeFilter="updateEventTypeFilter"
+            @updateTimeSlots="updateTimeSlots"
+            @resetTimeSlots="resetTimeSlots"
+            @showMap="setShowMap"
+            @showList="setShowList"
+          />
+        </div>
+        <div class="rounded mx-auto max-w-5xl">
+          <ErrorBanner v-if="eventError" :text="eventError.message" />
+          <EventList
+            id="listView"
+            v-if="!showMap && eventResult && eventResult.events"
+            :class="[!channelId ? '' : '']"
+            class="relative text-lg"
+            :result-count="eventResult ? eventResult.eventsCount : 0"
+            :events="eventResult.events"
+            :channel-id="channelId"
+            :search-input="filterValues.searchInput"
+            :selected-tags="filterValues.selectedTags"
+            :selected-channels="filterValues.selectedChannels"
+            :show-map="showMap"
+            @filterByTag="filterByTag"
+            @loadMore="loadMore"
+          />
+          <!-- <MapView v-if="showMap && eventResult && eventResult.events" /> -->
+          <div v-if="eventLoading">Loading...</div>
         </div>
       </div>
-      <EventFilterBar
-        :channel-id="channelId"
-        :result-count="eventResult ? eventResult.eventsCount : 0"
-        :filter-values="filterValues"
-        :loaded-event-count="eventResult ? eventResult.events.length : 0"
-        :time-slot-filters-active="timeSlotFiltersActive"
-        :create-event-path="createEventPath"
-        @updateSelectedDistance="updateSelectedDistance"
-        @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
-        @updateLocationInput="updateLocationInput"
-        @setSelectedChannels="setSelectedChannels"
-        @setSelectedTags="setSelectedTags"
-        @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
-        @updateSearchInput="updateSearchInput"
-        @updateEventTypeFilter="updateEventTypeFilter"
-        @updateTimeSlots="updateTimeSlots"
-        @resetTimeSlots="resetTimeSlots"
-        @showMap="setShowMap"
-        @showList="setShowList"
-      />
-    </div>
-    <div class="rounded mx-auto max-w-5xl">
-      <ErrorBanner
-        v-if="eventError"
-        :text="eventError.message"
-      />
-      <EventList
-        id="listView"
-        v-if="!showMap && eventResult && eventResult.events"
-        :class="[!channelId ? '' : '']"
-        class="relative text-lg"
-        :result-count="eventResult ? eventResult.eventsCount : 0"
-        :events="eventResult.events"
-        :channel-id="channelId"
-        :search-input="filterValues.searchInput"
-        :selected-tags="filterValues.selectedTags"
-        :selected-channels="filterValues.selectedChannels"
-        :show-map="showMap"
-        @filterByTag="filterByTag"
-        @loadMore="loadMore"
-      />
-      <MapView v-if="showMap && eventResult && eventResult.events" />
-      <div v-if="eventLoading">Loading...</div>
+      <div
+        class="
+          sm:invisible
+          lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto
+        "
+      >
+        <router-view></router-view>
+      </div>
     </div>
   </div>
 </template>
