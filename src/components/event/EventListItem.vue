@@ -112,7 +112,7 @@ export default defineComponent({
     :class="[
       event.id === eventIdInParams ? 'bg-slate-200' : 'hover:bg-slate-100',
     ]"
-    class="relative bg-white py-4 px-8 cursor-pointer"
+    class="relative bg-white px-8 cursor-pointer"
     @click="$emit('openPreview')"
   >
     <router-link :to="previewLink">

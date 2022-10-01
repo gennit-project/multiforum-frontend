@@ -580,7 +580,7 @@ export default defineComponent({
           flex flex-col flex-grow
         "
       >
-        <div class="rounded pl-16 pr-16">
+        <div class="rounded px-4">
           <div class="mb-4 md:flex md:items-center md:justify-between">
             <div class="flex-1 min-w-0" v-if="!channelId">
               <h2
@@ -618,7 +618,7 @@ export default defineComponent({
             @showList="setShowList"
           />
         </div>
-        <div class="rounded mx-auto max-w-5xl">
+        <div class="rounded max-w-5xl">
           <ErrorBanner v-if="eventError" :text="eventError.message" />
           <EventList
             id="listView"

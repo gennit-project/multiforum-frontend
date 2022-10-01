@@ -446,7 +446,7 @@ export default defineComponent({
     </div>
     <div v-else class="items-center space-x-2 flex flex-wrap">
       <div class="inline-block">
-        Showing {{ loadedEventCount }} of {{ resultCount }} within
+        Showing {{ loadedEventCount }} of {{ resultCount }} results within
       </div>
       <SelectMenu
         v-if="selectedDistanceUnit === MilesOrKm.KM"

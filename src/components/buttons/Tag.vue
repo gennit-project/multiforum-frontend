@@ -62,7 +62,7 @@ export default defineComponent({
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
     :class="[
-      large ? 'text-md' : 'text-xs',
+      large ? 'text-sm' : 'text-xs',
       clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-2',
       channelMode ? 'rounded-full' : 'rounded',
       this.active ? 'text-white' : '',
