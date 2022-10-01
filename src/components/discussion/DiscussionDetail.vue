@@ -28,8 +28,8 @@ export default defineComponent({
   props: {
     compactMode: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup() {
     const route = useRoute();
@@ -162,7 +162,21 @@ export default defineComponent({
       v-else-if="getDiscussionError"
       :text="getDiscussionError.message"
     />
-    <div v-else class="mx-auto max-w-6xl space-y-2 divide-y bg-white pt-4 pb-4 pr-8 pl-8 rounded">
+    <div
+      v-else
+      class="
+        mx-auto
+        max-w-6xl
+        space-y-2
+        divide-y
+        bg-white
+        pt-4
+        pb-4
+        pr-8
+        pl-8
+        rounded
+      "
+    >
       <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
           <h2
@@ -251,7 +265,12 @@ export default defineComponent({
                   class="understatedLink underline"
                   :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`"
                 >
-                  {{ `c/${channel.uniqueName}` }}
+                  <Tag
+                    class="mt-2"
+                    :tag="channel.uniqueName"
+                    :channel-mode="true"
+                    :discussionId="discussionId"
+                  />
                 </router-link>
               </li>
             </ul>

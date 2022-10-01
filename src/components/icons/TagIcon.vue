@@ -3,16 +3,16 @@
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    class="h-6 w-6"
     fill="none"
     viewBox="0 0 24 24"
+    stroke-width="1.5"
     stroke="currentColor"
+    class="w-3 h-3"
   >
     <path
       stroke-linecap="round"
       stroke-linejoin="round"
-      stroke-width="2"
-      d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
+      d="M5.25 8.25h15m-16.5 7.5h15m-1.8-13.5l-3.9 19.5m-2.1-19.5l-3.9 19.5"
     />
   </svg>
 </template>

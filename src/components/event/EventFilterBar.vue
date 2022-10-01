@@ -407,12 +407,16 @@ export default defineComponent({
           :key="shortcut.label"
           :tag="shortcut.label"
           :active="shortcut.value === activeDateShortcut"
+          :hide-icon="true"
+          :large="true"
           @click="handleTimeFilterShortcutClick(shortcut)"
         />
         <Tag
           v-for="shortcut in eventFilterTypeShortcuts"
           :key="shortcut.label"
           :tag="shortcut.label"
+          :hide-icon="true"
+          :large="true"
           :active="
             shortcut.locationFilterType === activeEventFilterTypeShortcut ||
             (shortcut.locationFilterType ===

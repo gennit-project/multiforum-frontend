@@ -124,23 +124,22 @@ export default defineComponent({
             Free
           </p>
         </div>
-        <p
-          v-if="!isWithinChannel"
-          class="mt-2 flex items-center text-sm text-gray-700 sm:mr-6"
-        >
-          {{ `Posted in: ` }}
-          <router-link
-            :class="[
-              selectedChannels.indexOf(channel.uniqueName) !== -1 ? 'highlighted' : '',
-            ]"
-            class="ml-1 text-blue-600 underline"
+        
+
+        <div class="text-sm" v-if="!isWithinChannel">
+          <Tag
+            class="m-1"
+            :active="selectedChannels.includes(channel.uniqueName)"
             :key="channel.uniqueName"
-            v-for="channel in event?.Channels"
-            :to="`/channels/c/${channel.uniqueName}/events/e/${event?.id}`"
-          >
-            {{ channel.uniqueName }}
-          </router-link>
-        </p>
+            :channel-mode="true"
+            v-for="channel in event.Channels"
+            :tag="channel.uniqueName"
+          />
+        </div>
+
+
+
+
         <div class="grid auto-cols-auto">
           <div class="
             mt-2

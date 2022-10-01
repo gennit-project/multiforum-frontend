@@ -81,22 +81,22 @@ export default defineComponent({
     };
   },
   computed: {
-    previewLink(){
+    previewLink() {
       if (!this.discussion) {
-        return ''
+        return "";
       }
-      if (this.isWithinChannel ) {
-        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`
+      if (this.isWithinChannel) {
+        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
       }
-      return  `/discussions/search/${this.discussion.id}`
-    }
+      return `/discussions/search/${this.discussion.id}`;
+    },
   },
   // methods: {
-    // getCommentCount(commentSection: CommentSectionData) {
-    //   const count = commentSection.CommentsAggregate.count;
-    //   return ` ${count} comment${count === 1 ? "" : "s"}`;
-    // },
-    
+  // getCommentCount(commentSection: CommentSectionData) {
+  //   const count = commentSection.CommentsAggregate.count;
+  //   return ` ${count} comment${count === 1 ? "" : "s"}`;
+  // },
+
   // },
   inheritAttrs: false,
 });
@@ -118,15 +118,7 @@ export default defineComponent({
         <div class="col-span-3">
           <div class="block">
             <div>
-              <p
-                class="
-                  cursor-pointer
-                  text-md
-                  font-medium
-                  truncate
-                  mr-2
-                "
-              >
+              <p class="cursor-pointer text-md font-medium truncate mr-2">
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
@@ -140,33 +132,24 @@ export default defineComponent({
                 :search-input="searchInput"
               />
               <Tag
-                class="border border-gray-600 m-1"
+                class="m-1"
                 :active="selectedTags.includes(tag)"
                 :key="tag"
                 v-for="tag in tags"
                 :tag="tag"
-                @click="$emit('filterByTag', tag)"
               />
             </p>
 
             <div class="text-sm" v-if="!isWithinChannel">
-              <div
+              <Tag
+                class="m-1"
+                :active="selectedChannels.includes(channel.uniqueName)"
                 :key="i"
+                :channel-mode="true"
                 v-for="(channel, i) in discussion.Channels"
-                class="font-medium"
-              >
-                {{ "comment count " }} in
-                <span
-                  :class="
-                    selectedChannels.includes(channel.uniqueName)
-                      ? 'highlighted'
-                      : ''
-                  "
-                  >{{ channel.uniqueName }}</span
-                >
-
-                {{ i === discussion.CommentSections.length - 1 ? "" : "•" }}
-              </div>
+                :tag="channel.uniqueName"
+                @click="$emit('filterByTag', channel.uniqueName)"
+              />
             </div>
           </div>
         </div>

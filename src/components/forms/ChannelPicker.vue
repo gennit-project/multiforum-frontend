@@ -99,6 +99,7 @@ export default defineComponent({
           v-for="channel in channelOptionLabels"
           :active="!!selectedChannelsMap[channel]"
           :tag="channel"
+          :channel-mode="true"
           @select="select"
           @deselect="deselect"
         />
