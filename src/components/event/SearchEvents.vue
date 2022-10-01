@@ -24,8 +24,9 @@ import {
 } from "@/types/eventTypes";
 import EventFilterBar from "./EventFilterBar.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
-import MapView from "./MapView.vue";
+// import MapView from "./MapView.vue";
 import LocationFilterTypes from "./locationFilterTypes";
+import EventPreview from "./EventPreview.vue";
 
 export default defineComponent({
   name: "SearchEvents",
@@ -33,7 +34,8 @@ export default defineComponent({
     ErrorBanner,
     EventFilterBar,
     EventList,
-    MapView,
+    EventPreview
+    // MapView,
   },
   setup() {
     const route = useRoute();
@@ -417,6 +419,8 @@ export default defineComponent({
       sendToPreview(defaultSelectedEvent.id);
     });
 
+    const previewIsOpen = ref(false);
+
     return {
       channelId,
       createEventPath,
@@ -429,6 +433,7 @@ export default defineComponent({
       loadMore,
       now,
       placeData: null,
+      previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
       router,
@@ -568,6 +573,12 @@ export default defineComponent({
       this.filterValues.selectedWeeklyHourRanges =
         createDefaultSelectedWeeklyHourRanges();
     },
+    openPreview() {
+      this.previewIsOpen = true;
+    },
+    closePreview() {
+      this.previewIsOpen = false;
+    }
   },
 });
 </script>
@@ -634,6 +645,12 @@ export default defineComponent({
             :show-map="showMap"
             @filterByTag="filterByTag"
             @loadMore="loadMore"
+            @openPreview="openPreview"
+          />
+          <EventPreview
+            class="lg:invisible"
+            :isOpen="previewIsOpen"
+            @closePreview="closePreview"
           />
           <!-- <MapView v-if="showMap && eventResult && eventResult.events" /> -->
           <div v-if="eventLoading">Loading...</div>
@@ -641,7 +658,7 @@ export default defineComponent({
       </div>
       <div
         class="
-          sm:invisible
+          invisible
           lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto
         "
       >

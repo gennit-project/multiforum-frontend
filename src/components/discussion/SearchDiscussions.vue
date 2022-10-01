@@ -402,7 +402,7 @@ export default defineComponent({
       </div>
       <div
         class="
-          sm:invisible
+          invisible
           lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto
         "
       >

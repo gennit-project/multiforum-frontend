@@ -269,7 +269,6 @@ export default defineComponent({
                     class="mt-2"
                     :tag="channel.uniqueName"
                     :channel-mode="true"
-                    :discussionId="discussionId"
                   />
                 </router-link>
               </li>

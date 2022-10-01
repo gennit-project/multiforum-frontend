@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Back from "../buttons/Back.vue";
 import Tag from "../buttons/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
@@ -32,8 +31,13 @@ import Comment from "../comments/Comment.vue";
 import ChannelIcon from "../icons/ChannelIcon.vue";
 
 export default defineComponent({
+  props: {
+    compactMode: {
+      type: Boolean,
+      default: false
+    }
+  },
   components: {
-    Back,
     CalendarIcon,
     ClockIcon,
     Comment,
@@ -90,8 +94,8 @@ export default defineComponent({
         console.error(e);
       }
       setTimeout(() => {
-        showAddressCopiedNotification.value = false
-      },2000)
+        showAddressCopiedNotification.value = false;
+      }, 2000);
     };
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
@@ -270,8 +274,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-10" >
-    <Back />
+  <div :class="[!compactMode ? 'px-10' : '']">
     <p v-if="eventLoading">Loading...</p>
     <ErrorBanner v-else-if="eventError" :text="eventError.message" />
 
@@ -323,7 +326,7 @@ export default defineComponent({
             {{ eventData.title }}
           </h2>
         </div>
-        <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+        <div v-if="!compactMode" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
           <div class="float-right">
             <span>
               <router-link
@@ -340,24 +343,112 @@ export default defineComponent({
         </div>
       </div>
       <div class="grid grid-cols-8 gap-1">
-        <div class="col-start-1 col-span-5 mr-4">
-          <Comment
-            v-if="eventData.description"
-            :author-username="eventData.Poster ? eventData.Poster.username : ''"
-            :created-at="eventData.createdAt"
-            :edited-at="editedAt"
-            :content="eventData.description"
-            :readonly="true"
-          />
-          <Tag
-            v-for="tag in eventData.Tags"
-            :tag="tag.text"
-            :key="tag.text"
-            :eventId="eventId"
-          />
+          <div  :class="!compactMode ? 'xl:col-span-5' : ''" class="col-start-1 col-span-8 mr-4">
+            <Comment
+              v-if="eventData.description"
+              :author-username="
+                eventData.Poster ? eventData.Poster.username : ''
+              "
+              :created-at="eventData.createdAt"
+              :edited-at="editedAt"
+              :content="eventData.description"
+              :readonly="true"
+            />
+            <Tag
+              v-for="tag in eventData.Tags"
+              :tag="tag.text"
+              :key="tag.text"
+              :eventId="eventId"
+            />
+            <div
+              v-if="channelId && channelsExceptCurrent.length > 0"
+              class="mt-2"
+            >
+              Crossposted To Channels:
+            </div>
 
-          <div class="text-xs text-gray-600 mt-4">
-            <p v-if="!eventData.virtualEventUrl && !eventData.address">This event won't show in online or in-person search results because it doesn't have a location or a virtual event URL.</p>
+            <router-link
+              v-for="channel in channelsExceptCurrent"
+              :key="channel.uniqueName"
+              :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+            >
+              <Tag
+                class="mt-2"
+                :tag="channel.uniqueName"
+                :channel-mode="true"
+              />
+            </router-link>
+          </div>
+
+          <div
+            :class="!compactMode ? 'xl:col-span-3' : ''"
+            class="
+              pl-8
+              col-span-8
+              text-sm text-gray-700
+              space-y-2
+              ml-4
+            "
+          >
+            <ul>
+              <li>
+                <CalendarIcon class="inline h-5 w-5 mr-3 text-blue-700" />{{
+                  getFormattedDateString(eventData.startTime)
+                }}
+              </li>
+              <li>
+                <ClockIcon class="inline h-5 w-5 mr-2 text-blue-700" />
+                {{
+                  getFormattedTimeString(eventData.startTime, eventData.endTime)
+                }}
+              </li>
+              <li v-if="eventData.isInPrivateResidence">
+                <HomeIcon class="inline" /> This event is in a private
+                residence.
+              </li>
+
+              <li class="hanging-indent" v-if="eventData.virtualEventUrl">
+                <LinkIcon class="inline h-5 w-5 mr-2 text-blue-700" />
+                <span class="underline cursor-pointer" @click="openLink">
+                  {{ eventData.virtualEventUrl }}
+                </span>
+              </li>
+              <li v-if="eventData.address">
+                <LocationIcon
+                  class="inline h-5 w-5 mr-2 text-blue-700"
+                ></LocationIcon>
+
+                {{ `${eventData.locationName}, ` }}
+                <span
+                  ><a
+                    class="underline"
+                    target="_blank"
+                    rel="noreferrer"
+                    :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
+                  >
+                    {{ eventData.address }}
+                  </a>
+
+                  <VTooltip class="inline-flex">
+                    <ClipboardIcon
+                      class="ml-1 h-4 w-4 cursor-pointer"
+                      @click="copyAddress"
+                    />
+                    <template #popper> Copy </template>
+                  </VTooltip>
+                </span>
+              </li>
+              <li v-if="!eventData.free">
+                <TicketIcon class="inline h-5 w-5 mr-2 text-blue-700" />
+                {{ eventData.cost }}
+              </li>
+            </ul>
+          </div>
+          <div class="col-span-8 text-xs text-gray-600 mt-4">
+            <p v-if="!eventData.virtualEventUrl && !eventData.address">
+              This event won't show in online or in-person search results
+              because it doesn't have a location or a virtual event URL.
+            </p>
             <div class="organizer">
               <router-link
                 v-if="eventData.Poster"
@@ -383,13 +474,14 @@ export default defineComponent({
               }}
               &#8226;
               <span
+                v-if="!compactMode"
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="confirmDeleteIsOpen = true"
                 >Delete</span
               >
-              <span class="ml-1 mr-1" v-if="!eventData.canceled">&#8226;</span>
+              <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1">&#8226;</span>
               <span
-                v-if="!eventData.canceled"
+                v-if="!compactMode && !eventData.canceled"
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="confirmCancelIsOpen = true"
                 >Cancel</span
@@ -403,87 +495,8 @@ export default defineComponent({
               <span v-if="eventData.updatedAt"> &#8226; </span>
               {{ editedAt }}
             </div>
-          </div>
         </div>
-        <div
-          class="
-            pl-8
-            col-span-3
-            text-sm text-gray-700
-            space-y-2
-            ml-4
-          "
-        >
-          <ul>
-            <li>
-              <CalendarIcon class="inline h-5 w-5 mr-3 text-blue-700" />{{
-                getFormattedDateString(eventData.startTime)
-              }}
-            </li>
-            <li>
-              <ClockIcon class="inline h-5 w-5 mr-2 text-blue-700" />
-              {{
-                getFormattedTimeString(eventData.startTime, eventData.endTime)
-              }}
-            </li>
-            <li v-if="eventData.isInPrivateResidence">
-              <HomeIcon class="inline" /> This event is in a private residence.
-            </li>
 
-            <li class="hanging-indent" v-if="eventData.virtualEventUrl">
-              <LinkIcon class="inline h-5 w-5 mr-2 text-blue-700" />
-              <span class="underline cursor-pointer" @click="openLink">
-                {{ eventData.virtualEventUrl }}
-              </span>
-            </li>
-            <li v-if="eventData.address">
-              <LocationIcon class="inline h-5 w-5 mr-2 text-blue-700"></LocationIcon>
-
-              {{ `${eventData.locationName}, ` }}
-              <span 
-                ><a
-                  class="underline"
-                  target="_blank"
-                  rel="noreferrer"
-                  :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
-                >
-                  {{ eventData.address }}
-                </a>
-
-                <VTooltip class="inline-flex">
-                  <ClipboardIcon
-                    class="ml-1 h-4 w-4 cursor-pointer"
-                    @click="copyAddress"
-                  />
-                  <template #popper> Copy </template>
-                </VTooltip>
-              </span>
-            </li>
-            <li v-if="!eventData.free">
-              <TicketIcon class="inline h-5 w-5 mr-2 text-blue-700" />
-              {{ eventData.cost }}
-            </li>
-            <li v-if="channelId && channelsExceptCurrent.length > 0">
-              <ChannelIcon class="inline h-5 w-5 mr-3 text-blue-700" />Crossposted to
-              Channels:
-
-              <ul>
-                <li
-                  v-for="channel in channelsExceptCurrent"
-                  :key="channel.uniqueName"
-                >
-                  <router-link
-                    key="{channel.uniqueName}"
-                    class="understatedLink"
-                    :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
-                  >
-                    {{ `c/${channel.uniqueName}` }}
-                  </router-link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </div>
         <WarningModal
           :title="'Delete Event'"
           :body="'Are you sure you want to delete this event?'"

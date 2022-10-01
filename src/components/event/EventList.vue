@@ -105,7 +105,11 @@ export default defineComponent({
     <p class="prose mt-3" v-if="events.length === 0 && !showMap">
       Could not find any events.
     </p>
-    <ul v-if="events.length > 0" role="list" class="rounded bg-white divide-y divide-gray-200 mb-4">
+    <ul
+      v-if="events.length > 0"
+      role="list"
+      class="rounded bg-white divide-y divide-gray-200 mb-4"
+    >
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"
@@ -143,10 +147,12 @@ export default defineComponent({
         "
         @clickedEventListItem="handleClickEventListItem(event)"
         @filterByTag="filterByTag"
+        @openPreview="$emit('openPreview')"
       />
     </ul>
 
     <LoadMore
+      class="px-8"
       :reached-end-of-results="resultCount === events.length"
       @loadMore="$emit('loadMore')"
     />

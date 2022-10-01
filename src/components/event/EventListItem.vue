@@ -119,7 +119,7 @@ export default defineComponent({
       <div class="block">
         <div class="py-2">
           <div class="flex items-center">
-            <p @click="$emit('clickedEventListItem')" class="space-x-2">
+            <p  class="space-x-2">
               <span
                 class="
                   text-sm
