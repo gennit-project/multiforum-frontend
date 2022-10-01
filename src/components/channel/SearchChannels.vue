@@ -110,7 +110,7 @@ export default defineComponent({
       eventWhere: {
         startTime_GT: new Date().toISOString(),
       },
-      limit: 5,
+      limit: 25,
       offset: 0,
     });
 
