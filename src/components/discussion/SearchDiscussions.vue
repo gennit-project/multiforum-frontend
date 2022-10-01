@@ -41,6 +41,12 @@ export default defineComponent({
       }
       return "";
     });
+    const discussionId = computed(() => {
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
+    });
 
     const defaultSelectedChannels = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -173,7 +179,13 @@ export default defineComponent({
     };
 
     onGetDiscussionResult((value) => {
-      if (!value.data || value.data.discussions.length === 0) {
+      // If the preview pane is blank, fill it with the details
+      // of the first result, if there is one.
+      if (
+        discussionId.value ||
+        !value.data ||
+        value.data.discussions.length === 0
+      ) {
         return;
       }
       const defaultSelectedDiscussion = value.data.discussions[0];
@@ -221,7 +233,7 @@ export default defineComponent({
       ? `/channels/c/${channelId.value}/discussions/create`
       : "/discussions/create";
 
-    const previewIsOpen = ref(false)
+    const previewIsOpen = ref(false);
 
     return {
       channelId,
@@ -256,15 +268,15 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
     },
-    closePreview(){
+    closePreview() {
       this.previewIsOpen = false;
     },
-    openPreview(){
+    openPreview() {
       this.previewIsOpen = true;
     },
-    setSelectedChannels(channels: Array<string>){
+    setSelectedChannels(channels: Array<string>) {
       this.selectedChannels = channels;
-    }
+    },
   },
 });
 </script>
@@ -272,7 +284,12 @@ export default defineComponent({
 <template>
   <div class="bg-white">
     <div class="lg:flex lg:flex-row">
-      <div class="lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto flex flex-col flex-grow">
+      <div
+        class="
+          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
+          flex flex-col flex-grow
+        "
+      >
         <div>
           <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
             <div class="pt-8">
@@ -365,7 +382,12 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="sm:invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
+      <div
+        class="
+          sm:invisible
+          lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto
+        "
+      >
         <router-view></router-view>
       </div>
     </div>

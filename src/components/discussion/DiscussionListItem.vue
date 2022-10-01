@@ -106,9 +106,9 @@ export default defineComponent({
   <li
     :class="[
       discussion.id === discussionIdInParams
-        ? 'bg-gray-200'
-        : 'hover:bg-gray-100',
-      channelIdInParams ? 'hover:bg-gray-100' : '',
+        ? 'bg-slate-200'
+        : 'hover:bg-slate-100',
+      channelIdInParams ? 'hover:bg-slate-200' : '',
     ]"
     class="relative bg-white py-4 px-8 cursor-pointer"
     @click="$emit('openPreview')"
@@ -126,7 +126,7 @@ export default defineComponent({
               </p>
             </div>
 
-            <p class="line-clamp-2 text-sm font-medium text-gray-500 mx-1 mt-1">
+            <p class="line-clamp-2 text-sm font-medium mx-1 mt-1">
               <HighlightedSearchTerms
                 :text="body"
                 :search-input="searchInput"
@@ -161,12 +161,12 @@ export default defineComponent({
               flex-shrink-0
               whitespace-nowrap
               font-medium
-              text-sm text-gray-500
+              text-sm
             "
             >{{ relativeTime }}</time
           >
           <br />
-          <p class="float-right text-sm font-medium text-gray-500 truncate">
+          <p class="float-right text-sm font-medium truncate">
             Posted by
 
             {{ `@${authorUsername}` }}
