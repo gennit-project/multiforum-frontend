@@ -178,6 +178,26 @@ export default defineComponent({
       });
     };
 
+    const sendToPreview = (discussionId: string) => {
+      if (discussionId) {
+        if (!channelId.value) {
+          router.push({
+            name: "SitewideSearchDiscussionPreview",
+            params: {
+              discussionId: discussionId,
+            },
+          });
+        } else {
+          router.push({
+            name: "SearchDiscussionPreview",
+            params: {
+              discussionId: discussionId,
+            },
+          });
+        }
+      }
+    }
+
     onGetDiscussionResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
@@ -190,21 +210,7 @@ export default defineComponent({
       }
       const defaultSelectedDiscussion = value.data.discussions[0];
 
-      if (!channelId.value) {
-        router.push({
-          name: "SitewideSearchDiscussionPreview",
-          params: {
-            discussionId: defaultSelectedDiscussion.id,
-          },
-        });
-      } else {
-        router.push({
-          name: "SearchDiscussionPreview",
-          params: {
-            discussionId: defaultSelectedDiscussion.id,
-          },
-        });
-      }
+      sendToPreview(defaultSelectedDiscussion.id);
     });
 
     const openModal = (selectedFilter: string) => {
@@ -242,6 +248,7 @@ export default defineComponent({
       compareDate,
       createDiscussionPath,
       defaultLabels,
+      discussionId,
       discussionError,
       discussionLoading,
       discussionResult,
@@ -258,8 +265,19 @@ export default defineComponent({
       selectedChannels,
       selectedFilterOptions,
       selectedTags,
+      sendToPreview,
       tagLabel,
     };
+  },
+  created() {
+    if (
+      !this.discussionId &&
+      this.discussionResult &&
+      this.discussionResult.discussions &&
+      this.discussionResult.discussions.length > 0
+    ) {
+      this.sendToPreview(this.discussionResult.discussions[0].id)
+    }
   },
   methods: {
     updateSearchResult(input: string) {
