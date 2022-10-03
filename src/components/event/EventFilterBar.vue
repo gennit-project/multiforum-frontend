@@ -26,15 +26,12 @@ import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "../icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
 import RefreshIcon from "../icons/RefreshIcon.vue";
-import ToggleMap from "../buttons/ToggleMap.vue";
-import CreateButton from "../buttons/CreateButton.vue";
 
 export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
-    CreateButton,
     FilterChip,
     LocationSearchBar,
     Modal,
@@ -43,7 +40,6 @@ export default defineComponent({
     Tag,
     TagIcon,
     TagPicker,
-    ToggleMap,
     WeeklyTimePicker,
     RefreshIcon,
   },
@@ -389,16 +385,6 @@ export default defineComponent({
         :search-placeholder="'Search events'"
         @updateSearchInput="updateSearchInput"
       />
-      <div class="float-right align-middle py-2">
-        <span class="flex-shrink-0 space-x-2 flex float-right">
-          <ToggleMap
-            :show-map="showMap"
-            @showMap="$emit('setShowMap', $event)"
-            @showList="$emit('setShowList', $event)"
-          />
-          <CreateButton :to="createEventPath" :label="'Create Event'" />
-        </span>
-      </div>
     </div>
     <div class="space-x-2">
       <div class="mt-2">

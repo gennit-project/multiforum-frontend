@@ -289,7 +289,7 @@ export default defineComponent({
     </div> -->
 
     <div
-      v-else-if="eventResult && eventResult.events"
+      v-else-if="eventResult && eventResult.events && eventData"
       class="mx-auto max-w-5xl bg-white rounded pt-4 pb-4 pr-8 pl-8"
     >
       <ErrorBanner
