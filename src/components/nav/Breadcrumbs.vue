@@ -41,7 +41,7 @@ export default defineComponent({
           <router-link
             v-if="link.path"
             :to="`/${link.path}/`"
-            class="text-xs text-gray-500 hover:text-gray-700"
+            class="text-xs text-gray-500 hover:text-gray-700 underline"
             active-class="text-gray-700"
             >{{ link.label }}
           </router-link>

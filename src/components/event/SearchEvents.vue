@@ -25,6 +25,7 @@ import {
 import EventFilterBar from "./EventFilterBar.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
 // import MapView from "./MapView.vue";
+import EventMap from "./Map.vue"
 import LocationFilterTypes from "./locationFilterTypes";
 import EventPreview from "./EventPreview.vue";
 import CreateButton from "../buttons/CreateButton.vue";
@@ -36,6 +37,7 @@ export default defineComponent({
     ErrorBanner,
     EventFilterBar,
     EventList,
+    EventMap,
     EventPreview,
     CreateButton,
     // MapView,
@@ -534,19 +536,6 @@ export default defineComponent({
     },
     toggleShowMap(e: boolean) {
       this.showMap =  e;
-
-      // const path = this.channelId
-      //   ? `/channels/c/${this.channelId}/events`
-      //   : "events";
-      // router.push({
-      //   path,
-      //   query: {
-      //     // search: this.filterValues.searchInput,
-      //     // channel: this.filterValues.selectedChannels,
-      //     // tag: this.filterValues.selectedTags,
-      //     view: this.showMap ? "map" : "list",
-      //   },
-      // });
     },
     setShowList() {
       this.showMap = false;
@@ -689,15 +678,24 @@ export default defineComponent({
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />
-          <!-- <MapView v-if="showMap && eventResult && eventResult.events" /> -->
+          
           <div v-if="eventLoading">Loading...</div>
         </div>
       </div>
       <div
+        v-if="!showMap"
         class="invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto"
       >
         <router-view></router-view>
       </div>
+      <EventMap
+        v-else-if="showMap"
+        :events="eventResult.events"
+        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+        :color-locked="colorLocked"
+        @open-preview="openPreview"
+        @lockColors="colorLocked = true"
+      />
     </div>
   </div>
 </template>

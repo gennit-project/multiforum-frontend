@@ -1,20 +1,33 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import EventPreview from "./EventPreview.vue";
+import { defineComponent, PropType } from "vue";
+import { EventData } from "@/types/eventTypes";
+// import EventPreview from "./EventPreview.vue";
 import EventMap from "./Map.vue";
-import PreviewContainer from "./PreviewContainer.vue";
-import CloseButton from "@/components/buttons/CloseButton.vue";
-import LoadMore from "../buttons/LoadMore.vue";
+// import PreviewContainer from "./PreviewContainer.vue";
+// import CloseButton from "@/components/buttons/CloseButton.vue";
+// import LoadMore from "../buttons/LoadMore.vue";
 
 export default defineComponent({
-  components: {
-    CloseButton,
-    EventPreview,
-    EventMap,
-    LoadMore,
-    PreviewContainer,
+  props: {
+     events: {
+        type: Array as PropType<Array<EventData>>,
+        default: []
+     }
   },
-  setup() {},
+  components: {
+    // CloseButton,
+    // EventPreview,
+    EventMap,
+    // LoadMore,
+    // PreviewContainer,
+  },
+  data(){
+    return {
+      colorLocked: false,
+      eventPreviewIsOpen: false,
+      multipleEventPreviewIsOpen: false
+    }
+  },
   methods: {
     setMarkerData(data: any) {
       this.markerMap = data.markerMap;
@@ -191,7 +204,7 @@ export default defineComponent({
   <div id="mapView" class="overflow-y-scroll">
     <div style="position: fixed; width: 66vw; height: calc(100vh - 130px)">
       <EventMap
-        :events="eventResult.events"
+        :events="events"
         :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
         @highlightEvent="highlightEvent"
@@ -200,7 +213,7 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
     </div>
-    <div style="position: fixed; right: 0; width: 34vw">
+    <!-- <div style="position: fixed; right: 0; width: 34vw">
       <EventList
         class="overscroll-auto overflow-auto"
         key="highlightedEventId"
@@ -224,10 +237,10 @@ export default defineComponent({
           @loadMore="loadMore"
         />
       </div>
-    </div>
+    </div> -->
   </div>
 
-  <PreviewContainer
+  <!-- <PreviewContainer
     :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
     :header="selectedEvent ? selectedEvent.title : 'Untitled'"
     :top-layer="true"
@@ -238,9 +251,9 @@ export default defineComponent({
       :event="selectedEvent"
       @closePreview="closeEventPreview"
     />
-  </PreviewContainer>
+  </PreviewContainer> -->
 
-  <PreviewContainer
+  <!-- <PreviewContainer
     :isOpen="multipleEventPreviewIsOpen"
     :header="'Events at this Location'"
     @closePreview="closeMultipleEventPreview"
@@ -270,5 +283,5 @@ export default defineComponent({
         @closePreview="closeEventPreview"
       />
     </PreviewContainer>
-  </PreviewContainer>
+  </PreviewContainer> -->
 </template>
