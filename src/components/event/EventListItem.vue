@@ -110,7 +110,7 @@ export default defineComponent({
   <li
     :ref="`#${event.id}`"
     :class="[
-      event.id === eventIdInParams ? 'bg-slate-200' : 'hover:bg-slate-100',
+      event.id === eventIdInParams ? 'bg-slate-100' : 'hover:bg-slate-200',
     ]"
     class="relative bg-white px-8 cursor-pointer"
     @click="$emit('openPreview')"
