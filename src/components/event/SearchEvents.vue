@@ -24,8 +24,7 @@ import {
 } from "@/types/eventTypes";
 import EventFilterBar from "./EventFilterBar.vue";
 import ErrorBanner from "../forms/ErrorBanner.vue";
-// import MapView from "./MapView.vue";
-import EventMap from "./Map.vue"
+import MapView from "./MapView.vue";
 import LocationFilterTypes from "./locationFilterTypes";
 import EventPreview from "./EventPreview.vue";
 import CreateButton from "../buttons/CreateButton.vue";
@@ -37,10 +36,9 @@ export default defineComponent({
     ErrorBanner,
     EventFilterBar,
     EventList,
-    EventMap,
     EventPreview,
     CreateButton,
-    // MapView,
+    MapView,
     TailwindSwitch: Switch,
     SwitchGroup,
     SwitchLabel,
@@ -535,7 +533,11 @@ export default defineComponent({
       this.setSelectedTags([tag]);
     },
     toggleShowMap(e: boolean) {
-      this.showMap =  e;
+      this.showMap = e;
+
+      if (this.showMap) {
+        this.closePreview();
+      }
     },
     setShowList() {
       this.showMap = false;
@@ -576,90 +578,89 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white">
-    <div class="lg:flex lg:flex-row">
+    <div class="mt-7 mb-4 mx-4 md:flex md:items-center md:justify-between">
+      <div class="flex-1 min-w-0">
+        <h2
+          v-if="!channelId"
+          class="
+            text-2xl
+            font-bold
+            leading-7
+            text-gray-900
+            align-middle
+            flex-1
+            sm:text-3xl sm:tracking-tight sm:truncate
+          "
+        >
+          Search Events
+        </h2>
+      </div>
+      <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
+        <div class="float-right">
+          <div class="flex justify-center">
+            <SwitchGroup as="div" class="flex items-center">
+              <TailwindSwitch
+                v-model="showMap"
+                :class="[
+                  showMap ? 'bg-blue-600' : 'bg-gray-200',
+                  'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+                ]"
+                @update:model-value="toggleShowMap"
+              >
+                <span
+                  aria-hidden="true"
+                  :class="[
+                    showMap ? 'translate-x-5' : 'translate-x-0',
+                    'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                  ]"
+                />
+              </TailwindSwitch>
+              <SwitchLabel as="span" class="ml-3">
+                <span class="text-sm font-medium text-gray-900">Show Map</span>
+              </SwitchLabel>
+            </SwitchGroup>
+            <CreateButton
+              class="align-middle ml-2"
+              :to="createEventPath"
+              :label="'Create Event'"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <EventFilterBar
+      class="mx-4"
+      :channel-id="channelId"
+      :result-count="eventResult ? eventResult.eventsCount : 0"
+      :filter-values="filterValues"
+      :loaded-event-count="eventResult ? eventResult.events.length : 0"
+      :time-slot-filters-active="timeSlotFiltersActive"
+      :create-event-path="createEventPath"
+      @updateSelectedDistance="updateSelectedDistance"
+      @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
+      @updateLocationInput="updateLocationInput"
+      @setSelectedChannels="setSelectedChannels"
+      @setSelectedTags="setSelectedTags"
+      @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
+      @updateSearchInput="updateSearchInput"
+      @updateEventTypeFilter="updateEventTypeFilter"
+      @updateTimeSlots="updateTimeSlots"
+      @resetTimeSlots="resetTimeSlots"
+      @showList="setShowList"
+    />
+    <div v-if="eventLoading">Loading...</div>
+    <ErrorBanner v-else-if="eventError" :text="eventError.message" />
+    <div v-else-if="!showMap && eventResult && eventResult.events" class="lg:flex lg:flex-row">
       <div
         class="
           lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
           flex flex-col flex-grow
         "
       >
-        <div class="mt-7 mb-4 mx-4 md:flex md:items-center md:justify-between">
-          <div class="flex-1 min-w-0">
-            <h2
-              v-if="!channelId"
-              class="
-                text-2xl
-                font-bold
-                leading-7
-                text-gray-900
-                align-middle
-                flex-1
-                sm:text-3xl sm:tracking-tight sm:truncate
-              "
-            >
-              Search Events
-            </h2>
-          </div>
-          <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
-            <div class="float-right">
-              <div class="flex justify-center">
-                <SwitchGroup as="div" class="flex items-center">
-                  <TailwindSwitch
-                    v-model="showMap"
-                    :class="[
-                      showMap ? 'bg-blue-600' : 'bg-gray-200',
-                      'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-                    ]"
-                    @update:model-value="toggleShowMap"
-                  >
-                    <span
-                      aria-hidden="true"
-                      :class="[
-                        showMap ? 'translate-x-5' : 'translate-x-0',
-                        'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-                      ]"
-                    />
-                  </TailwindSwitch>
-                  <SwitchLabel as="span" class="ml-3">
-                    <span class="text-sm font-medium text-gray-900"
-                      >Show Map</span
-                    >
-                  </SwitchLabel>
-                </SwitchGroup>
-                <CreateButton
-                  class="align-middle ml-2"
-                  :to="createEventPath"
-                  :label="'Create Event'"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-        <EventFilterBar
-          class="mx-4"
-          :channel-id="channelId"
-          :result-count="eventResult ? eventResult.eventsCount : 0"
-          :filter-values="filterValues"
-          :loaded-event-count="eventResult ? eventResult.events.length : 0"
-          :time-slot-filters-active="timeSlotFiltersActive"
-          :create-event-path="createEventPath"
-          @updateSelectedDistance="updateSelectedDistance"
-          @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
-          @updateLocationInput="updateLocationInput"
-          @setSelectedChannels="setSelectedChannels"
-          @setSelectedTags="setSelectedTags"
-          @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
-          @updateSearchInput="updateSearchInput"
-          @updateEventTypeFilter="updateEventTypeFilter"
-          @updateTimeSlots="updateTimeSlots"
-          @resetTimeSlots="resetTimeSlots"
-          @showList="setShowList"
-        />
         <div class="rounded max-w-5xl">
-          <ErrorBanner v-if="eventError" :text="eventError.message" />
+          
           <EventList
             id="listView"
-            v-if="!showMap && eventResult && eventResult.events"
             :class="[!channelId ? '' : '']"
             class="relative text-lg"
             :result-count="eventResult ? eventResult.eventsCount : 0"
@@ -678,25 +679,25 @@ export default defineComponent({
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />
-          
-          <div v-if="eventLoading">Loading...</div>
         </div>
       </div>
       <div
-        v-if="!showMap"
         class="invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto"
       >
-        <router-view></router-view>
+        <div v-if="!showMap">
+          <router-view></router-view>
+        </div>
       </div>
-      <EventMap
-        v-else-if="showMap"
-        :events="eventResult.events"
-        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-        :color-locked="colorLocked"
-        @open-preview="openPreview"
-        @lockColors="colorLocked = true"
-      />
     </div>
+    <MapView
+      v-else :channel-id="channelId"
+      :events="eventResult.events"
+      :result-count="eventResult.eventsCount"
+      :search-input="filterValues.searchInput"
+      :selected-tags="filterValues.selectedTags"
+      :selected-channels="filterValues.selectedChannels"
+      @loadMore="loadMore"
+    />
   </div>
 </template>
 

@@ -158,7 +158,7 @@ export default defineComponent({
   <div
     v-else
     ref="mapDiv"
-    style="position: fixed; width: 66vw; height: calc(100vh - 130px)"
+    style="position: fixed; width: 66vw; height: calc(100vh - 56px)"
   />
 </template>
 <style>

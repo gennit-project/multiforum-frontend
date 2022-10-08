@@ -19,7 +19,7 @@ import {
   timeFilterShortcuts,
   timeShortcutValues,
   distanceUnitOptions,
-  eventFilterTypeShortcuts
+  eventFilterTypeShortcuts,
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
@@ -62,7 +62,7 @@ export default defineComponent({
     },
     loadedEventCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     resultCount: {
       type: Number,
@@ -110,7 +110,7 @@ export default defineComponent({
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeFilterShortcuts,
-      timeShortcutValues
+      timeShortcutValues,
     };
   },
   methods: {
@@ -137,7 +137,7 @@ export default defineComponent({
         this.$emit("handleTimeFilterShortcutClick", {
           beginningOfDateRangeISO: DateTime.now().startOf("day").toISO(),
           endOfDateRangeISO: DateTime.now().plus({ years: 2 }).toISO(),
-          value: shortcut.value
+          value: shortcut.value,
         });
       } else {
         // If the filter is not selected, select it.
@@ -145,7 +145,7 @@ export default defineComponent({
         this.$emit("handleTimeFilterShortcutClick", {
           beginningOfDateRangeISO: shortcut.beginningOfDateRangeISO,
           endOfDateRangeISO: shortcut.endOfDateRangeISO,
-          value: shortcut.value
+          value: shortcut.value,
         });
       }
     },
@@ -274,8 +274,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div :class="[channelId ? '' : 'max-w-5xl']">
-    <div class="space-x-2">
+  <div>
+    <div class="space-x-2 inline-flex items-center">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -385,87 +385,85 @@ export default defineComponent({
         :search-placeholder="'Search events'"
         @updateSearchInput="updateSearchInput"
       />
+      <Tag
+       class="my-1 inline-flex align-middle"
+        v-for="shortcut in timeFilterShortcuts"
+        :key="shortcut.label"
+        :tag="shortcut.label"
+        :active="shortcut.value === activeDateShortcut"
+        :hide-icon="true"
+        :large="true"
+        @click="handleTimeFilterShortcutClick(shortcut)"
+      />
+      <Tag
+        class="my-1 inline-flex align-middle"
+        v-for="shortcut in eventFilterTypeShortcuts"
+        :key="shortcut.label"
+        :tag="shortcut.label"
+        :hide-icon="true"
+        :large="true"
+        :active="
+          shortcut.locationFilterType === activeEventFilterTypeShortcut ||
+          (shortcut.locationFilterType ===
+            LocationFilterTypes.ONLY_WITH_ADDRESS &&
+            filterValues.selectedLocationFilter ===
+              LocationFilterTypes.WITHIN_RADIUS)
+        "
+        @click="updateEventTypeFilter(shortcut)"
+      />
     </div>
-    <div class="space-x-2">
-      <div class="mt-2">
-        <Tag
-          v-for="shortcut in timeFilterShortcuts"
-          :key="shortcut.label"
-          :tag="shortcut.label"
-          :active="shortcut.value === activeDateShortcut"
-          :hide-icon="true"
-          :large="true"
-          @click="handleTimeFilterShortcutClick(shortcut)"
-        />
-        <Tag
-          v-for="shortcut in eventFilterTypeShortcuts"
-          :key="shortcut.label"
-          :tag="shortcut.label"
-          :hide-icon="true"
-          :large="true"
-          :active="
-            shortcut.locationFilterType === activeEventFilterTypeShortcut ||
-            (shortcut.locationFilterType ===
-              LocationFilterTypes.ONLY_WITH_ADDRESS &&
-              filterValues.selectedLocationFilter ===
-                LocationFilterTypes.WITHIN_RADIUS)
-          "
-          @click="updateEventTypeFilter(shortcut)"
-        />
-      </div>
-    </div>
-    <div class="p-2">
+    <div>
       <div
-      v-if="
-        filterValues.selectedLocationFilter === LocationFilterTypes.ONLY_VIRTUAL
-      "
-      class="items-center space-x-2 flex flex-wrap"
-    >
-      Showing {{ loadedEventCount }} online of {{ resultCount }} results
-    </div>
-    <div
-      v-else-if="
-        filterValues.selectedLocationFilter === LocationFilterTypes.NONE
-      "
-    >
-      Showing {{ loadedEventCount }} of {{ resultCount }} results
-    </div>
-    <div v-else class="items-center space-x-2 flex flex-wrap">
-      <div class="inline-block">
-        Showing {{ loadedEventCount }} of {{ resultCount }} results within
+        v-if="
+          filterValues.selectedLocationFilter ===
+          LocationFilterTypes.ONLY_VIRTUAL
+        "
+        class="items-center space-x-2 flex flex-wrap"
+      >
+        Showing {{ loadedEventCount }} online of {{ resultCount }} results
       </div>
-      <SelectMenu
-        v-if="selectedDistanceUnit === MilesOrKm.KM"
-        class="ml-2 w-44 inline-block"
-        :options="distanceOptionsForKilometers"
-        :default-option="defaultKilometerSelection"
-        @selected="updateSelectedDistance"
-      />
-      <SelectMenu
-        v-if="selectedDistanceUnit === MilesOrKm.MI"
-        class="ml-2 w-44 inline-block"
-        :options="distanceOptionsForMiles"
-        :default-option="defaultMileSelection"
-        @selected="updateSelectedDistance"
-      />
-      <SelectMenu
-        class="mr-4 w-18"
-        :options="distanceUnitOptions"
-        :default-option="{
-          label: filterValues.distanceUnit,
-          value: filterValues.distanceUnit,
-        }"
-        @selected="updateSelectedDistanceUnit"
-      />
-      <div class="inline-block">of</div>
-      <LocationSearchBar
-        class="flex flex-wrap"
-        :search-placeholder="filterValues.referencePointAddress"
-        :reference-point-address-name="filterValues.referencePointName"
-        @updateLocationInput="updateLocationInput"
-      />
+      <div
+        v-else-if="
+          filterValues.selectedLocationFilter === LocationFilterTypes.NONE
+        "
+      >
+        Showing {{ loadedEventCount }} of {{ resultCount }} results
+      </div>
+      <div v-else class="items-center space-x-2 flex flex-wrap">
+        <div class="inline-block">
+          Showing {{ loadedEventCount }} of {{ resultCount }} results within
+        </div>
+        <SelectMenu
+          v-if="selectedDistanceUnit === MilesOrKm.KM"
+          class="ml-2 w-44 inline-block"
+          :options="distanceOptionsForKilometers"
+          :default-option="defaultKilometerSelection"
+          @selected="updateSelectedDistance"
+        />
+        <SelectMenu
+          v-if="selectedDistanceUnit === MilesOrKm.MI"
+          class="ml-2 w-44 inline-block"
+          :options="distanceOptionsForMiles"
+          :default-option="defaultMileSelection"
+          @selected="updateSelectedDistance"
+        />
+        <SelectMenu
+          class="mr-4 w-18"
+          :options="distanceUnitOptions"
+          :default-option="{
+            label: filterValues.distanceUnit,
+            value: filterValues.distanceUnit,
+          }"
+          @selected="updateSelectedDistanceUnit"
+        />
+        <div class="inline-block">of</div>
+        <LocationSearchBar
+          class="flex flex-wrap"
+          :search-placeholder="filterValues.referencePointAddress"
+          :reference-point-address-name="filterValues.referencePointName"
+          @updateLocationInput="updateLocationInput"
+        />
+      </div>
     </div>
-    </div>
-    
   </div>
 </template>

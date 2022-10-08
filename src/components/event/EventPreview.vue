@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { defineComponent } from "vue";
+  import { defineComponent, PropType } from "vue";
   import {
     Dialog,
     DialogOverlay,
@@ -23,6 +23,10 @@
         type: Boolean,
         required: true,
       },
+      topLayer: {
+        type: Boolean,
+        default: false
+      }
     },
   });
   </script>
@@ -31,6 +35,7 @@
     <TransitionRoot as="template" :show="isOpen">
       <TailwindDialog
         as="div"
+        :class="[topLayer ? 'z-30' : 'z-20']"
         class="fixed inset-0 overflow-hidden z-20"
         @close="$emit('closePreview')"
       >

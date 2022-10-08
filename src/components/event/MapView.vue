@@ -1,32 +1,68 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { EventData } from "@/types/eventTypes";
-// import EventPreview from "./EventPreview.vue";
+import EventDetail from "./EventDetail.vue";
+import EventPreview from "./EventPreview.vue";
+import EventList from "./EventList.vue";
 import EventMap from "./Map.vue";
-// import PreviewContainer from "./PreviewContainer.vue";
-// import CloseButton from "@/components/buttons/CloseButton.vue";
-// import LoadMore from "../buttons/LoadMore.vue";
+import PreviewContainer from "./PreviewContainer.vue";
+import CloseButton from "@/components/buttons/CloseButton.vue";
+import LoadMore from "../buttons/LoadMore.vue";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   props: {
-     events: {
-        type: Array as PropType<Array<EventData>>,
-        default: []
-     }
+    events: {
+      type: Array as PropType<Array<EventData>>,
+      default: () => {
+        return [];
+      },
+    },
+    resultCount: {
+      type: Number,
+      default: 0,
+    },
+    selectedTags: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    },
+    selectedChannels: {
+      type: Array as PropType<Array<String>>,
+      default: () => {
+        return [];
+      },
+    },
+    channelId: {
+      type: String,
+      default: "",
+    },
+    searchInput: {
+      type: String,
+      default: "",
+    },
   },
   components: {
-    // CloseButton,
-    // EventPreview,
+    CloseButton,
+    EventDetail,
+    EventList,
     EventMap,
-    // LoadMore,
-    // PreviewContainer,
+    EventPreview,
+    PreviewContainer,
   },
-  data(){
+  data(props) {
+    const router = useRouter();
     return {
       colorLocked: false,
       eventPreviewIsOpen: false,
-      multipleEventPreviewIsOpen: false
-    }
+      highlightedEventId: "",
+      highlightedEventLocationId: "",
+      multipleEventPreviewIsOpen: false,
+      router,
+      selectedEvent: props[0],
+      selectedEvents: [],
+    };
   },
   methods: {
     setMarkerData(data: any) {
@@ -50,7 +86,7 @@ export default defineComponent({
       eventData: EventData,
       clickedMapMarker: boolean | false
     ) {
-      router.push(`#${eventLocationId}`);
+      this.router.push(`#${eventLocationId}`);
       this.highlightedEventLocationId = eventLocationId;
 
       if (eventId) {
@@ -202,8 +238,33 @@ export default defineComponent({
 </script>
 <template>
   <div id="mapView" class="overflow-y-scroll">
-    <div style="position: fixed; width: 66vw; height: calc(100vh - 130px)">
+    <div style="position: fixed; width: 34vw">
+      <EventList
+        class="overscroll-auto overflow-auto"
+        key="highlightedEventId"
+        :events="events"
+        :channel-id="channelId"
+        :search-input="searchInput"
+        :highlighted-event-location-id="highlightedEventLocationId"
+        :highlighted-event-id="highlightedEventId"
+        :selected-tags="selectedTags"
+        :selected-channels="selectedChannels"
+        :show-map="true"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+        @unhighlight="unhighlight"
+      />
+    </div>
+    <div
+      style="
+        position: fixed;
+        right: 0;
+        width: 66vw;
+        height: calc(100vh - 130px);
+      "
+    >
       <EventMap
+        v-if="events.length > 0"
         :events="events"
         :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
@@ -213,75 +274,36 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
     </div>
-    <!-- <div style="position: fixed; right: 0; width: 34vw">
+    <EventPreview
+      :top-layer="true"
+      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
+      @closePreview="closeEventPreview"
+    />
+    <PreviewContainer
+      :isOpen="multipleEventPreviewIsOpen"
+      :header="'Events at this Location'"
+      @closePreview="closeMultipleEventPreview"
+    >
       <EventList
+        v-if="selectedEvents"
         class="overscroll-auto overflow-auto"
-        key="highlightedEventId"
-        :events="eventResult.events"
+        :events="selectedEvents"
         :channel-id="channelId"
-        :search-input="searchInput"
-        :highlighted-event-location-id="highlightedEventLocationId"
         :highlighted-event-id="highlightedEventId"
-        :selected-tags="selectedTags"
-        :selected-channels="selectedChannels"
-        :show-map="showMap"
-        @filterByTag="filterByTag"
+        :show-map="true"
         @highlightEvent="highlightEvent"
         @open-preview="openPreview"
-        @unhighlight="unhighlight"
       />
-      <div class="grid justify-items-stretch">
-        <LoadMore
-          class="justify-self-center"
-          :reached-end-of-results="reachedEndOfResults"
-          @loadMore="loadMore"
-        />
+      <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+        <CloseButton @click="closeMultipleEventPreview" />
       </div>
-    </div> -->
-  </div>
-
-  <!-- <PreviewContainer
-    :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
-    :header="selectedEvent ? selectedEvent.title : 'Untitled'"
-    :top-layer="true"
-    @closePreview="closeEventPreview"
-  >
-    <EventPreview
-      v-if="selectedEvent"
-      :event="selectedEvent"
-      @closePreview="closeEventPreview"
-    />
-  </PreviewContainer> -->
-
-  <!-- <PreviewContainer
-    :isOpen="multipleEventPreviewIsOpen"
-    :header="'Events at this Location'"
-    @closePreview="closeMultipleEventPreview"
-  >
-    <EventList
-      v-if="selectedEvents"
-      class="overscroll-auto overflow-auto"
-      :events="selectedEvents"
-      :channel-id="channelId"
-      :highlighted-event-id="highlightedEventId"
-      :show-map="showMap"
-      @highlightEvent="highlightEvent"
-      @open-preview="openPreview"
-    />
-    <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-      <CloseButton @click="closeMultipleEventPreview" />
-    </div>
-    <PreviewContainer
-      :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
-      :header="selectedEvent ? selectedEvent.title : 'Untitled'"
-      :top-layer="true"
-      @closePreview="closeEventPreview"
-    >
-      <EventPreview
-        v-if="selectedEvent"
-        :event="selectedEvent"
+      <PreviewContainer
+        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
+        :top-layer="true"
         @closePreview="closeEventPreview"
-      />
+      >
+        <EventDetail :compact-mode="true" />
+      </PreviewContainer>
     </PreviewContainer>
-  </PreviewContainer> -->
+  </div>
 </template>
