@@ -393,14 +393,12 @@ export default defineComponent({
             <ul>
               <li>
                 <CalendarIcon class="inline h-5 w-5 mr-3 text-blue-700" />{{
-                  getFormattedDateString(eventData.startTime)
+                  `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}`
                 }}
               </li>
               <li>
-                <ClockIcon class="inline h-5 w-5 mr-2 text-blue-700" />
-                {{
-                  getFormattedTimeString(eventData.startTime, eventData.endTime)
-                }}
+                
+                
               </li>
               <li v-if="eventData.isInPrivateResidence">
                 <HomeIcon class="inline" /> This event is in a private
