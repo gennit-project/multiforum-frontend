@@ -335,6 +335,7 @@ export default defineComponent({
                 <GenericButton :text="'Edit'" class="mr-2" />
               </router-link>
               <CreateButton
+                v-if="$route.name === 'EventDetail' "
                 :to="`/channels/c/${channelId}/events/create`"
                 :label="'Create Event'"
               />
