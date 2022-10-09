@@ -74,11 +74,11 @@ export default defineComponent({
     ]"
     >
     <ChannelIcon
-      class="h-4"
+      class="h-4 inline-flex"
       v-if="channelMode && !hideIcon"
     />
     <TagIcon
-      class="h-4"
+      class="h-4 inline-flex"
       v-if="!channelMode && !hideIcon"
     />
     {{ tag }}

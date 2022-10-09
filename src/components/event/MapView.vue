@@ -274,7 +274,6 @@ export default defineComponent({
           @setMarkerData="setMarkerData"
         />
       </div>
-      
     </div>
     <div id="mapViewMobileWidth" class="visible lg:invisible">
       <EventMap
@@ -289,52 +288,51 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
       <EventList
-          key="highlightedEventId"
-          :events="events"
-          :channel-id="channelId"
-          :search-input="searchInput"
-          :highlighted-event-location-id="highlightedEventLocationId"
-          :highlighted-event-id="highlightedEventId"
-          :selected-tags="selectedTags"
-          :selected-channels="selectedChannels"
-          :show-map="true"
-          @highlightEvent="highlightEvent"
-          @open-preview="openPreview"
-          @unhighlight="unhighlight"
-        />
+        key="highlightedEventId"
+        :events="events"
+        :channel-id="channelId"
+        :search-input="searchInput"
+        :highlighted-event-location-id="highlightedEventLocationId"
+        :highlighted-event-id="highlightedEventId"
+        :selected-tags="selectedTags"
+        :selected-channels="selectedChannels"
+        :show-map="true"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+        @unhighlight="unhighlight"
+      />
     </div>
 
     <EventPreview
-    :top-layer="true"
-    :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
-    @closePreview="closeEventPreview"
-  />
-  <PreviewContainer
-    :isOpen="multipleEventPreviewIsOpen"
-    :header="'Events at this Location'"
-    @closePreview="closeMultipleEventPreview"
-  >
-    <EventList
-      v-if="selectedEvents"
-      class="overscroll-auto overflow-auto"
-      :events="selectedEvents"
-      :channel-id="channelId"
-      :highlighted-event-id="highlightedEventId"
-      :show-map="true"
-      @highlightEvent="highlightEvent"
-      @open-preview="openPreview"
-    />
-    <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-      <CloseButton @click="closeMultipleEventPreview" />
-    </div>
-    <PreviewContainer
-      :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
       :top-layer="true"
+      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
       @closePreview="closeEventPreview"
+    />
+    <PreviewContainer
+      :isOpen="multipleEventPreviewIsOpen"
+      :header="'Events at this Location'"
+      @closePreview="closeMultipleEventPreview"
     >
-      <EventDetail :compact-mode="true" />
+      <EventList
+        v-if="selectedEvents"
+        class="overscroll-auto overflow-auto"
+        :events="selectedEvents"
+        :channel-id="channelId"
+        :highlighted-event-id="highlightedEventId"
+        :show-map="true"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+      />
+      <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+        <CloseButton @click="closeMultipleEventPreview" />
+      </div>
+      <PreviewContainer
+        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
+        :top-layer="true"
+        @closePreview="closeEventPreview"
+      >
+        <EventDetail :compact-mode="true" />
+      </PreviewContainer>
     </PreviewContainer>
-  </PreviewContainer>
   </div>
- 
 </template>
