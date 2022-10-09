@@ -569,7 +569,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white" :class="showMap ? 'fixed' : ''">
-    <div class="px-4 lg:px-12 mt-7 md:flex md:items-center md:justify-between">
+    <div class="px-4 lg:px-12 mt-4 md:flex md:items-center md:justify-between">
       <div class="flex-1 min-w-0">
         <h2
           v-if="!channelId"
@@ -648,7 +648,6 @@ export default defineComponent({
         "
       >
         <div class="rounded max-w-5xl">
-          
           <EventList
             id="listView"
             :class="[!channelId ? '' : '']"
