@@ -419,7 +419,7 @@ export default defineComponent({
       }
       const defaultSelectedEvent = value.data.events[0];
 
-      sendToPreview(defaultSelectedEvent.id);
+      sendToPreview(defaultSelectedEvent.id, '');
     });
 
     const previewIsOpen = ref(false);

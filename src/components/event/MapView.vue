@@ -107,6 +107,7 @@ export default defineComponent({
           url: require("@/assets/images/highlighted-place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
         });
+        console.log('set icon to highlighted ',{markerMap: this.markerMap})
 
         const openSpecificInfowindow = () => {
           const eventTitle =
@@ -275,7 +276,7 @@ export default defineComponent({
       </div>
     </div>
     <div id="mapViewMobileWidth" class="visible lg:invisible">
-      <EventMap
+      <!-- <EventMap
         v-if="events.length > 0"
         :events="events"
         :use-mobile-styles="true"
@@ -285,7 +286,7 @@ export default defineComponent({
         @open-preview="openPreview"
         @lockColors="colorLocked = true"
         @setMarkerData="setMarkerData"
-      />
+      /> -->
       <EventList
         key="highlightedEventId"
         :events="events"
