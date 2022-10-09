@@ -237,10 +237,10 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div id="mapViewFullScreen" class="overflow-y-scroll invisible lg:visible">
-      <div style="position: fixed; width: 34vw">
+    <div id="mapViewFullScreen" class="overflow-y-auto invisible lg:visible">
+      <div class="h-full max-h-screen overflow-y-auto" style="position: fixed; width: 34vw">
         <EventList
-          class="overscroll-auto overflow-auto"
+          class="overflow-y-scroll" 
           key="highlightedEventId"
           :events="events"
           :channel-id="channelId"
