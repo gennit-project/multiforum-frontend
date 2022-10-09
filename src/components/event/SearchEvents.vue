@@ -569,24 +569,24 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white" :class="showMap ? 'fixed' : ''">
-    <div class="mt-7 mb-4 mx-4 md:flex md:items-center md:justify-between">
+    <div class="px-4 lg:px-12 mt-7 md:flex md:items-center md:justify-between">
       <div class="flex-1 min-w-0">
         <h2
           v-if="!channelId"
           class="
-            text-2xl
+            text-xl
             font-bold
             leading-7
             text-gray-900
             align-middle
             flex-1
-            sm:text-3xl sm:tracking-tight sm:truncate
+            sm:tracking-tight sm:truncate
           "
         >
           Search Events
         </h2>
       </div>
-      <div class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
+      <div class=" flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
         <div class="float-right">
           <div class="flex justify-center">
             <SwitchGroup as="div" class="flex items-center">
@@ -620,7 +620,6 @@ export default defineComponent({
       </div>
     </div>
     <EventFilterBar
-      class="mx-4"
       :channel-id="channelId"
       :result-count="eventResult ? eventResult.eventsCount : 0"
       :filter-values="filterValues"
@@ -639,8 +638,8 @@ export default defineComponent({
       @resetTimeSlots="resetTimeSlots"
       @showList="setShowList"
     />
-    <div v-if="eventLoading">Loading...</div>
-    <ErrorBanner v-else-if="eventError" :text="eventError.message" />
+    <div class="mx-4 lg:mx-12" v-if="eventLoading">Loading...</div>
+    <ErrorBanner class="mx-4 lg:mx-12" v-else-if="eventError" :text="eventError.message" />
     <div v-else-if="!showMap && eventResult && eventResult.events" class="lg:flex lg:flex-row">
       <div
         class="
@@ -675,7 +674,7 @@ export default defineComponent({
       <div
         class="invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto"
       >
-        <div v-if="!showMap">
+        <div v-if="!showMap && eventResult?.events?.length > 0">
           <router-view></router-view>
         </div>
       </div>

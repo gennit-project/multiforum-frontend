@@ -101,8 +101,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="sm:rounded-md mx-auto max-w-5xl pt-4">
-    <p class="prose mt-3" v-if="events.length === 0 && !showMap">
+  <div class="sm:rounded-md max-w-5xl pt-4">
+    <p class="prose px-4 lg:px-12 mt-3" v-if="events.length === 0 && !showMap">
       Could not find any events.
     </p>
     <ul
@@ -152,6 +152,7 @@ export default defineComponent({
     </ul>
 
     <LoadMore
+      v-if="events.length > 0"
       class="px-8"
       :reached-end-of-results="resultCount === events.length"
       @loadMore="$emit('loadMore')"

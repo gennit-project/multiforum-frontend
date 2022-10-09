@@ -274,8 +274,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <div class="space-x-2 items-center">
+  <div class="px-4 lg:px-12 border-b-2">
+    <div class="items-center space-x-2">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -385,6 +385,7 @@ export default defineComponent({
         :search-placeholder="'Search events'"
         @updateSearchInput="updateSearchInput"
       />
+    </div>
       <Tag
        class="my-1 align-middle"
         v-for="shortcut in timeFilterShortcuts"
@@ -411,7 +412,7 @@ export default defineComponent({
         "
         @click="updateEventTypeFilter(shortcut)"
       />
-    </div>
+      
     <div>
       <div
         v-if="
