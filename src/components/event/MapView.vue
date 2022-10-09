@@ -315,6 +315,7 @@ export default defineComponent({
         v-if="selectedEvents"
         class="overscroll-auto overflow-auto"
         :events="selectedEvents"
+        :result-count="selectedEvents.length"
         :channel-id="channelId"
         :highlighted-event-id="highlightedEventId"
         :show-map="true"
