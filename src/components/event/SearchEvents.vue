@@ -234,10 +234,8 @@ export default defineComponent({
           []
         );
         conditions.push({
-          TagsConnection: {
-            node: {
-              OR: matchTags,
-            },
+          Tags: {
+            OR: matchTags,
           },
         });
       }
@@ -253,10 +251,8 @@ export default defineComponent({
           []
         );
         conditions.push({
-          ChannelsConnection: {
-            node: {
-              OR: matchChannels,
-            },
+          Channels: {
+            OR: matchChannels,
           },
         });
       }
