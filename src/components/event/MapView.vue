@@ -237,10 +237,9 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div id="mapViewFullScreen" class="overflow-y-auto invisible lg:visible">
-      <div class="h-full max-h-screen overflow-y-auto" style="position: fixed; width: 34vw">
+    <div id="mapViewFullScreen" class="flex flex-row invisible lg:visible">
+      <div class="h-full max-h-screen overflow-y-auto flex-col flex-grow" style="width: 34vw">
         <EventList
-          class="overflow-y-scroll" 
           key="highlightedEventId"
           :events="events"
           :channel-id="channelId"
@@ -257,7 +256,6 @@ export default defineComponent({
       </div>
       <div
         style="
-          position: fixed;
           right: 0;
           width: 66vw;
           height: calc(100vh - 130px);

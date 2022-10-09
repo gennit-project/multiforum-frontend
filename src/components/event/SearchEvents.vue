@@ -577,7 +577,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="bg-white">
+  <div class="bg-white" :class="showMap ? 'fixed' : ''">
     <div class="mt-7 mb-4 mx-4 md:flex md:items-center md:justify-between">
       <div class="flex-1 min-w-0">
         <h2
