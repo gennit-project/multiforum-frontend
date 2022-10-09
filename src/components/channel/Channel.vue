@@ -83,9 +83,9 @@ export default defineComponent({
 <template>
   <div class="flex-1">
     <div class="bg-white">
-      <Breadcrumbs class="pl-10" :links="links" />
+      <Breadcrumbs class="px-4 lg:px-12" :links="links" />
       <div v-if="!discussionId || !eventId">
-        <h1 class="pl-10 text-xl inline-flex mt-3 text-black">
+        <h1 class="px-4 lg:px-12 text-xl inline-flex mt-3 text-black">
           <ChannelIcon class="h-6 w-6 mr-1" />{{ channelId }}
         </h1>
         <ChannelTabs />

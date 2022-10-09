@@ -37,11 +37,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-w-7xl px-2 sm:px-4 lg:px-8">
+  <div class="max-w-7xl px-2 px-4 lg:px-12">
     <div class="relative flex items-center justify-between h-14">
-      <div class="flex items-center px-2 lg:px-0">
+      <div class="flex items-center lg:px-0">
         <!-- <SiteLogo/> -->
-        <div class="px-2 text-white">gennit</div>
+        <div class="text-white">gennit</div>
         
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4 text-gray-300">
