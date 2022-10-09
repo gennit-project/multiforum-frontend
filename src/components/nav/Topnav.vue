@@ -7,7 +7,7 @@ import MobileMenuButton from "@/components/nav/MobileMenuButton.vue";
 // import UserProfileButton from '@/components/nav/UserProfileButton.vue'
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-import FeedIcon from "@/components/icons/FeedIcon.vue";
+// import FeedIcon from "@/components/icons/FeedIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 
 export default defineComponent({
@@ -19,7 +19,7 @@ export default defineComponent({
     // UserProfileButton,
     ChannelIcon,
     CalendarIcon,
-    FeedIcon,
+    // FeedIcon,
     DiscussionIcon,
   },
   data() {
@@ -45,7 +45,7 @@ export default defineComponent({
         
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4 text-gray-300">
-            <TopNavLink :to="'/'" :label="'Events'">
+            <TopNavLink :to="'/events'" :label="'Events'">
               <CalendarIcon class="-ml-0.5 h-6 w-4 mr-1"/>
             </TopNavLink>
             <TopNavLink :to="'/discussions'" :label="'Discussions'">

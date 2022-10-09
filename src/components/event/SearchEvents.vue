@@ -87,7 +87,7 @@ export default defineComponent({
         startOfDateRangeISO: defaultEndDateRangeISO,
         endOfDateRangeISO: defaultEndDateRangeISO,
         resultsOrder: chronologicalOrder,
-        radius: 5,
+        radius: 500,
         distanceUnit: MilesOrKm.KM,
         referencePoint: {
           // Default map center is Tempe Public Library
