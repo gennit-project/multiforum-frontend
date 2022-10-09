@@ -588,7 +588,7 @@ export default defineComponent({
       </div>
       <div class=" flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
         <div class="float-right">
-          <div class="flex justify-center">
+          <div v-if="!channelId" class="flex justify-center">
             <SwitchGroup as="div" class="flex items-center">
               <TailwindSwitch
                 v-model="showMap"
@@ -637,6 +637,7 @@ export default defineComponent({
       @updateTimeSlots="updateTimeSlots"
       @resetTimeSlots="resetTimeSlots"
       @showList="setShowList"
+      @toggleShowMap="toggleShowMap"
     />
     <div class="mx-4 lg:mx-12" v-if="eventLoading">Loading...</div>
     <ErrorBanner class="mx-4 lg:mx-12" v-else-if="eventError" :text="eventError.message" />

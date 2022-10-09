@@ -26,17 +26,23 @@ import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "../icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
 import RefreshIcon from "../icons/RefreshIcon.vue";
+import CreateButton from "../buttons/CreateButton.vue";
+import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 
 export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
+    CreateButton,
     FilterChip,
     LocationSearchBar,
     Modal,
     SearchBar,
     SelectMenu,
+    TailwindSwitch: Switch,
+    SwitchGroup,
+    SwitchLabel,
     Tag,
     TagIcon,
     TagPicker,
@@ -107,6 +113,7 @@ export default defineComponent({
       LocationFilterTypes,
       MilesOrKm,
       selectedDistanceUnit,
+      showMapCopy: ref(props.showMap),
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeFilterShortcuts,
@@ -385,6 +392,34 @@ export default defineComponent({
         :search-placeholder="'Search events'"
         @updateSearchInput="updateSearchInput"
       />
+      <div v-if="channelId" class="float-right flex">
+        <SwitchGroup as="div" class="flex items-center">
+          <TailwindSwitch
+            v-model="showMapCopy"
+            :class="[
+              showMapCopy ? 'bg-blue-600' : 'bg-gray-200',
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+            ]"
+            @update:model-value="$emit('toggleShowMap', showMapCopy)"
+          >
+            <span
+              aria-hidden="true"
+              :class="[
+                showMap ? 'translate-x-5' : 'translate-x-0',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+              ]"
+            />
+          </TailwindSwitch>
+          <SwitchLabel as="span" class="ml-3">
+            <span class="text-sm font-medium text-gray-900">Show Map</span>
+          </SwitchLabel>
+        </SwitchGroup>
+        <CreateButton
+          class="align-middle ml-2"
+          :to="createEventPath"
+          :label="'Create Event'"
+        />
+      </div>
     </div>
       <Tag
        class="my-1 align-middle"
