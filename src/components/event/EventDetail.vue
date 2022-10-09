@@ -326,7 +326,7 @@ export default defineComponent({
             {{ eventData.title }}
           </h2>
         </div>
-        <div v-if="!compactMode" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+        <div v-if="!compactMode && channelId" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
           <div class="float-right">
             <span>
               <router-link
