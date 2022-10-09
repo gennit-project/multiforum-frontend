@@ -6,7 +6,6 @@ import EventList from "./EventList.vue";
 import { router } from "@/router";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
-import { EventData } from "@/types/eventTypes";
 import {
   createDefaultSelectedWeeklyHourRanges,
   createDefaultSelectedHourRanges,
@@ -390,7 +389,7 @@ export default defineComponent({
       });
     };
 
-    const sendToPreview = (eventId: string) => {
+    const sendToPreview = (eventId: string, eventLocationId: string) => {
       if (eventId) {
         if (!channelId.value) {
           router.push({
@@ -398,6 +397,7 @@ export default defineComponent({
             params: {
               eventId,
             },
+            hash: `#${eventLocationId ? eventLocationId : ''}`
           });
         } else {
           router.push({
@@ -405,6 +405,7 @@ export default defineComponent({
             params: {
               eventId,
             },
+            hash: `#${eventLocationId ? eventLocationId : ''}`
           });
         }
       }
@@ -446,16 +447,6 @@ export default defineComponent({
   },
   data() {
     return {
-      eventPreviewIsOpen: false,
-      multipleEventPreviewIsOpen: false,
-      selectedEvent: null as EventData | null,
-      selectedEvents: [],
-      highlightedEventLocationId: "",
-      highlightedEventId: "",
-      highlightedMarker: null,
-      colorLocked: false,
-      markerMap: {} as any,
-      map: {} as any,
       MI_KM_RATIO: 1.609,
     };
   },
@@ -541,18 +532,18 @@ export default defineComponent({
     },
     setShowList() {
       this.showMap = false;
-      const path = this.channelId
-        ? `/channels/${this.channelId}/events`
-        : "events";
-      router.push({
-        path,
-        query: {
-          search: this.filterValues.searchInput,
-          channel: this.filterValues.selectedChannels,
-          tag: this.filterValues.selectedTags,
-          view: "list",
-        },
-      });
+      // const path = this.channelId
+      //   ? `/channels/${this.channelId}/events`
+      //   : "events";
+      // router.push({
+      //   path,
+      //   query: {
+      //     search: this.filterValues.searchInput,
+      //     channel: this.filterValues.selectedChannels,
+      //     tag: this.filterValues.selectedTags,
+      //     view: "list",
+      //   },
+      // });
     },
     updateRouterQueryParams(e: any) {
       router.push(e);
@@ -697,6 +688,7 @@ export default defineComponent({
       :selected-tags="filterValues.selectedTags"
       :selected-channels="filterValues.selectedChannels"
       @loadMore="loadMore"
+      @sendToPreview="sendToPreview"
     />
   </div>
 </template>

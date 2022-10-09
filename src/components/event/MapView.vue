@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { EventData } from "@/types/eventTypes";
-import EventDetail from "./EventDetail.vue";
 import EventPreview from "./EventPreview.vue";
 import EventList from "./EventList.vue";
 import EventMap from "./Map.vue";
@@ -44,22 +43,24 @@ export default defineComponent({
   },
   components: {
     CloseButton,
-    EventDetail,
     EventList,
     EventMap,
     EventPreview,
     PreviewContainer,
   },
-  data(props) {
+  data() {
     const router = useRouter();
     return {
+      highlightedMarker: null,
+      markerMap: {} as any,
+      map: {} as any,
       colorLocked: false,
       eventPreviewIsOpen: false,
       highlightedEventId: "",
       highlightedEventLocationId: "",
       multipleEventPreviewIsOpen: false,
       router,
-      selectedEvent: props[0],
+      selectedEvent: null as EventData | null,
       selectedEvents: [],
     };
   },
@@ -85,7 +86,7 @@ export default defineComponent({
       eventData: EventData,
       clickedMapMarker: boolean | false
     ) {
-      this.router.push(`#${eventLocationId}`);
+      this.$emit('sendToPreview', eventId, eventLocationId)
       this.highlightedEventLocationId = eventLocationId;
 
       if (eventId) {
@@ -330,7 +331,7 @@ export default defineComponent({
         :top-layer="true"
         @closePreview="closeEventPreview"
       >
-        <EventDetail :compact-mode="true" />
+        <router-view></router-view>
       </PreviewContainer>
     </PreviewContainer>
   </div>

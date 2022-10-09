@@ -66,7 +66,6 @@ export default defineComponent({
           marker.addListener("mouseover", () => {
             if (!props.colorLocked) {
               emit('highlightEvent', eventLocationId, event.id, event, true);
-              router.push(`#${eventLocationId}`)
             }
           })
 
