@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import config from "@/config";
 
 export default defineComponent({
+  name: "EventMap",
   setup(props, { emit }) {
     const router = useRouter()
     const loader = new Loader({ apiKey: config.googleMapsApiKey })
@@ -142,6 +143,10 @@ export default defineComponent({
       type: Boolean,
       default: false
     },
+    useMobileStyles: {
+      type: Boolean,
+      default: false
+    }
   },
   methods: {
     openPreview(event) {
@@ -158,7 +163,7 @@ export default defineComponent({
   <div
     v-else
     ref="mapDiv"
-    style="position: fixed; width: 66vw; height: calc(100vh - 56px)"
+    :style="[useMobileStyles ? 'width: 100vw; height: 100vw;' : 'position: fixed; width: 66vw; height: calc(100vh - 56px)']"
   />
 </template>
 <style>

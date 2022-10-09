@@ -236,35 +236,51 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div id="mapView" class="overflow-y-scroll">
-    <div style="position: fixed; width: 34vw">
-      <EventList
-        class="overscroll-auto overflow-auto"
-        key="highlightedEventId"
-        :events="events"
-        :channel-id="channelId"
-        :search-input="searchInput"
-        :highlighted-event-location-id="highlightedEventLocationId"
-        :highlighted-event-id="highlightedEventId"
-        :selected-tags="selectedTags"
-        :selected-channels="selectedChannels"
-        :show-map="true"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-        @unhighlight="unhighlight"
-      />
+  <div>
+    <div id="mapViewFullScreen" class="overflow-y-scroll invisible lg:visible">
+      <div style="position: fixed; width: 34vw">
+        <EventList
+          class="overscroll-auto overflow-auto"
+          key="highlightedEventId"
+          :events="events"
+          :channel-id="channelId"
+          :search-input="searchInput"
+          :highlighted-event-location-id="highlightedEventLocationId"
+          :highlighted-event-id="highlightedEventId"
+          :selected-tags="selectedTags"
+          :selected-channels="selectedChannels"
+          :show-map="true"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @unhighlight="unhighlight"
+        />
+      </div>
+      <div
+        style="
+          position: fixed;
+          right: 0;
+          width: 66vw;
+          height: calc(100vh - 130px);
+        "
+      >
+        <EventMap
+          v-if="events.length > 0"
+          :events="events"
+          :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+          :color-locked="colorLocked"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @lockColors="colorLocked = true"
+          @setMarkerData="setMarkerData"
+        />
+      </div>
+      
     </div>
-    <div
-      style="
-        position: fixed;
-        right: 0;
-        width: 66vw;
-        height: calc(100vh - 130px);
-      "
-    >
+    <div id="mapViewMobileWidth" class="visible lg:invisible">
       <EventMap
         v-if="events.length > 0"
         :events="events"
+        :use-mobile-styles="true"
         :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
         @highlightEvent="highlightEvent"
@@ -272,37 +288,53 @@ export default defineComponent({
         @lockColors="colorLocked = true"
         @setMarkerData="setMarkerData"
       />
-    </div>
-    <EventPreview
-      :top-layer="true"
-      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
-      @closePreview="closeEventPreview"
-    />
-    <PreviewContainer
-      :isOpen="multipleEventPreviewIsOpen"
-      :header="'Events at this Location'"
-      @closePreview="closeMultipleEventPreview"
-    >
       <EventList
-        v-if="selectedEvents"
-        class="overscroll-auto overflow-auto"
-        :events="selectedEvents"
-        :channel-id="channelId"
-        :highlighted-event-id="highlightedEventId"
-        :show-map="true"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-      />
-      <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-        <CloseButton @click="closeMultipleEventPreview" />
-      </div>
-      <PreviewContainer
-        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
-        :top-layer="true"
-        @closePreview="closeEventPreview"
-      >
-        <EventDetail :compact-mode="true" />
-      </PreviewContainer>
+          key="highlightedEventId"
+          :events="events"
+          :channel-id="channelId"
+          :search-input="searchInput"
+          :highlighted-event-location-id="highlightedEventLocationId"
+          :highlighted-event-id="highlightedEventId"
+          :selected-tags="selectedTags"
+          :selected-channels="selectedChannels"
+          :show-map="true"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @unhighlight="unhighlight"
+        />
+    </div>
+
+    <EventPreview
+    :top-layer="true"
+    :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
+    @closePreview="closeEventPreview"
+  />
+  <PreviewContainer
+    :isOpen="multipleEventPreviewIsOpen"
+    :header="'Events at this Location'"
+    @closePreview="closeMultipleEventPreview"
+  >
+    <EventList
+      v-if="selectedEvents"
+      class="overscroll-auto overflow-auto"
+      :events="selectedEvents"
+      :channel-id="channelId"
+      :highlighted-event-id="highlightedEventId"
+      :show-map="true"
+      @highlightEvent="highlightEvent"
+      @open-preview="openPreview"
+    />
+    <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+      <CloseButton @click="closeMultipleEventPreview" />
+    </div>
+    <PreviewContainer
+      :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
+      :top-layer="true"
+      @closePreview="closeEventPreview"
+    >
+      <EventDetail :compact-mode="true" />
     </PreviewContainer>
+  </PreviewContainer>
   </div>
+ 
 </template>
