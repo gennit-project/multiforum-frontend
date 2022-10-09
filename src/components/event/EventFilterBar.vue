@@ -275,7 +275,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="space-x-2 inline-flex items-center">
+    <div class="space-x-2 items-center">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -386,7 +386,7 @@ export default defineComponent({
         @updateSearchInput="updateSearchInput"
       />
       <Tag
-       class="my-1 inline-flex align-middle"
+       class="my-1 align-middle"
         v-for="shortcut in timeFilterShortcuts"
         :key="shortcut.label"
         :tag="shortcut.label"
@@ -396,7 +396,7 @@ export default defineComponent({
         @click="handleTimeFilterShortcutClick(shortcut)"
       />
       <Tag
-        class="my-1 inline-flex align-middle"
+        class="my-1 align-middle"
         v-for="shortcut in eventFilterTypeShortcuts"
         :key="shortcut.label"
         :tag="shortcut.label"
