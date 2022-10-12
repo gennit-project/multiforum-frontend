@@ -1,16 +1,16 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ApolloError } from "@apollo/client/errors";
-import TextEditor from "@/components/forms/TextEditor.vue";
-import FormRow from "@/components/forms/FormRow.vue";
-import Form from "@/components/forms/Form.vue";
+import TextEditor from "@/components/TextEditor.vue";
+import FormRow from "@/components/FormRow.vue";
+import Form from "@/components/Form.vue";
 import UserAddIcon from "@/components/icons/UserAddIcon.vue";
-import TagInput from "@/components/forms/TagInput.vue";
+import TagInput from "@/components/TagInput.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import PencilIcon from "@/components/icons/PencilIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
-import ErrorBanner from "@/components/forms/ErrorBanner.vue";
-import TextInput from "@/components/forms/TextInput.vue";
+import ErrorBanner from "@/components/ErrorBanner.vue";
+import TextInput from "@/components/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 
 export default defineComponent({

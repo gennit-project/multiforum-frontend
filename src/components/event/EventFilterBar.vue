@@ -1,16 +1,16 @@
 <script lang="ts">
 import { defineComponent, computed, PropType, ref } from "vue";
-import LocationSearchBar from "@/components/forms/LocationSearchBar.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
-import ChannelPicker from "@/components/forms/ChannelPicker.vue";
-import FilterChip from "@/components/forms/FilterChip.vue";
-import ChannelIcon from "../icons/ChannelIcon.vue";
-import TagIcon from "../icons/TagIcon.vue";
-import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
+import LocationSearchBar from "@/components/LocationSearchBar.vue";
+import TagPicker from "@/components/TagPicker.vue";
+import ChannelPicker from "@/components/ChannelPicker.vue";
+import FilterChip from "@/components/FilterChip.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+import TagIcon from "@/components/icons/TagIcon.vue";
+import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { DateTime } from "luxon";
-import Tag from "../buttons/Tag.vue";
-import SelectMenu from "../forms/Select.vue";
-import SearchBar from "../forms/SearchBar.vue";
+import Tag from "@/components/Tag.vue";
+import SelectMenu from "../Select.vue";
+import SearchBar from "../SearchBar.vue";
 import { SearchEventValues, DistanceUnit } from "@/types/eventTypes";
 import {
   distanceOptionsForKilometers,
@@ -23,10 +23,10 @@ import {
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
-import ClockIcon from "../icons/ClockIcon.vue";
+import ClockIcon from "@/components/icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
-import RefreshIcon from "../icons/RefreshIcon.vue";
-import CreateButton from "../buttons/CreateButton.vue";
+import RefreshIcon from "@/components/icons/RefreshIcon.vue";
+import CreateButton from "../CreateButton.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 
 export default defineComponent({

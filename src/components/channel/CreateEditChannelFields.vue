@@ -2,13 +2,13 @@
 import { defineComponent, PropType } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
-import Form from "../forms/Form.vue";
-import TagIcon from "../icons/TagIcon.vue";
-import TagInput from "../forms/TagInput.vue";
-import TextInput from "../forms/TextInput.vue";
-import PencilIcon from "../icons/PencilIcon.vue";
-import FormRow from "../forms/FormRow.vue";
-import TextEditor from "../forms/TextEditor.vue";
+import Form from "../Form.vue";
+import TagIcon from "@/components/icons/TagIcon.vue";
+import TagInput from "@/components/TagInput.vue";
+import TextInput from "../TextInput.vue";
+import PencilIcon from "@/components/icons/PencilIcon.vue";
+import FormRow from "../FormRow.vue";
+import TextEditor from "../TextEditor.vue";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
 
 export default defineComponent({

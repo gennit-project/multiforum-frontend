@@ -1,7 +1,7 @@
 <script lang="ts">
 import ChannelTabs from "./ChannelTabs.vue";
-import Breadcrumbs from "../nav/Breadcrumbs.vue";
-import ChannelIcon from "../icons/ChannelIcon.vue";
+import Breadcrumbs from "@/components/nav/Breadcrumbs.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 

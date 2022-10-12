@@ -1,6 +1,6 @@
 <script lang="ts">
-import MapIcon from '../icons/MapIcon.vue';
-import ListIcon from '../icons/ListIcon.vue';
+import MapIcon from '@/components/icons/MapIcon.vue';
+import ListIcon from '@/components/icons/ListIcon.vue';
 export default {
     setup() { },
     props: {

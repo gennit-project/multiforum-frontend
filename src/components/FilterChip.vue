@@ -1,6 +1,6 @@
 <script>
 import { defineComponent } from "vue";
-import ChevronDownIcon from "../icons/ChevronDownIcon.vue";
+import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 
 export default defineComponent({
   components: {

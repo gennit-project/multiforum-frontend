@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import ListboxButton from "@/components/forms/ListboxButton.vue";
+import ListboxButton from "@/components/ListboxButton.vue";
 import { Listbox, ListboxOption, ListboxOptions } from "@headlessui/vue";
-import CheckIcon from '../icons/CheckIcon.vue'
+import CheckIcon from '@/components/icons/CheckIcon.vue'
 import { SelectOptionData } from "@/types/genericFormTypes";
 
 export default defineComponent({

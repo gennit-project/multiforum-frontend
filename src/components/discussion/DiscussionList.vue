@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
-import LoadMore from "../buttons/LoadMore.vue";
+import LoadMore from "../LoadMore.vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute } from "vue-router";
 

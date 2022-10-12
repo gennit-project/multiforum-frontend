@@ -1,6 +1,23 @@
 import { TagData } from "@/types/tagTypes";
 import { gql } from "@apollo/client/core";
 
+export const getTagLabel = (selectedTags: Array<String>) => {
+  if (selectedTags.length > 0) {
+    const tagString = selectedTags.join(", ");
+    return `Tags: ${tagString}`;
+  }
+  return "Tags";
+};
+
+export const getChannelLabel = (selectedChannels: Array<string>) => {
+  if (selectedChannels.length > 0) {
+    const channelString = selectedChannels.join(", ");
+    return `Channels: ${channelString}`;
+  }
+  return "Channels";
+};
+
+
 export const updateTagsInCache = (cache: any, updatedTags: Array<TagData>) => {
 
   cache.modify({

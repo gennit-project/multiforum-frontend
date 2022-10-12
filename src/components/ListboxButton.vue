@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import SelectorIcon from "../icons/ChevronUpDownIcon.vue"
+import SelectorIcon from "@/components/icons/ChevronUpDownIcon.vue"
 import { ListboxButton} from '@headlessui/vue'
 
 export default defineComponent({

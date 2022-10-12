@@ -22,11 +22,11 @@ import {
   SetEventTimeRangeOptions,
 } from "@/types/eventTypes";
 import EventFilterBar from "./EventFilterBar.vue";
-import ErrorBanner from "../forms/ErrorBanner.vue";
+import ErrorBanner from "../ErrorBanner.vue";
 import MapView from "./MapView.vue";
 import LocationFilterTypes from "./locationFilterTypes";
 import EventPreview from "./EventPreview.vue";
-import CreateButton from "../buttons/CreateButton.vue";
+import CreateButton from "../CreateButton.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 
 export default defineComponent({

@@ -7,7 +7,7 @@ import {
   TransitionRoot,
   DialogTitle
 } from "@headlessui/vue";
-import XIcon from "../icons/XmarkIcon.vue";
+import XIcon from "@/components/icons/XmarkIcon.vue";
 
 export default defineComponent({
   name: "PreviewContainer",

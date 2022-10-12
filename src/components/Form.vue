@@ -1,9 +1,9 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import CancelButton from "@/components/buttons/CancelButton.vue";
-import SaveButton from "../buttons/SaveButton.vue";
-import FormTitle from "@/components/forms/FormTitle.vue";
-import FormRow from "../forms/FormRow.vue";
+import CancelButton from "@/components/CancelButton.vue";
+import SaveButton from "@/components/SaveButton.vue";
+import FormTitle from "@/components/FormTitle.vue";
+import FormRow from "@/components/FormRow.vue";
 
 export default defineComponent({
   props: {

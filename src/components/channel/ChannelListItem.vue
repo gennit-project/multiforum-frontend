@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
-import HighlightedSearchTerms from "../forms/HighlightedSearchTerms.vue";
-import Tag from "../buttons/Tag.vue";
+import HighlightedSearchTerms from "../HighlightedSearchTerms.vue";
+import Tag from "@/components/Tag.vue";
 // @ts-ignore
 import ProfileAvatar from "vue-profile-avatar";
 

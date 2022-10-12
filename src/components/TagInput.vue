@@ -2,8 +2,8 @@
 // This component uses some code from this CodePen: https://codepen.io/foucauld-gaudin/pen/abzBdRz
 import { defineComponent, PropType } from "vue";
 import ChannelPicker from "./ChannelPicker.vue";
-import Tag from "../buttons/Tag.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
+import Tag from "@/components/Tag.vue";
+import TagPicker from "@/components/TagPicker.vue";
 import FloatingDropdown from "./FloatingDropdown.vue";
 
 export default defineComponent({

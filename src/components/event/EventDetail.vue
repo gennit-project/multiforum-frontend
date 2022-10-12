@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Tag from "../buttons/Tag.vue";
+import Tag from "@/components/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
@@ -14,21 +14,21 @@ import {
 } from "../../dateTimeUtils";
 import WarningModal from "../WarningModal.vue";
 import { DateTime } from "luxon";
-import ErrorBanner from "../forms/ErrorBanner.vue";
-import GenericButton from "../buttons/GenericButton.vue";
-import CalendarIcon from "../icons/CalendarIcon.vue";
-import ClockIcon from "../icons/ClockIcon.vue";
-import CreateButton from "../buttons/CreateButton.vue";
-import HomeIcon from "../icons/HomeIcon.vue";
-import TicketIcon from "../icons/TicketIcon.vue";
+import ErrorBanner from "../ErrorBanner.vue";
+import GenericButton from "../GenericButton.vue";
+import CalendarIcon from "@/components/icons/CalendarIcon.vue";
+import ClockIcon from "@/components/icons/ClockIcon.vue";
+import CreateButton from "../CreateButton.vue";
+import HomeIcon from "@/components/icons/HomeIcon.vue";
+import TicketIcon from "@/components/icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
-import LocationIcon from "../icons/LocationIcon.vue";
-import LinkIcon from "../icons/LinkIcon.vue";
+import LocationIcon from "@/components/icons/LocationIcon.vue";
+import LinkIcon from "@/components/icons/LinkIcon.vue";
 import useClipboard from "vue-clipboard3";
-import ClipboardIcon from "../icons/ClipboardIcon.vue";
+import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
 import Notification from "../Notification.vue";
 import Comment from "../comments/Comment.vue";
-import ChannelIcon from "../icons/ChannelIcon.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 
 export default defineComponent({
   props: {

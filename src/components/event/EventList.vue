@@ -3,7 +3,7 @@ import { defineComponent, PropType, computed } from "vue";
 import EventListItem from "./EventListItem.vue";
 import { useRoute, useRouter } from "vue-router";
 import { EventData } from "@/types/eventTypes";
-import LoadMore from "../buttons/LoadMore.vue";
+import LoadMore from "../LoadMore.vue";
 
 export default defineComponent({
   setup() {

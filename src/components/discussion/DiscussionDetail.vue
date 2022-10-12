@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Tag from "../buttons/Tag.vue";
+import Tag from "@/components/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
@@ -11,9 +11,9 @@ import WarningModal from "../WarningModal.vue";
 import { DateTime } from "luxon";
 import { DiscussionData } from "@/types/discussionTypes";
 import { ChannelData } from "@/types/channelTypes";
-import ErrorBanner from "../forms/ErrorBanner.vue";
-import CreateButton from "../buttons/CreateButton.vue";
-import GenericButton from "../buttons/GenericButton.vue";
+import ErrorBanner from "../ErrorBanner.vue";
+import CreateButton from "../CreateButton.vue";
+import GenericButton from "../GenericButton.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({

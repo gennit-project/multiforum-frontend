@@ -5,14 +5,14 @@ import { useQuery } from "@vue/apollo-composable";
 import DiscussionList from "./DiscussionList.vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import { useRoute, useRouter } from "vue-router";
-import TagPicker from "../forms/TagPicker.vue";
-import ChannelPicker from "../forms/ChannelPicker.vue";
+import TagPicker from "@/components/TagPicker.vue";
+import ChannelPicker from "../ChannelPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import SearchBar from "@/components/forms/SearchBar.vue";
+import SearchBar from "@/components/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
-import FilterChip from "@/components/forms/FilterChip.vue";
-import ErrorBanner from "../forms/ErrorBanner.vue";
-import { getTagLabel, getChannelLabel } from "@/components/forms/utils";
+import FilterChip from "@/components/FilterChip.vue";
+import ErrorBanner from "../ErrorBanner.vue";
+import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
 
 interface Ref<T> {

@@ -6,14 +6,14 @@ import { gql } from "@apollo/client/core";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
-import SearchBar from "@/components/forms/SearchBar.vue";
+import SearchBar from "@/components/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
-import FilterChip from "@/components/forms/FilterChip.vue";
-import TagPicker from "@/components/forms/TagPicker.vue";
-import CreateButton from "@/components/buttons/CreateButton.vue";
-import LoadMore from "../buttons/LoadMore.vue";
-import ErrorBanner from "../forms/ErrorBanner.vue";
-import { getTagLabel } from "@/components/forms/utils";
+import FilterChip from "@/components/FilterChip.vue";
+import TagPicker from "@/components/TagPicker.vue";
+import CreateButton from "@/components/CreateButton.vue";
+import LoadMore from "../LoadMore.vue";
+import ErrorBanner from "../ErrorBanner.vue";
+import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
 
 interface Ref<T> {

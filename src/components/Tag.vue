@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import XmarkIcon from "../icons/XmarkIcon.vue";
-import ChannelIcon from "../icons/ChannelIcon.vue";
-import TagIcon from "../icons/TagIcon.vue";
+import XmarkIcon from "@/components/icons/XmarkIcon.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+import TagIcon from "@/components/icons/TagIcon.vue";
 
 export default defineComponent({
   components: {

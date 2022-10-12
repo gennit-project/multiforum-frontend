@@ -2,7 +2,7 @@
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
 import ChannelListItem from "@/components/channel/ChannelListItem.vue";
-import LoadMore from "../buttons/LoadMore.vue";
+import LoadMore from "../LoadMore.vue";
 
 export default defineComponent({
   setup() {},

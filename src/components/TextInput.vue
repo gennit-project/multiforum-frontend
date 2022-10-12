@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import ExclamationTriangleIcon from "../icons/ExclamationIcon.vue"
+import ExclamationTriangleIcon from "@/components/icons/ExclamationIcon.vue"
 
 export default defineComponent({
   components: {
