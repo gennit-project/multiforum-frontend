@@ -155,7 +155,7 @@ export default defineComponent({
 
           <FormRow>
             <template v-slot:icon>
-              <TagIcon class="float-right" />
+              <TagIcon class="float-right h-6 pt-1" />
             </template>
             <template v-slot:content>
               <TagInput

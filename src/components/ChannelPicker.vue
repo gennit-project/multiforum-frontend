@@ -126,7 +126,7 @@ export default defineComponent({
           "
           @click.prevent="resetChannels"
         >
-          <RefreshIcon class="h-5" @click="resetChannels"/>Reset
+          <RefreshIcon class="h-5 mr-1" @click="resetChannels"/>Reset
         </button>
       </div>
     </div>
