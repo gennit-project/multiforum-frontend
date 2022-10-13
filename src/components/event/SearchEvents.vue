@@ -123,7 +123,7 @@ export default defineComponent({
       return filterValues.value.resultsOrder;
     });
 
-    const showMap = ref(false);
+    const showMap = ref(route.query.view === "map");
 
     const flattenedTimeFilters = computed(() => {
       let flattenedTimeFilters = [];
@@ -435,6 +435,7 @@ export default defineComponent({
       previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
+      route,
       router,
       sendToPreview,
       showMap,
@@ -525,18 +526,23 @@ export default defineComponent({
       if (this.showMap) {
         this.closePreview();
       }
-            // const path = this.channelId
-      //   ? `/channels/${this.channelId}/events`
-      //   : "events";
-      // router.push({
-      //   path,
-      //   query: {
-      //     search: this.filterValues.searchInput,
-      //     channel: this.filterValues.selectedChannels,
-      //     tag: this.filterValues.selectedTags,
-      //     view: "list",
-      //   },
-      // });
+      const path = this.channelId
+        ? `/channels/${this.channelId}/events`
+        : "/events";
+
+      router.push({
+        path,
+        // hash: `#${this.eventResult && this.eventResult.events[0].id}`,
+        query: {
+          // search: this.filterValues.searchInput,
+          // channel: this.filterValues.selectedChannels,
+          // tag: this.filterValues.selectedTags,
+          view: e ? 'map' : "list",
+        },
+      })
+      if (!e) {
+        this.sendToPreview(this.eventResult && this.eventResult.events[0].id, '')
+      } 
     },
     updateRouterQueryParams(e: any) {
       router.push(e);
