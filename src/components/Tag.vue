@@ -78,7 +78,7 @@ export default defineComponent({
       v-if="channelMode && !hideIcon"
     />
     <TagIcon
-      class="h-4 inline-flex"
+      class="h-3 inline-flex"
       v-if="!channelMode && !hideIcon"
     />
     {{ tag }}

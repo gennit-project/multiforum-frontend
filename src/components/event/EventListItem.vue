@@ -19,9 +19,8 @@ export default defineComponent({
     const now = DateTime.now();
     const currentYear = now.year;
 
-    const formattedDate = `${weekday}, ${month} ${day}${
-      year !== currentYear ? ", " + year : ""
-    }`;
+    const formattedDate = `${weekday}, ${month} ${day}${year !== currentYear ? ", " + year : ""
+      }`;
 
     const eventIdInParams = computed(() => {
       if (typeof route.params.eventId === "string") {
@@ -107,83 +106,67 @@ export default defineComponent({
 </script>
 
 <template>
-  <li
-    :ref="`#${event.id}`"
-    :class="[
-      event.id === eventIdInParams ? 'bg-slate-100' : 'hover:bg-slate-200',
-    ]"
-    class="relative bg-white px-4 lg:px-12 cursor-pointer"
-    @click="$emit('openPreview')"
-  >
+  <li :ref="`#${event.id}`" :class="[
+    event.id === eventIdInParams ? 'bg-slate-100' : 'hover:bg-slate-200',
+  ]" class="relative bg-white pl-4 lg:pl-12 cursor-pointer" @click="$emit('openPreview')">
     <router-link :to="previewLink">
       <div class="block">
         <div class="py-2">
           <div class="flex items-center">
-            <p  class="space-x-2">
-              <span
-                class="
+            <p class="space-x-2">
+              <span class="
                   text-sm
                   font-medium
                   text-blue-600
                   truncate
                   cursor-pointer
                   underline
-                "
-              >
-                <HighlightedSearchTerms
-                  :text="event.title"
-                  :search-input="searchInput"
-              /></span>
+                ">
+                <HighlightedSearchTerms :text="event.title" :search-input="searchInput" />
+              </span>
 
-              <span
-                class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3"
-                v-if="event.canceled"
-                >Canceled</span
-              >
+              <span class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3" v-if="event.canceled">Canceled</span>
             </p>
           </div>
           <div v-if="event.description" class="items-center">
             <p class="text-sm font-medium text-gray-600 truncate">
-              <HighlightedSearchTerms
-                :text="event.description"
-                :search-input="searchInput"
-              />
+              <HighlightedSearchTerms :text="event.description" :search-input="searchInput" />
             </p>
-            <p
-              v-if="event.free"
-              class="text-sm font-medium text-gray-600 truncate"
-            >
+            <p v-if="event.free" class="text-sm font-medium text-gray-600 truncate">
               Free
             </p>
           </div>
 
-          <div class="text-sm" v-if="!isWithinChannel">
-            <Tag
-              class="m-1"
-              :active="selectedChannels.includes(channel.uniqueName)"
-              :key="channel.uniqueName"
-              :channel-mode="true"
-              v-for="channel in event.Channels"
-              :tag="channel.uniqueName"
-            />
-          </div>
-          <div class="grid auto-cols-auto">
-            <div
-              class="mt-2 flex text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2"
-            >
+
+          <p class="mt-2 flex flex-wrap text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2">
+            <span>
               <time :datetime="event.startTime">
-                {{ `${formattedDate}, ` }}
+                {{ formattedDate }}
               </time>
-              <div v-if="event.locationName" id="location">
-                {{ `${event.locationName}, ` }}
-              </div>
-              <div v-if="event.virtualEventUrl">
-                {{ ` ${event.virtualEventUrl}, ` }}
-              </div>
-              <time :datetime="event.startTime" class="ml-2">
+            </span>
+            <span>
+              &#x2022;
+            </span>
+            <span>
+              <time :datetime="event.startTime">
                 {{ timeOfDay }}
               </time>
-            </div>
+            </span>
+            <span>
+              &#x2022;
+            </span>
+            <span v-if="event.locationName">
+              {{ event.locationName }}
+            </span>
+          </p>
+          <div v-if="event.virtualEventUrl">
+            <Tag :tag="'Online event'" />
+          </div>
+
+
+          <div class="text-sm" v-if="!isWithinChannel">
+            <Tag class="m-1" :active="selectedChannels.includes(channel.uniqueName)" :key="channel.uniqueName"
+              :channel-mode="true" v-for="channel in event.Channels" :tag="channel.uniqueName" />
           </div>
 
           <!-- <div class="text-sm">
@@ -212,12 +195,7 @@ export default defineComponent({
             {{ i === event.CommentSections.length - 1 ? "" : "•" }}
           </router-link>
         </div> -->
-          <Tag
-            :key="tag"
-            :active="!!selectedTagsMap[tag.text]"
-            v-for="tag in event.Tags"
-            :tag="tag.text"
-          />
+          <Tag :key="tag" :active="!!selectedTagsMap[tag.text]" v-for="tag in event.Tags" :tag="tag.text" />
         </div>
       </div>
     </router-link>

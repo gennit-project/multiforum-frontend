@@ -307,7 +307,7 @@ export default defineComponent({
       <div :class="!channelId ? 'pt-8' : 'pt-2'">
         <div v-if="!channelId" class="flex justify-between min-w-0">
           <h2 class="
-                    text-2xl
+                    text-xl
                     font-bold
                     leading-7
                     text-gray-900
