@@ -525,10 +525,7 @@ export default defineComponent({
       if (this.showMap) {
         this.closePreview();
       }
-    },
-    setShowList() {
-      this.showMap = false;
-      // const path = this.channelId
+            // const path = this.channelId
       //   ? `/channels/${this.channelId}/events`
       //   : "events";
       // router.push({
@@ -632,7 +629,6 @@ export default defineComponent({
       @updateEventTypeFilter="updateEventTypeFilter"
       @updateTimeSlots="updateTimeSlots"
       @resetTimeSlots="resetTimeSlots"
-      @showList="setShowList"
       @toggleShowMap="toggleShowMap"
     />
     <div class="mx-4 lg:mx-12" v-if="eventLoading">Loading...</div>

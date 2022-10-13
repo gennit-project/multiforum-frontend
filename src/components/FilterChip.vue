@@ -43,7 +43,7 @@ export default defineComponent({
         <slot name="icon"></slot>
 
         {{ label }}
-        <ChevronDownIcon class="-mr-1 ml-1 h-4 w-4" aria-hidden="true" />
+        <ChevronDownIcon class="-mr-1 ml-1 mt-0.5 h-3 w-3" aria-hidden="true" />
       </button>
       <template #popper >
         <slot name="content"></slot>
