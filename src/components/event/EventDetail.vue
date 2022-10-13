@@ -437,7 +437,7 @@ export default defineComponent({
                   </VTooltip>
                 </span>
               </li>
-              <li v-if="!eventData.free">
+              <li v-if="!eventData.free && eventData.cost && eventData.cost !== '0'">
                 <TicketIcon class="inline h-5 w-5 mr-2 text-blue-700" />
                 {{ eventData.cost }}
               </li>
