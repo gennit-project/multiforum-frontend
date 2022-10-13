@@ -94,8 +94,14 @@ export default defineComponent({
     });
 
     const selectedDistanceUnit = ref(props.filterValues.distanceUnit);
-    const defaultMileSelection = ref(distanceOptionsForMiles[0]);
-    const defaultKilometerSelection = ref(distanceOptionsForKilometers[0]);
+
+    const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
+          (val: DistanceUnit) => {
+            return props.filterValues.radius === val.value;
+          }
+        );
+    const defaultMileSelection = ref(distanceOptionsForMiles[currentDistanceIndex]);
+    const defaultKilometerSelection = ref(distanceOptionsForKilometers[currentDistanceIndex]);
 
     return {
       activeDateShortcut: ref(timeShortcutValues.NONE),
