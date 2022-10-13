@@ -15,6 +15,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    small: {
+      type: Boolean,
+      default: false,
+    },
   },
   methods: {
     removeQuotationMarks(input: String) {
@@ -32,7 +36,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-1 mb-1 pt-1 pb-1">
+  <div class="mt-1 mb-1">
     <label for="search" class="sr-only">Search</label>
     <div class="relative items-center">
       <div
@@ -63,12 +67,11 @@ export default defineComponent({
       </div>
       <input
         v-model="input"
-        id="search"
         name="search"
+        :class="small ? 'h-7' : ''"
         class="
           pl-10
           pr-3
-          w-full
           border border-gray-300
           rounded-md
           leading-5
@@ -79,7 +82,7 @@ export default defineComponent({
           focus:ring-1
           focus:ring-blue-500
           focus:border-blue-500
-          text-sm
+          text-xs
         "
         :placeholder="searchPlaceholder"
         @keyup="updateSearchInput"

@@ -282,6 +282,59 @@ export default defineComponent({
 </script>
 <template>
   <div class="px-4 lg:px-12 border-b-2">
+    <div>
+      <div
+        v-if="
+          filterValues.selectedLocationFilter ===
+          LocationFilterTypes.ONLY_VIRTUAL
+        "
+        class="items-center space-x-2 flex flex-wrap"
+      >
+        Showing {{ loadedEventCount }} online of {{ resultCount }} results
+      </div>
+      <div
+        v-else-if="
+          filterValues.selectedLocationFilter === LocationFilterTypes.NONE
+        "
+      >
+        Showing {{ loadedEventCount }} of {{ resultCount }} results
+      </div>
+      <div v-else class="items-center space-x-2 flex flex-wrap">
+        <div class="inline-block">
+          Showing {{ loadedEventCount }} of {{ resultCount }} results within
+        </div>
+        <SelectMenu
+          v-if="selectedDistanceUnit === MilesOrKm.KM"
+          class="ml-2 w-44 inline-block"
+          :options="distanceOptionsForKilometers"
+          :default-option="defaultKilometerSelection"
+          @selected="updateSelectedDistance"
+        />
+        <SelectMenu
+          v-if="selectedDistanceUnit === MilesOrKm.MI"
+          class="ml-2 w-44 inline-block"
+          :options="distanceOptionsForMiles"
+          :default-option="defaultMileSelection"
+          @selected="updateSelectedDistance"
+        />
+        <SelectMenu
+          class="mr-4 w-18"
+          :options="distanceUnitOptions"
+          :default-option="{
+            label: filterValues.distanceUnit,
+            value: filterValues.distanceUnit,
+          }"
+          @selected="updateSelectedDistanceUnit"
+        />
+        <div class="inline-block">of</div>
+        <LocationSearchBar
+          class="flex flex-wrap"
+          :search-placeholder="filterValues.referencePointAddress"
+          :reference-point-address-name="filterValues.referencePointName"
+          @updateLocationInput="updateLocationInput"
+        />
+      </div>
+    </div>
     <div class="items-center space-x-2">
       <FilterChip
         class="align-middle"
@@ -325,7 +378,7 @@ export default defineComponent({
           max-height-4
           pl-2.5
           pr-3.5
-          py-2.5
+          py-1
           border
           text-xs
           font-medium
@@ -389,7 +442,8 @@ export default defineComponent({
       </Modal>
       <SearchBar
         class="inline-flex align-middle"
-        :search-placeholder="'Search events'"
+        :search-placeholder="'Search text'"
+        :small="true"
         @updateSearchInput="updateSearchInput"
       />
       <div v-if="channelId" class="float-right flex">
@@ -421,6 +475,7 @@ export default defineComponent({
         />
       </div>
     </div>
+
       <Tag
        class="my-1 align-middle"
         v-for="shortcut in timeFilterShortcuts"
@@ -428,7 +483,6 @@ export default defineComponent({
         :tag="shortcut.label"
         :active="shortcut.value === activeDateShortcut"
         :hide-icon="true"
-        :large="true"
         @click="handleTimeFilterShortcutClick(shortcut)"
       />
       <Tag
@@ -437,7 +491,6 @@ export default defineComponent({
         :key="shortcut.label"
         :tag="shortcut.label"
         :hide-icon="true"
-        :large="true"
         :active="
           shortcut.locationFilterType === activeEventFilterTypeShortcut ||
           (shortcut.locationFilterType ===
@@ -448,58 +501,6 @@ export default defineComponent({
         @click="updateEventTypeFilter(shortcut)"
       />
       
-    <div>
-      <div
-        v-if="
-          filterValues.selectedLocationFilter ===
-          LocationFilterTypes.ONLY_VIRTUAL
-        "
-        class="items-center space-x-2 flex flex-wrap"
-      >
-        Showing {{ loadedEventCount }} online of {{ resultCount }} results
-      </div>
-      <div
-        v-else-if="
-          filterValues.selectedLocationFilter === LocationFilterTypes.NONE
-        "
-      >
-        Showing {{ loadedEventCount }} of {{ resultCount }} results
-      </div>
-      <div v-else class="items-center space-x-2 flex flex-wrap">
-        <div class="inline-block">
-          Showing {{ loadedEventCount }} of {{ resultCount }} results within
-        </div>
-        <SelectMenu
-          v-if="selectedDistanceUnit === MilesOrKm.KM"
-          class="ml-2 w-44 inline-block"
-          :options="distanceOptionsForKilometers"
-          :default-option="defaultKilometerSelection"
-          @selected="updateSelectedDistance"
-        />
-        <SelectMenu
-          v-if="selectedDistanceUnit === MilesOrKm.MI"
-          class="ml-2 w-44 inline-block"
-          :options="distanceOptionsForMiles"
-          :default-option="defaultMileSelection"
-          @selected="updateSelectedDistance"
-        />
-        <SelectMenu
-          class="mr-4 w-18"
-          :options="distanceUnitOptions"
-          :default-option="{
-            label: filterValues.distanceUnit,
-            value: filterValues.distanceUnit,
-          }"
-          @selected="updateSelectedDistanceUnit"
-        />
-        <div class="inline-block">of</div>
-        <LocationSearchBar
-          class="flex flex-wrap"
-          :search-placeholder="filterValues.referencePointAddress"
-          :reference-point-address-name="filterValues.referencePointName"
-          @updateLocationInput="updateLocationInput"
-        />
-      </div>
-    </div>
+    
   </div>
 </template>

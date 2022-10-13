@@ -28,7 +28,7 @@ export default defineComponent({
 <template>
   <div
     :class="[fullWidth ? 'w-full' : '', 'inline-block']"
-    class="inline-block mt-1 mb-1 pt-1 pb-1"
+    class="inline-block mt-1 mb-1"
   >
     <label for="search" class="sr-only">Search Location</label>
     <div class="relative">

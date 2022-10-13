@@ -27,9 +27,9 @@ export default defineComponent({
         :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
         class="
           inline-flex
-          max-height-4
+          max-height-3
           px-2.5
-          py-2.5
+          py-1
           border
           text-xs
           font-medium
