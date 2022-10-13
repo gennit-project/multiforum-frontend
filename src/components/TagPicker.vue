@@ -80,8 +80,8 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="tagsLoading">Loading...</div>
-    <div v-else-if="tagsError">
+    <div class="px-4 lg:px-12" v-if="tagsLoading">Loading...</div>
+    <div class="px-4 lg:px-12" v-else-if="tagsError">
       <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
         {{ error.message }}
       </div>
