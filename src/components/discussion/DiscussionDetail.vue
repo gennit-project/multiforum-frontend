@@ -191,7 +191,7 @@ export default defineComponent({
             {{ discussion.title }}
           </h2>
         </div>
-        <div v-if="!compactMode" class="mt-4 flex-shrink-0 flex md:mx-4">
+        <div v-if="!compactMode && channelId" class="mt-4 flex-shrink-0 flex md:mx-4">
           <div class="float-right">
             <span>
               <router-link
@@ -200,6 +200,7 @@ export default defineComponent({
                 <GenericButton :text="'Edit'" />
               </router-link>
               <CreateButton
+                v-if="$route.name === 'DiscussionDetail'"
                 class="ml-2"
                 :to="`/channels/c/${channelId}/discussions/create`"
                 :label="'Create Discussion'"

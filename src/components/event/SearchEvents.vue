@@ -648,7 +648,7 @@ export default defineComponent({
           <EventList
             id="listView"
             :class="[!channelId ? '' : '']"
-            class="relative text-lg"
+            class="relative text-lg border-r border-gray-200"
             :result-count="eventResult ? eventResult.eventsCount : 0"
             :events="eventResult.events"
             :channel-id="channelId"

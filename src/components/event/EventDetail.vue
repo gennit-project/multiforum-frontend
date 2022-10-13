@@ -274,7 +274,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="[!compactMode ? 'px-10' : '']">
+  <div class="px-10">
     <p v-if="eventLoading">Loading...</p>
     <ErrorBanner v-else-if="eventError" :text="eventError.message" />
 
@@ -326,7 +326,7 @@ export default defineComponent({
             {{ eventData.title }}
           </h2>
         </div>
-        <div v-if="!compactMode && channelId" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+        <div v-if="channelId" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
           <div class="float-right">
             <span>
               <router-link
@@ -335,7 +335,7 @@ export default defineComponent({
                 <GenericButton :text="'Edit'" class="mr-2" />
               </router-link>
               <CreateButton
-                v-if="$route.name === 'EventDetail' "
+                v-if="$route.name === 'EventDetail'"
                 :to="`/channels/c/${channelId}/events/create`"
                 :label="'Create Event'"
               />
@@ -344,7 +344,7 @@ export default defineComponent({
         </div>
       </div>
       <div class="grid grid-cols-8 gap-1">
-          <div  :class="!compactMode ? 'xl:col-span-5' : ''" class="col-start-1 col-span-8 mr-4">
+          <div class="col-start-1 col-span-8 mr-4 xl:col-span-5">
             <Comment
               v-if="eventData.description"
               :author-username="

@@ -11,6 +11,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import SearchBar from "@/components/SearchBar.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/FilterChip.vue";
+import CreateButton from "@/components/CreateButton.vue";
 import ErrorBanner from "../ErrorBanner.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
@@ -23,6 +24,7 @@ export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
+    CreateButton,
     DiscussionList,
     DiscussionPreview,
     ErrorBanner,
@@ -301,111 +303,75 @@ export default defineComponent({
 
 <template>
   <div class="bg-white">
-    <div class="lg:flex lg:flex-row">
-      <div
-        class="
-          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
-          flex flex-col flex-grow
-        "
-      >
-        <div>
-          <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
-            <div class="pt-8">
-              <div v-if="!channelId" class="flex-1 min-w-0">
-                <h2
-                  class="
+    <div class="bg-white rounded px-4 lg:px-12 pr-8">
+      <div :class="!channelId ? 'pt-8' : 'pt-2'">
+        <div v-if="!channelId" class="flex justify-between min-w-0">
+          <h2 class="
                     text-2xl
                     font-bold
                     leading-7
                     text-gray-900
                     sm:text-3xl sm:tracking-tight sm:truncate
-                  "
-                >
-                  {{
-                    channelId
-                      ? `Discussions in ${channelId}`
-                      : "Search Discussions"
-                  }}
-                </h2>
-              </div>
-              <div class="items-center flex flex-wrap justify-between">
-                <SearchBar
-                  class="flex"
-                  :search-placeholder="'Search discussions'"
-                  @updateSearchInput="updateSearchResult"
-                />
-                <div class="flex justify-end items-center space-x-2">
-                  <FilterChip
-                    class="align-middle"
-                    v-if="!channelId"
-                    :label="channelLabel"
-                    :highlighted="channelLabel !== defaultLabels.channels"
-                  >
-                    <template v-slot:icon>
-                      <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-                    </template>
-                    <template v-slot:content>
-                      <ChannelPicker
-                        :selected-channels="selectedChannels"
-                        @setSelectedChannels="setSelectedChannels"
-                      />
-                    </template>
-                  </FilterChip>
-
-                  <FilterChip
-                    class="align-middle"
-                    :label="tagLabel"
-                    :highlighted="tagLabel !== defaultLabels.tags"
-                  >
-                    <template v-slot:icon>
-                      <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-                    </template>
-                    <template v-slot:content>
-                      <TagPicker
-                        :selected-tags="selectedTags"
-                        @setSelectedTags="setSelectedTags"
-                      />
-                    </template>
-                  </FilterChip>
-                </div>
-              </div>
-            </div>
-          </div>
+                  ">
+            {{
+            channelId
+            ? `Discussions in ${channelId}`
+            : "Search Discussions"
+            }}
+          </h2>
+          <CreateButton class="align-middle ml-2" :to="createDiscussionPath" :label="'Create Discussion'" />
         </div>
+        <div class="items-center flex justify-between">
+          
+           
+          <div class="flex items-center space-x-2">
+            <SearchBar class="flex mr-2 align-middle" :small="true" :search-placeholder="'Search discussions'"
+            @updateSearchInput="updateSearchResult" />
+            <FilterChip class="align-middle" v-if="!channelId" :label="channelLabel"
+              :highlighted="channelLabel !== defaultLabels.channels">
+              <template v-slot:icon>
+                <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+              </template>
+              <template v-slot:content>
+                <ChannelPicker :selected-channels="selectedChannels" @setSelectedChannels="setSelectedChannels" />
+              </template>
+            </FilterChip>
+
+            <FilterChip class="align-middle" :label="tagLabel" :highlighted="tagLabel !== defaultLabels.tags">
+              <template v-slot:icon>
+                <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+              </template>
+              <template v-slot:content>
+                <TagPicker :selected-tags="selectedTags" @setSelectedTags="setSelectedTags" />
+              </template>
+            </FilterChip>
+          </div>
+          <CreateButton v-if="channelId" class="align-middle ml-2" :to="createDiscussionPath" :label="'Create Discussion'" />
+        </div>
+      </div>
+    </div>
+    <div class="lg:flex lg:flex-row">
+      <div class="
+          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
+          flex flex-col flex-grow
+        ">
         <div>
-          <ErrorBanner
-            class="mx-auto max-w-5xl"
-            v-if="discussionError"
-            :text="discussionError.message"
-          />
-          <DiscussionList
-            v-if="discussionResult && discussionResult.discussions"
-            :discussions="discussionResult.discussions"
-            :channel-id="channelId"
-            :result-count="discussionResult.discussionsCount"
-            :search-input="searchInput"
-            :selected-tags="selectedTags"
-            :selected-channels="selectedChannels"
-            @filterByTag="filterByTag"
-            @loadMore="loadMore"
-            @openPreview="openPreview"
-          />
-          <DiscussionPreview
-            class="lg:invisible"
-            :isOpen="previewIsOpen"
-            @closePreview="closePreview"
-          />
-          <div class="mx-auto max-w-5xl px-8" v-if="discussionLoading">
+          <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
+          <DiscussionList v-if="discussionResult && discussionResult.discussions"
+            :discussions="discussionResult.discussions" :channel-id="channelId"
+            :result-count="discussionResult.discussionsCount" :search-input="searchInput" :selected-tags="selectedTags"
+            :selected-channels="selectedChannels" @filterByTag="filterByTag" @loadMore="loadMore"
+            @openPreview="openPreview" />
+          <DiscussionPreview class="lg:invisible" :isOpen="previewIsOpen" @closePreview="closePreview" />
+          <div class="px-4 lg:px-12" v-if="discussionLoading">
             Loading...
           </div>
         </div>
       </div>
-      <div
-        class="
+      <div class="
           invisible
           lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto
-        "
-      >
+        ">
         <router-view></router-view>
       </div>
     </div>

@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import DiscussionPreview from "./DiscussionPreview.vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
 import LoadMore from "../LoadMore.vue";
 import { DiscussionData } from "../../types/discussionTypes";
@@ -70,7 +69,7 @@ export default defineComponent({
 <template>
   <div class="sm:rounded-md mx-auto max-w-5xl pt-4">
     <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
-    <p v-else class="px-8">
+    <p v-else class="px-4 lg:px-12">
       Showing {{ discussions.length }} of {{ resultCount }} results
     </p>
     <ul

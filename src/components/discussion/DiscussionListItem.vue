@@ -110,7 +110,7 @@ export default defineComponent({
         : 'hover:bg-slate-200',
       channelIdInParams ? 'hover:bg-slate-200' : '',
     ]"
-    class="relative bg-white py-4 px-8 cursor-pointer "
+    class="relative bg-white py-4 px-4 lg:px-12 cursor-pointer "
     @click="$emit('openPreview')"
   >
     <router-link :to="previewLink">
