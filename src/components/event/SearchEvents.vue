@@ -365,7 +365,7 @@ export default defineComponent({
       offset: 0,
       where: eventWhere,
       resultsOrder: resultsOrder
-    },{
+    }, {
       fetchPolicy: 'network-only', // If it is not network only, the list
       // will not update when an event time changes in a way that affects
       // which search results it should be returned in.
@@ -546,7 +546,7 @@ export default defineComponent({
       })
       if (!e) {
         this.sendToPreview(this.eventResult && this.eventResult.events[0].id, '')
-      } 
+      }
     },
     updateRouterQueryParams(e: any) {
       router.push(e);
@@ -572,11 +572,9 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white" :class="showMap ? 'fixed' : ''">
-    <div class="px-4 lg:px-12 mt-4 md:flex md:items-center md:justify-between">
-      <div class="flex-1 min-w-0">
-        <h2
-          v-if="!channelId"
-          class="
+    <div class="px-4 lg:px-12 mt-4 flex items-center justify-between">
+
+      <h2 v-if="!channelId" class="
             text-xl
             font-bold
             leading-7
@@ -584,72 +582,47 @@ export default defineComponent({
             align-middle
             flex-1
             sm:tracking-tight sm:truncate
-          "
-        >
-          Search Events
-        </h2>
-      </div>
+          ">
+        Search Events
+      </h2>
+
       <div class=" flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
         <div class="float-right">
           <div v-if="!channelId" class="flex justify-center">
             <SwitchGroup as="div" class="flex items-center">
-              <TailwindSwitch
-                v-model="showMap"
-                :class="[
-                  showMap ? 'bg-blue-600' : 'bg-gray-200',
-                  'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-                ]"
-                @update:model-value="toggleShowMap"
-              >
-                <span
-                  aria-hidden="true"
-                  :class="[
-                    showMap ? 'translate-x-5' : 'translate-x-0',
-                    'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-                  ]"
-                />
+              <TailwindSwitch v-model="showMap" :class="[
+                showMap ? 'bg-blue-600' : 'bg-gray-200',
+                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+              ]" @update:model-value="toggleShowMap">
+                <span aria-hidden="true" :class="[
+                  showMap ? 'translate-x-5' : 'translate-x-0',
+                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+                ]" />
               </TailwindSwitch>
               <SwitchLabel as="span" class="ml-3">
                 <span class="text-sm font-medium text-gray-900">Show Map</span>
               </SwitchLabel>
             </SwitchGroup>
-            <CreateButton
-              class="align-middle ml-2"
-              :to="createEventPath"
-              :label="'Create Event'"
-            />
+            <CreateButton class="align-middle ml-2" :to="createEventPath" :label="'Create Event'" />
           </div>
         </div>
       </div>
     </div>
-    <EventFilterBar
-      :channel-id="channelId"
-      :result-count="eventResult ? eventResult.eventsCount : 0"
-      :filter-values="filterValues"
-      :loaded-event-count="eventResult ? eventResult.events.length : 0"
-      :time-slot-filters-active="timeSlotFiltersActive"
-      :create-event-path="createEventPath"
-      @updateSelectedDistance="updateSelectedDistance"
-      @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
-      @updateLocationInput="updateLocationInput"
-      @setSelectedChannels="setSelectedChannels"
-      @setSelectedTags="setSelectedTags"
-      @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
-      @updateSearchInput="updateSearchInput"
-      @updateEventTypeFilter="updateEventTypeFilter"
-      @updateTimeSlots="updateTimeSlots"
-      @resetTimeSlots="resetTimeSlots"
-      @toggleShowMap="toggleShowMap"
-    />
+    <EventFilterBar :channel-id="channelId" :result-count="eventResult ? eventResult.eventsCount : 0"
+      :filter-values="filterValues" :loaded-event-count="eventResult ? eventResult.events.length : 0"
+      :time-slot-filters-active="timeSlotFiltersActive" :create-event-path="createEventPath"
+      @updateSelectedDistance="updateSelectedDistance" @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
+      @updateLocationInput="updateLocationInput" @setSelectedChannels="setSelectedChannels"
+      @setSelectedTags="setSelectedTags" @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
+      @updateSearchInput="updateSearchInput" @updateEventTypeFilter="updateEventTypeFilter"
+      @updateTimeSlots="updateTimeSlots" @resetTimeSlots="resetTimeSlots" @toggleShowMap="toggleShowMap" />
     <div class="mx-4 lg:mx-12" v-if="eventLoading">Loading...</div>
     <ErrorBanner class="mx-4 lg:mx-12" v-else-if="eventError" :text="eventError.message" />
     <div v-else-if="!showMap && eventResult && eventResult.events" class="lg:flex lg:flex-row">
-      <div
-        class="
+      <div class="
           lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
           flex flex-col flex-grow
-        "
-      >
+        ">
         <div class="rounded max-w-5xl">
           <EventList
             id="listView"
@@ -673,23 +646,22 @@ export default defineComponent({
           />
         </div>
       </div>
-      <div
-        class="invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto"
-      >
+      <div class="invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
         <div v-if="!showMap && eventResult?.events?.length > 0">
           <router-view></router-view>
         </div>
       </div>
     </div>
-    <MapView
-      v-else :channel-id="channelId"
-      :events="eventResult.events"
+    <MapView 
+      v-else 
+      :channel-id="channelId" 
+      :events="eventResult.events" 
       :result-count="eventResult.eventsCount"
-      :search-input="filterValues.searchInput"
+      :search-input="filterValues.searchInput" 
       :selected-tags="filterValues.selectedTags"
-      :selected-channels="filterValues.selectedChannels"
-      @loadMore="loadMore"
-      @sendToPreview="sendToPreview"
+      :selected-channels="filterValues.selectedChannels" 
+      @loadMore="loadMore" 
+      @sendToPreview="sendToPreview" 
     />
   </div>
 </template>

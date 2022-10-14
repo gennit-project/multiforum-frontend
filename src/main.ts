@@ -14,21 +14,14 @@ import { onError } from "@apollo/client/link/error";
 import { logErrorMessages } from "@vue/apollo-util";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
-// import 'v-tooltip/dist/v-tooltip.css';
-// import {
-// Directives
-//   VTooltip
-// VClosePopper,
-// Components
-// Dropdown,
-// Tooltip,
-// Menu
-// } from 'v-tooltip'
-// import VTooltipPlugin from 'v-tooltip'
+import vuetify from './plugins/vuetify'
+import { loadFonts } from './plugins/webfontloader'
 import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
 // import "highlight.js/styles/github-dark-dimmed.css";
+
+loadFonts()
 
 const httpLink = createHttpLink({
   uri: config.graphqlUrl,
@@ -153,6 +146,7 @@ const app = createApp({
 
 app
   .use(router)
+  .use(vuetify)
   .use(FloatingVue)
   .use(VueGoogleMaps, {
     load: {

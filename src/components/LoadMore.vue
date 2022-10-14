@@ -1,6 +1,6 @@
 
 
-  <script lang="ts">
+<script lang="ts">
 import { defineComponent } from "vue";
 
 export default defineComponent({
@@ -14,11 +14,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <button
-    :class="!reachedEndOfResults ? 'underline' : ''"
-    class="justify-self-center prose"
-    @click="$emit('loadMore')"
-  >
-    {{ reachedEndOfResults ? "Reached the end of the results." : "Load more" }}
-  </button>
+  <div class="prose">
+    <p v-if="reachedEndOfResults">Reached the end of the results.</p>
+
+    <button v-else :class="!reachedEndOfResults ? 'underline' : ''" class="justify-self-center"
+      @click="$emit('loadMore')">
+      Load more
+    </button>
+  </div>
 </template>

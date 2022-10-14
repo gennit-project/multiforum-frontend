@@ -489,11 +489,6 @@ export default defineComponent({
             <div class="time-zone">
               {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
             </div>
-            <div class="created-date">
-              {{ `Created ${relativeTime(eventData.createdAt)}` }}
-              <span v-if="eventData.updatedAt"> &#8226; </span>
-              {{ editedAt }}
-            </div>
         </div>
 
         <WarningModal

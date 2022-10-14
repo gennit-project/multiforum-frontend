@@ -15,14 +15,14 @@ export default defineComponent({
     ListboxButton,
   },
   props: {
+    defaultOption: {
+      type: Object as PropType<SelectOptionData>,
+      required: false
+    },
     options: {
       type: Array as PropType<Array<SelectOptionData>>,
       required: true,
     },
-    defaultOption: {
-      type: Object as PropType<SelectOptionData>,
-      required: false
-    }
   },
   setup(props) {
     const defaultOption = props.defaultOption ? ref(props.defaultOption) : ref(props.options[0]);
@@ -51,14 +51,12 @@ export default defineComponent({
           shadow-sm
           pl-3
           pr-10
-          py-2
           text-left
           cursor-default
           focus:outline-none
           focus:ring-1
           focus:ring-blue-500
           focus:border-blue-500
-          sm:text-sm
         "
         :label="selected.label"
       >
@@ -104,7 +102,7 @@ export default defineComponent({
           <li
             :class="[
               active ? 'text-white bg-blue-600' : 'text-gray-900',
-              'cursor-default select-none relative py-2 pl-3 pr-9',
+              'cursor-default select-none relative py-1 pl-3 pr-9',
             ]"
           >
             <span

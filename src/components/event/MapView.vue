@@ -7,6 +7,7 @@ import EventMap from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import CloseButton from "@/components/CloseButton.vue";
 import { useRouter } from "vue-router";
+import { useDisplay } from 'vuetify';
 
 export default defineComponent({
   props: {
@@ -48,12 +49,21 @@ export default defineComponent({
     EventPreview,
     PreviewContainer,
   },
+  setup(){
+    const { smAndDown } = useDisplay();
+    return {
+      smAndDown,
+    }
+  },
   data() {
     const router = useRouter();
+    
     return {
       highlightedMarker: null,
-      markerMap: {} as any,
-      map: {} as any,
+      mobileMarkerMap: {} as any,
+      desktopMarkerMap: {} as any,
+      mobileMap: {} as any,
+      desktopMap: {} as any,
       colorLocked: false,
       eventPreviewIsOpen: false,
       highlightedEventId: "",
@@ -64,37 +74,45 @@ export default defineComponent({
       selectedEvents: [],
     };
   },
+  computed: {
+    smallerThanDesktopWidth() {
+      return this.$vuetify.breakpoint.lgAndDown;
+    },
+  },
   methods: {
     setMarkerData(data: any) {
-      this.markerMap = data.markerMap;
-      this.map = data.map;
+      this.mobileMap = data.map;
+      this.mobileMarkerMap = data.markerMap;
+
+      // Keep desktop and mobile maps consistent
+      this.desktopMap = data.map;
+      this.desktopMarkerMap = data.markerMap;
     },
     updateMapCenter(placeData: any) {
       if (this.showMap) {
-        const lat = placeData.geometry.location.lat();
-        const lng = placeData.geometry.location.lng();
+        const coords = {
+          lat: placeData.geometry.location.lat(),
+          lng: placeData.geometry.location.lng(),
+        };
 
-        this.map.setCenter({
-          lng,
-          lat,
-        });
+        this.mobileMap.setCenter(coords);
+        this.desktopMap.setCenter(coords);
       }
     },
-    highlightEvent(
-      eventLocationId: string,
-      eventId: string,
-      eventData: EventData,
-      clickedMapMarker: boolean | false
-    ) {
-      this.$emit('sendToPreview', eventId, eventLocationId)
-      this.highlightedEventLocationId = eventLocationId;
-
+    highlightEventOnMap({
+      eventId,
+      eventLocationId,
+      eventData,
+      clickedMapMarker,
+      markerMap,
+      map
+    }: any) {
       if (eventId) {
         if (
-          this.markerMap[eventLocationId] &&
-          this.markerMap[eventLocationId].events[eventId]
+          markerMap[eventLocationId] &&
+          markerMap[eventLocationId].events[eventId]
         ) {
-          this.selectedEvent = this.markerMap[eventLocationId].events[eventId];
+          this.selectedEvent = markerMap[eventLocationId].events[eventId];
         } else if (eventData) {
           this.selectedEvent = eventData;
         } else {
@@ -102,19 +120,18 @@ export default defineComponent({
         }
       }
 
-      if (this.markerMap[eventLocationId]) {
-        this.markerMap[eventLocationId].marker.setIcon({
+      if (markerMap[eventLocationId]) {
+        markerMap[eventLocationId].marker.setIcon({
           url: require("@/assets/images/highlighted-place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
         });
-        console.log('set icon to highlighted ',{markerMap: this.markerMap})
 
         const openSpecificInfowindow = () => {
           const eventTitle =
-            this.markerMap[eventLocationId].events[this.highlightedEventId]
+            markerMap[eventLocationId].events[this.highlightedEventId]
               .title;
           const eventLocation =
-            this.markerMap[eventLocationId].events[this.highlightedEventId]
+            markerMap[eventLocationId].events[this.highlightedEventId]
               .locationName;
 
           let infowindowContent = `<b>${eventTitle}</b>`;
@@ -122,25 +139,24 @@ export default defineComponent({
           if (eventLocation) {
             infowindowContent = `<div style="text-align:center"><b>${eventTitle}</b></div></div><div style="text-align:center">at ${eventLocation}</div>`;
           }
-          this.markerMap.infowindow.setContent(infowindowContent);
-          this.markerMap.infowindow.open({
-            anchor: this.markerMap[eventLocationId].marker,
-            map: this.map,
+          markerMap.infowindow.setContent(infowindowContent);
+          markerMap.infowindow.open({
+            anchor: markerMap[eventLocationId].marker,
+            map,
             shouldFocus: false,
           });
         };
 
         const openGenericInfowindow = () => {
-          this.markerMap.infowindow.setContent(`${numberOfEvents} events`);
-          this.markerMap.infowindow.open({
-            anchor: this.markerMap[eventLocationId].marker,
-            map: this.map,
+          markerMap.infowindow.setContent(`${numberOfEvents} events`);
+          markerMap.infowindow.open({
+            anchor: markerMap[eventLocationId].marker,
+            map,
             shouldFocus: false,
           });
         };
 
-        const numberOfEvents = this.markerMap[eventLocationId].numberOfEvents;
-
+        const numberOfEvents = markerMap[eventLocationId].numberOfEvents;
         // If the user mouses over a map marker with multiple events,
         // open a generic infowindow.
         if (clickedMapMarker && numberOfEvents > 1) {
@@ -151,7 +167,7 @@ export default defineComponent({
         // open a specific infowindow.
         else if (clickedMapMarker && numberOfEvents === 1) {
           const defaultEventId = Object.keys(
-            this.markerMap[eventLocationId].events
+            markerMap[eventLocationId].events
           )[0];
           this.highlightedEventId = defaultEventId;
           openSpecificInfowindow();
@@ -165,7 +181,7 @@ export default defineComponent({
         }
 
         if (numberOfEvents > 1) {
-          const selectedEventsObject = this.markerMap[eventLocationId].events;
+          const selectedEventsObject = markerMap[eventLocationId].events;
           const getArrayFromObject = (obj: any) => {
             const ary = [];
 
@@ -181,14 +197,41 @@ export default defineComponent({
         }
       }
     },
-    unhighlight() {
+    highlightEvent(
+      eventLocationId: string,
+      eventId: string,
+      eventData: EventData,
+      clickedMapMarker: boolean | false,
+    ) {
+      this.$emit('sendToPreview', eventId, eventLocationId)
+      this.highlightedEventLocationId = eventLocationId;
+
+      // Keep desktop and mobile maps in sync
+      this.highlightEventOnMap({
+        eventId,
+        eventLocationId,
+        eventData,
+        clickedMapMarker,
+        markerMap: this.mobileMarkerMap,
+        map: this.mobileMap
+      });
+      this.highlightEventOnMap({
+        eventId,
+        eventLocationId,
+        eventData,
+        clickedMapMarker,
+        markerMap: this.desktopMarkerMap,
+        map: this.desktopMap
+      });
+    },
+    unhighlightEventOnMap(markerMap: any) {
       if (!this.colorLocked) {
-        if (this.markerMap.infowindow) {
-          this.markerMap.infowindow.close();
+        if (markerMap.infowindow) {
+          markerMap.infowindow.close();
         }
 
-        if (this.markerMap[this.highlightedEventLocationId]) {
-          this.markerMap[this.highlightedEventLocationId].marker.setIcon({
+        if (markerMap[this.highlightedEventLocationId]) {
+          markerMap[this.highlightedEventLocationId].marker.setIcon({
             url: require("@/assets/images/place-icon.svg").default,
             scaledSize: { width: 20, height: 20 },
           });
@@ -197,13 +240,17 @@ export default defineComponent({
         this.highlightedEventLocationId = "";
       }
     },
+    unhighlight() {
+      // Keep desktop and mobile map markers consistent
+      this.unhighlightEventOnMap(this.mobileMarkerMap);
+      this.unhighlightEventOnMap(this.desktopMarkerMap);
+    },
     closeEventPreview() {
       this.eventPreviewIsOpen = false;
 
       if (!this.multipleEventPreviewIsOpen) {
         this.colorLocked = false;
       }
-
       this.unhighlight();
     },
     closeMultipleEventPreview() {
@@ -219,7 +266,8 @@ export default defineComponent({
         // that event. If there is more than one,
         // open a preview for multiple events.
         const eventsAtClickedLocation =
-          this.markerMap[this.highlightedEventLocationId].numberOfEvents;
+          // We assume desktop and mobile marker maps are in sync.
+          this.desktopMarkerMap[this.highlightedEventLocationId].numberOfEvents;
 
         if (eventsAtClickedLocation > 1) {
           this.multipleEventPreviewIsOpen = true;
@@ -239,99 +287,68 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div id="mapViewFullScreen" class="flex flex-row invisible lg:visible">
+    <div id="mapViewMobileWidth" v-if="smAndDown">
+      <EventMap 
+        v-if="events.length > 0" 
+        :events="events"
+        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen" 
+        :color-locked="colorLocked"
+        :use-mobile-styles="true" 
+        @highlightEvent="highlightEvent" 
+        @open-preview="openPreview"
+        @lockColors="colorLocked = true" 
+        @setMarkerData="setMarkerData" 
+      />
+    </div>
+    <div id="mapViewFullScreen" class="flex flex-row" v-else>
       <div class="h-full max-h-screen overflow-y-auto flex-col flex-grow" style="width: 34vw">
-        <EventList
+        <EventList 
           key="highlightedEventId"
           :events="events"
           :channel-id="channelId"
           :search-input="searchInput"
-          :highlighted-event-location-id="highlightedEventLocationId"
+          :highlighted-event-location-id="highlightedEventLocationId" 
           :highlighted-event-id="highlightedEventId"
-          :selected-tags="selectedTags"
-          :selected-channels="selectedChannels"
+          :selected-tags="selectedTags" 
+          :selected-channels="selectedChannels" 
           :show-map="true"
-          @highlightEvent="highlightEvent"
-          @open-preview="openPreview"
-          @unhighlight="unhighlight"
+          @highlightEvent="highlightEvent" 
+          @open-preview="openPreview" 
+          @unhighlight="unhighlight" 
         />
       </div>
       <div
         style="
           right: 0;
           width: 66vw;
-          height: calc(100vh - 130px);
         "
       >
-        <EventMap
+        <EventMap 
+          class="fixed"
           v-if="events.length > 0"
           :events="events"
           :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
           :color-locked="colorLocked"
+          :use-mobile-styles="false"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
-          @lockColors="colorLocked = true"
-          @setMarkerData="setMarkerData"
+          @lockColors="colorLocked = true" 
+          @setMarkerData="setMarkerData" 
         />
       </div>
     </div>
-    <div id="mapViewMobileWidth" class="visible lg:invisible">
-      <!-- <EventMap
-        v-if="events.length > 0"
-        :events="events"
-        :use-mobile-styles="true"
-        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-        :color-locked="colorLocked"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-        @lockColors="colorLocked = true"
-        @setMarkerData="setMarkerData"
-      /> -->
-      <EventList
-        key="highlightedEventId"
-        :events="events"
-        :channel-id="channelId"
-        :search-input="searchInput"
-        :highlighted-event-location-id="highlightedEventLocationId"
-        :highlighted-event-id="highlightedEventId"
-        :selected-tags="selectedTags"
-        :selected-channels="selectedChannels"
-        :show-map="true"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-        @unhighlight="unhighlight"
-      />
-    </div>
-
-    <EventPreview
-      :top-layer="true"
-      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
-      @closePreview="closeEventPreview"
-    />
-    <PreviewContainer
-      :isOpen="multipleEventPreviewIsOpen"
-      :header="'Events at this Location'"
-      @closePreview="closeMultipleEventPreview"
-    >
-      <EventList
-        v-if="selectedEvents"
-        class="overscroll-auto overflow-auto"
-        :events="selectedEvents"
-        :result-count="selectedEvents.length"
-        :channel-id="channelId"
-        :highlighted-event-id="highlightedEventId"
-        :show-map="true"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-      />
+    <EventPreview :top-layer="true" :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
+      @closePreview="closeEventPreview" />
+    <PreviewContainer :isOpen="multipleEventPreviewIsOpen" :header="'Events at this Location'"
+      @closePreview="closeMultipleEventPreview">
+      <EventList v-if="selectedEvents" class="overscroll-auto overflow-auto" :events="selectedEvents"
+        :result-count="selectedEvents.length" :channel-id="channelId" :highlighted-event-id="highlightedEventId"
+        :show-map="true" @highlightEvent="highlightEvent" @open-preview="openPreview" />
       <div class="flex-shrink-0 px-4 py-4 flex justify-end">
         <CloseButton @click="closeMultipleEventPreview" />
       </div>
-      <PreviewContainer
-        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
-        :top-layer="true"
-        @closePreview="closeEventPreview"
-      >
+      <PreviewContainer :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen" :top-layer="true"
+        @closePreview="closeEventPreview">
         <router-view></router-view>
       </PreviewContainer>
     </PreviewContainer>

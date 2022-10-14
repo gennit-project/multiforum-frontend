@@ -311,14 +311,14 @@ export default defineComponent({
         </div>
         <SelectMenu
           v-if="selectedDistanceUnit === MilesOrKm.KM"
-          class="ml-2 w-44 inline-block"
+          class="ml-2 w-36 inline-block"
           :options="distanceOptionsForKilometers"
           :default-option="defaultKilometerSelection"
           @selected="updateSelectedDistance"
         />
         <SelectMenu
           v-if="selectedDistanceUnit === MilesOrKm.MI"
-          class="ml-2 w-44 inline-block"
+          class="ml-2 w-36 inline-block"
           :options="distanceOptionsForMiles"
           :default-option="defaultMileSelection"
           @selected="updateSelectedDistance"
@@ -481,7 +481,7 @@ export default defineComponent({
         />
       </div>
     </div>
-
+    <div class="flex flex-wrap">
       <Tag
        class="my-1 align-middle"
         v-for="shortcut in timeFilterShortcuts"
@@ -506,7 +506,7 @@ export default defineComponent({
         "
         @click="updateEventTypeFilter(shortcut)"
       />
-      
+    </div>
     
   </div>
 </template>

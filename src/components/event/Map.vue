@@ -6,10 +6,29 @@ import config from "@/config";
 
 export default defineComponent({
   name: "EventMap",
+  props: {
+    colorLocked: {
+      type: Boolean,
+      required: true
+    },
+    events: {
+      type: Array,
+      default: () => { return [] },
+    },
+    previewIsOpen: {
+      type: Boolean,
+      default: false
+    },
+    useMobileStyles: {
+      type: Boolean,
+      required: true
+    }
+  },
   setup(props, { emit }) {
     const router = useRouter()
     const loader = new Loader({ apiKey: config.googleMapsApiKey })
-    const mapDiv = ref(null)
+    const mobileMapDiv = ref(null)
+    const desktopMapDiv = ref(null)
     let map = ref(null)
 
     // Only have one marker per location, even if multiple
@@ -19,12 +38,28 @@ export default defineComponent({
 
     onMounted(async () => {
       await loader.load()
-      // eslint-disable-next-line
-      map.value = new google.maps.Map(mapDiv.value, {
+
+      const mapConfig = {
         center: { lat: 33.4255, lng: -111.94 },
         zoom: 7,
         mapTypeId: "terrain"
-      })
+      }
+      // eslint-disable-next-line
+      if (props.useMobileStyles) {
+        // The Google map requires that the styles have to be set
+        // when the map is rendered and they can't change based on props.
+        // And if we render both mobile and desktop maps with the same map div,
+        // with the same ref, and just hide one with CSS, that doesn't work because
+        // all markers get painted on both maps twice. That's bad because if a
+        // map marker is highlighted, it calls the maps API excessively, and the markers
+        // appear to be un-highlighted due the duplicated and overlapping map
+        // markers. So the workaround is to create two different maps
+        // for desktop and mobile, which reference two different map divs.
+        map.value = new google.maps.Map(mobileMapDiv.value, mapConfig)
+      } else {
+        map.value = new google.maps.Map(desktopMapDiv.value, mapConfig)
+      }
+
 
       // eslint-disable-next-line
       let bounds = new google.maps.LatLngBounds();
@@ -34,7 +69,7 @@ export default defineComponent({
 
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i];
-        
+
         if (event.location) {
           // eslint-disable-next-line
           const marker = new google.maps.Marker({
@@ -56,7 +91,7 @@ export default defineComponent({
           bounds.extend(marker.position);
 
           const eventLocationId = event.location.latitude.toString() + event.location.longitude.toString();
-          
+
           marker.addListener("click", () => {
             emit("openPreview", event, true)
             emit("lockColors")
@@ -71,12 +106,12 @@ export default defineComponent({
 
           marker.addListener("mouseout", () => {
 
-            const unhighlight = (eventId, marker) => {
+            const unhighlight = (marker) => {
               if (!props.colorLocked) {
                 if (router.currentRoute.value.fullPath.includes(eventLocationId)) {
                   emit('unHighlight');
                 }
-              
+
                 marker.setIcon({
                   url: require('@/assets/images/place-icon.svg').default,
                   scaledSize: { width: 20, height: 20 },
@@ -84,7 +119,7 @@ export default defineComponent({
                 infowindow.close();
               }
             }
-            unhighlight(eventLocationId, marker)
+            unhighlight(marker)
           })
 
 
@@ -120,32 +155,15 @@ export default defineComponent({
         map: map.value
       });
     })
-    
+
     const center = ref(props.referencePoint);
 
     return {
       center,
-      mapDiv,
+      mobileMapDiv,
+      desktopMapDiv,
       router
     };
-  },
-  props: {
-    colorLocked: {
-      type: Boolean,
-      required: true
-    },
-    events: {
-      type: Array,
-      default: () => {return []},
-    },
-    previewIsOpen: {
-      type: Boolean,
-      default: false
-    },
-    useMobileStyles: {
-      type: Boolean,
-      default: false
-    }
   },
   methods: {
     openPreview(event) {
@@ -156,17 +174,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <p class="mx-3" v-if="events.length === 0">
-    Could not find any events with a location.
-  </p>
-  <div
-    v-else
-    ref="mapDiv"
-    :style="[useMobileStyles ? 'width: 100vw; height: 100vw;' : 'position: fixed; width: 66vw; height: calc(100vh - 56px)']"
-  />
+    <p class="mx-3" v-if="events.length === 0">
+      Could not find any events with a location.
+    </p>
+    <div
+      v-else-if="useMobileStyles" 
+      ref="mobileMapDiv" 
+      style="width: 100vw; height: 50vw;"
+    >
+    </div>
+    <div
+      v-else-if="!useMobileStyles"
+      ref="desktopMapDiv"
+      style="position: fixed; width: 66vw; height: calc(100vh - 56px);"
+    >
+    </div>
 </template>
 <style>
-.gm-style-iw > button {
+.gm-style-iw>button {
   display: none !important;
 }
 </style>

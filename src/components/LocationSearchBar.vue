@@ -5,6 +5,10 @@ export default defineComponent({
   name: "LocationSearchBar",
   setup() {},
   props: {
+    compact: {
+      type: Boolean,
+      default: false,
+    },
     searchPlaceholder: {
       type: String,
       default: "",
@@ -28,7 +32,7 @@ export default defineComponent({
 <template>
   <div
     :class="[fullWidth ? 'w-full' : '', 'inline-block']"
-    class="inline-block mt-1 mb-1"
+    class="inline-block mt-2 mb-1"
   >
     <label for="search" class="sr-only">Search Location</label>
     <div class="relative">
@@ -59,12 +63,11 @@ export default defineComponent({
         </svg>
       </div>
       <GMapAutocomplete
-        :class="[fullWidth ? 'w-full' : '']"
+        :class="[fullWidth ? 'w-full' : '', compact ? 'text-xs py-1' : 'text-sm py-2']"
         autocomplete="false"
         class="
           pl-10
           pr-3
-          py-2
           border border-gray-300
           rounded-md
           leading-5
@@ -75,7 +78,6 @@ export default defineComponent({
           focus:ring-1
           focus:ring-blue-500
           focus:border-blue-500
-          text-sm
         "
         :placeholder="
           referencePointAddressName ||
