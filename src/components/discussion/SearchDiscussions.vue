@@ -157,6 +157,11 @@ export default defineComponent({
       resultsOrder: {
         createdAt: "DESC",
       },
+    }, {
+      fetchPolicy: 'network-only', // If it uses the cache if the query
+      // params did not change, the list
+      // will not update when a discussion changes in a way that affects
+      // which search results it should be returned in.
     });
 
     const reachedEndOfResults = ref(false);

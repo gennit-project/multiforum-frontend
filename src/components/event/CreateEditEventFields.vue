@@ -369,7 +369,7 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <ClockIcon class="float-right" />
+            <ClockIcon class="float-right h-6" />
           </template>
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
@@ -482,7 +482,7 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <TagIcon class="float-right" />
+            <TagIcon class="float-right h-6" />
           </template>
           <template v-slot:content>
             <TagInput

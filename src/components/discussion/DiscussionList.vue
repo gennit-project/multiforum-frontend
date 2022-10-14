@@ -67,8 +67,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="sm:rounded-md mx-auto max-w-5xl pt-4">
-    <p v-if="discussions.length === 0" class="px-8">There are no results.</p>
+  <div class="sm:rounded-md pt-4">
+    <p v-if="discussions.length === 0" class="px-4 lg:px-12">There are no results.</p>
     <p v-else class="px-4 lg:px-12">
       Showing {{ discussions.length }} of {{ resultCount }} results
     </p>
@@ -89,7 +89,7 @@ export default defineComponent({
         @openPreview="openPreview"
       />
     </ul>
-    <div class="grid justify-items-stretch m-10">
+    <div class="px-4 lg:px-12">
       <LoadMore
         class="justify-self-center"
         :reached-end-of-results="resultCount === discussions.length"
