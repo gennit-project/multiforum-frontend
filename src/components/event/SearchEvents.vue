@@ -480,6 +480,30 @@ export default defineComponent({
     setSelectedTags(e: any) {
       this.filterValues.selectedTags = e;
     },
+    filterByTag(tag: string) {
+      const alreadySelected = this.filterValues.selectedTags.includes(tag);
+
+      if (alreadySelected) {
+        this.filterValues.selectedTags = this.filterValues.selectedTags.filter(
+          (t: string) => t !== tag
+        );
+      } else {
+        this.filterValues.selectedTags.push(tag);
+      }
+    },
+    filterByChannel(channel: string) {
+      const alreadySelected = this.filterValues.selectedChannels.includes(
+        channel
+      );
+
+      if (alreadySelected) {
+        this.filterValues.selectedChannels = this.filterValues.selectedChannels.filter(
+          (c: string) => c !== channel
+        );
+      } else {
+        this.filterValues.selectedChannels.push(channel);
+      }
+    },
     handleTimeFilterShortcutClick(event: SetEventTimeRangeOptions) {
       const { beginningOfDateRangeISO, endOfDateRangeISO } = event;
       this.filterValues.beginningOfDateRangeISO = beginningOfDateRangeISO;
@@ -520,9 +544,6 @@ export default defineComponent({
         );
       }
       this.filterValues.distanceUnit = unit;
-    },
-    filterByTag(tag: string) {
-      this.setSelectedTags([tag]);
     },
     toggleShowMap(e: boolean) {
       this.showMap = e;
@@ -635,7 +656,8 @@ export default defineComponent({
             :selected-tags="filterValues.selectedTags"
             :selected-channels="filterValues.selectedChannels"
             :show-map="showMap"
-            @filterByTag="filterByTag"
+            @filterByTag="filterByTag" 
+            @filterByChannel="filterByChannel"
             @loadMore="loadMore"
             @openPreview="openPreview"
           />
@@ -660,6 +682,8 @@ export default defineComponent({
       :search-input="filterValues.searchInput" 
       :selected-tags="filterValues.selectedTags"
       :selected-channels="filterValues.selectedChannels" 
+      @filterByTag="filterByTag" 
+      @filterByChannel="filterByChannel"
       @loadMore="loadMore" 
       @sendToPreview="sendToPreview" 
     />

@@ -137,6 +137,7 @@ export default defineComponent({
                 :key="tag"
                 v-for="tag in tags"
                 :tag="tag"
+                @click="$emit('filterByTag', tag)"
               />
             </p>
 
@@ -148,7 +149,7 @@ export default defineComponent({
                 :channel-mode="true"
                 v-for="(channel, i) in discussion.Channels"
                 :tag="channel.uniqueName"
-                @click="$emit('filterByTag', channel.uniqueName)"
+                @click="$emit('filterByChannel', channel.uniqueName)"
               />
             </div>
           </div>

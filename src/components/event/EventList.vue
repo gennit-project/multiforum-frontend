@@ -65,6 +65,9 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
+    filterByChannel(channel: string) {
+      this.$emit("filterByChannel", channel);
+    },
     getEventLocationId(event: EventData) {
       if (event.location) {
         return (
@@ -147,6 +150,7 @@ export default defineComponent({
         "
         @clickedEventListItem="handleClickEventListItem(event)"
         @filterByTag="filterByTag"
+        @filterByChannel="filterByChannel"
         @openPreview="$emit('openPreview')"
       />
     </ul>

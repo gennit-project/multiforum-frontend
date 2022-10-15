@@ -62,6 +62,9 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
+    filterByChannel(channel: string) {
+      this.$emit("filterByChannel", channel);
+    },
   },
   inheritAttrs: false,
 });
@@ -86,6 +89,7 @@ export default defineComponent({
         :selected-tags="selectedTags"
         :selected-channels="selectedChannels"
         @filterByTag="filterByTag"
+        @filterByChannel="filterByChannel"
         @openPreview="openPreview"
       />
     </ul>

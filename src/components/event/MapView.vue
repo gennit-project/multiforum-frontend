@@ -80,6 +80,12 @@ export default defineComponent({
     },
   },
   methods: {
+    filterByTag(tag: string) {
+      this.$emit("filterByTag", tag);
+    },
+    filterByChannel(channel: string) {
+      this.$emit("filterByChannel", channel);
+    },
     setMarkerData(data: any) {
       this.mobileMap = data.map;
       this.mobileMarkerMap = data.markerMap;
@@ -312,6 +318,8 @@ export default defineComponent({
           :selected-tags="selectedTags" 
           :selected-channels="selectedChannels" 
           :show-map="true"
+          @filterByTag="filterByTag" 
+            @filterByChannel="filterByChannel"
           @highlightEvent="highlightEvent" 
           @open-preview="openPreview" 
           @unhighlight="unhighlight" 

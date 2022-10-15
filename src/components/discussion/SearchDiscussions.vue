@@ -293,6 +293,9 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.setSelectedTags([tag]);
     },
+    filterByChannel(channel: string) {
+      this.setSelectedChannels([channel]);
+    },
     closePreview() {
       this.previewIsOpen = false;
     },
@@ -363,9 +366,15 @@ export default defineComponent({
         <div>
           <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
           <DiscussionList v-if="discussionResult && discussionResult.discussions"
-            :discussions="discussionResult.discussions" :channel-id="channelId"
-            :result-count="discussionResult.discussionsCount" :search-input="searchInput" :selected-tags="selectedTags"
-            :selected-channels="selectedChannels" @filterByTag="filterByTag" @loadMore="loadMore"
+            :discussions="discussionResult.discussions"
+            :channel-id="channelId"
+            :result-count="discussionResult.discussionsCount"
+            :search-input="searchInput"
+            :selected-tags="selectedTags"
+            :selected-channels="selectedChannels"
+            @filterByTag="filterByTag" 
+            @filterByChannel="filterByChannel"
+            @loadMore="loadMore"
             @openPreview="openPreview" />
           <DiscussionPreview class="lg:invisible" :isOpen="previewIsOpen" @closePreview="closePreview" />
           <div class="px-4 lg:px-12" v-if="discussionLoading">

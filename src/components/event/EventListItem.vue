@@ -165,8 +165,14 @@ export default defineComponent({
 
 
           <div class="text-sm" v-if="!isWithinChannel">
-            <Tag class="m-1" :active="selectedChannels.includes(channel.uniqueName)" :key="channel.uniqueName"
-              :channel-mode="true" v-for="channel in event.Channels" :tag="channel.uniqueName" />
+            <Tag class="m-1"
+              :active="selectedChannels.includes(channel.uniqueName)"
+              :key="channel.uniqueName"
+              :channel-mode="true" 
+              v-for="channel in event.Channels" 
+              :tag="channel.uniqueName" 
+              @click="$emit('filterByChannel', channel.uniqueName)"
+            />
           </div>
 
           <!-- <div class="text-sm">
@@ -195,7 +201,13 @@ export default defineComponent({
             {{ i === event.CommentSections.length - 1 ? "" : "•" }}
           </router-link>
         </div> -->
-          <Tag :key="tag" :active="!!selectedTagsMap[tag.text]" v-for="tag in event.Tags" :tag="tag.text" />
+          <Tag 
+            :key="tag" 
+            :active="!!selectedTagsMap[tag.text]" 
+            v-for="tag in event.Tags" 
+            :tag="tag.text"
+            @click="$emit('filterByTag', tag.text)" 
+          />
         </div>
       </div>
     </router-link>
