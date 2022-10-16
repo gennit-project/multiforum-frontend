@@ -100,83 +100,69 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <TailwindForm
-      class="pt-8"
-      v-else-if="formValues"
-      :form-title="formTitle"
-      :needs-changes="needsChanges"
-      @input="touched = true"
-      @submit="$emit('submit')"
-    >
+    <TailwindForm class="pt-8" v-else-if="formValues" :form-title="formTitle" :needs-changes="needsChanges"
+      @input="touched = true" @submit="$emit('submit')">
       <div class="divide-y divide-gray-200">
         <div class="mt-6">
           <FormRow>
             <template v-slot:icon>
-              <PencilIcon :wide="true" class="float-right" />
+              <VTooltip class="inline-flex">
+                <PencilIcon class="inline-flex" :wide="true" /><span class="text-red-500">*</span>
+                <template #popper> Title </template>
+              </VTooltip>
+
             </template>
             <template v-slot:content>
-              <TextInput
-                :value="formValues.title"
-                :placeholder="'Add title'"
-                :full-width="true"
-                @update="$emit('updateFormValues', { title: $event })"
-              />
+              <TextInput :value="formValues.title" :placeholder="'Add title'" :full-width="true"
+                @update="$emit('updateFormValues', { title: $event })" />
             </template>
           </FormRow>
 
           <FormRow>
             <template v-slot:icon>
-              <UserAddIcon :wide="true" class="float-right" />
+              <VTooltip class="inline-flex">
+              <UserAddIcon :wide="true" class="inline-flex" /><span class="text-red-500">*</span>
+              <template #popper> Channels </template>
+            </VTooltip>
             </template>
             <template v-slot:content>
-              <TagInput
-                :selected-channels="formValues.selectedChannels"
-                :channel-mode="true"
-                @setSelectedTags="
-                  $emit('updateFormValues', { selectedChannels: $event })
-                "
-              />
+              <TagInput :selected-channels="formValues.selectedChannels" :channel-mode="true" @setSelectedTags="
+                $emit('updateFormValues', { selectedChannels: $event })
+              " />
             </template>
           </FormRow>
 
           <FormRow>
             <template v-slot:icon>
+              <VTooltip class="inline-flex">
               <AnnotationIcon class="float-right" />
+              <template #popper> Details </template>
+            </VTooltip>
             </template>
             <template v-slot:content>
-              <TextEditor
-                class="mb-3"
-                :initial-value="formValues.body || ''"
-                :placeholder="'Add details'"
-                @update="$emit('updateFormValues', { body: $event })"
-              />
+              <TextEditor class="mb-3" :initial-value="formValues.body || ''" :placeholder="'Add details'"
+                @update="$emit('updateFormValues', { body: $event })" />
             </template>
           </FormRow>
 
           <FormRow>
             <template v-slot:icon>
+              <VTooltip class="inline-flex">
               <TagIcon class="float-right h-6 pt-1" />
+              <template #popper> Details </template>
+            </VTooltip>
             </template>
             <template v-slot:content>
-              <TagInput
-                :selected-tags="formValues?.selectedTags"
-                @setSelectedTags="
-                  $emit('updateFormValues', { selectedTags: $event })
-                "
-              />
+              <TagInput :selected-tags="formValues?.selectedTags" @setSelectedTags="
+                $emit('updateFormValues', { selectedTags: $event })
+              " />
             </template>
           </FormRow>
         </div>
       </div>
       <ErrorBanner v-if="needsChanges" :text="changesRequiredMessage" />
-      <ErrorBanner
-        v-if="createDiscussionError"
-        :text="createDiscussionError.message"
-      />
-      <ErrorBanner
-        v-if="updateDiscussionError"
-        :text="updateDiscussionError.message"
-      />
+      <ErrorBanner v-if="createDiscussionError" :text="createDiscussionError.message" />
+      <ErrorBanner v-if="updateDiscussionError" :text="updateDiscussionError.message" />
     </TailwindForm>
   </div>
 </template>

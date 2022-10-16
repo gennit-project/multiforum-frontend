@@ -65,7 +65,7 @@ export default defineComponent({
       // We do these checks:
       // - UniqueName is included
       const needsChanges =
-        !this.formValues.uniqueName 
+        !this.formValues.uniqueName
       return needsChanges;
     },
   },
@@ -79,53 +79,45 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <TailwindForm
-      v-else-if="formValues"
-      :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
-      :needs-changes="needsChanges"
-      @input="touched = true"
-      @submit="$emit('submit')"
-    >
+    <TailwindForm v-else-if="formValues" :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
+      :needs-changes="needsChanges" @input="touched = true" @submit="$emit('submit')">
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div class="sm:mt-5 space-y-4 sm:space-y-5">
           <FormRow>
             <template v-slot:icon>
-              <PencilIcon class="float-right" />
+              <VTooltip class="inline-flex">
+                <PencilIcon class="float-right h-6 w-6" /><span v-if="!editMode" class="text-red-500">*</span>
+                <template #popper> Title </template>
+              </VTooltip>
             </template>
             <template v-slot:content>
-              <TextInput
-                :disabled="editMode"
-                :value="formValues.uniqueName"
-                :placeholder="'Add unique name'"
-                :full-width="true"
-                @update="$emit('updateFormValues', { uniqueName: $event })"
-              />
+              <TextInput :disabled="editMode" :value="formValues.uniqueName" :placeholder="'Add unique name'"
+                :full-width="true" @update="$emit('updateFormValues', { uniqueName: $event })" />
             </template>
           </FormRow>
           <FormRow>
             <template v-slot:icon>
-              <TagIcon class="float-right" />
+              <VTooltip class="inline-flex">
+                <TagIcon class="float-right h-6 w-6" />
+                <template #popper> Tags </template>
+              </VTooltip>
             </template>
             <template v-slot:content>
-              <TagInput
-                :selected-tags="formValues?.selectedTags"
-                @setSelectedTags="
-                  $emit('updateFormValues', { selectedTags: $event })
-                "
-              />
+              <TagInput :selected-tags="formValues?.selectedTags" @setSelectedTags="
+                $emit('updateFormValues', { selectedTags: $event })
+              " />
             </template>
           </FormRow>
           <FormRow>
             <template v-slot:icon>
-              <AnnotationIcon class="float-right" />
+              <VTooltip class="inline-flex">
+                <AnnotationIcon class="float-right h-6 w-6" />
+                <template #popper> Description </template>
+              </VTooltip>
             </template>
             <template v-slot:content>
-              <TextEditor
-                class="mb-3"
-                :initial-value="formValues.description || ''"
-                :placeholder="'Add description'"
-                @update="$emit('updateFormValues', { description: $event })"
-              />
+              <TextEditor class="mb-3" :initial-value="formValues.description || ''" :placeholder="'Add description'"
+                @update="$emit('updateFormValues', { description: $event })" />
             </template>
           </FormRow>
         </div>
