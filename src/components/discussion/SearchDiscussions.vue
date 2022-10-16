@@ -210,7 +210,6 @@ export default defineComponent({
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
       if (
-        discussionId.value ||
         !value.data ||
         value.data.discussions.length === 0
       ) {
