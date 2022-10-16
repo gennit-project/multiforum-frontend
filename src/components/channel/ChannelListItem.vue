@@ -3,8 +3,6 @@ import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
 import HighlightedSearchTerms from "../HighlightedSearchTerms.vue";
 import Tag from "@/components/Tag.vue";
-// @ts-ignore
-import ProfileAvatar from "vue-profile-avatar";
 
 export default defineComponent({
   setup() {},
@@ -33,7 +31,6 @@ export default defineComponent({
   },
   components: {
     HighlightedSearchTerms,
-    ProfileAvatar,
     Tag,
   },
 });
@@ -45,31 +42,24 @@ export default defineComponent({
       class="
         relative
         rounded-lg
-        border border-gray-300
         bg-white
         px-6
-        py-5
+        py-2
         shadow-sm
         col-span-12
         space-x-3
       "
     >
       <div class="flex items-center">
-        <ProfileAvatar
-          class="ml-2"
-          :username="channel.uniqueName"
-          colorType="pastel"
-        />
+        <!-- <ChannelIcon class="h-12 w-12"/> -->
+        
         <div class="min-w-0">
-          <p class="font-large text-gray-900 ml-2">
+          <p class="ml-2">
             <router-link
               :to="`/channels/c/${channel.uniqueName}`"
-              class="focus:outline-none cursor-pointer"
+              class="cursor-pointer"
             >
-              <HighlightedSearchTerms
-                :text="channel.uniqueName"
-                :search-input="searchInput"
-              />
+            <Tag :channel-mode="true" :title-mode="true" :tag="channel.uniqueName"/>
             </router-link>
           </p>
         </div>

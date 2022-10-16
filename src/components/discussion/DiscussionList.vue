@@ -93,7 +93,7 @@ export default defineComponent({
         @openPreview="openPreview"
       />
     </ul>
-    <div class="px-4 lg:px-12">
+    <div v-if="discussions.length > 0" class="px-4 lg:px-12">
       <LoadMore
         class="justify-self-center"
         :reached-end-of-results="resultCount === discussions.length"

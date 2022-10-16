@@ -38,6 +38,10 @@ export default defineComponent({
     channelMode: {
       type: Boolean,
       default: false
+    },
+    titleMode: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -62,7 +66,9 @@ export default defineComponent({
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
     :class="[
-      large ? 'text-sm py-1.5' : 'text-xs py-0.5 ',
+      large ? 'text-sm py-1.5' : '',
+      titleMode ? 'text-xl py-1.5' : '',
+      !large && !titleMode ? 'text-xs py-0.5' : '',
       clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-2',
       channelMode ? 'rounded-full' : 'rounded',
       this.active ? 'text-white' : '',
@@ -74,8 +80,8 @@ export default defineComponent({
     ]"
     >
     <ChannelIcon
-      :class="clearable ? 'mr-1' : ''"
-      class="h-4 inline-flex"
+      :class="[clearable ? 'mr-1' : '', titleMode ? 'h-6 w-6' : 'h-4 w-4']"
+      class="inline-flex"
       v-if="channelMode && !hideIcon"
     />
     <TagIcon
