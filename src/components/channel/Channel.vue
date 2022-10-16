@@ -56,14 +56,14 @@ export default defineComponent({
         });
       }
 
-      if (discussionId) {
+      if (route.name === "DiscussionDetail") {
         channelBreadcrumbs.push({
           label: "Discussion",
           path: `channels/c/${channelId}/discussions/d/${discussionId}`,
         });
       }
 
-      if (eventId) {
+      if (route.name === "EventDetail") {
         channelBreadcrumbs.push({
           label: "Event",
           path: `channels/c/${channelId}/events/e/${eventId}`,
