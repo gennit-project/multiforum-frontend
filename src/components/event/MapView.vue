@@ -74,11 +74,6 @@ export default defineComponent({
       selectedEvents: [],
     };
   },
-  computed: {
-    smallerThanDesktopWidth() {
-      return this.$vuetify.breakpoint.lgAndDown;
-    },
-  },
   methods: {
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);

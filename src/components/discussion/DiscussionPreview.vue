@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import {
   Dialog,
   DialogOverlay,
@@ -27,7 +27,9 @@ export default defineComponent({
     },
   },
   setup() {
+    const cancelButtonRef = ref();
     return {
+      cancelButtonRef,
       discussionBody: "",
     };
   },
@@ -39,6 +41,7 @@ export default defineComponent({
     <TailwindDialog
       as="div"
       class="fixed inset-0 overflow-hidden z-20"
+      :initialFocus="cancelButtonRef"
       @close="$emit('closePreview')"
     >
       <div class="absolute inset-0 overflow-hidden">
@@ -72,6 +75,7 @@ export default defineComponent({
                       
                       <div class="h-7 flex items-center">
                         <button
+                          :ref="cancelButtonRef"
                           type="button"
                           class="
                             bg-white

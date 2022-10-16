@@ -15,6 +15,7 @@ import CreateButton from "@/components/CreateButton.vue";
 import ErrorBanner from "../ErrorBanner.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
+import { useDisplay } from 'vuetify';
 
 interface Ref<T> {
   value: T;
@@ -248,6 +249,8 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
+    const { smAndDown } = useDisplay();
+
     return {
       channelId,
       channelLabel,
@@ -273,6 +276,7 @@ export default defineComponent({
       selectedFilterOptions,
       selectedTags,
       sendToPreview,
+      smAndDown,
       tagLabel,
     };
   },
@@ -318,7 +322,9 @@ export default defineComponent({
       this.previewIsOpen = false;
     },
     openPreview() {
-      this.previewIsOpen = true;
+      if (this.smAndDown) {
+        this.previewIsOpen = true;
+      }
     },
     setSelectedChannels(channels: Array<string>) {
       this.selectedChannels = channels;
@@ -394,16 +400,17 @@ export default defineComponent({
             @filterByChannel="filterByChannel"
             @loadMore="loadMore"
             @openPreview="openPreview" />
-          <DiscussionPreview class="lg:invisible" :isOpen="previewIsOpen" @closePreview="closePreview" />
+          <DiscussionPreview 
+            v-if="smAndDown"
+            :isOpen="previewIsOpen" 
+            @closePreview="closePreview" 
+          />
           <div class="px-4 lg:px-12" v-if="discussionLoading">
             Loading...
           </div>
         </div>
       </div>
-      <div class="
-          invisible
-          lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto
-        ">
+      <div v-if="!smAndDown" class="w-3/5 max-h-screen overflow-y-auto">
         <router-view></router-view>
       </div>
     </div>

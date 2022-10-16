@@ -4,6 +4,7 @@ import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import EventList from "./EventList.vue";
 import { router } from "@/router";
+import { useDisplay } from 'vuetify'
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import {
@@ -424,6 +425,8 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
+    const { smAndDown } = useDisplay();
+
     return {
       channelId,
       createEventPath,
@@ -443,6 +446,7 @@ export default defineComponent({
       router,
       sendToPreview,
       showMap,
+      smAndDown,
       timeSlotFiltersActive,
     };
   },
@@ -583,7 +587,9 @@ export default defineComponent({
         createDefaultSelectedWeeklyHourRanges();
     },
     openPreview() {
-      this.previewIsOpen = true;
+      if (this.smAndDown) {
+        this.previewIsOpen = true;
+      }
     },
     closePreview() {
       this.previewIsOpen = false;
@@ -662,13 +668,13 @@ export default defineComponent({
             @openPreview="openPreview"
           />
           <EventPreview
-            class="lg:invisible"
+            v-if="smAndDown"
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />
         </div>
       </div>
-      <div class="invisible lg:visible lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
+      <div v-if="!smAndDown" class="lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
         <div v-if="!showMap && eventResult?.events?.length > 0">
           <router-view></router-view>
         </div>
