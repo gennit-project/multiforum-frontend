@@ -87,6 +87,7 @@ export default defineComponent({
           v-for="(tag, i) of tags"
           :key="tag"
           :active="true"
+          :channel-mode="channelMode"
           :clearable="true"
           :tag="tag"
           :index="i"

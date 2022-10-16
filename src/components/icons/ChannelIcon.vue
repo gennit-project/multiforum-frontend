@@ -1,11 +1,11 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent } from 'vue';
 export default defineComponent({
-  setup() {},
-});
+  setup(){},
+})
 </script>
 <template>
-  <svg
+<svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"

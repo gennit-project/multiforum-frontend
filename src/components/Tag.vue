@@ -74,6 +74,7 @@ export default defineComponent({
     ]"
     >
     <ChannelIcon
+      :class="clearable ? 'mr-1' : ''"
       class="h-4 inline-flex"
       v-if="channelMode && !hideIcon"
     />
@@ -83,7 +84,7 @@ export default defineComponent({
     />
     {{ tag }}
     <XmarkIcon
-      class="h-4 cursor-pointer"
+      class="h-4 w-4 mr-1 cursor-pointer"
       v-if="clearable"
       @click="$emit('delete', index)"
     />

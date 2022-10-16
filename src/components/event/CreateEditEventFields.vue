@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
-import UserAddIcon from "@/components/icons/UserAddIcon.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TextEditor from "@/components/TextEditor.vue";
 import FormRow from "@/components/FormRow.vue";
 import Form from "@/components/Form.vue";
@@ -91,6 +91,7 @@ export default defineComponent({
   },
   components: {
     AnnotationIcon,
+    ChannelIcon,
     CheckBox,
     ClockIcon,
     DatePicker,
@@ -110,7 +111,6 @@ export default defineComponent({
     TextEditor,
     TextInput,
     TicketIcon,
-    UserAddIcon,
   },
   computed: {
     datePickerErrorMessage() {
@@ -349,7 +349,7 @@ export default defineComponent({
         <FormRow>
           <template v-slot:icon>
             <VTooltip class="inline-flex">
-              <UserAddIcon :wide="true" class="float-right" /><span class="text-red-500">*</span>
+              <ChannelIcon class="float-right h-6 w-6" /><span class="text-red-500">*</span>
               <template #popper> Channels </template>
             </VTooltip>
 

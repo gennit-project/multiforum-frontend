@@ -161,7 +161,7 @@ export default defineComponent({
         </h2>
         <div class="text-sm">
           <span>
-            <router-link :to="`/channels/c/${channelId}/edit`"
+            <router-link class="underline" :to="`/channels/c/${channelId}/edit`"
               >Edit</router-link
             >
           </span>

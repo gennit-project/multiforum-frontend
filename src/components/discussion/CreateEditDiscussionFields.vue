@@ -4,7 +4,7 @@ import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/TextEditor.vue";
 import FormRow from "@/components/FormRow.vue";
 import Form from "@/components/Form.vue";
-import UserAddIcon from "@/components/icons/UserAddIcon.vue";
+import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagInput from "@/components/TagInput.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import PencilIcon from "@/components/icons/PencilIcon.vue";
@@ -83,7 +83,7 @@ export default defineComponent({
     FormRow,
     TextEditor,
     TextInput,
-    UserAddIcon,
+    ChannelIcon,
     TagInput,
     PencilIcon,
     AnnotationIcon,
@@ -107,7 +107,7 @@ export default defineComponent({
           <FormRow>
             <template v-slot:icon>
               <VTooltip class="inline-flex">
-                <PencilIcon class="inline-flex" :wide="true" /><span class="text-red-500">*</span>
+                <PencilIcon class="inline-flex h-6 w-6" /><span class="text-red-500">*</span>
                 <template #popper> Title </template>
               </VTooltip>
 
@@ -121,23 +121,22 @@ export default defineComponent({
           <FormRow>
             <template v-slot:icon>
               <VTooltip class="inline-flex">
-              <UserAddIcon :wide="true" class="inline-flex" /><span class="text-red-500">*</span>
-              <template #popper> Channels </template>
-            </VTooltip>
+                <ChannelIcon class="float-right h-6 w-6" /><span class="text-red-500">*</span>
+                <template #popper> Channels </template>
+              </VTooltip>
             </template>
             <template v-slot:content>
-              <TagInput :selected-channels="formValues.selectedChannels" :channel-mode="true" @setSelectedTags="
-                $emit('updateFormValues', { selectedChannels: $event })
-              " />
+              <TagInput :selected-channels="formValues.selectedChannels" :channel-mode="true"
+                @setSelectedTags="$emit('updateFormValues', { selectedChannels: $event })" />
             </template>
           </FormRow>
 
           <FormRow>
             <template v-slot:icon>
               <VTooltip class="inline-flex">
-              <AnnotationIcon class="float-right" />
-              <template #popper> Details </template>
-            </VTooltip>
+                <AnnotationIcon class="inline-flex h-6 w-6"  />
+                <template #popper> Details </template>
+              </VTooltip>
             </template>
             <template v-slot:content>
               <TextEditor class="mb-3" :initial-value="formValues.body || ''" :placeholder="'Add details'"
@@ -148,9 +147,9 @@ export default defineComponent({
           <FormRow>
             <template v-slot:icon>
               <VTooltip class="inline-flex">
-              <TagIcon class="float-right h-6 pt-1" />
-              <template #popper> Details </template>
-            </VTooltip>
+                <TagIcon class="inline-flex h-6 w-6"  />
+                <template #popper> Details </template>
+              </VTooltip>
             </template>
             <template v-slot:content>
               <TagInput :selected-tags="formValues?.selectedTags" @setSelectedTags="

@@ -170,18 +170,17 @@ export default defineComponent({
         space-y-2
         divide-y
         bg-white
-        pt-4
         pb-4
         pr-8
         pl-8
         rounded
       "
     >
-      <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
+      <div class="mt-4 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
           <h2
             class="
-              text-2xl
+              text-xl
               font-bold
               leading-7
               text-gray-900
@@ -191,7 +190,7 @@ export default defineComponent({
             {{ discussion.title }}
           </h2>
         </div>
-        <div v-if="!compactMode && channelId" class="mt-4 flex-shrink-0 flex md:mx-4">
+        <div v-if="!compactMode && channelId" class="flex-shrink-0 flex md:mx-4">
           <div class="float-right">
             <span>
               <router-link
