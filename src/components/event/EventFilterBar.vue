@@ -26,6 +26,7 @@ import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
+import FilterIcon from "@/components/icons/FilterIcon.vue";
 import CreateButton from "../CreateButton.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 
@@ -36,6 +37,7 @@ export default defineComponent({
     ClockIcon,
     CreateButton,
     FilterChip,
+    FilterIcon,
     LocationSearchBar,
     Modal,
     SearchBar,
@@ -93,18 +95,60 @@ export default defineComponent({
       return getTagLabel(props.filterValues.selectedTags);
     });
 
+    const activeDateShortcut = ref(timeShortcutValues.NONE)
+
+    const titleCase = (str: string) => {
+      if (!str) {
+        return "";
+      }
+      return str
+  .split("_")
+  .filter(x => x.length > 0)
+  .map((x) => (x.charAt(0).toUpperCase() + x.slice(1).toLowerCase()))
+  .join(" ");
+    };
+
+    const moreFiltersLabel = computed(() => {
+      const labels = [];
+      const locationFilter = props.filterValues.selectedLocationFilter
+      const timeShortcut = activeDateShortcut.value;
+      if (locationFilter !== LocationFilterTypes.NONE ) {
+        
+        if (locationFilter === LocationFilterTypes.ONLY_VIRTUAL) {
+          labels.push("Online events")
+        }
+        
+        if (locationFilter === LocationFilterTypes.ONLY_WITH_ADDRESS || locationFilter === LocationFilterTypes.WITHIN_RADIUS) {
+          labels.push("In-person events")
+        }
+      }
+      if (timeShortcut !== timeShortcutValues.NONE) {
+        labels.push(titleCase(timeShortcut))
+      }
+
+      if (labels.length === 0) {
+        return "More filters"
+      }
+
+      if (labels.length === 1) {
+        return labels[0]
+      }
+    
+      return labels.join(", ");
+    });
+
     const selectedDistanceUnit = ref(props.filterValues.distanceUnit);
 
     const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
-          (val: DistanceUnit) => {
-            return props.filterValues.radius === val.value;
-          }
-        );
+      (val: DistanceUnit) => {
+        return props.filterValues.radius === val.value;
+      }
+    );
     const defaultMileSelection = ref(distanceOptionsForMiles[currentDistanceIndex]);
     const defaultKilometerSelection = ref(distanceOptionsForKilometers[currentDistanceIndex]);
 
     return {
-      activeDateShortcut: ref(timeShortcutValues.NONE),
+      activeDateShortcut,
       activeEventFilterTypeShortcut: ref(
         props.filterValues.selectedLocationFilter
       ),
@@ -118,6 +162,7 @@ export default defineComponent({
       eventFilterTypeShortcuts,
       LocationFilterTypes,
       MilesOrKm,
+      moreFiltersLabel,
       selectedDistanceUnit,
       showMapCopy: ref(props.showMap),
       showTimeSlotPicker: ref(false),
@@ -247,9 +292,9 @@ export default defineComponent({
       if (e.locationFilterType === LocationFilterTypes.ONLY_WITH_ADDRESS) {
         if (
           this.activeEventFilterTypeShortcut ===
-            LocationFilterTypes.ONLY_WITH_ADDRESS ||
+          LocationFilterTypes.ONLY_WITH_ADDRESS ||
           this.activeEventFilterTypeShortcut ===
-            LocationFilterTypes.WITHIN_RADIUS
+          LocationFilterTypes.WITHIN_RADIUS
         ) {
           // If an in-person filter is already selected, clear it.
           this.$emit("updateEventTypeFilter", LocationFilterTypes.NONE);
@@ -341,45 +386,29 @@ export default defineComponent({
         />
       </div>
     </div>
-    <div class="items-center space-x-2">
-      <FilterChip
-        class="align-middle"
-        v-if="!channelId"
-        :label="channelLabel"
-        :highlighted="channelLabel !== defaultFilterLabels.channels"
-      >
+    <div class="items-center space-x-2 mb-1">
+      <FilterChip class="align-middle" v-if="!channelId" :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels">
         <template v-slot:icon>
           <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
-          <ChannelPicker
-            :selected-channels="filterValues.selectedChannels"
-            @setSelectedChannels="$emit('setSelectedChannels', $event)"
-          />
+          <ChannelPicker :selected-channels="filterValues.selectedChannels"
+            @setSelectedChannels="$emit('setSelectedChannels', $event)" />
         </template>
       </FilterChip>
-      <FilterChip
-        class="align-middle"
-        :label="tagLabel"
-        :highlighted="tagLabel !== defaultFilterLabels.tags"
-      >
+      <FilterChip class="align-middle" :label="tagLabel" :highlighted="tagLabel !== defaultFilterLabels.tags">
         <template v-slot:icon>
           <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
         </template>
         <template v-slot:content>
-          <TagPicker
-            :selected-tags="filterValues.selectedTags"
-            @setSelectedTags="$emit('setSelectedTags', $event)"
-          />
+          <TagPicker :selected-tags="filterValues.selectedTags" @setSelectedTags="$emit('setSelectedTags', $event)" />
         </template>
       </FilterChip>
-      <button
-        @click="toggleTimeSlotPicker"
-        :class="[
-          'align-middle',
-          timeSlotFiltersActive ? 'ring-1 ring-blue-500 border-blue-500' : '',
-        ]"
-        class="
+      <button @click="toggleTimeSlotPicker" :class="[
+        'align-middle',
+        timeSlotFiltersActive ? 'ring-1 ring-blue-500 border-blue-500' : '',
+      ]" class="
           inline-flex
           max-height-4
           pl-2.5
@@ -393,24 +422,17 @@ export default defineComponent({
           bg-white
           hover:bg-gray-200
           focus:ring-1 focus:ring-blue-500 focus:border-blue-500
-        "
-      >
+        ">
         <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
 
         Time Slots
       </button>
-      <Modal
-        :title="'Select Weekly Time Slots'"
-        :show="showTimeSlotPicker"
-        @close="toggleTimeSlotPicker"
-      >
+      <Modal :title="'Select Weekly Time Slots'" :show="showTimeSlotPicker" @close="toggleTimeSlotPicker">
         <template v-slot:icon>
           <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
         </template>
         <template v-slot:secondaryButton>
-          <button
-            type="button"
-            class="
+          <button type="button" class="
               w-full
               inline-flex
               justify-center
@@ -429,84 +451,79 @@ export default defineComponent({
               focus:ring-offset-2
               focus:ring-indigo-500
               sm:mt-0 sm:col-start-1 sm:text-sm
-            "
-            @click="resetTimeSlots"
-          >
+            " @click="resetTimeSlots">
             <RefreshIcon class="h-5" />
             Reset
           </button>
         </template>
         <template v-slot:content>
-          <WeeklyTimePicker
-            class="py-2 px-8"
-            :selected-weekdays="filterValues.selectedWeekdays"
+          <WeeklyTimePicker class="py-2 px-8" :selected-weekdays="filterValues.selectedWeekdays"
             :selected-hour-ranges="filterValues.selectedHourRanges"
-            :selected-weekly-hour-ranges="filterValues.selectedWeeklyHourRanges"
-            @updateTimeSlots="updateTimeSlots"
-          />
+            :selected-weekly-hour-ranges="filterValues.selectedWeeklyHourRanges" @updateTimeSlots="updateTimeSlots" />
         </template>
       </Modal>
-      <SearchBar
-        class="inline-flex align-middle"
-        :search-placeholder="'Search text'"
-        :small="true"
-        @updateSearchInput="updateSearchInput"
-      />
-      <div v-if="channelId" class="float-right flex">
+      <FilterChip v-if="channelId" class="align-middle" :label="moreFiltersLabel"
+        :highlighted="activeEventFilterTypeShortcut !== timeShortcutValues.NONE || filterValues.selectedLocationFilter !== LocationFilterTypes.NONE">
+        <template v-slot:icon>
+          <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
+        </template>
+        <template v-slot:content>
+          <div class="flex flex-wrap tagpicker">
+            <Tag class="my-1 align-middle" v-for="shortcut in timeFilterShortcuts" :key="shortcut.label"
+              :tag="shortcut.label" :active="shortcut.value === activeDateShortcut" :hide-icon="true"
+              @click="handleTimeFilterShortcutClick(shortcut)" />
+            <Tag class="my-1 align-middle" v-for="shortcut in eventFilterTypeShortcuts" :key="shortcut.label"
+              :tag="shortcut.label" :hide-icon="true" :active="
+                shortcut.locationFilterType === activeEventFilterTypeShortcut ||
+                (shortcut.locationFilterType ===
+                  LocationFilterTypes.ONLY_WITH_ADDRESS &&
+                  filterValues.selectedLocationFilter ===
+                    LocationFilterTypes.WITHIN_RADIUS)
+              " @click="updateEventTypeFilter(shortcut)" />
+          </div>
+        </template>
+      </FilterChip>
+      <SearchBar class="inline-flex align-middle" :search-placeholder="'Search text'" :small="true"
+        @updateSearchInput="updateSearchInput" />
+        <div v-if="channelId" class="float-right flex">
         <SwitchGroup as="div" class="flex items-center">
-          <TailwindSwitch
-            v-model="showMapCopy"
-            :class="[
-              showMapCopy ? 'bg-blue-600' : 'bg-gray-200',
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-            ]"
-            @update:model-value="$emit('toggleShowMap', showMapCopy)"
-          >
-            <span
-              aria-hidden="true"
-              :class="[
-                showMap ? 'translate-x-5' : 'translate-x-0',
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-              ]"
-            />
+          <TailwindSwitch v-model="showMapCopy" :class="[
+            showMapCopy ? 'bg-blue-600' : 'bg-gray-200',
+            'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+          ]" @update:model-value="$emit('toggleShowMap', showMapCopy)">
+            <span aria-hidden="true" :class="[
+              showMap ? 'translate-x-5' : 'translate-x-0',
+              'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+            ]" />
           </TailwindSwitch>
           <SwitchLabel as="span" class="ml-3">
             <span class="text-sm font-medium text-gray-900">Show Map</span>
           </SwitchLabel>
         </SwitchGroup>
-        <CreateButton
-          class="align-middle ml-2"
-          :to="createEventPath"
-          :label="'Create Event'"
-        />
+        <CreateButton class="align-middle ml-2" :to="createEventPath" :label="'Create Event'" />
       </div>
     </div>
-    <div class="flex flex-wrap">
-      <Tag
-       class="my-1 align-middle"
-        v-for="shortcut in timeFilterShortcuts"
-        :key="shortcut.label"
-        :tag="shortcut.label"
-        :active="shortcut.value === activeDateShortcut"
-        :hide-icon="true"
-        @click="handleTimeFilterShortcutClick(shortcut)"
-      />
-      <Tag
-        class="my-1 align-middle"
-        v-for="shortcut in eventFilterTypeShortcuts"
-        :key="shortcut.label"
-        :tag="shortcut.label"
-        :hide-icon="true"
-        :active="
+    <div v-if="!channelId" class="flex flex-wrap">
+      <Tag class="my-1 align-middle" v-for="shortcut in timeFilterShortcuts" :key="shortcut.label" :tag="shortcut.label"
+        :active="shortcut.value === activeDateShortcut" :hide-icon="true"
+        @click="handleTimeFilterShortcutClick(shortcut)" />
+      <Tag class="my-1 align-middle" v-for="shortcut in eventFilterTypeShortcuts" :key="shortcut.label"
+        :tag="shortcut.label" :hide-icon="true" :active="
           shortcut.locationFilterType === activeEventFilterTypeShortcut ||
           (shortcut.locationFilterType ===
             LocationFilterTypes.ONLY_WITH_ADDRESS &&
             filterValues.selectedLocationFilter ===
               LocationFilterTypes.WITHIN_RADIUS)
-        "
-        @click="updateEventTypeFilter(shortcut)"
-      />
+        " @click="updateEventTypeFilter(shortcut)" />
     </div>
-    
+
   </div>
 </template>
+<style>
+.tagpicker {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  max-width: 600px;
+}
+</style>

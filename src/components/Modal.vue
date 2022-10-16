@@ -32,9 +32,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <TransitionRoot as="template" :show="show">
+  <TransitionRoot @click="$emit('close')" as="template" :show="show">
     <Dialog as="div" class="relative z-10" @close="$emit('close')">
       <TransitionChild
+      
         as="template"
         enter="ease-out duration-300"
         enter-from="opacity-0"
@@ -44,6 +45,7 @@ export default defineComponent({
         leave-to="opacity-0"
       >
         <div
+        
           class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
         />
       </TransitionChild>
