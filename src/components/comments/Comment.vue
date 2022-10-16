@@ -2,13 +2,11 @@
 import { defineComponent, readonly } from "vue";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
-import ProfileAvatar from "vue-profile-avatar";
 import { relativeTime } from "../../dateTimeUtils";
 
 export default defineComponent({
   components: {
     MdEditor,
-    ProfileAvatar,
   },
   setup(props) {
     return {
@@ -43,12 +41,6 @@ export default defineComponent({
 <template>
   <div class="text-sm">
     <div class="flex space-x-4 mt-2">
-      <ProfileAvatar
-        class="w-5 h-5"
-        v-if="authorUsername"
-        :username="authorUsername"
-        colorType="pastel"
-      ></ProfileAvatar>
       <div class="align-middle">
         <h3 class="font-medium text-gray-900">
           <router-link

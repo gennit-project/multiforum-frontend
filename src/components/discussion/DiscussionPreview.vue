@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import {
   Dialog,
   DialogOverlay,
+  DialogPanel,
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
@@ -12,6 +13,7 @@ import DiscussionDetail from "./DiscussionDetail.vue";
 export default defineComponent({
   components: {
     TailwindDialog: Dialog,
+    DialogPanel,
     DialogOverlay,
     DiscussionDetail,
     TransitionChild,
@@ -52,7 +54,7 @@ export default defineComponent({
             leave-from="translate-x-0"
             leave-to="translate-x-full"
           >
-            <div class="w-screen max-w-xl">
+          <DialogPanel class="pointer-events-auto w-screen max-w-md">
               <div
                 class="
                   h-full
@@ -140,7 +142,7 @@ export default defineComponent({
                   </button> -->
                 </div>
               </div>
-            </div>
+          </DialogPanel>
           </TransitionChild>
         </div>
       </div>
