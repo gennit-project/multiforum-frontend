@@ -291,10 +291,28 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     filterByTag(tag: string) {
-      this.setSelectedTags([tag]);
+      const alreadySelected = this.selectedTags.includes(tag);
+
+      if (alreadySelected) {
+        this.selectedTags = this.selectedTags.filter(
+          (t: string) => t !== tag
+        );
+      } else {
+        this.selectedTags.push(tag);
+      }
     },
     filterByChannel(channel: string) {
-      this.setSelectedChannels([channel]);
+      const alreadySelected = this.selectedChannels.includes(
+        channel
+      );
+
+      if (alreadySelected) {
+        this.selectedChannels = this.selectedChannels.filter(
+          (c: string) => c !== channel
+        );
+      } else {
+        this.selectedChannels.push(channel);
+      }
     },
     closePreview() {
       this.previewIsOpen = false;
