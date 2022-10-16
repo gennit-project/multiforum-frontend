@@ -555,12 +555,12 @@ export default defineComponent({
       if (this.showMap) {
         this.closePreview();
       }
-      const path = this.channelId
-        ? `/channels/${this.channelId}/events`
-        : "/events";
+      // const pathName = this.channelId
+      //   ? "SearchEventsInChannel"
+      //   : "SearchEvents";
 
       router.push({
-        path,
+        path: this.$route.path,
         // hash: `#${this.eventResult && this.eventResult.events[0].id}`,
         query: {
           // search: this.filterValues.searchInput,

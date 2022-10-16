@@ -2165,10 +2165,10 @@ make-dir@^3.0.2:
   dependencies:
     semver "^6.0.0"
 
-md-editor-v3@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/md-editor-v3/-/md-editor-v3-2.2.1.tgz#96a88f86348c82b9f04f8c1eb3982c009ea63310"
-  integrity sha512-nOd8mlEhvC99l9Y8pDMwEi6EdCAeBp88Ffl24We+2uz3/Iympctm92L1qyNicONJRhtZJacQ4oWTQGMYKGAxVg==
+md-editor-v3@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/md-editor-v3/-/md-editor-v3-2.3.0.tgz#4402389fa838f9681a4b38ef26ef3a8b3a37908f"
+  integrity sha512-HZiOSwOct3YsuTtsTucEg5o9mSRkgnazVn2sTInjG+d+zlMQE6iCMmDyGICBoh5Im0kmX2Pf6Sxhz6qp/0XngQ==
   dependencies:
     "@types/marked" "^4.0.3"
 

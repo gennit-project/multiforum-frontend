@@ -1,5 +1,5 @@
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
+// import '@mdi/font/css/materialdesignicons.css'
 // import 'vuetify/styles' // Not using vuetify styles because we're using Tailwind styles
 
 // Vuetify
