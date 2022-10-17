@@ -38,7 +38,7 @@ export default defineComponent({
 
 <template>
   <div class="max-w-7xl px-2 px-4 lg:px-12">
-    <div class="relative flex items-center justify-between h-14">
+    <div class="relative flex items-center justify-between h-10">
       <div class="flex items-center lg:px-0">
         <!-- <SiteLogo/> -->
         <div class="text-white">gennit</div>

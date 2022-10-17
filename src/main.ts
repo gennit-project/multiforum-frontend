@@ -80,6 +80,12 @@ const cache = new InMemoryCache({
         },
       },
     },
+    Comments: {
+      keyFields: ["id"],
+    },
+    CommentSections: {
+      keyFields: ["id"],
+    },
     Query: {
       fields: {
         events: {

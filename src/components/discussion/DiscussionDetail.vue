@@ -14,11 +14,15 @@ import { ChannelData } from "@/types/channelTypes";
 import ErrorBanner from "../ErrorBanner.vue";
 import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
+import CommentSection from "../comments/CommentSection.vue";
+import CreateComment from "../comments/CreateComment.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     Comment,
+    CommentSection,
+    CreateComment,
     WarningModal,
     CreateButton,
     ErrorBanner,
@@ -178,17 +182,16 @@ export default defineComponent({
     >
       <div class="mt-4 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
-          <h2
+          <h1
             class="
-              text-xl
+              mt-6
               font-bold
-              leading-7
-              text-gray-900
-              sm:text-3xl sm:tracking-tight sm:truncate
+              text-lg
+              sm:tracking-tight sm:truncate
             "
           >
             {{ discussion.title }}
-          </h2>
+          </h1>
         </div>
         <div v-if="!compactMode && channelId" class="flex-shrink-0 flex md:mx-4">
           <div class="float-right">
@@ -220,6 +223,23 @@ export default defineComponent({
               :edited-at="editedAt"
               :content="discussion.body"
               :readonly="true"
+            />
+            <CreateComment
+              :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
+              :is-root-comment="true"
+            />
+            <h2 class="text-xl">Comment Sections</h2>
+            <ul>
+              <li 
+                v-for="commentSection in discussion.CommentSections" 
+                :key="commentSection.id"
+              >
+              {{commentSection.Channel.uniqueName}}
+              </li>
+            </ul>
+            <h2>Active comment section: {{channelId}}</h2>
+            <CommentSection
+              :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
             />
           </div>
           <Tag

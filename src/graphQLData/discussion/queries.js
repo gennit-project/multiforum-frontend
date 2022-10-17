@@ -25,6 +25,9 @@ export const GET_DISCUSSION = gql`
       CommentSections {
         id
         __typename
+        Channel {
+          uniqueName
+        }
         OriginalPost {
           ... on Discussion {
             id
