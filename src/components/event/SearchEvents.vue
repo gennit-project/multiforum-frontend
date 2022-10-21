@@ -601,22 +601,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="bg-white" :class="showMap ? 'fixed' : ''">
-    <div class="px-4 lg:px-12 mt-4 flex items-center justify-between">
-
-      <h2 v-if="!channelId" class="
-            text-xl
-            font-bold
-            leading-7
-            text-gray-900
-            align-middle
-            flex-1
-            sm:tracking-tight sm:truncate
-          ">
-        Search Events
-      </h2>
-
-      <div class=" flex-shrink-0 flex md:mt-0 md:ml-4 items-center">
-        <div class="float-right">
+    <div class="float-right mx-4 lg:mr-12 mt-2">
           <div v-if="!channelId" class="flex justify-center">
             <SwitchGroup as="div" class="flex items-center">
               <TailwindSwitch v-model="showMap" :class="[
@@ -635,9 +620,9 @@ export default defineComponent({
             <CreateButton class="align-middle ml-2" :to="createEventPath" :label="'Create Event'" />
           </div>
         </div>
-      </div>
-    </div>
-    <EventFilterBar :channel-id="channelId" :result-count="eventResult ? eventResult.eventsCount : 0"
+    <EventFilterBar 
+      class="mt-2"
+      :channel-id="channelId" :result-count="eventResult ? eventResult.eventsCount : 0"
       :filter-values="filterValues" :loaded-event-count="eventResult ? eventResult.events.length : 0"
       :time-slot-filters-active="timeSlotFiltersActive" :create-event-path="createEventPath"
       @updateSelectedDistance="updateSelectedDistance" @updateSelectedDistanceUnit="updateSelectedDistanceUnit"

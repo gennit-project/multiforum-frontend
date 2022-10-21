@@ -337,26 +337,8 @@ export default defineComponent({
 <template>
   <div class="bg-white">
     <div class="bg-white rounded px-4 lg:px-12 pr-8">
-      <div :class="!channelId ? 'pt-8' : 'pt-2'">
-        <div v-if="!channelId" class="flex justify-between min-w-0">
-          <h2 class="
-                    text-xl
-                    font-bold
-                    leading-7
-                    text-gray-900
-                    sm:text-3xl sm:tracking-tight sm:truncate
-                  ">
-            {{
-            channelId
-            ? `Discussions in ${channelId}`
-            : "Search Discussions"
-            }}
-          </h2>
-          <CreateButton class="align-middle ml-2" :to="createDiscussionPath" :label="'Create Discussion'" />
-        </div>
+      <div class="pt-2 pb-2">
         <div class="items-center flex justify-between">
-
-
           <div class="flex items-center space-x-2">
             <SearchBar class="flex mr-2 align-middle" :small="true" :search-placeholder="'Search discussions'"
               @updateSearchInput="updateSearchResult" />
@@ -378,8 +360,9 @@ export default defineComponent({
                 <TagPicker :selected-tags="selectedTags" @setSelectedTags="setSelectedTags" />
               </template>
             </FilterChip>
+           
           </div>
-          <CreateButton v-if="channelId" class="align-middle ml-2" :to="createDiscussionPath"
+          <CreateButton class="align-middle ml-2" :to="createDiscussionPath"
             :label="'Create Discussion'" />
         </div>
       </div>

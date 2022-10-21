@@ -97,6 +97,7 @@ export default defineComponent({
         <Comment 
             v-for="comment in commentResult.commentSections[0].Comments" :key="comment.id"
             :author-username="comment.CommentAuthor ? comment.CommentAuthor.username : ''" 
+            :compact="true"
             :created-at="comment.createdAt"
             :edited-at="comment.updatedAt"
             :content="comment.text"

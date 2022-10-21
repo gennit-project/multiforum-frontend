@@ -267,7 +267,7 @@ export default defineComponent({
             />
             
             <div class="text-xs text-gray-600 mt-4">
-              <div class="organizer">
+              <div>
                 <router-link
                   v-if="discussion.Author"
                   class="text-blue-800 underline"
