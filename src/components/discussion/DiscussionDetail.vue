@@ -16,18 +16,21 @@ import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import CreateComment from "../comments/CreateComment.vue";
+import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 import "md-editor-v3/lib/style.css";
+import { router } from "@/router";
 
 export default defineComponent({
   components: {
     Comment,
     CommentSection,
-    CreateComment,
-    WarningModal,
     CreateButton,
+    CreateComment,
+    DiscussionIcon,
     ErrorBanner,
     GenericButton,
     Tag,
+    WarningModal,
   },
   props: {
     compactMode: {
@@ -38,6 +41,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
+    console.log('name',route.name)
 
     const discussionId = computed(() => {
       return route.params.discussionId;
@@ -123,6 +127,7 @@ export default defineComponent({
     });
 
     const deleteModalIsOpen = ref(false);
+    const showScrollToCommentsButton = ref(false)
 
     return {
       channelId,
@@ -138,6 +143,8 @@ export default defineComponent({
       editedAt,
       discussion,
       relativeTime,
+      route,
+      showScrollToCommentsButton
     };
   },
   methods: {
@@ -154,12 +161,22 @@ export default defineComponent({
 
       return startTimeObj.toFormat("cccc LLLL d yyyy");
     },
+    scrollToComments() {
+      let commentStart = document.getElementById('comments');
+      if (commentStart){
+        commentStart.scrollIntoView(false);
+      }
+    },
+    scrollHandler(e: any){
+      console.log('bottom ', e.target.scrollBottom)
+      this.showScrollToCommentsButton = e.target.scrollBottom < 300 ? false : true
+    }
   },
 });
 </script>
 
 <template>
-  <div :class="!compactMode ? 'px-10' : ''" class="sticky top-10">
+  <div :class="!compactMode ? 'px-10' : ''" class="sticky top-10 pb-36">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -212,9 +229,9 @@ export default defineComponent({
         </div>
       </div>
 
-      <div>
+      <div @scroll="scrollHandler">
         <div>
-          <div v-if="discussion.body" class="body min-height-min">
+          <div v-if="discussion.body" class="body" >
             <Comment
               :author-username="
                 discussion.Author ? discussion.Author.username : ''
@@ -224,11 +241,41 @@ export default defineComponent({
               :content="discussion.body"
               :readonly="true"
             />
+            
+            <div class="text-xs text-gray-600 mt-4">
+              <div class="organizer">
+                <router-link
+                  v-if="discussion.Author"
+                  class="text-blue-800 underline"
+                  :to="`/u/${discussion.Author.username}`"
+                >
+                  {{ discussion.Author.username }}
+                </router-link>
+                {{ createdAt }}
+                <span v-if="discussion.updatedAt"> &#8226; </span>
+                {{ editedAt }}
+                &#8226;
+                <span
+                  v-if="!compactMode"
+                  class="underline font-medium text-gray-900 cursor-pointer"
+                  @click="deleteModalIsOpen = true"
+                  >Delete</span
+                >
+              </div>
+            </div>
             <CreateComment
               :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
               :is-root-comment="true"
             />
-            <h2 class="text-xl">Comment Sections</h2>
+            <button 
+              v-show="true"
+              type="button" 
+              class="sticky bottom-10 float-right inline-flex mt-1 items-center rounded-full border border-transparent bg-blue-600 p-3 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+              @click="scrollToComments"
+            >
+              <DiscussionIcon class="h-6 w-6" aria-hidden="true" />Comments
+            </button>
+            <h2 id='comments' class="text-xl">Comments</h2>
             <ul>
               <li 
                 v-for="commentSection in discussion.CommentSections" 
@@ -237,8 +284,9 @@ export default defineComponent({
               {{commentSection.Channel.uniqueName}}
               </li>
             </ul>
-            <h2>Active comment section: {{channelId}}</h2>
+            <h2 v-if="route.name === 'DiscussionDetail'">Active comment section: {{channelId}}</h2>
             <CommentSection
+              v-if="route.name === 'DiscussionDetail'"
               :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
             />
           </div>
@@ -250,27 +298,9 @@ export default defineComponent({
             :discussionId="discussionId"
           />
           <div class="text-xs text-gray-600 mt-4">
-            <div class="organizer">
-              <router-link
-                v-if="discussion.Author"
-                class="text-blue-800 underline"
-                :to="`/u/${discussion.Author.username}`"
-              >
-                {{ discussion.Author.username }}
-              </router-link>
-              {{ createdAt }}
-              <span v-if="discussion.updatedAt"> &#8226; </span>
-              {{ editedAt }}
-              &#8226;
-              <span
-                v-if="!compactMode"
-                class="underline font-medium text-gray-900 cursor-pointer"
-                @click="deleteModalIsOpen = true"
-                >Delete</span
-              >
-            </div>
+            
             <div
-              v-if="channelId && channelsExceptCurrent.length > 0"
+              v-if="route.name === 'DiscussionDetail' && channelsExceptCurrent.length > 0"
               class="mt-2"
             >
               Crossposted To Channels:

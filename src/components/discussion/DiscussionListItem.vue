@@ -110,7 +110,7 @@ export default defineComponent({
         : 'hover:bg-slate-200',
       channelIdInParams ? 'hover:bg-slate-200' : '',
     ]"
-    class="relative bg-white py-4 px-4 lg:px-12 cursor-pointer "
+    class="relative bg-white py-1 px-4 lg:px-12 cursor-pointer "
     @click="$emit('openPreview')"
   >
     <router-link :to="previewLink">
@@ -118,7 +118,7 @@ export default defineComponent({
         <div class="col-span-3">
           <div class="block">
             <div>
-              <p class="cursor-pointer text-md font-medium truncate mr-2 text-blue-500 underline">
+              <p class="cursor-pointer text-sm font-medium truncate mr-2 text-blue-500 underline">
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
@@ -127,10 +127,7 @@ export default defineComponent({
             </div>
 
             <p class="line-clamp-2 text-sm text-slate-600 hover:no-underline font-medium mx-1 mt-1">
-              <HighlightedSearchTerms
-                :text="body"
-                :search-input="searchInput"
-              />
+              
               <Tag
                 class="m-1"
                 :active="selectedTags.includes(tag)"
@@ -162,13 +159,13 @@ export default defineComponent({
               flex-shrink-0
               whitespace-nowrap
               font-medium
-              text-sm
+              text-xs
               text-slate-600 no-underline
             "
             >{{ relativeTime }}</time
           >
           <br />
-          <p class="float-right text-sm font-medium truncate text-slate-600 no-underline">
+          <p class="float-right text-xs font-medium truncate text-slate-600 no-underline">
             Posted by
 
             {{ `@${authorUsername}` }}

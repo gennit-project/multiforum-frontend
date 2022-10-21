@@ -2,12 +2,12 @@
 import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useMutation, provideApolloClient } from "@vue/apollo-composable";
-import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import { CommentData, CommentSectionData, CreateEditCommentFormValues } from "@/types/commentTypes";
+import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
 import CreateEditCommentFields from "./CreateEditCommentFields.vue";
 import "md-editor-v3/lib/style.css";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
     name: "CreateComment",
@@ -102,6 +102,36 @@ export default defineComponent({
 
                 // Will use readQuery and writeQuery to update the cache 
                 // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+                const readQueryResult = cache.readQuery({
+                        query: GET_COMMENT_SECTION,
+                        // Provide any required variables in this object.
+                        // Variables of mismatched types will return `null`.
+                        variables: {
+                            id: props.commentSectionId,
+                        },
+                });
+
+                const existingCommentSectionData = readQueryResult?.commentSections[0]
+
+                let commentsCopy = [...existingCommentSectionData.Comments || []];
+
+                commentsCopy.unshift(newComment);
+
+                cache.writeQuery({
+                    query: GET_COMMENT_SECTION,
+                    data: {
+                        commentSections: [
+                            {
+                                ...readQueryResult?.commentSections[0],
+                                    Comments: commentsCopy
+                            }
+                        ]
+                    },
+                    variables: {
+                        id: props.commentSectionId,
+                    },
+                });
             },
         }));
 

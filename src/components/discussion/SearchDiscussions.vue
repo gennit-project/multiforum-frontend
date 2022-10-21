@@ -381,11 +381,10 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="lg:flex lg:flex-row">
-      <div class="
-          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
-          flex flex-col flex-grow
-        ">
+      <div :class="!smAndDown ? 'flex flex-row' : ''">
+      <div 
+        :class="!smAndDown ? 'w-2/5 h-full max-h-screen overflow-y-auto' : ''" 
+        class="flex flex-col flex-grow">
         <div>
           <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
           <DiscussionList v-if="discussionResult && discussionResult.discussions"

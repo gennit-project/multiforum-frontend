@@ -61,9 +61,9 @@ export default defineComponent({
       </div>
     </div>
     <md-editor
-      class="mt-4"
+      class="mt-4 prose prose-sm"
       v-if="content && readonly"
-      v-model="content"
+      v-model="contentCopy"
       language="en-US"
       previewTheme="github"
       preview-only
