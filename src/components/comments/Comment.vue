@@ -40,7 +40,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="text-sm">
-    <div class="flex space-x-4 mt-2">
+    <div class="flex mt-2">
       <div class="align-middle">
         <h3 class="font-medium text-gray-900">
           <router-link
@@ -61,19 +61,30 @@ export default defineComponent({
       </div>
     </div>
     <md-editor
-      class="mt-4 prose prose-sm"
+      class="
+        mt-4 
+        prose 
+        prose-p:text-sm 
+        prose-p:text-black
+        prose-li:text-black
+        prose-h1:text-lg
+        prose-h2:text-md
+        prose-h3:text-sm
+        prose-li:text-sm
+        prose-li:leading-none
+        prose-p:leading-none
+        prose-ul:space-y-1
+      "
       v-if="content && readonly"
       v-model="contentCopy"
       language="en-US"
-      previewTheme="github"
       preview-only
     />
     <md-editor
-      class="mt-4"
+      class="mt-4 prose prose-p:text-xs"
       v-if="content && !readonly"
       v-model="contentCopy"
       language="en-US"
-      previewTheme="github"
     />
   </div>
 </template>

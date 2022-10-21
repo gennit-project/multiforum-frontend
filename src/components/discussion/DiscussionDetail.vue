@@ -16,9 +16,8 @@ import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import CreateComment from "../comments/CreateComment.vue";
-import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
+import ChevronDoubleDownIcon from "@/components/icons/ChevronDoubleDownIcon.vue";
 import "md-editor-v3/lib/style.css";
-import { router } from "@/router";
 
 export default defineComponent({
   components: {
@@ -26,7 +25,7 @@ export default defineComponent({
     CommentSection,
     CreateButton,
     CreateComment,
-    DiscussionIcon,
+    ChevronDoubleDownIcon,
     ErrorBanner,
     GenericButton,
     Tag,
@@ -41,7 +40,6 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    console.log('name',route.name)
 
     const discussionId = computed(() => {
       return route.params.discussionId;
@@ -127,7 +125,7 @@ export default defineComponent({
     });
 
     const deleteModalIsOpen = ref(false);
-    const showScrollToCommentsButton = ref(false)
+    const showScrollToCommentsButton = ref(true)
 
     return {
       channelId,
@@ -166,13 +164,40 @@ export default defineComponent({
       if (commentStart){
         commentStart.scrollIntoView(false);
       }
+      this.handleScroll()
     },
-    scrollHandler(e: any){
-      console.log('bottom ', e.target.scrollBottom)
-      this.showScrollToCommentsButton = e.target.scrollBottom < 300 ? false : true
-    }
+    handleScroll() {
+      const commentSectionHeader = this.$refs.commentSectionHeader;
+      const scrollToCommentsButton = this.$refs.scrollToCommentsButton;
+         
+      if (commentSectionHeader && scrollToCommentsButton){
+        if (commentSectionHeader.offsetTop - scrollToCommentsButton.offsetTop < 500) {
+          this.showScrollToCommentsButton = false;
+        } else {
+          this.showScrollToCommentsButton = true;
+        }
+      }
+    },
+  },
+  mounted() {
+    let ticking = false;
+      window.addEventListener("scroll", () => {
+
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            this.handleScroll();
+            ticking = false;
+          });
+
+          ticking = true;
+        }
+    });
+  },
+  beforeUnmount() {
+      window.removeEventListener("scroll", this.handleScroll);
   },
 });
+
 </script>
 
 <template>
@@ -185,6 +210,7 @@ export default defineComponent({
     />
     <div
       v-else
+      ref="discussionDetail" 
       class="
         mx-auto
         max-w-6xl
@@ -192,8 +218,6 @@ export default defineComponent({
         divide-y
         bg-white
         pb-4
-        pr-8
-        pl-8
         rounded
       "
     >
@@ -229,7 +253,7 @@ export default defineComponent({
         </div>
       </div>
 
-      <div @scroll="scrollHandler">
+      <div>
         <div>
           <div v-if="discussion.body" class="body" >
             <Comment
@@ -263,19 +287,22 @@ export default defineComponent({
                 >
               </div>
             </div>
-            <CreateComment
-              :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
-              :is-root-comment="true"
-            />
             <button 
-              v-show="true"
+              ref="scrollToCommentsButton"
+              v-show="showScrollToCommentsButton"
+              aria-label="Scroll to comments"
               type="button" 
               class="sticky bottom-10 float-right inline-flex mt-1 items-center rounded-full border border-transparent bg-blue-600 p-3 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               @click="scrollToComments"
             >
-              <DiscussionIcon class="h-6 w-6" aria-hidden="true" />Comments
+              <ChevronDoubleDownIcon class="h-6 w-6" aria-hidden="true" />
             </button>
-            <h2 id='comments' class="text-xl">Comments</h2>
+            <CreateComment
+              :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
+              :is-root-comment="true"
+            />
+           
+            <h2 id='comments' ref="commentSectionHeader" class="text-xl">Comments</h2>
             <ul>
               <li 
                 v-for="commentSection in discussion.CommentSections" 

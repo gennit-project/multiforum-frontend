@@ -98,7 +98,6 @@ export default defineComponent({
             update: (cache: any, result: any) => {
                 const newComment: CommentData =
                     result.data?.createComments?.comments[0];
-                console.log('create comment ', newComment)
 
                 // Will use readQuery and writeQuery to update the cache 
                 // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
