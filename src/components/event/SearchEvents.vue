@@ -29,6 +29,7 @@ import LocationFilterTypes from "./locationFilterTypes";
 import EventPreview from "./EventPreview.vue";
 import CreateButton from "../CreateButton.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
+import TwoSeparatelyScrollingPanes from "../TwoSeparatelyScrollingPanes.vue";
 
 export default defineComponent({
   name: "SearchEvents",
@@ -42,7 +43,8 @@ export default defineComponent({
     TailwindSwitch: Switch,
     SwitchGroup,
     SwitchLabel,
-  },
+    TwoSeparatelyScrollingPanes
+},
   setup() {
     const route = useRoute();
 
@@ -645,11 +647,8 @@ export default defineComponent({
       @updateTimeSlots="updateTimeSlots" @resetTimeSlots="resetTimeSlots" @toggleShowMap="toggleShowMap" />
     <div class="mx-4 lg:mx-12" v-if="eventLoading">Loading...</div>
     <ErrorBanner class="mx-4 lg:mx-12" v-else-if="eventError" :text="eventError.message" />
-    <div v-else-if="!showMap && eventResult && eventResult.events" class="lg:flex lg:flex-row">
-      <div class="
-          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
-          flex flex-col flex-grow
-        ">
+    <TwoSeparatelyScrollingPanes v-else-if="!showMap && eventResult && eventResult.events" >
+      <template v-slot:leftpane>
         <div class="rounded max-w-5xl">
           <EventList
             id="listView"
@@ -673,13 +672,13 @@ export default defineComponent({
             @closePreview="closePreview"
           />
         </div>
-      </div>
-      <div v-if="!smAndDown" class="lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
+      </template>
+      <template v-slot:rightpane>
         <div v-if="!showMap && eventResult?.events?.length > 0">
           <router-view></router-view>
         </div>
-      </div>
-    </div>
+      </template>
+    </TwoSeparatelyScrollingPanes>
     <MapView 
       v-else 
       :channel-id="channelId" 

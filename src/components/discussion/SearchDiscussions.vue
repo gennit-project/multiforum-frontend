@@ -13,6 +13,7 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/FilterChip.vue";
 import CreateButton from "@/components/CreateButton.vue";
 import ErrorBanner from "../ErrorBanner.vue";
+import TwoSeparatelyScrollingPanes from "../TwoSeparatelyScrollingPanes.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
 import { useDisplay } from 'vuetify';
@@ -33,6 +34,7 @@ export default defineComponent({
     SearchBar,
     TagPicker,
     TagIcon,
+    TwoSeparatelyScrollingPanes,
   },
   setup() {
     const route = useRoute();
@@ -353,11 +355,11 @@ export default defineComponent({
           <CreateButton class="align-middle ml-2" :to="createDiscussionPath" :label="'Create Discussion'" />
         </div>
         <div class="items-center flex justify-between">
-          
-           
+
+
           <div class="flex items-center space-x-2">
             <SearchBar class="flex mr-2 align-middle" :small="true" :search-placeholder="'Search discussions'"
-            @updateSearchInput="updateSearchResult" />
+              @updateSearchInput="updateSearchResult" />
             <FilterChip class="align-middle" v-if="!channelId" :label="channelLabel"
               :highlighted="channelLabel !== defaultLabels.channels">
               <template v-slot:icon>
@@ -377,40 +379,27 @@ export default defineComponent({
               </template>
             </FilterChip>
           </div>
-          <CreateButton v-if="channelId" class="align-middle ml-2" :to="createDiscussionPath" :label="'Create Discussion'" />
+          <CreateButton v-if="channelId" class="align-middle ml-2" :to="createDiscussionPath"
+            :label="'Create Discussion'" />
         </div>
       </div>
     </div>
-      <div :class="!smAndDown ? 'flex flex-row' : ''">
-      <div 
-        :class="!smAndDown ? 'w-2/5 h-full max-h-screen overflow-y-auto' : ''" 
-        class="flex flex-col flex-grow">
-        <div>
-          <ErrorBanner class="mx-auto max-w-5xl" v-if="discussionError" :text="discussionError.message" />
-          <DiscussionList v-if="discussionResult && discussionResult.discussions"
-            :discussions="discussionResult.discussions"
-            :channel-id="channelId"
-            :result-count="discussionResult.discussionsCount"
-            :search-input="searchInput"
-            :selected-tags="selectedTags"
-            :selected-channels="selectedChannels"
-            @filterByTag="filterByTag" 
-            @filterByChannel="filterByChannel"
-            @loadMore="loadMore"
-            @openPreview="openPreview" />
-          <DiscussionPreview 
-            v-if="smAndDown"
-            :isOpen="previewIsOpen" 
-            @closePreview="closePreview" 
-          />
-          <div class="px-4 lg:px-12" v-if="discussionLoading">
-            Loading...
-          </div>
-        </div>
-      </div>
-      <div v-if="!smAndDown" class="w-3/5 max-h-screen overflow-y-auto">
+    <div class="px-4 lg:px-12" v-if="discussionLoading">
+      Loading...
+    </div>
+    <ErrorBanner class="mx-auto max-w-5xl" v-else-if="discussionError" :text="discussionError.message" />
+    <TwoSeparatelyScrollingPanes v-else-if="discussionResult && discussionResult.discussions">
+
+      <template v-slot:leftpane>
+        <DiscussionList :discussions="discussionResult.discussions" :channel-id="channelId"
+          :result-count="discussionResult.discussionsCount" :search-input="searchInput" :selected-tags="selectedTags"
+          :selected-channels="selectedChannels" @filterByTag="filterByTag" @filterByChannel="filterByChannel"
+          @loadMore="loadMore" @openPreview="openPreview" />
+        <DiscussionPreview v-if="smAndDown" :isOpen="previewIsOpen" @closePreview="closePreview" />
+      </template>
+      <template v-slot:rightpane>
         <router-view></router-view>
-      </div>
-    </div>
+      </template>
+    </TwoSeparatelyScrollingPanes>
   </div>
 </template>
