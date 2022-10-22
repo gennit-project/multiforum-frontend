@@ -17,5 +17,5 @@ body {
     font-style: normal;
     font-display: auto;
     unicode-range: U+000-5FF;
-    src: local("Inter"), url(@/assets/styles/fonts/Inter/Inter-Regular.woff) format("woff");
+    src: local("Inter"), url(@/assets/fonts/Inter/Inter-Regular.woff) format("woff");
   }

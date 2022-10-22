@@ -56,7 +56,7 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const discussion = computed<DiscussionData>(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value) {
+      if (getDiscussionLoading.value || getDiscussionError.value || !discussionId.value) {
         return null;
       }
       return getDiscussionResult.value.discussions[0];
@@ -180,18 +180,19 @@ export default defineComponent({
     },
   },
   mounted() {
-    let ticking = false;
-      window.addEventListener("scroll", () => {
+    // let ticking = false;
+    //   window.addEventListener("scroll", () => {
 
-        if (!ticking) {
-          window.requestAnimationFrame(() => {
-            this.handleScroll();
-            ticking = false;
-          });
+    //     if (!ticking) {
+    //       window.requestAnimationFrame(() => {
+    //         ticking = false;
+    //         this.handleScroll();
+            
+    //       });
 
-          ticking = true;
-        }
-    });
+    //       ticking = true;
+    //     }
+    // });
   },
   beforeUnmount() {
       window.removeEventListener("scroll", this.handleScroll);
@@ -261,7 +262,7 @@ export default defineComponent({
                 discussion.Author ? discussion.Author.username : ''
               "
               :created-at="discussion.createdAt"
-              :edited-at="editedAt"
+              :edited-at="discussion.updatedAt"
               :content="discussion.body"
               :readonly="true"
             />
