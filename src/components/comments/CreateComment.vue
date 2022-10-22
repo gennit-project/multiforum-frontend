@@ -160,8 +160,12 @@ export default defineComponent({
 });
 </script>
 <template>
-    <CreateEditCommentFields :create-comment-error="createCommentError" :edit-mode="false" :form-values="formValues"
-        @submit="submit" @updateFormValues="updateFormValues" />
+    <CreateEditCommentFields 
+      :create-comment-error="createCommentError" 
+      :edit-mode="false" :form-values="formValues"
+      @submit="submit"
+      @updateFormValues="updateFormValues"
+    />
 </template>
 
 <style>

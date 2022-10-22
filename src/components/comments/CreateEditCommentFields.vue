@@ -80,7 +80,29 @@ export default defineComponent({
               $emit('updateFormValues', { text: $event });
               this.touched = true;
             }" />
-        <button @click="$emit('submit')">Submit</button>
+        <button
+          :disabled="needsChanges"
+          class="
+            inline-flex
+            whitespace-nowrap
+            items-center
+            max-height-4
+            px-4
+            py-2
+            text-sm
+            font-medium
+            rounded
+            text-blue-700
+            bg-blue-100
+            hover:bg-blue-200
+            focus:outline-none
+            focus:ring-offset-2
+            focus:ring-offset-gray-100
+            focus:ring-blue-500
+          "
+          @click="$emit('submit')">
+          Submit
+        </button>
         <ErrorBanner v-if="touched && needsChanges" :text="changesRequiredMessage" />
         <ErrorBanner v-if="createCommentError" :text="createCommentError.message" />
         <ErrorBanner v-if="updateCommentError" :text="updateCommentError.message" />

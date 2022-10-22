@@ -302,8 +302,6 @@ export default defineComponent({
               :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"
               :is-root-comment="true"
             />
-           
-            <h2 id='comments' ref="commentSectionHeader" class="text-xl">Comments</h2>
             <ul>
               <li 
                 v-for="commentSection in discussion.CommentSections" 
@@ -312,7 +310,6 @@ export default defineComponent({
               {{commentSection.Channel.uniqueName}}
               </li>
             </ul>
-            <h2 v-if="route.name === 'DiscussionDetail'">Active comment section: {{channelId}}</h2>
             <CommentSection
               v-if="route.name === 'DiscussionDetail'"
               :comment-section-id="'fd98abdd-88b7-46d9-a2bb-848b2d9e0b01'"

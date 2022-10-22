@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
+import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
 // import LoadMore from "../LoadMore.vue";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
@@ -23,6 +24,7 @@ export default defineComponent({
         WarningModal,
     },
     setup(props) {
+        const route = useRoute();
 
         // const searchInput: Ref<string> = ref("");
 
@@ -99,6 +101,7 @@ export default defineComponent({
 
             //   loadMore,
             //   reachedEndOfResults,
+            route
             //   searchInput,
             //   setSearchInput,
         };
@@ -127,6 +130,12 @@ export default defineComponent({
         <p v-if="commentLoading">Loading comments...</p>
         <ErrorBanner class="mt-2" v-else-if="commentError" :text="commentError.message" />
         <div v-else-if="commentResult.commentSections.length > 0">
+            <h2 
+              v-if="route.name === 'DiscussionDetail'"
+              id='comments' 
+              ref="commentSectionHeader" 
+              class="text-xl"
+            >{{ `Top Comments (${commentResult.commentSections[0].Comments.length})`}}</h2>
             <Comment v-for="comment in commentResult.commentSections[0].Comments" :key="comment.id"
                 :author-username="comment.CommentAuthor ? comment.CommentAuthor.username : ''" :compact="true"
                 :created-at="comment.createdAt" :edited-at="comment.updatedAt" :content="comment.text" :readonly="true"
