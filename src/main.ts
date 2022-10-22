@@ -85,9 +85,19 @@ const cache = new InMemoryCache({
     },
     CommentSections: {
       keyFields: ["id"],
+      fields: {
+        Comments: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        }
+      }
     },
     Query: {
       fields: {
+        comments: {
+              merge: true
+        },
         events: {
           // Only consider it a different query if
           // the filters have changed, because we expect

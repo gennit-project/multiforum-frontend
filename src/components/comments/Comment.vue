@@ -21,6 +21,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    commentId: {
+      type: String,
+      default: "",
+    },
     compact: {
       type: Boolean,
       default: false,
@@ -59,21 +63,20 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="w-full">
     <div :class="!compact ? 'mt-4' : 'mt-3'">
-      <div class="flex text-gray-500">
+      <div class="flex text-gray-500 max-w-2xl">
         <UpArrowIcon v-if="compact" class="text-gray-400 h-4 mt-1" />
         <div 
           class="
             border
             border-gray-200
             pt-2
-            max-w-2xl
             rounded-md" 
           :class="compact ? 'px-3' : 'px-6'"
         >
           <span>
-            <div :class="compact ? 'text-tiny' : 'text-sm'">
+            <div :class="compact ? 'text-tiny mb-1' : 'text-sm'">
               <router-link v-if="authorUsername" class="underline" :to="`/u/${authorUsername}`">
                 {{ authorUsername }}
               </router-link>
@@ -83,6 +86,7 @@ export default defineComponent({
             </div>
           </span>
           <md-editor 
+            class="mt-3"
             v-if="content && readonly" 
             v-model="contentCopy" 
             previewTheme="github"
@@ -101,10 +105,16 @@ export default defineComponent({
           />
         </div>
       </div>
-      <div :class="compact ? 'text-tiny mt-1 pl-5 text-gray-400' : 'text-sm'" class="space-x-2">
-        <span class="underline cursor-pointer" @click="$emit('reply', commentId)">Reply</span><span
-          class="underline cursor-pointer" @click="$emit('delete', commentId)">Delete</span><span
-          class="underline cursor-pointer" @click="$emit('edit', commentId)">Edit</span>
+      <div :class="compact ? 'text-tiny mt-1 pl-5 text-gray-400 ' : 'text-sm'" class="space-x-2">
+        <span 
+          class="underline cursor-pointer hover:text-black" 
+          @click="$emit('reply', commentId)">Reply</span>
+        <span
+          class="underline cursor-pointer hover:text-black" 
+          @click="$emit('delete', commentId)">Delete</span>
+        <span
+          class="underline cursor-pointer hover:text-black" 
+          @click="$emit('edit', commentId)">Edit</span>
       </div>
       
     </div>

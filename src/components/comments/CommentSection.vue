@@ -5,7 +5,7 @@ import Comment from "./Comment.vue";
 // import LoadMore from "../LoadMore.vue";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
 import { DELETE_COMMENT, UPDATE_COMMENT } from "@/graphQLData/comment/mutations";
-// import { CommentData } from "../../types/commentTypes";
+import { CommentData } from "../../types/commentTypes";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../ErrorBanner.vue";
 import WarningModal from "../WarningModal.vue";
@@ -49,25 +49,32 @@ export default defineComponent({
             // error: editCommentError,
         } = useMutation(UPDATE_COMMENT)
 
+
+        const commentToDelete =  ref('')
+
         const {
             mutate: deleteComment,
             // error: deleteCommentError,
-        } = useMutation(DELETE_COMMENT, //{
-            //update: (cache: any) => {
-            // cache.modify({
-            //   fields: {
-            //     discussions(existingDiscussionRefs = [], fieldInfo: any) {
-            //       const readField = fieldInfo.readField;
+        } = useMutation(DELETE_COMMENT, {
+            update: (cache: any, ) => {
 
-            //       return existingDiscussionRefs.filter((ref) => {
-            //         return readField("id", ref) !== commentId.value;
-            //       });
-            //     },
-            //   },
-            // });
-            //},
-            //}
-        );
+                cache.modify({
+                    id: cache.identify({
+                        __typename: 'CommentSection',
+                        id: props.commentSectionId,
+                    }),
+                    fields: {
+                        comments(existingComments: any, { readField }: any) {
+                            const newComments = existingComments.filter((comment: any) => {
+                                return readField("id", comment) !== commentToDelete.value
+                           })
+                        console.log({newComments, existingComments})
+                            return newComments
+                        }
+                    }
+                })
+            },
+        });
 
         // const reachedEndOfResults = ref(false);
 
@@ -93,11 +100,12 @@ export default defineComponent({
         return {
             commentError,
             commentLoading,
+            commentToDelete,
             commentResult,
             deleteComment,
-            deleteModalIsOpen: ref(false),
+            showDeleteCommentModal: ref(false),
             editComment,
-            editModalIsOpen: ref(false),
+            showEditCommentModal: ref(false),
 
             //   loadMore,
             //   reachedEndOfResults,
@@ -108,7 +116,12 @@ export default defineComponent({
     },
 
     methods: {
+        handleClickDelete(commentId: string){
+            this.showDeleteCommentModal = true;
+            this.commentToDelete = commentId;
+        },
         handleDeleteComment(commentId: string) {
+            console.log("handleDeleteComment", commentId);
             this.deleteComment({
                 id: commentId,
             });
@@ -136,10 +149,19 @@ export default defineComponent({
               ref="commentSectionHeader" 
               class="text-xl"
             >{{ `Top Comments (${commentResult.commentSections[0].Comments.length})`}}</h2>
-            <Comment v-for="comment in commentResult.commentSections[0].Comments" :key="comment.id"
-                :author-username="comment.CommentAuthor ? comment.CommentAuthor.username : ''" :compact="true"
-                :created-at="comment.createdAt" :edited-at="comment.updatedAt" :content="comment.text" :readonly="true"
-                @edit="this.showEditCommentModal = true" @delete="this.showDeleteCommentModal = true" />
+            <Comment 
+              v-for="comment in commentResult.commentSections[0].Comments" 
+              :key="comment.id"
+              :author-username="comment.CommentAuthor ? comment.CommentAuthor.username : ''" 
+              :compact="true"
+              :comment-id="comment.id"
+              :created-at="comment.createdAt"
+              :edited-at="comment.updatedAt" 
+              :content="comment.text" 
+              :readonly="true"
+              @edit="this.showEditCommentModal = true" 
+              @delete="handleClickDelete($event)" 
+            />
         </div>
 
 
@@ -151,8 +173,13 @@ export default defineComponent({
         @loadMore="$emit('loadMore')"
       />
     </div> -->
-        <WarningModal :title="'Delete Discussion'" :body="'Are you sure you want to delete this discussion?'"
-            :open="deleteModalIsOpen" @close="deleteModalIsOpen = false" @delete="handleDeleteComment($event)" />
+        <WarningModal 
+          :title="'Delete Comment'"
+          :body="'Are you sure you want to delete this comment?'"
+          :open="showDeleteCommentModal" 
+          @close="showDeleteCommentModal = false" 
+          @delete="handleDeleteComment(commentToDelete)" 
+        />
         <!-- <EditModal/> -->
     </div>
 </template>
