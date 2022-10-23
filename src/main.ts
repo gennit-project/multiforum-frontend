@@ -80,18 +80,12 @@ const cache = new InMemoryCache({
         },
       },
     },
-    Comments: {
-      keyFields: ["id"],
-    },
+    // Comments: {
+    //   keyFields: ["id"],
+    //   merge: false
+    // },
     CommentSections: {
       keyFields: ["id"],
-      // fields: {
-      //   Comments: {
-      //     merge(existing, incoming) {
-      //       return incoming;
-      //     }
-      //   }
-      // }
     },
     Query: {
       fields: {

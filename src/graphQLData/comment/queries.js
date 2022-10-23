@@ -20,16 +20,24 @@ export const GET_COMMENT_SECTION = gql`
           }
         }
       }
-      Comments(where: {isRootComment: true}){
-        id
-        text
-        CommentAuthor {
-          ... on User {
-            username
+      CommentsConnection(where: {
+        node: {
+          isRootComment: true
+        }
+      }){
+        edges {
+          node {
+            id
+            text
+            CommentAuthor {
+              ... on User {
+                username
+              }
+            }
+            createdAt
+            updatedAt
           }
         }
-        createdAt
-        updatedAt
       }
     }
 }

@@ -17,18 +17,19 @@ export type CommentSectionData = {
 export type CreateEditCommentFormValues = {
   text: string
   tags?: [TagData]
+  isRootComment?: boolean
 }
 
 export type CommentData = {
   id: string
   CommentAuthor: UserData
-  CommentSection: CommentSectionData
-  ParentComment: Comment
   text: string
   isRootComment: Boolean
-  ChildComments: [Comment]
-  deleted: boolean
-  updatedAt: string
+  CommentSection?: CommentSectionData
+  ParentComment?: Comment
+  ChildComments?: [Comment]
+  deleted?: boolean
+  updatedAt?: string
   createdAt: string
-  Tags: [TagData]
+  Tags?: [TagData]
 }

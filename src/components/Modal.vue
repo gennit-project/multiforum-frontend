@@ -12,10 +12,9 @@ import CheckIcon from "./icons/CheckIcon.vue";
 export default defineComponent({
   components: {
     CheckIcon,
-    Dialog,
+    TailwindDialog: Dialog,
     DialogPanel,
     DialogTitle,
-
     TransitionChild,
     TransitionRoot,
   },
@@ -28,12 +27,16 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    primaryButtonText: {
+      type: String,
+      required: false,
+    },
   },
 });
 </script>
 <template>
   <TransitionRoot @click="$emit('close')" as="template" :show="show">
-    <Dialog as="div" class="relative z-10" @close="$emit('close')">
+    <TailwindDialog as="div" class="relative z-10" @close="$emit('close')">
       <TransitionChild
       
         as="template"
@@ -59,7 +62,6 @@ export default defineComponent({
             justify-center
             min-h-full
             p-4
-            text-center
             sm:p-0
           "
         >
@@ -107,10 +109,10 @@ export default defineComponent({
                     />
                   </slot>
                 </div>
-                <div class="mt-3 text-center sm:mt-5">
+                <div class="mt-3 sm:mt-5">
                   <DialogTitle
                     as="h3"
-                    class="text-lg leading-6 font-medium text-gray-900"
+                    class="text-lg text-center leading-6 font-medium text-gray-900"
                   >
                     {{ title }}
                   </DialogTitle>
@@ -147,9 +149,12 @@ export default defineComponent({
                     focus:ring-indigo-500
                     sm:col-start-2 sm:text-sm
                   "
-                  @click="$emit('close')"
+                  @click="()=>{
+                    $emit('close')
+                    $emit('primaryButtonClick')
+                  }"
                 >
-                  Close
+                  {{ primaryButtonText ? primaryButtonText : 'Close' }}
                 </button>
                 <slot name="secondaryButton">
                   <button
@@ -175,7 +180,10 @@ export default defineComponent({
                       focus:ring-indigo-500
                       sm:mt-0 sm:col-start-1 sm:text-sm
                     "
-                    @click="$emit('close')"
+                    @click="()=>{
+                      $emit('secondaryButtonClick')
+                      $emit('close')
+                    }"
                   >
                     Cancel
                   </button>
@@ -185,7 +193,7 @@ export default defineComponent({
           </TransitionChild>
         </div>
       </div>
-    </Dialog>
+    </TailwindDialog>
   </TransitionRoot>
 </template>
 

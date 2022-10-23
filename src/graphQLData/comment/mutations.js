@@ -34,12 +34,6 @@ mutation createDiscussion(
 				  title
 		  	}
 			}
-      Comments {
-        id
-      }
-			Channel {
-				uniqueName
-			}
 		}
 	}
 }

@@ -13,7 +13,6 @@ import { ChannelData } from "@/types/channelTypes";
 import { CreateEditDiscussionFormValues, DiscussionData } from "@/types/discussionTypes";
 import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
-import { updateDiscussionInCache, updateTagsInCache } from "@/components/utils";
 
 export default defineComponent({
   name: "EditDiscussion",
@@ -97,7 +96,7 @@ export default defineComponent({
       };
     });
 
-        // Remember the existing tags so that if the user removes
+    // Remember the existing tags so that if the user removes
     // one or more tags, we will know to manually disconnect
     // the nodes in the async call when the discussion is updated.
     const existingTags = computed(() => {
@@ -131,7 +130,7 @@ export default defineComponent({
     });
 
     const updateDiscussionInput = computed(() => {
-  
+
       const tagConnections = formValues.value.selectedTags.map(
         (tag: string) => {
           return {
@@ -273,16 +272,15 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditDiscussionFields
-    :edit-mode="true"
-    :discussion-loading="getDiscussionLoading"
-    :get-discussion-error="getDiscussionError"
-    :update-discussion-error="updateDiscussionError"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <CreateEditDiscussionFields :edit-mode="true"
+                              :discussion-loading="getDiscussionLoading"
+                              :get-discussion-error="getDiscussionError"
+                              :update-discussion-error="updateDiscussionError"
+                              :form-values="formValues"
+                              @submit="submit"
+                              @updateFormValues="updateFormValues" />
 </template>
 
 <style>
+
 </style>

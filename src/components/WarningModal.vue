@@ -30,7 +30,11 @@ export default defineComponent({
     open: {
         type: Boolean,
         default: false
-    }
+    },
+    primaryButtonText: {
+      type: String,
+      default: "Delete"
+    },
   },
   setup() {
   },
@@ -149,10 +153,10 @@ export default defineComponent({
                   "
                   @click="() => {
                     $emit('close')
-                    $emit('delete')
+                    $emit('primaryButtonClick')
                   }"
                 >
-                  Delete
+                  {{ primaryButtonText }}
                 </button>
                 <button
                   type="button"
