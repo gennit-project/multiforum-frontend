@@ -20,13 +20,7 @@ export const GET_COMMENT_SECTION = gql`
           }
         }
       }
-      CommentsConnection(where: {
-        node: {
-          isRootComment: true
-        }
-      }){
-        edges {
-          node {
+      Comments {
             id
             text
             CommentAuthor {
@@ -36,8 +30,6 @@ export const GET_COMMENT_SECTION = gql`
             }
             createdAt
             updatedAt
-          }
-        }
       }
     }
 }

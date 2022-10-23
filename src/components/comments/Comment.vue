@@ -77,7 +77,7 @@ export default defineComponent({
           </span>
           <md-editor class="mt-3"
                      v-if="commentData.text && readonly"
-                     v-model="textCopy"
+                     v-model="commentData.text"
                      previewTheme="github"
                      codeTheme="github"
                      language="en-US"

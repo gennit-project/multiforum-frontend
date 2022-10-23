@@ -86,6 +86,11 @@ const cache = new InMemoryCache({
     // },
     CommentSections: {
       keyFields: ["id"],
+      fields: {
+        Comments: {
+          merge: false,
+        }
+      }
     },
     Query: {
       fields: {

@@ -126,9 +126,9 @@ export default defineComponent({
                         id: props.commentSectionId,
                     }),
                     fields: {
-                        CommentsConnection(existingComments: any, { readField }: any) {
-                            const newComments = existingComments.edges.filter((comment: any) => {
-                                return readField("id", comment.node.id) !== commentToDelete.value
+                        Comments(existingComments: any, { readField }: any) {
+                            const newComments = existingComments.filter((comment: any) => {
+                                return readField("id", comment.id) !== commentToDelete.value
                             })
                             return newComments
                         }
@@ -209,23 +209,21 @@ export default defineComponent({
                     },
                 });
 
-                const existingCommentSectionData = readQueryResult?.commentSections[0].CommentsConnection
+                const existingCommentSectionData = readQueryResult?.commentSections[0]
                 //commentResult.commentSections[0].CommentsConnection.edges"
                   //   :key="comment.node.id"
-                let commentsCopy = [...existingCommentSectionData.edges || []];
+                let commentsCopy = [...existingCommentSectionData.Comments || []];
 
-                commentsCopy.unshift({ node: newComment });
+                commentsCopy.unshift(newComment);
 
                 cache.writeQuery({
                     query: GET_COMMENT_SECTION,
                     data: {
+                        ...readQueryResult,
                         commentSections: [
                             {
-                                ...readQueryResult?.commentSections[0],
-                                CommentsConnection: {
-                                    ...existingCommentSectionData,
-                                    edges: commentsCopy,
-                                },
+                                ...existingCommentSectionData,
+                                Comments: commentsCopy,
                             },
                         ],
                     },
@@ -306,7 +304,7 @@ export default defineComponent({
             <h2 v-if="route.name === 'DiscussionDetail'"
                 id='comments'
                 ref="commentSectionHeader"
-                class="text-xl">{{ `Top Comments (${commentResult.commentSections[0].CommentsConnection.edges.length})` }}</h2>
+                class="text-xl">{{ `Top Comments (${commentResult.commentSections[0].Comments.length})` }}</h2>
             <div class="mt-1 sm:col-span-2 sm:mt-0 flex space-x-2">
                 <Avatar />
                 <textarea id="addcomment"
@@ -316,10 +314,10 @@ export default defineComponent({
                           placeholder="Add to the discussion"
                           class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
             </div>
-            <Comment v-for="comment in commentResult.commentSections[0].CommentsConnection.edges"
-                     :key="comment.node.id"
+            <Comment v-for="comment in commentResult.commentSections[0].Comments"
+                     :key="comment.id"
                      :compact="true"
-                     :commentData="comment.node"
+                     :commentData="comment"
                      :readonly="true"
                      @edit="handleClickEdit($event)"
                      @delete="handleClickDelete($event)" />
