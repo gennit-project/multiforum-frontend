@@ -197,19 +197,12 @@ export default defineComponent({
       return eventData.value.address;
     });
 
-    const editedAt = computed(() => {
-      return eventData.value.updatedAt
-        ? `Edited ${relativeTime(eventData.value.updatedAt)}`
-        : "";
-    });
-
     return {
       cancelEvent,
       cancelEventError,
       confirmCancelIsOpen,
       confirmDeleteIsOpen,
       copyAddress,
-      editedAt,
       eventData,
       eventResult,
       eventError,
@@ -351,7 +344,7 @@ export default defineComponent({
                 eventData.Poster ? eventData.Poster.username : ''
               "
               :created-at="eventData.createdAt"
-              :edited-at="editedAt"
+              :edited-at="eventData.updatedAt"
               :content="eventData.description"
               :readonly="true"
             />
