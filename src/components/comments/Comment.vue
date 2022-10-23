@@ -72,7 +72,7 @@ export default defineComponent({
             border
             border-gray-200
             pt-2
-            rounded-md" 
+            rounded-lg" 
           :class="compact ? 'px-3' : 'px-6'"
         >
           <span>

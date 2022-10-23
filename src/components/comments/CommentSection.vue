@@ -5,7 +5,6 @@ import Comment from "./Comment.vue";
 // import LoadMore from "../LoadMore.vue";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
 import { DELETE_COMMENT, UPDATE_COMMENT } from "@/graphQLData/comment/mutations";
-import { CommentData } from "../../types/commentTypes";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../ErrorBanner.vue";
 import WarningModal from "../WarningModal.vue";
@@ -56,19 +55,17 @@ export default defineComponent({
             mutate: deleteComment,
             // error: deleteCommentError,
         } = useMutation(DELETE_COMMENT, {
-            update: (cache: any, ) => {
-
+            update: (cache: any) => {
                 cache.modify({
                     id: cache.identify({
                         __typename: 'CommentSection',
                         id: props.commentSectionId,
                     }),
                     fields: {
-                        comments(existingComments: any, { readField }: any) {
+                        Comments(existingComments: any, { readField }: any) {
                             const newComments = existingComments.filter((comment: any) => {
                                 return readField("id", comment) !== commentToDelete.value
                            })
-                        console.log({newComments, existingComments})
                             return newComments
                         }
                     }
@@ -121,7 +118,6 @@ export default defineComponent({
             this.commentToDelete = commentId;
         },
         handleDeleteComment(commentId: string) {
-            console.log("handleDeleteComment", commentId);
             this.deleteComment({
                 id: commentId,
             });
@@ -144,7 +140,7 @@ export default defineComponent({
         <ErrorBanner class="mt-2" v-else-if="commentError" :text="commentError.message" />
         <div v-else-if="commentResult.commentSections.length > 0">
             <h2 
-              v-if="route.name === 'DiscussionDetail'"
+              v-if="route.name === 'CommentDetail'"
               id='comments' 
               ref="commentSectionHeader" 
               class="text-xl"
