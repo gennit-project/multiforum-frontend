@@ -8,7 +8,7 @@ import TagInput from "@/components/TagInput.vue";
 import TextInput from "../TextInput.vue";
 import PencilIcon from "@/components/icons/PencilIcon.vue";
 import FormRow from "../FormRow.vue";
-import TextEditor from "../TextEditor.vue";
+import TextEditor from "../comments/TextEditor.vue";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
 
 export default defineComponent({

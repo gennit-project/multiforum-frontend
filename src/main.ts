@@ -19,7 +19,14 @@ import { loadFonts } from './plugins/webfontloader'
 import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
+import MdEditor from "md-editor-v3";
+import { library } from '@fortawesome/fontawesome-svg-core'
 // import "highlight.js/styles/github-dark-dimmed.css";
+
+import { faFaceSmile } from '@fortawesome/free-solid-svg-icons'
+
+library.add(faFaceSmile)
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 loadFonts()
 
@@ -160,6 +167,8 @@ app
   .use(router)
   .use(vuetify)
   .use(FloatingVue)
+  .use(MdEditor)
+  .component('font-awesome-icon', FontAwesomeIcon)
   .use(VueGoogleMaps, {
     load: {
       key: config.googleMapsApiKey,

@@ -6,17 +6,22 @@ import { CommentData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
 import Avatar from "../Avatar.vue";
+import { toolbars } from "./toolbars";
+import EmojiExtension from "./EmojiExtension/index.vue";
 
 export default defineComponent({
   components: {
     Avatar,
+    EmojiExtension,
     MdEditor,
     UpArrowIcon,
   },
   setup(props) {
     return {
+      editorId: 'texteditor',
       relativeTime,
       textCopy: props.commentData.text,
+      toolbars,
     };
   },
   props: {
@@ -33,6 +38,11 @@ export default defineComponent({
       default: false,
     }
   },
+  methods: {
+    updateText(text: string) {
+      this.textCopy = text;
+    },
+  },
   computed: {
     createdAtFormatted() {
       if (!this.commentData.createdAt) {
@@ -45,7 +55,8 @@ export default defineComponent({
         return "";
       }
       return `Edited ${this.relativeTime(this.commentData.updatedAt)}`;
-    }
+    },
+
   }
 });
 </script>
@@ -83,12 +94,18 @@ export default defineComponent({
                      language="en-US"
                      :noMermaid="true"
                      preview-only />
+
           <md-editor v-if="commentData.text && !readonly"
                      v-model="textCopy"
-                     previewTheme="github"
-                     codeTheme="github"
-                     language="en-US"
-                     :noMermaid="true" />
+                     :editor-id="editorId"
+                     language='en-US'
+                     previewTheme='github'
+                     @update:model-value="$emit('update', textCopy)">
+            <template #defToolbars>
+              <emoji-extension :editor-id="editorId"
+                               @on-change="updateText" />
+            </template>
+          </md-editor>
         </div>
       </div>
       <div v-if="compact"

@@ -13,7 +13,7 @@ import Modal from "../Modal.vue";
 import PencilIcon from "../icons/PencilIcon.vue";
 import Avatar from "../Avatar.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import TextEditor from "../TextEditor.vue";
+import TextEditor from "./TextEditor.vue";
 import type { Ref } from 'vue'
 
 export default defineComponent({
@@ -114,23 +114,17 @@ export default defineComponent({
             mutate: deleteComment,
             // error: deleteCommentError,
         } = useMutation(DELETE_COMMENT, {
-            variables: {
-                commentWhere: {
-                    id: commentToDelete.value,
-                },
-            },
-            update: (cache: any) => {
+            update: (cache: any ) => {
                 cache.modify({
                     id: cache.identify({
                         __typename: 'CommentSection',
                         id: props.commentSectionId,
                     }),
                     fields: {
-                        Comments(existingComments: any, { readField }: any) {
-                            const newComments = existingComments.filter((comment: any) => {
-                                return readField("id", comment.id) !== commentToDelete.value
+                        Comments(existingComments: any,{ readField }: any) {
+                            return existingComments.filter((comment: any, ) => {
+                                return readField("id",comment) !== commentToDelete.value
                             })
-                            return newComments
                         }
                     }
                 })
@@ -305,14 +299,14 @@ export default defineComponent({
                 id='comments'
                 ref="commentSectionHeader"
                 class="text-xl">{{ `Top Comments (${commentResult.commentSections[0].Comments.length})` }}</h2>
-            <div class="mt-1 sm:col-span-2 sm:mt-0 flex space-x-2">
+            <div class="mt-1 flex space-x-2 max-w-2xl">
                 <Avatar />
                 <textarea id="addcomment"
                           @click="showCreateCommentModal = true"
                           name="addcomment"
                           rows="3"
                           placeholder="Add to the discussion"
-                          class="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
             </div>
             <Comment v-for="comment in commentResult.commentSections[0].Comments"
                      :key="comment.id"
@@ -322,8 +316,6 @@ export default defineComponent({
                      @edit="handleClickEdit($event)"
                      @delete="handleClickDelete($event)" />
         </div>
-
-
         <p v-else>Could not find the comment section.</p>
         <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">
       <LoadMore
@@ -336,7 +328,9 @@ export default defineComponent({
                       :body="'Are you sure you want to delete this comment?'"
                       :open="showDeleteCommentModal"
                       @close="showDeleteCommentModal = false"
-                      @primaryButtonClick="deleteComment" />
+                      @primaryButtonClick="() => {
+                        deleteComment({id: commentToDelete})
+                      }" />
         <Modal title="Comment on Post"
                :show="showCreateCommentModal"
                :primary-button-text="'Save'"
@@ -352,7 +346,7 @@ export default defineComponent({
             </template>
             <template v-slot:content>
                 <TextEditor
-                  class="mb-3 h-56" 
+                  class="mb-3 h-72" 
                   :placeholder="'Comment'"
                   @update="createFormValues.text = $event"
                  />
@@ -370,7 +364,7 @@ export default defineComponent({
             </template>
             <template v-slot:content>
                 <TextEditor
-                  class="mb-3 h-56" 
+                  class="mb-3 h-72" 
                   :initialValue="commentToEdit?.text"
                   :placeholder="'Comment'"
                   @update="editFormValues.text = $event" />
