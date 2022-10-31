@@ -18,6 +18,7 @@ export const CREATE_COMMENT = gql`
       }
     }
   }`
+  
 
 export const CREATE_COMMENT_SECTION = gql`
 mutation createDiscussion(

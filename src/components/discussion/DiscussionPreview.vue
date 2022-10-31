@@ -57,7 +57,7 @@ export default defineComponent({
             leave-from="translate-x-0"
             leave-to="translate-x-full"
           >
-          <DialogPanel class="pointer-events-auto w-screen max-w-md">
+          <DialogPanel class="pointer-events-auto w-screen max-w-xl">
               <div
                 class="
                   h-full

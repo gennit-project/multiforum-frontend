@@ -58,7 +58,7 @@ export default defineComponent({
             leave-from="translate-x-0"
             leave-to="translate-x-full"
           >
-            <div class="w-screen max-w-md">
+            <div class="w-screen max-w-3xl">
               <div
                 class="
                   h-full

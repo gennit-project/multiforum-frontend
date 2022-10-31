@@ -2,6 +2,7 @@
 import { defineComponent, PropType, ref } from "vue";
 import MdEditor from "md-editor-v3";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
+import DownArrowIcon from "../icons/DownArrowIcon.vue";
 import { CommentData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
@@ -16,6 +17,7 @@ export default defineComponent({
   components: {
     Avatar,
     CancelButton,
+    DownArrowIcon,
     EmojiExtension,
     MdEditor,
     SaveButton,
@@ -40,6 +42,10 @@ export default defineComponent({
     compact: {
       type: Boolean,
       default: false,
+    },
+    parentCommentId: {
+      type: String,
+      default: "",
     },
     readonly: {
       type: Boolean,
@@ -69,17 +75,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full">
-    <div :class="!compact ? 'mt-4' : 'mt-3'">
+  <div>
+    <div :class="!compact ? 'mt-4' : 'mt-3 max-w-3xl border-l-2 border-blue-200'">
       <div class="flex text-gray-500">
-        <UpArrowIcon v-if="compact"
-                     class="text-gray-400 h-4 mt-1" />
-        <div class="
-            border
-            border-gray-200
-            pt-3
-            max-w-full
-            rounded-lg">
+        <div :class="!compact ? 'border border-gray-200 rounded-lg' : ''"
+             class="pt-3 w-full
+            ">
           <div :class="compact ? 'mx-3' : 'mx-6'">
             <span>
               <div :class="compact ? 'text-tiny mb-1' : 'text-sm'">
@@ -117,8 +118,7 @@ export default defineComponent({
             </md-editor>
           </div>
           <div v-if="!compact"
-               class="mt-1 border-t-2 flex space-x-2 py-2"
-               :class="compact ? 'px-3' : 'px-6'">
+               class="mt-1 flex space-x-2 py-2 px-3">
             <Avatar class="h-5 w-5" />
             <textarea v-if="!showRootCommentEditor"
                       id="addcomment"
@@ -128,14 +128,17 @@ export default defineComponent({
                       placeholder="Write a reply"
                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
             <div v-else>
-              <TextEditor class="mb-3 h-48 w-full"
+              <TextEditor class="mb-3 h-48"
                           :placeholder="'Comment'"
                           @update="$emit('updateComment', $event)" />
               <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
               <div class="flex justify-start">
                 <CancelButton @click="showRootCommentEditor = false" />
-                <SaveButton @click.prevent="$emit('createComment')"
+                <SaveButton @click.prevent="() => {
+                  $emit('createComment')
+                  showRootCommentEditor = false
+                }"
                             :disabled="commentData.text.length === 0" />
               </div>
             </div>
@@ -143,12 +146,14 @@ export default defineComponent({
         </div>
       </div>
       <div v-if="compact"
-           class="text-tiny mt-1 pl-5 text-gray-400 space-x-2">
-        <span 
-          class="underline cursor-pointer hover:text-black"
-          :class="showReplyEditor ? 'text-black' : ''"
+           class="text-tiny text-gray-400 space-x-2">
+        <UpArrowIcon class="text-gray-400 h-5 ml-3 inline-flex hover:text-black cursor-pointer" />
+        <span>{{ "0" }}</span>
+        <DownArrowIcon class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer" />
+        <span class="underline cursor-pointer hover:text-black"
+              :class="showReplyEditor ? 'text-black' : ''"
               @click="() => {
-                $emit('reply', commentData)
+                $emit('reply', commentData, parentCommentId)
                 showReplyEditor = !showReplyEditor
               }">Reply</span>
         <span class="underline cursor-pointer hover:text-black"
@@ -158,27 +163,36 @@ export default defineComponent({
       </div>
       <div v-if="compact && showReplyEditor"
            class="mt-1 border-t-2 flex space-x-2 py-2"
-           :class="compact ? 'px-3' : 'px-6'">
+           :class="compact ? 'px-3' : 'lg:px-6'">
         <Avatar class="h-5 w-5" />
         <div>
-          <TextEditor class="mb-3 h-48 w-full"
+          <TextEditor class="mb-3 h-48"
                       :placeholder="'Comment'"
                       @update="$emit('updateComment', $event)" />
           <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
           <div class="flex justify-start">
             <CancelButton @click="showReplyEditor = false" />
-            <SaveButton @click.prevent="$emit('createComment')"
-                        :disabled="commentData.text.length === 0" />
+            <SaveButton 
+              @click.prevent="() =>{
+                $emit('createComment')
+                showReplyEditor = false
+              }"
+              :disabled="commentData.text.length === 0"
+            >
+            </SaveButton>
           </div>
         </div>
       </div>
-
+      <div class="pl-3">
+        <slot></slot>
+      </div>
+      
 
     </div>
   </div>
 </template>
-<style>
+<style lang="scss">
 .bullet {
   text-indent: -2.1em;
   padding-left: 2.1em;
@@ -186,5 +200,17 @@ export default defineComponent({
 
 .text-tiny {
   font-size: 0.7rem;
+}
+
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+
+  p,
+  li {
+    color: black;
+    font-size: 0.9rem;
+  }
 }
 </style>

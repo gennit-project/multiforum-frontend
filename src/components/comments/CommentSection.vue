@@ -270,9 +270,12 @@ export default defineComponent({
     },
 
     methods: {
-        handleClickCreate(){//parentCommentData: CommentData | null) {
-            // this.createFormValues.isRootComment = parentCommentData === null;
-            this.$emit("createComment")
+        handleClickCreate(commentData: CommentData, parentCommentId: string){//parentCommentData: CommentData | null) {
+            // Reply to a comment
+            console.log("handleClickCreate", commentData, parentCommentId);
+            this.createFormValues.isRootComment = false;
+            this.createFormValues.parentCommentId = parentCommentId;
+            this.createComment();
         },
         handleClickEdit(commentData: CommentData) {
             this.showEditCommentModal = true
@@ -304,7 +307,21 @@ export default defineComponent({
                      :commentData="comment"
                      :readonly="true"
                      @edit="handleClickEdit($event)"
-                     @delete="handleClickDelete($event)" />
+                     @delete="handleClickDelete($event)"
+                     @createComment="handleClickCreate"
+            >
+              <Comment 
+                v-for="childComment in comment.ChildComments"
+                :key="childComment.id"
+                :compact="true"
+                :commentData="childComment"
+                :parentCommentId="comment.id"
+                :readonly="true"
+                @edit="handleClickEdit($event)"
+                @delete="handleClickDelete($event)"
+                @createComment="handleClickCreate"
+              />
+            </Comment>
         </div>
         <p v-else>Could not find the comment section.</p>
         <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">

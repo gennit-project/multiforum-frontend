@@ -32,10 +32,7 @@ export default defineComponent({
     ChevronDoubleDownIcon,
     ErrorBanner,
     GenericButton,
-    Modal,
-    PencilIcon,
     Tag,
-    TextEditor,
     WarningModal,
   },
   props: {
@@ -135,108 +132,108 @@ export default defineComponent({
     const showScrollToCommentsButton = ref(true)
 
     const createCommentDefaultValues: CreateEditCommentFormValues = {
-            text: "",
-            isRootComment: true,
-        };
+      text: "",
+      isRootComment: true,
+    };
 
     const createFormValues = ref<CreateEditCommentFormValues>(createCommentDefaultValues);
 
-      const createCommentInput = computed(() => {
-            //   const tagConnections = formValues.value.tags.map(
-            //     (tag: string) => {
-            //       return {
-            //         onCreate: {
-            //           node: {
-            //             text: tag,
-            //           },
-            //         },
-            //         where: {
-            //           node: {
-            //             text: tag,
-            //           },
-            //         },
-            //       };
-            //     }
-            //   );
+    const createCommentInput = computed(() => {
+      //   const tagConnections = formValues.value.tags.map(
+      //     (tag: string) => {
+      //       return {
+      //         onCreate: {
+      //           node: {
+      //             text: tag,
+      //           },
+      //         },
+      //         where: {
+      //           node: {
+      //             text: tag,
+      //           },
+      //         },
+      //       };
+      //     }
+      //   );
 
-            const input = {
-                isRootComment: createFormValues.value.isRootComment,
-                CommentSection: {
-                    connect: {
-                        where: {
-                            node: {
-                                id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97'
-                            }
-                        }
-                    }
-                },
-                text: createFormValues.value.text || "",
-                // Tags: {
-                //   connectOrCreate: tagConnections,
-                // },
-                CommentAuthor: {
-                    User: {
-                        connect: {
-                            where: {
-                                node: {
-                                    username: "Alice"
-                                }
-                            }
-                        }
-                    }
+      let input = {
+        isRootComment: createFormValues.value.isRootComment,
+        CommentSection: {
+          connect: {
+            where: {
+              node: {
+                id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97'
+              }
+            }
+          }
+        },
+        text: createFormValues.value.text || "",
+        // Tags: {
+        //   connectOrCreate: tagConnections,
+        // },
+        CommentAuthor: {
+          User: {
+            connect: {
+              where: {
+                node: {
+                  username: "Alice"
                 }
-            };
-            return [input];
+              }
+            }
+          }
+        }
+      };
+      return [input];
+    });
+
+    const {
+      mutate: createComment,
+      error: createCommentError,
+    } = useMutation(CREATE_COMMENT, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentInput: createCommentInput.value,
+      },
+      update: (cache: any, result: any) => {
+        const newComment: CommentData =
+          result.data?.createComments?.comments[0];
+
+        // Will use readQuery and writeQuery to update the cache 
+        // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+        const readQueryResult = cache.readQuery({
+          query: GET_COMMENT_SECTION,
+          // Provide any required variables in this object.
+          // Variables of mismatched types will return `null`.
+          variables: {
+            id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
+          },
         });
 
-        const {
-            mutate: createComment,
-            error: createCommentError,
-        } = useMutation(CREATE_COMMENT, () => ({
-            errorPolicy: "all",
-            variables: {
-                createCommentInput: createCommentInput.value,
-            },
-            update: (cache: any, result: any) => {
-                const newComment: CommentData =
-                    result.data?.createComments?.comments[0];
+        const existingCommentSectionData = readQueryResult?.commentSections[0]
+        //commentResult.commentSections[0].CommentsConnection.edges"
+        //   :key="comment.node.id"
+        let commentsCopy = [...existingCommentSectionData.Comments || []];
 
-                // Will use readQuery and writeQuery to update the cache 
-                // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+        commentsCopy.unshift(newComment);
 
-                const readQueryResult = cache.readQuery({
-                    query: GET_COMMENT_SECTION,
-                    // Provide any required variables in this object.
-                    // Variables of mismatched types will return `null`.
-                    variables: {
-                        id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
-                    },
-                });
-
-                const existingCommentSectionData = readQueryResult?.commentSections[0]
-                //commentResult.commentSections[0].CommentsConnection.edges"
-                  //   :key="comment.node.id"
-                let commentsCopy = [...existingCommentSectionData.Comments || []];
-
-                commentsCopy.unshift(newComment);
-
-                cache.writeQuery({
-                    query: GET_COMMENT_SECTION,
-                    data: {
-                        ...readQueryResult,
-                        commentSections: [
-                            {
-                                ...existingCommentSectionData,
-                                Comments: commentsCopy,
-                            },
-                        ],
-                    },
-                    variables: {
-                        id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
-                    },
-                });
-            },
-        }));
+        cache.writeQuery({
+          query: GET_COMMENT_SECTION,
+          data: {
+            ...readQueryResult,
+            commentSections: [
+              {
+                ...existingCommentSectionData,
+                Comments: commentsCopy,
+              },
+            ],
+          },
+          variables: {
+            id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
+          },
+        });
+      },
+    }));
     return {
       channelId,
       channelsExceptCurrent,
@@ -292,11 +289,11 @@ export default defineComponent({
         }
       }
     },
-    handleCreateComment(){
+    handleCreateComment() {
       // this.createFormValues.isRootComment = parentCommentData === null;
-      this.showCreateCommentModal = true;
+      this.createComment()
     },
-    handleUpdateComment(event: any){
+    handleUpdateComment(event: any) {
       this.createFormValues.text = event
     }
   },
@@ -333,7 +330,7 @@ export default defineComponent({
          ref="discussionDetail"
          class="
         mx-auto
-        max-w-6xl
+        max-w-5xl
         space-y-2
         divide-y
         bg-white
@@ -371,21 +368,19 @@ export default defineComponent({
         <div>
           <div v-if="discussion.body"
                class="body">
-            <Comment
-              :comment-data="{
-                id: discussion.id,
-                CommentAuthor: {
-                  username: discussion.Author.username,
-                },
-                text: discussion.body,
-                createdAt: discussion.createdAt,
-                updatedAt: discussion.updatedAt,
-                isRootComment: false
-              }"
-              :readonly="true" 
-              @createComment="handleCreateComment"
-              @updateComment="handleUpdateComment"
-            />
+            <Comment :comment-data="{
+              id: discussion.id,
+              CommentAuthor: {
+                username: discussion.Author.username,
+              },
+              text: discussion.body,
+              createdAt: discussion.createdAt,
+              updatedAt: discussion.updatedAt,
+              isRootComment: false
+            }"
+                     :readonly="true"
+                     @createComment="handleCreateComment"
+                     @updateComment="handleUpdateComment" />
             <div class="text-xs text-gray-600 mt-4">
               <div>
                 <router-link v-if="discussion.Author"

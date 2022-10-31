@@ -15,6 +15,7 @@ export type CommentSectionData = {
 }
 
 export type CreateEditCommentFormValues = {
+  parentCommentId?: string
   text: string
   tags?: [TagData]
   isRootComment?: boolean

@@ -2,16 +2,14 @@
 import ChannelTabs from "./ChannelTabs.vue";
 import Breadcrumbs from "@/components/nav/Breadcrumbs.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import Tag from "@/components/Tag.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   components: {
+    Breadcrumbs,
     ChannelIcon,
     ChannelTabs,
-    Breadcrumbs,
-    Tag,
   },
   setup() {
     const route = useRoute();
@@ -88,7 +86,9 @@ export default defineComponent({
       <Breadcrumbs class="px-4 lg:px-12" :links="links" />
       <div v-if="!discussionId || !eventId">
         <h1 class="px-4 lg:px-12 text-xl inline-flex mt-3 text-black">
-          <Tag :channel-mode="true" :title-mode="true" :tag="channelId"/>
+          <ChannelIcon
+            class="inline-flex h-6 w-6 mr-1 text-gray-400"
+          />{{ channelId }}
         </h1>
         <ChannelTabs />
       </div>

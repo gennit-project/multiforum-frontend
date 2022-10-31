@@ -46,6 +46,7 @@ export default defineComponent({
 <template>
   <md-editor v-model="text"
              ref="editor"
+             class="rounded-lg w-full"
              :editor-id="editorId"
              :preview="false"
              language='en-US'

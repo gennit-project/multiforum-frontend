@@ -20,7 +20,9 @@ export const GET_COMMENT_SECTION = gql`
           }
         }
       }
-      Comments {
+      Comments (where: {
+        isRootComment: true
+      }){
             id
             text
             CommentAuthor {
@@ -30,6 +32,15 @@ export const GET_COMMENT_SECTION = gql`
             }
             createdAt
             updatedAt
+            ChildComments {
+              id 
+              text
+              CommentAuthor {
+                ... on User {
+                  username
+                }
+              }
+            }
       }
     }
 }
