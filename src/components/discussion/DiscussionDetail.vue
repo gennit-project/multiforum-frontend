@@ -14,8 +14,14 @@ import { ChannelData } from "@/types/channelTypes";
 import ErrorBanner from "../ErrorBanner.vue";
 import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
+import Modal from "../Modal.vue";
+import PencilIcon from "../icons/PencilIcon.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import ChevronDoubleDownIcon from "@/components/icons/ChevronDoubleDownIcon.vue";
+import TextEditor from "../comments/TextEditor.vue";
+import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
+import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -26,7 +32,10 @@ export default defineComponent({
     ChevronDoubleDownIcon,
     ErrorBanner,
     GenericButton,
+    Modal,
+    PencilIcon,
     Tag,
+    TextEditor,
     WarningModal,
   },
   props: {
@@ -125,9 +134,115 @@ export default defineComponent({
     const deleteModalIsOpen = ref(false);
     const showScrollToCommentsButton = ref(true)
 
+    const createCommentDefaultValues: CreateEditCommentFormValues = {
+            text: "",
+            isRootComment: true,
+        };
+
+    const createFormValues = ref<CreateEditCommentFormValues>(createCommentDefaultValues);
+
+      const createCommentInput = computed(() => {
+            //   const tagConnections = formValues.value.tags.map(
+            //     (tag: string) => {
+            //       return {
+            //         onCreate: {
+            //           node: {
+            //             text: tag,
+            //           },
+            //         },
+            //         where: {
+            //           node: {
+            //             text: tag,
+            //           },
+            //         },
+            //       };
+            //     }
+            //   );
+
+            const input = {
+                isRootComment: createFormValues.value.isRootComment,
+                CommentSection: {
+                    connect: {
+                        where: {
+                            node: {
+                                id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97'
+                            }
+                        }
+                    }
+                },
+                text: createFormValues.value.text || "",
+                // Tags: {
+                //   connectOrCreate: tagConnections,
+                // },
+                CommentAuthor: {
+                    User: {
+                        connect: {
+                            where: {
+                                node: {
+                                    username: "Alice"
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            return [input];
+        });
+
+        const {
+            mutate: createComment,
+            error: createCommentError,
+        } = useMutation(CREATE_COMMENT, () => ({
+            errorPolicy: "all",
+            variables: {
+                createCommentInput: createCommentInput.value,
+            },
+            update: (cache: any, result: any) => {
+                const newComment: CommentData =
+                    result.data?.createComments?.comments[0];
+
+                // Will use readQuery and writeQuery to update the cache 
+                // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+                const readQueryResult = cache.readQuery({
+                    query: GET_COMMENT_SECTION,
+                    // Provide any required variables in this object.
+                    // Variables of mismatched types will return `null`.
+                    variables: {
+                        id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
+                    },
+                });
+
+                const existingCommentSectionData = readQueryResult?.commentSections[0]
+                //commentResult.commentSections[0].CommentsConnection.edges"
+                  //   :key="comment.node.id"
+                let commentsCopy = [...existingCommentSectionData.Comments || []];
+
+                commentsCopy.unshift(newComment);
+
+                cache.writeQuery({
+                    query: GET_COMMENT_SECTION,
+                    data: {
+                        ...readQueryResult,
+                        commentSections: [
+                            {
+                                ...existingCommentSectionData,
+                                Comments: commentsCopy,
+                            },
+                        ],
+                    },
+                    variables: {
+                        id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
+                    },
+                });
+            },
+        }));
     return {
       channelId,
       channelsExceptCurrent,
+      createComment,
+      createCommentError,
+      createFormValues,
       createdAt,
       deleteModalIsOpen,
       getDiscussionResult,
@@ -140,6 +255,7 @@ export default defineComponent({
       discussion,
       relativeTime,
       route,
+      showCreateCommentModal: ref(false),
       showScrollToCommentsButton
     };
   },
@@ -176,6 +292,13 @@ export default defineComponent({
         }
       }
     },
+    handleCreateComment(){
+      // this.createFormValues.isRootComment = parentCommentData === null;
+      this.showCreateCommentModal = true;
+    },
+    handleUpdateComment(event: any){
+      this.createFormValues.text = event
+    }
   },
   mounted() {
     // let ticking = false;
@@ -260,6 +383,8 @@ export default defineComponent({
                 isRootComment: false
               }"
               :readonly="true" 
+              @createComment="handleCreateComment"
+              @updateComment="handleUpdateComment"
             />
             <div class="text-xs text-gray-600 mt-4">
               <div>
@@ -320,6 +445,23 @@ export default defineComponent({
             </ul>
           </div>
         </div>
+        <!-- <Modal title="Comment on Post"
+               :show="showCreateCommentModal"
+               :primary-button-text="'Save'"
+               @primaryButtonClick="() => {
+                createComment()
+                showCreateCommentModal = false
+            }"
+               @secondaryButtonClick="showCreateCommentModal = false"
+            >
+            <template v-slot:icon>
+                <PencilIcon class="h-6 w-6 text-green-600"
+                            aria-hidden="true" />
+            </template>
+            <template v-slot:content>
+                
+             </template>
+        </Modal> -->
         <WarningModal :title="'Delete Discussion'"
                       :body="'Are you sure you want to delete this discussion?'"
                       :open="deleteModalIsOpen"

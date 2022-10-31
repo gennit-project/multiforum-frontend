@@ -36,11 +36,18 @@ export default defineComponent({
       this.$emit('update', text)
     },
   },
+  created(){
+    this.$nextTick(() => {
+      this.$refs.editor.$el.children[1].children[0].children[0].focus()
+    })
+  }
 });
 </script>
 <template>
   <md-editor v-model="text"
+             ref="editor"
              :editor-id="editorId"
+             :preview="false"
              language='en-US'
              previewTheme='github'
              :toolbars="toolbars"

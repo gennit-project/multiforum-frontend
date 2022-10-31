@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
 import MdEditor from "md-editor-v3";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import { CommentData } from "@/types/commentTypes";
@@ -8,18 +8,26 @@ import { relativeTime } from "../../dateTimeUtils";
 import Avatar from "../Avatar.vue";
 import { toolbars } from "./toolbars";
 import EmojiExtension from "./EmojiExtension/index.vue";
+import TextEditor from "./TextEditor.vue";
+import CancelButton from "@/components/CancelButton.vue";
+import SaveButton from "@/components/SaveButton.vue";
 
 export default defineComponent({
   components: {
     Avatar,
+    CancelButton,
     EmojiExtension,
     MdEditor,
+    SaveButton,
+    TextEditor,
     UpArrowIcon,
   },
   setup(props) {
     return {
       editorId: 'texteditor',
       relativeTime,
+      showReplyEditor: ref(false),
+      showRootCommentEditor: ref(false),
       textCopy: props.commentData.text,
       toolbars,
     };
@@ -63,7 +71,7 @@ export default defineComponent({
 <template>
   <div class="w-full">
     <div :class="!compact ? 'mt-4' : 'mt-3'">
-      <div class="flex text-gray-500 max-w-2xl">
+      <div class="flex text-gray-500">
         <UpArrowIcon v-if="compact"
                      class="text-gray-400 h-4 mt-1" />
         <div class="
@@ -71,52 +79,101 @@ export default defineComponent({
             border-gray-200
             pt-3
             max-w-full
-            rounded-lg"
-             :class="compact ? 'px-3' : 'px-6'">
-          <span>
-            <div :class="compact ? 'text-tiny mb-1' : 'text-sm'">
-              <Avatar class="align-middle mr-2" />
-              <router-link v-if="commentData.CommentAuthor.username"
-                           class="underline"
-                           :to="`/u/${commentData.CommentAuthor.username}`">
-                {{ commentData.CommentAuthor.username }}
-              </router-link>
-              {{ createdAtFormatted }}
-              <span v-if="commentData.updatedAt"> &#8226; </span>
-              {{ editedAtFormatted }}
-            </div>
-          </span>
-          <md-editor class="mt-3"
-                     v-if="commentData.text && readonly"
-                     v-model="commentData.text"
-                     previewTheme="github"
-                     codeTheme="github"
-                     language="en-US"
-                     :noMermaid="true"
-                     preview-only />
+            rounded-lg">
+          <div :class="compact ? 'mx-3' : 'mx-6'">
+            <span>
+              <div :class="compact ? 'text-tiny mb-1' : 'text-sm'">
+                <Avatar class="align-middle mr-2 h-5 w-5" />
+                <router-link v-if="commentData.CommentAuthor.username"
+                             class="underline"
+                             :to="`/u/${commentData.CommentAuthor.username}`">
+                  {{ commentData.CommentAuthor.username }}
+                </router-link>
+                {{ createdAtFormatted }}
+                <span v-if="commentData.updatedAt"> &#8226; </span>
+                {{ editedAtFormatted }}
+              </div>
+            </span>
+            <md-editor class="mt-3"
+                       v-if="commentData.text && readonly"
+                       v-model="commentData.text"
+                       previewTheme="github"
+                       codeTheme="github"
+                       language="en-US"
+                       :noMermaid="true"
+                       preview-only />
 
-          <md-editor v-if="commentData.text && !readonly"
-                     v-model="textCopy"
-                     :editor-id="editorId"
-                     language='en-US'
-                     previewTheme='github'
-                     @update:model-value="$emit('update', textCopy)">
-            <template #defToolbars>
-              <emoji-extension :editor-id="editorId"
-                               @on-change="updateText" />
-            </template>
-          </md-editor>
+            <md-editor v-if="commentData.text && !readonly"
+                       v-model="textCopy"
+                       :editor-id="editorId"
+                       :preview="false"
+                       language='en-US'
+                       previewTheme='github'
+                       @update:model-value="$emit('update', textCopy)">
+              <template #defToolbars>
+                <emoji-extension :editor-id="editorId"
+                                 @on-change="updateText" />
+              </template>
+            </md-editor>
+          </div>
+          <div v-if="!compact"
+               class="mt-1 border-t-2 flex space-x-2 py-2"
+               :class="compact ? 'px-3' : 'px-6'">
+            <Avatar class="h-5 w-5" />
+            <textarea v-if="!showRootCommentEditor"
+                      id="addcomment"
+                      @click="showRootCommentEditor = true"
+                      name="addcomment"
+                      rows="1"
+                      placeholder="Write a reply"
+                      class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+            <div v-else>
+              <TextEditor class="mb-3 h-48 w-full"
+                          :placeholder="'Comment'"
+                          @update="$emit('updateComment', $event)" />
+              <!-- <ErrorBanner v-if="createCommentError"
+                           :text="createCommentError.message" /> -->
+              <div class="flex justify-start">
+                <CancelButton @click="showRootCommentEditor = false" />
+                <SaveButton @click.prevent="$emit('createComment')"
+                            :disabled="commentData.text.length === 0" />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div v-if="compact"
            class="text-tiny mt-1 pl-5 text-gray-400 space-x-2">
-        <span class="underline cursor-pointer hover:text-black"
-              @click="$emit('reply', commentData)">Reply</span>
+        <span 
+          class="underline cursor-pointer hover:text-black"
+          :class="showReplyEditor ? 'text-black' : ''"
+              @click="() => {
+                $emit('reply', commentData)
+                showReplyEditor = !showReplyEditor
+              }">Reply</span>
         <span class="underline cursor-pointer hover:text-black"
               @click="$emit('delete', commentData.id)">Delete</span>
         <span class="underline cursor-pointer hover:text-black"
               @click="$emit('edit', commentData)">Edit</span>
       </div>
+      <div v-if="compact && showReplyEditor"
+           class="mt-1 border-t-2 flex space-x-2 py-2"
+           :class="compact ? 'px-3' : 'px-6'">
+        <Avatar class="h-5 w-5" />
+        <div>
+          <TextEditor class="mb-3 h-48 w-full"
+                      :placeholder="'Comment'"
+                      @update="$emit('updateComment', $event)" />
+          <!-- <ErrorBanner v-if="createCommentError"
+                           :text="createCommentError.message" /> -->
+          <div class="flex justify-start">
+            <CancelButton @click="showReplyEditor = false" />
+            <SaveButton @click.prevent="$emit('createComment')"
+                        :disabled="commentData.text.length === 0" />
+          </div>
+        </div>
+      </div>
+
 
     </div>
   </div>

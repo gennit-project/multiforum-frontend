@@ -11,7 +11,6 @@ import ErrorBanner from "../ErrorBanner.vue";
 import WarningModal from "../WarningModal.vue";
 import Modal from "../Modal.vue";
 import PencilIcon from "../icons/PencilIcon.vue";
-import Avatar from "../Avatar.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import TextEditor from "./TextEditor.vue";
 import type { Ref } from 'vue'
@@ -24,7 +23,6 @@ export default defineComponent({
         }
     },
     components: {
-        Avatar,
         Comment,
         ErrorBanner,
         // LoadMore,
@@ -274,7 +272,7 @@ export default defineComponent({
     methods: {
         handleClickCreate(){//parentCommentData: CommentData | null) {
             // this.createFormValues.isRootComment = parentCommentData === null;
-            this.showCreateCommentModal = true;
+            this.$emit("createComment")
         },
         handleClickEdit(commentData: CommentData) {
             this.showEditCommentModal = true
@@ -299,15 +297,7 @@ export default defineComponent({
                 id='comments'
                 ref="commentSectionHeader"
                 class="text-xl">{{ `Top Comments (${commentResult.commentSections[0].Comments.length})` }}</h2>
-            <div class="mt-1 flex space-x-2 max-w-2xl">
-                <Avatar />
-                <textarea id="addcomment"
-                          @click="showCreateCommentModal = true"
-                          name="addcomment"
-                          rows="3"
-                          placeholder="Add to the discussion"
-                          class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
-            </div>
+            
             <Comment v-for="comment in commentResult.commentSections[0].Comments"
                      :key="comment.id"
                      :compact="true"
