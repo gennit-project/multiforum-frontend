@@ -13,8 +13,21 @@ export const CREATE_COMMENT = gql`
             username
           }
         }
+        ParentComment {
+          id
+        }
         createdAt
         updatedAt
+        ChildComments {
+          id
+          text
+          createdAt
+          CommentAuthor {
+            ... on User {
+              username
+            }
+          }
+        }
       }
     }
   }`

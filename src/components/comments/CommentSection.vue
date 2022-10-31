@@ -14,6 +14,7 @@ import PencilIcon from "../icons/PencilIcon.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import TextEditor from "./TextEditor.vue";
 import type { Ref } from 'vue'
+import { StringValueNode } from "graphql";
 
 export default defineComponent({
     props: {
@@ -112,16 +113,16 @@ export default defineComponent({
             mutate: deleteComment,
             // error: deleteCommentError,
         } = useMutation(DELETE_COMMENT, {
-            update: (cache: any ) => {
+            update: (cache: any) => {
                 cache.modify({
                     id: cache.identify({
                         __typename: 'CommentSection',
                         id: props.commentSectionId,
                     }),
                     fields: {
-                        Comments(existingComments: any,{ readField }: any) {
-                            return existingComments.filter((comment: any, ) => {
-                                return readField("id",comment) !== commentToDelete.value
+                        Comments(existingComments: any, { readField }: any) {
+                            return existingComments.filter((comment: any,) => {
+                                return readField("id", comment) !== commentToDelete.value
                             })
                         }
                     }
@@ -158,6 +159,15 @@ export default defineComponent({
                         }
                     }
                 },
+                ParentComment: {
+                    connect: {
+                        where: {
+                            node: {
+                                id: createFormValues.value.parentCommentId
+                            }
+                        }
+                    }
+                },
                 text: createFormValues.value.text || "",
                 // Tags: {
                 //   connectOrCreate: tagConnections,
@@ -186,6 +196,10 @@ export default defineComponent({
                 createCommentInput: createCommentInput.value,
             },
             update: (cache: any, result: any) => {
+                // This is the logic for updating the cache
+                // after replying to a comment. For the logic
+                // to create a root level comment, see the
+                // parent component.
                 const newComment: CommentData =
                     result.data?.createComments?.comments[0];
 
@@ -203,10 +217,22 @@ export default defineComponent({
 
                 const existingCommentSectionData = readQueryResult?.commentSections[0]
                 //commentResult.commentSections[0].CommentsConnection.edges"
-                  //   :key="comment.node.id"
-                let commentsCopy = [...existingCommentSectionData.Comments || []];
+                //   :key="comment.node.id"
+                let rootCommentsCopy = [...existingCommentSectionData.Comments || []];
 
-                commentsCopy.unshift(newComment);
+                rootCommentsCopy = rootCommentsCopy.map((comment: any) => {
+                    if (comment.id === createFormValues.value.parentCommentId) {
+                        let commentCopy = {
+                            ...comment,
+                            ChildComments: [
+                                newComment,
+                                ...comment.ChildComments,
+                            ],
+                        };
+                        return commentCopy
+                    }
+                    return comment;
+                });
 
                 cache.writeQuery({
                     query: GET_COMMENT_SECTION,
@@ -215,7 +241,7 @@ export default defineComponent({
                         commentSections: [
                             {
                                 ...existingCommentSectionData,
-                                Comments: commentsCopy,
+                                Comments: rootCommentsCopy,
                             },
                         ],
                     },
@@ -270,11 +296,16 @@ export default defineComponent({
     },
 
     methods: {
-        handleClickCreate(commentData: CommentData, parentCommentId: string){//parentCommentData: CommentData | null) {
-            // Reply to a comment
-            console.log("handleClickCreate", commentData, parentCommentId);
+        handleUpdateReply(text: StringValueNode, parentCommentId: string) {
+            if (!parentCommentId) {
+                throw new Error("parentCommentId is required to reply to a comment");
+            }
             this.createFormValues.isRootComment = false;
             this.createFormValues.parentCommentId = parentCommentId;
+            this.createFormValues.text = text;
+        },
+        handleClickCreate() {
+            // Reply to a comment
             this.createComment();
         },
         handleClickEdit(commentData: CommentData) {
@@ -300,7 +331,7 @@ export default defineComponent({
                 id='comments'
                 ref="commentSectionHeader"
                 class="text-xl">{{ `Top Comments (${commentResult.commentSections[0].Comments.length})` }}</h2>
-            
+
             <Comment v-for="comment in commentResult.commentSections[0].Comments"
                      :key="comment.id"
                      :compact="true"
@@ -309,18 +340,17 @@ export default defineComponent({
                      @edit="handleClickEdit($event)"
                      @delete="handleClickDelete($event)"
                      @createComment="handleClickCreate"
-            >
-              <Comment 
-                v-for="childComment in comment.ChildComments"
-                :key="childComment.id"
-                :compact="true"
-                :commentData="childComment"
-                :parentCommentId="comment.id"
-                :readonly="true"
-                @edit="handleClickEdit($event)"
-                @delete="handleClickDelete($event)"
-                @createComment="handleClickCreate"
-              />
+                     @updateComment="handleUpdateReply($event, comment.id)">
+                <Comment v-for="childComment in comment.ChildComments"
+                         :key="childComment.id"
+                         :compact="true"
+                         :commentData="childComment"
+                         :parentCommentId="comment.id"
+                         :readonly="true"
+                         @edit="handleClickEdit($event)"
+                         @delete="handleClickDelete($event)"
+                         @createComment="handleClickCreate"
+                         @updateComment="handleUpdateReply($event, comment.id)" />
             </Comment>
         </div>
         <p v-else>Could not find the comment section.</p>
@@ -336,29 +366,27 @@ export default defineComponent({
                       :open="showDeleteCommentModal"
                       @close="showDeleteCommentModal = false"
                       @primaryButtonClick="() => {
-                        deleteComment({id: commentToDelete})
+                          deleteComment({ id: commentToDelete })
                       }" />
         <Modal title="Comment on Post"
                :show="showCreateCommentModal"
                :primary-button-text="'Save'"
                @primaryButtonClick="() => {
-                createComment()
-                showCreateCommentModal = false
-            }"
-               @secondaryButtonClick="showCreateCommentModal = false"
-            >
+                   createComment()
+                   showCreateCommentModal = false
+               }"
+               @secondaryButtonClick="showCreateCommentModal = false">
             <template v-slot:icon>
                 <PencilIcon class="h-6 w-6 text-green-600"
                             aria-hidden="true" />
             </template>
             <template v-slot:content>
-                <TextEditor
-                  class="mb-3 h-72" 
-                  :placeholder="'Comment'"
-                  @update="createFormValues.text = $event"
-                 />
-                <ErrorBanner v-if="createCommentError" :text="createCommentError.message" />
-             </template>
+                <TextEditor class="mb-3 h-72"
+                            :placeholder="'Comment'"
+                            @update="createFormValues.text = $event" />
+                <ErrorBanner v-if="createCommentError"
+                             :text="createCommentError.message" />
+            </template>
         </Modal>
         <Modal :title="'Edit Comment'"
                :show="showEditCommentModal"
@@ -370,11 +398,10 @@ export default defineComponent({
                             aria-hidden="true" />
             </template>
             <template v-slot:content>
-                <TextEditor
-                  class="mb-3 h-72" 
-                  :initialValue="commentToEdit?.text"
-                  :placeholder="'Comment'"
-                  @update="editFormValues.text = $event" />
+                <TextEditor class="mb-3 h-72"
+                            :initialValue="commentToEdit?.text"
+                            :placeholder="'Comment'"
+                            @update="editFormValues.text = $event" />
             </template>
         </Modal>
     </div>

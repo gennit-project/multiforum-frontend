@@ -168,6 +168,7 @@ export default defineComponent({
         <div>
           <TextEditor class="mb-3 h-48"
                       :placeholder="'Comment'"
+
                       @update="$emit('updateComment', $event)" />
           <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -175,7 +176,7 @@ export default defineComponent({
             <CancelButton @click="showReplyEditor = false" />
             <SaveButton 
               @click.prevent="() =>{
-                $emit('createComment')
+                $emit('createComment', parentCommentId)
                 showReplyEditor = false
               }"
               :disabled="commentData.text.length === 0"
