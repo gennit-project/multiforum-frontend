@@ -267,9 +267,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-10">
-    <p v-if="eventLoading">Loading...</p>
-    <ErrorBanner v-else-if="eventError"
+  <div>
+    <p class="px-4 lg:px-10"
+       v-if="eventLoading">Loading...</p>
+    <ErrorBanner class="px-4 lg:px-10"
+                 v-else-if="eventError"
                  :text="eventError.message" />
 
     <!-- <div v-if="!eventData">
@@ -324,38 +326,8 @@ export default defineComponent({
         </div>
       </div>
       <div class="grid grid-cols-8 gap-1">
-        <div class="col-start-1 col-span-8 mr-4 xl:col-span-5">
-          <Comment v-if="eventData.description"
-                   :comment-data="{
-                     id: eventData.id,
-                     CommentAuthor: eventData.Poster ? eventData.Poster.username : '',
-                     text: eventData.description,
-                     createdAt: eventData.createdAt,
-                     updatedAt: eventData.updatedAt,
-                     isRootComment: false,
-                   }"
-                   :readonly="true" />
-          <Tag v-for="tag in eventData.Tags"
-               :tag="tag.text"
-               :key="tag.text"
-               :eventId="eventId" />
-          <div v-if="channelId && channelsExceptCurrent.length > 0"
-               class="mt-2">
-            Crossposted To Channels:
-          </div>
-
-          <router-link v-for="channel in channelsExceptCurrent"
-                       :key="channel.uniqueName"
-                       :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`">
-            <Tag class="mt-2"
-                 :tag="channel.uniqueName"
-                 :channel-mode="true" />
-          </router-link>
-        </div>
-
         <div :class="!compactMode ? 'xl:col-span-3' : ''"
              class="
-              pl-8
               col-span-8
               text-sm text-gray-700
               space-y-2
@@ -367,10 +339,6 @@ export default defineComponent({
                   `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime,
                     eventData.endTime)}`
               }}
-            </li>
-            <li>
-
-
             </li>
             <li v-if="eventData.isInPrivateResidence">
               <HomeIcon class="inline" /> This event is in a private
@@ -409,68 +377,97 @@ export default defineComponent({
             </li>
           </ul>
         </div>
-        <div class="col-span-8 text-xs text-gray-600 mt-4">
-          <p v-if="!eventData.virtualEventUrl && !eventData.address">
-            This event won't show in online or in-person search results
-            because it doesn't have a location or a virtual event URL.
-          </p>
-          <div class="organizer">
-            <router-link v-if="eventData.Poster"
-                         class="text-blue-800 underline"
-                         :to="`/u/${eventData.Poster.username}`">
-              {{ eventData.Poster.username }}
-            </router-link>
-            {{
-                `${eventData.createdAt
-                  ? `posted this event ${relativeTime(
-                    "" + eventData.createdAt
-                  )}`
-                  : ""
-                }`
-            }}
-            <span v-if="eventData.updatedAt"> &#8226; </span>
-            {{
-                eventData.updatedAt
-                  ? `Edited ${relativeTime("" + eventData.updatedAt)}`
-                  : ""
-            }}
-            &#8226;
-            <span v-if="!compactMode"
-                  class="underline font-medium text-gray-900 cursor-pointer"
-                  @click="confirmDeleteIsOpen = true">Delete</span>
-            <span v-if="!compactMode && !eventData.canceled"
-                  class="ml-1 mr-1">&#8226;</span>
-            <span v-if="!compactMode && !eventData.canceled"
-                  class="underline font-medium text-gray-900 cursor-pointer"
-                  @click="confirmCancelIsOpen = true">Cancel</span>
+        <div class="col-start-1 col-span-8 mr-4 xl:col-span-5">
+          <Comment v-if="eventData.description"
+                   :comment-data="{
+                     id: eventData.id,
+                     CommentAuthor: eventData.Poster ? eventData.Poster.username : '',
+                     text: eventData.description,
+                     createdAt: eventData.createdAt,
+                     updatedAt: eventData.updatedAt,
+                     isRootComment: false,
+                   }"
+                   :readonly="true" />
+          <Tag v-for="tag in eventData.Tags"
+               :tag="tag.text"
+               :key="tag.text"
+               :eventId="eventId" />
+          <div v-if="channelId && channelsExceptCurrent.length > 0"
+               class="mt-2">
+            Crossposted To Channels:
           </div>
-          <div class="time-zone">
-            {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
-          </div>
-        </div>
 
-        <WarningModal :title="'Delete Event'"
-                      :body="'Are you sure you want to delete this event?'"
-                      :open="confirmDeleteIsOpen"
-                      @close="confirmDeleteIsOpen = false"
-                      @primaryButtonClick="deleteEvent" />
-        <WarningModal :title="'Cancel Event'"
-                      :body="'Are you sure you want to cancel this event?'"
-                      :open="confirmCancelIsOpen"
-                      :primary-button-text="'Yes, cancel the event'"
-                      @close="confirmCancelIsOpen = false"
-                      @primaryButtonClick="cancelEvent" />
-        <Notification :show="showAddressCopiedNotification"
-                      :title="'Copied to clipboard!'"
-                      @closeNotification="showAddressCopiedNotification = false" />
+          <router-link v-for="channel in channelsExceptCurrent"
+                       :key="channel.uniqueName"
+                       :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`">
+            <Tag class="mt-2"
+                 :tag="channel.uniqueName"
+                 :channel-mode="true" />
+          </router-link>
+        </div>
       </div>
+
+      <div class="text-xs text-gray-600 mt-4">
+        <p v-if="!eventData.virtualEventUrl && !eventData.address">
+          This event won't show in online or in-person search results
+          because it doesn't have a location or a virtual event URL.
+        </p>
+        <div class="organizer">
+          <router-link v-if="eventData.Poster"
+                       class="text-blue-800 underline"
+                       :to="`/u/${eventData.Poster.username}`">
+            {{ eventData.Poster.username }}
+          </router-link>
+          {{
+              `${eventData.createdAt
+                ? `posted this event ${relativeTime(
+                  "" + eventData.createdAt
+                )}`
+                : ""
+              }`
+          }}
+          <span v-if="eventData.updatedAt"> &#8226; </span>
+          {{
+              eventData.updatedAt
+                ? `Edited ${relativeTime("" + eventData.updatedAt)}`
+                : ""
+          }}
+          &#8226;
+          <span v-if="!compactMode"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmDeleteIsOpen = true">Delete</span>
+          <span v-if="!compactMode && !eventData.canceled"
+                class="ml-1 mr-1">&#8226;</span>
+          <span v-if="!compactMode && !eventData.canceled"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmCancelIsOpen = true">Cancel</span>
+        </div>
+        <div class="time-zone">
+          {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
+        </div>
+      </div>
+
+      <WarningModal :title="'Delete Event'"
+                    :body="'Are you sure you want to delete this event?'"
+                    :open="confirmDeleteIsOpen"
+                    @close="confirmDeleteIsOpen = false"
+                    @primaryButtonClick="deleteEvent" />
+      <WarningModal :title="'Cancel Event'"
+                    :body="'Are you sure you want to cancel this event?'"
+                    :open="confirmCancelIsOpen"
+                    :primary-button-text="'Yes, cancel the event'"
+                    @close="confirmCancelIsOpen = false"
+                    @primaryButtonClick="cancelEvent" />
+      <Notification :show="showAddressCopiedNotification"
+                    :title="'Copied to clipboard!'"
+                    @closeNotification="showAddressCopiedNotification = false" />
+
+
     </div>
   </div>
 </template>
 <style scoped>
 li {
   margin-top: 0.5em;
-  text-indent: -2.1em;
-  padding-left: 2.1em;
 }
 </style>
