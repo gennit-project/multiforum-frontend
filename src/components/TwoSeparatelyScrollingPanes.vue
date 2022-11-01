@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import { useDisplay } from 'vuetify'
 
 export default defineComponent({
+
     setup() {
         const { smAndDown } = useDisplay();
 
@@ -17,9 +18,11 @@ export default defineComponent({
 
 <template>
     <div class="lg:flex lg:flex-row">
-        <div class="
-          lg:w-2/5 lg:h-full lg:max-h-screen lg:overflow-y-auto
-          flex flex-col flex-grow
+        <div 
+          :class="[!smAndDown ? 'constrain-height' : '']"
+          class="
+            lg:w-2/5 lg:overflow-y-auto
+            flex flex-col flex-grow
         ">
             <slot name="leftpane"></slot>
         </div>
@@ -28,3 +31,9 @@ export default defineComponent({
         </div>
     </div>
 </template>
+<style>
+.constrain-height {
+    max-height: 86vh;
+    height: 100% - 200px;
+}
+</style>

@@ -320,13 +320,14 @@ export default defineComponent({
 
 <template>
   <div
-       class="sticky top-10 pb-36 px-4 lg:px-10">
+       class="top-10 pb-36 px-4 lg:px-10 height-constrained-more">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner class="mt-2"
                  v-else-if="getDiscussionError"
                  :text="getDiscussionError.message" />
     <div v-else
          ref="discussionDetail"
+         :class="route.name==='DiscussionDetail'? ' overflow-y-scroll': ''"
          class="
         mx-auto
         max-w-5xl
@@ -473,5 +474,11 @@ export default defineComponent({
                  :text="deleteDiscussionError.message" />
   </div>
 </template>
+<style>
+.height-constrained-more {
+    max-height: 84vh;
+    height: 100% - 100px;
+}
+</style>
 
 

@@ -340,49 +340,75 @@ export default defineComponent({
       <div class="pt-2 pb-2">
         <div class="items-center flex justify-between">
           <div class="flex items-center space-x-2">
-            <SearchBar class="flex mr-2 align-middle" :small="true" :search-placeholder="'Search discussions'"
-              @updateSearchInput="updateSearchResult" />
-            <FilterChip class="align-middle" v-if="!channelId" :label="channelLabel"
-              :highlighted="channelLabel !== defaultLabels.channels">
+            <SearchBar class="flex mr-2 align-middle"
+                       :small="true"
+                       :search-placeholder="'Search discussions'"
+                       @updateSearchInput="updateSearchResult" />
+            <FilterChip class="align-middle"
+                        v-if="!channelId"
+                        :label="channelLabel"
+                        :highlighted="channelLabel !== defaultLabels.channels">
               <template v-slot:icon>
                 <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
               </template>
               <template v-slot:content>
-                <ChannelPicker :selected-channels="selectedChannels" @setSelectedChannels="setSelectedChannels" />
+                <ChannelPicker :selected-channels="selectedChannels"
+                               @setSelectedChannels="setSelectedChannels" />
               </template>
             </FilterChip>
 
-            <FilterChip class="align-middle" :label="tagLabel" :highlighted="tagLabel !== defaultLabels.tags">
+            <FilterChip class="align-middle"
+                        :label="tagLabel"
+                        :highlighted="tagLabel !== defaultLabels.tags">
               <template v-slot:icon>
                 <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
               </template>
               <template v-slot:content>
-                <TagPicker :selected-tags="selectedTags" @setSelectedTags="setSelectedTags" />
+                <TagPicker :selected-tags="selectedTags"
+                           @setSelectedTags="setSelectedTags" />
               </template>
             </FilterChip>
-           
+
           </div>
-          <CreateButton class="align-middle ml-2" :to="createDiscussionPath"
-            :label="'Create Discussion'" />
+          <CreateButton class="align-middle ml-2"
+                        :to="createDiscussionPath"
+                        :label="'Create Discussion'" />
         </div>
       </div>
     </div>
-    <div class="px-4 lg:px-12" v-if="discussionLoading">
+    <div class="px-4 lg:px-12"
+         v-if="discussionLoading">
       Loading...
     </div>
-    <ErrorBanner class="mx-auto max-w-5xl" v-else-if="discussionError" :text="discussionError.message" />
-    <TwoSeparatelyScrollingPanes v-else-if="discussionResult && discussionResult.discussions">
-
+    <ErrorBanner class="mx-auto max-w-5xl"
+                 v-else-if="discussionError"
+                 :text="discussionError.message" />
+    <TwoSeparatelyScrollingPanes 
+      v-else-if="discussionResult && discussionResult.discussions"
+    >
       <template v-slot:leftpane>
-        <DiscussionList :discussions="discussionResult.discussions" :channel-id="channelId"
-          :result-count="discussionResult.discussionsCount" :search-input="searchInput" :selected-tags="selectedTags"
-          :selected-channels="selectedChannels" @filterByTag="filterByTag" @filterByChannel="filterByChannel"
-          @loadMore="loadMore" @openPreview="openPreview" />
-        <DiscussionPreview v-if="smAndDown" :isOpen="previewIsOpen" @closePreview="closePreview" />
+        <DiscussionList :discussions="discussionResult.discussions"
+                        :channel-id="channelId"
+                        :result-count="discussionResult.discussionsCount"
+                        :search-input="searchInput"
+                        :selected-tags="selectedTags"
+                        :selected-channels="selectedChannels"
+                        @filterByTag="filterByTag"
+                        @filterByChannel="filterByChannel"
+                        @loadMore="loadMore"
+                        @openPreview="openPreview" />
+        <DiscussionPreview v-if="smAndDown"
+                           :isOpen="previewIsOpen"
+                           @closePreview="closePreview" />
       </template>
       <template v-slot:rightpane>
         <router-view></router-view>
       </template>
-    </TwoSeparatelyScrollingPanes>
+    </TwoSeparatelyScrollingPanes >
   </div>
 </template>
+<style>
+.height-constrained {
+  max-height: 50px;
+}
+</style>

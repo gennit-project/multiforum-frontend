@@ -266,7 +266,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="height-constrained-more">
     <p class="px-4 lg:px-10"
        v-if="eventLoading">Loading...</p>
     <ErrorBanner class="px-4 lg:px-10"
@@ -278,6 +278,7 @@ export default defineComponent({
     </div>
 
     <div v-else-if="eventResult && eventResult.events && eventData"
+    :class="route.name==='EventDetail'? ' overflow-y-scroll': ''"
          class="bg-white rounded pb-4 pr-8 px-4 lg:px-10">
 
       <ErrorBanner class="mt-2 mb-2"
@@ -467,5 +468,9 @@ export default defineComponent({
 <style scoped>
 li {
   margin-top: 0.5em;
+}
+.height-constrained-more {
+    max-height: 50vh;
+    height: 100% - 150px;
 }
 </style>
