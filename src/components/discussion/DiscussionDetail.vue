@@ -128,7 +128,7 @@ export default defineComponent({
     });
 
     const deleteModalIsOpen = ref(false);
-    const showScrollToCommentsButton = ref(true)
+    // const showScrollToCommentsButton = ref(true)
 
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
@@ -252,7 +252,7 @@ export default defineComponent({
       relativeTime,
       route,
       showCreateCommentModal: ref(false),
-      showScrollToCommentsButton
+      // showScrollToCommentsButton
     };
   },
   methods: {
@@ -269,25 +269,25 @@ export default defineComponent({
 
       return startTimeObj.toFormat("cccc LLLL d yyyy");
     },
-    scrollToComments() {
-      let commentStart = document.getElementById('comments');
-      if (commentStart) {
-        commentStart.scrollIntoView(false);
-      }
-      this.handleScroll()
-    },
-    handleScroll() {
-      const commentSectionHeader = this.$refs.commentSectionHeader;
-      const scrollToCommentsButton = this.$refs.scrollToCommentsButton;
+    // scrollToComments() {
+    //   let commentStart = document.getElementById('comments');
+    //   if (commentStart) {
+    //     commentStart.scrollIntoView(false);
+    //   }
+    //   this.handleScroll()
+    // },
+    // handleScroll() {
+    //   const commentSectionHeader = this.$refs.commentSectionHeader;
+    //   const scrollToCommentsButton = this.$refs.scrollToCommentsButton;
 
-      if (commentSectionHeader && scrollToCommentsButton) {
-        if (commentSectionHeader.offsetTop - scrollToCommentsButton.offsetTop < 500) {
-          this.showScrollToCommentsButton = false;
-        } else {
-          this.showScrollToCommentsButton = true;
-        }
-      }
-    },
+    //   if (commentSectionHeader && scrollToCommentsButton) {
+    //     if (commentSectionHeader.offsetTop - scrollToCommentsButton.offsetTop < 500) {
+    //       this.showScrollToCommentsButton = false;
+    //     } else {
+    //       this.showScrollToCommentsButton = true;
+    //     }
+    //   }
+    // },
     handleCreateComment() {
       // this.createFormValues.isRootComment = parentCommentData === null;
       this.createComment()
@@ -296,7 +296,7 @@ export default defineComponent({
       this.createFormValues.text = event
     }
   },
-  mounted() {
+  // mounted() {
     // let ticking = false;
     //   window.addEventListener("scroll", () => {
 
@@ -310,10 +310,10 @@ export default defineComponent({
     //       ticking = true;
     //     }
     // });
-  },
-  beforeUnmount() {
-    window.removeEventListener("scroll", this.handleScroll);
-  },
+  // },
+  // beforeUnmount() {
+  //   window.removeEventListener("scroll", this.handleScroll);
+  // },
 });
 
 </script>
@@ -401,7 +401,7 @@ export default defineComponent({
                       @click="deleteModalIsOpen = true">Delete</span>
               </div>
             </div>
-            <button ref="scrollToCommentsButton"
+            <!-- <button ref="scrollToCommentsButton"
                     v-show="showScrollToCommentsButton"
                     aria-label="Scroll to comments"
                     type="button"
@@ -409,7 +409,7 @@ export default defineComponent({
                     @click="scrollToComments">
               <ChevronDoubleDownIcon class="h-6 w-6"
                                      aria-hidden="true" />
-            </button>
+            </button> -->
             <ul>
               <li v-for="commentSection in discussion.CommentSections"
                   :key="commentSection.id">
