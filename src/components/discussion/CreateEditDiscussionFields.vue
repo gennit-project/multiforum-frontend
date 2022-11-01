@@ -148,7 +148,7 @@ export default defineComponent({
             <template v-slot:icon>
               <VTooltip class="inline-flex">
                 <TagIcon class="inline-flex h-6 w-6"  />
-                <template #popper> Details </template>
+                <template #popper> Tags </template>
               </VTooltip>
             </template>
             <template v-slot:content>
