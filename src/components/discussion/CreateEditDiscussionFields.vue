@@ -139,7 +139,7 @@ export default defineComponent({
               </VTooltip>
             </template>
             <template v-slot:content>
-              <TextEditor class="mb-3" :initial-value="formValues.body || ''" :placeholder="'Add details'"
+              <TextEditor class="mb-3 h-56" :initial-value="formValues.body || ''" :placeholder="'Add details'"
                 @update="$emit('updateFormValues', { body: $event })" />
             </template>
           </FormRow>
