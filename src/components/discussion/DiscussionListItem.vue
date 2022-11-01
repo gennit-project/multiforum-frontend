@@ -112,17 +112,17 @@ export default defineComponent({
       class="relative bg-white py-2 px-4 lg:px-12 cursor-pointer "
       @click="$emit('openPreview')">
     <router-link :to="previewLink">
-      <div class="grid grid-cols-4">
+      <div class="grid grid-cols-4 gap-x-1 ">
         <div class="col-span-3">
           <div class="block">
             <div>
-              <p class="cursor-pointer text-md font-medium mr-2 text-blue-800">
+              <p class="cursor-pointer text-md font-medium text-blue-800 pr-4">
                 <HighlightedSearchTerms :text="title"
                                         :search-input="searchInput" />
               </p>
             </div>
 
-            <p class="line-clamp-2 text-sm text-slate-600 hover:no-underline font-medium mx-1 mt-1">
+            <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
 
               <Tag class="m-1"
                    :active="selectedTags.includes(tag)"
