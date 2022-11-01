@@ -41,7 +41,7 @@ export default defineComponent({
     <div class="mt-1 flex relative rounded-md shadow-sm">
       <input
         v-model="text"
-        @keyup="$emit('update', text)"
+        @update:model-value="$emit('update', text)"
         :placeholder="placeholder"
         :disabled="disabled"
         type="text"
