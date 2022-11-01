@@ -129,7 +129,7 @@ export default defineComponent({
                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
             <div v-else>
               <TextEditor class="mb-3 h-48"
-                          :placeholder="'Comment'"
+                          :placeholder="'Please be kind'"
                           @update="$emit('updateComment', $event)" />
               <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -167,8 +167,7 @@ export default defineComponent({
         <Avatar class="h-5 w-5" />
         <div>
           <TextEditor class="mb-3 h-48"
-                      :placeholder="'Comment'"
-
+                      :placeholder="'Please be kind'"
                       @update="$emit('updateComment', $event)" />
           <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
