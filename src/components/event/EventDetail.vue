@@ -17,7 +17,6 @@ import { DateTime } from "luxon";
 import ErrorBanner from "../ErrorBanner.vue";
 import GenericButton from "../GenericButton.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-import ClockIcon from "@/components/icons/ClockIcon.vue";
 import CreateButton from "../CreateButton.vue";
 import HomeIcon from "@/components/icons/HomeIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
@@ -28,7 +27,7 @@ import useClipboard from "vue-clipboard3";
 import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
 import Notification from "../Notification.vue";
 import Comment from "../comments/Comment.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+import LeftArrowIcon from "../icons/LeftArrowIcon.vue";
 
 export default defineComponent({
   props: {
@@ -39,20 +38,19 @@ export default defineComponent({
   },
   components: {
     CalendarIcon,
-    ClockIcon,
+    ClipboardIcon,
     Comment,
-    WarningModal,
     CreateButton,
     ErrorBanner,
     GenericButton,
     HomeIcon,
-    Tag,
-    TicketIcon,
+    LeftArrowIcon,
     LocationIcon,
     LinkIcon,
-    ClipboardIcon,
     Notification,
-    ChannelIcon,
+    Tag,
+    TicketIcon,
+    WarningModal,
   },
   setup() {
     const route = useRoute();
@@ -90,8 +88,8 @@ export default defineComponent({
           eventData.value?.address ? eventData.value.address : ""
         );
         showAddressCopiedNotification.value = true;
-      } catch (e) {
-        console.error(e);
+      } catch (e: any) {
+        throw new Error(e);
       }
       setTimeout(() => {
         showAddressCopiedNotification.value = false;
@@ -216,6 +214,7 @@ export default defineComponent({
       deleteEventError,
       locationText,
       relativeTime,
+      route,
       showAddressCopiedNotification,
     };
   },
@@ -274,18 +273,13 @@ export default defineComponent({
                  v-else-if="eventError"
                  :text="eventError.message" />
 
-    <!-- <div v-if="!eventData">
+    <div v-else-if="!eventData">
       <p>Could not find the event.</p>
-      <router-link :to="`/channels/c/${channelId}/events`">
-        <p>
-          <i class="fas fa-arrow-left"></i> Go back to
-          {{ `c/${channelId}/events` }}
-        </p>
-      </router-link>
-    </div> -->
+    </div>
 
     <div v-else-if="eventResult && eventResult.events && eventData"
-         class="mx-auto max-w-5xl bg-white rounded pt-4 pb-4 pr-8 pl-8">
+         class="bg-white rounded pb-4 pr-8 px-4 lg:px-10">
+
       <ErrorBanner class="mt-2 mb-2"
                    v-if="deleteEventError"
                    :text="deleteEventError.message" />
@@ -298,7 +292,14 @@ export default defineComponent({
       <ErrorBanner class="mt-2 mb-2"
                    v-if="eventData.canceled"
                    :text="'This event is canceled.'" />
-      <div class="mt-2 mb-4 md:flex md:items-center md:justify-between">
+      <router-link v-if="route.name === 'EventDetail'"
+                   :to="`/channels/c/${channelId}/events`"
+                   class="underline text-xs text-gray-500 mb-4">
+        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        {{ `Event list in c/${channelId}` }}
+      </router-link>
+      <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4 lg:px-10">
+
         <div class="flex-1 min-w-0">
           <h2 class="
               text-2xl
@@ -325,86 +326,83 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="grid grid-cols-8 gap-1">
-        <div :class="!compactMode ? 'xl:col-span-3' : ''"
-             class="
-              col-span-8
+
+      <div class="
+              px-4 lg:px-10
               text-sm text-gray-700
               space-y-2
-              ml-4
             ">
-          <ul>
-            <li>
-              <CalendarIcon class="inline h-5 w-5 mr-3 text-blue-700" />{{
-                  `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime,
-                    eventData.endTime)}`
-              }}
-            </li>
-            <li v-if="eventData.isInPrivateResidence">
-              <HomeIcon class="inline" /> This event is in a private
-              residence.
-            </li>
+        <ul>
+          <li>
+            <CalendarIcon class="inline h-5 w-5 mr-3 text-blue-700" />{{
+                `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime,
+                  eventData.endTime)}`
+            }}
+          </li>
+          <li v-if="eventData.isInPrivateResidence">
+            <HomeIcon class="inline" /> This event is in a private
+            residence.
+          </li>
 
-            <li class="hanging-indent"
-                v-if="eventData.virtualEventUrl">
-              <LinkIcon class="inline h-5 w-5 mr-2 text-blue-700" />
-              <span class="underline cursor-pointer"
-                    @click="openLink">
-                {{ eventData.virtualEventUrl }}
-              </span>
-            </li>
-            <li v-if="eventData.address">
-              <LocationIcon class="inline h-5 w-5 mr-2 text-blue-700"></LocationIcon>
+          <li class="hanging-indent"
+              v-if="eventData.virtualEventUrl">
+            <LinkIcon class="inline h-5 w-5 mr-2 text-blue-700" />
+            <span class="underline cursor-pointer"
+                  @click="openLink">
+              {{ eventData.virtualEventUrl }}
+            </span>
+          </li>
+          <li v-if="eventData.address">
+            <LocationIcon class="inline h-5 w-5 mr-2 text-blue-700"></LocationIcon>
 
-              {{ `${eventData.locationName}, ` }}
-              <span><a class="underline"
-                   target="_blank"
-                   rel="noreferrer"
-                   :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`">
-                  {{ eventData.address }}
-                </a>
+            {{ `${eventData.locationName}, ` }}
+            <span><a class="underline"
+                 target="_blank"
+                 rel="noreferrer"
+                 :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`">
+                {{ eventData.address }}
+              </a>
 
-                <VTooltip class="inline-flex">
-                  <ClipboardIcon class="ml-1 h-4 w-4 cursor-pointer"
-                                 @click="copyAddress" />
-                  <template #popper> Copy </template>
-                </VTooltip>
-              </span>
-            </li>
-            <li v-if="!eventData.free && eventData.cost && eventData.cost !== '0'">
-              <TicketIcon class="inline h-5 w-5 mr-2 text-blue-700" />
-              {{ eventData.cost }}
-            </li>
-          </ul>
+              <VTooltip class="inline-flex">
+                <ClipboardIcon class="ml-1 h-4 w-4 cursor-pointer"
+                               @click="copyAddress" />
+                <template #popper> Copy </template>
+              </VTooltip>
+            </span>
+          </li>
+          <li v-if="!eventData.free && eventData.cost && eventData.cost !== '0'">
+            <TicketIcon class="inline h-5 w-5 mr-2 text-blue-700" />
+            {{ eventData.cost }}
+          </li>
+        </ul>
+      </div>
+      <div class="px-4 lg:px-10">
+        <Comment v-if="eventData.description"
+                 :comment-data="{
+                   id: eventData.id,
+                   CommentAuthor: eventData.Poster ? eventData.Poster.username : '',
+                   text: eventData.description,
+                   createdAt: eventData.createdAt,
+                   updatedAt: eventData.updatedAt,
+                   isRootComment: false,
+                 }"
+                 :readonly="true" />
+        <Tag v-for="tag in eventData.Tags"
+             :tag="tag.text"
+             :key="tag.text"
+             :eventId="eventId" />
+        <div v-if="channelId && channelsExceptCurrent.length > 0"
+             class="mt-2">
+          Crossposted To Channels:
         </div>
-        <div class="col-start-1 col-span-8 mr-4 xl:col-span-5">
-          <Comment v-if="eventData.description"
-                   :comment-data="{
-                     id: eventData.id,
-                     CommentAuthor: eventData.Poster ? eventData.Poster.username : '',
-                     text: eventData.description,
-                     createdAt: eventData.createdAt,
-                     updatedAt: eventData.updatedAt,
-                     isRootComment: false,
-                   }"
-                   :readonly="true" />
-          <Tag v-for="tag in eventData.Tags"
-               :tag="tag.text"
-               :key="tag.text"
-               :eventId="eventId" />
-          <div v-if="channelId && channelsExceptCurrent.length > 0"
-               class="mt-2">
-            Crossposted To Channels:
-          </div>
 
-          <router-link v-for="channel in channelsExceptCurrent"
-                       :key="channel.uniqueName"
-                       :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`">
-            <Tag class="mt-2"
-                 :tag="channel.uniqueName"
-                 :channel-mode="true" />
-          </router-link>
-        </div>
+        <router-link v-for="channel in channelsExceptCurrent"
+                     :key="channel.uniqueName"
+                     :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`">
+          <Tag class="mt-2"
+               :tag="channel.uniqueName"
+               :channel-mode="true" />
+        </router-link>
       </div>
 
       <div class="text-xs text-gray-600 mt-4">

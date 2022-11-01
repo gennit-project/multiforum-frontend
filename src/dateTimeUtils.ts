@@ -1,4 +1,5 @@
 import { DateTime, Interval } from 'luxon';
+import { DurationObjectUnits } from 'luxon';
 
 const relativeTime = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);
@@ -9,7 +10,7 @@ const relativeTime = (dateISO: string) => {
 
 const relativeTimeHoursAndMinutes = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);
-  const time = dateObj.toRelative(["hours", "minutes"]);
+  const time = dateObj.toRelative({unit: ["hours", "minutes"]});
 
   return time;
 };
@@ -41,40 +42,40 @@ const durationHoursAndMinutes = (startISO: string, endISO: string) => {
   }
 };
 
-const formatDuration = (eventDurationObj: typeof DateTime) => {
+const formatDuration = (eventDurationObj: DurationObjectUnits) => {
   const { hours, minutes } = eventDurationObj;
 
   if (hours === 0) {
     return `${minutes} minutes`;
   }
   if (hours === 1) {
-    if (minutes > 0) {
+    if (minutes && minutes > 0) {
       return `1 hour and ${minutes} minutes`;
     }
     return "1 hour";
   }
-  if (hours > 1) {
-    if (minutes > 0) {
+  if (hours && hours > 1) {
+    if (minutes && minutes > 0) {
       return `${hours} hours and ${minutes} minutes`;
     }
     return `${hours} hours`;
   }
 };
 
-const formatAbbreviatedDuration = (eventDurationObj: typeof DateTime) => {
+const formatAbbreviatedDuration = (eventDurationObj: DurationObjectUnits) => {
   const { hours, minutes } = eventDurationObj;
 
   if (hours === 0) {
     return `${minutes}m`;
   }
   if (hours === 1) {
-    if (minutes > 0) {
+    if (minutes && minutes > 0) {
       return `1h ${minutes}m`;
     }
     return "1h";
   }
-  if (hours > 1) {
-    if (minutes > 0) {
+  if (hours && hours > 1) {
+    if (minutes && minutes > 0) {
       return `${hours}h ${minutes}m`;
     }
     return `${hours}h`;

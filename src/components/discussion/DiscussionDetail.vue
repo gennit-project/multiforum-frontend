@@ -14,11 +14,9 @@ import { ChannelData } from "@/types/channelTypes";
 import ErrorBanner from "../ErrorBanner.vue";
 import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
-import Modal from "../Modal.vue";
-import PencilIcon from "../icons/PencilIcon.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import ChevronDoubleDownIcon from "@/components/icons/ChevronDoubleDownIcon.vue";
-import TextEditor from "../comments/TextEditor.vue";
+import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
 import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
@@ -32,6 +30,7 @@ export default defineComponent({
     ChevronDoubleDownIcon,
     ErrorBanner,
     GenericButton,
+    LeftArrowIcon,
     Tag,
     WarningModal,
   },
@@ -320,8 +319,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="!compactMode ? 'px-10' : ''"
-       class="sticky top-10 pb-36">
+  <div
+       class="sticky top-10 pb-36 px-4 lg:px-10">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner class="mt-2"
                  v-else-if="getDiscussionError"
@@ -332,15 +331,20 @@ export default defineComponent({
         mx-auto
         max-w-5xl
         space-y-2
-        divide-y
         bg-white
         pb-4
         rounded
       ">
+      <router-link v-if="route.name === 'DiscussionDetail'"
+                   :to="`/channels/c/${channelId}/discussions`"
+                   class="underline text-xs text-gray-500 mb-4">
+        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        {{ `Discussion list in c/${channelId}` }}
+      </router-link>
       <div class="mt-4 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
           <h1 class="
-              mt-6
+              mt-4
               font-bold
               text-lg
               sm:tracking-tight
