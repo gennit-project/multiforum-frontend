@@ -36,7 +36,7 @@ export default defineComponent({
   <div class="h-screen">
     <nav class="bg-gray-800">
       <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
-      <SiteSidenav :show-mobile-dropdown="showMobileDropdown" />
+      <SiteSidenav :show-mobile-dropdown="showMobileDropdown" @click="showMobileDropdown = false"/>
     </nav>
     <div v-if="!channelId">
       <router-view></router-view>
