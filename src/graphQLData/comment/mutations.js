@@ -48,6 +48,17 @@ mutation createDiscussion(
 				  title
 		  	}
 			}
+      Comments {
+        id
+        text
+        CommentAuthor {
+          ... on User {
+            username
+          }
+        }
+        createdAt
+        updatedAt
+      }
 		}
 	}
 }

@@ -20,7 +20,7 @@ export default defineComponent({
     props: {
         commentSectionId: {
             type: String,
-            required: true,
+            default: ''
         }
     },
     components: {
@@ -321,7 +321,8 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="sm:rounded-md pt-4">
+    <p v-if="!commentSectionId">Could not find any comments.</p>
+    <div v-else class="sm:rounded-md pt-4">
         <p v-if="commentLoading">Loading comments...</p>
         <ErrorBanner class="mt-2"
                      v-else-if="commentError"
@@ -353,7 +354,6 @@ export default defineComponent({
                          @updateComment="handleUpdateReply($event, comment.id)" />
             </Comment>
         </div>
-        <p v-else>Could not find the comment section.</p>
         <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">
       <LoadMore
         class="justify-self-center"

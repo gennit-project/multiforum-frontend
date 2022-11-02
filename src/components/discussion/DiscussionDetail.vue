@@ -15,11 +15,10 @@ import ErrorBanner from "../ErrorBanner.vue";
 import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
-import ChevronDoubleDownIcon from "@/components/icons/ChevronDoubleDownIcon.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
 import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
-import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
+import { CREATE_COMMENT, CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -27,7 +26,6 @@ export default defineComponent({
     Comment,
     CommentSection,
     CreateButton,
-    ChevronDoubleDownIcon,
     ErrorBanner,
     GenericButton,
     LeftArrowIcon,
@@ -45,17 +43,24 @@ export default defineComponent({
     const router = useRouter();
 
     const discussionId = computed(() => {
-      return route.params.discussionId;
+      if (typeof route.params.discussionId === 'string') {
+        return route.params.discussionId;
+      }
+      return ''
     });
 
     const channelId = computed(() => {
-      return route.params.channelId;
+      if (typeof route.params.channelId === 'string') {
+        return route.params.channelId
+      }
+      return ''
     });
 
     const {
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
+      onResult: onDoneGettingDiscussion,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const discussion = computed<DiscussionData>(() => {
@@ -81,6 +86,17 @@ export default defineComponent({
         return "";
       }
       return `posted ${relativeTime(discussion.value.createdAt)}`;
+    });
+
+    const commentSectionId = ref('');
+
+    onDoneGettingDiscussion(() => {
+      const commentSection = discussion.value.CommentSections.find(
+        (commentSection) => commentSection.Channel.uniqueName === channelId.value
+      );
+      if (commentSection) {
+        commentSectionId.value = commentSection.id;
+      }
     });
 
     const channelsExceptCurrent = computed(() => {
@@ -157,15 +173,7 @@ export default defineComponent({
 
       let input = {
         isRootComment: createFormValues.value.isRootComment,
-        CommentSection: {
-          connect: {
-            where: {
-              node: {
-                id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97'
-              }
-            }
-          }
-        },
+
         text: createFormValues.value.text || "",
         // Tags: {
         //   connectOrCreate: tagConnections,
@@ -180,10 +188,44 @@ export default defineComponent({
               }
             }
           }
+        },
+        CommentSection: {
+          connect: {
+            where: {
+              node: {
+                id: commentSectionId.value
+              }
+            }
+          }
         }
       };
+
       return [input];
     });
+    const {
+      mutate: createCommentSection,
+      onDone: onDoneCreatingCommentSection,
+    } = useMutation(CREATE_COMMENT_SECTION, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentSectionInput: [{
+          OriginalPost: {
+            Discussion: {
+              connect: {
+                where: {
+                  node: {
+                    id: discussionId.value
+                  }
+                }
+              }
+            }
+          },
+          Channel: {
+            connect: {where: {node: {uniqueName: channelId.value}}}
+          }
+        }]
+      },
+    }))
 
     const {
       mutate: createComment,
@@ -205,7 +247,7 @@ export default defineComponent({
           // Provide any required variables in this object.
           // Variables of mismatched types will return `null`.
           variables: {
-            id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
+            id: commentSectionId.value,
           },
         });
 
@@ -233,11 +275,19 @@ export default defineComponent({
         });
       },
     }));
+
+    onDoneCreatingCommentSection((cs: any) => {
+      const data = cs.data.createCommentSections?.commentSections[0]
+      commentSectionId.value = data.id;
+      createComment();
+    });
     return {
       channelId,
       channelsExceptCurrent,
+      commentSectionId,
       createComment,
       createCommentError,
+      createCommentSection,
       createFormValues,
       createdAt,
       deleteModalIsOpen,
@@ -290,26 +340,31 @@ export default defineComponent({
     // },
     handleCreateComment() {
       // this.createFormValues.isRootComment = parentCommentData === null;
-      this.createComment()
+      if (!this.commentSectionId) {
+        this.createCommentSection()
+      } else {
+        this.createComment()
+      }
+      
     },
     handleUpdateComment(event: any) {
       this.createFormValues.text = event
     }
   },
   // mounted() {
-    // let ticking = false;
-    //   window.addEventListener("scroll", () => {
+  // let ticking = false;
+  //   window.addEventListener("scroll", () => {
 
-    //     if (!ticking) {
-    //       window.requestAnimationFrame(() => {
-    //         ticking = false;
-    //         this.handleScroll();
+  //     if (!ticking) {
+  //       window.requestAnimationFrame(() => {
+  //         ticking = false;
+  //         this.handleScroll();
 
-    //       });
+  //       });
 
-    //       ticking = true;
-    //     }
-    // });
+  //       ticking = true;
+  //     }
+  // });
   // },
   // beforeUnmount() {
   //   window.removeEventListener("scroll", this.handleScroll);
@@ -319,15 +374,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-       class="top-10 pb-36 px-4 lg:px-10 height-constrained-more">
+  <div class="top-10 pb-36 px-4 lg:px-10 height-constrained-more">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner class="mt-2"
                  v-else-if="getDiscussionError"
                  :text="getDiscussionError.message" />
     <div v-else
          ref="discussionDetail"
-         :class="route.name==='DiscussionDetail'? ' overflow-y-scroll': ''"
+         :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
          class="
         mx-auto
         max-w-5xl
@@ -411,6 +465,31 @@ export default defineComponent({
               <ChevronDoubleDownIcon class="h-6 w-6"
                                      aria-hidden="true" />
             </button> -->
+            <Tag class="mt-2"
+                 v-for="tag in discussion.Tags"
+                 :tag="tag.text"
+                 :key="tag.text"
+                 :discussionId="discussionId" />
+            <div class="text-xs text-gray-600 mt-4">
+
+              <div v-if="route.name === 'DiscussionDetail' && channelsExceptCurrent.length > 0"
+                   class="mt-2">
+                Crossposted To Channels:
+              </div>
+              <ul>
+                <li v-for="channel in channelsExceptCurrent"
+                    :key="channel.uniqueName">
+                  <router-link :key="channel.uniqueName"
+                               class="understatedLink underline"
+                               :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`">
+                    <Tag class="mt-2"
+                         :tag="channel.uniqueName"
+                         :channel-mode="true" />
+                  </router-link>
+                </li>
+              </ul>
+            </div>
+            <p>Existing comment sections:</p>
             <ul>
               <li v-for="commentSection in discussion.CommentSections"
                   :key="commentSection.id">
@@ -418,32 +497,9 @@ export default defineComponent({
               </li>
             </ul>
             <CommentSection v-if="route.name === 'DiscussionDetail'"
-                            :comment-section-id="'d9f185ec-a865-4832-b5cd-7fef59f06e97'" />
+                            :commentSectionId="commentSectionId" />
           </div>
-          <Tag class="mt-2"
-               v-for="tag in discussion.Tags"
-               :tag="tag.text"
-               :key="tag.text"
-               :discussionId="discussionId" />
-          <div class="text-xs text-gray-600 mt-4">
 
-            <div v-if="route.name === 'DiscussionDetail' && channelsExceptCurrent.length > 0"
-                 class="mt-2">
-              Crossposted To Channels:
-            </div>
-            <ul>
-              <li v-for="channel in channelsExceptCurrent"
-                  :key="channel.uniqueName">
-                <router-link :key="channel.uniqueName"
-                             class="understatedLink underline"
-                             :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`">
-                  <Tag class="mt-2"
-                       :tag="channel.uniqueName"
-                       :channel-mode="true" />
-                </router-link>
-              </li>
-            </ul>
-          </div>
         </div>
         <!-- <Modal title="Comment on Post"
                :show="showCreateCommentModal"
@@ -476,8 +532,8 @@ export default defineComponent({
 </template>
 <style>
 .height-constrained-more {
-    max-height: 84vh;
-    height: 100% - 100px;
+  max-height: 84vh;
+  height: 100% - 100px;
 }
 </style>
 
