@@ -17,8 +17,11 @@ import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
 import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
-import { CREATE_COMMENT, CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import {
+  CREATE_COMMENT,
+  CREATE_COMMENT_SECTION,
+} from "@/graphQLData/comment/mutations";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -43,17 +46,17 @@ export default defineComponent({
     const router = useRouter();
 
     const discussionId = computed(() => {
-      if (typeof route.params.discussionId === 'string') {
+      if (typeof route.params.discussionId === "string") {
         return route.params.discussionId;
       }
-      return ''
+      return "";
     });
 
     const channelId = computed(() => {
-      if (typeof route.params.channelId === 'string') {
-        return route.params.channelId
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
       }
-      return ''
+      return "";
     });
 
     const {
@@ -64,7 +67,11 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const discussion = computed<DiscussionData>(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value || !discussionId.value) {
+      if (
+        getDiscussionLoading.value ||
+        getDiscussionError.value ||
+        !discussionId.value
+      ) {
         return null;
       }
       return getDiscussionResult.value.discussions[0];
@@ -88,14 +95,21 @@ export default defineComponent({
       return `posted ${relativeTime(discussion.value.createdAt)}`;
     });
 
-    const commentSectionId = ref('');
+    const commentSectionId = ref("");
 
     onDoneGettingDiscussion(() => {
-      const commentSection = discussion.value.CommentSections.find(
-        (commentSection) => commentSection.Channel.uniqueName === channelId.value
-      );
-      if (commentSection) {
-        commentSectionId.value = commentSection.id;
+      if (discussion.value && discussion.value.CommentSections) {
+        const commentSection = discussion.value.CommentSections.find(
+          (commentSection) => {
+            if (commentSection && commentSection.Channel) {
+              return commentSection.Channel.uniqueName === channelId.value;
+            }
+            return false;
+          }
+        );
+        if (commentSection) {
+          commentSectionId.value = commentSection.id;
+        }
       }
     });
 
@@ -151,7 +165,9 @@ export default defineComponent({
       isRootComment: true,
     };
 
-    const createFormValues = ref<CreateEditCommentFormValues>(createCommentDefaultValues);
+    const createFormValues = ref<CreateEditCommentFormValues>(
+      createCommentDefaultValues
+    );
 
     const createCommentInput = computed(() => {
       //   const tagConnections = formValues.value.tags.map(
@@ -183,21 +199,21 @@ export default defineComponent({
             connect: {
               where: {
                 node: {
-                  username: "Alice"
-                }
-              }
-            }
-          }
+                  username: "Alice",
+                },
+              },
+            },
+          },
         },
         CommentSection: {
           connect: {
             where: {
               node: {
-                id: commentSectionId.value
-              }
-            }
-          }
-        }
+                id: commentSectionId.value,
+              },
+            },
+          },
+        },
       };
 
       return [input];
@@ -208,76 +224,162 @@ export default defineComponent({
     } = useMutation(CREATE_COMMENT_SECTION, () => ({
       errorPolicy: "all",
       variables: {
-        createCommentSectionInput: [{
-          OriginalPost: {
-            Discussion: {
-              connect: {
-                where: {
-                  node: {
-                    id: discussionId.value
-                  }
-                }
-              }
-            }
-          },
-          Channel: {
-            connect: {where: {node: {uniqueName: channelId.value}}}
-          }
-        }]
-      },
-    }))
-
-    const {
-      mutate: createComment,
-      error: createCommentError,
-    } = useMutation(CREATE_COMMENT, () => ({
-      errorPolicy: "all",
-      variables: {
-        createCommentInput: createCommentInput.value,
-      },
-      update: (cache: any, result: any) => {
-        const newComment: CommentData =
-          result.data?.createComments?.comments[0];
-
-        // Will use readQuery and writeQuery to update the cache 
-        // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
-
-        const readQueryResult = cache.readQuery({
-          query: GET_COMMENT_SECTION,
-          // Provide any required variables in this object.
-          // Variables of mismatched types will return `null`.
-          variables: {
-            id: commentSectionId.value,
-          },
-        });
-
-        const existingCommentSectionData = readQueryResult?.commentSections[0]
-        //commentResult.commentSections[0].CommentsConnection.edges"
-        //   :key="comment.node.id"
-        let commentsCopy = [...existingCommentSectionData.Comments || []];
-
-        commentsCopy.unshift(newComment);
-
-        cache.writeQuery({
-          query: GET_COMMENT_SECTION,
-          data: {
-            ...readQueryResult,
-            commentSections: [
-              {
-                ...existingCommentSectionData,
-                Comments: commentsCopy,
+        createCommentSectionInput: [
+          {
+            OriginalPost: {
+              Discussion: {
+                connect: {
+                  where: {
+                    node: {
+                      id: discussionId.value,
+                    },
+                  },
+                },
               },
-            ],
+            },
+            Channel: {
+              connect: { where: { node: { uniqueName: channelId.value } } },
+            },
           },
-          variables: {
-            id: 'd9f185ec-a865-4832-b5cd-7fef59f06e97',
+        ],
+      },
+
+      update: (cache: any, result: any) => {
+        console.log("created with variables ", {
+          createCommentSectionInput: [
+            {
+              OriginalPost: {
+                Discussion: {
+                  connect: {
+                    where: {
+                      node: {
+                        id: discussionId.value,
+                      },
+                    },
+                  },
+                },
+              },
+              Channel: {
+                connect: { where: { node: { uniqueName: channelId.value } } },
+              },
+            },
+          ],
+        });
+
+        cache.modify({
+          fields: {
+            discussions() {
+              const readQueryResult = cache.readQuery({
+                query: GET_DISCUSSION,
+                // Provide any required variables in this object.
+                // Variables of mismatched types will return `null`.
+                variables: {
+                  id: discussionId.value,
+                },
+              });
+              if (readQueryResult) {
+                console.log("read query result ", readQueryResult);
+                const existingDiscussion = readQueryResult.discussions[0];
+                const newCommentSection =
+                  result.data?.createCommentSections?.commentSections[0];
+
+                console.log({
+                  newCommentSection: result.data?.createCommentSections,
+                });
+                cache.writeQuery({
+                  query: GET_DISCUSSION,
+                  data: {
+                    discussions: [
+                      {
+                        ...existingDiscussion,
+                        CommentSections: [
+                          ...existingDiscussion.CommentSections,
+                          newCommentSection,
+                        ],
+                      },
+                    ],
+                  },
+                  variables: {
+                    id: discussionId.value,
+                  },
+                });
+              }
+            },
           },
         });
+        console.log("finished updating cache for CS creation");
       },
     }));
 
+    const { mutate: createComment, error: createCommentError } = useMutation(
+      CREATE_COMMENT,
+      () => ({
+        errorPolicy: "all",
+        variables: {
+          createCommentInput: createCommentInput.value,
+        },
+        update: (cache: any, result: any) => {
+          console.log('started updating comment cache, newComment is ',result.data?.createComments?.comments[0])
+          const newComment: CommentData =
+            result.data?.createComments?.comments[0];
+
+          // Will use readQuery and writeQuery to update the cache
+          // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+          const readQueryResult = cache.readQuery({
+            query: GET_COMMENT_SECTION,
+            // Provide any required variables in this object.
+            // Variables of mismatched types will return `null`.
+            variables: {
+              id: commentSectionId.value,
+            },
+          });
+          console.log('read query result is ', readQueryResult)
+
+          // If the comment is the first, the comment section will also be new,
+          // so there won't be a preexisting query for getting the comment section.
+          if (!readQueryResult) {
+            return;
+          }
+
+          const existingCommentSectionData =
+            readQueryResult?.commentSections[0];
+          //commentResult.commentSections[0].CommentsConnection.edges"
+          //   :key="comment.node.id"
+          let commentsCopy: any = [];
+
+          if (
+            existingCommentSectionData &&
+            existingCommentSectionData.Comments
+          ) {
+            const existingComments = existingCommentSectionData.Comments
+            commentsCopy = [...existingComments];
+          }
+          console.log('comments comment section data ', existingCommentSectionData)
+
+          commentsCopy.unshift(newComment);
+
+          cache.writeQuery({
+            query: GET_COMMENT_SECTION,
+            data: {
+              ...readQueryResult,
+              commentSections: [
+                {
+                  ...existingCommentSectionData,
+                  Comments: commentsCopy,
+                },
+              ],
+            },
+            variables: {
+              id: commentSectionId.value,
+            },
+          });
+        },
+      })
+    );
+
     onDoneCreatingCommentSection((cs: any) => {
-      const data = cs.data.createCommentSections?.commentSections[0]
+      const data = cs.data.createCommentSections?.commentSections[0];
       commentSectionId.value = data.id;
       createComment();
     });
@@ -341,15 +443,14 @@ export default defineComponent({
     handleCreateComment() {
       // this.createFormValues.isRootComment = parentCommentData === null;
       if (!this.commentSectionId) {
-        this.createCommentSection()
+        this.createCommentSection();
       } else {
-        this.createComment()
+        this.createComment();
       }
-      
     },
     handleUpdateComment(event: any) {
-      this.createFormValues.text = event
-    }
+      this.createFormValues.text = event;
+    },
   },
   // mounted() {
   // let ticking = false;
@@ -370,54 +471,53 @@ export default defineComponent({
   //   window.removeEventListener("scroll", this.handleScroll);
   // },
 });
-
 </script>
 
 <template>
   <div class="top-10 pb-36 px-4 lg:px-10 height-constrained-more">
     <p v-if="getDiscussionLoading">Loading...</p>
-    <ErrorBanner class="mt-2"
-                 v-else-if="getDiscussionError"
-                 :text="getDiscussionError.message" />
-    <div v-else
-         ref="discussionDetail"
-         :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-         class="
-        mx-auto
-        max-w-5xl
-        space-y-2
-        bg-white
-        pb-4
-        rounded
-      ">
-      <router-link v-if="route.name === 'DiscussionDetail'"
-                   :to="`/channels/c/${channelId}/discussions`"
-                   class="underline text-xs text-gray-500 mb-4">
+    <ErrorBanner
+      class="mt-2"
+      v-else-if="getDiscussionError"
+      :text="getDiscussionError.message"
+    />
+    <div
+      v-else
+      ref="discussionDetail"
+      :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
+      class="mx-auto max-w-5xl space-y-2 bg-white pb-4 rounded"
+    >
+      <router-link
+        v-if="route.name === 'DiscussionDetail'"
+        :to="`/channels/c/${channelId}/discussions`"
+        class="underline text-xs text-gray-500 mb-4"
+      >
         <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
         {{ `Discussion list in c/${channelId}` }}
       </router-link>
       <div class="mt-4 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
-          <h1 class="
-              mt-4
-              font-bold
-              text-lg
-              sm:tracking-tight
-            ">
+          <h1 class="mt-4 font-bold text-lg sm:tracking-tight">
             {{ discussion.title }}
           </h1>
         </div>
-        <div v-if="!compactMode && channelId"
-             class="flex-shrink-0 flex md:mx-4">
+        <div
+          v-if="!compactMode && channelId"
+          class="flex-shrink-0 flex md:mx-4"
+        >
           <div class="float-right">
             <span>
-              <router-link :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`">
+              <router-link
+                :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+              >
                 <GenericButton :text="'Edit'" />
               </router-link>
-              <CreateButton v-if="$route.name === 'DiscussionDetail'"
-                            class="ml-2"
-                            :to="`/channels/c/${channelId}/discussions/create`"
-                            :label="'Create Discussion'" />
+              <CreateButton
+                v-if="$route.name === 'DiscussionDetail'"
+                class="ml-2"
+                :to="`/channels/c/${channelId}/discussions/create`"
+                :label="'Create Discussion'"
+              />
             </span>
           </div>
         </div>
@@ -425,35 +525,41 @@ export default defineComponent({
 
       <div>
         <div>
-          <div v-if="discussion.body"
-               class="body">
-            <Comment :comment-data="{
-              id: discussion.id,
-              CommentAuthor: {
-                username: discussion.Author.username,
-              },
-              text: discussion.body,
-              createdAt: discussion.createdAt,
-              updatedAt: discussion.updatedAt,
-              isRootComment: false
-            }"
-                     :readonly="true"
-                     @createComment="handleCreateComment"
-                     @updateComment="handleUpdateComment" />
+          <div v-if="discussion.body" class="body">
+            <Comment
+              :comment-data="{
+                id: discussion.id,
+                CommentAuthor: {
+                  username: discussion.Author.username,
+                },
+                text: discussion.body,
+                createdAt: discussion.createdAt,
+                updatedAt: discussion.updatedAt,
+                isRootComment: false,
+              }"
+              :readonly="true"
+              @createComment="handleCreateComment"
+              @updateComment="handleUpdateComment"
+            />
             <div class="text-xs text-gray-600 mt-4">
               <div>
-                <router-link v-if="discussion.Author"
-                             class="text-blue-800 underline"
-                             :to="`/u/${discussion.Author.username}`">
+                <router-link
+                  v-if="discussion.Author"
+                  class="text-blue-800 underline"
+                  :to="`/u/${discussion.Author.username}`"
+                >
                   {{ discussion.Author.username }}
                 </router-link>
                 {{ createdAt }}
                 <span v-if="discussion.updatedAt"> &#8226; </span>
                 {{ editedAt }}
                 &#8226;
-                <span v-if="!compactMode"
-                      class="underline font-medium text-gray-900 cursor-pointer"
-                      @click="deleteModalIsOpen = true">Delete</span>
+                <span
+                  v-if="!compactMode"
+                  class="underline font-medium text-gray-900 cursor-pointer"
+                  @click="deleteModalIsOpen = true"
+                  >Delete</span
+                >
               </div>
             </div>
             <!-- <button ref="scrollToCommentsButton"
@@ -465,41 +571,36 @@ export default defineComponent({
               <ChevronDoubleDownIcon class="h-6 w-6"
                                      aria-hidden="true" />
             </button> -->
-            <Tag class="mt-2"
-                 v-for="tag in discussion.Tags"
-                 :tag="tag.text"
-                 :key="tag.text"
-                 :discussionId="discussionId" />
+            <Tag
+              class="mt-2"
+              v-for="tag in discussion.Tags"
+              :tag="tag.text"
+              :key="tag.text"
+              :discussionId="discussionId"
+            />
             <div class="text-xs text-gray-600 mt-4">
-
-              <div v-if="route.name === 'DiscussionDetail' && channelsExceptCurrent.length > 0"
-                   class="mt-2">
+              <div
+                v-if="
+                  route.name === 'DiscussionDetail' &&
+                  channelsExceptCurrent.length > 0
+                "
+                class="mt-2"
+              >
                 Crossposted To Channels:
               </div>
-              <ul>
-                <li v-for="channel in channelsExceptCurrent"
-                    :key="channel.uniqueName">
-                  <router-link :key="channel.uniqueName"
-                               class="understatedLink underline"
-                               :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussionId}`">
-                    <Tag class="mt-2"
-                         :tag="channel.uniqueName"
-                         :channel-mode="true" />
-                  </router-link>
-                </li>
-              </ul>
+                    <Tag
+                      class="mt-2"
+                      v-for="channel in channelsExceptCurrent"
+                  :key="channel.uniqueName"
+                      :tag="channel.uniqueName"
+                      :channel-mode="true"
+                    />
             </div>
-            <p>Existing comment sections:</p>
-            <ul>
-              <li v-for="commentSection in discussion.CommentSections"
-                  :key="commentSection.id">
-                {{ commentSection.Channel.uniqueName }}
-              </li>
-            </ul>
-            <CommentSection v-if="route.name === 'DiscussionDetail'"
-                            :commentSectionId="commentSectionId" />
+            <CommentSection
+              v-if="route.name === 'DiscussionDetail'"
+              :commentSectionId="commentSectionId"
+            />
           </div>
-
         </div>
         <!-- <Modal title="Comment on Post"
                :show="showCreateCommentModal"
@@ -518,16 +619,20 @@ export default defineComponent({
                 
              </template>
         </Modal> -->
-        <WarningModal :title="'Delete Discussion'"
-                      :body="'Are you sure you want to delete this discussion?'"
-                      :open="deleteModalIsOpen"
-                      @close="deleteModalIsOpen = false"
-                      @primaryButtonClick="deleteDiscussion" />
+        <WarningModal
+          :title="'Delete Discussion'"
+          :body="'Are you sure you want to delete this discussion?'"
+          :open="deleteModalIsOpen"
+          @close="deleteModalIsOpen = false"
+          @primaryButtonClick="deleteDiscussion"
+        />
       </div>
     </div>
-    <ErrorBanner class="mt-2"
-                 v-if="deleteDiscussionError"
-                 :text="deleteDiscussionError.message" />
+    <ErrorBanner
+      class="mt-2"
+      v-if="deleteDiscussionError"
+      :text="deleteDiscussionError.message"
+    />
   </div>
 </template>
 <style>

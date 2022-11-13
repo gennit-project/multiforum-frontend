@@ -8,6 +8,9 @@ export const CREATE_COMMENT = gql`
       comments {
         id
         text
+        Channel {
+          uniqueName
+        }
         CommentAuthor {
           ... on User {
             username
@@ -34,7 +37,7 @@ export const CREATE_COMMENT = gql`
   
 
 export const CREATE_COMMENT_SECTION = gql`
-mutation createDiscussion(
+mutation createCommentSection(
     $createCommentSectionInput: [CommentSectionCreateInput!]!
   ){
 	createCommentSections(
@@ -48,6 +51,9 @@ mutation createDiscussion(
 				  title
 		  	}
 			}
+      Channel {
+        uniqueName
+      }
       Comments {
         id
         text
@@ -55,6 +61,9 @@ mutation createDiscussion(
           ... on User {
             username
           }
+        }
+        ChildComments {
+          id
         }
         createdAt
         updatedAt

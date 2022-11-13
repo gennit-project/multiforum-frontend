@@ -25,6 +25,9 @@ export const GET_COMMENT_SECTION = gql`
       }){
             id
             text
+            Channel {
+              uniqueName
+            }
             CommentAuthor {
               ... on User {
                 username
