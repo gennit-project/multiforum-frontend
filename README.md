@@ -1,5 +1,7 @@
 # gennit-vue
 
+Events, discussions and comments
+
 ## Project setup
 
 ```
