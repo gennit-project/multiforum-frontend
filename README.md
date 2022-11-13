@@ -1,6 +1,7 @@
 # gennit-vue
 
 Events, discussions and comments
+Last updated Nov 12, 2022
 
 ## Project setup
 
