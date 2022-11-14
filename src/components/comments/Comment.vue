@@ -56,6 +56,18 @@ export default defineComponent({
     updateText(text: string) {
       this.textCopy = text;
     },
+    handleClickEdit(e: any){
+
+    },
+    handleClickDelete(e: any) {
+
+    },
+    handleClickCreate(){
+
+    },
+    handleUpdateReply(e: any, id: string) {
+      
+    }
   },
   computed: {
     createdAtFormatted() {
@@ -110,7 +122,7 @@ export default defineComponent({
                        :preview="false"
                        language='en-US'
                        previewTheme='github'
-                       @update:model-value="$emit('update', textCopy)">
+                       @update:model-value="$emit('updateComment', textCopy)">
               <template #defToolbars>
                 <emoji-extension :editor-id="editorId"
                                  @on-change="updateText" />
@@ -157,9 +169,9 @@ export default defineComponent({
                 showReplyEditor = !showReplyEditor
               }">Reply</span>
         <span class="underline cursor-pointer hover:text-black"
-              @click="$emit('delete', commentData.id)">Delete</span>
+              @click="$emit('deleteComment', commentData.id)">Delete</span>
         <span class="underline cursor-pointer hover:text-black"
-              @click="$emit('edit', commentData)">Edit</span>
+              @click="$emit('clickEditComment', commentData)">Edit</span>
       </div>
       <div v-if="compact && showReplyEditor"
            class="mt-1 border-t-2 flex space-x-2 py-2"
@@ -184,8 +196,20 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="pl-3">
-        <slot></slot>
+      <div id="childComments" class="pl-3">
+        
+        <Comment
+          v-for="childComment, i in commentData.ChildComments"
+          :key="i"
+          :compact="true"
+          :commentData="childComment"
+          :parentCommentId="commentData.id"
+          :readonly="true"
+          @edit="handleClickEdit($event)"
+          @delete="handleClickDelete($event)"
+          @createComment="handleClickCreate"
+          @updateComment="handleUpdateReply($event, commentData.id)"
+        />
       </div>
       
 

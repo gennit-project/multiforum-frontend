@@ -37,22 +37,23 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const commentSectionIdRef = ref(props.commentSectionId);
+    // const commentSectionIdRef = ref(props.commentSectionId);
+
+    const commentSectionId = computed(() => {
+      // Makes component rerender when comment section ID changes
+      return props.commentSectionId;
+    });
 
     const {
       result: commentResult,
       error: commentError,
       loading: commentLoading,
-      onResult: onDoneGettingComments,
-      //   refetch: refetchComments,
+      refetch: refetchComments,
       //   fetchMore,
     } = useQuery(GET_COMMENT_SECTION, {
-      id: commentSectionIdRef,
+      id: commentSectionId,
       // limit: 25,
       // offset: 0,
-    });
-    onDoneGettingComments((res: any) => {
-      console.log("fetched comments", res);
     });
     const commentToDelete = ref("");
     const commentToEdit: Ref<CommentData | null> = ref(null);
@@ -289,15 +290,16 @@ export default defineComponent({
       commentToDelete,
       commentResult,
       createFormValues,
+      editComment,
       deleteComment,
       editFormValues,
       createComment,
       createCommentError,
       createCommentInput,
+      refetchComments,
       showCreateCommentModal: ref(false),
       showEditCommentModal: ref(false),
       showDeleteCommentModal: ref(false),
-      editComment,
       //   loadMore,
       //   reachedEndOfResults,
       route,
@@ -367,24 +369,11 @@ export default defineComponent({
         :compact="true"
         :commentData="comment"
         :readonly="true"
-        @edit="handleClickEdit($event)"
-        @delete="handleClickDelete($event)"
+        @clickEditComment="handleClickEdit($event)"
+        @deleteComment="handleClickDelete($event)"
         @createComment="handleClickCreate"
         @updateComment="handleUpdateReply($event, comment.id)"
-      >
-        <Comment
-          v-for="childComment in comment.ChildComments"
-          :key="childComment.id"
-          :compact="true"
-          :commentData="childComment"
-          :parentCommentId="comment.id"
-          :readonly="true"
-          @edit="handleClickEdit($event)"
-          @delete="handleClickDelete($event)"
-          @createComment="handleClickCreate"
-          @updateComment="handleUpdateReply($event, comment.id)"
-        />
-      </Comment>
+      />
     </div>
     <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">
       <LoadMore

@@ -24,6 +24,9 @@ const cache = new InMemoryCache({
         Channels: {
           merge: false,
         },
+        CommentSections: {
+          merge: false
+        }
       },
     },
     Event: {

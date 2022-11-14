@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
+import type { Ref } from "vue";
 import Tag from "@/components/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
@@ -17,7 +18,6 @@ import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
 import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import {
   CREATE_COMMENT,
   CREATE_COMMENT_SECTION,
@@ -284,7 +284,8 @@ export default defineComponent({
                   result.data?.createCommentSections?.commentSections[0];
 
                 console.log({
-                  newCommentSection: result.data?.createCommentSections,
+                  newCommentSection,
+                  existingCommentSections: existingDiscussion.CommentSections,
                 });
                 cache.writeQuery({
                   query: GET_DISCUSSION,
@@ -311,82 +312,37 @@ export default defineComponent({
       },
     }));
 
-    const { mutate: createComment, error: createCommentError } = useMutation(
-      CREATE_COMMENT,
-      () => ({
-        errorPolicy: "all",
-        variables: {
-          createCommentInput: createCommentInput.value,
-        },
-        update: (cache: any, result: any) => {
-          console.log('started updating comment cache, newComment is ',result.data?.createComments?.comments[0])
-          const newComment: CommentData =
-            result.data?.createComments?.comments[0];
+    const {
+      mutate: createComment,
+      error: createCommentError,
+      onDone: onDoneCreatingComment,
+    } = useMutation(CREATE_COMMENT, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentInput: createCommentInput.value,
+      },
+    }));
 
-          // Will use readQuery and writeQuery to update the cache
-          // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
-
-          const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
-            // Provide any required variables in this object.
-            // Variables of mismatched types will return `null`.
-            variables: {
-              id: commentSectionId.value,
-            },
-          });
-          console.log('read query result is ', readQueryResult)
-
-          // If the comment is the first, the comment section will also be new,
-          // so there won't be a preexisting query for getting the comment section.
-          if (!readQueryResult) {
-            return;
-          }
-
-          const existingCommentSectionData =
-            readQueryResult?.commentSections[0];
-          //commentResult.commentSections[0].CommentsConnection.edges"
-          //   :key="comment.node.id"
-          let commentsCopy: any = [];
-
-          if (
-            existingCommentSectionData &&
-            existingCommentSectionData.Comments
-          ) {
-            const existingComments = existingCommentSectionData.Comments
-            commentsCopy = [...existingComments];
-          }
-          console.log('comments comment section data ', existingCommentSectionData)
-
-          commentsCopy.unshift(newComment);
-
-          cache.writeQuery({
-            query: GET_COMMENT_SECTION,
-            data: {
-              ...readQueryResult,
-              commentSections: [
-                {
-                  ...existingCommentSectionData,
-                  Comments: commentsCopy,
-                },
-              ],
-            },
-            variables: {
-              id: commentSectionId.value,
-            },
-          });
-        },
-      })
-    );
+    const commentSectionRef = ref<InstanceType<typeof CommentSection>>();
 
     onDoneCreatingCommentSection((cs: any) => {
       const data = cs.data.createCommentSections?.commentSections[0];
       commentSectionId.value = data.id;
-      createComment();
+    });
+    onDoneCreatingComment(() => {
+      // Call the refetch comments function from the CommentSection
+      // component so that the new comment appears
+
+      if (commentSectionRef.value) {
+        console.log('we have the comment section refs')
+        commentSectionRef.value.refetchComments();
+      }
     });
     return {
       channelId,
       channelsExceptCurrent,
       commentSectionId,
+      commentSectionRef,
       createComment,
       createCommentError,
       createCommentSection,
@@ -403,11 +359,15 @@ export default defineComponent({
       discussion,
       relativeTime,
       route,
+      router,
       showCreateCommentModal: ref(false),
       // showScrollToCommentsButton
     };
   },
   methods: {
+    refetch(){
+      console.log('refs ', this.$refs)
+    },
     filterDiscussionsByTag(tag: string) {
       this.router.push({
         name: "FilterDiscussionsByTag",
@@ -440,13 +400,12 @@ export default defineComponent({
     //     }
     //   }
     // },
-    handleCreateComment() {
+    async handleCreateComment() {
       // this.createFormValues.isRootComment = parentCommentData === null;
       if (!this.commentSectionId) {
-        this.createCommentSection();
-      } else {
-        this.createComment();
+        await this.createCommentSection();
       }
+      this.createComment();
     },
     handleUpdateComment(event: any) {
       this.createFormValues.text = event;
@@ -578,6 +537,7 @@ export default defineComponent({
               :key="tag.text"
               :discussionId="discussionId"
             />
+            <button @click="printRefs">print refs</button>
             <div class="text-xs text-gray-600 mt-4">
               <div
                 v-if="
@@ -588,15 +548,25 @@ export default defineComponent({
               >
                 Crossposted To Channels:
               </div>
-                    <Tag
-                      class="mt-2"
-                      v-for="channel in channelsExceptCurrent"
-                  :key="channel.uniqueName"
-                      :tag="channel.uniqueName"
-                      :channel-mode="true"
-                    />
+              <Tag
+                class="mt-2"
+                v-for="channel in channelsExceptCurrent"
+                :key="channel.uniqueName"
+                :tag="channel.uniqueName"
+                :channel-mode="true"
+                @click="
+                  router.push({
+                    name: 'DiscussionDetail',
+                    params: {
+                      discussionId,
+                      channelId: channel.uniqueName,
+                    },
+                  })
+                "
+              />
             </div>
             <CommentSection
+              ref="commentSectionRef"
               v-if="route.name === 'DiscussionDetail'"
               :commentSectionId="commentSectionId"
             />
