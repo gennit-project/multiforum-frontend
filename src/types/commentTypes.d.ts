@@ -28,6 +28,7 @@ export type CommentData = {
   isRootComment: Boolean
   CommentSection?: CommentSectionData
   ParentComment?: Comment
+  ChildCommentsAggregate: Number
   ChildComments?: [Comment]
   deleted?: boolean
   updatedAt?: string

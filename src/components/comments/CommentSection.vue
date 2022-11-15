@@ -17,7 +17,6 @@ import PencilIcon from "../icons/PencilIcon.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import TextEditor from "./TextEditor.vue";
 import type { Ref } from "vue";
-import { StringValueNode } from "graphql";
 
 export default defineComponent({
   props: {
@@ -48,7 +47,6 @@ export default defineComponent({
       result: commentResult,
       error: commentError,
       loading: commentLoading,
-      refetch: refetchComments,
       //   fetchMore,
     } = useQuery(GET_COMMENT_SECTION, {
       id: commentSectionId,
@@ -204,20 +202,15 @@ export default defineComponent({
         },
         update: (cache: any, result: any) => {
           // This is the logic for updating the cache
-          // after replying to a comment. For the logic
-          // to create a root level comment, see the
+          // after replying to a root level comment, see the
           // parent component.
-          console.log("got this far");
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
-          console.log("new comment", newComment);
           // Will use readQuery and writeQuery to update the cache
           // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
           const readQueryResult = cache.readQuery({
             query: GET_COMMENT_SECTION,
-            // Provide any required variables in this object.
-            // Variables of mismatched types will return `null`.
             variables: {
               id: props.commentSectionId,
             },
@@ -225,9 +218,6 @@ export default defineComponent({
 
           const existingCommentSectionData =
             readQueryResult?.commentSections[0];
-          //commentResult.commentSections[0].CommentsConnection.edges"
-          //   :key="comment.node.id"
-          console.log("existing cs data ", existingCommentSectionData);
           let rootCommentsCopy = [
             ...(existingCommentSectionData.Comments || []),
           ];
@@ -296,7 +286,6 @@ export default defineComponent({
       createComment,
       createCommentError,
       createCommentInput,
-      refetchComments,
       showCreateCommentModal: ref(false),
       showEditCommentModal: ref(false),
       showDeleteCommentModal: ref(false),
@@ -307,7 +296,7 @@ export default defineComponent({
   },
 
   methods: {
-    handleUpdateReply(text: StringValueNode, parentCommentId: string) {
+    handleUpdateReply(text: string, parentCommentId: string) {
       if (!parentCommentId) {
         throw new Error("parentCommentId is required to reply to a comment");
       }
@@ -346,7 +335,7 @@ export default defineComponent({
       "
     >
       <h2 class="text-xl" id="comments" ref="commentSectionHeader">
-        {{ `Top Comments (0)` }}
+        {{ `Comments (0)` }}
       </h2>
       <p>There are no comments yet.</p>
     </div>
@@ -359,7 +348,7 @@ export default defineComponent({
         class="text-xl"
       >
         {{
-          `Top Comments (${commentResult.commentSections[0].Comments.length})`
+          `Comments (${commentResult.commentSections[0].CommentsAggregate.count})`
         }}
       </h2>
 

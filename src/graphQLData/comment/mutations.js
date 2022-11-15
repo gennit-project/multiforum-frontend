@@ -21,6 +21,9 @@ export const CREATE_COMMENT = gql`
         }
         createdAt
         updatedAt
+        ChildCommentsAggregate {
+          count
+        }
         ChildComments {
           id
           text
@@ -61,6 +64,9 @@ mutation createCommentSection(
           ... on User {
             username
           }
+        }
+        ChildCommentsAggregate {
+          count
         }
         ChildComments {
           id

@@ -20,6 +20,9 @@ export const GET_COMMENT_SECTION = gql`
           }
         }
       }
+      CommentsAggregate {
+        count
+      }
       Comments (where: {
         isRootComment: true
       }){
@@ -35,6 +38,9 @@ export const GET_COMMENT_SECTION = gql`
             }
             createdAt
             updatedAt
+            ChildCommentsAggregate {
+              count
+            }
             ChildComments {
               id 
               text
@@ -43,8 +49,36 @@ export const GET_COMMENT_SECTION = gql`
                   username
                 }
               }
+              ChildCommentsAggregate {
+                count
+              }
             }
       }
     }
+}
+`
+
+export const GET_COMMENT_REPLIES = gql`
+query getCommentWithReplies($id: ID!){
+	comments(where: {
+		id: $id
+	}){
+    id
+		ChildComments {
+			id
+      CommentAuthor {
+        ... on User {
+          username
+        }
+      }
+			text
+      ParentComment {
+        id
+      }
+      ChildCommentsAggregate {
+        count
+      }
+		}
+	}
 }
 `

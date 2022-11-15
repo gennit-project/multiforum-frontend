@@ -22,6 +22,7 @@ import {
   CREATE_COMMENT,
   CREATE_COMMENT_SECTION,
 } from "@/graphQLData/comment/mutations";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -245,26 +246,6 @@ export default defineComponent({
       },
 
       update: (cache: any, result: any) => {
-        console.log("created with variables ", {
-          createCommentSectionInput: [
-            {
-              OriginalPost: {
-                Discussion: {
-                  connect: {
-                    where: {
-                      node: {
-                        id: discussionId.value,
-                      },
-                    },
-                  },
-                },
-              },
-              Channel: {
-                connect: { where: { node: { uniqueName: channelId.value } } },
-              },
-            },
-          ],
-        });
 
         cache.modify({
           fields: {
@@ -278,15 +259,9 @@ export default defineComponent({
                 },
               });
               if (readQueryResult) {
-                console.log("read query result ", readQueryResult);
                 const existingDiscussion = readQueryResult.discussions[0];
                 const newCommentSection =
                   result.data?.createCommentSections?.commentSections[0];
-
-                console.log({
-                  newCommentSection,
-                  existingCommentSections: existingDiscussion.CommentSections,
-                });
                 cache.writeQuery({
                   query: GET_DISCUSSION,
                   data: {
@@ -308,19 +283,58 @@ export default defineComponent({
             },
           },
         });
-        console.log("finished updating cache for CS creation");
       },
     }));
 
     const {
       mutate: createComment,
       error: createCommentError,
-      onDone: onDoneCreatingComment,
     } = useMutation(CREATE_COMMENT, () => ({
       errorPolicy: "all",
       variables: {
         createCommentInput: createCommentInput.value,
       },
+      update: (cache: any, result: any) => {
+          // This is the logic for updating the cache
+          // after replying to a comment. For the logic
+          // to create a root level comment, see the
+          // parent component.
+          const newComment: CommentData =
+            result.data?.createComments?.comments[0];
+          // Will use readQuery and writeQuery to update the cache
+          // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+          const readQueryResult = cache.readQuery({
+            query: GET_COMMENT_SECTION,
+            variables: {
+              id: commentSectionId.value,
+            },
+          });
+
+          const existingCommentSectionData =
+            readQueryResult?.commentSections[0];
+          //commentResult.commentSections[0].CommentsConnection.edges"
+          //   :key="comment.node.id"
+          let rootCommentsCopy = [ newComment,
+            ...(existingCommentSectionData.Comments || []),
+          ];
+
+          cache.writeQuery({
+            query: GET_COMMENT_SECTION,
+            data: {
+              ...readQueryResult,
+              commentSections: [
+                {
+                  ...existingCommentSectionData,
+                  Comments: rootCommentsCopy,
+                },
+              ],
+            },
+            variables: {
+              id: commentSectionId.value,
+            },
+          });
+        },
     }));
 
     const commentSectionRef = ref<InstanceType<typeof CommentSection>>();
@@ -328,15 +342,6 @@ export default defineComponent({
     onDoneCreatingCommentSection((cs: any) => {
       const data = cs.data.createCommentSections?.commentSections[0];
       commentSectionId.value = data.id;
-    });
-    onDoneCreatingComment(() => {
-      // Call the refetch comments function from the CommentSection
-      // component so that the new comment appears
-
-      if (commentSectionRef.value) {
-        console.log('we have the comment section refs')
-        commentSectionRef.value.refetchComments();
-      }
     });
     return {
       channelId,
@@ -365,9 +370,6 @@ export default defineComponent({
     };
   },
   methods: {
-    refetch(){
-      console.log('refs ', this.$refs)
-    },
     filterDiscussionsByTag(tag: string) {
       this.router.push({
         name: "FilterDiscussionsByTag",
