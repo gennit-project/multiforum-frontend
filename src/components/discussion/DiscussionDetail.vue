@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import type { Ref } from "vue";
 import Tag from "@/components/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
@@ -17,6 +16,10 @@ import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
+import Avatar from "@/components/Avatar.vue";
+import TextEditor from "@/components/comments/TextEditor.vue";
+import CancelButton from "@/components/CancelButton.vue";
+import SaveButton from "@/components/SaveButton.vue";
 import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
 import {
   CREATE_COMMENT,
@@ -27,13 +30,17 @@ import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
+    Avatar,
+    CancelButton,
     Comment,
     CommentSection,
     CreateButton,
     ErrorBanner,
     GenericButton,
     LeftArrowIcon,
+    SaveButton,
     Tag,
+    TextEditor,
     WarningModal,
   },
   props: {
@@ -316,9 +323,16 @@ export default defineComponent({
           //commentResult.commentSections[0].CommentsConnection.edges"
           //   :key="comment.node.id"
           let rootCommentsCopy = [ newComment,
-            ...(existingCommentSectionData.Comments || []),
+            ...(existingCommentSectionData?.Comments || []),
           ];
-
+          let existingCommentAggregate = existingCommentSectionData?.CommentsAggregate ? existingCommentSectionData.CommentsAggregate : null
+          let newCommentAggregate = null
+          if (existingCommentAggregate) {
+             newCommentAggregate = {
+              ...existingCommentAggregate,
+              count: existingCommentAggregate.count + 1
+             }
+          }
           cache.writeQuery({
             query: GET_COMMENT_SECTION,
             data: {
@@ -327,6 +341,7 @@ export default defineComponent({
                 {
                   ...existingCommentSectionData,
                   Comments: rootCommentsCopy,
+                  CommentsAggregate: newCommentAggregate ? newCommentAggregate : existingCommentAggregate
                 },
               ],
             },
@@ -366,6 +381,7 @@ export default defineComponent({
       route,
       router,
       showCreateCommentModal: ref(false),
+      showEditorInCommentSection: ref(false)
       // showScrollToCommentsButton
     };
   },
@@ -502,27 +518,7 @@ export default defineComponent({
               @createComment="handleCreateComment"
               @updateComment="handleUpdateComment"
             />
-            <div class="text-xs text-gray-600 mt-4">
-              <div>
-                <router-link
-                  v-if="discussion.Author"
-                  class="text-blue-800 underline"
-                  :to="`/u/${discussion.Author.username}`"
-                >
-                  {{ discussion.Author.username }}
-                </router-link>
-                {{ createdAt }}
-                <span v-if="discussion.updatedAt"> &#8226; </span>
-                {{ editedAt }}
-                &#8226;
-                <span
-                  v-if="!compactMode"
-                  class="underline font-medium text-gray-900 cursor-pointer"
-                  @click="deleteModalIsOpen = true"
-                  >Delete</span
-                >
-              </div>
-            </div>
+            
             <!-- <button ref="scrollToCommentsButton"
                     v-show="showScrollToCommentsButton"
                     aria-label="Scroll to comments"
@@ -539,7 +535,6 @@ export default defineComponent({
               :key="tag.text"
               :discussionId="discussionId"
             />
-            <button @click="printRefs">print refs</button>
             <div class="text-xs text-gray-600 mt-4">
               <div
                 v-if="
@@ -567,12 +562,77 @@ export default defineComponent({
                 "
               />
             </div>
-            <CommentSection
+            
+          </div>
+          <div class="text-xs text-gray-600 mt-4">
+            <div>
+              <router-link
+                v-if="discussion.Author"
+                class="text-blue-800 underline"
+                :to="`/u/${discussion.Author.username}`"
+              >
+                {{ discussion.Author.username }}
+              </router-link>
+              {{ createdAt }}
+              <span v-if="discussion.updatedAt"> &#8226; </span>
+              {{ editedAt }}
+              &#8226;
+              <span
+                v-if="!compactMode"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="deleteModalIsOpen = true"
+                >Delete</span
+              >
+            </div>
+          </div>
+         
+
+            <div class="mt-1 flex space-x-2 py-2 px-3">
+              <Avatar class="h-5 w-5" />
+              <textarea
+                v-if="!showEditorInCommentSection"
+                id="addcomment"
+                @click="showEditorInCommentSection = true"
+                name="addcomment"
+                rows="1"
+                placeholder="Write a reply"
+                class="
+                  block
+                  w-full
+                  rounded-md
+                  border-gray-300
+                  shadow-sm
+                  text-sm
+                  focus:border-indigo-500 focus:ring-indigo-500
+                "
+              />
+              <div v-else>
+                <TextEditor
+                  class="mb-3 h-48"
+                  :placeholder="'Please be kind'"
+                  @update="handleUpdateComment"
+                />
+                <!-- <ErrorBanner v-if="createCommentError"
+                             :text="createCommentError.message" /> -->
+                <div class="flex justify-start">
+                  <CancelButton @click="showEditorInCommentSection = false" />
+                  <SaveButton
+                    @click.prevent="
+                      () => {
+                        handleCreateComment()
+                        showEditorInCommentSection = false;
+                      }
+                    "
+                    :disabled="this.createFormValues.text.length === 0"
+                  />
+                </div>
+              </div>
+            </div>
+             <CommentSection
               ref="commentSectionRef"
               v-if="route.name === 'DiscussionDetail'"
               :commentSectionId="commentSectionId"
             />
-          </div>
         </div>
         <!-- <Modal title="Comment on Post"
                :show="showCreateCommentModal"
