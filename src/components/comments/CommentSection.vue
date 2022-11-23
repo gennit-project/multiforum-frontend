@@ -22,7 +22,7 @@ export default defineComponent({
   props: {
     commentSectionId: {
       type: String,
-      default: "",
+      required: true
     },
   },
   components: {

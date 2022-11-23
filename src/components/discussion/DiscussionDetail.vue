@@ -71,7 +71,6 @@ export default defineComponent({
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
-      onResult: onDoneGettingDiscussion,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const discussion = computed<DiscussionData>(() => {
@@ -103,10 +102,11 @@ export default defineComponent({
       return `posted ${relativeTime(discussion.value.createdAt)}`;
     });
 
-    const commentSectionId = ref("");
-
-    onDoneGettingDiscussion(() => {
-      if (discussion.value && discussion.value.CommentSections) {
+    const commentSectionId = computed(() => {
+      if (!discussion.value) {
+        return ''
+      }
+      if (discussion.value.CommentSections) {
         const commentSection = discussion.value.CommentSections.find(
           (commentSection) => {
             if (commentSection && commentSection.Channel) {
@@ -116,10 +116,12 @@ export default defineComponent({
           }
         );
         if (commentSection) {
-          commentSectionId.value = commentSection.id;
+          return commentSection.id;
         }
       }
-    });
+      return ''
+    })
+
 
     const channelsExceptCurrent = computed(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
