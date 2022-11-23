@@ -25,7 +25,7 @@ import {
   CREATE_COMMENT,
   CREATE_COMMENT_SECTION,
 } from "@/graphQLData/comment/mutations";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries"
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -104,7 +104,7 @@ export default defineComponent({
 
     const commentSectionId = computed(() => {
       if (!discussion.value) {
-        return ''
+        return "";
       }
       if (discussion.value.CommentSections) {
         const commentSection = discussion.value.CommentSections.find(
@@ -119,18 +119,24 @@ export default defineComponent({
           return commentSection.id;
         }
       }
-      return ''
-    })
+      return "";
+    });
 
-
-    const channelsExceptCurrent = computed(() => {
+    const channelLinks = computed(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
         return [];
       }
 
-      return discussion.value.Channels.filter((channel: ChannelData) => {
-        return channel.uniqueName !== channelId.value;
-      });
+      // On the discussion detail page, hide the current channel because
+      // that would link to the current page.
+      if (route.name === "DiscussionDetail") {
+        return discussion.value.Channels.filter((channel: ChannelData) => {
+          return channel.uniqueName !== channelId.value;
+        });
+      }
+
+      // On the preview, show all of the links as options.
+      return discussion.value.Channels;
     });
 
     const {
@@ -255,7 +261,6 @@ export default defineComponent({
       },
 
       update: (cache: any, result: any) => {
-
         cache.modify({
           fields: {
             discussions() {
@@ -295,15 +300,14 @@ export default defineComponent({
       },
     }));
 
-    const {
-      mutate: createComment,
-      error: createCommentError,
-    } = useMutation(CREATE_COMMENT, () => ({
-      errorPolicy: "all",
-      variables: {
-        createCommentInput: createCommentInput.value,
-      },
-      update: (cache: any, result: any) => {
+    const { mutate: createComment, error: createCommentError } = useMutation(
+      CREATE_COMMENT,
+      () => ({
+        errorPolicy: "all",
+        variables: {
+          createCommentInput: createCommentInput.value,
+        },
+        update: (cache: any, result: any) => {
           // This is the logic for updating the cache
           // after replying to a comment. For the logic
           // to create a root level comment, see the
@@ -324,16 +328,20 @@ export default defineComponent({
             readQueryResult?.commentSections[0];
           //commentResult.commentSections[0].CommentsConnection.edges"
           //   :key="comment.node.id"
-          let rootCommentsCopy = [ newComment,
+          let rootCommentsCopy = [
+            newComment,
             ...(existingCommentSectionData?.Comments || []),
           ];
-          let existingCommentAggregate = existingCommentSectionData?.CommentsAggregate ? existingCommentSectionData.CommentsAggregate : null
-          let newCommentAggregate = null
+          let existingCommentAggregate =
+            existingCommentSectionData?.CommentsAggregate
+              ? existingCommentSectionData.CommentsAggregate
+              : null;
+          let newCommentAggregate = null;
           if (existingCommentAggregate) {
-             newCommentAggregate = {
+            newCommentAggregate = {
               ...existingCommentAggregate,
-              count: existingCommentAggregate.count + 1
-             }
+              count: existingCommentAggregate.count + 1,
+            };
           }
           cache.writeQuery({
             query: GET_COMMENT_SECTION,
@@ -343,7 +351,9 @@ export default defineComponent({
                 {
                   ...existingCommentSectionData,
                   Comments: rootCommentsCopy,
-                  CommentsAggregate: newCommentAggregate ? newCommentAggregate : existingCommentAggregate
+                  CommentsAggregate: newCommentAggregate
+                    ? newCommentAggregate
+                    : existingCommentAggregate,
                 },
               ],
             },
@@ -352,7 +362,8 @@ export default defineComponent({
             },
           });
         },
-    }));
+      })
+    );
 
     const commentSectionRef = ref<InstanceType<typeof CommentSection>>();
 
@@ -362,7 +373,7 @@ export default defineComponent({
     });
     return {
       channelId,
-      channelsExceptCurrent,
+      channelLinks,
       commentSectionId,
       commentSectionRef,
       createComment,
@@ -383,7 +394,7 @@ export default defineComponent({
       route,
       router,
       showCreateCommentModal: ref(false),
-      showEditorInCommentSection: ref(false)
+      showEditorInCommentSection: ref(false),
       // showScrollToCommentsButton
     };
   },
@@ -520,7 +531,7 @@ export default defineComponent({
               @createComment="handleCreateComment"
               @updateComment="handleUpdateComment"
             />
-            
+
             <!-- <button ref="scrollToCommentsButton"
                     v-show="showScrollToCommentsButton"
                     aria-label="Scroll to comments"
@@ -530,41 +541,39 @@ export default defineComponent({
               <ChevronDoubleDownIcon class="h-6 w-6"
                                      aria-hidden="true" />
             </button> -->
+          </div>
+          <Tag
+            class="mt-2"
+            v-for="tag in discussion.Tags"
+            :tag="tag.text"
+            :key="tag.text"
+            :discussionId="discussionId"
+          />
+          <div class="text-xs text-gray-600 mt-4">
+            <div
+              v-if="
+                route.name === 'DiscussionDetail' && channelLinks.length > 0
+              "
+              class="mt-2"
+            >
+              Crossposted To Channels:
+            </div>
             <Tag
               class="mt-2"
-              v-for="tag in discussion.Tags"
-              :tag="tag.text"
-              :key="tag.text"
-              :discussionId="discussionId"
+              v-for="channel in channelLinks"
+              :key="channel.uniqueName"
+              :tag="channel.uniqueName"
+              :channel-mode="true"
+              @click="
+                router.push({
+                  name: 'DiscussionDetail',
+                  params: {
+                    discussionId,
+                    channelId: channel.uniqueName,
+                  },
+                })
+              "
             />
-            <div class="text-xs text-gray-600 mt-4">
-              <div
-                v-if="
-                  route.name === 'DiscussionDetail' &&
-                  channelsExceptCurrent.length > 0
-                "
-                class="mt-2"
-              >
-                Crossposted To Channels:
-              </div>
-              <Tag
-                class="mt-2"
-                v-for="channel in channelsExceptCurrent"
-                :key="channel.uniqueName"
-                :tag="channel.uniqueName"
-                :channel-mode="true"
-                @click="
-                  router.push({
-                    name: 'DiscussionDetail',
-                    params: {
-                      discussionId,
-                      channelId: channel.uniqueName,
-                    },
-                  })
-                "
-              />
-            </div>
-            
           </div>
           <div class="text-xs text-gray-600 mt-4">
             <div>
@@ -587,54 +596,53 @@ export default defineComponent({
               >
             </div>
           </div>
-         
 
-            <div class="mt-1 flex space-x-2 py-2 px-3">
-              <Avatar class="h-5 w-5" />
-              <textarea
-                v-if="!showEditorInCommentSection"
-                id="addcomment"
-                @click="showEditorInCommentSection = true"
-                name="addcomment"
-                rows="1"
-                placeholder="Write a reply"
-                class="
-                  block
-                  w-full
-                  rounded-md
-                  border-gray-300
-                  shadow-sm
-                  text-sm
-                  focus:border-indigo-500 focus:ring-indigo-500
-                "
+          <div v-if="!discussion.body" class="mt-1 flex space-x-2 py-2 px-3">
+            <Avatar class="h-5 w-5" />
+            <textarea
+              v-if="!showEditorInCommentSection"
+              id="addcomment"
+              @click="showEditorInCommentSection = true"
+              name="addcomment"
+              rows="1"
+              placeholder="Write a reply"
+              class="
+                block
+                w-full
+                rounded-md
+                border-gray-300
+                shadow-sm
+                text-sm
+                focus:border-indigo-500 focus:ring-indigo-500
+              "
+            />
+            <div v-else>
+              <TextEditor
+                class="mb-3 h-48"
+                :placeholder="'Please be kind'"
+                @update="handleUpdateComment"
               />
-              <div v-else>
-                <TextEditor
-                  class="mb-3 h-48"
-                  :placeholder="'Please be kind'"
-                  @update="handleUpdateComment"
-                />
-                <!-- <ErrorBanner v-if="createCommentError"
+              <!-- <ErrorBanner v-if="createCommentError"
                              :text="createCommentError.message" /> -->
-                <div class="flex justify-start">
-                  <CancelButton @click="showEditorInCommentSection = false" />
-                  <SaveButton
-                    @click.prevent="
-                      () => {
-                        handleCreateComment()
-                        showEditorInCommentSection = false;
-                      }
-                    "
-                    :disabled="this.createFormValues.text.length === 0"
-                  />
-                </div>
+              <div class="flex justify-start">
+                <CancelButton @click="showEditorInCommentSection = false" />
+                <SaveButton
+                  @click.prevent="
+                    () => {
+                      handleCreateComment();
+                      showEditorInCommentSection = false;
+                    }
+                  "
+                  :disabled="this.createFormValues.text.length === 0"
+                />
               </div>
             </div>
-             <CommentSection
-              ref="commentSectionRef"
-              v-if="route.name === 'DiscussionDetail'"
-              :commentSectionId="commentSectionId"
-            />
+          </div>
+          <CommentSection
+            ref="commentSectionRef"
+            v-if="route.name === 'DiscussionDetail'"
+            :commentSectionId="commentSectionId"
+          />
         </div>
         <!-- <Modal title="Comment on Post"
                :show="showCreateCommentModal"
