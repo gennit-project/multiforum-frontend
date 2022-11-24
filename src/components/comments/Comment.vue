@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, PropType, ref, computed } from "vue";
 import MdEditor from "md-editor-v3";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import DownArrowIcon from "../icons/DownArrowIcon.vue";
@@ -27,11 +27,14 @@ export default defineComponent({
     UpArrowIcon,
   },
   setup(props) {
-    let replyCount = 0;
+    let replyCount = computed(() => {
+      if (props.commentData.ChildCommentsAggregate) {
+        return props.commentData.ChildCommentsAggregate.count;
+      }
+      return 0
+    });
 
-    if (props.commentData.ChildCommentsAggregate) {
-      replyCount = props.commentData.ChildCommentsAggregate.count;
-    }
+    
     return {
       editorId: "texteditor",
       relativeTime,
@@ -97,12 +100,12 @@ export default defineComponent({
 <template>
   <div>
     <div
-      :class="!compact ? 'mt-4' : 'mt-3 max-w-3xl border-l-2 border-gray-200'"
+      :class="!compact ? 'mt-4' : 'mt-2 max-w-3xl border-l-2 border-gray-200'"
     >
       <div class="flex text-gray-500">
         <div
           :class="!compact ? 'border border-gray-200 rounded-lg' : 'text-sm'"
-          class="pt-3 w-full"
+          class="pt-1 w-full"
         >
           <div :class="compact ? 'mx-3' : 'mx-6'">
             <span>

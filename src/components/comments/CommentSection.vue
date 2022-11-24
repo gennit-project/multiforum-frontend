@@ -30,7 +30,6 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    // const commentSectionIdRef = ref(props.commentSectionId);
 
     const commentSectionId = computed(() => {
       // Makes component rerender when comment section ID changes
@@ -196,8 +195,7 @@ export default defineComponent({
         },
         update: (cache: any, result: any) => {
           // This is the logic for updating the cache
-          // after replying to a root level comment, see the
-          // parent component.
+          // after replying to a root level comment
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
           // Will use readQuery and writeQuery to update the cache
@@ -215,12 +213,25 @@ export default defineComponent({
           let rootCommentsCopy = [
             ...(existingCommentSectionData.Comments || []),
           ];
+          
+          
 
           rootCommentsCopy = rootCommentsCopy.map((comment: any) => {
             if (comment.id === createFormValues.value.parentCommentId) {
+
+              const existingChildCommentAggregate = comment.ChildCommentsAggregate
+              let newChildCommentAggregate = null
+
+              if (existingChildCommentAggregate) {
+                newChildCommentAggregate = {
+                  ...existingChildCommentAggregate,
+                  count: existingChildCommentAggregate.count + 1
+                }
+              }
               let commentCopy = {
                 ...comment,
                 ChildComments: [newComment, ...comment.ChildComments],
+                ChildCommentsAggregate: newChildCommentAggregate ? newChildCommentAggregate : existingChildCommentAggregate
               };
               return commentCopy;
             }
