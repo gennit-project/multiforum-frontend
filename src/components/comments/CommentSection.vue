@@ -12,10 +12,7 @@ import {
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../ErrorBanner.vue";
 import WarningModal from "../WarningModal.vue";
-import Modal from "../Modal.vue";
-import PencilIcon from "../icons/PencilIcon.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import TextEditor from "./TextEditor.vue";
 import type { Ref } from "vue";
 
 export default defineComponent({
@@ -29,9 +26,6 @@ export default defineComponent({
     Comment,
     ErrorBanner,
     // LoadMore,
-    Modal,
-    PencilIcon,
-    TextEditor,
     WarningModal,
   },
   setup(props) {
@@ -286,8 +280,6 @@ export default defineComponent({
       createComment,
       createCommentError,
       createCommentInput,
-      showCreateCommentModal: ref(false),
-      showEditCommentModal: ref(false),
       showDeleteCommentModal: ref(false),
       //   loadMore,
       //   reachedEndOfResults,
@@ -296,7 +288,7 @@ export default defineComponent({
   },
 
   methods: {
-    handleUpdateReply(text: string, parentCommentId: string) {
+    updateCreateInputValuesForReply(text: string, parentCommentId: string) {
       if (!parentCommentId) {
         throw new Error("parentCommentId is required to reply to a comment");
       }
@@ -304,18 +296,27 @@ export default defineComponent({
       this.createFormValues.parentCommentId = parentCommentId;
       this.createFormValues.text = text;
     },
+    updateCreateInputValuesForRootComment(text: string) {
+      this.createFormValues.isRootComment = true;
+      this.createFormValues.text = text;
+    },
+    updateEditInputValues(text: string){
+      this.editFormValues.text = text;
+    },
     handleClickCreate() {
       // Reply to a comment
       this.createComment();
     },
     handleClickEdit(commentData: CommentData) {
-      this.showEditCommentModal = true;
       this.commentToEdit = commentData;
     },
     handleClickDelete(commentId: string) {
       this.showDeleteCommentModal = true;
       this.commentToDelete = commentId;
     },
+    handleSaveEdit() {
+      this.editComment()
+    }
   },
   inheritAttrs: false,
 });
@@ -357,11 +358,13 @@ export default defineComponent({
         :key="comment.id"
         :compact="true"
         :commentData="comment"
-        :readonly="true"
         @clickEditComment="handleClickEdit($event)"
         @deleteComment="handleClickDelete($event)"
         @createComment="handleClickCreate"
-        @updateComment="handleUpdateReply($event, comment.id)"
+        @updateCreateReplyCommentInput="updateCreateInputValuesForReply($event, comment.id)"
+        @updateCreateRootCommentInput="updateCreateInputValuesForRootComment($event)"
+        @updateEditCommentInput="updateEditInputValues($event)"
+        @saveEdit="handleSaveEdit"
       />
     </div>
     <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">
@@ -382,51 +385,5 @@ export default defineComponent({
         }
       "
     />
-    <Modal
-      title="Comment on Post"
-      :show="showCreateCommentModal"
-      :primary-button-text="'Save'"
-      @primaryButtonClick="
-        () => {
-          createComment();
-          showCreateCommentModal = false;
-        }
-      "
-      @secondaryButtonClick="showCreateCommentModal = false"
-    >
-      <template v-slot:icon>
-        <PencilIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
-      </template>
-      <template v-slot:content>
-        <TextEditor
-          class="mb-3 h-72"
-          :placeholder="'Comment'"
-          @update="createFormValues.text = $event"
-        />
-        <ErrorBanner
-          v-if="createCommentError"
-          :text="createCommentError.message"
-        />
-      </template>
-    </Modal>
-    <Modal
-      :title="'Edit Comment'"
-      :show="showEditCommentModal"
-      :primary-button-text="'Save'"
-      @primaryButtonClick="editComment"
-      @close="showEditCommentModal = false"
-    >
-      <template v-slot:icon>
-        <PencilIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
-      </template>
-      <template v-slot:content>
-        <TextEditor
-          class="mb-3 h-72"
-          :initialValue="commentToEdit?.text"
-          :placeholder="'Comment'"
-          @update="editFormValues.text = $event"
-        />
-      </template>
-    </Modal>
   </div>
 </template>

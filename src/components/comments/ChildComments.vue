@@ -10,6 +10,9 @@ export default defineComponent({
     // conditionally use the useQuery hook. To work around that,
     // I have placed the useQuery hook in this component, then
     // this component is conditionally rendered in the Comment component.
+
+    // This query needs to be conditional because we shouldn't
+    // always load all of the replies.
     const {
       result: commentResult,
       error: commentError,

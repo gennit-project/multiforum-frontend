@@ -1,21 +1,21 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import MdEditor from 'md-editor-v3';
-import EmojiExtension from "./EmojiExtension/index.vue"
-import 'md-editor-v3/lib/style.css';
+import MdEditor from "md-editor-v3";
+import EmojiExtension from "./EmojiExtension/index.vue";
+import "md-editor-v3/lib/style.css";
 import { toolbars } from "./toolbars";
 
 export default defineComponent({
   components: {
     EmojiExtension,
-    MdEditor
+    MdEditor,
   },
   setup(props) {
     return {
-      editorId: 'texteditor',
+      editorId: "texteditor",
       showFormatted: ref(false),
       text: ref(props.initialValue),
-      toolbars
+      toolbars,
     };
   },
   props: {
@@ -33,29 +33,30 @@ export default defineComponent({
     },
     updateText(text: string) {
       this.text = text;
-      this.$emit('update', text)
+      this.$emit("update", text);
     },
   },
-  created(){
+  created() {
     this.$nextTick(() => {
-      this.$refs.editor.$el.children[1].children[0].children[0].focus()
-    })
-  }
+      this.$refs.editor.$el.children[1].children[0].children[0].focus();
+    });
+  },
 });
 </script>
 <template>
-  <md-editor v-model="text"
-             ref="editor"
-             class="rounded-lg w-full"
-             :editor-id="editorId"
-             :preview="false"
-             language='en-US'
-             previewTheme='github'
-             :toolbars="toolbars"
-             @update:model-value="$emit('update', text)">
+  <md-editor
+    v-model="text"
+    ref="editor"
+    class="rounded-lg w-full"
+    :editor-id="editorId"
+    :preview="false"
+    language="en-US"
+    previewTheme="github"
+    :toolbars="toolbars"
+    @update:model-value="$emit('update', text)"
+  >
     <template #defToolbars>
-      <emoji-extension :editor-id="editorId"
-                       @on-change="updateText" />
+      <emoji-extension :editor-id="editorId" @on-change="updateText" />
     </template>
   </md-editor>
 </template>

@@ -36,6 +36,7 @@ export default defineComponent({
       editorId: "texteditor",
       relativeTime,
       replyCount,
+      showEditCommentField: ref(false),
       showReplyEditor: ref(false),
       showRootCommentEditor: ref(false),
       textCopy: props.commentData.text,
@@ -61,6 +62,16 @@ export default defineComponent({
     },
   },
   methods: {
+    updateExistingComment(text: string) {
+      this.$emit('updateEditCommentInput', text)
+    },
+    updateNewComment(text: string, parentCommentId: string){
+      if (parentCommentId) {
+        this.$emit('updateCreateReplyCommentInput', text, parentCommentId)
+      } else {
+        this.$emit('updateCreateRootCommentInput', text)
+      }
+    },
     updateText(text: string) {
       this.textCopy = text;
     },
@@ -110,8 +121,8 @@ export default defineComponent({
               </div>
             </span>
             <md-editor
+              v-if="commentData.text && !showEditCommentField"
               class="mt-3"
-              v-if="commentData.text && readonly"
               v-model="commentData.text"
               previewTheme="github"
               codeTheme="github"
@@ -119,16 +130,13 @@ export default defineComponent({
               :noMermaid="true"
               preview-only
             />
-
-            <md-editor
-              v-if="commentData.text && !readonly"
-              v-model="textCopy"
+            <TextEditor
+              id="editExistingComment"
+              class="h-48"
+              v-if="!readonly && showEditCommentField"
+              :initial-value="textCopy"
               :editor-id="editorId"
-              :preview="false"
-              language="en-US"
-              previewTheme="github"
-              codeTheme="github"
-              @update:model-value="$emit('updateComment', textCopy)"
+              @update="updateExistingComment($event)"
             >
               <template #defToolbars>
                 <emoji-extension
@@ -136,15 +144,14 @@ export default defineComponent({
                   @on-change="updateText"
                 />
               </template>
-            </md-editor>
+            </TextEditor>
           </div>
           <div v-if="!compact" class="mt-1 flex space-x-2 py-2 px-3">
             <Avatar class="h-5 w-5" />
             <textarea
               v-if="!showRootCommentEditor"
-              id="addcomment"
               @click="showRootCommentEditor = true"
-              name="addcomment"
+              name="addCommentWindow"
               rows="1"
               placeholder="Write a reply"
               class="
@@ -157,11 +164,11 @@ export default defineComponent({
                 focus:border-indigo-500 focus:ring-indigo-500
               "
             />
-            <div v-else>
+            <div v-if="showRootCommentEditor">
               <TextEditor
                 class="mb-3 h-48"
                 :placeholder="'Please be kind'"
-                @update="$emit('updateComment', $event)"
+                @update="updateNewComment($event, '')"
               />
               <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -199,12 +206,7 @@ export default defineComponent({
         <span
           class="underline cursor-pointer hover:text-black"
           :class="showReplyEditor ? 'text-black' : ''"
-          @click="
-            () => {
-              $emit('reply', commentData, parentCommentId);
-              showReplyEditor = !showReplyEditor;
-            }
-          "
+          @click="showReplyEditor = !showReplyEditor"
           >Reply</span
         >
         <span
@@ -213,9 +215,30 @@ export default defineComponent({
           >Delete</span
         >
         <span
+          v-if="!showEditCommentField"
           class="underline cursor-pointer hover:text-black"
-          @click="$emit('clickEditComment', commentData)"
+          @click="
+            () => {
+              $emit('clickEditComment', commentData);
+              showEditCommentField = true;
+            }
+          "
           >Edit</span
+        >
+        <span
+          v-if="showEditCommentField"
+          class="underline cursor-pointer hover:text-black"
+          @click="showEditCommentField = false"
+          >Cancel</span
+        >
+        <span
+          v-if="showEditCommentField"
+          class="underline cursor-pointer hover:text-black"
+          @click="() => {
+            $emit('saveEdit');
+            showEditCommentField = false
+          }"
+          >Save</span
         >
       </div>
       <div
@@ -228,7 +251,7 @@ export default defineComponent({
           <TextEditor
             class="mb-3 h-48"
             :placeholder="'Please be kind'"
-            @update="$emit('updateComment', $event)"
+            @update="updateNewComment($event, commentData.id)"
           />
           <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -259,7 +282,10 @@ export default defineComponent({
             @clickEditComment="$emit('clickEditComment', $event)"
             @deleteComment="$emit('deleteComment', $event)"
             @createComment="$emit('createComment')"
-            @updateComment="$emit('updateComment', $event)"
+            @saveEdit="$emit('saveEdit')"
+            @updateCreateReplyCommentInput="updateNewComment"
+            @updateCreateRootCommentInput="updateNewComment"
+            @updateEditCommentInput="updateExistingComment"
           />
         </ChildComments>
       </div>

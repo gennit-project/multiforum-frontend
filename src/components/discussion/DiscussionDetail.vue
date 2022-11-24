@@ -266,8 +266,6 @@ export default defineComponent({
             discussions() {
               const readQueryResult = cache.readQuery({
                 query: GET_DISCUSSION,
-                // Provide any required variables in this object.
-                // Variables of mismatched types will return `null`.
                 variables: {
                   id: discussionId.value,
                 },
@@ -529,7 +527,7 @@ export default defineComponent({
               }"
               :readonly="true"
               @createComment="handleCreateComment"
-              @updateComment="handleUpdateComment"
+              @updateCreateRootCommentInput="handleUpdateComment"
             />
 
             <!-- <button ref="scrollToCommentsButton"
@@ -644,23 +642,6 @@ export default defineComponent({
             :commentSectionId="commentSectionId"
           />
         </div>
-        <!-- <Modal title="Comment on Post"
-               :show="showCreateCommentModal"
-               :primary-button-text="'Save'"
-               @primaryButtonClick="() => {
-                createComment()
-                showCreateCommentModal = false
-            }"
-               @secondaryButtonClick="showCreateCommentModal = false"
-            >
-            <template v-slot:icon>
-                <PencilIcon class="h-6 w-6 text-green-600"
-                            aria-hidden="true" />
-            </template>
-            <template v-slot:content>
-                
-             </template>
-        </Modal> -->
         <WarningModal
           :title="'Delete Discussion'"
           :body="'Are you sure you want to delete this discussion?'"
