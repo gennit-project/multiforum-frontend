@@ -47,6 +47,7 @@ export default defineComponent({
       // offset: 0,
     });
     const commentToDelete = ref("");
+    const parentOfCommentToDelete = ref("");
     const commentToEdit: Ref<CommentData | null> = ref(null);
 
     const editFormValues = ref<CreateEditCommentFormValues>({
@@ -113,19 +114,35 @@ export default defineComponent({
       // error: deleteCommentError,
     } = useMutation(DELETE_COMMENT, {
       update: (cache: any) => {
-        cache.modify({
-          id: cache.identify({
-            __typename: "CommentSection",
-            id: props.commentSectionId,
-          }),
-          fields: {
-            Comments(existingComments: any, { readField }: any) {
-              return existingComments.filter((comment: any) => {
-                return readField("id", comment) !== commentToDelete.value;
-              });
+        if (parentOfCommentToDelete.value) {
+          cache.modify({
+            id: cache.identify({
+              __typename: "Comment",
+              id: parentOfCommentToDelete.value,
+            }),
+            fields: {
+              ChildComments(existingComments: any, { readField }: any) {
+                return existingComments.filter((comment: any) => {
+                  return readField("id", comment) !== commentToDelete.value;
+                });
+              },
             },
-          },
-        });
+          });
+        } else {
+          cache.modify({
+            id: cache.identify({
+              __typename: "CommentSection",
+              id: props.commentSectionId,
+            }),
+            fields: {
+              Comments(existingComments: any, { readField }: any) {
+                return existingComments.filter((comment: any) => {
+                  return readField("id", comment) !== commentToDelete.value;
+                });
+              },
+            },
+          });
+        }
       },
     });
 
@@ -284,13 +301,14 @@ export default defineComponent({
       commentToEdit,
       commentToDelete,
       commentResult,
+      createComment,
+      createCommentError,
+      createCommentInput,
       createFormValues,
       editComment,
       deleteComment,
       editFormValues,
-      createComment,
-      createCommentError,
-      createCommentInput,
+      parentOfCommentToDelete,
       showDeleteCommentModal: ref(false),
       //   loadMore,
       //   reachedEndOfResults,
@@ -321,9 +339,10 @@ export default defineComponent({
     handleClickEdit(commentData: CommentData) {
       this.commentToEdit = commentData;
     },
-    handleClickDelete(commentId: string) {
+    handleClickDelete(commentId: string, parentCommentId: string) {
       this.showDeleteCommentModal = true;
       this.commentToDelete = commentId;
+      this.parentOfCommentToDelete = parentCommentId;
     },
     handleSaveEdit() {
       this.editComment()
@@ -370,7 +389,7 @@ export default defineComponent({
         :compact="true"
         :commentData="comment"
         @clickEditComment="handleClickEdit($event)"
-        @deleteComment="handleClickDelete($event)"
+        @deleteComment="handleClickDelete"
         @createComment="handleClickCreate"
         @updateCreateReplyCommentInput="updateCreateInputValuesForReply($event, comment.id)"
         @updateCreateRootCommentInput="updateCreateInputValuesForRootComment($event)"

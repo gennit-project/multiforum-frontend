@@ -31,10 +31,9 @@ export default defineComponent({
       if (props.commentData.ChildCommentsAggregate) {
         return props.commentData.ChildCommentsAggregate.count;
       }
-      return 0
+      return 0;
     });
 
-    
     return {
       editorId: "texteditor",
       relativeTime,
@@ -65,14 +64,17 @@ export default defineComponent({
     },
   },
   methods: {
-    updateExistingComment(text: string) {
-      this.$emit('updateEditCommentInput', text)
+    handleClickDelete(commentId: string, parentCommentId: string){
+      this.$emit('deleteComment', commentId, parentCommentId)
     },
-    updateNewComment(text: string, parentCommentId: string){
+    updateExistingComment(text: string) {
+      this.$emit("updateEditCommentInput", text);
+    },
+    updateNewComment(text: string, parentCommentId: string) {
       if (parentCommentId) {
-        this.$emit('updateCreateReplyCommentInput', text, parentCommentId)
+        this.$emit("updateCreateReplyCommentInput", text, parentCommentId);
       } else {
-        this.$emit('updateCreateRootCommentInput', text)
+        this.$emit("updateCreateRootCommentInput", text);
       }
     },
     updateText(text: string) {
@@ -214,7 +216,7 @@ export default defineComponent({
         >
         <span
           class="underline cursor-pointer hover:text-black"
-          @click="$emit('deleteComment', commentData.id)"
+          @click="$emit('deleteComment', commentData.id, commentData.ParentComment ? commentData.ParentComment.id : '')"
           >Delete</span
         >
         <span
@@ -237,10 +239,12 @@ export default defineComponent({
         <span
           v-if="showEditCommentField"
           class="underline cursor-pointer hover:text-black"
-          @click="() => {
-            $emit('saveEdit');
-            showEditCommentField = false
-          }"
+          @click="
+            () => {
+              $emit('saveEdit');
+              showEditCommentField = false;
+            }
+          "
           >Save</span
         >
       </div>
@@ -281,9 +285,8 @@ export default defineComponent({
             :compact="true"
             :commentData="childComment"
             :parentCommentId="commentData.id"
-            :readonly="true"
             @clickEditComment="$emit('clickEditComment', $event)"
-            @deleteComment="$emit('deleteComment', $event)"
+            @deleteComment="handleClickDelete"
             @createComment="$emit('createComment')"
             @saveEdit="$emit('saveEdit')"
             @updateCreateReplyCommentInput="updateNewComment"
