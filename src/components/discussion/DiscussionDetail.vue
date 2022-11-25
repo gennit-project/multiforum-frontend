@@ -5,7 +5,6 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import Comment from "../comments/Comment.vue";
 import { relativeTime } from "../../dateTimeUtils";
 import WarningModal from "../WarningModal.vue";
 import { DateTime } from "luxon";
@@ -26,18 +25,19 @@ import {
   CREATE_COMMENT_SECTION,
 } from "@/graphQLData/comment/mutations";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     Avatar,
     CancelButton,
-    Comment,
     CommentSection,
     CreateButton,
     ErrorBanner,
     GenericButton,
     LeftArrowIcon,
+    MdEditor,
     SaveButton,
     Tag,
     TextEditor,
@@ -179,6 +179,7 @@ export default defineComponent({
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: true,
+      depth: 1
     };
 
     const createFormValues = ref<CreateEditCommentFormValues>(
@@ -204,7 +205,7 @@ export default defineComponent({
       //   );
 
       let input = {
-        isRootComment: createFormValues.value.isRootComment,
+        isRootComment: true,
 
         text: createFormValues.value.text || "",
         // Tags: {
@@ -393,7 +394,7 @@ export default defineComponent({
       router,
       showCreateCommentModal: ref(false),
       showEditorInCommentSection: ref(false),
-      // showScrollToCommentsButton
+      showRootCommentEditor: ref(false),
     };
   },
   methods: {
@@ -410,27 +411,7 @@ export default defineComponent({
 
       return startTimeObj.toFormat("cccc LLLL d yyyy");
     },
-    // scrollToComments() {
-    //   let commentStart = document.getElementById('comments');
-    //   if (commentStart) {
-    //     commentStart.scrollIntoView(false);
-    //   }
-    //   this.handleScroll()
-    // },
-    // handleScroll() {
-    //   const commentSectionHeader = this.$refs.commentSectionHeader;
-    //   const scrollToCommentsButton = this.$refs.scrollToCommentsButton;
-
-    //   if (commentSectionHeader && scrollToCommentsButton) {
-    //     if (commentSectionHeader.offsetTop - scrollToCommentsButton.offsetTop < 500) {
-    //       this.showScrollToCommentsButton = false;
-    //     } else {
-    //       this.showScrollToCommentsButton = true;
-    //     }
-    //   }
-    // },
     async handleCreateComment() {
-      // this.createFormValues.isRootComment = parentCommentData === null;
       if (!this.commentSectionId) {
         await this.createCommentSection();
       }
@@ -439,25 +420,10 @@ export default defineComponent({
     handleUpdateComment(event: any) {
       this.createFormValues.text = event;
     },
+    updateCreateInputValuesForRootComment(text: string) {
+      this.createFormValues.text = text;
+    },
   },
-  // mounted() {
-  // let ticking = false;
-  //   window.addEventListener("scroll", () => {
-
-  //     if (!ticking) {
-  //       window.requestAnimationFrame(() => {
-  //         ticking = false;
-  //         this.handleScroll();
-
-  //       });
-
-  //       ticking = true;
-  //     }
-  // });
-  // },
-  // beforeUnmount() {
-  //   window.removeEventListener("scroll", this.handleScroll);
-  // },
 });
 </script>
 
@@ -513,32 +479,79 @@ export default defineComponent({
 
       <div>
         <div>
-          <div v-if="discussion.body" class="body">
-            <Comment
-              :comment-data="{
-                id: discussion.id,
-                CommentAuthor: {
-                  username: discussion.Author.username,
-                },
-                text: discussion.body,
-                createdAt: discussion.createdAt,
-                updatedAt: discussion.updatedAt,
-                isRootComment: false,
-              }"
-              :readonly="true"
-              @createComment="handleCreateComment"
-              @updateCreateRootCommentInput="handleUpdateComment"
+          <div class="text-xs text-gray-600 mt-4">
+            <div>
+              <router-link
+                v-if="discussion.Author"
+                class="text-blue-800 underline"
+                :to="`/u/${discussion.Author.username}`"
+              >
+                {{ discussion.Author.username }}
+              </router-link>
+              {{ createdAt }}
+              <span v-if="discussion.updatedAt"> &#8226; </span>
+              {{ editedAt }}
+              &#8226;
+              <span
+                v-if="!compactMode"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="deleteModalIsOpen = true"
+                >Delete</span
+              >
+            </div>
+          </div>
+          <div v-if="discussion.body" class="body mr-10">
+            
+            <md-editor
+              v-if="discussion.body"
+              class="mt-3"
+              v-model="discussion.body"
+              previewTheme="github"
+              codeTheme="github"
+              language="en-US"
+              :noMermaid="true"
+              preview-only
             />
-
-            <!-- <button ref="scrollToCommentsButton"
-                    v-show="showScrollToCommentsButton"
-                    aria-label="Scroll to comments"
-                    type="button"
-                    class="sticky bottom-10 float-right inline-flex mt-1 items-center rounded-full border border-transparent bg-blue-600 p-3 text-white shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    @click="scrollToComments">
-              <ChevronDoubleDownIcon class="h-6 w-6"
-                                     aria-hidden="true" />
-            </button> -->
+            <div class="mt-1 flex space-x-2 py-2 px-3">
+              <Avatar class="h-5 w-5" />
+              <textarea
+                v-if="!showRootCommentEditor"
+                @click="showRootCommentEditor = true"
+                name="clickToAddComment"
+                rows="1"
+                placeholder="Write a reply"
+                class="
+                  block
+                  w-full
+                  rounded-md
+                  border-gray-300
+                  shadow-sm
+                  text-sm
+                  focus:border-indigo-500 focus:ring-indigo-500
+                "
+              />
+              <div v-if="showRootCommentEditor">
+                <TextEditor
+                  class="mb-3 h-48"
+                  :placeholder="'Please be kind'"
+                  @update="updateCreateInputValuesForRootComment"
+                />
+                <!-- <ErrorBanner v-if="createCommentError"
+                             :text="createCommentError.message" /> -->
+                <div class="flex justify-start">
+                  <CancelButton @click="showRootCommentEditor = false" />
+                  <SaveButton
+                    @click.prevent="
+                      () => {
+                        handleCreateComment();
+                        showRootCommentEditor = false;
+                      }
+                    "
+                    :disabled="createFormValues.text.length === 0"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <Tag
             class="mt-2"
@@ -573,28 +586,6 @@ export default defineComponent({
               "
             />
           </div>
-          <div class="text-xs text-gray-600 mt-4">
-            <div>
-              <router-link
-                v-if="discussion.Author"
-                class="text-blue-800 underline"
-                :to="`/u/${discussion.Author.username}`"
-              >
-                {{ discussion.Author.username }}
-              </router-link>
-              {{ createdAt }}
-              <span v-if="discussion.updatedAt"> &#8226; </span>
-              {{ editedAt }}
-              &#8226;
-              <span
-                v-if="!compactMode"
-                class="underline font-medium text-gray-900 cursor-pointer"
-                @click="deleteModalIsOpen = true"
-                >Delete</span
-              >
-            </div>
-          </div>
-
           <div v-if="!discussion.body" class="mt-1 flex space-x-2 py-2 px-3">
             <Avatar class="h-5 w-5" />
             <textarea

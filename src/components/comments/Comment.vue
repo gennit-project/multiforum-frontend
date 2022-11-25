@@ -40,7 +40,6 @@ export default defineComponent({
       replyCount,
       showEditCommentField: ref(false),
       showReplyEditor: ref(false),
-      showRootCommentEditor: ref(false),
       textCopy: props.commentData.text,
       toolbars,
     };
@@ -78,8 +77,6 @@ export default defineComponent({
       const { text, parentCommentId, depth } = input;
       if (parentCommentId) {
         this.$emit("updateCreateReplyCommentInput", { text, parentCommentId, depth });
-      } else {
-        this.$emit("updateCreateRootCommentInput", text);
       }
     },
     updateText(text: string) {
@@ -157,50 +154,7 @@ export default defineComponent({
               </template>
             </TextEditor>
           </div>
-          <div v-if="!compact" class="mt-1 flex space-x-2 py-2 px-3">
-            <Avatar class="h-5 w-5" />
-            <textarea
-              v-if="!showRootCommentEditor"
-              @click="showRootCommentEditor = true"
-              name="clickToAddComment"
-              rows="1"
-              placeholder="Write a reply"
-              class="
-                block
-                w-full
-                rounded-md
-                border-gray-300
-                shadow-sm
-                text-sm
-                focus:border-indigo-500 focus:ring-indigo-500
-              "
-            />
-            <div v-if="showRootCommentEditor">
-              <TextEditor
-                class="mb-3 h-48"
-                :placeholder="'Please be kind'"
-                @update="updateNewComment({
-                  text: $event,
-                  parentCommentId: '',
-                  depth: 1
-                })"
-              />
-              <!-- <ErrorBanner v-if="createCommentError"
-                           :text="createCommentError.message" /> -->
-              <div class="flex justify-start">
-                <CancelButton @click="showRootCommentEditor = false" />
-                <SaveButton
-                  @click.prevent="
-                    () => {
-                      $emit('createComment');
-                      showRootCommentEditor = false;
-                    }
-                  "
-                  :disabled="commentData.text.length === 0"
-                />
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
       <div v-if="compact" class="text-tiny text-gray-400 space-x-2">
@@ -309,7 +263,6 @@ export default defineComponent({
             @createComment="$emit('createComment')"
             @saveEdit="$emit('saveEdit')"
             @updateCreateReplyCommentInput="updateNewComment"
-            @updateCreateRootCommentInput="updateNewComment"
             @updateEditCommentInput="updateExistingComment"
           />
         </ChildComments>

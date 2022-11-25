@@ -11,7 +11,6 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/FilterChip.vue";
 import TagPicker from "@/components/TagPicker.vue";
 import CreateButton from "@/components/CreateButton.vue";
-import LoadMore from "../LoadMore.vue";
 import ErrorBanner from "../ErrorBanner.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
@@ -26,7 +25,6 @@ export default defineComponent({
     CreateButton,
     ErrorBanner,
     FilterChip,
-    LoadMore,
     TagPicker,
     SearchBar,
     TagIcon,

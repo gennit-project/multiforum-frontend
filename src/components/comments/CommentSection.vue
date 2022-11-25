@@ -68,7 +68,7 @@ export default defineComponent({
 
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
-      isRootComment: true,
+      isRootComment: false,
       depth: 1,
     };
 
@@ -205,7 +205,7 @@ export default defineComponent({
       //   );
 
       const input = {
-        isRootComment: createFormValues.value.isRootComment,
+        isRootComment: false,
         CommentSection: {
           connect: {
             where: {
@@ -450,13 +450,8 @@ export default defineComponent({
         ...this.createFormValues,
         text,
         parentCommentId,
-        isRootComment: false,
         depth,
       };
-    },
-    updateCreateInputValuesForRootComment(text: string) {
-      this.createFormValues.isRootComment = true;
-      this.createFormValues.text = text;
     },
     updateEditInputValues(text: string, isRootComment: boolean) {
       this.editFormValues.isRootComment = isRootComment
@@ -537,7 +532,6 @@ export default defineComponent({
         @deleteComment="handleClickDelete"
         @createComment="handleClickCreate"
         @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
-        @updateCreateRootCommentInput="updateCreateInputValuesForRootComment"
         @updateEditCommentInput="updateEditInputValues"
         @saveEdit="handleSaveEdit"
       />
