@@ -7,6 +7,7 @@ import {
   CommentData,
   CreateEditCommentFormValues,
   CreateReplyInputData,
+  DeleteCommentInputData
 } from "@/types/commentTypes";
 import {
   GET_COMMENT_SECTION,
@@ -15,6 +16,7 @@ import {
 import {
   DELETE_COMMENT,
   UPDATE_COMMENT,
+  SOFT_DELETE_COMMENT
 } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../ErrorBanner.vue";
@@ -53,7 +55,8 @@ export default defineComponent({
       // limit: 25,
       // offset: 0,
     });
-    const commentToDelete = ref("");
+    const commentToDeleteId = ref("");
+    const commentToDeleteReplyCount = ref(0);
     const parentOfCommentToDelete = ref("");
     const commentToEdit: Ref<CommentData | null> = ref(null);
 
@@ -125,6 +128,7 @@ export default defineComponent({
     } = useMutation(DELETE_COMMENT, {
       update: (cache: any) => {
         if (parentOfCommentToDelete.value) {
+          // For child comments, update the parent comment's replies
           cache.modify({
             id: cache.identify({
               __typename: "Comment",
@@ -133,7 +137,7 @@ export default defineComponent({
             fields: {
               ChildComments(existingComments: any, { readField }: any) {
                 return existingComments.filter((comment: any) => {
-                  return readField("id", comment) !== commentToDelete.value;
+                  return readField("id", comment) !== commentToDeleteId.value;
                 });
               },
             },
@@ -148,7 +152,7 @@ export default defineComponent({
             fields: {
               Comments(existingComments: any, { readField }: any) {
                 return existingComments.filter((comment: any) => {
-                  return readField("id", comment) !== commentToDelete.value;
+                  return readField("id", comment) !== commentToDeleteId.value;
                 });
               },
             },
@@ -172,6 +176,15 @@ export default defineComponent({
         });
       },
     });
+
+    // The soft delete is for comments that have
+    // replies. It replaces the text with [deleted]
+    // and removes the author name, but leaves the comment
+    // so that the replies are still visible.
+    const {
+      mutate: softDeleteComment,
+      // error: deleteCommentError,
+    } = useMutation(SOFT_DELETE_COMMENT);
 
     const createCommentInput = computed(() => {
       //   const tagConnections = formValues.value.tags.map(
@@ -408,7 +421,8 @@ export default defineComponent({
       commentError,
       commentLoading,
       commentToEdit,
-      commentToDelete,
+      commentToDeleteId,
+      commentToDeleteReplyCount,
       commentResult,
       createComment,
       createCommentError,
@@ -422,6 +436,7 @@ export default defineComponent({
       //   loadMore,
       //   reachedEndOfResults,
       route,
+      softDeleteComment
     };
   },
 
@@ -454,14 +469,28 @@ export default defineComponent({
     handleClickEdit(commentData: CommentData) {
       this.commentToEdit = commentData;
     },
-    handleClickDelete(commentId: string, parentCommentId: string) {
+    handleClickDelete(input: DeleteCommentInputData) {
+      const { commentId, parentCommentId, replyCount } = input;
       this.showDeleteCommentModal = true;
-      this.commentToDelete = commentId;
+      this.commentToDeleteId = commentId;
+      this.commentToDeleteReplyCount = replyCount;
       this.parentOfCommentToDelete = parentCommentId;
     },
     handleSaveEdit() {
       this.editComment();
     },
+    handleDeleteComment(){
+      if (this.commentToDeleteReplyCount > 0) {
+        // Soft delete the comment if there are replies
+        // to allow the replies to remain visible
+        this.softDeleteComment({ id: this.commentToDeleteId })
+      }
+      if (this.commentToDeleteReplyCount === 0) {
+        // Hard delete the comment if there are no replies
+        // to avoid cluttering the screen
+        this.deleteComment({ id: this.commentToDeleteId });
+      }
+    }
   },
   inheritAttrs: false,
 });
@@ -525,11 +554,7 @@ export default defineComponent({
       :body="'Are you sure you want to delete this comment?'"
       :open="showDeleteCommentModal"
       @close="showDeleteCommentModal = false"
-      @primaryButtonClick="
-        () => {
-          deleteComment({ id: commentToDelete });
-        }
-      "
+      @primaryButtonClick="handleDeleteComment"
     />
   </div>
 </template>

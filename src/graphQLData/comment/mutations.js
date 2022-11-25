@@ -80,13 +80,51 @@ mutation createCommentSection(
 `;
 
 export const UPDATE_COMMENT = gql`
-  mutation updateDiscussion(
+  mutation updateComment(
     $updateCommentInput: CommentUpdateInput
     $commentWhere: CommentWhere
   ) {
     updateComments(
       update: $updateCommentInput
       where: $commentWhere
+    ) {
+      comments {
+        id
+        text
+        CommentAuthor {
+          ... on User {
+            username
+          }
+        }
+        createdAt
+        updatedAt
+      }
+    }
+  }
+  `;
+
+export const SOFT_DELETE_COMMENT = gql`
+  mutation updateDiscussion(
+    $commentId: string
+  ) {
+    updateComments(
+      update: {
+        text: "[Deleted]",
+      },
+      disconnect: {
+        CommentAuthor: {
+          User: {
+            where: {
+              node_NOT: {
+                username: "[Deleted]"
+              }
+            }
+          }
+        }
+      }, 
+      where: {
+        id: $commentId
+      }
     ) {
       comments {
         id

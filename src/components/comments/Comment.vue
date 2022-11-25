@@ -3,7 +3,7 @@ import { defineComponent, PropType, ref, computed } from "vue";
 import MdEditor from "md-editor-v3";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import DownArrowIcon from "../icons/DownArrowIcon.vue";
-import { CommentData, CreateReplyInputData } from "@/types/commentTypes";
+import { CommentData, CreateReplyInputData, DeleteCommentInputData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
 import Avatar from "../Avatar.vue";
@@ -68,8 +68,8 @@ export default defineComponent({
     },
   },
   methods: {
-    handleClickDelete(commentId: string, parentCommentId: string){
-      this.$emit('deleteComment', commentId, parentCommentId)
+    handleClickDelete(input: DeleteCommentInputData){
+      this.$emit('deleteComment', input)
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
@@ -119,12 +119,13 @@ export default defineComponent({
               <div :class="compact ? 'text-tiny mb-1' : 'text-tiny'">
                 <Avatar class="align-middle mr-2 h-4 w-4" />
                 <router-link
-                  v-if="commentData.CommentAuthor.username"
+                  v-if="commentData.CommentAuthor"
                   class="underline"
                   :to="`/u/${commentData.CommentAuthor.username}`"
                 >
                   {{ commentData.CommentAuthor.username }}
                 </router-link>
+                <span v-else class="underline">[Deleted]</span>
                 {{ createdAtFormatted }}
                 <span v-if="commentData.updatedAt"> &#8226; </span>
                 {{ editedAtFormatted }}
@@ -225,7 +226,11 @@ export default defineComponent({
         >
         <span
           class="underline cursor-pointer hover:text-black"
-          @click="$emit('deleteComment', commentData.id, commentData.ParentComment ? commentData.ParentComment.id : '')"
+          @click="$emit('deleteComment', {
+            commentId: commentData.id, 
+            parentCommentId: commentData.ParentComment ? commentData.ParentComment.id : '', 
+            replyCount
+          })"
           >Delete</span
         >
         <span
