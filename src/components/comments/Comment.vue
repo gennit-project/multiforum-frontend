@@ -71,8 +71,8 @@ export default defineComponent({
     handleClickDelete(commentId: string, parentCommentId: string){
       this.$emit('deleteComment', commentId, parentCommentId)
     },
-    updateExistingComment(text: string) {
-      this.$emit("updateEditCommentInput", text);
+    updateExistingComment(text: string, depth: number) {
+      this.$emit("updateEditCommentInput", text, depth === 1);
     },
     updateNewComment(input: CreateReplyInputData) {
       const { text, parentCommentId, depth } = input;
@@ -107,7 +107,7 @@ export default defineComponent({
 <template>
   <div>
     <div
-      :class="!compact ? 'mt-4' : 'mt-2 max-w-3xl border-l-2 border-gray-200'"
+      :class="[!compact ? 'mt-4' : 'mt-2 max-w-3xl border-l-2 border-gray-200']"
     >
       <div class="flex text-gray-500">
         <div
@@ -146,7 +146,7 @@ export default defineComponent({
               v-if="!readonly && showEditCommentField"
               :initial-value="commentData.text"
               :editor-id="editorId"
-              @update="updateExistingComment($event)"
+              @update="updateExistingComment($event, depth)"
             >
               <template #defToolbars>
                 <emoji-extension

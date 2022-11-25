@@ -59,6 +59,7 @@ export default defineComponent({
 
     const editFormValues = ref<CreateEditCommentFormValues>({
       text: commentToEdit.value?.text || "",
+      isRootComment: true, // changes to false for 2nd level comments and below
       depth: 1,
     });
 
@@ -106,7 +107,7 @@ export default defineComponent({
 
       return {
         text: editFormValues.value?.text || "",
-        isRootComment: createFormValues.value?.isRootComment,
+        isRootComment: editFormValues.value?.isRootComment,
       };
     });
     const { mutate: editComment } = useMutation(UPDATE_COMMENT, () => ({
@@ -425,7 +426,8 @@ export default defineComponent({
       this.createFormValues.isRootComment = true;
       this.createFormValues.text = text;
     },
-    updateEditInputValues(text: string) {
+    updateEditInputValues(text: string, isRootComment: boolean) {
+      this.editFormValues.isRootComment = isRootComment
       this.editFormValues.text = text;
     },
     handleClickCreate() {
@@ -485,14 +487,12 @@ export default defineComponent({
         :compact="true"
         :commentData="comment"
         :depth="1"
-        @clickEditComment="handleClickEdit($event)"
+        @clickEditComment="handleClickEdit"
         @deleteComment="handleClickDelete"
         @createComment="handleClickCreate"
         @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
-        @updateCreateRootCommentInput="
-          updateCreateInputValuesForRootComment($event)
-        "
-        @updateEditCommentInput="updateEditInputValues($event)"
+        @updateCreateRootCommentInput="updateCreateInputValuesForRootComment"
+        @updateEditCommentInput="updateEditInputValues"
         @saveEdit="handleSaveEdit"
       />
     </div>
