@@ -3,8 +3,15 @@ import { defineComponent, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
 // import LoadMore from "../LoadMore.vue";
-import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import {
+  CommentData,
+  CreateEditCommentFormValues,
+  CreateReplyInputData,
+} from "@/types/commentTypes";
+import {
+  GET_COMMENT_SECTION,
+  GET_COMMENT_REPLIES,
+} from "@/graphQLData/comment/queries";
 import {
   DELETE_COMMENT,
   UPDATE_COMMENT,
@@ -19,7 +26,7 @@ export default defineComponent({
   props: {
     commentSectionId: {
       type: String,
-      required: true
+      required: true,
     },
   },
   components: {
@@ -52,11 +59,13 @@ export default defineComponent({
 
     const editFormValues = ref<CreateEditCommentFormValues>({
       text: commentToEdit.value?.text || "",
+      depth: 1,
     });
 
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: true,
+      depth: 1,
     };
 
     const createFormValues = ref<CreateEditCommentFormValues>(
@@ -202,6 +211,7 @@ export default defineComponent({
       };
       return [input];
     });
+  
 
     const { mutate: createComment, error: createCommentError } = useMutation(
       CREATE_COMMENT,
@@ -211,65 +221,146 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
-          // This is the logic for updating the cache
-          // after replying to a root level comment
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
-          // Will use readQuery and writeQuery to update the cache
-          // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
-          const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
-            variables: {
-              id: props.commentSectionId,
-            },
-          });
+          if (createFormValues.value.depth === 2) {
+            // For second level comments, the cache update logic
+            // is to update the GET_COMMENT_SECTION query because
+            // the first two levels of comments are loaded when
+            // the comment section is first loaded.
 
-          const existingCommentSectionData =
-            readQueryResult?.commentSections[0];
-          let rootCommentsCopy = [
-            ...(existingCommentSectionData.Comments || []),
-          ];
-          
-          
+            // (For root level comments, cache update logic is
+            // in the discussion component.)
 
-          rootCommentsCopy = rootCommentsCopy.map((comment: any) => {
-            if (comment.id === createFormValues.value.parentCommentId) {
+            const readQueryResult = cache.readQuery({
+              query: GET_COMMENT_SECTION,
+              variables: {
+                id: props.commentSectionId,
+              },
+            });
 
-              const existingChildCommentAggregate = comment.ChildCommentsAggregate
-              let newChildCommentAggregate = null
+            const existingCommentSectionData =
+              readQueryResult?.commentSections[0];
+
+            let rootCommentsCopy = [
+              ...(existingCommentSectionData.Comments || []),
+            ];
+            rootCommentsCopy = rootCommentsCopy.map((comment: any) => {
+              if (comment.id === createFormValues.value.parentCommentId) {
+                const existingChildCommentAggregate =
+                  comment.ChildCommentsAggregate;
+                let newChildCommentAggregate = null;
+
+                if (existingChildCommentAggregate) {
+                  newChildCommentAggregate = {
+                    ...existingChildCommentAggregate,
+                    count: existingChildCommentAggregate.count + 1,
+                  };
+                }
+                let commentCopy = {
+                  ...comment,
+                  ChildComments: [newComment, ...comment.ChildComments],
+                  ChildCommentsAggregate: newChildCommentAggregate
+                    ? newChildCommentAggregate
+                    : existingChildCommentAggregate,
+                };
+                return commentCopy;
+              }
+              return comment;
+            });
+
+            cache.writeQuery({
+              query: GET_COMMENT_SECTION,
+              data: {
+                ...readQueryResult,
+                commentSections: [
+                  {
+                    ...existingCommentSectionData,
+                    Comments: rootCommentsCopy,
+                  },
+                ],
+              },
+              variables: {
+                id: props.commentSectionId,
+              },
+            });
+          }
+
+          if (createFormValues.value.depth > 2) {
+            // For more deeply nested comments, first
+            // check if there are already replies to the parent
+            // comment.
+            const readQueryResult = cache.readQuery({
+              query: GET_COMMENT_REPLIES,
+              variables: {
+                id: createFormValues.value.parentCommentId,
+              },
+            });
+
+            if (!readQueryResult) {
+              // If we have not yet tried to fetch the replies
+              // of the parent comment, it is probably because
+              // the reply count was 0. Changing the count to 1
+              // should cause the replies to refetch.
+              cache.modify({
+                id: cache.identify({
+                  __typename: "Comment",
+                  id: createFormValues.value.parentCommentId
+                }),
+                fields: {
+                  ChildCommentsAggregate(existingValue: any) {
+                    return {
+                      ...existingValue,
+                      count: existingValue.count + 1
+                    }
+                  },
+                },
+              });
+            }
+
+            if (readQueryResult) {
+              const parentComment = readQueryResult?.comments[0];
+
+              const existingReplies = parentComment?.ChildComments;
+
+              // If there are NOT already replies to the parent
+              // comment, edit the aggregate count
+              // of child comments on the parent comment. That should
+              // trigger the GET_COMMENT_REPLIES query to be fetched.
+
+              const existingChildCommentAggregate =
+                parentComment?.ChildCommentsAggregate;
+              let newChildCommentAggregate = null;
 
               if (existingChildCommentAggregate) {
                 newChildCommentAggregate = {
                   ...existingChildCommentAggregate,
-                  count: existingChildCommentAggregate.count + 1
-                }
+                  count: 1,
+                };
               }
-              let commentCopy = {
-                ...comment,
-                ChildComments: [newComment, ...comment.ChildComments],
-                ChildCommentsAggregate: newChildCommentAggregate ? newChildCommentAggregate : existingChildCommentAggregate
-              };
-              return commentCopy;
-            }
-            return comment;
-          });
 
-          cache.writeQuery({
-            query: GET_COMMENT_SECTION,
-            data: {
-              ...readQueryResult,
-              commentSections: [
-                {
-                  ...existingCommentSectionData,
-                  Comments: rootCommentsCopy,
+              cache.writeQuery({
+                query: GET_COMMENT_REPLIES,
+                data: {
+                  ...readQueryResult,
+                  comments: [
+                    {
+                      ...parentComment,
+                      ChildComments: [newComment, ...existingReplies],
+                      ChildCommentAggregate: newChildCommentAggregate
+                        ? newChildCommentAggregate
+                        : existingChildCommentAggregate,
+                    },
+                  ],
                 },
-              ],
-            },
-            variables: {
-              id: props.commentSectionId,
-            },
-          });
+                variables: {
+                  id: createFormValues.value.parentCommentId,
+                },
+              });
+            }
+            
+          }
         },
       })
     );
@@ -317,19 +408,24 @@ export default defineComponent({
   },
 
   methods: {
-    updateCreateInputValuesForReply(text: string, parentCommentId: string) {
+    updateCreateInputValuesForReply(input: CreateReplyInputData) {
+      const { text, parentCommentId, depth } = input;
       if (!parentCommentId) {
         throw new Error("parentCommentId is required to reply to a comment");
       }
-      this.createFormValues.isRootComment = false;
-      this.createFormValues.parentCommentId = parentCommentId;
-      this.createFormValues.text = text;
+      this.createFormValues = {
+        ...this.createFormValues,
+        text,
+        parentCommentId,
+        isRootComment: false,
+        depth,
+      };
     },
     updateCreateInputValuesForRootComment(text: string) {
       this.createFormValues.isRootComment = true;
       this.createFormValues.text = text;
     },
-    updateEditInputValues(text: string){
+    updateEditInputValues(text: string) {
       this.editFormValues.text = text;
     },
     handleClickCreate() {
@@ -345,8 +441,8 @@ export default defineComponent({
       this.parentOfCommentToDelete = parentCommentId;
     },
     handleSaveEdit() {
-      this.editComment()
-    }
+      this.editComment();
+    },
   },
   inheritAttrs: false,
 });
@@ -388,11 +484,14 @@ export default defineComponent({
         :key="comment.id"
         :compact="true"
         :commentData="comment"
+        :depth="1"
         @clickEditComment="handleClickEdit($event)"
         @deleteComment="handleClickDelete"
         @createComment="handleClickCreate"
-        @updateCreateReplyCommentInput="updateCreateInputValuesForReply($event, comment.id)"
-        @updateCreateRootCommentInput="updateCreateInputValuesForRootComment($event)"
+        @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
+        @updateCreateRootCommentInput="
+          updateCreateInputValuesForRootComment($event)
+        "
         @updateEditCommentInput="updateEditInputValues($event)"
         @saveEdit="handleSaveEdit"
       />

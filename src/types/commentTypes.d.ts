@@ -15,10 +15,17 @@ export type CommentSectionData = {
 }
 
 export type CreateEditCommentFormValues = {
+  depth: number
   parentCommentId?: string
   text: string
   tags?: [TagData]
   isRootComment?: boolean
+}
+
+export type CreateReplyInputData = {
+  parentCommentId: string
+  text: string
+  depth: number
 }
 
 export type CommentData = {
@@ -29,7 +36,7 @@ export type CommentData = {
   CommentSection?: CommentSectionData
   ParentComment?: CommentData
   ChildCommentsAggregate: { 
-    count: Number
+    count: number
   }
   ChildComments?: [Comment]
   deleted?: boolean

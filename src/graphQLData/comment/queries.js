@@ -64,6 +64,9 @@ query getCommentWithReplies($id: ID!){
 		id: $id
 	}){
     id
+    ChildCommentsAggregate {
+      count
+    }
 		ChildComments {
 			id
       CommentAuthor {

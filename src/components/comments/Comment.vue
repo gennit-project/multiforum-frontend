@@ -3,7 +3,7 @@ import { defineComponent, PropType, ref, computed } from "vue";
 import MdEditor from "md-editor-v3";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import DownArrowIcon from "../icons/DownArrowIcon.vue";
-import { CommentData } from "@/types/commentTypes";
+import { CommentData, CreateReplyInputData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
 import Avatar from "../Avatar.vue";
@@ -54,6 +54,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    depth: {
+      type: Number,
+      required: true
+    },
     parentCommentId: {
       type: String,
       default: "",
@@ -70,9 +74,10 @@ export default defineComponent({
     updateExistingComment(text: string) {
       this.$emit("updateEditCommentInput", text);
     },
-    updateNewComment(text: string, parentCommentId: string) {
+    updateNewComment(input: CreateReplyInputData) {
+      const { text, parentCommentId, depth } = input;
       if (parentCommentId) {
-        this.$emit("updateCreateReplyCommentInput", text, parentCommentId);
+        this.$emit("updateCreateReplyCommentInput", { text, parentCommentId, depth });
       } else {
         this.$emit("updateCreateRootCommentInput", text);
       }
@@ -139,7 +144,7 @@ export default defineComponent({
               id="editExistingComment"
               class="h-48"
               v-if="!readonly && showEditCommentField"
-              :initial-value="textCopy"
+              :initial-value="commentData.text"
               :editor-id="editorId"
               @update="updateExistingComment($event)"
             >
@@ -156,7 +161,7 @@ export default defineComponent({
             <textarea
               v-if="!showRootCommentEditor"
               @click="showRootCommentEditor = true"
-              name="addCommentWindow"
+              name="clickToAddComment"
               rows="1"
               placeholder="Write a reply"
               class="
@@ -173,7 +178,11 @@ export default defineComponent({
               <TextEditor
                 class="mb-3 h-48"
                 :placeholder="'Please be kind'"
-                @update="updateNewComment($event, '')"
+                @update="updateNewComment({
+                  text: $event,
+                  parentCommentId: '',
+                  depth: 1
+                })"
               />
               <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -258,7 +267,11 @@ export default defineComponent({
           <TextEditor
             class="mb-3 h-48"
             :placeholder="'Please be kind'"
-            @update="updateNewComment($event, commentData.id)"
+            @update="updateNewComment({
+              text: $event, 
+              parentCommentId: commentData.id,
+              depth: depth + 1
+            })"
           />
           <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -284,6 +297,7 @@ export default defineComponent({
             :key="i"
             :compact="true"
             :commentData="childComment"
+            :depth="depth + 1"
             :parentCommentId="commentData.id"
             @clickEditComment="$emit('clickEditComment', $event)"
             @deleteComment="handleClickDelete"
