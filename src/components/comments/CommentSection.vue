@@ -139,6 +139,7 @@ export default defineComponent({
             },
           });
         } else {
+          // For root comments, update the comment section query result
           cache.modify({
             id: cache.identify({
               __typename: "CommentSection",
@@ -153,6 +154,22 @@ export default defineComponent({
             },
           });
         }
+        // For both root comments and replies, update the aggregate
+        // count of the comment section
+        cache.modify({
+          id: cache.identify({
+            __typename: "CommentSection",
+            id: props.commentSectionId,
+          }),
+          fields: {
+            CommentsAggregate(existingValue: any) {
+              return {
+                ...existingValue,
+                count: existingValue.count - 1
+              }
+            },
+          },
+        });
       },
     });
 
