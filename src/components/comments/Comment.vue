@@ -3,7 +3,11 @@ import { defineComponent, PropType, ref, computed } from "vue";
 import MdEditor from "md-editor-v3";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import DownArrowIcon from "../icons/DownArrowIcon.vue";
-import { CommentData, CreateReplyInputData, DeleteCommentInputData } from "@/types/commentTypes";
+import {
+  CommentData,
+  CreateReplyInputData,
+  DeleteCommentInputData,
+} from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
 import Avatar from "../Avatar.vue";
@@ -40,6 +44,7 @@ export default defineComponent({
       relativeTime,
       replyCount,
       showEditCommentField: ref(false),
+      showReplies: ref(true),
       showReplyEditor: ref(false),
       textCopy: props.commentData.text,
       toolbars,
@@ -56,11 +61,11 @@ export default defineComponent({
     },
     depth: {
       type: Number,
-      required: true
+      required: true,
     },
     locked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     parentCommentId: {
       type: String,
@@ -72,8 +77,8 @@ export default defineComponent({
     },
   },
   methods: {
-    handleClickDelete(input: DeleteCommentInputData){
-      this.$emit('deleteComment', input)
+    handleClickDelete(input: DeleteCommentInputData) {
+      this.$emit("deleteComment", input);
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
@@ -81,7 +86,11 @@ export default defineComponent({
     updateNewComment(input: CreateReplyInputData) {
       const { text, parentCommentId, depth } = input;
       if (parentCommentId) {
-        this.$emit("updateCreateReplyCommentInput", { text, parentCommentId, depth });
+        this.$emit("updateCreateReplyCommentInput", {
+          text,
+          parentCommentId,
+          depth,
+        });
       }
     },
     updateText(text: string) {
@@ -108,9 +117,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div
-      :class="[!compact ? 'mt-4' : 'mt-2 max-w-3xl' ]"
-    >
+    <div :class="[!compact ? 'mt-4' : 'mt-3 max-w-3xl']">
       <div class="flex text-gray-500">
         <div
           :class="!compact ? 'border border-gray-200 rounded-lg' : 'text-sm'"
@@ -159,7 +166,6 @@ export default defineComponent({
               </template>
             </TextEditor>
           </div>
-          
         </div>
       </div>
       <div v-if="compact" class="text-tiny text-gray-400 space-x-2">
@@ -186,11 +192,15 @@ export default defineComponent({
         >
         <span
           class="underline cursor-pointer hover:text-black"
-          @click="$emit('deleteComment', {
-            commentId: commentData.id, 
-            parentCommentId: commentData.ParentComment ? commentData.ParentComment.id : '', 
-            replyCount
-          })"
+          @click="
+            $emit('deleteComment', {
+              commentId: commentData.id,
+              parentCommentId: commentData.ParentComment
+                ? commentData.ParentComment.id
+                : '',
+              replyCount,
+            })
+          "
           >Delete</span
         >
         <span
@@ -221,6 +231,18 @@ export default defineComponent({
           "
           >Save</span
         >
+        <span
+          v-if="showReplies && replyCount > 0"
+          class="underline cursor-pointer hover:text-black"
+          @click="showReplies = false"
+          >{{`Hide ${replyCount} ${replyCount === 1 ? 'Reply' : 'Replies'}`}}</span
+        >
+        <span
+          v-if="!showReplies"
+          class="underline cursor-pointer hover:text-black"
+          @click="showReplies = true"
+          >{{`Show ${replyCount} ${replyCount === 1 ? 'Reply' : 'Replies'}`}}</span
+        >
       </div>
       <div
         v-if="compact && showReplyEditor"
@@ -232,11 +254,13 @@ export default defineComponent({
           <TextEditor
             class="mb-3 h-48"
             :placeholder="'Please be kind'"
-            @update="updateNewComment({
-              text: $event, 
-              parentCommentId: commentData.id,
-              depth: depth + 1
-            })"
+            @update="
+              updateNewComment({
+                text: $event,
+                parentCommentId: commentData.id,
+                depth: depth + 1,
+              })
+            "
           />
           <!-- <ErrorBanner v-if="createCommentError"
                            :text="createCommentError.message" /> -->
@@ -257,12 +281,17 @@ export default defineComponent({
       </div>
       <div
         id="childComments"
-        :class="['ml-2 pl-2', highlight ? 'border-l-2 border-gray-200' : 'border-l-2 border-gray-100']"
-        v-if="replyCount > 0"
+        :class="[
+          'ml-2 pl-2',
+          highlight
+            ? 'border-l-2 border-gray-200'
+            : 'border-l-2 border-gray-100',
+        ]"
+        v-if="replyCount > 0 && showReplies"
       >
-        <ChildComments 
-          
-          v-slot="slotProps" :parent-comment-id="commentData.id"
+        <ChildComments
+          v-slot="slotProps"
+          :parent-comment-id="commentData.id"
           @mouseenter="highlight = true"
           @mouseleave="highlight = false"
         >
