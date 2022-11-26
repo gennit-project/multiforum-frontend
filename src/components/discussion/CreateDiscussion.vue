@@ -143,12 +143,6 @@ export default defineComponent({
     }));
 
     onDone((response: any) => {
-      // Add a new comment section for each selected channel.
-      // createCommentSections({
-      //   variables: {
-      //     commentSectionObjects: getCommentSectionObjects(newDiscussionId),
-      //   },
-      // });
       const newDiscussionId = response.data.createDiscussions.discussions[0].id;
 
       /*

@@ -28,6 +28,9 @@ export const GET_DISCUSSION = gql`
         Channel {
           uniqueName
         }
+        CommentsAggregate {
+          count
+        }
         OriginalPost {
           ... on Discussion {
             id

@@ -122,6 +122,19 @@ export default defineComponent({
       return "";
     });
 
+    const getCommentCount = (channelId: string) => {
+      const commentSections = discussion.value.CommentSections;
+
+     const commentSectionForChannel = commentSections.find((cs: any) => {
+       return cs.Channel?.uniqueName === channelId
+     })
+
+     if (!commentSectionForChannel) {
+       return 0;
+     }
+     return commentSectionForChannel.CommentsAggregate?.count ? commentSectionForChannel.CommentsAggregate.count : 0;
+    }
+
     const channelLinks = computed(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
         return [];
@@ -135,8 +148,19 @@ export default defineComponent({
         });
       }
 
-      // On the preview, show all of the links as options.
-      return discussion.value.Channels;
+      if (route.name === "SearchDiscussionPreview") {
+        return discussion.value.Channels.filter((channel: ChannelData) => {
+          return channel.uniqueName === channelId.value;
+        })
+      }
+
+      // On the preview, show all of the links as options, sorted by
+      // comment count.
+      return [...discussion.value.Channels].sort((a: ChannelData, b: ChannelData) => {
+        const countA = getCommentCount(a.uniqueName)
+        const countB = getCommentCount(b.uniqueName)
+        return countB - countA
+      })
     });
 
     const {
@@ -381,6 +405,7 @@ export default defineComponent({
       createFormValues,
       createdAt,
       deleteModalIsOpen,
+      getCommentCount,
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
@@ -423,7 +448,8 @@ export default defineComponent({
     updateCreateInputValuesForRootComment(text: string) {
       this.createFormValues.text = text;
     },
-  },
+    
+  }
 });
 </script>
 
@@ -560,20 +586,21 @@ export default defineComponent({
             :key="tag.text"
             :discussionId="discussionId"
           />
-          <div class="text-xs text-gray-600 mt-4">
+          <div class="text-gray-600 mt-4">
             <div
               v-if="
                 route.name === 'DiscussionDetail' && channelLinks.length > 0
               "
               class="mt-2"
             >
-              Crossposted To Channels:
+              Crossposted To Channels
             </div>
+            <h3 v-else class="text-md">Comments</h3>
             <Tag
               class="mt-2"
               v-for="channel in channelLinks"
               :key="channel.uniqueName"
-              :tag="channel.uniqueName"
+              :tag="`${channel.uniqueName} (${getCommentCount(channel.uniqueName)})`"
               :channel-mode="true"
               @click="
                 router.push({
