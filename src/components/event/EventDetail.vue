@@ -387,6 +387,7 @@ export default defineComponent({
                    updatedAt: eventData.updatedAt,
                    isRootComment: false,
                  }"
+                 :depth="1"
                  :readonly="true" />
         <Tag v-for="tag in eventData.Tags"
              :tag="tag.text"

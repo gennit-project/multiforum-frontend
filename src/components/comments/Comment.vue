@@ -123,7 +123,7 @@ export default defineComponent({
           :class="!compact ? 'border border-gray-200 rounded-lg' : 'text-sm'"
           class="pt-1 w-full"
         >
-          <div :class="compact ? 'mx-3' : 'mx-6'">
+          <div>
             <span>
               <div :class="compact ? 'text-tiny mb-1' : 'text-tiny'">
                 <Avatar class="align-middle mr-2 h-4 w-4" />
@@ -152,7 +152,7 @@ export default defineComponent({
             />
             <TextEditor
               id="editExistingComment"
-              class="h-48"
+              class="h-48 mb-2"
               v-if="!readonly && showEditCommentField"
               :initial-value="commentData.text"
               :editor-id="editorId"
@@ -173,7 +173,6 @@ export default defineComponent({
           class="
             text-gray-400
             h-5
-            ml-3
             inline-flex
             hover:text-black
             cursor-pointer
@@ -232,7 +231,7 @@ export default defineComponent({
           >Save</span
         >
         <span
-          v-if="showReplies && replyCount > 0"
+          v-if="showReplies && replyCount > 1"
           class="underline cursor-pointer hover:text-black"
           @click="showReplies = false"
           >{{`Hide ${replyCount} ${replyCount === 1 ? 'Reply' : 'Replies'}`}}</span
@@ -282,7 +281,7 @@ export default defineComponent({
       <div
         id="childComments"
         :class="[
-          'ml-2 pl-2',
+          'pl-4',
           highlight
             ? 'border-l-2 border-gray-200'
             : 'border-l-2 border-gray-100',
