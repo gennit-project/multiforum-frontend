@@ -537,22 +537,21 @@ export default defineComponent({
               >
             </div>
           </div>
-          <div v-if="discussion.body" class="body mr-10">
+          <div v-if="discussion.body" class="body mr-10 max-w-2xl">
             
             <md-editor
               v-if="discussion.body"
-              class="mt-3"
               v-model="discussion.body"
-              previewTheme="github"
-              codeTheme="github"
+              previewTheme="vuepress"
+              codeTheme="vuepress"
               language="en-US"
               :noMermaid="true"
               preview-only
             />
-            <div v-if="route.name === 'DiscussionDetail' && !commentSectionIsLocked" class="mt-1 flex space-x-2 py-2 px-3">
-              <Avatar class="h-5 w-5" />
+            <div v-if="route.name === 'DiscussionDetail' && !commentSectionIsLocked" class="mt-1 flex space-x-2 py-2">
+              <Avatar v-if="!showRootCommentEditor" class="h-5 w-5" />
               <textarea
-                v-if="!showRootCommentEditor "
+                v-if="!showRootCommentEditor"
                 @click="showRootCommentEditor = true"
                 name="clickToAddComment"
                 rows="1"
@@ -590,6 +589,9 @@ export default defineComponent({
               </div>
             </div>
           </div>
+          <div class="text-gray-600 mt-4" v-if="route.name === 'DiscussionDetail' && discussion.Tags.length > 0">
+            Tags
+          </div>
           <Tag
             class="mt-2"
             v-for="tag in discussion.Tags"
@@ -606,7 +608,7 @@ export default defineComponent({
             >
               Crossposted To Channels
             </div>
-            <h3 v-else class="text-md">Comments</h3>
+            <h3 v-else-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0" class="text-md">Comments</h3>
             <Tag
               class="mt-2"
               v-for="channel in channelLinks"
@@ -624,7 +626,7 @@ export default defineComponent({
               "
             />
           </div>
-          <div v-if="!discussion.body && route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2 px-3">
+          <div v-if="!discussion.body && route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2">
             <Avatar class="h-5 w-5" />
             <textarea
               v-if="!showEditorInCommentSection"
@@ -640,6 +642,7 @@ export default defineComponent({
                 border-gray-300
                 shadow-sm
                 text-sm
+                max-w-2xl
                 focus:border-indigo-500 focus:ring-indigo-500
               "
             />

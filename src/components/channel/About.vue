@@ -89,7 +89,7 @@ export default defineComponent({
               class="mt-4 pt-4 pb-4 pr-8 pl-8 rounded"
               v-model="channel.description"
               language="en-US"
-              previewTheme="github"
+              previewTheme="vuepress"
               preview-only
             />
           </div>

@@ -47,11 +47,11 @@ export default defineComponent({
   <md-editor
     v-model="text"
     ref="editor"
-    class="rounded-lg w-full"
+    class="rounded-lg max-w-2xl"
     :editor-id="editorId"
     :preview="false"
     language="en-US"
-    previewTheme="github"
+    previewTheme="vuepress"
     :toolbars="toolbars"
     @update:model-value="$emit('update', text)"
   >
@@ -60,3 +60,12 @@ export default defineComponent({
     </template>
   </md-editor>
 </template>
+<style lang="scss">
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+
+
+}
+</style>

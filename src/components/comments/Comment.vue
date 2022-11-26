@@ -117,10 +117,10 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div :class="[!compact ? 'mt-4' : 'mt-3 max-w-3xl']">
+    <div :class="['mt-3 max-w-3xl']">
       <div class="flex text-gray-500">
         <div
-          :class="!compact ? 'border border-gray-200 rounded-lg' : 'text-sm'"
+          :class="'border border-gray-200 rounded-lg text-sm pl-4 mb-1'"
           class="pt-1 w-full"
         >
           <div>
@@ -142,10 +142,9 @@ export default defineComponent({
             </span>
             <md-editor
               v-if="commentData.text && !showEditCommentField"
-              class="mt-3"
+              class="max-w-2xl"
               v-model="commentData.text"
-              previewTheme="github"
-              codeTheme="github"
+              previewTheme="vuepress"
               language="en-US"
               :noMermaid="true"
               preview-only
@@ -231,7 +230,7 @@ export default defineComponent({
           >Save</span
         >
         <span
-          v-if="showReplies && replyCount > 1"
+          v-if="showReplies && replyCount > 0"
           class="underline cursor-pointer hover:text-black"
           @click="showReplies = false"
           >{{`Hide ${replyCount} ${replyCount === 1 ? 'Reply' : 'Replies'}`}}</span
@@ -245,7 +244,7 @@ export default defineComponent({
       </div>
       <div
         v-if="compact && showReplyEditor"
-        class="mt-1 border-t-2 flex space-x-2 py-2"
+        class="mt-1 border-t-2 flex space-x-2"
         :class="compact ? 'px-3' : 'lg:px-6'"
       >
         <Avatar class="h-5 w-5" />
@@ -328,11 +327,5 @@ export default defineComponent({
 .md-content .md-html {
   word-break: break-word;
   width: 100%;
-
-  p,
-  li {
-    color: black;
-    font-size: 0.9rem;
-  }
 }
 </style>

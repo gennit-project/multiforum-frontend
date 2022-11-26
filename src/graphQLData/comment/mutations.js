@@ -104,8 +104,8 @@ export const UPDATE_COMMENT = gql`
   `;
 
 export const SOFT_DELETE_COMMENT = gql`
-  mutation updateDiscussion(
-    $commentId: string
+  mutation updateComments(
+    $id: ID!
   ) {
     updateComments(
       update: {
@@ -116,14 +116,14 @@ export const SOFT_DELETE_COMMENT = gql`
           User: {
             where: {
               node_NOT: {
-                username: "[Deleted]"
+                username: "null"
               }
             }
           }
         }
-      }, 
+      },
       where: {
-        id: $commentId
+        id: $id
       }
     ) {
       comments {
