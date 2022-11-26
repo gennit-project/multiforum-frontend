@@ -394,10 +394,21 @@ export default defineComponent({
       const data = cs.data.createCommentSections?.commentSections[0];
       commentSectionId.value = data.id;
     });
+
+    const commentSectionIsLocked = computed(() => {
+      if (!discussion.value) {
+        return false
+      }
+      return !discussion.value.Channels.find(c => {
+        return c.uniqueName === channelId.value
+      })
+    })
+    
     return {
       channelId,
       channelLinks,
       commentSectionId,
+      commentSectionIsLocked,
       commentSectionRef,
       createComment,
       createCommentError,
@@ -538,10 +549,10 @@ export default defineComponent({
               :noMermaid="true"
               preview-only
             />
-            <div v-if="route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2 px-3">
+            <div v-if="route.name === 'DiscussionDetail' && !commentSectionIsLocked" class="mt-1 flex space-x-2 py-2 px-3">
               <Avatar class="h-5 w-5" />
               <textarea
-                v-if="!showRootCommentEditor"
+                v-if="!showRootCommentEditor "
                 @click="showRootCommentEditor = true"
                 name="clickToAddComment"
                 rows="1"
@@ -658,8 +669,10 @@ export default defineComponent({
             ref="commentSectionRef"
             v-if="route.name === 'DiscussionDetail'"
             :commentSectionId="commentSectionId"
+            :locked="commentSectionIsLocked"
           />
         </div>
+        
         <WarningModal
           :title="'Delete Discussion'"
           :body="'Are you sure you want to delete this discussion?'"

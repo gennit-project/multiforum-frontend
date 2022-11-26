@@ -30,6 +30,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    locked: {
+      type: Boolean,
+      default: false
+    }
   },
   components: {
     Comment,
@@ -507,10 +511,16 @@ export default defineComponent({
       <h2 class="text-xl" id="comments" ref="commentSectionHeader">
         {{ `Comments (0)` }}
       </h2>
-      <p>There are no comments yet.</p>
+      <ErrorBanner
+        class="mt-2 mr-10"
+        v-if="locked"
+        :text="'This comment section is locked because the post was removed from the channel.'"
+      />
+      <p v-else>There are no comments yet.</p>
     </div>
 
     <div v-else-if="commentResult.commentSections.length > 0">
+      
       <h2
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
@@ -521,6 +531,11 @@ export default defineComponent({
           `Comments (${commentResult.commentSections[0].CommentsAggregate.count})`
         }}
       </h2>
+      <ErrorBanner
+        class="mt-2 mr-10"
+        v-if="locked"
+        :text="'This comment section is locked because the post was removed from the channel.'"
+      />
 
       <Comment
         v-for="comment in commentResult.commentSections[0].Comments"
@@ -528,6 +543,7 @@ export default defineComponent({
         :compact="true"
         :commentData="comment"
         :depth="1"
+        :locked="locked"
         @clickEditComment="handleClickEdit"
         @deleteComment="handleClickDelete"
         @createComment="handleClickCreate"

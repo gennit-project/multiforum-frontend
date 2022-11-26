@@ -57,6 +57,10 @@ export default defineComponent({
       type: Number,
       required: true
     },
+    locked: {
+      type: Boolean,
+      default: false
+    },
     parentCommentId: {
       type: String,
       default: "",
@@ -173,6 +177,7 @@ export default defineComponent({
           class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
         />
         <span
+          v-if="!locked"
           class="underline cursor-pointer hover:text-black"
           :class="showReplyEditor ? 'text-black' : ''"
           @click="showReplyEditor = !showReplyEditor"
@@ -257,6 +262,7 @@ export default defineComponent({
             :compact="true"
             :commentData="childComment"
             :depth="depth + 1"
+            :locked="locked"
             :parentCommentId="commentData.id"
             @clickEditComment="$emit('clickEditComment', $event)"
             @deleteComment="handleClickDelete"
