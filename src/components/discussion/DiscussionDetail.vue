@@ -476,7 +476,7 @@ export default defineComponent({
       v-else
       ref="discussionDetail"
       :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-      class="mx-auto max-w-5xl space-y-2 bg-white pb-4 rounded"
+      class="mx-auto max-w-5xl bg-white pb-4 rounded"
     >
       <router-link
         v-if="route.name === 'DiscussionDetail'"

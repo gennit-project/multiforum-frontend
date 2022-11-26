@@ -120,25 +120,23 @@ export default defineComponent({
     <div :class="['mt-3 max-w-3xl']">
       <div class="flex text-gray-500">
         <div
-          :class="'border border-gray-200 rounded-lg text-sm pl-4 mb-1'"
+          :class="'text-sm mb-1 mt-2'"
           class="pt-1 w-full"
         >
           <div>
             <span>
-              <div :class="compact ? 'text-tiny mb-1' : 'text-tiny'">
                 <Avatar class="align-middle mr-2 h-4 w-4" />
                 <router-link
                   v-if="commentData.CommentAuthor"
-                  class="underline"
+                  class="underline font-bold text-tiny"
                   :to="`/u/${commentData.CommentAuthor.username}`"
                 >
                   {{ commentData.CommentAuthor.username }}
                 </router-link>
-                <span v-else class="underline">[Deleted]</span>
+                <span v-else class="underline font-bold text-tiny">[Deleted]</span>
                 {{ createdAtFormatted }}
                 <span v-if="commentData.updatedAt"> &#8226; </span>
                 {{ editedAtFormatted }}
-              </div>
             </span>
             <md-editor
               v-if="commentData.text && !showEditCommentField"
@@ -151,7 +149,7 @@ export default defineComponent({
             />
             <TextEditor
               id="editExistingComment"
-              class="h-48 mb-2"
+              class="h-48 mb-1"
               v-if="!readonly && showEditCommentField"
               :initial-value="commentData.text"
               :editor-id="editorId"
@@ -167,7 +165,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div v-if="compact" class="text-tiny text-gray-400 space-x-2">
+      <div v-if="compact" class="text-xs text-gray-400 space-x-2">
         <UpArrowIcon
           class="
             text-gray-400
@@ -245,7 +243,7 @@ export default defineComponent({
       <div
         v-if="compact && showReplyEditor"
         class="mt-1 border-t-2 flex space-x-2"
-        :class="compact ? 'px-3' : 'lg:px-6'"
+        :class="compact ? 'px-3 py-2' : 'lg:px-6'"
       >
         <Avatar class="h-5 w-5" />
         <div>
@@ -320,12 +318,27 @@ export default defineComponent({
 }
 
 .text-tiny {
-  font-size: 0.8em;
+  font-size: 0.9em;
+  margin-bottom: 0;
 }
 
 .md-content .md-preview,
 .md-content .md-html {
   word-break: break-word;
   width: 100%;
+  padding: 0;
+  margin: 0;
+}
+#md-editor-v3-preview > p, ul, ol, blockquote {
+  font-size: 0.9rem;
+}
+
+#md-editor-v3-preview > p, ul, ol {
+  margin-top: 0.3em;
+  margin-bottom: 0.2em;
+}
+
+#md-editor-v3-preview > pre  {
+  font-size: 0.8rem;
 }
 </style>
