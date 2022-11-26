@@ -36,6 +36,7 @@ export default defineComponent({
 
     return {
       editorId: "texteditor",
+      highlight: ref(false),
       relativeTime,
       replyCount,
       showEditCommentField: ref(false),
@@ -108,7 +109,7 @@ export default defineComponent({
 <template>
   <div>
     <div
-      :class="[!compact ? 'mt-4' : 'mt-2 max-w-3xl border-l-2 border-gray-200']"
+      :class="[!compact ? 'mt-4' : 'mt-2 max-w-3xl' ]"
     >
       <div class="flex text-gray-500">
         <div
@@ -254,8 +255,17 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div id="childComments" class="pl-3" v-if="replyCount > 0">
-        <ChildComments v-slot="slotProps" :parent-comment-id="commentData.id">
+      <div
+        id="childComments"
+        :class="['ml-2 pl-2', highlight ? 'border-l-2 border-gray-200' : 'border-l-2 border-gray-100']"
+        v-if="replyCount > 0"
+      >
+        <ChildComments 
+          
+          v-slot="slotProps" :parent-comment-id="commentData.id"
+          @mouseenter="highlight = true"
+          @mouseleave="highlight = false"
+        >
           <Comment
             v-for="(childComment, i) in slotProps.comments"
             :key="i"
