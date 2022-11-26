@@ -538,7 +538,7 @@ export default defineComponent({
               :noMermaid="true"
               preview-only
             />
-            <div class="mt-1 flex space-x-2 py-2 px-3">
+            <div v-if="route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2 px-3">
               <Avatar class="h-5 w-5" />
               <textarea
                 v-if="!showRootCommentEditor"
@@ -613,7 +613,7 @@ export default defineComponent({
               "
             />
           </div>
-          <div v-if="!discussion.body" class="mt-1 flex space-x-2 py-2 px-3">
+          <div v-if="!discussion.body && route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2 px-3">
             <Avatar class="h-5 w-5" />
             <textarea
               v-if="!showEditorInCommentSection"
