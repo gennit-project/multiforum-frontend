@@ -15,7 +15,7 @@
     "@fortawesome/fontawesome-svg-core": "^6.2.0",
     "@fortawesome/free-regular-svg-icons": "6.2.0",
     "@fortawesome/free-solid-svg-icons": "^6.2.0",
-    "@fortawesome/vue-fontawesome": "latest-3",
+    "@fortawesome/vue-fontawesome": "^3.0.2",
     "@github/markdown-toolbar-element": "^2.1.1",
     "@googlemaps/js-api-loader": "^1.14.3",
     "@headlessui/vue": "^1.6.7",
