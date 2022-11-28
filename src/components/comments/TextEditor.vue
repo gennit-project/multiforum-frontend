@@ -94,24 +94,25 @@ export default defineComponent({
 .md-content .md-html {
   word-break: break-word;
   width: 100%;
-}
-
-
-#md-editor-v3-preview > p, ul, ol, blockquote {
   font-size: 0.9rem;
 }
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+  padding: 0;
+  margin: 0;
 
-#md-editor-v3-preview > p, ul, ol {
-  margin-top: 0.3em;
-  margin-bottom: 0.2em;
+}
+#md-editor-v3-preview > p, ul, ol, blockquote {
+  font-size: 0.9rem;
+  line-height: 1.5em;
+  word-break: break-word;
 }
 
-#md-editor-v3-preview > li {
-  margin-top: 0;
-  margin-bottom: 0;
+#md-editor-v3-preview > p, ul, ol, li {
+  line-height: 1.5em;
 }
 
-#md-editor-v3-preview > pre  {
-  font-size: 0.8rem;
-}
+
 </style>

@@ -114,11 +114,11 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div :class="['mt-3 max-w-3xl']">
+    <div :class="['max-w-3xl my-4']">
       <div class="flex text-gray-500">
         <div
-          :class="'text-sm mb-1 mt-2'"
-          class="pt-1 w-full"
+          :class="'text-sm'"
+          class="w-full"
         >
           <div>
             <span class="text-tiny">
@@ -145,7 +145,7 @@ export default defineComponent({
             />
             <TextEditor
               id="editExistingComment"
-              class="h-48 mb-1"
+              class="h-48"
               v-if="!readonly && showEditCommentField"
               :initial-value="commentData.text"
               :editor-id="editorId"
@@ -239,11 +239,11 @@ export default defineComponent({
       <div
         v-if="compact && showReplyEditor"
         class="mt-1 border-t-2 flex space-x-2"
-        :class="compact ? 'px-3 py-2' : 'lg:px-6'"
+        :class="compact ? 'px-3' : 'lg:px-6'"
       >
         <div>
           <TextEditor
-            class="mb-3 h-48"
+            class="my-3 h-48"
             :placeholder="'Please be kind'"
             @update="
               updateNewComment({
@@ -324,13 +324,35 @@ export default defineComponent({
   padding: 0;
   margin: 0;
 }
-#md-editor-v3-preview > p, ul, ol, blockquote {
-  font-size: 0.9rem;
+#md-editor-v3-preview {
+  p, ul, ol, blockquote > li {
+    font-size: 1em;
+    word-break: break-word;
+  }
+  ul > li > p {
+    margin: 0.5em 0;
+    line-height: 1.5em;
+  }
+  h1, h2, h3 {
+    margin-bottom: 0.5em;
+  }
+  h3 {
+    margin-top: 1.5em;
+  }
+  p {
+    line-height: 1.5em;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
+  ul > li > p {
+    margin-bottom: 0.35em;
+  }
+  li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  ul {
+    margin: 0.1em;
+  }
 }
-
-#md-editor-v3-preview > p, ul, ol, li {
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
-}
-
 </style>

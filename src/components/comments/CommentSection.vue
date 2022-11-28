@@ -525,7 +525,7 @@ export default defineComponent({
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
         ref="commentSectionHeader"
-        class="text-xl"
+        class="text-xl max-w-2xl"
       >
         {{
           `Comments (${commentResult.commentSections[0].CommentsAggregate.count})`
@@ -568,3 +568,10 @@ export default defineComponent({
     />
   </div>
 </template>
+<style scoped>
+h2 {
+  font-size: 1.65em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+}
+</style>
