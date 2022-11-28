@@ -36,6 +36,10 @@ export default defineComponent({
       return 0;
     });
 
+    const textCopy = computed(() => {
+      return props.commentData.text;
+    });
+
     return {
       editorId: "texteditor",
       highlight: ref(false),
@@ -44,7 +48,7 @@ export default defineComponent({
       showEditCommentField: ref(false),
       showReplies: ref(true),
       showReplyEditor: ref(false),
-      textCopy: props.commentData.text,
+      textCopy,
     };
   },
   props: {
@@ -116,23 +120,20 @@ export default defineComponent({
   <div>
     <div :class="['max-w-3xl my-4']">
       <div class="flex text-gray-500">
-        <div
-          :class="'text-sm'"
-          class="w-full"
-        >
+        <div :class="'text-sm'" class="w-full">
           <div>
             <span class="text-tiny">
-                <router-link
-                  v-if="commentData.CommentAuthor"
-                  class="underline font-bold"
-                  :to="`/u/${commentData.CommentAuthor.username}`"
-                >
-                  {{ commentData.CommentAuthor.username }}
-                </router-link>
-                <span v-else class="underline font-bold">[Deleted]</span>
-                {{ createdAtFormatted }}
-                <span v-if="commentData.updatedAt" > &#8226; </span>
-                {{ editedAtFormatted }}
+              <router-link
+                v-if="commentData.CommentAuthor"
+                class="underline font-bold"
+                :to="`/u/${commentData.CommentAuthor.username}`"
+              >
+                {{ commentData.CommentAuthor.username }}
+              </router-link>
+              <span v-else class="underline font-bold">[Deleted]</span>
+              {{ createdAtFormatted }}
+              <span v-if="commentData.updatedAt"> &#8226; </span>
+              {{ editedAtFormatted }}
             </span>
             <md-editor
               v-if="commentData.text && !showEditCommentField"
@@ -163,13 +164,7 @@ export default defineComponent({
       </div>
       <div v-if="compact" class="text-xs text-gray-400 space-x-2">
         <UpArrowIcon
-          class="
-            text-gray-400
-            h-5
-            inline-flex
-            hover:text-black
-            cursor-pointer
-          "
+          class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
         />
         <span>{{ "0" }}</span>
         <DownArrowIcon
@@ -227,13 +222,17 @@ export default defineComponent({
           v-if="showReplies && replyCount > 0"
           class="underline cursor-pointer hover:text-black"
           @click="showReplies = false"
-          >{{`Hide ${replyCount} ${replyCount === 1 ? 'Reply' : 'Replies'}`}}</span
+          >{{
+            `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
+          }}</span
         >
         <span
           v-if="!showReplies"
           class="underline cursor-pointer hover:text-black"
           @click="showReplies = true"
-          >{{`Show ${replyCount} ${replyCount === 1 ? 'Reply' : 'Replies'}`}}</span
+          >{{
+            `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
+          }}</span
         >
       </div>
       <div
@@ -325,7 +324,10 @@ export default defineComponent({
   margin: 0;
 }
 #md-editor-v3-preview {
-  p, ul, ol, blockquote > li {
+  p,
+  ul,
+  ol,
+  blockquote > li {
     font-size: 1em;
     word-break: break-word;
   }
@@ -333,7 +335,9 @@ export default defineComponent({
     margin: 0.5em 0;
     line-height: 1.5em;
   }
-  h1, h2, h3 {
+  h1,
+  h2,
+  h3 {
     margin-bottom: 0.5em;
   }
   h3 {
