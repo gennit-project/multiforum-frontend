@@ -498,7 +498,7 @@ export default defineComponent({
       </router-link>
       <div class="mt-4 mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
-          <h1 class="mt-4 font-bold text-lg sm:tracking-tight">
+          <h1 class="mt-4 text-2xl max-w-2xl">
             {{ discussion.title }}
           </h1>
         </div>
@@ -706,6 +706,12 @@ export default defineComponent({
 .height-constrained-more {
   max-height: 84vh;
   height: 100% - 100px;
+}
+
+h1 {
+    font-size: 2.65em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #eaecef;
 }
 </style>
 
