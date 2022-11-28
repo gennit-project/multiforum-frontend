@@ -10,8 +10,6 @@ import {
 } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
-import Avatar from "../Avatar.vue";
-import { toolbars } from "./toolbars";
 import EmojiExtension from "./EmojiExtension/index.vue";
 import TextEditor from "./TextEditor.vue";
 import CancelButton from "@/components/CancelButton.vue";
@@ -19,8 +17,8 @@ import SaveButton from "@/components/SaveButton.vue";
 import ChildComments from "./ChildComments.vue";
 
 export default defineComponent({
+  name: "CommentComponent",
   components: {
-    Avatar,
     CancelButton,
     ChildComments,
     DownArrowIcon,
@@ -47,7 +45,6 @@ export default defineComponent({
       showReplies: ref(true),
       showReplyEditor: ref(false),
       textCopy: props.commentData.text,
-      toolbars,
     };
   },
   props: {
@@ -124,24 +121,23 @@ export default defineComponent({
           class="pt-1 w-full"
         >
           <div>
-            <span>
-                <Avatar class="align-middle mr-2 h-4 w-4" />
+            <span class="text-tiny">
                 <router-link
                   v-if="commentData.CommentAuthor"
-                  class="underline font-bold text-tiny"
+                  class="underline font-bold"
                   :to="`/u/${commentData.CommentAuthor.username}`"
                 >
                   {{ commentData.CommentAuthor.username }}
                 </router-link>
-                <span v-else class="underline font-bold text-tiny">[Deleted]</span>
+                <span v-else class="underline font-bold">[Deleted]</span>
                 {{ createdAtFormatted }}
-                <span v-if="commentData.updatedAt"> &#8226; </span>
+                <span v-if="commentData.updatedAt" > &#8226; </span>
                 {{ editedAtFormatted }}
             </span>
             <md-editor
               v-if="commentData.text && !showEditCommentField"
               class="max-w-2xl"
-              v-model="commentData.text"
+              v-model="textCopy"
               previewTheme="vuepress"
               language="en-US"
               :noMermaid="true"
@@ -245,7 +241,6 @@ export default defineComponent({
         class="mt-1 border-t-2 flex space-x-2"
         :class="compact ? 'px-3 py-2' : 'lg:px-6'"
       >
-        <Avatar class="h-5 w-5" />
         <div>
           <TextEditor
             class="mb-3 h-48"
@@ -333,12 +328,9 @@ export default defineComponent({
   font-size: 0.9rem;
 }
 
-#md-editor-v3-preview > p, ul, ol {
-  margin-top: 0.3em;
-  margin-bottom: 0.2em;
+#md-editor-v3-preview > p, ul, ol, li {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
 }
 
-#md-editor-v3-preview > pre  {
-  font-size: 0.8rem;
-}
 </style>

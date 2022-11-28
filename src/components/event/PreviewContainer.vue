@@ -27,7 +27,7 @@ export default defineComponent({
   },
   setup() {},
   components: {
-    Dialog,
+    DialogComponent: Dialog,
     DialogOverlay,
     DialogTitle,
     TransitionChild,
@@ -39,7 +39,7 @@ export default defineComponent({
 
 <template>
   <TransitionRoot as="template" :show="isOpen">
-    <Dialog
+    <DialogComponent
       as="div"
       class="fixed inset-0 overflow-hidden"
       :class="[topLayer ? 'z-30' : 'z-20']"
@@ -105,6 +105,6 @@ export default defineComponent({
           </TransitionChild>
         </div>
       </div>
-    </Dialog>
+    </DialogComponent>
   </TransitionRoot>
 </template>

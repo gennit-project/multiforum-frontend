@@ -234,7 +234,7 @@ export default defineComponent({
               </template>
               <template v-slot:content>
                 <TagPicker
-                  :selected-tags="selectedTags"
+                  :selected-tags="selectedTags.value"
                   @setSelectedTags="setSelectedTags"
                 />
               </template>
@@ -252,8 +252,8 @@ export default defineComponent({
         v-if="channelResult && channelResult.channels"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsCount"
-        :search-input="searchInput"
-        :selected-tags="selectedTags"
+        :search-input="searchInput.value"
+        :selected-tags="selectedTags.value"
         @filterByTag="filterByTag"
         @loadMore="loadMore"
       />

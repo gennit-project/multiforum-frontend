@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
+    name: "TableComponent",
     setup(){}
 })
 </script>

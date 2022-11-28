@@ -57,6 +57,9 @@ mutation createCommentSection(
       Channel {
         uniqueName
       }
+      CommentsAggregate {
+        count
+      }
       Comments {
         id
         text

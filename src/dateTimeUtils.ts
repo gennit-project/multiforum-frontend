@@ -10,7 +10,7 @@ const relativeTime = (dateISO: string) => {
 
 const relativeTimeHoursAndMinutes = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);
-  const time = dateObj.toRelative({unit: ["hours", "minutes"]});
+  const time = dateObj.toRelative();
 
   return time;
 };

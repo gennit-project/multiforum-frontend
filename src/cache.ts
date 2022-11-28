@@ -63,7 +63,11 @@ const cache = new InMemoryCache({
           // Concatenate the incoming list items with
           // the existing list items.
           // More info: https://www.apollographql.com/docs/react/pagination/core-api/
-          merge(existing, incoming, { args: { offset = 0 }}) {
+          merge(existing, incoming, args) {
+            let offset = args?.args?.offset;
+            if (!offset) {
+              offset = 0
+            }
             // Slicing is necessary because the existing data is
             // immutable.
             const merged = existing ? existing.slice(0) : [];
@@ -75,17 +79,25 @@ const cache = new InMemoryCache({
         },
         discussions: {
           keyArgs: ['where', 'resultsOrder'],
-          merge(existing, incoming, { args: { offset = 0 }}) {
+          merge(existing, incoming, args) {
+            let offset = args?.args?.offset;
+            if (!offset) {
+              offset = 0
+            }
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
-              merged[offset + i] = incoming[i];
+              merged[i] = incoming[i];
             }
             return merged;
           },
         },
         channels: {
           keyArgs: ['channelWhere', 'eventWhere', 'limit'],
-          merge(existing, incoming, { args: { offset = 0 }}) {
+          merge(existing, incoming, args) {
+            let offset = args?.args?.offset;
+            if (!offset) {
+              offset = 0
+            }
             const merged = existing ? existing.slice(0) : [];
             for (let i = 0; i < incoming.length; ++i) {
               merged[offset + i] = incoming[i];

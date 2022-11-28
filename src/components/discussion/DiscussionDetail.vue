@@ -15,7 +15,7 @@ import CreateButton from "../CreateButton.vue";
 import GenericButton from "../GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
-import Avatar from "@/components/Avatar.vue";
+import ProfileAvatar from "@/components/ProfileAvatar.vue";
 import TextEditor from "@/components/comments/TextEditor.vue";
 import CancelButton from "@/components/CancelButton.vue";
 import SaveButton from "@/components/SaveButton.vue";
@@ -30,7 +30,7 @@ import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
-    Avatar,
+    ProfileAvatar,
     CancelButton,
     CommentSection,
     CreateButton,
@@ -102,6 +102,10 @@ export default defineComponent({
       return `posted ${relativeTime(discussion.value.createdAt)}`;
     });
 
+    // Update this ID when creating the first comment and comment
+    // section to go with it
+    const newCommentSectionId = ref('')
+
     const commentSectionId = computed(() => {
       if (!discussion.value) {
         return "";
@@ -119,7 +123,7 @@ export default defineComponent({
           return commentSection.id;
         }
       }
-      return "";
+      return newCommentSectionId.value;
     });
 
     const getCommentCount = (channelId: string) => {
@@ -392,7 +396,7 @@ export default defineComponent({
 
     onDoneCreatingCommentSection((cs: any) => {
       const data = cs.data.createCommentSections?.commentSections[0];
-      commentSectionId.value = data.id;
+      newCommentSectionId.value = data.id;
     });
 
     const commentSectionIsLocked = computed(() => {
@@ -449,6 +453,12 @@ export default defineComponent({
     },
     async handleCreateComment() {
       if (!this.commentSectionId) {
+        if (!this.channelId) {
+          throw new Error("Cannot create comment section because there is no channel ID.")
+        }
+        if (!this.discussionId) {
+          throw new Error("Cannot create comment section because there is no discussion ID.")
+        }
         await this.createCommentSection();
       }
       this.createComment();
@@ -549,7 +559,7 @@ export default defineComponent({
               preview-only
             />
             <div v-if="route.name === 'DiscussionDetail' && !commentSectionIsLocked" class="mt-1 flex space-x-2 py-2">
-              <Avatar v-if="!showRootCommentEditor" class="h-5 w-5" />
+              <ProfileAvatar v-if="!showRootCommentEditor" class="h-5 w-5" />
               <textarea
                 v-if="!showRootCommentEditor"
                 @click="showRootCommentEditor = true"
@@ -627,7 +637,7 @@ export default defineComponent({
             />
           </div>
           <div v-if="!discussion.body && route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2">
-            <Avatar class="h-5 w-5" />
+            <ProfileAvatar class="h-5 w-5" />
             <textarea
               v-if="!showEditorInCommentSection"
               id="addcomment"

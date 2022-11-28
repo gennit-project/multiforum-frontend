@@ -63,7 +63,7 @@ export default defineComponent({
   },
   computed: {
     selectedTagsMap() {
-      let obj = {};
+      let obj: any = {};
       for (let i = 0; i < this.selectedTags.length; i++) {
         const tag = this.selectedTags[i];
         obj[tag] = true;

@@ -11,7 +11,7 @@ import ExclamationIcon from "./icons/ExclamationIcon.vue";
 
 export default defineComponent({
   components: {
-    Dialog,
+    DialogComponent: Dialog,
     DialogPanel,
     DialogTitle,
     TransitionChild,
@@ -42,7 +42,7 @@ export default defineComponent({
 </script>
 <template>
   <TransitionRoot as="template" :show="open">
-    <Dialog as="div" class="relative z-10" @close="$emit('close')">
+    <DialogComponent as="div" class="relative z-10" @close="$emit('close')">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -191,7 +191,7 @@ export default defineComponent({
           </TransitionChild>
         </div>
       </div>
-    </Dialog>
+    </DialogComponent>
   </TransitionRoot>
 </template>
 

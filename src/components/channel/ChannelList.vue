@@ -22,7 +22,7 @@ export default defineComponent({
       default: "",
     },
     selectedTags: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },

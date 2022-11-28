@@ -58,7 +58,7 @@ export default defineComponent({
   },
   computed: {
      selectedChannelsMap() {
-        let map = {}
+        let map: any = {}
         for (let i = 0; i < this.selectedChannels.length; i++) {
             const channel = this.selectedChannels[i]
             map[channel] = true

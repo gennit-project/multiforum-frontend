@@ -1,10 +1,11 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import Back from "../Back.vue";
+import GoBack from "../GoBack.vue";
 import Breadcrumbs from '@/components/nav/Breadcrumbs.vue';
 import { useRoute } from "vue-router";
 
 export default defineComponent({
+  name: "FeedComponent",
   setup() {
     const route = useRoute();
     const feedId = computed(() => {
@@ -26,8 +27,8 @@ export default defineComponent({
     };
   },
   components: {
-    Back,
-    Breadcrumbs
+    Breadcrumbs,
+    GoBack,
   },
 });
 </script>
@@ -35,7 +36,7 @@ export default defineComponent({
 <template>
   <div class="flex-1 px-10 font-bold">
     <Breadcrumbs :links="links" />
-    <Back />
+    <GoBack />
     <p class="text-md font-medium text-gray-800 truncate">
       <span>Title {{ feedId }}</span>
     </p>

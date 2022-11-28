@@ -24,7 +24,7 @@ export default defineComponent({
       },
     },
   },
-  setup(props) {
+  setup() {
     const {
       loading: tagsLoading,
       error: tagsError,
@@ -52,9 +52,10 @@ export default defineComponent({
   },
   computed: {
      selectedTagsMap() {
-        let map = {}
+        let map: any = {}
         for (let i = 0; i < this.selectedTags.length; i++) {
             const tag = this.selectedTags[i]
+
             map[tag] = true
         }
         return map

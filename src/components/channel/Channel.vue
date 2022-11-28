@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
+  name: "ChannelComponent",
   components: {
     ChannelIcon,
     ChannelTabs,

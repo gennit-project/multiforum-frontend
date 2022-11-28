@@ -6,6 +6,7 @@ import FormTitle from "@/components/FormTitle.vue";
 import FormRow from "@/components/FormRow.vue";
 
 export default defineComponent({
+  name: "FormComponent",
   props: {
     formTitle: {
       type: String,

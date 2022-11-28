@@ -5,6 +5,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 
 export default defineComponent({
+  name: "TagComponent",
   components: {
     ChannelIcon,
     TagIcon,

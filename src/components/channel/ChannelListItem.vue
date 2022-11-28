@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
+import { TagData } from "@/types/tagTypes";
 import HighlightedSearchTerms from "../HighlightedSearchTerms.vue";
 import Tag from "@/components/Tag.vue";
 
@@ -24,7 +25,7 @@ export default defineComponent({
   },
   data(props) {
     return {
-      tags: props.channel.Tags.map((tag) => {
+      tags: props.channel.Tags.map((tag: TagData) => {
         return tag.text;
       }),
     };
@@ -77,7 +78,7 @@ export default defineComponent({
             :to="`/channels/c/${channel.uniqueName}/discussions`"
             >{{ channel.DiscussionsAggregate.count }}
             {{
-              channel.DiscussionsAggregate.count === 1
+              channel.DiscussionsAggregate.count === "1"
                 ? "Discussion"
                 : "Discussions"
             }}</router-link

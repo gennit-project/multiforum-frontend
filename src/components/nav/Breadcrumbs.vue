@@ -7,6 +7,7 @@ interface Link {
 }
 
 export default defineComponent({
+  name: "BreadCrumbs",
   setup() {
 
   },

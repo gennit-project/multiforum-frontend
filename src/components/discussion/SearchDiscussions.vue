@@ -364,7 +364,7 @@ export default defineComponent({
                 <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
               </template>
               <template v-slot:content>
-                <TagPicker :selected-tags="selectedTags"
+                <TagPicker :selected-tags="selectedTags.value"
                            @setSelectedTags="setSelectedTags" />
               </template>
             </FilterChip>
@@ -390,8 +390,8 @@ export default defineComponent({
         <DiscussionList :discussions="discussionResult.discussions"
                         :channel-id="channelId"
                         :result-count="discussionResult.discussionsCount"
-                        :search-input="searchInput"
-                        :selected-tags="selectedTags"
+                        :search-input="searchInput.value"
+                        :selected-tags="selectedTags.value"
                         :selected-channels="selectedChannels"
                         @filterByTag="filterByTag"
                         @filterByChannel="filterByChannel"

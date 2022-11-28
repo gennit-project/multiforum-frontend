@@ -11,6 +11,7 @@ import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 
 export default defineComponent({
+  name: "TopNav",
   components: {
     TopNavLink,
     MobileMenuButton,

@@ -44,7 +44,7 @@ export default defineComponent({
         zoom: 7,
         mapTypeId: "terrain"
       }
-      // eslint-disable-next-line
+      /* eslint-disable */
       if (props.useMobileStyles) {
         // The Google map requires that the styles have to be set
         // when the map is rendered and they can't change based on props.
@@ -60,12 +60,10 @@ export default defineComponent({
         map.value = new google.maps.Map(desktopMapDiv.value, mapConfig)
       }
 
-
-      // eslint-disable-next-line
       let bounds = new google.maps.LatLngBounds();
 
-      // eslint-disable-next-line
       const infowindow = new google.maps.InfoWindow()
+      /* eslint-enable */
 
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i];

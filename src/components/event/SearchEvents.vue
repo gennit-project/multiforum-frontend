@@ -54,12 +54,6 @@ export default defineComponent({
       }
       return "";
     });
-    const eventId = computed(() => {
-      if (typeof route.params.eventId === "string") {
-        return route.params.eventId;
-      }
-      return "";
-    });
     const now = DateTime.now();
 
     const createEventPath = channelId.value

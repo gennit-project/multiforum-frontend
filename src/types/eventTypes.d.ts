@@ -39,7 +39,7 @@ export interface CreateEditEventFormValues {
   free: boolean;
 }
 export interface EventData {
-  id: string?;
+  id: string;
   title: string;
   description: string;
   address?: string;

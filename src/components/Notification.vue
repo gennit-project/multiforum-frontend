@@ -4,6 +4,7 @@ import CheckCircleIcon from "./icons/CheckCircleIcon.vue";
 import XMarkIcon from "./icons/XmarkIcon.vue";
 
 export default defineComponent({
+  name: "NotificationComponent",
   props: {
     show: {
         type: Boolean,

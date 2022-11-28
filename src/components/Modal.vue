@@ -10,6 +10,7 @@ import {
 import CheckIcon from "./icons/CheckIcon.vue";
 
 export default defineComponent({
+  name: "ModalComponent",
   components: {
     CheckIcon,
     TailwindDialog: Dialog,

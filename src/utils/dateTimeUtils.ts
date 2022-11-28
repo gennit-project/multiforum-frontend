@@ -23,7 +23,7 @@ const getTimePieces = (timeObj: DateTime) => {
 
 const relativeTimeHoursAndMinutes = (dateISO: string) => {
   const dateObj = DateTime.fromISO(dateISO);
-  const time = dateObj.toRelative(["hours", "minutes"]);
+  const time = dateObj.toRelative();
 
   return time;
 };

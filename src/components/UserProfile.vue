@@ -8,7 +8,10 @@ export default defineComponent({
     const route = useRoute();
 
     const username = computed(() => {
-      return route.params.username
+      if (typeof route.params.username === 'string') {
+        return route.params.username
+      }
+      return ''
     });
 
     const links = computed(() => {
