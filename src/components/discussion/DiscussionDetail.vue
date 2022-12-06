@@ -438,14 +438,6 @@ export default defineComponent({
     };
   },
   methods: {
-    filterDiscussionsByTag(tag: string) {
-      this.router.push({
-        name: "FilterDiscussionsByTag",
-        params: {
-          tag,
-        },
-      });
-    },
     getFormattedDateString(startTime: string) {
       const startTimeObj = DateTime.fromISO(startTime);
 

@@ -395,6 +395,46 @@ export default defineComponent({
               });
             }
             
+            // Update the total count of comments
+            const readCommentSectionQueryResult = cache.readQuery({
+              query: GET_COMMENT_SECTION,
+              variables: {
+                id: props.commentSectionId,
+              },
+            });
+
+            const existingCommentSectionData = readCommentSectionQueryResult?.posts[0];
+
+            let existingCommentAggregate = existingCommentSectionData?.CommentsAggregate
+              ? existingCommentSectionData.CommentsAggregate
+              : null;
+
+            let newCommentAggregate = null;
+
+            if (existingCommentAggregate) {
+              newCommentAggregate = {
+                ...existingCommentAggregate,
+                count: existingCommentAggregate.count + 1,
+              };
+            }
+
+            cache.writeQuery({
+              query: GET_COMMENT_SECTION,
+              data: {
+                ...readQueryResult,
+                posts: [
+                  {
+                    ...existingCommentSectionData,
+                    CommentsAggregate: newCommentAggregate
+                      ? newCommentAggregate
+                      : existingCommentAggregate,
+                  },
+                ],
+                variables: {
+                  id: props.commentSectionId,
+                },
+              },
+            });
           }
         },
       })

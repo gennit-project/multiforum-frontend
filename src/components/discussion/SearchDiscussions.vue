@@ -60,7 +60,6 @@ export default defineComponent({
       return [];
     });
 
-    const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(
       route.params.tag && typeof route.params.tag === "string"
@@ -222,15 +221,6 @@ export default defineComponent({
       sendToPreview(defaultSelectedDiscussion.id);
     });
 
-    const openModal = (selectedFilter: string) => {
-      showModal.value = true;
-      selectedFilterOptions.value = selectedFilter;
-    };
-    const closeModal = () => {
-      showModal.value = false;
-      selectedFilterOptions.value = "";
-    };
-
     const defaultLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -255,7 +245,6 @@ export default defineComponent({
     return {
       channelId,
       channelLabel,
-      closeModal,
       compareDate,
       createDiscussionPath,
       defaultLabels,
@@ -264,7 +253,6 @@ export default defineComponent({
       discussionLoading,
       discussionResult,
       loadMore,
-      openModal,
       previewIsOpen,
       reachedEndOfResults,
       refetchDiscussions,
@@ -272,7 +260,6 @@ export default defineComponent({
       searchInput,
       setSearchInput,
       setSelectedTags,
-      showModal,
       selectedChannels,
       selectedFilterOptions,
       selectedTags,
