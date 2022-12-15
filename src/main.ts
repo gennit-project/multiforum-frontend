@@ -4,7 +4,6 @@ import { router } from "./router";
 import "./index.css";
 import {
   ApolloClient,
-  ApolloLink,
   createHttpLink,
 } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
@@ -30,8 +29,12 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 loadFonts()
 
+const { environment, graphqlUrlDev, graphqlUrlProd } = config;
+
+console.log({ environment })
+
 const httpLink = createHttpLink({
-  uri: config.graphqlUrl,
+  uri: environment === 'development' ? graphqlUrlDev : graphqlUrlProd
 });
 
 const networkErrorLink = onError(({ graphQLErrors, networkError }) => {
