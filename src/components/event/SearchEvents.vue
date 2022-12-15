@@ -293,11 +293,13 @@ export default defineComponent({
     let eventQueryString = gql`
       query getEvents(
         $where: EventWhere
-        $resultsOrder: [EventSort]
+        $resultsOrder: [EventSort!]
         $offset: Int
         $limit: Int
       ) {
-        eventsCount(where: $where)
+        eventsAggregate(where: $where) {
+          count
+        }
         events(
           where: $where
           options: { sort: $resultsOrder, offset: $offset, limit: $limit }
@@ -616,7 +618,7 @@ export default defineComponent({
         </div>
     <EventFilterBar 
       class="mt-2"
-      :channel-id="channelId" :result-count="eventResult ? eventResult.eventsCount : 0"
+      :channel-id="channelId" :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
       :filter-values="filterValues" :loaded-event-count="eventResult ? eventResult.events.length : 0"
       :time-slot-filters-active="timeSlotFiltersActive" :create-event-path="createEventPath"
       @updateSelectedDistance="updateSelectedDistance" @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
@@ -633,7 +635,7 @@ export default defineComponent({
             id="listView"
             :class="[!channelId ? '' : '']"
             class="relative"
-            :result-count="eventResult ? eventResult.eventsCount : 0"
+            :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
             :events="eventResult.events"
             :channel-id="channelId"
             :search-input="filterValues.searchInput"
@@ -662,7 +664,7 @@ export default defineComponent({
       v-else 
       :channel-id="channelId" 
       :events="eventResult.events" 
-      :result-count="eventResult.eventsCount"
+      :result-count="eventResult.eventsAggregate.count"
       :search-input="filterValues.searchInput" 
       :selected-tags="filterValues.selectedTags"
       :selected-channels="filterValues.selectedChannels" 

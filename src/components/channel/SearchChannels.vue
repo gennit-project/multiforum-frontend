@@ -58,7 +58,9 @@ export default defineComponent({
 
     const GET_CHANNELS = gql`
       query getChannels($channelWhere: ChannelWhere, $eventWhere: EventWhere, $limit: Int, $offset: Int) {
-        channelsCount(where: $channelWhere)
+        channelsAggregate(where: $channelWhere) {
+          count
+        }
         channels(where: $channelWhere, options: {
           limit: $limit,
           offset: $offset
@@ -251,7 +253,7 @@ export default defineComponent({
         class="px-8 flex-1 text-xl font-bold mx-auto max-w-5xl"
         v-if="channelResult && channelResult.channels"
         :channels="channelResult.channels"
-        :result-count="channelResult.channelsCount"
+        :result-count="channelResult.channelsAggregate.count"
         :search-input="searchInput.value"
         :selected-tags="selectedTags.value"
         @filterByTag="filterByTag"

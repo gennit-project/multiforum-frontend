@@ -106,11 +106,13 @@ export default defineComponent({
     let GET_DISCUSSIONS = gql`
       query getDiscussions(
         $where: DiscussionWhere
-        $resultsOrder: [DiscussionSort]
+        $resultsOrder: [DiscussionSort!]
         $offset: Int
         $limit: Int
       ) {
-        discussionsCount(where: $where)
+        discussionsAggregate(where: $where) {
+          count
+        }
         discussions(
           where: $where
           options: { sort: $resultsOrder, offset: $offset, limit: $limit }
@@ -376,7 +378,7 @@ export default defineComponent({
       <template v-slot:leftpane>
         <DiscussionList :discussions="discussionResult.discussions"
                         :channel-id="channelId"
-                        :result-count="discussionResult.discussionsCount"
+                        :result-count="discussionResult.discussionsAggregate.count"
                         :search-input="searchInput.value"
                         :selected-tags="selectedTags.value"
                         :selected-channels="selectedChannels"
