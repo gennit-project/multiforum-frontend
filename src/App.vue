@@ -1,51 +1,26 @@
-<script lang="ts">
-import { defineComponent, computed } from "vue";
-import Topnav from "./components/nav/Topnav.vue";
-import SiteSidenav from "./components/nav/SiteSidenav.vue";
-import { useRoute } from "vue-router";
-
-export default defineComponent({
-  setup() {
-    const route = useRoute();
-
-    const channelId = computed(() => {
-      return route.params.channelId;
-    });
-
-    return { channelId }
-  },
-  name: "App",
-  components: {
-    Topnav,
-    SiteSidenav,
-  },
-  data() {
-    return {
-      showMobileDropdown: false,
-    };
-  },
-  methods: {
-    toggleMobileDropdown() {
-      this.showMobileDropdown = !this.showMobileDropdown;
-    },
-  },
-});
-</script>
-
 <template>
-  <div class="h-screen">
-    <nav class="bg-gray-800">
-      <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
-      <SiteSidenav :show-mobile-dropdown="showMobileDropdown" @click="showMobileDropdown = false"/>
-    </nav>
-    <div v-if="!channelId">
-      <router-view></router-view>
-    </div>
-    
-    <router-view v-else></router-view>
-  </div>
+  <v-app>
+    <v-main>
+      <HelloWorld/>
+    </v-main>
+  </v-app>
 </template>
 
-<style lang="scss">
+<script lang="ts">
+import { defineComponent } from 'vue'
+import HelloWorld from './components/HelloWorld.vue'
 
-</style>
+export default defineComponent({
+  name: 'App',
+
+  components: {
+    HelloWorld,
+  },
+
+  data () {
+    return {
+      //
+    }
+  },
+})
+</script>

@@ -12,20 +12,32 @@ import { onError } from "@apollo/client/link/error";
 import { logErrorMessages } from "@vue/apollo-util";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
-import vuetify from './plugins/vuetify'
-import { loadFonts } from './plugins/webfontloader'
 import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
 import MdEditor from "md-editor-v3";
 import { library } from '@fortawesome/fontawesome-svg-core'
 import cache from './cache';
+import { createVuetify } from 'vuetify'
+const vuetify = createVuetify()
 // import "highlight.js/styles/github-dark-dimmed.css";
 
 import { faFaceSmile } from '@fortawesome/free-solid-svg-icons'
 
 library.add(faFaceSmile)
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+
+async function loadFonts () {
+  const webFontLoader = await import(/* webpackChunkName: "webfontloader" */'webfontloader')
+
+  webFontLoader.load({
+    google: {
+      families: ['Roboto:100,300,400,500,700,900&display=swap'],
+    },
+  })
+}
+
 
 loadFonts()
 
