@@ -458,9 +458,9 @@ export default defineComponent({
               ? `Edited ${relativeTime("" + eventData.updatedAt)}`
               : ""
           }}
-          &#8226;
+          <span v-if="route.name === 'EventDetail'">&#8226;</span>
           <span
-            v-if="!compactMode"
+            v-if="!compactMode && route.name === 'EventDetail'"
             class="underline font-medium text-gray-900 cursor-pointer"
             @click="confirmDeleteIsOpen = true"
             >Delete</span

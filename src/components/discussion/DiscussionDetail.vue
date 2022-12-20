@@ -530,9 +530,10 @@ export default defineComponent({
               {{ createdAt }}
               <span v-if="discussion.updatedAt"> &#8226; </span>
               {{ editedAt }}
-              &#8226;
+              <span v-if="route.name === 'DiscussionDetail'">
+                &#8226;</span>
               <span
-                v-if="!compactMode"
+                v-if="!compactMode && route.name === 'DiscussionDetail'"
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="deleteModalIsOpen = true"
                 >Delete</span

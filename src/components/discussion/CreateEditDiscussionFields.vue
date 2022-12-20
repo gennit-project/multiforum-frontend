@@ -93,14 +93,14 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="flex justify-center">
     <div v-if="discussionLoading">Loading...</div>
     <div v-else-if="getDiscussionError">
       <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">
         {{ error.message }}
       </div>
     </div>
-    <TailwindForm class="pt-8" v-else-if="formValues" :form-title="formTitle" :needs-changes="needsChanges"
+    <TailwindForm class="pt-8 max-w-4xl" v-else-if="formValues" :form-title="formTitle" :needs-changes="needsChanges"
       @input="touched = true" @submit="$emit('submit')">
       <div class="divide-y divide-gray-200">
         <div class="mt-6">

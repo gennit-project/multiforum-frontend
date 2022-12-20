@@ -108,7 +108,7 @@ export default defineComponent({
 <template>
   <li :ref="`#${event.id}`" :class="[
     event.id === eventIdInParams ? 'bg-slate-100' : '',
-  ]" class="relative bg-white pl-4 lg:pl-12 cursor-pointer" @click="$emit('openPreview')">
+  ]" class="relative bg-white pl-4 cursor-pointer" @click="$emit('openPreview')">
     <router-link :to="previewLink">
       <div class="block">
         <div class="py-2">

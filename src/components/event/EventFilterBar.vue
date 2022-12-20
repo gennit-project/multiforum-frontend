@@ -495,6 +495,10 @@ export default defineComponent({
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
+
+      
+      <slot></slot>
+      
       <div v-if="channelId" >
         <SwitchGroup as="div" class="flex inline-flex items-center">
           <TailwindSwitch

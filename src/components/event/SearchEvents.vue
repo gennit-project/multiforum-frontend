@@ -632,7 +632,40 @@ export default defineComponent({
       @updateTimeSlots="updateTimeSlots"
       @resetTimeSlots="resetTimeSlots"
       @toggleShowMap="toggleShowMap"
-    />
+    >
+    <div class="block float-right mx-4 lg:mr-12 mt-2">
+      <div v-if="!channelId" class="flex justify-center">
+        <SwitchGroup as="div" class="flex items-center">
+          <TailwindSwitch
+            v-model="showMap"
+            :class="[
+              showMap ? 'bg-blue-600' : 'bg-gray-200',
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+            ]"
+            @update:model-value="toggleShowMap"
+          >
+            <span
+              aria-hidden="true"
+              :class="[
+                showMap ? 'translate-x-5' : 'translate-x-0',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+              ]"
+            />
+          </TailwindSwitch>
+          <SwitchLabel as="span" class="ml-3">
+            <span class="text-sm font-medium text-gray-900">Show Map</span>
+          </SwitchLabel>
+        </SwitchGroup>
+        <CreateButton
+          class="align-middle ml-2"
+          :to="createEventPath"
+          :label="'Create Event'"
+        />
+      </div>
+    </div>
+
+  
+  </EventFilterBar>
     </div>
     <div class="mx-auto" v-if="eventLoading">Loading...</div>
     <ErrorBanner
@@ -643,7 +676,7 @@ export default defineComponent({
   </div>
   <div  v-if="!showMap && eventResult && eventResult.events"  class="flex justify-content">
     <TwoSeparatelyScrollingPanes
-      class="mx-auto block"
+      :class="'mx-auto block'"
      
     >
       <template v-slot:leftpane>
