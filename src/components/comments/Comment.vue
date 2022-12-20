@@ -163,13 +163,13 @@ export default defineComponent({
         </div>
       </div>
       <div v-if="compact" class="text-xs text-gray-400 space-x-2">
-        <UpArrowIcon
+        <!-- <UpArrowIcon
           class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
         />
         <span>{{ "0" }}</span>
         <DownArrowIcon
           class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-        />
+        /> -->
         <span
           v-if="!locked"
           class="underline cursor-pointer hover:text-black"

@@ -7,7 +7,7 @@ import EventMap from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import CloseButton from "@/components/CloseButton.vue";
 import { useRouter } from "vue-router";
-import { useDisplay } from 'vuetify';
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   props: {
@@ -49,15 +49,15 @@ export default defineComponent({
     EventPreview,
     PreviewContainer,
   },
-  setup(){
+  setup() {
     const { smAndDown } = useDisplay();
     return {
       smAndDown,
-    }
+    };
   },
   data() {
     const router = useRouter();
-    
+
     return {
       highlightedMarker: null,
       mobileMarkerMap: {} as any,
@@ -106,7 +106,7 @@ export default defineComponent({
       eventData,
       clickedMapMarker,
       markerMap,
-      map
+      map,
     }: any) {
       if (eventId) {
         if (
@@ -129,8 +129,7 @@ export default defineComponent({
 
         const openSpecificInfowindow = () => {
           const eventTitle =
-            markerMap[eventLocationId].events[this.highlightedEventId]
-              .title;
+            markerMap[eventLocationId].events[this.highlightedEventId].title;
           const eventLocation =
             markerMap[eventLocationId].events[this.highlightedEventId]
               .locationName;
@@ -202,9 +201,9 @@ export default defineComponent({
       eventLocationId: string,
       eventId: string,
       eventData: EventData,
-      clickedMapMarker: boolean | false,
+      clickedMapMarker: boolean | false
     ) {
-      this.$emit('sendToPreview', eventId, eventLocationId)
+      this.$emit("sendToPreview", eventId, eventLocationId);
       this.highlightedEventLocationId = eventLocationId;
 
       // Keep desktop and mobile maps in sync
@@ -214,7 +213,7 @@ export default defineComponent({
         eventData,
         clickedMapMarker,
         markerMap: this.mobileMarkerMap,
-        map: this.mobileMap
+        map: this.mobileMap,
       });
       this.highlightEventOnMap({
         eventId,
@@ -222,7 +221,7 @@ export default defineComponent({
         eventData,
         clickedMapMarker,
         markerMap: this.desktopMarkerMap,
-        map: this.desktopMap
+        map: this.desktopMap,
       });
     },
     unhighlightEventOnMap(markerMap: any) {
@@ -287,46 +286,44 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="mx-auto">
     <div id="mapViewMobileWidth" v-if="smAndDown">
-      <EventMap 
-        v-if="events.length > 0" 
+      <EventMap
+        v-if="events.length > 0"
         :events="events"
-        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen" 
+        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
-        :use-mobile-styles="true" 
-        @highlightEvent="highlightEvent" 
+        :use-mobile-styles="true"
+        @highlightEvent="highlightEvent"
         @open-preview="openPreview"
-        @lockColors="colorLocked = true" 
-        @setMarkerData="setMarkerData" 
+        @lockColors="colorLocked = true"
+        @setMarkerData="setMarkerData"
       />
     </div>
     <div id="mapViewFullScreen" class="flex flex-row" v-else>
-      <div class="h-full max-h-screen overflow-y-auto flex-col flex-grow" style="width: 34vw">
-        <EventList 
+      <div
+        class="h-full max-h-screen overflow-y-auto flex-col flex-grow"
+        style="width: 34vw"
+      >
+        <EventList
           key="highlightedEventId"
           :events="events"
           :channel-id="channelId"
           :search-input="searchInput"
-          :highlighted-event-location-id="highlightedEventLocationId" 
+          :highlighted-event-location-id="highlightedEventLocationId"
           :highlighted-event-id="highlightedEventId"
-          :selected-tags="selectedTags" 
-          :selected-channels="selectedChannels" 
+          :selected-tags="selectedTags"
+          :selected-channels="selectedChannels"
           :show-map="true"
-          @filterByTag="filterByTag" 
-            @filterByChannel="filterByChannel"
-          @highlightEvent="highlightEvent" 
-          @open-preview="openPreview" 
-          @unhighlight="unhighlight" 
+          @filterByTag="filterByTag"
+          @filterByChannel="filterByChannel"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @unhighlight="unhighlight"
         />
       </div>
-      <div
-        style="
-          right: 0;
-          width: 66vw;
-        "
-      >
-        <EventMap 
+      <div style="right: 0; width: 66vw">
+        <EventMap
           class="fixed"
           v-if="events.length > 0"
           :events="events"
@@ -335,23 +332,40 @@ export default defineComponent({
           :use-mobile-styles="false"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
-          @lockColors="colorLocked = true" 
-          @setMarkerData="setMarkerData" 
+          @lockColors="colorLocked = true"
+          @setMarkerData="setMarkerData"
         />
       </div>
     </div>
-    <EventPreview :top-layer="true" :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
-      @closePreview="closeEventPreview" />
-    <PreviewContainer :isOpen="multipleEventPreviewIsOpen" :header="'Events at this Location'"
-      @closePreview="closeMultipleEventPreview">
-      <EventList v-if="selectedEvents" class="overscroll-auto overflow-auto" :events="selectedEvents"
-        :result-count="selectedEvents.length" :channel-id="channelId" :highlighted-event-id="highlightedEventId"
-        :show-map="true" @highlightEvent="highlightEvent" @open-preview="openPreview" />
+    <EventPreview
+      :top-layer="true"
+      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
+      @closePreview="closeEventPreview"
+    />
+    <PreviewContainer
+      :isOpen="multipleEventPreviewIsOpen"
+      :header="'Events at this Location'"
+      @closePreview="closeMultipleEventPreview"
+    >
+      <EventList
+        v-if="selectedEvents"
+        class="overscroll-auto overflow-auto"
+        :events="selectedEvents"
+        :result-count="selectedEvents.length"
+        :channel-id="channelId"
+        :highlighted-event-id="highlightedEventId"
+        :show-map="true"
+        @highlightEvent="highlightEvent"
+        @open-preview="openPreview"
+      />
       <div class="flex-shrink-0 px-4 py-4 flex justify-end">
         <CloseButton @click="closeMultipleEventPreview" />
       </div>
-      <PreviewContainer :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen" :top-layer="true"
-        @closePreview="closeEventPreview">
+      <PreviewContainer
+        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
+        :top-layer="true"
+        @closePreview="closeEventPreview"
+      >
         <router-view></router-view>
       </PreviewContainer>
     </PreviewContainer>

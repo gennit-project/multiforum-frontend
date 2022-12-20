@@ -54,7 +54,8 @@ export default defineComponent({
           focus:ring-blue-500 focus:border-blue-500
           border-gray-300
           rounded-md
-          mb-4
+          mt-2
+          mb-2
         "
       >
         <option value="discussions">Discussions</option>

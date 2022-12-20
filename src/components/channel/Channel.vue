@@ -1,13 +1,13 @@
 <script lang="ts">
 import ChannelTabs from "./ChannelTabs.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
+// import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
-    ChannelIcon,
+    // ChannelIcon,
     ChannelTabs,
   },
   setup() {
@@ -35,17 +35,26 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-1">
-    <div class="bg-white">
-      <div v-if="!discussionId || !eventId">
-        <h1 class="px-4 lg:px-12 text-xl inline-flex mt-3 text-black">
-          <ChannelIcon
-            class="inline-flex h-6 w-6 mr-1"
-          />{{ channelId }}
-        </h1>
-        <ChannelTabs />
+  <div class="flex justify-center ">
+      <div class="bg-white mx-auto md:w-2/3">
+        <div v-if="!discussionId || !eventId">
+          <div  class="block flex justify-center"> 
+
+            <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
+              <!-- <ChannelIcon
+                class="inline-flex h-6 w-6 mr-1"
+              /> -->
+              {{ channelId }}
+            </h1>
+          </div>
+        <div class="block flex justify-center">
+          <ChannelTabs class="block mt-2"/>
+        </div>
+      </div>
+      <div class="block">
+        <router-view></router-view>
       </div>
     </div>
-    <router-view></router-view>
   </div>
+  
 </template>

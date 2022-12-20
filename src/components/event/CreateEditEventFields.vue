@@ -331,7 +331,7 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <TailwindForm class="pt-8" v-else-if="formValues" :form-title="formTitle" :needs-changes="needsChanges"
+    <TailwindForm class="pt-8 max-w-3xl" v-else-if="formValues" :form-title="formTitle" :needs-changes="needsChanges"
       @input="touched = true" @submit="$emit('submit')">
       <div class="pr-8">
         <FormRow>

@@ -64,35 +64,49 @@ export default defineComponent({
     needsChanges() {
       // We do these checks:
       // - UniqueName is included
-      const needsChanges =
-        !this.formValues.uniqueName
+      const needsChanges = !this.formValues.uniqueName;
       return needsChanges;
     },
   },
 });
 </script>
 <template>
-  <div class="mt-8">
+  <div class="mt-8 flex justify-center">
     <div v-if="channelLoading">Loading...</div>
     <div v-else-if="getChannelError">
       <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
         {{ error.message }}
       </div>
     </div>
-    <TailwindForm v-else-if="formValues" :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
-      :needs-changes="needsChanges" @input="touched = true" @submit="$emit('submit')">
+    <TailwindForm
+      v-else-if="formValues"
+      class="max-w-2xl"
+      :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
+      :needs-changes="needsChanges"
+      @input="touched = true"
+      @submit="$emit('submit')"
+    >
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div class="sm:mt-5 space-y-4 sm:space-y-5">
           <FormRow>
             <template v-slot:icon>
               <VTooltip class="inline-flex">
-                <PencilIcon class="float-right h-6 w-6" /><span v-if="!editMode" class="text-red-500">*</span>
+                <PencilIcon class="float-right h-6 w-6" /><span
+                  v-if="!editMode"
+                  class="text-red-500"
+                  >*</span
+                >
                 <template #popper> Title </template>
               </VTooltip>
             </template>
             <template v-slot:content>
-              <TextInput :disabled="editMode" :value="formValues.uniqueName" :placeholder="'Add unique name'"
-                :full-width="true" @update="$emit('updateFormValues', { uniqueName: $event })" />
+              <TextInput
+                :disabled="editMode"
+                :value="formValues.uniqueName"
+                :placeholder="'Add unique name'"
+                :full-width="true"
+                @update="$emit('updateFormValues', { uniqueName: $event })"
+              />
             </template>
           </FormRow>
           <FormRow>
@@ -103,9 +117,12 @@ export default defineComponent({
               </VTooltip>
             </template>
             <template v-slot:content>
-              <TagInput :selected-tags="formValues?.selectedTags" @setSelectedTags="
-                $emit('updateFormValues', { selectedTags: $event })
-              " />
+              <TagInput
+                :selected-tags="formValues?.selectedTags"
+                @setSelectedTags="
+                  $emit('updateFormValues', { selectedTags: $event })
+                "
+              />
             </template>
           </FormRow>
           <FormRow>
@@ -116,8 +133,12 @@ export default defineComponent({
               </VTooltip>
             </template>
             <template v-slot:content>
-              <TextEditor class="mb-3" :initial-value="formValues.description || ''" :placeholder="'Add description'"
-                @update="$emit('updateFormValues', { description: $event })" />
+              <TextEditor
+                class="mb-3"
+                :initial-value="formValues.description || ''"
+                :placeholder="'Add description'"
+                @update="$emit('updateFormValues', { description: $event })"
+              />
             </template>
           </FormRow>
         </div>

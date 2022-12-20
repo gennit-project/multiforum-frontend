@@ -4,7 +4,7 @@ import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import EventList from "./EventList.vue";
 import { router } from "@/router";
-import { useDisplay } from 'vuetify'
+import { useDisplay } from "vuetify";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import {
@@ -43,8 +43,8 @@ export default defineComponent({
     TailwindSwitch: Switch,
     SwitchGroup,
     SwitchLabel,
-    TwoSeparatelyScrollingPanes
-},
+    TwoSeparatelyScrollingPanes,
+  },
   setup() {
     const route = useRoute();
 
@@ -359,16 +359,20 @@ export default defineComponent({
       refetch: refetchEvents,
       onResult: onGetEventResult,
       fetchMore,
-    } = useQuery(eventQueryString, {
-      limit: 25,
-      offset: 0,
-      where: eventWhere,
-      resultsOrder: resultsOrder
-    }, {
-      fetchPolicy: 'network-only', // If it is not network only, the list
-      // will not update when an event time changes in a way that affects
-      // which search results it should be returned in.
-    });
+    } = useQuery(
+      eventQueryString,
+      {
+        limit: 25,
+        offset: 0,
+        where: eventWhere,
+        resultsOrder: resultsOrder,
+      },
+      {
+        fetchPolicy: "network-only", // If it is not network only, the list
+        // will not update when an event time changes in a way that affects
+        // which search results it should be returned in.
+      }
+    );
 
     const reachedEndOfResults = ref(false);
 
@@ -396,7 +400,7 @@ export default defineComponent({
             params: {
               eventId,
             },
-            hash: `#${eventLocationId ? eventLocationId : ''}`
+            hash: `#${eventLocationId ? eventLocationId : ""}`,
           });
         } else {
           router.push({
@@ -404,7 +408,7 @@ export default defineComponent({
             params: {
               eventId,
             },
-            hash: `#${eventLocationId ? eventLocationId : ''}`
+            hash: `#${eventLocationId ? eventLocationId : ""}`,
           });
         }
       }
@@ -418,7 +422,7 @@ export default defineComponent({
       }
       const defaultSelectedEvent = value.data.events[0];
 
-      sendToPreview(defaultSelectedEvent.id, '');
+      sendToPreview(defaultSelectedEvent.id, "");
     });
 
     const previewIsOpen = ref(false);
@@ -494,14 +498,14 @@ export default defineComponent({
       }
     },
     filterByChannel(channel: string) {
-      const alreadySelected = this.filterValues.selectedChannels.includes(
-        channel
-      );
+      const alreadySelected =
+        this.filterValues.selectedChannels.includes(channel);
 
       if (alreadySelected) {
-        this.filterValues.selectedChannels = this.filterValues.selectedChannels.filter(
-          (c: string) => c !== channel
-        );
+        this.filterValues.selectedChannels =
+          this.filterValues.selectedChannels.filter(
+            (c: string) => c !== channel
+          );
       } else {
         this.filterValues.selectedChannels.push(channel);
       }
@@ -564,11 +568,14 @@ export default defineComponent({
           // search: this.filterValues.searchInput,
           // channel: this.filterValues.selectedChannels,
           // tag: this.filterValues.selectedTags,
-          view: e ? 'map' : "list",
+          view: e ? "map" : "list",
         },
-      })
+      });
       if (!e) {
-        this.sendToPreview(this.eventResult && this.eventResult.events[0].id, '')
+        this.sendToPreview(
+          this.eventResult && this.eventResult.events[0].id,
+          ""
+        );
       }
     },
     updateRouterQueryParams(e: any) {
@@ -598,37 +605,65 @@ export default defineComponent({
 <template>
   <div class="bg-white" :class="showMap ? 'fixed' : ''">
     <div class="float-right mx-4 lg:mr-12 mt-2">
-          <div v-if="!channelId" class="flex justify-center">
-            <SwitchGroup as="div" class="flex items-center">
-              <TailwindSwitch v-model="showMap" :class="[
-                showMap ? 'bg-blue-600' : 'bg-gray-200',
-                'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-              ]" @update:model-value="toggleShowMap">
-                <span aria-hidden="true" :class="[
-                  showMap ? 'translate-x-5' : 'translate-x-0',
-                  'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-                ]" />
-              </TailwindSwitch>
-              <SwitchLabel as="span" class="ml-3">
-                <span class="text-sm font-medium text-gray-900">Show Map</span>
-              </SwitchLabel>
-            </SwitchGroup>
-            <CreateButton class="align-middle ml-2" :to="createEventPath" :label="'Create Event'" />
-          </div>
-        </div>
-    <EventFilterBar 
+      <div v-if="!channelId" class="flex justify-center">
+        <SwitchGroup as="div" class="flex items-center">
+          <TailwindSwitch
+            v-model="showMap"
+            :class="[
+              showMap ? 'bg-blue-600' : 'bg-gray-200',
+              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
+            ]"
+            @update:model-value="toggleShowMap"
+          >
+            <span
+              aria-hidden="true"
+              :class="[
+                showMap ? 'translate-x-5' : 'translate-x-0',
+                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+              ]"
+            />
+          </TailwindSwitch>
+          <SwitchLabel as="span" class="ml-3">
+            <span class="text-sm font-medium text-gray-900">Show Map</span>
+          </SwitchLabel>
+        </SwitchGroup>
+        <CreateButton
+          class="align-middle ml-2"
+          :to="createEventPath"
+          :label="'Create Event'"
+        />
+      </div>
+    </div>
+    <EventFilterBar
       class="mt-2"
-      :channel-id="channelId" :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
-      :filter-values="filterValues" :loaded-event-count="eventResult ? eventResult.events.length : 0"
-      :time-slot-filters-active="timeSlotFiltersActive" :create-event-path="createEventPath"
-      @updateSelectedDistance="updateSelectedDistance" @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
-      @updateLocationInput="updateLocationInput" @setSelectedChannels="setSelectedChannels"
-      @setSelectedTags="setSelectedTags" @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
-      @updateSearchInput="updateSearchInput" @updateEventTypeFilter="updateEventTypeFilter"
-      @updateTimeSlots="updateTimeSlots" @resetTimeSlots="resetTimeSlots" @toggleShowMap="toggleShowMap" />
-    <div class="mx-4 lg:mx-12" v-if="eventLoading">Loading...</div>
-    <ErrorBanner class="mx-4 lg:mx-12" v-else-if="eventError" :text="eventError.message" />
-    <TwoSeparatelyScrollingPanes v-else-if="!showMap && eventResult && eventResult.events" >
+      :channel-id="channelId"
+      :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
+      :filter-values="filterValues"
+      :loaded-event-count="eventResult ? eventResult.events.length : 0"
+      :time-slot-filters-active="timeSlotFiltersActive"
+      :create-event-path="createEventPath"
+      @updateSelectedDistance="updateSelectedDistance"
+      @updateSelectedDistanceUnit="updateSelectedDistanceUnit"
+      @updateLocationInput="updateLocationInput"
+      @setSelectedChannels="setSelectedChannels"
+      @setSelectedTags="setSelectedTags"
+      @handleTimeFilterShortcutClick="handleTimeFilterShortcutClick"
+      @updateSearchInput="updateSearchInput"
+      @updateEventTypeFilter="updateEventTypeFilter"
+      @updateTimeSlots="updateTimeSlots"
+      @resetTimeSlots="resetTimeSlots"
+      @toggleShowMap="toggleShowMap"
+    />
+    <div class="mx-auto" v-if="eventLoading">Loading...</div>
+    <ErrorBanner
+      class="mx-auto"
+      v-else-if="eventError"
+      :text="eventError.message"
+    />
+    <TwoSeparatelyScrollingPanes
+      class="mx-auto"
+      v-else-if="!showMap && eventResult && eventResult.events"
+    >
       <template v-slot:leftpane>
         <div class="rounded max-w-5xl">
           <EventList
@@ -642,7 +677,7 @@ export default defineComponent({
             :selected-tags="filterValues.selectedTags"
             :selected-channels="filterValues.selectedChannels"
             :show-map="showMap"
-            @filterByTag="filterByTag" 
+            @filterByTag="filterByTag"
             @filterByChannel="filterByChannel"
             @loadMore="loadMore"
             @openPreview="openPreview"
@@ -660,18 +695,18 @@ export default defineComponent({
         </div>
       </template>
     </TwoSeparatelyScrollingPanes>
-    <MapView 
-      v-else 
-      :channel-id="channelId" 
-      :events="eventResult.events" 
+    <MapView
+      v-else
+      :channel-id="channelId"
+      :events="eventResult.events"
       :result-count="eventResult.eventsAggregate.count"
-      :search-input="filterValues.searchInput" 
+      :search-input="filterValues.searchInput"
       :selected-tags="filterValues.selectedTags"
-      :selected-channels="filterValues.selectedChannels" 
-      @filterByTag="filterByTag" 
+      :selected-channels="filterValues.selectedChannels"
+      @filterByTag="filterByTag"
       @filterByChannel="filterByChannel"
-      @loadMore="loadMore" 
-      @sendToPreview="sendToPreview" 
+      @loadMore="loadMore"
+      @sendToPreview="sendToPreview"
     />
   </div>
 </template>

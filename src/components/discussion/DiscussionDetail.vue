@@ -478,7 +478,7 @@ export default defineComponent({
       v-else
       ref="discussionDetail"
       :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-      class="mx-auto max-w-5xl bg-white pb-4 rounded"
+      class="max-w-4xl bg-white pb-4 rounded"
     >
       <router-link
         v-if="route.name === 'DiscussionDetail'"
@@ -537,6 +537,16 @@ export default defineComponent({
                 @click="deleteModalIsOpen = true"
                 >Delete</span
               >
+              <!-- <span v-if="channelId" class="ml-1 mr-1"
+              >&#8226;</span
+            >
+  
+  
+            <router-link
+              v-if="channelId"
+              class="underline font-medium text-gray-900 cursor-pointer"
+              :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
+            >Permalink</router-link> -->
             </div>
           </div>
           <div v-if="discussion.body" class="body mr-10 max-w-2xl">

@@ -106,8 +106,8 @@ export default defineComponent({
   <li :class="[
     discussion.id === discussionIdInParams
       ? 'bg-slate-100'
-      : 'hover:bg-slate-200',
-    channelIdInParams ? 'hover:bg-slate-200' : '',
+      : 'hover:bg-slate-100',
+    channelIdInParams ? 'hover:bg-gray-100' : '',
   ]"
       class="relative bg-white py-2 px-4 lg:px-12 cursor-pointer "
       @click="$emit('openPreview')">

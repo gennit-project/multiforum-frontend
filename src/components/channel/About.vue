@@ -166,13 +166,13 @@ export default defineComponent({
               >Edit</router-link
             >
           </span>
-          &#8226;
+          <!-- &#8226;
           <span
             class="underline font-medium text-gray-900 cursor-pointer"
             @click="confirmDeleteIsOpen = true"
           >
             Delete
-          </span>
+          </span> -->
         </div>
       </div>
     </div>

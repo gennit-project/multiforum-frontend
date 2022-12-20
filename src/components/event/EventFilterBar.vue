@@ -332,7 +332,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-4 lg:px-12 border-b-2">
+  <div class="px-4 pb-1 lg:px-12">
     <div>
       <div v-if="
         filterValues.selectedLocationFilter ===
@@ -405,19 +405,18 @@ export default defineComponent({
         timeSlotFiltersActive ? 'ring-1 ring-blue-500 border-blue-500' : '',
       ]"
               class="
-          inline-flex
-          max-height-4
-          pl-2.5
-          pr-3.5
-          py-1
-          border
-          text-xs
-          font-medium
-          rounded-md
-          text-gray-700
-          bg-white
-          hover:bg-gray-200
-          focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+              inline-flex
+              max-height-3
+              px-3.5
+              py-2
+              border
+              text-xs
+              font-medium
+              rounded-lg
+              text-gray-700
+              bg-white
+              hover:bg-gray-200
+              focus:ring-1 focus:ring-blue-500 focus:border-blue-500 drop-shadow-sm
         ">
         <ClockIcon class="-ml-0.5 w-4 h-4 mr-2"
                    aria-hidden="true" />

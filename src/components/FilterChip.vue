@@ -28,12 +28,12 @@ export default defineComponent({
         class="
           inline-flex
           max-height-3
-          px-2.5
-          py-1
+          px-3.5
+          py-2
           border
           text-xs
           font-medium
-          rounded-md
+          rounded-lg
           text-gray-700
           bg-white
           hover:bg-gray-200

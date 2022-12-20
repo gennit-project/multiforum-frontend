@@ -107,7 +107,7 @@ export default defineComponent({
 
 <template>
   <li :ref="`#${event.id}`" :class="[
-    event.id === eventIdInParams ? 'bg-slate-100' : 'hover:bg-slate-200',
+    event.id === eventIdInParams ? 'bg-slate-100' : '',
   ]" class="relative bg-white pl-4 lg:pl-12 cursor-pointer" @click="$emit('openPreview')">
     <router-link :to="previewLink">
       <div class="block">
@@ -115,12 +115,10 @@ export default defineComponent({
           <div class="flex items-center">
             <p class="space-x-2">
               <span class="
-                  text-sm
-                  font-medium
-                  text-blue-600
+                  text-lg
+                  font-bold
                   truncate
                   cursor-pointer
-                  underline
                 ">
                 <HighlightedSearchTerms :text="event.title" :search-input="searchInput" />
               </span>
