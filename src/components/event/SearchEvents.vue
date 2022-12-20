@@ -603,39 +603,18 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="bg-white" :class="showMap ? 'fixed' : ''">
-    <div class="float-right mx-4 lg:mr-12 mt-2">
-      <div v-if="!channelId" class="flex justify-center">
-        <SwitchGroup as="div" class="flex items-center">
-          <TailwindSwitch
-            v-model="showMap"
-            :class="[
-              showMap ? 'bg-blue-600' : 'bg-gray-200',
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-            ]"
-            @update:model-value="toggleShowMap"
-          >
-            <span
-              aria-hidden="true"
-              :class="[
-                showMap ? 'translate-x-5' : 'translate-x-0',
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-              ]"
-            />
-          </TailwindSwitch>
-          <SwitchLabel as="span" class="ml-3">
-            <span class="text-sm font-medium text-gray-900">Show Map</span>
-          </SwitchLabel>
-        </SwitchGroup>
-        <CreateButton
-          class="align-middle ml-2"
-          :to="createEventPath"
-          :label="'Create Event'"
-        />
-      </div>
+  <div class="mx-auto max-w-5xl " :class="showMap ? 'fixed' : ''">
+    <div  v-if="!channelId" class="block flex justify-center"> 
+
+      <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
+
+        Search Events
+      </h1>
     </div>
+    
+    <div class="flex justify-content">
     <EventFilterBar
-      class="mt-2"
+      class="mt-2 max-w-5xl"
       :channel-id="channelId"
       :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
       :filter-values="filterValues"
@@ -654,15 +633,18 @@ export default defineComponent({
       @resetTimeSlots="resetTimeSlots"
       @toggleShowMap="toggleShowMap"
     />
+    </div>
     <div class="mx-auto" v-if="eventLoading">Loading...</div>
     <ErrorBanner
-      class="mx-auto"
+      class="mx-auto block"
       v-else-if="eventError"
       :text="eventError.message"
     />
+  </div>
+  <div  v-if="!showMap && eventResult && eventResult.events"  class="flex justify-content">
     <TwoSeparatelyScrollingPanes
-      class="mx-auto"
-      v-else-if="!showMap && eventResult && eventResult.events"
+      class="mx-auto block"
+     
     >
       <template v-slot:leftpane>
         <div class="rounded max-w-5xl">
@@ -695,8 +677,10 @@ export default defineComponent({
         </div>
       </template>
     </TwoSeparatelyScrollingPanes>
+  </div>
+  <div v-if="showMap && eventResult?.events?.length > 0">
     <MapView
-      v-else
+     
       :channel-id="channelId"
       :events="eventResult.events"
       :result-count="eventResult.eventsAggregate.count"

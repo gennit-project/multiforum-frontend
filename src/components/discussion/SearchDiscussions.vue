@@ -324,8 +324,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white">
-    <div class="bg-white rounded px-4 lg:px-12 pr-8">
+  <div class="bg-white ">
+    <div  v-if="!channelId" class="block flex justify-center"> 
+
+      <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
+
+        Search Discussions
+      </h1>
+    </div>
+
+
+   
+    <div class="bg-white rounded px-4 lg:px-12 pr-8 flex justify-center">
       <div class="pt-2 pb-2">
         <div class="items-center flex justify-between">
           <div class="flex items-center space-x-2">
@@ -372,28 +382,35 @@ export default defineComponent({
     <ErrorBanner class="mx-auto max-w-5xl"
                  v-else-if="discussionError"
                  :text="discussionError.message" />
-    <TwoSeparatelyScrollingPanes 
-      v-else-if="discussionResult && discussionResult.discussions"
-    >
-      <template v-slot:leftpane>
-        <DiscussionList :discussions="discussionResult.discussions"
-                        :channel-id="channelId"
-                        :result-count="discussionResult.discussionsAggregate.count"
-                        :search-input="searchInput.value"
-                        :selected-tags="selectedTags.value"
-                        :selected-channels="selectedChannels"
-                        @filterByTag="filterByTag"
-                        @filterByChannel="filterByChannel"
-                        @loadMore="loadMore"
-                        @openPreview="openPreview" />
-        <DiscussionPreview v-if="smAndDown"
-                           :isOpen="previewIsOpen"
-                           @closePreview="closePreview" />
-      </template>
-      <template v-slot:rightpane>
-        <router-view></router-view>
-      </template>
-    </TwoSeparatelyScrollingPanes >
+
+
+
+                 <div class=" flex justify-center">
+
+                  <TwoSeparatelyScrollingPanes 
+                  v-if="discussionResult && discussionResult.discussions"
+                >
+                  <template v-slot:leftpane>
+                    <DiscussionList :discussions="discussionResult.discussions"
+                                    :channel-id="channelId"
+                                    :result-count="discussionResult.discussionsAggregate.count"
+                                    :search-input="searchInput.value"
+                                    :selected-tags="selectedTags.value"
+                                    :selected-channels="selectedChannels"
+                                    @filterByTag="filterByTag"
+                                    @filterByChannel="filterByChannel"
+                                    @loadMore="loadMore"
+                                    @openPreview="openPreview" />
+                    <DiscussionPreview v-if="smAndDown"
+                                       :isOpen="previewIsOpen"
+                                       @closePreview="closePreview" />
+                  </template>
+                  <template v-slot:rightpane>
+                    <router-view></router-view>
+                  </template>
+                </TwoSeparatelyScrollingPanes >
+                 </div>
+    
   </div>
 </template>
 <style>

@@ -315,7 +315,7 @@ export default defineComponent({
         <div class="flex-1 min-w-0">
           <h2
             class="
-              text-2xl
+              text-xl
               font-bold
               leading-7
               text-gray-900
@@ -474,15 +474,15 @@ export default defineComponent({
             @click="confirmCancelIsOpen = true"
             >Cancel</span
           >
-          <span v-if="channelId" class="ml-1 mr-1"
+          <span v-if="route.name !== 'EventDetail' && !channelId" class="ml-1 mr-1"
             >&#8226;</span
           >
 
 
           <router-link
-            v-if="channelId"
+            v-if="route.name !== 'EventDetail' && !channelId"
             class="underline font-medium text-gray-900 cursor-pointer"
-            :to="`/channels/c/${channelId}/events/e/${eventId}`"
+            :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
           >Permalink</router-link>
 
         </div>

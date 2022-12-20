@@ -537,16 +537,16 @@ export default defineComponent({
                 @click="deleteModalIsOpen = true"
                 >Delete</span
               >
-              <!-- <span v-if="channelId" class="ml-1 mr-1"
+            <span  v-if="route.name !== 'DiscussionDetail'" class="ml-1 mr-1"
               >&#8226;</span
             >
   
   
             <router-link
-              v-if="channelId"
+              v-if="route.name !== 'DiscussionDetail'"
               class="underline font-medium text-gray-900 cursor-pointer"
-              :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
-            >Permalink</router-link> -->
+              :to="`/channels/c/${channelLinks[0].uniqueName}/discussions/d/${discussionId}`"
+            >Permalink</router-link>
             </div>
           </div>
           <div v-if="discussion.body" class="body mr-10 max-w-2xl">

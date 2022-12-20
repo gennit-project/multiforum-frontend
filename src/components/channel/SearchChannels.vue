@@ -206,25 +206,19 @@ export default defineComponent({
   <div class="bg-white">
     <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
       <div class="mb-4 pt-8">
-        <div class="flex-1 min-w-0">
-          <h2
-            class="
-              text-2xl
-              font-bold
-              leading-7
-              text-gray-900
-              sm:text-3xl sm:tracking-tight sm:truncate
-            "
-          >
-            Search Channels
-          </h2>
+        <div class="block flex justify-center"> 
+
+          <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
+    
+            Channels
+          </h1>
         </div>
         <div class="items-center flex justify-between">
-          <SearchBar
+          <!-- <SearchBar
             class="flex"
             :search-placeholder="'Search channels'"
             @updateSearchInput="updateSearchResult"
-          />
+          /> -->
           <div class="flex justify-end items-center space-x-2">
             <FilterChip
               class="align-middle"

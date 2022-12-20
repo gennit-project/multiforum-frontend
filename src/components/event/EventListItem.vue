@@ -150,7 +150,7 @@ export default defineComponent({
                 {{ timeOfDay }}
               </time>
             </span>
-            <span>
+            <span v-if="event.locationName">
               &#x2022;
             </span>
             <span v-if="event.locationName">
