@@ -32,6 +32,7 @@ export default defineComponent({
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
     "
   >
+ <slot></slot>
     {{ text }}
 </button>
 </template>

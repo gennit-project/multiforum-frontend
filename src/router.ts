@@ -18,6 +18,7 @@ import CreateDiscussion from "@/components/discussion/CreateDiscussion.vue";
 import EditDiscussion from "@/components/discussion/EditDiscussion.vue";
 import CreateChannel from "@/components/channel/CreateChannel.vue";
 import EditChannel from "@/components/channel/EditChannel.vue";
+import MapView from "@/components/event/MapView.vue"
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -37,6 +38,11 @@ export const router = createRouter({
           component: EventDetail
         }
       ]
+    },
+    {
+      name: 'MapView',
+      path: "/events/search/map",
+      component: MapView
     },
     {
       path: "/events/create",

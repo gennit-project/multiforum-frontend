@@ -73,8 +73,8 @@ export default defineComponent({
           pl-10
           pr-3
           py-4
-          border border-gray-300
-          rounded-md
+          border border-gray-200
+          rounded-lg
           leading-5
           bg-white
           placeholder-gray-500

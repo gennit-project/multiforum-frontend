@@ -5,9 +5,11 @@ import EventPreview from "./EventPreview.vue";
 import EventList from "./EventList.vue";
 import EventMap from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
-import CloseButton from "@/components/CloseButton.vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
+import XmarkIcon from "../icons/XmarkIcon.vue";
+import CloseButton from "../CloseButton.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   props: {
@@ -48,15 +50,20 @@ export default defineComponent({
     EventMap,
     EventPreview,
     PreviewContainer,
+    XmarkIcon,
   },
   setup() {
     const { smAndDown } = useDisplay();
+    const route = useRoute();
+    const router = useRouter();
     return {
+      route,
+      router,
       smAndDown,
     };
   },
   data() {
-    const router = useRouter();
+    
 
     return {
       highlightedMarker: null,
@@ -69,7 +76,6 @@ export default defineComponent({
       highlightedEventId: "",
       highlightedEventLocationId: "",
       multipleEventPreviewIsOpen: false,
-      router,
       selectedEvent: null as EventData | null,
       selectedEvents: [],
     };
@@ -90,7 +96,6 @@ export default defineComponent({
       this.desktopMarkerMap = data.markerMap;
     },
     updateMapCenter(placeData: any) {
-      if (this.showMap) {
         const coords = {
           lat: placeData.geometry.location.lat(),
           lng: placeData.geometry.location.lng(),
@@ -98,7 +103,6 @@ export default defineComponent({
 
         this.mobileMap.setCenter(coords);
         this.desktopMap.setCenter(coords);
-      }
     },
     highlightEventOnMap({
       eventId,
@@ -282,6 +286,10 @@ export default defineComponent({
       this.selectedEvent = event;
       this.colorLocked = true;
     },
+    clickCloseMap(){
+      // const router = useRouter();
+      this.$router.push({ path: "events" })
+    }
   },
 });
 </script>
@@ -305,6 +313,28 @@ export default defineComponent({
         class="h-full max-h-screen overflow-y-auto flex-col flex-grow"
         style="width: 34vw"
       >
+      <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
+        <button
+          type="button"
+          class="
+            my-2
+            cursor-pointer
+            bg-white
+            rounded-md
+            inline-flex
+            text-gray-400
+            hover:text-gray-500
+            focus:outline-none
+            focus:ring-2
+            focus:ring-offset-2
+            focus:ring-indigo-500
+            align-middle
+          "
+        >
+          <XmarkIcon class="h-5 w-5 mt-0.5" aria-hidden="true" />
+          Close Map
+        </button>
+      </div>
         <EventList
           key="highlightedEventId"
           :events="events"

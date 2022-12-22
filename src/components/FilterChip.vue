@@ -36,7 +36,7 @@ export default defineComponent({
           rounded-lg
           text-gray-700
           bg-white
-          hover:bg-gray-200
+          hover:bg-gray-50
           focus:ring-1 focus:ring-blue-500 focus:border-blue-500
         "
       >

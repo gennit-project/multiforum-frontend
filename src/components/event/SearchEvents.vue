@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import EventList from "./EventList.vue";
 import { router } from "@/router";
@@ -26,10 +25,12 @@ import EventFilterBar from "./EventFilterBar.vue";
 import ErrorBanner from "../ErrorBanner.vue";
 import MapView from "./MapView.vue";
 import LocationFilterTypes from "./locationFilterTypes";
+import GenericSmallButton from "../GenericSmallButton.vue";
 import EventPreview from "./EventPreview.vue";
 import CreateButton from "../CreateButton.vue";
-import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import TwoSeparatelyScrollingPanes from "../TwoSeparatelyScrollingPanes.vue";
+import MapIcon from "../icons/MapIcon.vue";
+import { GET_EVENTS } from "@/graphQLData/event/queries";
 
 export default defineComponent({
   name: "SearchEvents",
@@ -39,10 +40,9 @@ export default defineComponent({
     EventList,
     EventPreview,
     CreateButton,
+    GenericSmallButton,
+    MapIcon,
     MapView,
-    TailwindSwitch: Switch,
-    SwitchGroup,
-    SwitchLabel,
     TwoSeparatelyScrollingPanes,
   },
   setup() {
@@ -290,67 +290,7 @@ export default defineComponent({
       };
     }); // End of EventWhere computed property
 
-    let eventQueryString = gql`
-      query getEvents(
-        $where: EventWhere
-        $resultsOrder: [EventSort!]
-        $offset: Int
-        $limit: Int
-      ) {
-        eventsAggregate(where: $where) {
-          count
-        }
-        events(
-          where: $where
-          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
-        ) {
-          id
-          Channels {
-            uniqueName
-          }
-          title
-          description
-          startTime
-          endTime
-          locationName
-          address
-          virtualEventUrl
-          startTimeDayOfWeek
-          canceled
-          location {
-            latitude
-            longitude
-          }
-          cost
-          Poster {
-            username
-          }
-          Tags {
-            text
-          }
-          CommentSections {
-            id
-            CommentsAggregate {
-              count
-            }
-            OriginalPost {
-              __typename
-              ... on Discussion {
-                id
-                title
-              }
-              ... on Event {
-                id
-                title
-              }
-            }
-            Channel {
-              uniqueName
-            }
-          }
-        }
-      }
-    `;
+    
 
     const {
       error: eventError,
@@ -360,7 +300,7 @@ export default defineComponent({
       onResult: onGetEventResult,
       fetchMore,
     } = useQuery(
-      eventQueryString,
+      GET_EVENTS,
       {
         limit: 25,
         offset: 0,
@@ -434,7 +374,6 @@ export default defineComponent({
       createEventPath,
       eventError,
       eventLoading,
-      eventQueryString,
       eventResult,
       eventWhere, // Return for debugging in dev tools
       filterValues,
@@ -554,21 +493,13 @@ export default defineComponent({
     toggleShowMap(e: boolean) {
       this.showMap = e;
 
-      if (this.showMap) {
-        this.closePreview();
-      }
-      // const pathName = this.channelId
-      //   ? "SearchEventsInChannel"
-      //   : "SearchEvents";
-
       router.push({
-        path: this.$route.path,
+        name: "MapView",
         // hash: `#${this.eventResult && this.eventResult.events[0].id}`,
         query: {
-          // search: this.filterValues.searchInput,
-          // channel: this.filterValues.selectedChannels,
-          // tag: this.filterValues.selectedTags,
-          view: e ? "map" : "list",
+          search: this.filterValues.searchInput,
+          channel: this.filterValues.selectedChannels,
+          tag: this.filterValues.selectedTags,
         },
       });
       if (!e) {
@@ -633,29 +564,11 @@ export default defineComponent({
       @resetTimeSlots="resetTimeSlots"
       @toggleShowMap="toggleShowMap"
     >
-    <div class="block float-right mx-4 lg:mr-12 mt-2">
+    <div class="block float-right mx-4 lg:mr-12">
       <div v-if="!channelId" class="flex justify-center">
-        <SwitchGroup as="div" class="flex items-center">
-          <TailwindSwitch
-            v-model="showMap"
-            :class="[
-              showMap ? 'bg-blue-600' : 'bg-gray-200',
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-            ]"
-            @update:model-value="toggleShowMap"
-          >
-            <span
-              aria-hidden="true"
-              :class="[
-                showMap ? 'translate-x-5' : 'translate-x-0',
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-              ]"
-            />
-          </TailwindSwitch>
-          <SwitchLabel as="span" class="ml-3">
-            <span class="text-sm font-medium text-gray-900">Show Map</span>
-          </SwitchLabel>
-        </SwitchGroup>
+        <GenericSmallButton @click="toggleShowMap" :text="'Map'">
+          <MapIcon class="h-4 w-4 mr-2"/>
+        </GenericSmallButton>
         <CreateButton
           class="align-middle ml-2"
           :to="createEventPath"
@@ -674,10 +587,9 @@ export default defineComponent({
       :text="eventError.message"
     />
   </div>
-  <div  v-if="!showMap && eventResult && eventResult.events"  class="flex justify-content">
+  <div  v-if="eventResult && eventResult.events"  class="flex justify-content">
     <TwoSeparatelyScrollingPanes
       :class="'mx-auto block'"
-     
     >
       <template v-slot:leftpane>
         <div class="rounded max-w-5xl">
@@ -691,7 +603,7 @@ export default defineComponent({
             :search-input="filterValues.searchInput"
             :selected-tags="filterValues.selectedTags"
             :selected-channels="filterValues.selectedChannels"
-            :show-map="showMap"
+            :show-map="false"
             @filterByTag="filterByTag"
             @filterByChannel="filterByChannel"
             @loadMore="loadMore"
@@ -711,21 +623,7 @@ export default defineComponent({
       </template>
     </TwoSeparatelyScrollingPanes>
   </div>
-  <div v-if="showMap && eventResult?.events?.length > 0">
-    <MapView
-     
-      :channel-id="channelId"
-      :events="eventResult.events"
-      :result-count="eventResult.eventsAggregate.count"
-      :search-input="filterValues.searchInput"
-      :selected-tags="filterValues.selectedTags"
-      :selected-channels="filterValues.selectedChannels"
-      @filterByTag="filterByTag"
-      @filterByChannel="filterByChannel"
-      @loadMore="loadMore"
-      @sendToPreview="sendToPreview"
-    />
-  </div>
+ 
 </template>
 
 <style>

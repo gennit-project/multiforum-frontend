@@ -86,3 +86,65 @@ export const GET_EVENTS_IN_CHANNEL = gql`
     }
   }
 `;
+
+export const GET_EVENTS = gql`
+      query getEvents(
+        $where: EventWhere
+        $resultsOrder: [EventSort!]
+        $offset: Int
+        $limit: Int
+      ) {
+        eventsAggregate(where: $where) {
+          count
+        }
+        events(
+          where: $where
+          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+        ) {
+          id
+          Channels {
+            uniqueName
+          }
+          title
+          description
+          startTime
+          endTime
+          locationName
+          address
+          virtualEventUrl
+          startTimeDayOfWeek
+          canceled
+          location {
+            latitude
+            longitude
+          }
+          cost
+          Poster {
+            username
+          }
+          Tags {
+            text
+          }
+          CommentSections {
+            id
+            CommentsAggregate {
+              count
+            }
+            OriginalPost {
+              __typename
+              ... on Discussion {
+                id
+                title
+              }
+              ... on Event {
+                id
+                title
+              }
+            }
+            Channel {
+              uniqueName
+            }
+          }
+        }
+      }
+    `;

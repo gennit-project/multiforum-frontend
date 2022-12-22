@@ -27,17 +27,17 @@ import ClockIcon from "@/components/icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
-import CreateButton from "../CreateButton.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
+import GenericSmallButton from "../GenericSmallButton.vue";
 
 export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
-    CreateButton,
     FilterChip,
     FilterIcon,
+    GenericSmallButton,
     LocationSearchBar,
     Modal,
     SearchBar,
@@ -339,12 +339,8 @@ export default defineComponent({
 </script>
 <template>
   <div class="pb-1 px-4">
-    
     <div class="items-center flex justify-center space-x-2 mb-1">
-      <div class="flex inline-flex">
-
-        
-      </div>
+      <div class="flex inline-flex"></div>
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -376,31 +372,13 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <button
+      <GenericSmallButton
         @click="toggleTimeSlotPicker"
-        :class="[
-
-          timeSlotFiltersActive ? 'ring-1 ring-blue-500 border-blue-500' : '',
-        ]"
-        class="
-          inline-flex
-          max-height-3
-          px-3.5
-          py-2
-          border
-          text-xs
-          font-medium
-          rounded-lg
-          text-gray-700
-          bg-white
-          hover:bg-gray-200
-          focus:ring-1 focus:ring-blue-500 focus:border-blue-500
-        "
+        :active="timeSlotFiltersActive"
+        :text="'Times'"
       >
-        <ClockIcon class="-ml-0.5 w-4 h-4 mr-2 " aria-hidden="true" />
-
-        Time Slots
-      </button>
+        <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
+      </GenericSmallButton>
       <Modal
         :title="'Select Weekly Time Slots'"
         :show="showTimeSlotPicker"
@@ -496,10 +474,9 @@ export default defineComponent({
         @updateSearchInput="updateSearchInput"
       />
 
-      
       <slot></slot>
-      
-      <div v-if="channelId" >
+
+      <div v-if="channelId">
         <SwitchGroup as="div" class="flex inline-flex items-center">
           <TailwindSwitch
             v-model="showMapCopy"
@@ -521,7 +498,6 @@ export default defineComponent({
             <span class="text-sm font-medium text-gray-900">Show Map</span>
           </SwitchLabel>
         </SwitchGroup>
-        
       </div>
     </div>
     <!-- <CreateButton
@@ -554,7 +530,8 @@ export default defineComponent({
         "
         @click="updateEventTypeFilter(shortcut)"
       />
-    </div><div>
+    </div>
+    <div>
       <div
         v-if="
           filterValues.selectedLocationFilter ===
