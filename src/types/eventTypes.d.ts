@@ -101,11 +101,6 @@ export type SelectedWeeklyHourRanges = {
   [index: string]: SelectedHourRanges;
 };
 
-export type ReferencePoint = {
-  lat: number;
-  lng: number;
-};
-
 export type DistanceUnit = {
   label: string,
   value: string | number
@@ -114,23 +109,24 @@ export type DistanceUnit = {
 export type Distance = any;
 
 export type SearchEventValues = {
-  beginningOfDateRangeISO: string;
-  distanceUnit: string;
-  endOfDateRangeISO: string;
-  radius: number;
-  referencePoint: ReferencePoint;
-  referencePointAddress: string;
-  referencePointPlaceId: string;
-  referencePointName: string;
-  resultsOrder: { startTime: string };
-  selectedTags: Array[string];
-  selectedChannels: Array[string];
-  selectedWeekdays: Array[SelectedWeekdays];
-  selectedHourRanges: Array[SelectedHourRanges];
-  selectedWeeklyHourRanges: Array[SelectedWeeklyHourRanges]
-  selectedLocationFilter: string;
-  searchInput: string;
+  // These values are used to build the
+  // EventWhere and ResultsOrder input parameters for the
+  // GET_EVENTS GraphQL query.
+  // They are also used in the URL query
+  // parameters on the event search pages.
+  // These must match because the URL query
+  // parameters are used to build the EventWhere.
+  beginningOfDateRangeISO?: string;
+  endOfDateRangeISO?: string;
+  radius?: number;
+  latitude?: number;
+  longitude?: number;
+  tags?: Array[string];
+  channels?: Array[string];
+  weeklyHourRanges?: Array[SelectedWeeklyHourRanges]
+  locationFilter?: string;
+  searchInput?: string;
   showCanceledEvents?: boolean;
-  showOnlyFreeEvents: boolean;
-  startOfDateRangeISO: string;
+  free?: boolean;
+  resultsOrder?: any;
 };

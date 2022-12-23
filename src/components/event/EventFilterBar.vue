@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, PropType, ref } from "vue";
+import { defineComponent, computed, ref, Ref } from "vue";
 import LocationSearchBar from "@/components/LocationSearchBar.vue";
 import TagPicker from "@/components/TagPicker.vue";
 import ChannelPicker from "@/components/ChannelPicker.vue";
@@ -11,7 +11,7 @@ import { DateTime } from "luxon";
 import Tag from "@/components/Tag.vue";
 import SelectMenu from "../Select.vue";
 import SearchBar from "../SearchBar.vue";
-import { SearchEventValues, DistanceUnit } from "@/types/eventTypes";
+import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
 import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
@@ -20,6 +20,7 @@ import {
   timeShortcutValues,
   distanceUnitOptions,
   eventFilterTypeShortcuts,
+  createDefaultSelectedWeeklyHourRanges,
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
@@ -29,8 +30,15 @@ import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import GenericSmallButton from "../GenericSmallButton.vue";
+import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
+import { useRoute } from "vue-router";
+import { chronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
+  name: "EventFilterBar",
+  // The SearchEvent component writes to the query
+  // params, while the MapView, EventListView, and EventFilterBar
+  // components consume the query params.
   components: {
     ChannelIcon,
     ChannelPicker,
@@ -64,10 +72,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    filterValues: {
-      type: Object as PropType<SearchEventValues>,
-      required: true,
-    },
     loadedEventCount: {
       type: Number,
       default: 0,
@@ -76,10 +80,6 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
-    timeSlotFiltersActive: {
-      type: Boolean,
-      default: false,
-    },
   },
 
   setup(props) {
@@ -87,12 +87,157 @@ export default defineComponent({
       channels: "Channels",
       tags: "Tags",
     };
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
+    const route = useRoute();
+    const now = DateTime.now();
+    const defaultStartDateObj = now.startOf("day");
+    const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
+    const defaultStartDateISO = defaultStartDateObj.toISO();
+    const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
+
+    const defaultPlace = {
+      // Default map center is Tempe Public Library
+      name: "Tempe Public Library",
+      latitude: 33.39131450000001,
+      longitude: -111.9280626,
+      referencePointId: "ChIJR35tTZ8IK4cR2D0p0AxOqbg",
+      address: "3500 S Rural Rd, Tempe, AZ 85282, USA",
+    };
+
+    const getDefaultFilterValues = function (): SearchEventValues {
+      // Need to re-clean data when route values change
+      console.log("cleaning values", route.query);
+      // Take the default filter values from the query
+      // in the URL if the values exist.
+
+      let cleanedValues: SearchEventValues = {};
+
+      for (let key in route.query) {
+        const val = route.query[key];
+
+        switch (key) {
+          case "beginningOfDateRangeISO":
+            if (typeof val === "string") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "endOfDateRangeISO":
+            if (typeof val === "string") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "radius":
+            // May need to cast to string
+            if (typeof val === "number") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "latitude":
+            if (typeof val === "number") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "tags":
+            if (typeof val === "string") {
+              cleanedValues[key] = [val];
+            }
+            if (typeof val === "object") {
+              // If it is an array of strings, which
+              // is good, then the type is an object.
+              cleanedValues[key] = val;
+            }
+            break;
+          case "channels":
+            if (typeof val === "string") {
+              cleanedValues[key] = [val];
+            }
+            if (typeof val === "object") {
+              // If it is an array of strings, which
+              // is good, then the type is an object.
+              cleanedValues[key] = val;
+            }
+            break;
+          case "searchInput":
+            if (typeof val === "string") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "showCanceledEvents":
+            // May need to cast to boolean
+            if (typeof val === "boolean") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "free":
+            if (typeof val === "boolean") {
+              cleanedValues[key] = val;
+            }
+            break;
+          case "weeklyHourRanges":
+            // need to translate params to filter
+            cleanedValues[key] = val;
+            break;
+          case "resultsOrder":
+            // need to translate params to filter
+            cleanedValues[key] = val;
+            break;
+          case "locationFilter":
+            cleanedValues[key] = val?.toString();
+            break;
+        }
+      }
+
+      const {
+        beginningOfDateRangeISO,
+        endOfDateRangeISO,
+        radius,
+        latitude,
+        longitude,
+        tags,
+        channels,
+        searchInput,
+        showCanceledEvents,
+        free,
+        weeklyHourRanges,
+        resultsOrder,
+        locationFilter,
+      } = cleanedValues;
+
+      return {
+        beginningOfDateRangeISO: beginningOfDateRangeISO || defaultStartDateISO,
+        endOfDateRangeISO: endOfDateRangeISO || defaultEndDateRangeISO,
+        radius: radius || 500,
+        latitude: latitude || defaultPlace.latitude,
+        longitude: longitude || defaultPlace.longitude,
+        tags: tags || [],
+        channels: channels || [],
+        searchInput: searchInput || "",
+        showCanceledEvents: showCanceledEvents || false,
+        free: free || false,
+        weeklyHourRanges:
+          weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
+        resultsOrder: resultsOrder || chronologicalOrder,
+        locationFilter:
+          locationFilter ||
+          (channelId.value
+            ? LocationFilterTypes.NONE
+            : LocationFilterTypes.WITHIN_RADIUS),
+      };
+    };
+
+    const filterValues: Ref<SearchEventValues> = ref(getDefaultFilterValues());
+
     const channelLabel = computed(() => {
-      return getChannelLabel(props.filterValues.selectedChannels);
+      return getChannelLabel(filterValues.value.channels);
     });
 
     const tagLabel = computed(() => {
-      return getTagLabel(props.filterValues.selectedTags);
+      return getTagLabel(filterValues.value.tags);
     });
 
     const activeDateShortcut = ref(timeShortcutValues.NONE);
@@ -110,7 +255,7 @@ export default defineComponent({
 
     const moreFiltersLabel = computed(() => {
       const labels = [];
-      const locationFilter = props.filterValues.selectedLocationFilter;
+      const locationFilter = filterValues.value.locationFilter;
       const timeShortcut = activeDateShortcut.value;
       if (locationFilter !== LocationFilterTypes.NONE) {
         if (locationFilter === LocationFilterTypes.ONLY_VIRTUAL) {
@@ -139,11 +284,11 @@ export default defineComponent({
       return labels.join(", ");
     });
 
-    const selectedDistanceUnit = ref(props.filterValues.distanceUnit);
+    const distanceUnit = ref(MilesOrKm.MI);
 
     const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
       (val: DistanceUnit) => {
-        return props.filterValues.radius === val.value;
+        return filterValues.value.radius === val.value;
       }
     );
     const defaultMileSelection = ref(
@@ -153,11 +298,12 @@ export default defineComponent({
       distanceOptionsForKilometers[currentDistanceIndex]
     );
 
+    const hourRanges: Ref<SelectedHourRanges> = ref({});
+    const weekdays: Ref<SelectedWeekdays> = ref({});
+
     return {
       activeDateShortcut,
-      activeEventFilterTypeShortcut: ref(
-        props.filterValues.selectedLocationFilter
-      ),
+      activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
       channelLabel,
       defaultFilterLabels,
       defaultKilometerSelection,
@@ -165,19 +311,36 @@ export default defineComponent({
       distanceOptionsForKilometers,
       distanceOptionsForMiles,
       distanceUnitOptions,
+      filterValues,
+      hourRanges,
       eventFilterTypeShortcuts,
       LocationFilterTypes,
       MilesOrKm,
       moreFiltersLabel,
-      selectedDistanceUnit,
+      referencePointName: ref(defaultPlace.name),
+      referencePointAddress: ref(defaultPlace.address),
+      referencePointPlaceId: ref(defaultPlace.referencePointId),
+      distanceUnit,
       showMapCopy: ref(props.showMap),
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeFilterShortcuts,
       timeShortcutValues,
+      timeSlotFiltersActive: ref(false),
+      weekdays,
     };
   },
   methods: {
+    updateLocalState(params: SearchEventValues) {
+      // Updating filterValues updates local state
+      // so that parts of the filter form don't get
+      // outdated when a related setting is updated.
+      const existingFilterValues = this.filterValues;
+      this.filterValues = {
+        ...existingFilterValues,
+        ...params,
+      };
+    },
     updateRouterParams() {
       this.$emit("updateRouterParams", {
         path: "/events",
@@ -190,18 +353,31 @@ export default defineComponent({
     },
     updateTimeSlots(e: any) {
       this.$emit("updateTimeSlots", e);
+      this.updateLocalState({
+        weeklyHourRanges: e,
+      });
     },
     resetTimeSlots() {
       this.$emit("resetTimeSlots");
+      this.updateLocalState({
+        weeklyHourRanges: {},
+      });
     },
     handleTimeFilterShortcutClick(shortcut: any) {
       if (shortcut.value === this.activeDateShortcut) {
         // If the filter is currently selected, clear it.
         this.activeDateShortcut = this.timeFilterShortcuts.NONE;
+        const newBeginning = DateTime.now().startOf("day").toISO();
+        const newEnd = DateTime.now().plus({ years: 2 }).toISO();
+
         this.$emit("handleTimeFilterShortcutClick", {
-          beginningOfDateRangeISO: DateTime.now().startOf("day").toISO(),
-          endOfDateRangeISO: DateTime.now().plus({ years: 2 }).toISO(),
+          beginningOfDateRangeISO: newBeginning,
+          endOfDateRangeISO: newEnd,
           value: shortcut.value,
+        });
+        this.updateLocalState({
+          beginningOfDateRangeISO: newBeginning,
+          endOfDateRangeISO: newEnd,
         });
       } else {
         // If the filter is not selected, select it.
@@ -211,13 +387,28 @@ export default defineComponent({
           endOfDateRangeISO: shortcut.endOfDateRangeISO,
           value: shortcut.value,
         });
+        this.updateLocalState({
+          beginningOfDateRange: shortcut.beginningOfDateRangeISO,
+          endOfDateRangeISO: shortcut.endOfDateRangeISO,
+        });
       }
     },
-    updateLocationInput(e: any) {
-      this.$emit("updateLocationInput", e);
+    updateLocationInput(placeData: any) {
+      this.$emit("updateLocationInput", placeData);
+
+      try {
+        this.updateLocalState({
+          latitude: placeData.geometry.location.lat(),
+          longitude: placeData.geometry.location.lng(),
+        });
+        this.referencePointAddress.value = placeData.formatted_address;
+      } catch (e: any) {
+        throw new Error(e);
+      }
     },
     updateSearchInput(e: any) {
       this.$emit("updateSearchInput", e);
+      this.updateLocalState({ searchInput: e });
     },
     updateSelectedDistance(distanceOption: DistanceUnit) {
       this.$emit("updateSelectedDistance", distanceOption.value);
@@ -230,6 +421,9 @@ export default defineComponent({
           "updateEventTypeFilter",
           LocationFilterTypes.ONLY_WITH_ADDRESS
         );
+        this.updateLocalState({
+          locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS
+        })
       }
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit) {
@@ -254,6 +448,7 @@ export default defineComponent({
           "updateSelectedDistance",
           distanceOptionsForKilometers[currentDistanceIndex].value
         );
+        this.updateLocalState({ radius: distanceOptionsForKilometers[currentDistanceIndex].value })
         this.defaultKilometerSelection =
           distanceOptionsForKilometers[currentDistanceIndex];
       }
@@ -272,6 +467,7 @@ export default defineComponent({
           "updateSelectedDistance",
           distanceOptionsForMiles[currentDistanceIndex].value
         );
+        this.updateLocalState({ radius: distanceOptionsForMiles[currentDistanceIndex].value})
         this.defaultMileSelection =
           distanceOptionsForMiles[currentDistanceIndex];
       }
@@ -290,9 +486,15 @@ export default defineComponent({
           // If the online-only filter was already selected, clear it.
           this.$emit("updateEventTypeFilter", LocationFilterTypes.NONE);
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
+          this.updateLocalState({
+            locationFilter: LocationFilterTypes.NONE
+          })
         } else {
           this.$emit("updateEventTypeFilter", LocationFilterTypes.ONLY_VIRTUAL);
           this.activeEventFilterTypeShortcut = LocationFilterTypes.ONLY_VIRTUAL;
+          this.updateLocalState({
+            locationFilter: LocationFilterTypes.ONLY_VIRTUAL
+          })
         }
       }
       if (e.locationFilterType === LocationFilterTypes.ONLY_WITH_ADDRESS) {
@@ -305,6 +507,9 @@ export default defineComponent({
           // If an in-person filter is already selected, clear it.
           this.$emit("updateEventTypeFilter", LocationFilterTypes.NONE);
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
+          this.updateLocalState({
+            locationFilter: LocationFilterTypes.NONE
+          })
         } else {
           // There are two filter types for in-person events - ONLY_WITH_ADDRESS,
           // which filters for events that have a physical address, and WITHIN_RADIUS,
@@ -320,11 +525,17 @@ export default defineComponent({
               "updateEventTypeFilter",
               LocationFilterTypes.WITHIN_RADIUS
             );
+            this.updateLocalState({
+              locationFilter: LocationFilterTypes.WITHIN_RADIUS
+            })
           } else {
             this.$emit(
               "updateEventTypeFilter",
               LocationFilterTypes.ONLY_WITH_ADDRESS
             );
+            this.updateLocalState({
+              locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS
+            })
           }
 
           // Affects only this local component, to keep track of which
@@ -352,7 +563,7 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <ChannelPicker
-            :selected-channels="filterValues.selectedChannels"
+            :selected-channels="filterValues.channels"
             @setSelectedChannels="$emit('setSelectedChannels', $event)"
           />
         </template>
@@ -367,7 +578,7 @@ export default defineComponent({
         </template>
         <template v-slot:content>
           <TagPicker
-            :selected-tags="filterValues.selectedTags"
+            :selected-tags="filterValues.tags"
             @setSelectedTags="$emit('setSelectedTags', $event)"
           />
         </template>
@@ -419,9 +630,9 @@ export default defineComponent({
         <template v-slot:content>
           <WeeklyTimePicker
             class="py-2 px-8"
-            :selected-weekdays="filterValues.selectedWeekdays"
-            :selected-hour-ranges="filterValues.selectedHourRanges"
-            :selected-weekly-hour-ranges="filterValues.selectedWeeklyHourRanges"
+            :selected-weekdays="weekdays"
+            :selected-hour-ranges="hourRanges"
+            :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
             @updateTimeSlots="updateTimeSlots"
           />
         </template>
@@ -432,7 +643,7 @@ export default defineComponent({
         :label="moreFiltersLabel"
         :highlighted="
           activeEventFilterTypeShortcut !== timeShortcutValues.NONE ||
-          filterValues.selectedLocationFilter !== LocationFilterTypes.NONE
+          filterValues.locationFilter !== LocationFilterTypes.NONE
         "
       >
         <template v-slot:icon>
@@ -459,7 +670,7 @@ export default defineComponent({
                 shortcut.locationFilterType === activeEventFilterTypeShortcut ||
                 (shortcut.locationFilterType ===
                   LocationFilterTypes.ONLY_WITH_ADDRESS &&
-                  filterValues.selectedLocationFilter ===
+                  filterValues.locationFilter ===
                     LocationFilterTypes.WITHIN_RADIUS)
               "
               @click="updateEventTypeFilter(shortcut)"
@@ -525,27 +736,19 @@ export default defineComponent({
           shortcut.locationFilterType === activeEventFilterTypeShortcut ||
           (shortcut.locationFilterType ===
             LocationFilterTypes.ONLY_WITH_ADDRESS &&
-            filterValues.selectedLocationFilter ===
-              LocationFilterTypes.WITHIN_RADIUS)
+            filterValues.locationFilter === LocationFilterTypes.WITHIN_RADIUS)
         "
         @click="updateEventTypeFilter(shortcut)"
       />
     </div>
     <div>
       <div
-        v-if="
-          filterValues.selectedLocationFilter ===
-          LocationFilterTypes.ONLY_VIRTUAL
-        "
+        v-if="filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL"
         class="items-center space-x-2 flex flex-wrap"
       >
         Showing {{ loadedEventCount }} online of {{ resultCount }} results
       </div>
-      <div
-        v-else-if="
-          filterValues.selectedLocationFilter === LocationFilterTypes.NONE
-        "
-      >
+      <div v-else-if="filterValues.locationFilter === LocationFilterTypes.NONE">
         Showing {{ loadedEventCount }} of {{ resultCount }} results
       </div>
       <div v-else class="items-center space-x-2 flex flex-wrap">
@@ -553,14 +756,14 @@ export default defineComponent({
           Showing {{ loadedEventCount }} of {{ resultCount }} results within
         </div>
         <SelectMenu
-          v-if="selectedDistanceUnit === MilesOrKm.KM"
+          v-if="distanceUnit === MilesOrKm.KM"
           class="ml-2 w-36 inline-block"
           :options="distanceOptionsForKilometers"
           :default-option="defaultKilometerSelection"
           @selected="updateSelectedDistance"
         />
         <SelectMenu
-          v-if="selectedDistanceUnit === MilesOrKm.MI"
+          v-if="distanceUnit === MilesOrKm.MI"
           class="ml-2 w-36 inline-block"
           :options="distanceOptionsForMiles"
           :default-option="defaultMileSelection"
@@ -570,16 +773,16 @@ export default defineComponent({
           class="mr-4 w-18"
           :options="distanceUnitOptions"
           :default-option="{
-            label: filterValues.distanceUnit,
-            value: filterValues.distanceUnit,
+            label: distanceUnit,
+            value: distanceUnit,
           }"
           @selected="updateSelectedDistanceUnit"
         />
         <div class="inline-block">of</div>
         <LocationSearchBar
           class="flex flex-wrap"
-          :search-placeholder="filterValues.referencePointAddress"
-          :reference-point-address-name="filterValues.referencePointName"
+          :search-placeholder="referencePointAddress"
+          :reference-point-address-name="referencePointName"
           @updateLocationInput="updateLocationInput"
         />
       </div>

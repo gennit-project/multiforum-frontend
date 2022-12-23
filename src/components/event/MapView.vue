@@ -1,5 +1,6 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, ref } from "vue";
+import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
 import EventPreview from "./EventPreview.vue";
 import EventList from "./EventList.vue";
@@ -10,8 +11,14 @@ import { useDisplay } from "vuetify";
 import XmarkIcon from "../icons/XmarkIcon.vue";
 import CloseButton from "../CloseButton.vue";
 import { useRoute } from "vue-router";
+import { GET_EVENTS } from "@/graphQLData/event/queries";
+import getEventWhere from "./getEventWhere";
 
 export default defineComponent({
+  name: "MapView",
+  // The SearchEvent component writes to the query
+  // params, while the MapView, EventListView, and EventFilterBar
+  // components consume the query params.
   props: {
     events: {
       type: Array as PropType<Array<EventData>>,
@@ -56,10 +63,94 @@ export default defineComponent({
     const { smAndDown } = useDisplay();
     const route = useRoute();
     const router = useRouter();
+
+    const eventWhere = ref(getEventWhere(filterValues, true))
+
+
+    const {
+      error: eventError,
+      result: eventResult,
+      loading: eventLoading,
+      refetch: refetchEvents,
+      onResult: onGetEventResult,
+      fetchMore,
+    } = useQuery(
+      GET_EVENTS,
+      {
+        limit: 25,
+        offset: 0,
+        where: eventWhere,
+        resultsOrder: resultsOrder,
+      },
+      {
+        fetchPolicy: "network-only", // If it is not network only, the list
+        // will not update when an event time changes in a way that affects
+        // which search results it should be returned in.
+      }
+    );
+
+    const reachedEndOfResults = ref(false);
+
+    onGetEventResult((value) => {
+      // If the preview pane is blank, fill it with the details
+      // of the first result, if there is one.
+      if (!value.data || value.data.events.length === 0) {
+        return;
+      }
+      const defaultSelectedEvent = value.data.events[0];
+
+      sendToPreview(defaultSelectedEvent.id, "");
+    });
+
+    const previewIsOpen = ref(false);
+    const sendToPreview = (eventId: string, eventLocationId: string) => {
+      if (eventId) {
+        if (!channelId.value) {
+          router.push({
+            name: "SitewideSearchEventPreview",
+            params: {
+              eventId,
+            },
+            hash: `#${eventLocationId ? eventLocationId : ""}`,
+          });
+        } else {
+          router.push({
+            name: "SearchEventPreview",
+            params: {
+              eventId,
+            },
+            hash: `#${eventLocationId ? eventLocationId : ""}`,
+          });
+        }
+      }
+    };
+    const loadMore = () => {
+      fetchMore({
+        variables: {
+          offset: eventResult.value.events.length,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+
+          return {
+            ...previousResult,
+            events: [...previousResult.events, ...fetchMoreResult.events],
+          };
+        },
+      });
+    };
+
     return {
       route,
       router,
       smAndDown,
+      eventError,
+      eventLoading,
+      eventResult,
+      loadMore,
+      previewIsOpen,
+      reachedEndOfResults,
+      refetchEvents,
     };
   },
   data() {
@@ -287,15 +378,28 @@ export default defineComponent({
       this.colorLocked = true;
     },
     clickCloseMap(){
-      // const router = useRouter();
       this.$router.push({ path: "events" })
     }
   },
+  created() {
+        this.$watch(
+        () => this.$route.params,
+        (toParams, previousParams) => {
+            // react to route changes...
+        }
+        )
+    },
 });
 </script>
 <template>
   <div class="mx-auto">
-    <div id="mapViewMobileWidth" v-if="smAndDown">
+    <div v-if="eventLoading">Loading...</div>
+    <ErrorBanner
+      class="block"
+      v-else-if="eventError"
+      :text="eventError.message"
+    />
+    <div id="mapViewMobileWidth" v-if="smAndDown && eventResult && eventResult.events">
       <EventMap
         v-if="events.length > 0"
         :events="events"
@@ -308,7 +412,7 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
     </div>
-    <div id="mapViewFullScreen" class="flex flex-row" v-else>
+    <div  v-else id="mapViewFullScreen" class="flex flex-row">
       <div
         class="h-full max-h-screen overflow-y-auto flex-col flex-grow"
         style="width: 34vw"
