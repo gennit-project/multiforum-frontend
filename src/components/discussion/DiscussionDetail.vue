@@ -622,22 +622,23 @@ export default defineComponent({
               Crossposted To Channels
             </div>
             <h3 v-else-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0" class="text-md">Comments</h3>
-            <Tag
-              class="mt-2"
-              v-for="channel in channelLinks"
+            <router-link 
+              v-for="channel in channelLinks" 
               :key="channel.uniqueName"
+              :to="{
+                name: 'DiscussionDetail',
+                params: {
+                  discussionId,
+                  channelId: channel.uniqueName,
+                }
+              }">
+              <Tag
+              class="mt-2"
               :tag="`${channel.uniqueName} (${getCommentCount(channel.uniqueName)})`"
               :channel-mode="true"
-              @click="
-                router.push({
-                  name: 'DiscussionDetail',
-                  params: {
-                    discussionId,
-                    channelId: channel.uniqueName,
-                  },
-                })
-              "
             />
+            </router-link>
+            
           </div>
           <div v-if="!discussion.body && route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2">
             <ProfileAvatar class="h-5 w-5" />

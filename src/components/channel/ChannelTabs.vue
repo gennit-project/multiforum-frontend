@@ -17,10 +17,11 @@ export default defineComponent({
 
     return {
       channelId,
+      route,
       tabRoutes: {
         discussions: `/channels/c/${channelId.value}/discussions/`,
         events: `/channels/c/${channelId.value}/events`,
-        about: `/channels/c/${channelId.value}/about`
+        about: `/channels/c/${channelId.value}/about`,
       } as any,
     };
   },
@@ -64,11 +65,20 @@ export default defineComponent({
       </select>
     </div>
     <div class="hidden sm:block">
-      <nav class="-mb-px text-lg max-w-7xl space-x-8 px-4 lg:px-12" aria-label="Tabs">
+      <nav
+        class="-mb-px text-lg max-w-7xl space-x-8 px-4 lg:px-12"
+        aria-label="Tabs"
+      >
         <!-- Current: "border-blue-500 text-blue-600", Default: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" -->
-        <ChannelTabButton :to="tabRoutes.discussions" :label="'Discussions'"/>
-        <ChannelTabButton :to="tabRoutes.events" :label="'Events'"/>
-        <ChannelTabButton :to="tabRoutes.about" :label="'About'"/>
+        <ChannelTabButton 
+          :to="tabRoutes.discussions" 
+          :label="'Discussions'"
+        />
+        <ChannelTabButton 
+          :to="tabRoutes.events" 
+          :label="'Events'" 
+        />
+        <ChannelTabButton :to="tabRoutes.about" :label="'About'" />
       </nav>
     </div>
     <div class="border-b border-gray-200 width-full"></div>

@@ -19,9 +19,11 @@ import EditDiscussion from "@/components/discussion/EditDiscussion.vue";
 import CreateChannel from "@/components/channel/CreateChannel.vue";
 import EditChannel from "@/components/channel/EditChannel.vue";
 import MapView from "@/components/event/MapView.vue"
+import EventListView from "@/components/event/EventListView.vue"
 
 export const router = createRouter({
   history: createWebHistory(),
+  linkActiveClass: "active",
   routes: [
     {
       path: "/",
@@ -33,10 +35,30 @@ export const router = createRouter({
       component: SearchEvents,
       children: [
         {
-          name: "SitewideSearchEventPreview",
-          path: "search/:eventId",
-          component: EventDetail
-        }
+          name: 'SearchEventsList',
+          path: "map",
+          component: MapView,
+          children: [
+            {
+              name: "SitewideSearchEventPreview",
+              path: "search/:eventId",
+              component: EventDetail
+            }
+          ]
+        },
+        {
+          name: 'SearchEventsMap',
+          path: "list",
+          component: EventListView,
+          children: [
+            {
+              name: "SitewideSearchEventPreview",
+              path: "search/:eventId",
+              component: EventDetail
+            }
+          ]
+        },
+        
       ]
     },
     {

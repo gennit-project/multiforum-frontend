@@ -6,6 +6,10 @@ export default defineComponent({
 
   },
   props: {
+    currentPage: {
+      type: Boolean,
+      default: false
+    },
     to: {
       type: String,
       required: true,
@@ -15,13 +19,20 @@ export default defineComponent({
       required: true,
     },
   },
+  computed: {
+    getCurrentPage: function() {
+      return this.$route.name;
+    }
+  }
 });
 </script>
 
 <template>
   <router-link
     :to="to"
+    :class="[currentPage ? 'currentPage' : '']"
     class="
+      link
       border-transparent
       text-gray-500
       hover:text-blue-600 hover:border-blue-500
@@ -33,8 +44,16 @@ export default defineComponent({
       font-medium
       text-sm
     "
-    active-class="border-blue-500 text-blue-600"
   >
     <span>{{ label }}</span>
   </router-link>
 </template>
+<style>
+.link.active {
+  @apply border-blue-500 text-blue-600
+}
+.link.currentPage {
+  @apply border-blue-500 text-blue-600
+}
+</style>
+

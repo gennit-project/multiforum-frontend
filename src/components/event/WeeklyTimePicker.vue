@@ -1,12 +1,15 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
-import { weekdays, hourRangesData } from "./eventSearchOptions";
+import { weekdays, hourRangesData, defaultSelectedWeekdays, defaultSelectedHourRanges } from "./eventSearchOptions";
 import { hourRangesObject } from "./eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
+  SelectedWeekdays,
+  SelectedHourRanges,
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
+import { useRoute } from "vue-router"
 import { defaultSelectedWeeklyHourRanges } from "./eventSearchOptions";
 import Table from "../Table.vue";
 import TableHead from "../TableHead.vue";
@@ -16,20 +19,35 @@ export default defineComponent({
     TableComponent: Table,
     TableHead,
   },
-  setup(props) {
+  setup() {
     // - Table header rows emit the event "toggleSelectWeekday"
     // - Table cells in first column emit the event "toggleSelectTimeRange"
     // - Other table cells emit the event "toggleSelectWeeklyTimeRange";
-
+    const route = useRoute()
     const workingCopyOfTimeSlots: Ref<SelectedWeeklyHourRanges> = ref(defaultSelectedWeeklyHourRanges)
-    console.log('time slots in props ', workingCopyOfTimeSlots.value)
+    const workingCopyOfSelectedWeekdays: Ref<SelectedWeekdays> = ref(defaultSelectedWeekdays)
+    const workingCopyOfSelectedHourRanges: Ref<SelectedHourRanges> = ref(defaultSelectedHourRanges)
+
+    console.log('time slots ', workingCopyOfTimeSlots.value)
+
+    const {
+      hourRanges,
+      // weekdays,
+      weeklyTimeSlots
+    } = route.query
+
+    console.log('query values', {
+      hourRanges,
+      // weekdays,
+      weeklyTimeSlots
+    })
 
     // take defaults from params
     return {
       weekdays,
       hourRangesData,
-      workingCopyOfSelectedWeekdays: ref(props.selectedWeekdays),
-      workingCopyOfSelectedHourRanges: ref(props.selectedHourRanges),
+      workingCopyOfSelectedWeekdays,
+      workingCopyOfSelectedHourRanges,
       workingCopyOfTimeSlots,
     };
   },

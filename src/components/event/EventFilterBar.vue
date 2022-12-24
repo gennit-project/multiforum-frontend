@@ -398,32 +398,53 @@ export default defineComponent({
       }
     },
 
-    handleTimeFilterShortcutClick(event: SetEventTimeRangeOptions) {
+    handleTimeFilterShortcutClick(shortcut: SetEventTimeRangeOptions) {
       // type SetEventTimeRangeOptions = {
       //   beginningOfDateRangeISO: string;
       //   endOfDateRangeISO: string;
       //   value: string;
       // }
-      console.log("handle time filter shortcut click", event);
-      const { beginningOfDateRangeISO, endOfDateRangeISO } = event;
+      console.log("handle time filter shortcut click", shortcut);
+        const { beginningOfDateRangeISO, endOfDateRangeISO } = shortcut;
 
-      // this.updateFilters({
-      //   beginningOfDateRangeISO,
-      //   endOfDateRangeISO
-      // })
+      if (shortcut.value === this.activeDateShortcut) {
+        // If the filter is currently selected, clear it.
+        this.activeDateShortcut = this.timeFilterShortcuts.NONE;
+        const newBeginning = DateTime.now().startOf("day").toISO();
+        const newEnd = DateTime.now().plus({ years: 2 }).toISO();
 
-      if (event.value === timeShortcutValues.PAST_EVENTS) {
+        this.updateFilters({
+          beginningOfDateRangeISO: newBeginning,
+          endOfDateRangeISO: newEnd
+        });
+        this.updateLocalState({
+          beginningOfDateRangeISO: newBeginning,
+          endOfDateRangeISO: newEnd,
+        });
+      }
+      else if (shortcut.value === timeShortcutValues.PAST_EVENTS) {
+      
         this.updateFilters({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
           resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
         });
+        this.updateLocalState({
+          beginningOfDateRangeISO,
+          endOfDateRangeISO,
+          resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
+        })
       } else {
         this.updateFilters({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
           resultsOrder: resultOrderTypes.CHRONOLOGICAL,
         });
+        this.updateLocalState({
+          beginningOfDateRangeISO,
+          endOfDateRangeISO,
+          resultsOrder: resultOrderTypes.CHRONOLOGICAL,
+        })
       }
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit) {
@@ -436,44 +457,43 @@ export default defineComponent({
         // Switch from miles to kilometers
         const currentDistanceIndex = distanceOptionsForMiles.findIndex(
           (val: DistanceUnit) => {
-            return this.filterValues.radius === val.value;
+            return this.filterValues.radius.toString() === val.label;
           }
         );
-        const newRadius = distanceOptionsForKilometers[currentDistanceIndex]
+        const newRadius = distanceOptionsForKilometers[currentDistanceIndex].value
+        console.log({
+          radius: this.filterValues.radius,
+          distanceOptionsForMiles,
+          currentIdx: currentDistanceIndex,
+          newRadius: distanceOptionsForKilometers[currentDistanceIndex].value
+        })
         this.updateLocalState({ radius: newRadius });
         this.updateFilters({ radius: newRadius });
-      }
-
-      if (
+        
+      } else if (
         this.selectedDistanceUnit === MilesOrKm.KM &&
         unitOption.value === MilesOrKm.MI
       ) {
         // Switch from kilometers to miles
         const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
           (val: DistanceUnit) => {
-            return this.filterValues.radius === val.value;
+            return this.filterValues.radius.toString() === val.label;
           }
         );
-        const newRadius = distanceOptionsForMiles[currentDistanceIndex]
+        console.log({
+          radius: this.filterValues.radius,
+          distanceOptionsForKilometers,
+          currentIdx: currentDistanceIndex,
+          newRadius: distanceOptionsForMiles[currentDistanceIndex].value
+        })
+        const newRadius = distanceOptionsForMiles[currentDistanceIndex].value
         this.updateLocalState({ radius: newRadius });
         this.updateFilters({ radius: newRadius })
       }
 
       this.selectedDistanceUnit = unitOption.value;
     },
-
-    updateRouterParams() {
-      this.$emit("updateRouterParams", {
-        path: "/events",
-        query: {
-          search: this.filterValues.searchInput,
-          channel: this.filterValues.selectedChannels,
-          tag: this.filterValues.selectedTags,
-        },
-      });
-    },
-    updateWeekdays() {},
-    updateHourRanges() {},
+    
     updateTimeSlots(flattenedTimeFilters: string) {
       console.log("update selected weekly hour ranges ", flattenedTimeFilters);
       this.updateFilters({
@@ -481,19 +501,27 @@ export default defineComponent({
       });
     },
     resetTimeSlots() {
-      this.filterValues.selectedHourRanges =
+      const defaultSelectedHourRanges =
         createDefaultSelectedWeeklyHourRanges();
-      this.filterValues.selectedWeekdays = createDefaultSelectedWeekdays();
-      this.filterValues.selectedWeeklyHourRanges =
+
+      const defaultSelectedWeekdays = createDefaultSelectedWeekdays();
+      
+      const defaultSelectedWeeklyHourRanges =
         createDefaultSelectedWeeklyHourRanges();
+
+      this.updateLocalState({
+        hourRanges: defaultSelectedHourRanges,
+        weekdays: defaultSelectedWeekdays,
+        weeklyHourRanges: defaultSelectedWeeklyHourRanges,
+      });
 
       this.updateFilters({
-        hourRanges: createDefaultSelectedWeeklyHourRanges(),
-        weekdays: createDefaultSelectedWeekdays(),
-        weeklyHourRanges: createDefaultSelectedWeeklyHourRanges(),
-      });
+        hourRanges: '',
+        weekdays: '',
+        weeklyHourRanges: ''
+      })
     },
-
+    updateHourRanges() {},
     updateWeekdays(weekdays: SelectedWeekdays) {
       const stringWeekdays = Object.keys(weekdays)
         .map((number) => {
@@ -502,46 +530,7 @@ export default defineComponent({
         .join(",");
       this.$emit("updateWeekdays", stringWeekdays);
     },
-    updateTimeSlots(timeSlots: SelectedWeeklyHourRanges) {
-      console.log("update time slots ", timeSlots);
-      this.$emit("updateTimeSlots", JSON.stringify(timeSlots));
-    },
-    resetTimeSlots() {
-      this.$emit("resetTimeSlots");
-      this.updateLocalState({
-        weeklyHourRanges: {},
-      });
-    },
-    handleTimeFilterShortcutClick(shortcut: any) {
-      if (shortcut.value === this.activeDateShortcut) {
-        // If the filter is currently selected, clear it.
-        this.activeDateShortcut = this.timeFilterShortcuts.NONE;
-        const newBeginning = DateTime.now().startOf("day").toISO();
-        const newEnd = DateTime.now().plus({ years: 2 }).toISO();
-
-        this.$emit("handleTimeFilterShortcutClick", {
-          beginningOfDateRangeISO: newBeginning,
-          endOfDateRangeISO: newEnd,
-          value: shortcut.value,
-        });
-        this.updateLocalState({
-          beginningOfDateRangeISO: newBeginning,
-          endOfDateRangeISO: newEnd,
-        });
-      } else {
-        // If the filter is not selected, select it.
-        this.activeDateShortcut = shortcut.value;
-        this.$emit("handleTimeFilterShortcutClick", {
-          beginningOfDateRangeISO: shortcut.beginningOfDateRangeISO,
-          endOfDateRangeISO: shortcut.endOfDateRangeISO,
-          value: shortcut.value,
-        });
-        this.updateLocalState({
-          beginningOfDateRange: shortcut.beginningOfDateRangeISO,
-          endOfDateRangeISO: shortcut.endOfDateRangeISO,
-        });
-      }
-    },
+    
     updateSelectedDistance(distance: DistanceUnit) {
       console.log("update distance ", distance);
       if (distance.value === 0) {
