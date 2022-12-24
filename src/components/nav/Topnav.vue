@@ -42,7 +42,7 @@ export default defineComponent({
     <div class="relative flex items-center justify-between h-10">
       <div class="flex items-center lg:px-0">
         <!-- <SiteLogo/> -->
-        <div class="text-white flex"><ChannelIcon class="h-5 w-5 mr-1 text-green-400"/> gennit</div>
+        <div class="text-white flex"><ChannelIcon class="h-5 w-5 mr-1 text-blue-400"/> gennit</div>
         
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4 text-gray-300">

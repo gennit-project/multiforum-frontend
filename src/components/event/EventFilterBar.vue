@@ -424,6 +424,7 @@ export default defineComponent({
       }
       else if (shortcut.value === timeShortcutValues.PAST_EVENTS) {
       
+        this.activeDateShortcut = shortcut.value
         this.updateFilters({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
@@ -435,6 +436,7 @@ export default defineComponent({
           resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
         })
       } else {
+        this.activeDateShortcut = shortcut.value
         this.updateFilters({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
@@ -522,13 +524,12 @@ export default defineComponent({
       })
     },
     updateHourRanges() {},
-    updateWeekdays(weekdays: SelectedWeekdays) {
-      const stringWeekdays = Object.keys(weekdays)
-        .map((number) => {
-          return number;
-        })
-        .join(",");
-      this.$emit("updateWeekdays", stringWeekdays);
+    updateWeekdays() {
+      // const stringWeekdays = Object.keys(weekdays)
+      //   .map((number) => {
+      //     return number;
+      //   })
+      //   .join(",");
     },
     
     updateSelectedDistance(distance: DistanceUnit) {
@@ -566,7 +567,6 @@ export default defineComponent({
           // If the online-only filter was already selected, clear it.
           
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
-          
           this.updateLocalState({
             locationFilter: LocationFilterTypes.NONE,
           });
@@ -611,6 +611,7 @@ export default defineComponent({
             // If a radius is set, assume WITHIN_RADIUS should be used. Otherwise,
             // assume ONLY_WITH_ADDRESS should be used.
 
+            this.activeEventFilterTypeShortcut = LocationFilterTypes.WITHIN_RADIUS
             this.updateLocalState({
               locationFilter: LocationFilterTypes.WITHIN_RADIUS,
             });
@@ -619,6 +620,7 @@ export default defineComponent({
             })
           } else {
             
+            this.activeEventFilterTypeShortcut = LocationFilterTypes.ONLY_WITH_ADDRESS
             this.updateLocalState({
               locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
             });
@@ -626,11 +628,6 @@ export default defineComponent({
               locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
             })
           }
-
-          // Affects only this local component, to keep track of which
-          // shortcut button should be marked as active
-          this.activeEventFilterTypeShortcut =
-            LocationFilterTypes.ONLY_WITH_ADDRESS;
         }
       }
     },

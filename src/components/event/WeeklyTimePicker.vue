@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
-import { weekdays, hourRangesData, defaultSelectedWeekdays, defaultSelectedHourRanges } from "./eventSearchOptions";
+import { weekdays as weekdayData, hourRangesData, defaultSelectedWeekdays, defaultSelectedHourRanges } from "./eventSearchOptions";
 import { hourRangesObject } from "./eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
@@ -32,19 +32,19 @@ export default defineComponent({
 
     const {
       hourRanges,
-      // weekdays,
+      weekdays,
       weeklyTimeSlots
     } = route.query
 
     console.log('query values', {
       hourRanges,
-      // weekdays,
+      weekdays,
       weeklyTimeSlots
     })
 
     // take defaults from params
     return {
-      weekdays,
+      weekdayData,
       hourRangesData,
       workingCopyOfSelectedWeekdays,
       workingCopyOfSelectedHourRanges,
@@ -54,16 +54,16 @@ export default defineComponent({
   methods: {
     shouldBeDisabled(weekday: WeekdayData, range: HourRangeData) {
       const hourRangeIsSelected =
-        this.selectedHourRanges[range["12-hour-label"]] === true;
-      const weekdayIsSelected = this.selectedWeekdays[weekday.number] === true;
+        this.workingCopyOfSelectedHourRanges[range["12-hour-label"]] === true;
+      const weekdayIsSelected = this.workingCopyOfSelectedWeekdays[weekday.number] === true;
       return hourRangeIsSelected || weekdayIsSelected;
     },
     shouldBeChecked(weekday: WeekdayData, range: HourRangeData) {
       const hourRangeIsSelected =
-        this.selectedHourRanges[range["12-hour-label"]] === true;
-      const weekdayIsSelected = this.selectedWeekdays[weekday.number] === true;
+        this.workingCopyOfSelectedHourRanges[range["12-hour-label"]] === true;
+      const weekdayIsSelected = this.workingCopyOfSelectedWeekdays[weekday.number] === true;
       const weeklyTimeSlotIsSelected =
-        this.selectedWeeklyHourRanges[weekday.number][range["12-hour-label"]];
+        this.workingCopyOfTimeSlots[weekday.number][range["12-hour-label"]];
 
       return (
         hourRangeIsSelected || weekdayIsSelected || weeklyTimeSlotIsSelected
@@ -84,7 +84,7 @@ export default defineComponent({
       // We keep track of the selected weekly time ranges
       // in an object data structure to prevent duplicates.
       const timeRangeName = timeRange["12-hour-label"];
-      if (this.selectedWeeklyHourRanges[dayNumber][timeRangeName]) {
+      if (this.workingCopyOfTimeSlots[dayNumber][timeRangeName]) {
         this.deselectWeeklyTimeRange(dayNumber, timeRange);
       } else {
         this.selectWeeklyTimeRange(dayNumber, timeRange);
@@ -97,7 +97,7 @@ export default defineComponent({
       // availability windows, it applies to the
       // time range filter.
       const label = timeRange["12-hour-label"];
-      if (this.selectedHourRanges[label]) {
+      if (this.workingCopyOfSelectedHourRanges[label]) {
         this.removeTimeRange(timeRange);
       } else {
         this.addTimeRange(timeRange);
@@ -195,7 +195,7 @@ export default defineComponent({
         }
       }
       this.$emit("updateWeekdays");
-      this.$emit("updateTimeSlots", this.flatten(this.workingCopyOfTimeSlots));
+      this.$emit("updateTimeSlots", 'flat')//this.flatten(this.workingCopyOfTimeSlots));
     },
     addWeekday(day: WeekdayData) {
       // example input: { number: '0', name: 'Sunday', shortName: 'Sun'}
@@ -217,7 +217,7 @@ export default defineComponent({
       // to fetch events. They are just used to make form state appear
       // consistent when switching between map view and list view.
       this.$emit("updateWeekdays");
-      this.$emit("updateTimeSlots", this.flatten());
+      this.$emit("updateTimeSlots", 'flat')// this.flatten());
     },
     toggleSelectWeekday(day: WeekdayData) {
       // This function makes it so that when an
@@ -225,7 +225,7 @@ export default defineComponent({
       // is selected with a checkbox in the form
       // for selecting availability windows, it applies
       // the weekday filter.
-      if (this.selectedWeekdays[day.number]) {
+      if (this.workingCopyOfSelectedWeekdays[day.number]) {
         this.removeWeekday(day);
       } else {
         this.addWeekday(day);
@@ -234,10 +234,10 @@ export default defineComponent({
     removeTimeRange(timeRange: HourRangeData) {
       const label = timeRange["12-hour-label"];
       this.workingCopyOfSelectedHourRanges[label] = false;
-      for (let weekday in this.selectedWeeklyHourRanges) {
+      for (let weekday in this.workingCopyOfTimeSlots) {
         // Leave the input enabled if it was locked in place
         // by highlighting the same time slot for the whole week.
-        if (!(this.selectedWeekdays[weekday] === true)) {
+        if (!(this.workingCopyOfSelectedWeekdays[weekday] === true)) {
           this.workingCopyOfTimeSlots[weekday][label] = false;
         }
       }
@@ -246,7 +246,7 @@ export default defineComponent({
     addTimeRange(timeRange: HourRangeData) {
       const label = timeRange["12-hour-label"];
       this.workingCopyOfSelectedHourRanges[label] = true;
-      for (let weekday in this.selectedWeeklyHourRanges) {
+      for (let weekday in this.workingCopyOfTimeSlots) {
         this.workingCopyOfTimeSlots[weekday][label] = true;
       }
       this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
@@ -272,7 +272,7 @@ export default defineComponent({
                 <tr>
                   <TableHead> Time Range </TableHead>
                   <TableHead
-                    v-for="weekday in weekdays"
+                    v-for="weekday in weekdayData"
                     :key="weekday.shortName"
                   >
                     <input
@@ -286,7 +286,7 @@ export default defineComponent({
                         border-gray-400
                         rounded
                       "
-                      :checked="selectedWeekdays[weekday.number] === true"
+                      :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
                       @input="() => toggleSelectWeekday(weekday)"
                     />
                     <span>{{ weekday.shortName }}</span>
@@ -338,7 +338,7 @@ export default defineComponent({
                       text-sm text-gray-500
                     "
                     :key="weekday.number"
-                    v-for="weekday in weekdays"
+                    v-for="weekday in weekdayData"
                   >
                     <div class="flex items-center h-5">
                       <input

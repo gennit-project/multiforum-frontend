@@ -32,7 +32,7 @@ export default defineComponent({
     active-class="
         inline-flex
         items-center
-        bg-gray-900
+        bg-gray-800
         text-white
         px-3
         py-1
