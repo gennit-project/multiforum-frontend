@@ -36,13 +36,12 @@ import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import GenericSmallButton from "../GenericSmallButton.vue";
-import {
-  SelectedWeekdays,
-  SelectedHourRanges,
-  SelectedWeeklyHourRanges,
-} from "@/types/eventTypes";
+import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute } from "vue-router";
-import { chronologicalOrder } from "./filterStrings";
+import {
+  getFilterValuesFromParams,
+  defaultPlace,
+} from "@/components/event/getFilterValuesFromParams";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -104,144 +103,10 @@ export default defineComponent({
       return "";
     });
     const route = useRoute();
-    const now = DateTime.now();
-    const defaultStartDateObj = now.startOf("day");
-    const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
-    const defaultStartDateISO = defaultStartDateObj.toISO();
-    const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
 
-    const defaultPlace = {
-      // Default map center is Tempe Public Library
-      name: "Tempe Public Library",
-      latitude: 33.39131450000001,
-      longitude: -111.9280626,
-      referencePointId: "ChIJR35tTZ8IK4cR2D0p0AxOqbg",
-      address: "3500 S Rural Rd, Tempe, AZ 85282, USA",
-    };
-
-    const getDefaultFilterValues = function (): SearchEventValues {
-      // Need to re-clean data when route values change
-      console.log("cleaning values", route.query);
-      // Take the default filter values from the query
-      // in the URL if the values exist.
-
-      let cleanedValues: SearchEventValues = {};
-
-      for (let key in route.query) {
-        const val = route.query[key];
-
-        switch (key) {
-          case "beginningOfDateRangeISO":
-            if (typeof val === "string") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "endOfDateRangeISO":
-            if (typeof val === "string") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "radius":
-            // May need to cast to string
-            if (typeof val === "number") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "latitude":
-            if (typeof val === "number") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "tags":
-            if (typeof val === "string") {
-              cleanedValues[key] = [val];
-            }
-            if (typeof val === "object") {
-              // If it is an array of strings, which
-              // is good, then the type is an object.
-              cleanedValues[key] = val;
-            }
-            break;
-          case "channels":
-            if (typeof val === "string") {
-              cleanedValues[key] = [val];
-            }
-            if (typeof val === "object") {
-              // If it is an array of strings, which
-              // is good, then the type is an object.
-              cleanedValues[key] = val;
-            }
-            break;
-          case "searchInput":
-            if (typeof val === "string") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "showCanceledEvents":
-            // May need to cast to boolean
-            if (typeof val === "boolean") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "free":
-            if (typeof val === "boolean") {
-              cleanedValues[key] = val;
-            }
-            break;
-          case "weeklyHourRanges":
-            // need to translate params to filter
-            cleanedValues[key] = val;
-            break;
-          case "resultsOrder":
-            // need to translate params to filter
-            cleanedValues[key] = val;
-            break;
-          case "locationFilter":
-            cleanedValues[key] = val?.toString();
-            break;
-        }
-      }
-
-      const {
-        beginningOfDateRangeISO,
-        endOfDateRangeISO,
-        radius,
-        latitude,
-        longitude,
-        tags,
-        channels,
-        searchInput,
-        showCanceledEvents,
-        free,
-        weeklyHourRanges,
-        resultsOrder,
-        locationFilter,
-      } = cleanedValues;
-
-      return {
-        beginningOfDateRangeISO: beginningOfDateRangeISO || defaultStartDateISO,
-        endOfDateRangeISO: endOfDateRangeISO || defaultEndDateRangeISO,
-        radius: radius || 500,
-        latitude: latitude || defaultPlace.latitude,
-        longitude: longitude || defaultPlace.longitude,
-        tags: tags || [],
-        channels: channels || [],
-        searchInput: searchInput || "",
-        showCanceledEvents: showCanceledEvents || false,
-        free: free || false,
-        weeklyHourRanges:
-          weeklyHourRanges ||
-          JSON.stringify(createDefaultSelectedWeeklyHourRanges()),
-        resultsOrder: resultsOrder || chronologicalOrder,
-        locationFilter:
-          locationFilter ||
-          (channelId.value
-            ? LocationFilterTypes.NONE
-            : LocationFilterTypes.WITHIN_RADIUS),
-      };
-    };
-
-    const filterValues: Ref<SearchEventValues> = ref(getDefaultFilterValues());
+    const filterValues: Ref<SearchEventValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
 
     const channelLabel = computed(() => {
       return getChannelLabel(filterValues.value.channels);
@@ -345,7 +210,6 @@ export default defineComponent({
   },
   methods: {
     updateFilters(params: SearchEventValues) {
-      console.log("update query params", params);
       const existingQuery = this.$route.query;
       // Updating the URL params causes the events
       // to be refetched by the EventListView
@@ -358,7 +222,6 @@ export default defineComponent({
       });
     },
     updateLocalState(params: SearchEventValues) {
-      console.log("update local state ", params);
       // Updating filterValues updates local state
       // so that parts of the filter form don't get
       // outdated when a related setting is updated.
@@ -369,12 +232,10 @@ export default defineComponent({
       };
     },
     setSelectedChannels(channels: string[]) {
-      console.log("set selected channels ", channels);
       this.updateLocalState({ channels });
       this.updateFilters({ channels });
     },
     setSelectedTags(tags: string[]) {
-      console.log("set selected tags", tags);
       this.updateLocalState({ tags });
       this.updateFilters({ tags });
     },
@@ -404,8 +265,7 @@ export default defineComponent({
       //   endOfDateRangeISO: string;
       //   value: string;
       // }
-      console.log("handle time filter shortcut click", shortcut);
-        const { beginningOfDateRangeISO, endOfDateRangeISO } = shortcut;
+      const { beginningOfDateRangeISO, endOfDateRangeISO } = shortcut;
 
       if (shortcut.value === this.activeDateShortcut) {
         // If the filter is currently selected, clear it.
@@ -415,16 +275,14 @@ export default defineComponent({
 
         this.updateFilters({
           beginningOfDateRangeISO: newBeginning,
-          endOfDateRangeISO: newEnd
+          endOfDateRangeISO: newEnd,
         });
         this.updateLocalState({
           beginningOfDateRangeISO: newBeginning,
           endOfDateRangeISO: newEnd,
         });
-      }
-      else if (shortcut.value === timeShortcutValues.PAST_EVENTS) {
-      
-        this.activeDateShortcut = shortcut.value
+      } else if (shortcut.value === timeShortcutValues.PAST_EVENTS) {
+        this.activeDateShortcut = shortcut.value;
         this.updateFilters({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
@@ -434,9 +292,9 @@ export default defineComponent({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
           resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
-        })
+        });
       } else {
-        this.activeDateShortcut = shortcut.value
+        this.activeDateShortcut = shortcut.value;
         this.updateFilters({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
@@ -446,12 +304,10 @@ export default defineComponent({
           beginningOfDateRangeISO,
           endOfDateRangeISO,
           resultsOrder: resultOrderTypes.CHRONOLOGICAL,
-        })
+        });
       }
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit) {
-      console.log('update distance unit ', unitOption)
-
       if (
         this.selectedDistanceUnit === MilesOrKm.MI &&
         unitOption.value === MilesOrKm.KM
@@ -462,16 +318,10 @@ export default defineComponent({
             return this.filterValues.radius.toString() === val.label;
           }
         );
-        const newRadius = distanceOptionsForKilometers[currentDistanceIndex].value
-        console.log({
-          radius: this.filterValues.radius,
-          distanceOptionsForMiles,
-          currentIdx: currentDistanceIndex,
-          newRadius: distanceOptionsForKilometers[currentDistanceIndex].value
-        })
+        const newRadius =
+          distanceOptionsForKilometers[currentDistanceIndex].value;
         this.updateLocalState({ radius: newRadius });
         this.updateFilters({ radius: newRadius });
-        
       } else if (
         this.selectedDistanceUnit === MilesOrKm.KM &&
         unitOption.value === MilesOrKm.MI
@@ -482,32 +332,24 @@ export default defineComponent({
             return this.filterValues.radius.toString() === val.label;
           }
         );
-        console.log({
-          radius: this.filterValues.radius,
-          distanceOptionsForKilometers,
-          currentIdx: currentDistanceIndex,
-          newRadius: distanceOptionsForMiles[currentDistanceIndex].value
-        })
-        const newRadius = distanceOptionsForMiles[currentDistanceIndex].value
+        const newRadius = distanceOptionsForMiles[currentDistanceIndex].value;
         this.updateLocalState({ radius: newRadius });
-        this.updateFilters({ radius: newRadius })
+        this.updateFilters({ radius: newRadius });
       }
 
       this.selectedDistanceUnit = unitOption.value;
     },
-    
+
     updateTimeSlots(flattenedTimeFilters: string) {
-      console.log("update selected weekly hour ranges ", flattenedTimeFilters);
       this.updateFilters({
         weeklyHourRanges: flattenedTimeFilters,
       });
     },
     resetTimeSlots() {
-      const defaultSelectedHourRanges =
-        createDefaultSelectedWeeklyHourRanges();
+      const defaultSelectedHourRanges = createDefaultSelectedWeeklyHourRanges();
 
       const defaultSelectedWeekdays = createDefaultSelectedWeekdays();
-      
+
       const defaultSelectedWeeklyHourRanges =
         createDefaultSelectedWeeklyHourRanges();
 
@@ -518,22 +360,19 @@ export default defineComponent({
       });
 
       this.updateFilters({
-        hourRanges: '',
-        weekdays: '',
-        weeklyHourRanges: ''
-      })
+        hourRanges: "",
+        weekdays: "",
+        weeklyHourRanges: "",
+      });
     },
-    updateHourRanges() {},
-    updateWeekdays() {
-      // const stringWeekdays = Object.keys(weekdays)
-      //   .map((number) => {
-      //     return number;
-      //   })
-      //   .join(",");
+    updateHourRanges(flattenedHourRanges: string) {
+      this.updateFilters({ hourRanges: flattenedHourRanges });
     },
-    
+    updateWeekdays(flattenedWeekdays: string) {
+      this.updateFilters({ weekdays: flattenedWeekdays });
+    },
+
     updateSelectedDistance(distance: DistanceUnit) {
-      console.log("update distance ", distance);
       if (distance.value === 0) {
         // If the radius is 0 (Any distance), don't use a radius when
         // filtering events, but the results should still be limited
@@ -554,7 +393,7 @@ export default defineComponent({
       }
       this.updateFilters({ radius: d });
     },
-    
+
     toggleTimeSlotPicker() {
       this.showTimeSlotPicker = !this.showTimeSlotPicker;
     },
@@ -565,23 +404,22 @@ export default defineComponent({
           LocationFilterTypes.ONLY_VIRTUAL
         ) {
           // If the online-only filter was already selected, clear it.
-          
+
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
           this.updateLocalState({
             locationFilter: LocationFilterTypes.NONE,
           });
           this.updateFilters({
             locationFilter: LocationFilterTypes.NONE,
-          })
+          });
         } else {
-          
           this.activeEventFilterTypeShortcut = LocationFilterTypes.ONLY_VIRTUAL;
           this.updateLocalState({
             locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
           });
           this.updateFilters({
-            locationFilter: LocationFilterTypes.ONLY_VIRTUAL
-          })
+            locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
+          });
         }
       }
       if (e.locationFilterType === LocationFilterTypes.ONLY_WITH_ADDRESS) {
@@ -592,14 +430,14 @@ export default defineComponent({
             LocationFilterTypes.WITHIN_RADIUS
         ) {
           // If an in-person filter is already selected, clear it.
-          
+
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
           this.updateLocalState({
             locationFilter: LocationFilterTypes.NONE,
           });
           this.updateFilters({
-            locationFilter: LocationFilterTypes.NONE
-          })
+            locationFilter: LocationFilterTypes.NONE,
+          });
         } else {
           // There are two filter types for in-person events - ONLY_WITH_ADDRESS,
           // which filters for events that have a physical address, and WITHIN_RADIUS,
@@ -611,22 +449,23 @@ export default defineComponent({
             // If a radius is set, assume WITHIN_RADIUS should be used. Otherwise,
             // assume ONLY_WITH_ADDRESS should be used.
 
-            this.activeEventFilterTypeShortcut = LocationFilterTypes.WITHIN_RADIUS
+            this.activeEventFilterTypeShortcut =
+              LocationFilterTypes.WITHIN_RADIUS;
             this.updateLocalState({
               locationFilter: LocationFilterTypes.WITHIN_RADIUS,
             });
             this.updateFilters({
               locationFilter: LocationFilterTypes.WITHIN_RADIUS,
-            })
+            });
           } else {
-            
-            this.activeEventFilterTypeShortcut = LocationFilterTypes.ONLY_WITH_ADDRESS
+            this.activeEventFilterTypeShortcut =
+              LocationFilterTypes.ONLY_WITH_ADDRESS;
             this.updateLocalState({
               locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
             });
             this.updateFilters({
               locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
-            })
+            });
           }
         }
       }

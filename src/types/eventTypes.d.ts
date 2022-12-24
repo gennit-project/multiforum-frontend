@@ -126,7 +126,7 @@ export type SearchEventValues = {
   channels?: Array[string];
   weekdays?: Array[SelectedWeekdays];
   hourRanges?: Array[SelectedHourRanges];
-  weeklyHourRanges?: string; // stringified version of Array[SelectedWeeklyHourRanges]
+  weeklyHourRanges?: Array[SelectedWeeklyHourRanges];
   locationFilter?: string;
   searchInput?: string;
   showCanceledEvents?: boolean;

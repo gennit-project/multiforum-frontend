@@ -1,6 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, Ref } from "vue";
-import { weekdays as weekdayData, hourRangesData, defaultSelectedWeekdays, defaultSelectedHourRanges } from "./eventSearchOptions";
+import {
+  weekdays as weekdayData,
+  hourRangesData,
+  defaultSelectedWeekdays,
+  defaultSelectedHourRanges,
+} from "./eventSearchOptions";
 import { hourRangesObject } from "./eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
@@ -9,7 +14,7 @@ import {
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
-import { useRoute } from "vue-router"
+import { useRoute } from "vue-router";
 import { defaultSelectedWeeklyHourRanges } from "./eventSearchOptions";
 import Table from "../Table.vue";
 import TableHead from "../TableHead.vue";
@@ -23,24 +28,16 @@ export default defineComponent({
     // - Table header rows emit the event "toggleSelectWeekday"
     // - Table cells in first column emit the event "toggleSelectTimeRange"
     // - Other table cells emit the event "toggleSelectWeeklyTimeRange";
-    const route = useRoute()
-    const workingCopyOfTimeSlots: Ref<SelectedWeeklyHourRanges> = ref(defaultSelectedWeeklyHourRanges)
-    const workingCopyOfSelectedWeekdays: Ref<SelectedWeekdays> = ref(defaultSelectedWeekdays)
-    const workingCopyOfSelectedHourRanges: Ref<SelectedHourRanges> = ref(defaultSelectedHourRanges)
-
-    console.log('time slots ', workingCopyOfTimeSlots.value)
-
-    const {
-      hourRanges,
-      weekdays,
-      weeklyTimeSlots
-    } = route.query
-
-    console.log('query values', {
-      hourRanges,
-      weekdays,
-      weeklyTimeSlots
-    })
+    const route = useRoute();
+    const workingCopyOfTimeSlots: Ref<SelectedWeeklyHourRanges> = ref(
+      defaultSelectedWeeklyHourRanges
+    );
+    const workingCopyOfSelectedWeekdays: Ref<SelectedWeekdays> = ref(
+      defaultSelectedWeekdays
+    );
+    const workingCopyOfSelectedHourRanges: Ref<SelectedHourRanges> = ref(
+      defaultSelectedHourRanges
+    );
 
     // take defaults from params
     return {
@@ -55,13 +52,15 @@ export default defineComponent({
     shouldBeDisabled(weekday: WeekdayData, range: HourRangeData) {
       const hourRangeIsSelected =
         this.workingCopyOfSelectedHourRanges[range["12-hour-label"]] === true;
-      const weekdayIsSelected = this.workingCopyOfSelectedWeekdays[weekday.number] === true;
+      const weekdayIsSelected =
+        this.workingCopyOfSelectedWeekdays[weekday.number] === true;
       return hourRangeIsSelected || weekdayIsSelected;
     },
     shouldBeChecked(weekday: WeekdayData, range: HourRangeData) {
       const hourRangeIsSelected =
         this.workingCopyOfSelectedHourRanges[range["12-hour-label"]] === true;
-      const weekdayIsSelected = this.workingCopyOfSelectedWeekdays[weekday.number] === true;
+      const weekdayIsSelected =
+        this.workingCopyOfSelectedWeekdays[weekday.number] === true;
       const weeklyTimeSlotIsSelected =
         this.workingCopyOfTimeSlots[weekday.number][range["12-hour-label"]];
 
@@ -71,11 +70,9 @@ export default defineComponent({
     },
     selectWeeklyTimeRange(day: string, timeRange: HourRangeData) {
       this.workingCopyOfTimeSlots[day][timeRange["12-hour-label"]] = true;
-      this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
     },
     deselectWeeklyTimeRange(day: string, timeRange: HourRangeData) {
       this.workingCopyOfTimeSlots[day][timeRange["12-hour-label"]] = false;
-      this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
     },
     toggleWeeklyTimeRange(dayNumber: string, timeRange: HourRangeData) {
       // This function selects time ranges based on the
@@ -89,6 +86,7 @@ export default defineComponent({
       } else {
         this.selectWeeklyTimeRange(dayNumber, timeRange);
       }
+      this.$emit("updateTimeSlots", this.flattenWeeklyHourRanges());
     },
     toggleSelectTimeRange(timeRange: HourRangeData) {
       // This function makes it so that when an
@@ -102,52 +100,53 @@ export default defineComponent({
       } else {
         this.addTimeRange(timeRange);
       }
+      this.$emit("updateHourRanges", this.flattenHourRanges());
     },
-    flatten() {
-      console.log("flattening ", {
-        weekdays: this.workingCopyOfSelectedWeekdays,
-      });
+    flattenWeekdays() {
       const flattenedTimeFilters = [];
 
       for (const day in Object.keys(this.workingCopyOfSelectedWeekdays)) {
-        flattenedTimeFilters.push({
-          AND: [
-            {
-              startTimeDayOfWeek: day,
-            },
-          ],
-        });
-      }
-
-      for (const timeSlot in Object.keys(
-        this.workingCopyOfSelectedHourRanges
-      )) {
-        const min = hourRangesObject[timeSlot].min;
-        const max = hourRangesObject[timeSlot].max;
-
-        for (let hour = min; hour < max; hour++) {
+        if (this.workingCopyOfSelectedWeekdays[day]) {
           flattenedTimeFilters.push({
-            AND: [
-              {
-                startTimeHourOfDay: hour,
-              },
-            ],
+            startTimeDayOfWeek: day,
           });
         }
       }
+      const res = JSON.stringify(flattenedTimeFilters);
+      return res;
+    },
+    flattenHourRanges() {
+      const flattenedTimeFilters = [];
+      for (let timeSlot in this.workingCopyOfSelectedHourRanges) {
+        if (this.workingCopyOfSelectedHourRanges[timeSlot]) {
+          const min = hourRangesObject[timeSlot].min;
+          const max = hourRangesObject[timeSlot].max;
 
+          for (let hour = min; hour < max; hour++) {
+            flattenedTimeFilters.push({
+              startTimeHourOfDay: hour,
+            });
+          }
+        }
+      }
+      const res = JSON.stringify(flattenedTimeFilters);
+      return res;
+    },
+    flattenWeeklyHourRanges() {
+      const flattenedTimeFilters = [];
       for (const dayNumber in this.workingCopyOfTimeSlots) {
+        if (this.workingCopyOfSelectedWeekdays[dayNumber] === true) {
+          // Don't add a filter for a specific hour and day
+          // if we have already selected that weekday
+          continue;
+        }
         const selectedSlotsInDay = this.workingCopyOfTimeSlots[dayNumber];
 
         for (const timeSlot in selectedSlotsInDay) {
-          if (
-            this.workingCopyOfTimeSlots[timeSlot] === true ||
-            this.workingCopyOfSelectedWeekdays[dayNumber] === true
-          ) {
-            // To avoid adding redundant filters to the eventual
-            // GraphQL query, don't add a filter for a specific
-            // hour and day if we have already selected a weekday
-            // at any time, or a time range across the entire week.
+          if (this.workingCopyOfTimeSlots[timeSlot] === true) {
+            // Don't add a filter for a specific
+            // day and time range if we have already selected that time
+            // range across the entire week.
             continue;
           }
 
@@ -176,8 +175,8 @@ export default defineComponent({
           }
         }
       }
-      console.log('flattened filter is ',flattenedTimeFilters)
-      return flattenedTimeFilters;
+      const res = JSON.stringify(flattenedTimeFilters);
+      return res;
     },
     removeWeekday(day: WeekdayData) {
       this.workingCopyOfSelectedWeekdays[day.number] = false;
@@ -194,21 +193,15 @@ export default defineComponent({
           this.workingCopyOfTimeSlots[day.number][timeSlot] = false;
         }
       }
-      this.$emit("updateWeekdays");
-      this.$emit("updateTimeSlots", 'flat')//this.flatten(this.workingCopyOfTimeSlots));
     },
     addWeekday(day: WeekdayData) {
       // example input: { number: '0', name: 'Sunday', shortName: 'Sun'}
-      console.log("adding weekday ", day);
-
       this.workingCopyOfSelectedWeekdays[day.number] = true;
       // example working copy of selected weekdays:
       // { 0: true }
 
       const timesToAdd = Object.keys(this.workingCopyOfTimeSlots[day.number]);
       // example time weekdays to add: ['0']
-
-      console.log("times to add  ", timesToAdd);
       for (let i = 0; i < timesToAdd.length; i++) {
         const timeSlot = timesToAdd[i];
         this.workingCopyOfTimeSlots[day.number][timeSlot] = true;
@@ -216,8 +209,6 @@ export default defineComponent({
       // The selected weekdays are not used in the EventWhere param
       // to fetch events. They are just used to make form state appear
       // consistent when switching between map view and list view.
-      this.$emit("updateWeekdays");
-      this.$emit("updateTimeSlots", 'flat')// this.flatten());
     },
     toggleSelectWeekday(day: WeekdayData) {
       // This function makes it so that when an
@@ -230,6 +221,7 @@ export default defineComponent({
       } else {
         this.addWeekday(day);
       }
+      this.$emit("updateWeekdays", this.flattenWeekdays());
     },
     removeTimeRange(timeRange: HourRangeData) {
       const label = timeRange["12-hour-label"];
@@ -241,7 +233,6 @@ export default defineComponent({
           this.workingCopyOfTimeSlots[weekday][label] = false;
         }
       }
-      this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
     },
     addTimeRange(timeRange: HourRangeData) {
       const label = timeRange["12-hour-label"];
@@ -249,7 +240,6 @@ export default defineComponent({
       for (let weekday in this.workingCopyOfTimeSlots) {
         this.workingCopyOfTimeSlots[weekday][label] = true;
       }
-      this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
     },
   },
 });
@@ -286,7 +276,9 @@ export default defineComponent({
                         border-gray-400
                         rounded
                       "
-                      :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
+                      :checked="
+                        workingCopyOfSelectedWeekdays[weekday.number] === true
+                      "
                       @input="() => toggleSelectWeekday(weekday)"
                     />
                     <span>{{ weekday.shortName }}</span>

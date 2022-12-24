@@ -1,8 +1,8 @@
 import LocationFilterTypes from "./locationFilterTypes";
 import { SearchEventValues } from "@/types/eventTypes";
-import {
-    hourRangesObject,
-  } from "@/components/event/eventSearchOptions";
+// import {
+//     hourRangesObject,
+//   } from "@/components/event/eventSearchOptions";
 
 const getEventWhere = (filterValues: SearchEventValues, showMap: boolean) => {
     let conditions = [];
@@ -13,7 +13,7 @@ const getEventWhere = (filterValues: SearchEventValues, showMap: boolean) => {
         radius,
         tags,
         channels,
-        weeklyHourRanges,
+        // weeklyHourRanges,
         locationFilter,
         searchInput,
         showCanceledEvents,
