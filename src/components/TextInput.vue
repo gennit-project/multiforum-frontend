@@ -38,7 +38,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="mt-1 flex relative rounded-md shadow-sm">
+    <div class="mt-1 flex relative rounded-full shadow-sm">
       <input
         v-model="text"
         @update:model-value="$emit('update', text)"

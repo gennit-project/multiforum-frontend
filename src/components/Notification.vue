@@ -85,7 +85,7 @@ export default defineComponent({
                   @click="$emit('closeNotification')"
                   class="
                     bg-white
-                    rounded-md
+                    rounded-full
                     inline-flex
                     text-gray-400
                     hover:text-gray-500

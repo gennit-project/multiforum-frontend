@@ -126,33 +126,9 @@ const getEventWhere = (filterValues: SearchEventValues, showMap: boolean) => {
 
     // But to create a GraphQL query filter out of that,
     // this function flattens the structure.
-    const flattenedTimeFilters = [];
-    for (const dayNumber in weeklyHourRanges) {
-      const selectedSlotsInDay =
-        weeklyHourRanges[dayNumber];
+    
 
-      for (const timeSlot in selectedSlotsInDay) {
-        const slotIsSelected = selectedSlotsInDay[timeSlot];
-
-        if (slotIsSelected) {
-          const min = hourRangesObject[timeSlot].min;
-          const max = hourRangesObject[timeSlot].max;
-
-          for (let hour = min; hour < max; hour++) {
-            flattenedTimeFilters.push({
-              AND: [
-                {
-                  startTimeHourOfDay: hour,
-                },
-                {
-                  startTimeDayOfWeek: dayNumber,
-                },
-              ],
-            });
-          }
-        }
-      }
-    }
+    const flattenedTimeFilters: any = [] // rewrite to take query params
 
     if (flattenedTimeFilters.length > 0) {
       conditions.push({

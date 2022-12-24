@@ -23,7 +23,7 @@ export default defineComponent({
           block
           px-3
           py-2
-          rounded-md
+          rounded-full
           text-base
           font-medium"
         active-class="bg-gray-900 text-white"
@@ -37,7 +37,7 @@ export default defineComponent({
           block
           px-3
           py-2
-          rounded-md
+          rounded-full
           text-base
           font-medium"
         active-class="bg-gray-900 text-white"
@@ -51,7 +51,7 @@ export default defineComponent({
           block
           px-3
           py-2
-          rounded-md
+          rounded-full
           text-base
           font-medium"
         active-class="bg-gray-900 text-white"
@@ -114,7 +114,7 @@ export default defineComponent({
             block
             px-3
             py-2
-            rounded-md
+            rounded-full
             text-base
             font-medium
             text-gray-400
@@ -130,7 +130,7 @@ export default defineComponent({
             block
             px-3
             py-2
-            rounded-md
+            rounded-full
             text-base
             font-medium
             text-gray-400
@@ -146,7 +146,7 @@ export default defineComponent({
             block
             px-3
             py-2
-            rounded-md
+            rounded-full
             text-base
             font-medium
             text-gray-400

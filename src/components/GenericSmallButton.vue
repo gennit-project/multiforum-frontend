@@ -27,7 +27,7 @@ export default defineComponent({
     class="
       inline-flex
       items-center
-      rounded-lg
+      rounded-full
       border border-gray-200
       bg-white
       px-4

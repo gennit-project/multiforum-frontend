@@ -134,7 +134,7 @@ export default defineComponent({
                     w-full
                     inline-flex
                     justify-center
-                    rounded-md
+                    rounded-full
                     border border-transparent
                     shadow-sm
                     px-4
@@ -165,7 +165,7 @@ export default defineComponent({
                       w-full
                       inline-flex
                       justify-center
-                      rounded-md
+                      rounded-full
                       border border-gray-300
                       shadow-sm
                       px-4

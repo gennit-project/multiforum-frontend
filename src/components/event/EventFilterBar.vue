@@ -11,7 +11,11 @@ import { DateTime } from "luxon";
 import Tag from "@/components/Tag.vue";
 import SelectMenu from "../Select.vue";
 import SearchBar from "../SearchBar.vue";
-import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
+import {
+  DistanceUnit,
+  SearchEventValues,
+  SetEventTimeRangeOptions,
+} from "@/types/eventTypes";
 import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
@@ -21,6 +25,8 @@ import {
   distanceUnitOptions,
   eventFilterTypeShortcuts,
   createDefaultSelectedWeeklyHourRanges,
+  createDefaultSelectedWeekdays,
+  resultOrderTypes,
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
@@ -30,14 +36,18 @@ import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import GenericSmallButton from "../GenericSmallButton.vue";
-import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
+import {
+  SelectedWeekdays,
+  SelectedHourRanges,
+  SelectedWeeklyHourRanges,
+} from "@/types/eventTypes";
 import { useRoute } from "vue-router";
 import { chronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
   name: "EventFilterBar",
-  // The SearchEvent component writes to the query
-  // params, while the MapView, EventListView, and EventFilterBar
+  // The EventFilterBar component writes to the query
+  // params, while the MapView and EventListView
   // components consume the query params.
   components: {
     ChannelIcon,
@@ -220,7 +230,8 @@ export default defineComponent({
         showCanceledEvents: showCanceledEvents || false,
         free: free || false,
         weeklyHourRanges:
-          weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
+          weeklyHourRanges ||
+          JSON.stringify(createDefaultSelectedWeeklyHourRanges()),
         resultsOrder: resultsOrder || chronologicalOrder,
         locationFilter:
           locationFilter ||
@@ -315,12 +326,14 @@ export default defineComponent({
       hourRanges,
       eventFilterTypeShortcuts,
       LocationFilterTypes,
+      MI_KM_RATIO: 1.609,
       MilesOrKm,
       moreFiltersLabel,
       referencePointName: ref(defaultPlace.name),
       referencePointAddress: ref(defaultPlace.address),
       referencePointPlaceId: ref(defaultPlace.referencePointId),
       distanceUnit,
+      selectedDistanceUnit: ref(MilesOrKm.MI),
       showMapCopy: ref(props.showMap),
       showTimeSlotPicker: ref(false),
       tagLabel,
@@ -331,7 +344,21 @@ export default defineComponent({
     };
   },
   methods: {
+    updateFilters(params: SearchEventValues) {
+      console.log("update query params", params);
+      const existingQuery = this.$route.query;
+      // Updating the URL params causes the events
+      // to be refetched by the EventListView
+      // and MapView components
+      this.$router.replace({
+        query: {
+          ...existingQuery,
+          ...params,
+        },
+      });
+    },
     updateLocalState(params: SearchEventValues) {
+      console.log("update local state ", params);
       // Updating filterValues updates local state
       // so that parts of the filter form don't get
       // outdated when a related setting is updated.
@@ -341,6 +368,100 @@ export default defineComponent({
         ...params,
       };
     },
+    setSelectedChannels(channels: string[]) {
+      console.log("set selected channels ", channels);
+      this.updateLocalState({ channels });
+      this.updateFilters({ channels });
+    },
+    setSelectedTags(tags: string[]) {
+      console.log("set selected tags", tags);
+      this.updateLocalState({ tags });
+      this.updateFilters({ tags });
+    },
+    updateSearchInput(searchInput: string) {
+      this.updateLocalState({ searchInput });
+      this.updateFilters({ searchInput });
+    },
+    updateLocationInput(placeData: any) {
+      try {
+        this.updateFilters({
+          latitude: placeData.geometry.location.lat(),
+          longitude: placeData.geometry.location.lng(),
+        });
+        this.updateLocalState({
+          latitude: placeData.geometry.location.lat(),
+          longitude: placeData.geometry.location.lng(),
+        });
+        this.referencePointAddress = placeData.formatted_address;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+    },
+
+    handleTimeFilterShortcutClick(event: SetEventTimeRangeOptions) {
+      // type SetEventTimeRangeOptions = {
+      //   beginningOfDateRangeISO: string;
+      //   endOfDateRangeISO: string;
+      //   value: string;
+      // }
+      console.log("handle time filter shortcut click", event);
+      const { beginningOfDateRangeISO, endOfDateRangeISO } = event;
+
+      // this.updateFilters({
+      //   beginningOfDateRangeISO,
+      //   endOfDateRangeISO
+      // })
+
+      if (event.value === timeShortcutValues.PAST_EVENTS) {
+        this.updateFilters({
+          beginningOfDateRangeISO,
+          endOfDateRangeISO,
+          resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
+        });
+      } else {
+        this.updateFilters({
+          beginningOfDateRangeISO,
+          endOfDateRangeISO,
+          resultsOrder: resultOrderTypes.CHRONOLOGICAL,
+        });
+      }
+    },
+    updateSelectedDistanceUnit(unitOption: DistanceUnit) {
+      console.log('update distance unit ', unitOption)
+
+      if (
+        this.selectedDistanceUnit === MilesOrKm.MI &&
+        unitOption.value === MilesOrKm.KM
+      ) {
+        // Switch from miles to kilometers
+        const currentDistanceIndex = distanceOptionsForMiles.findIndex(
+          (val: DistanceUnit) => {
+            return this.filterValues.radius === val.value;
+          }
+        );
+        const newRadius = distanceOptionsForKilometers[currentDistanceIndex]
+        this.updateLocalState({ radius: newRadius });
+        this.updateFilters({ radius: newRadius });
+      }
+
+      if (
+        this.selectedDistanceUnit === MilesOrKm.KM &&
+        unitOption.value === MilesOrKm.MI
+      ) {
+        // Switch from kilometers to miles
+        const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
+          (val: DistanceUnit) => {
+            return this.filterValues.radius === val.value;
+          }
+        );
+        const newRadius = distanceOptionsForMiles[currentDistanceIndex]
+        this.updateLocalState({ radius: newRadius });
+        this.updateFilters({ radius: newRadius })
+      }
+
+      this.selectedDistanceUnit = unitOption.value;
+    },
+
     updateRouterParams() {
       this.$emit("updateRouterParams", {
         path: "/events",
@@ -351,11 +472,39 @@ export default defineComponent({
         },
       });
     },
-    updateTimeSlots(e: any) {
-      this.$emit("updateTimeSlots", e);
-      this.updateLocalState({
-        weeklyHourRanges: e,
+    updateWeekdays() {},
+    updateHourRanges() {},
+    updateTimeSlots(flattenedTimeFilters: string) {
+      console.log("update selected weekly hour ranges ", flattenedTimeFilters);
+      this.updateFilters({
+        weeklyHourRanges: flattenedTimeFilters,
       });
+    },
+    resetTimeSlots() {
+      this.filterValues.selectedHourRanges =
+        createDefaultSelectedWeeklyHourRanges();
+      this.filterValues.selectedWeekdays = createDefaultSelectedWeekdays();
+      this.filterValues.selectedWeeklyHourRanges =
+        createDefaultSelectedWeeklyHourRanges();
+
+      this.updateFilters({
+        hourRanges: createDefaultSelectedWeeklyHourRanges(),
+        weekdays: createDefaultSelectedWeekdays(),
+        weeklyHourRanges: createDefaultSelectedWeeklyHourRanges(),
+      });
+    },
+
+    updateWeekdays(weekdays: SelectedWeekdays) {
+      const stringWeekdays = Object.keys(weekdays)
+        .map((number) => {
+          return number;
+        })
+        .join(",");
+      this.$emit("updateWeekdays", stringWeekdays);
+    },
+    updateTimeSlots(timeSlots: SelectedWeeklyHourRanges) {
+      console.log("update time slots ", timeSlots);
+      this.$emit("updateTimeSlots", JSON.stringify(timeSlots));
     },
     resetTimeSlots() {
       this.$emit("resetTimeSlots");
@@ -393,87 +542,29 @@ export default defineComponent({
         });
       }
     },
-    updateLocationInput(placeData: any) {
-      this.$emit("updateLocationInput", placeData);
-
-      try {
-        this.updateLocalState({
-          latitude: placeData.geometry.location.lat(),
-          longitude: placeData.geometry.location.lng(),
+    updateSelectedDistance(distance: DistanceUnit) {
+      console.log("update distance ", distance);
+      if (distance.value === 0) {
+        // If the radius is 0 (Any distance), don't use a radius when
+        // filtering events, but the results should still be limited
+        // to events with in-person locations.
+        this.updateFilters({
+          locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
         });
-        this.referencePointAddress.value = placeData.formatted_address;
-      } catch (e: any) {
-        throw new Error(e);
-      }
-    },
-    updateSearchInput(e: any) {
-      this.$emit("updateSearchInput", e);
-      this.updateLocalState({ searchInput: e });
-    },
-    updateSelectedDistance(distanceOption: DistanceUnit) {
-      this.$emit("updateSelectedDistance", distanceOption.value);
-
-      if (distanceOption.value === 0) {
-        // If the radius is 0, don't use a radius when filtering events,
-        // but the results should still be limited to events with in-person
-        // locations.
-        this.$emit(
-          "updateEventTypeFilter",
-          LocationFilterTypes.ONLY_WITH_ADDRESS
-        );
         this.updateLocalState({
-          locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS
-        })
+          locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
+        });
       }
+      let d: number = 0;
+
+      if (typeof distance.value === "string") {
+        d = parseInt(distance.value, 10);
+      } else if (typeof distance.value === "number") {
+        d = distance.value;
+      }
+      this.updateFilters({ radius: d });
     },
-    updateSelectedDistanceUnit(unitOption: DistanceUnit) {
-      if (
-        unitOption.value !== MilesOrKm.MI &&
-        unitOption.value !== MilesOrKm.KM
-      ) {
-        throw new Error("Unit must be in miles or kilometers.");
-      }
-
-      if (
-        this.selectedDistanceUnit === MilesOrKm.MI &&
-        unitOption.value === MilesOrKm.KM
-      ) {
-        // Switch from miles to kilometers
-        const currentDistanceIndex = distanceOptionsForMiles.findIndex(
-          (val: DistanceUnit) => {
-            return this.filterValues.radius === val.value;
-          }
-        );
-        this.$emit(
-          "updateSelectedDistance",
-          distanceOptionsForKilometers[currentDistanceIndex].value
-        );
-        this.updateLocalState({ radius: distanceOptionsForKilometers[currentDistanceIndex].value })
-        this.defaultKilometerSelection =
-          distanceOptionsForKilometers[currentDistanceIndex];
-      }
-
-      if (
-        this.selectedDistanceUnit === MilesOrKm.KM &&
-        unitOption.value === MilesOrKm.MI
-      ) {
-        // Switch from kilometers to miles
-        const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
-          (val: DistanceUnit) => {
-            return this.filterValues.radius === val.value;
-          }
-        );
-        this.$emit(
-          "updateSelectedDistance",
-          distanceOptionsForMiles[currentDistanceIndex].value
-        );
-        this.updateLocalState({ radius: distanceOptionsForMiles[currentDistanceIndex].value})
-        this.defaultMileSelection =
-          distanceOptionsForMiles[currentDistanceIndex];
-      }
-
-      this.selectedDistanceUnit = unitOption.value;
-    },
+    
     toggleTimeSlotPicker() {
       this.showTimeSlotPicker = !this.showTimeSlotPicker;
     },
@@ -484,15 +575,22 @@ export default defineComponent({
           LocationFilterTypes.ONLY_VIRTUAL
         ) {
           // If the online-only filter was already selected, clear it.
-          this.$emit("updateEventTypeFilter", LocationFilterTypes.NONE);
+          
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
+          
           this.updateLocalState({
-            locationFilter: LocationFilterTypes.NONE
+            locationFilter: LocationFilterTypes.NONE,
+          });
+          this.updateFilters({
+            locationFilter: LocationFilterTypes.NONE,
           })
         } else {
-          this.$emit("updateEventTypeFilter", LocationFilterTypes.ONLY_VIRTUAL);
+          
           this.activeEventFilterTypeShortcut = LocationFilterTypes.ONLY_VIRTUAL;
           this.updateLocalState({
+            locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
+          });
+          this.updateFilters({
             locationFilter: LocationFilterTypes.ONLY_VIRTUAL
           })
         }
@@ -505,9 +603,12 @@ export default defineComponent({
             LocationFilterTypes.WITHIN_RADIUS
         ) {
           // If an in-person filter is already selected, clear it.
-          this.$emit("updateEventTypeFilter", LocationFilterTypes.NONE);
+          
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
           this.updateLocalState({
+            locationFilter: LocationFilterTypes.NONE,
+          });
+          this.updateFilters({
             locationFilter: LocationFilterTypes.NONE
           })
         } else {
@@ -521,20 +622,19 @@ export default defineComponent({
             // If a radius is set, assume WITHIN_RADIUS should be used. Otherwise,
             // assume ONLY_WITH_ADDRESS should be used.
 
-            this.$emit(
-              "updateEventTypeFilter",
-              LocationFilterTypes.WITHIN_RADIUS
-            );
             this.updateLocalState({
-              locationFilter: LocationFilterTypes.WITHIN_RADIUS
+              locationFilter: LocationFilterTypes.WITHIN_RADIUS,
+            });
+            this.updateFilters({
+              locationFilter: LocationFilterTypes.WITHIN_RADIUS,
             })
           } else {
-            this.$emit(
-              "updateEventTypeFilter",
-              LocationFilterTypes.ONLY_WITH_ADDRESS
-            );
+            
             this.updateLocalState({
-              locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS
+              locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
+            });
+            this.updateFilters({
+              locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
             })
           }
 
@@ -564,7 +664,7 @@ export default defineComponent({
         <template v-slot:content>
           <ChannelPicker
             :selected-channels="filterValues.channels"
-            @setSelectedChannels="$emit('setSelectedChannels', $event)"
+            @setSelectedChannels="setSelectedChannels"
           />
         </template>
       </FilterChip>
@@ -579,7 +679,7 @@ export default defineComponent({
         <template v-slot:content>
           <TagPicker
             :selected-tags="filterValues.tags"
-            @setSelectedTags="$emit('setSelectedTags', $event)"
+            @setSelectedTags="setSelectedTags"
           />
         </template>
       </FilterChip>
@@ -598,6 +698,14 @@ export default defineComponent({
         <template v-slot:icon>
           <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
         </template>
+        <template v-slot:content>
+          <WeeklyTimePicker
+            class="py-2 px-8"
+            @updateWeekdays="updateWeekdays"
+            @updateHourRanges="updateHourRanges"
+            @updateTimeSlots="updateTimeSlots"
+          />
+        </template>
         <template v-slot:secondaryButton>
           <button
             type="button"
@@ -605,7 +713,7 @@ export default defineComponent({
               w-full
               inline-flex
               justify-center
-              rounded-md
+              rounded-full
               border border-gray-300
               shadow-sm
               px-4
@@ -626,15 +734,6 @@ export default defineComponent({
             <RefreshIcon class="h-5" />
             Reset
           </button>
-        </template>
-        <template v-slot:content>
-          <WeeklyTimePicker
-            class="py-2 px-8"
-            :selected-weekdays="weekdays"
-            :selected-hour-ranges="hourRanges"
-            :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
-            @updateTimeSlots="updateTimeSlots"
-          />
         </template>
       </Modal>
       <FilterChip

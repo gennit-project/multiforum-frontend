@@ -1,13 +1,13 @@
 <script lang="ts">
-import { defineComponent, ref, PropType } from "vue";
+import { defineComponent, ref, Ref } from "vue";
 import { weekdays, hourRangesData } from "./eventSearchOptions";
+import { hourRangesObject } from "./eventSearchOptions";
 import {
-  SelectedWeekdays,
-  SelectedHourRanges,
   SelectedWeeklyHourRanges,
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
+import { defaultSelectedWeeklyHourRanges } from "./eventSearchOptions";
 import Table from "../Table.vue";
 import TableHead from "../TableHead.vue";
 
@@ -16,36 +16,24 @@ export default defineComponent({
     TableComponent: Table,
     TableHead,
   },
-  props: {
-    selectedWeekdays: {
-      type: Object as PropType<SelectedWeekdays>,
-      required: true,
-    },
-    selectedHourRanges: {
-      type: Object as PropType<SelectedHourRanges>,
-      required: true,
-    },
-    selectedWeeklyHourRanges: {
-      type: Object as PropType<SelectedWeeklyHourRanges>,
-      required: true,
-    },
-  },
   setup(props) {
     // - Table header rows emit the event "toggleSelectWeekday"
     // - Table cells in first column emit the event "toggleSelectTimeRange"
     // - Other table cells emit the event "toggleSelectWeeklyTimeRange";
+
+    const workingCopyOfTimeSlots: Ref<SelectedWeeklyHourRanges> = ref(defaultSelectedWeeklyHourRanges)
+    console.log('time slots in props ', workingCopyOfTimeSlots.value)
+
+    // take defaults from params
     return {
       weekdays,
       hourRangesData,
       workingCopyOfSelectedWeekdays: ref(props.selectedWeekdays),
       workingCopyOfSelectedHourRanges: ref(props.selectedHourRanges),
-      workingCopyOfTimeSlots: ref(props.selectedWeeklyHourRanges),
+      workingCopyOfTimeSlots,
     };
   },
   methods: {
-    toggleSelectWeeklyTimeRange(weekdayNumber: string, range: HourRangeData) {
-      this.toggleWeeklyTimeRange(weekdayNumber, range);
-    },
     shouldBeDisabled(weekday: WeekdayData, range: HourRangeData) {
       const hourRangeIsSelected =
         this.selectedHourRanges[range["12-hour-label"]] === true;
@@ -97,29 +85,121 @@ export default defineComponent({
         this.addTimeRange(timeRange);
       }
     },
+    flatten() {
+      console.log("flattening ", {
+        weekdays: this.workingCopyOfSelectedWeekdays,
+      });
+      const flattenedTimeFilters = [];
+
+      for (const day in Object.keys(this.workingCopyOfSelectedWeekdays)) {
+        flattenedTimeFilters.push({
+          AND: [
+            {
+              startTimeDayOfWeek: day,
+            },
+          ],
+        });
+      }
+
+      for (const timeSlot in Object.keys(
+        this.workingCopyOfSelectedHourRanges
+      )) {
+        const min = hourRangesObject[timeSlot].min;
+        const max = hourRangesObject[timeSlot].max;
+
+        for (let hour = min; hour < max; hour++) {
+          flattenedTimeFilters.push({
+            AND: [
+              {
+                startTimeHourOfDay: hour,
+              },
+            ],
+          });
+        }
+      }
+
+      for (const dayNumber in this.workingCopyOfTimeSlots) {
+        const selectedSlotsInDay = this.workingCopyOfTimeSlots[dayNumber];
+
+        for (const timeSlot in selectedSlotsInDay) {
+          if (
+            this.workingCopyOfTimeSlots[timeSlot] === true ||
+            this.workingCopyOfSelectedWeekdays[dayNumber] === true
+          ) {
+            // To avoid adding redundant filters to the eventual
+            // GraphQL query, don't add a filter for a specific
+            // hour and day if we have already selected a weekday
+            // at any time, or a time range across the entire week.
+            continue;
+          }
+
+          const slotIsSelected = selectedSlotsInDay[timeSlot];
+
+          if (slotIsSelected) {
+            const min = hourRangesObject[timeSlot].min;
+            const max = hourRangesObject[timeSlot].max;
+
+            for (let hour = min; hour < max; hour++) {
+              // Due to the way that Neo4j works, it is faster
+              // to check for specific hours that an event may
+              // begin than it is to check for hour ranges
+              // using greater-than or less-than operators.
+              flattenedTimeFilters.push({
+                AND: [
+                  {
+                    startTimeHourOfDay: hour,
+                  },
+                  {
+                    startTimeDayOfWeek: dayNumber,
+                  },
+                ],
+              });
+            }
+          }
+        }
+      }
+      console.log('flattened filter is ',flattenedTimeFilters)
+      return flattenedTimeFilters;
+    },
     removeWeekday(day: WeekdayData) {
       this.workingCopyOfSelectedWeekdays[day.number] = false;
+
       const timeSlotsToRemove = Object.keys(
-        this.workingCopyOfSelectedHourRanges
+        this.workingCopyOfTimeSlots[day.number]
       );
+
       for (let i = 0; i < timeSlotsToRemove.length; i++) {
         const timeSlot = timeSlotsToRemove[i];
         // Leave the input enabled if it was locked in place
         // by highlighting the same weekday for every time slot.
-        if (this.workingCopyOfSelectedHourRanges[timeSlot] === false) {
+        if (this.workingCopyOfSelectedWeekdays[day.number] === false) {
           this.workingCopyOfTimeSlots[day.number][timeSlot] = false;
         }
       }
-      this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
+      this.$emit("updateWeekdays");
+      this.$emit("updateTimeSlots", this.flatten(this.workingCopyOfTimeSlots));
     },
     addWeekday(day: WeekdayData) {
+      // example input: { number: '0', name: 'Sunday', shortName: 'Sun'}
+      console.log("adding weekday ", day);
+
       this.workingCopyOfSelectedWeekdays[day.number] = true;
-      const timeSlotsToAdd = Object.keys(this.workingCopyOfSelectedHourRanges);
-      for (let i = 0; i < timeSlotsToAdd.length; i++) {
-        const timeSlot = timeSlotsToAdd[i];
+      // example working copy of selected weekdays:
+      // { 0: true }
+
+      const timesToAdd = Object.keys(this.workingCopyOfTimeSlots[day.number]);
+      // example time weekdays to add: ['0']
+
+      console.log("times to add  ", timesToAdd);
+      for (let i = 0; i < timesToAdd.length; i++) {
+        const timeSlot = timesToAdd[i];
         this.workingCopyOfTimeSlots[day.number][timeSlot] = true;
       }
-      this.$emit("updateTimeSlots", this.workingCopyOfTimeSlots);
+      // The selected weekdays are not used in the EventWhere param
+      // to fetch events. They are just used to make form state appear
+      // consistent when switching between map view and list view.
+      this.$emit("updateWeekdays");
+      this.$emit("updateTimeSlots", this.flatten());
     },
     toggleSelectWeekday(day: WeekdayData) {
       // This function makes it so that when an
@@ -139,7 +219,7 @@ export default defineComponent({
       for (let weekday in this.selectedWeeklyHourRanges) {
         // Leave the input enabled if it was locked in place
         // by highlighting the same time slot for the whole week.
-        if (!this.selectedWeekdays[weekday] === true) {
+        if (!(this.selectedWeekdays[weekday] === true)) {
           this.workingCopyOfTimeSlots[weekday][label] = false;
         }
       }
@@ -158,7 +238,7 @@ export default defineComponent({
 </script>
 <template>
   <form>
-    <div class="flex flex-col ">
+    <div class="flex flex-col">
       <div class="-my-2 sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
           <div
@@ -188,9 +268,7 @@ export default defineComponent({
                         border-gray-400
                         rounded
                       "
-                      :checked="
-                        selectedWeekdays[weekday.number] === true
-                      "
+                      :checked="selectedWeekdays[weekday.number] === true"
                       @input="() => toggleSelectWeekday(weekday)"
                     />
                     <span>{{ weekday.shortName }}</span>
@@ -223,7 +301,11 @@ export default defineComponent({
                           border-gray-400
                           rounded
                         "
-                        :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
+                        :checked="
+                          workingCopyOfSelectedHourRanges[
+                            range['12-hour-label']
+                          ]
+                        "
                         @input="() => toggleSelectTimeRange(range)"
                       />
                       <span class="ml-1">{{ range["12-hour-label"] }}</span>
@@ -259,7 +341,7 @@ export default defineComponent({
                         :disabled="shouldBeDisabled(weekday, range)"
                         @input="
                           () => {
-                            toggleSelectWeeklyTimeRange(weekday.number, range);
+                            toggleWeeklyTimeRange(weekday.number, range);
                           }
                         "
                       />

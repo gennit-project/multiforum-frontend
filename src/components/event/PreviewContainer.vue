@@ -81,7 +81,7 @@ export default defineComponent({
                           type="button"
                           class="
                             bg-white
-                            rounded-md
+                            rounded-full
                             text-gray-400
                             hover:text-gray-500
                             focus:outline-none

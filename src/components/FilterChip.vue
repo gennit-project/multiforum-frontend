@@ -33,7 +33,7 @@ export default defineComponent({
           border
           text-xs
           font-medium
-          rounded-lg
+          rounded-full
           text-gray-700
           bg-white
           hover:bg-gray-50

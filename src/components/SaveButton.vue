@@ -30,7 +30,7 @@ export default defineComponent({
       shadow-sm
       text-sm
       font-medium
-      rounded-md
+      rounded-full
     "
   >
     Save

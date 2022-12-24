@@ -75,7 +75,7 @@ export default defineComponent({
         mt-2
         w-40
         z-20
-        rounded-md
+        rounded-full
         shadow-2xl
         bg-white
         ring-1 ring-black ring-opacity-5

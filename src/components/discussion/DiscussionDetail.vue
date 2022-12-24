@@ -572,7 +572,7 @@ export default defineComponent({
                 class="
                   block
                   w-full
-                  rounded-md
+                  rounded-full
                   border-gray-300
                   shadow-sm
                   text-sm
@@ -651,7 +651,7 @@ export default defineComponent({
               class="
                 block
                 w-full
-                rounded-md
+                rounded-full
                 border-gray-300
                 shadow-sm
                 text-sm

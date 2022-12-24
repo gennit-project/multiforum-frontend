@@ -8,11 +8,12 @@ import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
 import getEventWhere from '@/components/event/getEventWhere'
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
   name: "EventListView",
-  // The SearchEvent component writes to the query
-  // params, while the MapView, EventListView, and EventFilterBar
+  // The EventFilterBar component writes to the query
+  // params, while the MapView and EventListView
   // components consume the query params.
   components: {
     EventList,

@@ -30,7 +30,7 @@ export default defineComponent({
                 right-0
                 mt-2
                 w-48
-                rounded-md
+                rounded-full
                 shadow-lg
                 py-1
                 bg-white

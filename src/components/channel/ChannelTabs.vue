@@ -53,7 +53,7 @@ export default defineComponent({
           w-full
           focus:ring-blue-500 focus:border-blue-500
           border-gray-300
-          rounded-md
+          rounded-full
           mt-2
           mb-2
         "

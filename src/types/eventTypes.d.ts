@@ -109,7 +109,8 @@ export type DistanceUnit = {
 export type Distance = any;
 
 export type SearchEventValues = {
-  // These values are used to build the
+  // With the exception of 'hourRanges' and 'weekdays',
+  // these values are used to build the
   // EventWhere and ResultsOrder input parameters for the
   // GET_EVENTS GraphQL query.
   // They are also used in the URL query
@@ -123,7 +124,9 @@ export type SearchEventValues = {
   longitude?: number;
   tags?: Array[string];
   channels?: Array[string];
-  weeklyHourRanges?: Array[SelectedWeeklyHourRanges]
+  weekdays?: Array[SelectedWeekdays];
+  hourRanges?: Array[SelectedHourRanges];
+  weeklyHourRanges?: string; // stringified version of Array[SelectedWeeklyHourRanges]
   locationFilter?: string;
   searchInput?: string;
   showCanceledEvents?: boolean;

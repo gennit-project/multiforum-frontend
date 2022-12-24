@@ -80,7 +80,7 @@ export default defineComponent({
                           class="
                             bg-white
                             ml-8
-                            rounded-md
+                            rounded-full
                             text-gray-400
                             hover:text-gray-500
                             focus:outline-none focus:ring-2 focus:ring-blue-500
@@ -105,7 +105,7 @@ export default defineComponent({
                       py-2
                       px-4
                       border border-gray-300
-                      rounded-md
+                      rounded-full
                       shadow-sm
                       text-sm
                       font-medium
@@ -132,7 +132,7 @@ export default defineComponent({
                       shadow-sm
                       text-sm
                       font-medium
-                      rounded-md
+                      rounded-full
                       text-white
                       bg-blue-600
                       hover:bg-blue-700

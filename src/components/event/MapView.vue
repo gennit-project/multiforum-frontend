@@ -13,11 +13,12 @@ import CloseButton from "../CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
 import getEventWhere from "./getEventWhere";
+// import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
   name: "MapView",
   // The SearchEvent component writes to the query
-  // params, while the MapView, EventListView, and EventFilterBar
+  // params, while the MapView and EventListView
   // components consume the query params.
   props: {
     events: {
@@ -424,7 +425,7 @@ export default defineComponent({
             my-2
             cursor-pointer
             bg-white
-            rounded-md
+            rounded-full
             inline-flex
             text-gray-400
             hover:text-gray-500

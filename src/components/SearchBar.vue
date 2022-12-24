@@ -74,7 +74,7 @@ export default defineComponent({
           pr-3
           py-4
           border border-gray-200
-          rounded-lg
+          rounded-full
           leading-5
           bg-white
           placeholder-gray-500

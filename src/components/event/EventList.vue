@@ -107,7 +107,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="sm:rounded-md max-w-5xl">
+  <div class="sm:rounded-full max-w-5xl">
     <p class="prose px-4 lg:px-12 mt-3" v-if="events.length === 0 && !showMap">
       Could not find any events.
     </p>

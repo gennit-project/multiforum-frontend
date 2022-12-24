@@ -32,7 +32,7 @@ export default defineComponent({
       py-2
       text-sm
       font-medium
-      rounded
+      rounded-full
       text-blue-700
       bg-blue-100
       hover:bg-blue-200

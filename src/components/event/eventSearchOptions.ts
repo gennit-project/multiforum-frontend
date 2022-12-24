@@ -190,7 +190,7 @@ export const createDefaultSelectedHourRanges = () => {
 export const defaultSelectedHourRanges = createDefaultSelectedHourRanges();
 
 export const createDefaultSelectedWeeklyHourRanges = () => {
-  const weeklyTimeSlots = {} as SelectedWeeklyHourRanges;
+  const weeklyTimeSlots: SelectedWeeklyHourRanges = {};
 
   for (let i = 0; i < weekdays.length; i++) {
     const weekday = weekdays[i];
@@ -318,3 +318,8 @@ const createWeekdayMap = () => {
 };
 
 export const weekdayMap = createWeekdayMap();
+
+export const resultOrderTypes = {
+  CHRONOLOGICAL: "CHRONOLOGICAL",
+  REVERSE_CHRONOLOGICAL: "REVERSE_CHRONOLOGICAL"
+}
