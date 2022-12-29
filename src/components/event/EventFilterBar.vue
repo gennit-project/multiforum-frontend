@@ -24,15 +24,12 @@ import {
   timeShortcutValues,
   distanceUnitOptions,
   eventFilterTypeShortcuts,
-  createDefaultSelectedWeeklyHourRanges,
-  createDefaultSelectedWeekdays,
   resultOrderTypes,
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
-import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import GenericSmallButton from "../GenericSmallButton.vue";
@@ -42,6 +39,11 @@ import {
   getFilterValuesFromParams,
   defaultPlace,
 } from "@/components/event/getFilterValuesFromParams";
+import {
+  defaultSelectedWeekdays,
+  defaultSelectedHourRanges,
+  defaultSelectedWeeklyHourRanges,
+} from "./eventSearchOptions";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -66,7 +68,6 @@ export default defineComponent({
     TagIcon,
     TagPicker,
     WeeklyTimePicker,
-    RefreshIcon,
   },
   props: {
     channelId: {
@@ -184,6 +185,9 @@ export default defineComponent({
       defaultFilterLabels,
       defaultKilometerSelection,
       defaultMileSelection,
+      defaultSelectedWeekdays,
+      defaultSelectedHourRanges,
+      defaultSelectedWeeklyHourRanges,
       distanceOptionsForKilometers,
       distanceOptionsForMiles,
       distanceUnitOptions,
@@ -339,31 +343,22 @@ export default defineComponent({
 
       this.selectedDistanceUnit = unitOption.value;
     },
-
-    updateTimeSlots(flattenedTimeFilters: string) {
-      this.updateFilters({
-        weeklyHourRanges: flattenedTimeFilters,
-      });
-    },
     resetTimeSlots() {
-      const defaultSelectedHourRanges = createDefaultSelectedWeeklyHourRanges();
+      // Remove values from query params
+      const existingQueryCopy = { ...this.$route.query };
+      delete existingQueryCopy.hourRanges;
+      delete existingQueryCopy.weekdays;
+      delete existingQueryCopy.weeklyHourRanges;
+      this.$router.replace({
+        query: existingQueryCopy,
+      });
 
-      const defaultSelectedWeekdays = createDefaultSelectedWeekdays();
-
-      const defaultSelectedWeeklyHourRanges =
-        createDefaultSelectedWeeklyHourRanges();
-
+      // Update local state
       this.updateLocalState({
-        hourRanges: defaultSelectedHourRanges,
-        weekdays: defaultSelectedWeekdays,
-        weeklyHourRanges: defaultSelectedWeeklyHourRanges,
-      });
-
-      this.updateFilters({
-        hourRanges: "",
-        weekdays: "",
-        weeklyHourRanges: "",
-      });
+        weekdays: this.defaultSelectedWeekdays,
+        hourRanges: this.defaultSelectedHourRanges,
+        weeklyHourRanges: this.defaultSelectedWeeklyHourRanges,
+      })
     },
     updateHourRanges(flattenedHourRanges: string) {
       this.updateFilters({ hourRanges: flattenedHourRanges });
@@ -371,7 +366,11 @@ export default defineComponent({
     updateWeekdays(flattenedWeekdays: string) {
       this.updateFilters({ weekdays: flattenedWeekdays });
     },
-
+    updateTimeSlots(flattenedTimeFilters: string) {
+      this.updateFilters({
+        weeklyHourRanges: flattenedTimeFilters,
+      });
+    },
     updateSelectedDistance(distance: DistanceUnit) {
       if (distance.value === 0) {
         // If the radius is 0 (Any distance), don't use a radius when
@@ -393,7 +392,6 @@ export default defineComponent({
       }
       this.updateFilters({ radius: d });
     },
-
     toggleTimeSlotPicker() {
       this.showTimeSlotPicker = !this.showTimeSlotPicker;
     },
@@ -516,9 +514,10 @@ export default defineComponent({
         <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
       </GenericSmallButton>
       <Modal
+        v-if="showTimeSlotPicker"
         :title="'Select Weekly Time Slots'"
         :show="showTimeSlotPicker"
-        @close="toggleTimeSlotPicker"
+        :use-custom-buttons="true"
       >
         <template v-slot:icon>
           <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
@@ -526,39 +525,15 @@ export default defineComponent({
         <template v-slot:content>
           <WeeklyTimePicker
             class="py-2 px-8"
+            :selected-weekdays="filterValues.weekdays"
+            :selected-hour-ranges="filterValues.hourRanges"
+            :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
             @updateWeekdays="updateWeekdays"
             @updateHourRanges="updateHourRanges"
             @updateTimeSlots="updateTimeSlots"
+            @resetTimeSlots="resetTimeSlots"
+            @close="toggleTimeSlotPicker"
           />
-        </template>
-        <template v-slot:secondaryButton>
-          <button
-            type="button"
-            class="
-              w-full
-              inline-flex
-              justify-center
-              rounded-full
-              border border-gray-300
-              shadow-sm
-              px-4
-              py-2
-              bg-white
-              text-base
-              font-medium
-              text-gray-700
-              hover:bg-gray-50
-              focus:outline-none
-              focus:ring-2
-              focus:ring-offset-2
-              focus:ring-indigo-500
-              sm:mt-0 sm:col-start-1 sm:text-sm
-            "
-            @click="resetTimeSlots"
-          >
-            <RefreshIcon class="h-5" />
-            Reset
-          </button>
         </template>
       </Modal>
       <FilterChip

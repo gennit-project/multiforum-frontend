@@ -6,6 +6,7 @@ import {
   createDefaultSelectedWeeklyHourRanges,
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
+  hourRangesObject
 } from "./eventSearchOptions";
 
 import { resultOrderTypes } from "./eventSearchOptions";
@@ -113,13 +114,64 @@ const getFilterValuesFromParams = function (
         cleanedValues.locationFilter = val?.toString();
         break;
       case "weekdays":
-        cleanedValues.weekdays = JSON.parse(val);
+        // Example value: weekdays=[{"startTimeDayOfWeek":"1"}]
+        try {
+          const weekdaysInQuery = JSON.parse(val);
+          cleanedValues.weekdays = createDefaultSelectedWeekdays()
+
+          for (let i = 0; i < weekdaysInQuery.length; i++) {
+            const obj = weekdaysInQuery[i]
+
+            if (obj && obj.startTimeDayOfWeek) {
+                cleanedValues.weekdays[obj.startTimeDayOfWeek] = true
+            }
+          }
+          
+        } catch (e: any) {
+          throw new Error(e);
+        }
         break;
       case "hourRanges":
-        cleanedValues.hourRanges = JSON.parse(val);
+        // Example value: hourRanges=[{"startTimeHourOfDay":"3am-6am"}]
+        try {
+          const hourRanges = JSON.parse(val);
+          
+          cleanedValues.hourRanges = createDefaultSelectedHourRanges()
+
+          for (let i = 0; i < hourRanges.length; i++) {
+            const obj = hourRanges[i];
+        
+            if (obj && obj.startTimeHourOfDay !== undefined && hourRangesObject[obj.startTimeHourOfDay]) {
+              // Due to the way that Neo4j works, it is faster
+              // to check for specific hours that an event may
+              // begin than it is to check for hour ranges
+              // using greater-than or less-than operators.
+        
+              cleanedValues.hourRanges[obj.startTimeHourOfDay] = true;
+            }
+          }
+        } catch (e: any) {
+          throw new Error(e);
+        }
         break;
       case "weeklyHourRanges":
-        cleanedValues.weeklyHourRanges = JSON.parse(val);
+        // Example value: weeklyHourRanges=[{"AND":[{"startTimeHourOfDay":"3am-6am"},{"startTimeDayOfWeek":"4"}]}]
+        try {
+            const weeklyHourRangesInQuery = JSON.parse(val);
+
+            cleanedValues.weeklyHourRanges = createDefaultSelectedWeeklyHourRanges();
+
+            for (let i = 0; i < weeklyHourRangesInQuery.length; i++) {
+              const obj = weeklyHourRangesInQuery[i]
+              const objConditions = obj.AND;
+              const hourOfDay = objConditions[0]?.startTimeHourOfDay;
+              const dayOfWeek = objConditions[1]?.startTimeDayOfWeek;
+
+              cleanedValues.weeklyHourRanges[dayOfWeek][hourOfDay] = true
+            }
+        } catch (e: any) {
+          throw new Error(e);
+        }
         break;
     }
   }
@@ -166,4 +218,4 @@ const getFilterValuesFromParams = function (
   };
 };
 
-export  { getFilterValuesFromParams, defaultPlace } ;
+export { getFilterValuesFromParams, defaultPlace };

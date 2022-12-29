@@ -194,7 +194,7 @@ export const createDefaultSelectedWeeklyHourRanges = () => {
 
   for (let i = 0; i < weekdays.length; i++) {
     const weekday = weekdays[i];
-    weeklyTimeSlots[weekday.number] = { ...defaultSelectedHourRanges };
+    weeklyTimeSlots[weekday.number] = createDefaultSelectedHourRanges()
   }
   return weeklyTimeSlots;
 };

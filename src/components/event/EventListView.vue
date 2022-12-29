@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, Ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import EventList from "./EventList.vue";
@@ -7,8 +7,11 @@ import TwoSeparatelyScrollingPanes from "../TwoSeparatelyScrollingPanes.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from '@/components/event/getEventWhere'
-
+import getEventWhere from "@/components/event/getEventWhere";
+import { SearchEventValues } from "@/types/eventTypes";
+import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
+import ErrorBanner from "../ErrorBanner.vue";
+import EventPreview from "./EventPreview.vue";
 
 export default defineComponent({
   name: "EventListView",
@@ -16,7 +19,9 @@ export default defineComponent({
   // params, while the MapView and EventListView
   // components consume the query params.
   components: {
+    ErrorBanner,
     EventList,
+    EventPreview,
     TwoSeparatelyScrollingPanes,
   },
   setup() {
@@ -29,18 +34,17 @@ export default defineComponent({
       }
       return "";
     });
+    const filterValues: Ref<SearchEventValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
 
     const resultsOrder = computed(() => {
-      // Keep track of results order separately so that query
-      // will be refetched when it changes. Otherwise the query
-      // would only be refetched when a value inside the eventWhere
-      // object is changed.
-      return resultsOrder;
+      return filterValues.value.resultsOrder;
     });
 
     const eventWhere = computed(() => {
-        return getEventWhere(filterValues, false)
-    })
+      return getEventWhere(filterValues.value, false);
+    });
 
     const {
       error: eventError,
@@ -55,7 +59,7 @@ export default defineComponent({
         limit: 25,
         offset: 0,
         where: eventWhere,
-        resultsOrder: resultsOrder,
+        resultsOrder: resultsOrder.value,
       },
       {
         fetchPolicy: "network-only", // If it is not network only, the list
@@ -99,9 +103,11 @@ export default defineComponent({
           router.push({
             name: "SitewideSearchEventPreview",
             params: {
+              ...route.params,
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
+            query: {...route.query}
           });
         } else {
           router.push({
@@ -110,6 +116,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
+            query: { ...route.query}
           });
         }
       }
@@ -123,10 +130,14 @@ export default defineComponent({
       eventError,
       eventLoading,
       eventResult,
+      eventWhere, // used for debugging with Vue developer tools
+      filterValues,
+      getFilterValuesFromParams,
       loadMore,
       previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
+      route,
       smAndDown,
     };
   },
@@ -163,16 +174,14 @@ export default defineComponent({
         this.filterValues.selectedChannels.push(channel);
       }
     },
-    
   },
   created() {
-        this.$watch(
-        () => this.$route.params,
-        (toParams, previousParams) => {
-            // react to route changes...
-        }
-        )
-    },
+    this.$watch("$route.query", (to: any) => {
+      if (this.route.query) {
+        this.filterValues = getFilterValuesFromParams(this.route, this.channelId);
+      }
+    });
+  },
 });
 </script>
 <template>
@@ -183,7 +192,10 @@ export default defineComponent({
       v-else-if="eventError"
       :text="eventError.message"
     />
-    <TwoSeparatelyScrollingPanes v-if="eventResult && eventResult.events" :class="'mx-auto block'">
+    <TwoSeparatelyScrollingPanes
+      v-if="eventResult && eventResult.events"
+      :class="'mx-auto block'"
+    >
       <template v-slot:leftpane>
         <div class="rounded max-w-5xl">
           <EventList
@@ -194,8 +206,8 @@ export default defineComponent({
             :events="eventResult.events"
             :channel-id="channelId"
             :search-input="filterValues.searchInput"
-            :selected-tags="filterValues.selectedTags"
-            :selected-channels="filterValues.selectedChannels"
+            :selected-tags="filterValues.tags"
+            :selected-channels="filterValues.channels"
             :show-map="false"
             @filterByTag="filterByTag"
             @filterByChannel="filterByChannel"
@@ -214,5 +226,4 @@ export default defineComponent({
       </template>
     </TwoSeparatelyScrollingPanes>
   </div>
-  P
 </template>

@@ -132,6 +132,7 @@ export default defineComponent({
             ? 'bg-gray-100'
             : '',
         ]"
+        :show-map="showMap"
         @mouseover="
           () => {
             if (showMap) {

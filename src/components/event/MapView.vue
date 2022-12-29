@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, ref } from "vue";
+import { defineComponent, PropType, ref, Ref, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
 import EventPreview from "./EventPreview.vue";
@@ -13,7 +13,9 @@ import CloseButton from "../CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
 import getEventWhere from "./getEventWhere";
-// import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
+import { SearchEventValues } from "@/types/eventTypes";
+import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
+import ErrorBanner from "../ErrorBanner.vue";
 
 export default defineComponent({
   name: "MapView",
@@ -54,6 +56,7 @@ export default defineComponent({
   },
   components: {
     CloseButton,
+    ErrorBanner,
     EventList,
     EventMap,
     EventPreview,
@@ -64,9 +67,28 @@ export default defineComponent({
     const { smAndDown } = useDisplay();
     const route = useRoute();
     const router = useRouter();
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
 
-    const eventWhere = ref(getEventWhere(filterValues, true))
+    const filterValues: Ref<SearchEventValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
 
+    const resultsOrder = ref(() => {
+      // Keep track of results order separately so that query
+      // will be refetched when it changes. Otherwise the query
+      // would only be refetched when a value inside the eventWhere
+      // object is changed.
+      return filterValues.value.resultsOrder;
+    });
+
+    const eventWhere = ref(() => {
+        return getEventWhere(filterValues.value, false)
+    })
 
     const {
       error: eventError,
@@ -81,7 +103,7 @@ export default defineComponent({
         limit: 25,
         offset: 0,
         where: eventWhere,
-        resultsOrder: resultsOrder,
+        resultsOrder: resultsOrder.value,
       },
       {
         fetchPolicy: "network-only", // If it is not network only, the list
@@ -385,7 +407,8 @@ export default defineComponent({
   created() {
         this.$watch(
         () => this.$route.params,
-        (toParams, previousParams) => {
+        ()=> {
+        // (toParams, previousParams) => {
             // react to route changes...
         }
         )

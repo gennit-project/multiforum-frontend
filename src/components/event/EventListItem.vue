@@ -60,6 +60,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    showMap: {
+      type: Boolean,
+      required: true
+    }
   },
   computed: {
     selectedTagsMap() {
@@ -77,7 +81,7 @@ export default defineComponent({
       if (this.isWithinChannel) {
         return `/channels/c/${this.defaultUniqueName}/events/search/${this.event.id}`;
       }
-      return `/events/search/${this.event.id}`;
+      return `/events/${this.showMap ? 'map' : 'list'}/search/${this.event.id}`;
     },
   },
   methods: {

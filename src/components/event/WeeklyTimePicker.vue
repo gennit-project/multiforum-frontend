@@ -1,12 +1,16 @@
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
+import { defineComponent, ref, Ref, PropType } from "vue";
 import {
   weekdays as weekdayData,
   hourRangesData,
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
+  defaultSelectedWeeklyHourRanges,
+  hourRangesObject,
+  createDefaultSelectedHourRanges,
+  createDefaultSelectedWeekdays,
+  createDefaultSelectedWeeklyHourRanges
 } from "./eventSearchOptions";
-import { hourRangesObject } from "./eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
   SelectedWeekdays,
@@ -14,35 +18,51 @@ import {
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
-import { useRoute } from "vue-router";
-import { defaultSelectedWeeklyHourRanges } from "./eventSearchOptions";
 import Table from "../Table.vue";
 import TableHead from "../TableHead.vue";
+import RefreshIcon from "../icons/RefreshIcon.vue";
 
 export default defineComponent({
+  props: {
+    selectedWeeklyHourRanges: {
+      type: Object as PropType<SelectedWeeklyHourRanges>,
+      required: true,
+    },
+    selectedHourRanges: {
+      type: Object as PropType<SelectedHourRanges>,
+      required: true,
+    },
+    selectedWeekdays: {
+      type: Object as PropType<SelectedWeekdays>,
+      required: true,
+    },
+  },
   components: {
+    RefreshIcon,
     TableComponent: Table,
     TableHead,
   },
-  setup() {
+  setup(props) {
     // - Table header rows emit the event "toggleSelectWeekday"
     // - Table cells in first column emit the event "toggleSelectTimeRange"
     // - Other table cells emit the event "toggleSelectWeeklyTimeRange";
-    const route = useRoute();
     const workingCopyOfTimeSlots: Ref<SelectedWeeklyHourRanges> = ref(
-      defaultSelectedWeeklyHourRanges
+      props.selectedWeeklyHourRanges
     );
     const workingCopyOfSelectedWeekdays: Ref<SelectedWeekdays> = ref(
-      defaultSelectedWeekdays
+      props.selectedWeekdays
     );
     const workingCopyOfSelectedHourRanges: Ref<SelectedHourRanges> = ref(
-      defaultSelectedHourRanges
+      props.selectedHourRanges
     );
 
     // take defaults from params
     return {
-      weekdayData,
+      defaultSelectedWeekdays,
+      defaultSelectedHourRanges,
+      defaultSelectedWeeklyHourRanges,
       hourRangesData,
+      weekdayData,
       workingCopyOfSelectedWeekdays,
       workingCopyOfSelectedHourRanges,
       workingCopyOfTimeSlots,
@@ -70,9 +90,13 @@ export default defineComponent({
     },
     selectWeeklyTimeRange(day: string, timeRange: HourRangeData) {
       this.workingCopyOfTimeSlots[day][timeRange["12-hour-label"]] = true;
+      // Don't need to emit an event to update params because it is
+      // already emitted in toggleWeeklyTimeRange
     },
     deselectWeeklyTimeRange(day: string, timeRange: HourRangeData) {
       this.workingCopyOfTimeSlots[day][timeRange["12-hour-label"]] = false;
+      // Don't need to emit an event to update params because it is
+      // already emitted in toggleWeeklyTimeRange
     },
     toggleWeeklyTimeRange(dayNumber: string, timeRange: HourRangeData) {
       // This function selects time ranges based on the
@@ -119,14 +143,10 @@ export default defineComponent({
       const flattenedTimeFilters = [];
       for (let timeSlot in this.workingCopyOfSelectedHourRanges) {
         if (this.workingCopyOfSelectedHourRanges[timeSlot]) {
-          const min = hourRangesObject[timeSlot].min;
-          const max = hourRangesObject[timeSlot].max;
 
-          for (let hour = min; hour < max; hour++) {
-            flattenedTimeFilters.push({
-              startTimeHourOfDay: hour,
-            });
-          }
+          flattenedTimeFilters.push({
+            startTimeHourOfDay: timeSlot,
+          });
         }
       }
       const res = JSON.stringify(flattenedTimeFilters);
@@ -153,10 +173,7 @@ export default defineComponent({
           const slotIsSelected = selectedSlotsInDay[timeSlot];
 
           if (slotIsSelected) {
-            const min = hourRangesObject[timeSlot].min;
-            const max = hourRangesObject[timeSlot].max;
 
-            for (let hour = min; hour < max; hour++) {
               // Due to the way that Neo4j works, it is faster
               // to check for specific hours that an event may
               // begin than it is to check for hour ranges
@@ -164,19 +181,24 @@ export default defineComponent({
               flattenedTimeFilters.push({
                 AND: [
                   {
-                    startTimeHourOfDay: hour,
+                    startTimeHourOfDay: timeSlot,
                   },
                   {
                     startTimeDayOfWeek: dayNumber,
                   },
                 ],
               });
-            }
           }
         }
       }
       const res = JSON.stringify(flattenedTimeFilters);
       return res;
+    },
+    resetTimeSlots() {
+      this.workingCopyOfTimeSlots = createDefaultSelectedWeeklyHourRanges()
+      this.workingCopyOfSelectedWeekdays = createDefaultSelectedWeekdays()
+      this.workingCopyOfSelectedHourRanges = createDefaultSelectedHourRanges()
+      this.$emit("resetTimeSlots");
     },
     removeWeekday(day: WeekdayData) {
       this.workingCopyOfSelectedWeekdays[day.number] = false;
@@ -193,6 +215,8 @@ export default defineComponent({
           this.workingCopyOfTimeSlots[day.number][timeSlot] = false;
         }
       }
+      // Don't need to emit an event to update params because it is
+      // already emitted in toggleSelectWeekday.
     },
     addWeekday(day: WeekdayData) {
       // example input: { number: '0', name: 'Sunday', shortName: 'Sun'}
@@ -209,6 +233,9 @@ export default defineComponent({
       // The selected weekdays are not used in the EventWhere param
       // to fetch events. They are just used to make form state appear
       // consistent when switching between map view and list view.
+
+      // Don't need to emit an event to update params because it is
+      // already emitted in toggleSelectWeekday.
     },
     toggleSelectWeekday(day: WeekdayData) {
       // This function makes it so that when an
@@ -233,6 +260,8 @@ export default defineComponent({
           this.workingCopyOfTimeSlots[weekday][label] = false;
         }
       }
+      // Don't need to emit an event to update params because it is
+      // already emitted in toggleSelectTimeRange
     },
     addTimeRange(timeRange: HourRangeData) {
       const label = timeRange["12-hour-label"];
@@ -240,6 +269,8 @@ export default defineComponent({
       for (let weekday in this.workingCopyOfTimeSlots) {
         this.workingCopyOfTimeSlots[weekday][label] = true;
       }
+      // Don't need to emit an event to update params because it is
+      // already emitted in toggleSelectTimeRange
     },
   },
 });
@@ -363,6 +394,70 @@ export default defineComponent({
           </div>
         </div>
       </div>
+    </div>
+    <div
+      class="
+        mt-5
+        sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense
+      "
+    >
+      <button
+        type="button"
+        class="
+          w-full
+          inline-flex
+          justify-center
+          rounded-full
+          border border-transparent
+          shadow-sm
+          px-4
+          py-2
+          bg-indigo-600
+          text-base
+          font-medium
+          text-white
+          hover:bg-indigo-700
+          focus:outline-none
+          focus:ring-2
+          focus:ring-offset-2
+          focus:ring-indigo-500
+          sm:col-start-2 sm:text-sm
+        "
+        @click="
+          () => {
+            $emit('close');
+          }
+        "
+      >
+        Close
+      </button>
+      <button
+        type="button"
+        class="
+          w-full
+          inline-flex
+          justify-center
+          rounded-full
+          border border-gray-300
+          shadow-sm
+          px-4
+          py-2
+          bg-white
+          text-base
+          font-medium
+          text-gray-700
+          hover:bg-gray-50
+          focus:outline-none
+          focus:ring-2
+          focus:ring-offset-2
+          focus:ring-indigo-500
+          sm:mt-0 sm:col-start-1 sm:text-sm
+        "
+        @click="resetTimeSlots"
+      >
+        <RefreshIcon class="h-5" />
+        Reset
+      </button>
     </div>
   </form>
 </template>

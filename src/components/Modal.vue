@@ -20,18 +20,22 @@ export default defineComponent({
     TransitionRoot,
   },
   props: {
-    title: {
+    primaryButtonText: {
       type: String,
-      required: true,
+      required: false,
     },
     show: {
       type: Boolean,
       required: true,
     },
-    primaryButtonText: {
+    title: {
       type: String,
-      required: false,
+      required: true,
     },
+    useCustomButtons: {
+      type: Boolean,
+      default: false
+    }
   },
 });
 </script>
@@ -39,7 +43,6 @@ export default defineComponent({
   <TransitionRoot @click="$emit('close')" as="template" :show="show">
     <TailwindDialog as="div" class="relative z-10" @close="$emit('close')">
       <TransitionChild
-      
         as="template"
         enter="ease-out duration-300"
         enter-from="opacity-0"
@@ -123,6 +126,7 @@ export default defineComponent({
                 </div>
               </div>
               <div
+                v-if="!useCustomButtons"
                 class="
                   mt-5
                   sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense

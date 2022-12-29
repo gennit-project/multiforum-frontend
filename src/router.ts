@@ -36,35 +36,30 @@ export const router = createRouter({
       children: [
         {
           name: 'SearchEventsList',
-          path: "map",
-          component: MapView,
-          children: [
-            {
-              name: "SitewideSearchEventPreview",
-              path: "search/:eventId",
-              component: EventDetail
-            }
-          ]
-        },
-        {
-          name: 'SearchEventsMap',
-          path: "list",
+          path: "/events/list",
           component: EventListView,
           children: [
             {
               name: "SitewideSearchEventPreview",
-              path: "search/:eventId",
+              path: "/events/list/search/:eventId",
               component: EventDetail
             }
           ]
         },
+        // {
+        //   name: 'SearchEventsMap',
+        //   path: "/events/map",
+        //   component: MapView,
+        //   children: [
+        //     {
+        //       name: "SitewideSearchEventPreview",
+        //       path: "/events/map/search/:eventId",
+        //       component: EventDetail
+        //     }
+        //   ]
+        // },
         
       ]
-    },
-    {
-      name: 'MapView',
-      path: "/events/search/map",
-      component: MapView
     },
     {
       path: "/events/create",
