@@ -187,14 +187,15 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <div class="mx-auto" v-if="eventLoading">Loading...</div>
+  <div class="flex justify-center">
+    
     <ErrorBanner
       class="mx-auto block"
-      v-else-if="eventError"
+      v-if="eventError"
       :text="eventError.message"
     />
     <TwoSeparatelyScrollingPanes
+      class="block"
       v-if="eventResult && eventResult.events"
       :class="'mx-auto block'"
     >
@@ -216,8 +217,9 @@ export default defineComponent({
             @loadMore="loadMore"
             @openPreview="openPreview"
           />
+          <div class="mx-auto" v-if="eventLoading">Loading...</div>
           <EventPreview
-            v-if="smAndDown"
+            v-else-if="smAndDown"
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />

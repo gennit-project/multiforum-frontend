@@ -8,7 +8,7 @@ import Tag from "@/components/Tag.vue";
 import HighlightedSearchTerms from "@/components/HighlightedSearchTerms.vue";
 
 export default defineComponent({
-  setup() { },
+  setup() {},
   props: {
     discussion: {
       type: Object as PropType<DiscussionData>,
@@ -103,65 +103,46 @@ export default defineComponent({
 </script>
 
 <template>
-  <li :class="[
-    discussion.id === discussionIdInParams
-      ? 'bg-slate-100'
-      : 'hover:bg-slate-100',
-    channelIdInParams ? 'hover:bg-gray-100' : '',
-  ]"
-      class="relative bg-white py-2 px-4 lg:px-12 cursor-pointer "
-      @click="$emit('openPreview')">
+  <li
+    :class="[
+      discussion.id === discussionIdInParams
+        ? 'bg-slate-100'
+        : 'hover:bg-slate-100',
+      channelIdInParams ? 'hover:bg-gray-100' : '',
+    ]"
+    class="relative bg-white py-2 px-4 lg:px-12 cursor-pointer"
+    @click="$emit('openPreview')"
+  >
     <router-link :to="previewLink">
-      <div class="grid grid-cols-4 gap-x-1 ">
-        <div class="col-span-3">
-          <div class="block">
-            <div>
-              <p class="cursor-pointer text-md font-medium text-blue-800 pr-4">
-                <HighlightedSearchTerms :text="title"
-                                        :search-input="searchInput" />
-              </p>
-            </div>
+      <p class="text-lg font-bold cursor-pointer">
+        <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+      </p>
 
-            <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
-
-              <Tag class="m-1"
-                   :active="selectedTags.includes(tag)"
-                   :key="tag"
-                   v-for="tag in tags"
-                   :tag="tag"
-                   @click="$emit('filterByTag', tag)" />
-            </p>
-
-            <div class="text-sm"
-                 v-if="!isWithinChannel">
-              <Tag class="m-1"
-                   :active="selectedChannels.includes(channel.uniqueName)"
-                   :key="i"
-                   :channel-mode="true"
-                   v-for="(channel, i) in discussion.Channels"
-                   :tag="channel.uniqueName"
-                   @click="$emit('filterByChannel', channel.uniqueName)" />
-            </div>
-          </div>
-        </div>
-        <div class="col-span-1">
-          <time :datetime="createdAt"
-                class="
-              float-right
-              flex-shrink-0
-              whitespace-nowrap
-              font-medium
-              text-xs
-              text-slate-600 no-underline
-            ">{{ relativeTime }}</time>
-          <br />
-          <p class="float-right text-xs font-medium truncate text-slate-600 no-underline">
-            Posted by
-
-            {{ `@${authorUsername}` }}
-          </p>
-        </div>
+      <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+        <Tag
+          class="my-1"
+          :active="selectedTags.includes(tag)"
+          :key="tag"
+          v-for="tag in tags"
+          :tag="tag"
+          @click="$emit('filterByTag', tag)"
+        />
+      </p>
+      <p class="text-xs font-medium text-slate-600 no-underline">
+        {{ `Posted ${relativeTime} by @${authorUsername}` }}
+      </p>
+      <div class="text-sm" v-if="!isWithinChannel">
+        <Tag
+          class="my-1"
+          :active="selectedChannels.includes(channel.uniqueName)"
+          :key="i"
+          :channel-mode="true"
+          v-for="(channel, i) in discussion.Channels"
+          :tag="channel.uniqueName"
+          @click="$emit('filterByChannel', channel.uniqueName)"
+        />
       </div>
+      
     </router-link>
   </li>
 </template>

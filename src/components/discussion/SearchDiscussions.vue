@@ -16,7 +16,7 @@ import ErrorBanner from "../ErrorBanner.vue";
 import TwoSeparatelyScrollingPanes from "../TwoSeparatelyScrollingPanes.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
-import { useDisplay } from 'vuetify';
+import { useDisplay } from "vuetify";
 
 interface Ref<T> {
   value: T;
@@ -154,19 +154,23 @@ export default defineComponent({
       refetch: refetchDiscussions,
       onResult: onGetDiscussionResult,
       fetchMore,
-    } = useQuery(GET_DISCUSSIONS, {
-      where: discussionWhere,
-      limit: 25,
-      offset: 0,
-      resultsOrder: {
-        createdAt: "DESC",
+    } = useQuery(
+      GET_DISCUSSIONS,
+      {
+        where: discussionWhere,
+        limit: 25,
+        offset: 0,
+        resultsOrder: {
+          createdAt: "DESC",
+        },
       },
-    }, {
-      fetchPolicy: 'network-only', // If it uses the cache if the query
-      // params did not change, the list
-      // will not update when a discussion changes in a way that affects
-      // which search results it should be returned in.
-    });
+      {
+        fetchPolicy: "network-only", // If it uses the cache if the query
+        // params did not change, the list
+        // will not update when a discussion changes in a way that affects
+        // which search results it should be returned in.
+      }
+    );
 
     const reachedEndOfResults = ref(false);
 
@@ -207,15 +211,12 @@ export default defineComponent({
           });
         }
       }
-    }
+    };
 
     onGetDiscussionResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
-      if (
-        !value.data ||
-        value.data.discussions.length === 0
-      ) {
+      if (!value.data || value.data.discussions.length === 0) {
         return;
       }
       const defaultSelectedDiscussion = value.data.discussions[0];
@@ -277,7 +278,7 @@ export default defineComponent({
       this.discussionResult.discussions &&
       this.discussionResult.discussions.length > 0
     ) {
-      this.sendToPreview(this.discussionResult.discussions[0].id)
+      this.sendToPreview(this.discussionResult.discussions[0].id);
     }
   },
   methods: {
@@ -288,17 +289,13 @@ export default defineComponent({
       const alreadySelected = this.selectedTags.includes(tag);
 
       if (alreadySelected) {
-        this.selectedTags = this.selectedTags.filter(
-          (t: string) => t !== tag
-        );
+        this.selectedTags = this.selectedTags.filter((t: string) => t !== tag);
       } else {
         this.selectedTags.push(tag);
       }
     },
     filterByChannel(channel: string) {
-      const alreadySelected = this.selectedChannels.includes(
-        channel
-      );
+      const alreadySelected = this.selectedChannels.includes(channel);
 
       if (alreadySelected) {
         this.selectedChannels = this.selectedChannels.filter(
@@ -324,93 +321,102 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white ">
-    <div  v-if="!channelId" class="block flex justify-center"> 
-
+  <div class="bg-white">
+    <div v-if="!channelId" class="block flex justify-center">
       <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
-
         Search Discussions
       </h1>
     </div>
 
-
-   
     <div class="bg-white rounded px-4 lg:px-12 pr-8 flex justify-center">
       <div class="pt-2 pb-2">
         <div class="items-center flex justify-between">
           <div class="flex items-center space-x-2">
-            <SearchBar class="flex mr-2 align-middle"
-                       :small="true"
-                       :search-placeholder="'Search discussions'"
-                       @updateSearchInput="updateSearchResult" />
-            <FilterChip class="align-middle"
-                        v-if="!channelId"
-                        :label="channelLabel"
-                        :highlighted="channelLabel !== defaultLabels.channels">
+            <SearchBar
+              class="flex mr-2 align-middle"
+              :small="true"
+              :search-placeholder="'Search discussions'"
+              @updateSearchInput="updateSearchResult"
+            />
+            <FilterChip
+              class="align-middle"
+              v-if="!channelId"
+              :label="channelLabel"
+              :highlighted="channelLabel !== defaultLabels.channels"
+            >
               <template v-slot:icon>
                 <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
               </template>
               <template v-slot:content>
-                <ChannelPicker :selected-channels="selectedChannels"
-                               @setSelectedChannels="setSelectedChannels" />
+                <ChannelPicker
+                  :selected-channels="selectedChannels"
+                  @setSelectedChannels="setSelectedChannels"
+                />
               </template>
             </FilterChip>
 
-            <FilterChip class="align-middle"
-                        :label="tagLabel"
-                        :highlighted="tagLabel !== defaultLabels.tags">
+            <FilterChip
+              class="align-middle"
+              :label="tagLabel"
+              :highlighted="tagLabel !== defaultLabels.tags"
+            >
               <template v-slot:icon>
                 <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
               </template>
               <template v-slot:content>
-                <TagPicker :selected-tags="selectedTags.value"
-                           @setSelectedTags="setSelectedTags" />
+                <TagPicker
+                  :selected-tags="selectedTags.value"
+                  @setSelectedTags="setSelectedTags"
+                />
               </template>
             </FilterChip>
-
           </div>
-          <CreateButton class="align-middle ml-2"
-                        :to="createDiscussionPath"
-                        :label="'Create Discussion'" />
+          <CreateButton
+            class="align-middle ml-2"
+            :to="createDiscussionPath"
+            :label="'Create Discussion'"
+          />
         </div>
       </div>
     </div>
-    <div class="px-4 lg:px-12"
-         v-if="discussionLoading">
-      Loading...
-    </div>
-    <ErrorBanner class="mx-auto max-w-5xl"
-                 v-else-if="discussionError"
-                 :text="discussionError.message" />
-
-
-
-                 <div class=" flex justify-center">
-
-                  <TwoSeparatelyScrollingPanes 
-                  v-if="discussionResult && discussionResult.discussions"
-                >
-                  <template v-slot:leftpane>
-                    <DiscussionList :discussions="discussionResult.discussions"
-                                    :channel-id="channelId"
-                                    :result-count="discussionResult.discussionsAggregate.count"
-                                    :search-input="searchInput.value"
-                                    :selected-tags="selectedTags.value"
-                                    :selected-channels="selectedChannels"
-                                    @filterByTag="filterByTag"
-                                    @filterByChannel="filterByChannel"
-                                    @loadMore="loadMore"
-                                    @openPreview="openPreview" />
-                    <DiscussionPreview v-if="smAndDown"
-                                       :isOpen="previewIsOpen"
-                                       @closePreview="closePreview" />
-                  </template>
-                  <template v-slot:rightpane>
-                    <router-view></router-view>
-                  </template>
-                </TwoSeparatelyScrollingPanes >
-                 </div>
     
+    <ErrorBanner
+      class="mx-auto max-w-5xl"
+      v-if="discussionError"
+      :text="discussionError.message"
+    />
+
+    <div class="flex justify-center">
+      <div class="block">
+        <TwoSeparatelyScrollingPanes
+          v-if="discussionResult && discussionResult.discussions"
+        >
+          <template v-slot:leftpane>
+            <DiscussionList
+              :discussions="discussionResult.discussions"
+              :channel-id="channelId"
+              :result-count="discussionResult.discussionsAggregate.count"
+              :search-input="searchInput.value"
+              :selected-tags="selectedTags.value"
+              :selected-channels="selectedChannels"
+              @filterByTag="filterByTag"
+              @filterByChannel="filterByChannel"
+              @loadMore="loadMore"
+              @openPreview="openPreview"
+            />
+            <div class="px-4 lg:px-12" v-if="discussionLoading">Loading...</div>
+            <DiscussionPreview
+              v-else-if="smAndDown"
+              :isOpen="previewIsOpen"
+              @closePreview="closePreview"
+            />
+          </template>
+          <template v-slot:rightpane>
+            <router-view></router-view>
+          </template>
+        </TwoSeparatelyScrollingPanes>
+      </div>
+    </div>
   </div>
 </template>
 <style>

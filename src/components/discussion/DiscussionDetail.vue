@@ -104,7 +104,7 @@ export default defineComponent({
 
     // Update this ID when creating the first comment and comment
     // section to go with it
-    const newCommentSectionId = ref('')
+    const newCommentSectionId = ref("");
 
     const commentSectionId = computed(() => {
       if (!discussion.value) {
@@ -129,15 +129,17 @@ export default defineComponent({
     const getCommentCount = (channelId: string) => {
       const commentSections = discussion.value.CommentSections;
 
-     const commentSectionForChannel = commentSections.find((cs: any) => {
-       return cs.Channel?.uniqueName === channelId
-     })
+      const commentSectionForChannel = commentSections.find((cs: any) => {
+        return cs.Channel?.uniqueName === channelId;
+      });
 
-     if (!commentSectionForChannel) {
-       return 0;
-     }
-     return commentSectionForChannel.CommentsAggregate?.count ? commentSectionForChannel.CommentsAggregate.count : 0;
-    }
+      if (!commentSectionForChannel) {
+        return 0;
+      }
+      return commentSectionForChannel.CommentsAggregate?.count
+        ? commentSectionForChannel.CommentsAggregate.count
+        : 0;
+    };
 
     const channelLinks = computed(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
@@ -155,16 +157,18 @@ export default defineComponent({
       if (route.name === "SearchDiscussionPreview") {
         return discussion.value.Channels.filter((channel: ChannelData) => {
           return channel.uniqueName === channelId.value;
-        })
+        });
       }
 
       // On the preview, show all of the links as options, sorted by
       // comment count.
-      return [...discussion.value.Channels].sort((a: ChannelData, b: ChannelData) => {
-        const countA = getCommentCount(a.uniqueName)
-        const countB = getCommentCount(b.uniqueName)
-        return countB - countA
-      })
+      return [...discussion.value.Channels].sort(
+        (a: ChannelData, b: ChannelData) => {
+          const countA = getCommentCount(a.uniqueName);
+          const countB = getCommentCount(b.uniqueName);
+          return countB - countA;
+        }
+      );
     });
 
     const {
@@ -207,7 +211,7 @@ export default defineComponent({
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: true,
-      depth: 1
+      depth: 1,
     };
 
     const createFormValues = ref<CreateEditCommentFormValues>(
@@ -401,13 +405,13 @@ export default defineComponent({
 
     const commentSectionIsLocked = computed(() => {
       if (!discussion.value) {
-        return false
+        return false;
       }
-      return !discussion.value.Channels.find(c => {
-        return c.uniqueName === channelId.value
-      })
-    })
-    
+      return !discussion.value.Channels.find((c) => {
+        return c.uniqueName === channelId.value;
+      });
+    });
+
     return {
       channelId,
       channelLinks,
@@ -446,10 +450,14 @@ export default defineComponent({
     async handleCreateComment() {
       if (!this.commentSectionId) {
         if (!this.channelId) {
-          throw new Error("Cannot create comment section because there is no channel ID.")
+          throw new Error(
+            "Cannot create comment section because there is no channel ID."
+          );
         }
         if (!this.discussionId) {
-          throw new Error("Cannot create comment section because there is no discussion ID.")
+          throw new Error(
+            "Cannot create comment section because there is no discussion ID."
+          );
         }
         await this.createCommentSection();
       }
@@ -461,13 +469,12 @@ export default defineComponent({
     updateCreateInputValuesForRootComment(text: string) {
       this.createFormValues.text = text;
     },
-    
-  }
+  },
 });
 </script>
 
 <template>
-  <div class="top-10 pb-36 px-4 lg:px-10 height-constrained-more">
+  <div class="top-10 pb-36 px-4 lg:px-10 height-constrained-more lg:w-full">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -530,28 +537,26 @@ export default defineComponent({
               {{ createdAt }}
               <span v-if="discussion.updatedAt"> &#8226; </span>
               {{ editedAt }}
-              <span v-if="route.name === 'DiscussionDetail'">
-                &#8226;</span>
+              <span v-if="route.name === 'DiscussionDetail'"> &#8226;</span>
               <span
                 v-if="!compactMode && route.name === 'DiscussionDetail'"
                 class="underline font-medium text-gray-900 cursor-pointer"
                 @click="deleteModalIsOpen = true"
                 >Delete</span
               >
-            <span  v-if="route.name !== 'DiscussionDetail'" class="ml-1 mr-1"
-              >&#8226;</span
-            >
-  
-  
-            <router-link
-              v-if="route.name !== 'DiscussionDetail'"
-              class="underline font-medium text-gray-900 cursor-pointer"
-              :to="`/channels/c/${channelLinks[0].uniqueName}/discussions/d/${discussionId}`"
-            >Permalink</router-link>
+              <span v-if="route.name !== 'DiscussionDetail'" class="ml-1 mr-1"
+                >&#8226;</span
+              >
+
+              <router-link
+                v-if="route.name !== 'DiscussionDetail'"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                :to="`/channels/c/${channelLinks[0].uniqueName}/discussions/d/${discussionId}`"
+                >Permalink</router-link
+              >
             </div>
           </div>
           <div v-if="discussion.body" class="body mr-10 max-w-2xl">
-            
             <md-editor
               v-if="discussion.body"
               v-model="discussion.body"
@@ -561,7 +566,12 @@ export default defineComponent({
               :noMermaid="true"
               preview-only
             />
-            <div v-if="route.name === 'DiscussionDetail' && !commentSectionIsLocked" class="mt-1 flex space-x-2 py-2">
+            <div
+              v-if="
+                route.name === 'DiscussionDetail' && !commentSectionIsLocked
+              "
+              class="mt-1 flex space-x-2 py-2"
+            >
               <ProfileAvatar v-if="!showRootCommentEditor" class="h-5 w-5" />
               <textarea
                 v-if="!showRootCommentEditor"
@@ -602,7 +612,12 @@ export default defineComponent({
               </div>
             </div>
           </div>
-          <div class="text-gray-600 mt-4" v-if="route.name === 'DiscussionDetail' && discussion.Tags.length > 0">
+          <div
+            class="text-gray-600 mt-4"
+            v-if="
+              route.name === 'DiscussionDetail' && discussion.Tags.length > 0
+            "
+          >
             Tags
           </div>
           <Tag
@@ -621,26 +636,38 @@ export default defineComponent({
             >
               Crossposted To Channels
             </div>
-            <h3 v-else-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0" class="text-md">Comments</h3>
-            <router-link 
-              v-for="channel in channelLinks" 
+            <h3
+              v-else-if="
+                route.name !== 'DiscussionDetail' && channelLinks.length > 0
+              "
+              class="text-md"
+            >
+              Comments
+            </h3>
+            <router-link
+              v-for="channel in channelLinks"
               :key="channel.uniqueName"
               :to="{
                 name: 'DiscussionDetail',
                 params: {
                   discussionId,
                   channelId: channel.uniqueName,
-                }
-              }">
+                },
+              }"
+            >
               <Tag
-              class="mt-2"
-              :tag="`${channel.uniqueName} (${getCommentCount(channel.uniqueName)})`"
-              :channel-mode="true"
-            />
+                class="mt-2"
+                :tag="`${channel.uniqueName} (${getCommentCount(
+                  channel.uniqueName
+                )})`"
+                :channel-mode="true"
+              />
             </router-link>
-            
           </div>
-          <div v-if="!discussion.body && route.name === 'DiscussionDetail'" class="mt-1 flex space-x-2 py-2">
+          <div
+            v-if="!discussion.body && route.name === 'DiscussionDetail'"
+            class="mt-1 flex space-x-2 py-2"
+          >
             <ProfileAvatar class="h-5 w-5" />
             <textarea
               v-if="!showEditorInCommentSection"
@@ -689,7 +716,7 @@ export default defineComponent({
             :locked="commentSectionIsLocked"
           />
         </div>
-        
+
         <WarningModal
           :title="'Delete Discussion'"
           :body="'Are you sure you want to delete this discussion?'"
@@ -713,9 +740,9 @@ export default defineComponent({
 }
 
 h1 {
-    font-size: 2.65em;
-    padding-bottom: 0.3em;
-    border-bottom: 1px solid #eaecef;
+  font-size: 2.65em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
 }
 </style>
 

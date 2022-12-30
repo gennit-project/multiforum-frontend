@@ -472,7 +472,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="pb-1 px-4">
+  <div class="pb-1">
     <div class="items-center flex justify-center space-x-2 mb-1">
       <div class="flex inline-flex"></div>
       <FilterChip
