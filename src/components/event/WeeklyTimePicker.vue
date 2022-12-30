@@ -9,7 +9,7 @@ import {
   hourRangesObject,
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
-  createDefaultSelectedWeeklyHourRanges
+  createDefaultSelectedWeeklyHourRanges,
 } from "./eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
@@ -143,7 +143,6 @@ export default defineComponent({
       const flattenedTimeFilters = [];
       for (let timeSlot in this.workingCopyOfSelectedHourRanges) {
         if (this.workingCopyOfSelectedHourRanges[timeSlot]) {
-
           flattenedTimeFilters.push({
             startTimeHourOfDay: timeSlot,
           });
@@ -173,21 +172,21 @@ export default defineComponent({
           const slotIsSelected = selectedSlotsInDay[timeSlot];
 
           if (slotIsSelected) {
-
-              // Due to the way that Neo4j works, it is faster
-              // to check for specific hours that an event may
-              // begin than it is to check for hour ranges
-              // using greater-than or less-than operators.
-              flattenedTimeFilters.push({
-                AND: [
-                  {
-                    startTimeHourOfDay: timeSlot,
-                  },
-                  {
-                    startTimeDayOfWeek: dayNumber,
-                  },
-                ],
-              });
+            // Due to the way that Neo4j works, it is faster
+            // to check for specific hours that an event may
+            // begin than it is to check for hour ranges
+            // using greater-than or less-than operators.
+            flattenedTimeFilters.push({
+              AND: [
+                {
+                  startTimeHourOfDay: timeSlot, // For brevity in the URL query, times are conflated.
+                  // They are broken into individual hours when the EventWhere filter object is built.
+                },
+                {
+                  startTimeDayOfWeek: dayNumber,
+                },
+              ],
+            });
           }
         }
       }
@@ -195,9 +194,9 @@ export default defineComponent({
       return res;
     },
     resetTimeSlots() {
-      this.workingCopyOfTimeSlots = createDefaultSelectedWeeklyHourRanges()
-      this.workingCopyOfSelectedWeekdays = createDefaultSelectedWeekdays()
-      this.workingCopyOfSelectedHourRanges = createDefaultSelectedHourRanges()
+      this.workingCopyOfTimeSlots = createDefaultSelectedWeeklyHourRanges();
+      this.workingCopyOfSelectedWeekdays = createDefaultSelectedWeekdays();
+      this.workingCopyOfSelectedHourRanges = createDefaultSelectedHourRanges();
       this.$emit("resetTimeSlots");
     },
     removeWeekday(day: WeekdayData) {

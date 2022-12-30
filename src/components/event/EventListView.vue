@@ -24,7 +24,7 @@ export default defineComponent({
     EventPreview,
     TwoSeparatelyScrollingPanes,
   },
-  setup() {
+  setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
 
@@ -61,11 +61,11 @@ export default defineComponent({
         where: eventWhere,
         resultsOrder: resultsOrder.value,
       },
-      {
-        fetchPolicy: "network-only", // If it is not network only, the list
-        // will not update when an event time changes in a way that affects
-        // which search results it should be returned in.
-      }
+      // {
+      //   fetchPolicy: "network-only", // If it is not network only, the list
+      //   // will not update when an event time changes in a way that affects
+      //   // which search results it should be returned in.
+      // }
     );
 
     const reachedEndOfResults = ref(false);
@@ -95,6 +95,8 @@ export default defineComponent({
       const defaultSelectedEvent = value.data.events[0];
 
       sendToPreview(defaultSelectedEvent.id, "");
+      emit('updateLoadedEventCount', value.data.eventsAggregate?.count)
+      emit('updateResultCount', value.data.events.length)
     });
 
     const sendToPreview = (eventId: string, eventLocationId: string) => {

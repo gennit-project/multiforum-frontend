@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import Topnav from "./components/nav/Topnav.vue";
+import TopNav from "./components/nav/Topnav.vue";
 import SiteSidenav from "./components/nav/SiteSidenav.vue";
 import { useRoute } from "vue-router";
 
@@ -12,11 +12,15 @@ export default defineComponent({
       return route.params.channelId;
     });
 
-    return { channelId }
+    const showTopNav = computed(() => {
+      return route.name !== 'MapView' && route.name !== 'MapEventPreview'
+    })
+
+    return { channelId, route, showTopNav }
   },
   name: "App",
   components: {
-    Topnav,
+    TopNav,
     SiteSidenav,
   },
   data() {
@@ -35,7 +39,7 @@ export default defineComponent({
 <template>
   <div class="h-screen">
     <nav class="bg-black">
-      <Topnav @toggleMobileDropdown="toggleMobileDropdown" />
+      <TopNav v-if="showTopNav" @toggleMobileDropdown="toggleMobileDropdown" />
       <SiteSidenav :show-mobile-dropdown="showMobileDropdown" @click="showMobileDropdown = false"/>
     </nav>
     <div v-if="!channelId">

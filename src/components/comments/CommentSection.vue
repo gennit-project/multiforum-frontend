@@ -535,7 +535,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="sm:rounded-full pt-4">
+  <div class="pt-4">
     <p v-if="commentLoading">Loading comments...</p>
     <ErrorBanner
       class="mt-2"

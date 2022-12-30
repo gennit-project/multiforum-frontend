@@ -480,7 +480,7 @@ export default defineComponent({
 
 
           <router-link
-            v-if="route.name !== 'EventDetail' && !channelId"
+            v-if="route.name !== 'EventDetail' && !channelId && channelsExceptCurrent.length > 0"
             class="underline font-medium text-gray-900 cursor-pointer"
             :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
           >Permalink</router-link>

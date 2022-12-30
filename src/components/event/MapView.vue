@@ -23,16 +23,6 @@ export default defineComponent({
   // params, while the MapView and EventListView
   // components consume the query params.
   props: {
-    events: {
-      type: Array as PropType<Array<EventData>>,
-      default: () => {
-        return [];
-      },
-    },
-    resultCount: {
-      type: Number,
-      default: 0,
-    },
     selectedTags: {
       type: Array as PropType<Array<String>>,
       default: () => {
@@ -78,7 +68,7 @@ export default defineComponent({
       getFilterValuesFromParams(route, channelId.value)
     );
 
-    const resultsOrder = ref(() => {
+    const resultsOrder = computed(() => {
       // Keep track of results order separately so that query
       // will be refetched when it changes. Otherwise the query
       // would only be refetched when a value inside the eventWhere
@@ -86,7 +76,7 @@ export default defineComponent({
       return filterValues.value.resultsOrder;
     });
 
-    const eventWhere = ref(() => {
+    const eventWhere = computed(() => {
         return getEventWhere(filterValues.value, false)
     })
 
@@ -102,14 +92,14 @@ export default defineComponent({
       {
         limit: 25,
         offset: 0,
-        where: eventWhere,
+        where: eventWhere.value,
         resultsOrder: resultsOrder.value,
       },
-      {
-        fetchPolicy: "network-only", // If it is not network only, the list
-        // will not update when an event time changes in a way that affects
-        // which search results it should be returned in.
-      }
+      // {
+      //   fetchPolicy: "network-only", // If it is not network only, the list
+      //   // will not update when an event time changes in a way that affects
+      //   // which search results it should be returned in.
+      // }
     );
 
     const reachedEndOfResults = ref(false);
@@ -130,11 +120,12 @@ export default defineComponent({
       if (eventId) {
         if (!channelId.value) {
           router.push({
-            name: "SitewideSearchEventPreview",
+            name: "MapEventPreview",
             params: {
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
+            query: route.query
           });
         } else {
           router.push({
@@ -143,6 +134,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
+            query: route.query
           });
         }
       }
@@ -170,10 +162,14 @@ export default defineComponent({
       eventError,
       eventLoading,
       eventResult,
+      filterValues,
+      resultsOrder,
+      eventWhere,
       loadMore,
       previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
+      sendToPreview
     };
   },
   data() {
@@ -321,7 +317,8 @@ export default defineComponent({
       eventData: EventData,
       clickedMapMarker: boolean | false
     ) {
-      this.$emit("sendToPreview", eventId, eventLocationId);
+      this.sendToPreview( eventId, eventLocationId);
+
       this.highlightedEventLocationId = eventLocationId;
 
       // Keep desktop and mobile maps in sync
@@ -401,18 +398,21 @@ export default defineComponent({
       this.colorLocked = true;
     },
     clickCloseMap(){
-      this.$router.push({ path: "events" })
+      this.$router.push({ 
+        path: "/events/list",
+        query: {...this.$route.query}
+      })
     }
   },
-  created() {
-        this.$watch(
-        () => this.$route.params,
-        ()=> {
-        // (toParams, previousParams) => {
-            // react to route changes...
-        }
-        )
-    },
+  // created() {
+  //       this.$watch(
+  //       () => this.$route.params,
+  //       ()=> {
+  //       // (toParams, previousParams) => {
+  //           // react to route changes...
+  //       }
+  //       )
+  //   },
 });
 </script>
 <template>
@@ -423,10 +423,10 @@ export default defineComponent({
       v-else-if="eventError"
       :text="eventError.message"
     />
-    <div id="mapViewMobileWidth" v-if="smAndDown && eventResult && eventResult.events">
+    <div id="mapViewMobileWidth" v-else-if="smAndDown && eventResult && eventResult.events">
       <EventMap
-        v-if="events.length > 0"
-        :events="events"
+        v-if="eventResult.events.length > 0"
+        :events="eventResult.events"
         :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
         :color-locked="colorLocked"
         :use-mobile-styles="true"
@@ -436,9 +436,9 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
     </div>
-    <div  v-else id="mapViewFullScreen" class="flex flex-row">
+    <div  v-else-if="!smAndDown && eventResult && eventResult.events" id="mapViewFullScreen" class="flex flex-row">
       <div
-        class="h-full max-h-screen overflow-y-auto flex-col flex-grow"
+        class="h-full max-h-screen overflow-y-auto flex-col flex-grow border border-2"
         style="width: 34vw"
       >
       <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
@@ -465,7 +465,7 @@ export default defineComponent({
       </div>
         <EventList
           key="highlightedEventId"
-          :events="events"
+          :events="eventResult.events"
           :channel-id="channelId"
           :search-input="searchInput"
           :highlighted-event-location-id="highlightedEventLocationId"
@@ -473,6 +473,8 @@ export default defineComponent({
           :selected-tags="selectedTags"
           :selected-channels="selectedChannels"
           :show-map="true"
+          :loaded-event-count="eventResult.events.length"
+          :result-count="eventResult.eventsAggregate?.count"
           @filterByTag="filterByTag"
           @filterByChannel="filterByChannel"
           @highlightEvent="highlightEvent"
@@ -483,8 +485,8 @@ export default defineComponent({
       <div style="right: 0; width: 66vw">
         <EventMap
           class="fixed"
-          v-if="events.length > 0"
-          :events="events"
+          v-if="eventResult.events.length > 0"
+          :events="eventResult.events"
           :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
           :color-locked="colorLocked"
           :use-mobile-styles="false"

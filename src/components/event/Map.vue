@@ -184,7 +184,7 @@ export default defineComponent({
     <div
       v-else-if="!useMobileStyles"
       ref="desktopMapDiv"
-      style="position: fixed; width: 66vw; height: calc(100vh - 56px);"
+      style="position: fixed; width: 66vw; height: 100vh;"
     >
     </div>
 </template>

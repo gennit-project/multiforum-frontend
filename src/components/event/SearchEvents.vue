@@ -115,7 +115,10 @@ export default defineComponent({
         </div>
       </EventFilterBar>
     </div>
-    <router-view></router-view>
+    <router-view 
+      @updateLoadedEventCount="loadedEventCount = $event"
+      @updateResultCount="resultCount = $event"
+    ></router-view>
   </div>
 </template>
 

@@ -30,35 +30,35 @@ export const router = createRouter({
       component: SearchEvents,
     },
     {
+      name: 'MapView',
+      path: "/map",
+      component: MapView,
+      children: [
+        {
+          name: "MapEventPreview",
+          path: "/map/search/:eventId",
+          component: EventDetail
+        },
+      ]
+    },
+    
+    {
       name: 'SearchEvents',
       path: "/events",
       component: SearchEvents,
       children: [
         {
           name: 'SearchEventsList',
-          path: "/events/list",
+          path: "list",
           component: EventListView,
           children: [
             {
               name: "SitewideSearchEventPreview",
-              path: "/events/list/search/:eventId",
+              path: "search/:eventId",
               component: EventDetail
             }
           ]
         },
-        // {
-        //   name: 'SearchEventsMap',
-        //   path: "/events/map",
-        //   component: MapView,
-        //   children: [
-        //     {
-        //       name: "SitewideSearchEventPreview",
-        //       path: "/events/map/search/:eventId",
-        //       component: EventDetail
-        //     }
-        //   ]
-        // },
-        
       ]
     },
     {
@@ -196,5 +196,9 @@ export const router = createRouter({
     { path: "/u/:username", component: UserProfile },
 
     { path: "/settings", component: SiteSettings },
+    {
+      path: '/:catchAll(.*)',
+      component: SearchDiscussions,
+    }
   ],
 });

@@ -35,6 +35,10 @@ export default defineComponent({
         return [];
       },
     },
+    loadedEventCount: {
+      type: Number,
+      default: 0
+    },
     resultCount: {
       type: Number,
       default: 0,
@@ -107,9 +111,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="sm:rounded-full max-w-5xl">
+  <div class="max-w-5xl">
     <p class="prose px-4 lg:px-12 mt-3" v-if="events.length === 0 && !showMap">
       Could not find any events.
+    </p>
+    <p class="prose px-4 mt-3" v-if="loadedEventCount && resultCount">
+      {{ `Showing ${loadedEventCount} of ${resultCount} results` }}
     </p>
     <ul
       v-if="events.length > 0"

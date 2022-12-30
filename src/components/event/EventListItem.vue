@@ -81,7 +81,7 @@ export default defineComponent({
       if (this.isWithinChannel) {
         return `/channels/c/${this.defaultUniqueName}/events/search/${this.event.id}`;
       }
-      return `/events/${this.showMap ? 'map' : 'list'}/search/${this.event.id}`;
+      return `/${this.showMap ? 'map' : 'events/list'}/search/${this.event.id}`;
     },
   },
   methods: {
@@ -141,25 +141,8 @@ export default defineComponent({
 
 
           <p class="mt-2 flex flex-wrap text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2">
-            <span>
-              <time :datetime="event.startTime">
-                {{ formattedDate }}
-              </time>
-            </span>
-            <span>
-              &#x2022;
-            </span>
-            <span>
-              <time :datetime="event.startTime">
-                {{ timeOfDay }}
-              </time>
-            </span>
-            <span v-if="event.locationName">
-              &#x2022;
-            </span>
-            <span v-if="event.locationName">
-              {{ event.locationName }}
-            </span>
+            
+            {{ `${formattedDate} at ${timeOfDay}${event.locationName ? ',' : ''} ${event.locationName || ''}` }}
           </p>
           <div v-if="event.virtualEventUrl">
             <Tag :tag="'Online event'" />
@@ -167,7 +150,7 @@ export default defineComponent({
 
 
           <div class="text-sm" v-if="!isWithinChannel">
-            <Tag class="m-1"
+            <Tag class="my-1"
               :active="selectedChannels.includes(channel.uniqueName)"
               :key="channel.uniqueName"
               :channel-mode="true" 
