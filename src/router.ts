@@ -18,8 +18,8 @@ import CreateDiscussion from "@/components/discussion/CreateDiscussion.vue";
 import EditDiscussion from "@/components/discussion/EditDiscussion.vue";
 import CreateChannel from "@/components/channel/CreateChannel.vue";
 import EditChannel from "@/components/channel/EditChannel.vue";
-import MapView from "@/components/event/MapView.vue"
-import EventListView from "@/components/event/EventListView.vue"
+import MapView from "@/components/event/MapView.vue";
+import EventListView from "@/components/event/EventListView.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -30,36 +30,36 @@ export const router = createRouter({
       component: SearchEvents,
     },
     {
-      name: 'MapView',
+      name: "MapView",
       path: "/map",
       component: MapView,
       children: [
         {
           name: "MapEventPreview",
           path: "/map/search/:eventId",
-          component: EventDetail
+          component: EventDetail,
         },
-      ]
+      ],
     },
-    
+
     {
-      name: 'SearchEvents',
+      name: "SearchEvents",
       path: "/events",
       component: SearchEvents,
       children: [
         {
-          name: 'SearchEventsList',
+          name: "SearchEventsList",
           path: "list",
           component: EventListView,
           children: [
             {
               name: "SitewideSearchEventPreview",
               path: "search/:eventId",
-              component: EventDetail
-            }
-          ]
+              component: EventDetail,
+            },
+          ],
         },
-      ]
+      ],
     },
     {
       path: "/events/create",
@@ -67,21 +67,21 @@ export const router = createRouter({
       component: CreateEvent,
     },
     {
-      name: 'SearchDiscussions',
+      name: "SearchDiscussions",
       path: "/discussions",
       component: SearchDiscussions,
       children: [
         {
           name: "SitewideSearchDiscussionPreview",
           path: "search/:discussionId",
-          component: DiscussionDetail
-        }
-      ]
+          component: DiscussionDetail,
+        },
+      ],
     },
     {
-      name: 'FilterDiscussionsByTag',
+      name: "FilterDiscussionsByTag",
       path: "/discussions/tag/:tag",
-      component: SearchDiscussions
+      component: SearchDiscussions,
     },
     {
       path: "/discussions/create",
@@ -89,9 +89,9 @@ export const router = createRouter({
       component: CreateDiscussion,
     },
     {
-      name: 'FilterChannelsByTag',
+      name: "FilterChannelsByTag",
       path: "/channels/tag/:tag",
-      component: SearchChannels
+      component: SearchChannels,
     },
     {
       name: "SearchChannels",
@@ -101,7 +101,7 @@ export const router = createRouter({
     {
       name: "CreateChannel",
       path: "/channels/create",
-      component: CreateChannel
+      component: CreateChannel,
     },
     {
       path: "/channels/c/:channelId",
@@ -119,7 +119,7 @@ export const router = createRouter({
         {
           name: "EditChannel",
           path: "edit",
-          component: EditChannel
+          component: EditChannel,
         },
         {
           name: "Discussions",
@@ -134,14 +134,14 @@ export const router = createRouter({
                 {
                   name: "SearchDiscussionPreview",
                   path: "search/:discussionId",
-                  component: DiscussionDetail
-                }
-              ]
+                  component: DiscussionDetail,
+                },
+              ],
             },
             {
               name: "CreateDiscussionInChannel",
               path: "create",
-              component: CreateDiscussion
+              component: CreateDiscussion,
             },
             {
               name: "DiscussionDetail",
@@ -163,19 +163,19 @@ export const router = createRouter({
             {
               name: "SearchEventsInChannel",
               path: "",
-              component: SearchEvents,
+              component: EventListView,
               children: [
                 {
                   name: "SearchEventPreview",
                   path: "search/:eventId",
-                  component: EventDetail
+                  component: EventDetail,
                 }
               ]
             },
             {
               name: "CreateEventInChannel",
               path: "create",
-              component: CreateEvent
+              component: CreateEvent,
             },
             {
               name: "EventDetail",
@@ -197,8 +197,8 @@ export const router = createRouter({
 
     { path: "/settings", component: SiteSettings },
     {
-      path: '/:catchAll(.*)',
+      path: "/:catchAll(.*)",
       component: SearchDiscussions,
-    }
+    },
   ],
 });

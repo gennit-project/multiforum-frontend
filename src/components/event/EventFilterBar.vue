@@ -31,8 +31,8 @@ import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import Modal from "../Modal.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
-import { Switch, SwitchGroup, SwitchLabel } from "@headlessui/vue";
 import GenericSmallButton from "../GenericSmallButton.vue";
+import MapIcon from "../icons/MapIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute } from "vue-router";
 import {
@@ -58,12 +58,10 @@ export default defineComponent({
     FilterIcon,
     GenericSmallButton,
     LocationSearchBar,
+    MapIcon,
     Modal,
     SearchBar,
     SelectMenu,
-    TailwindSwitch: Switch,
-    SwitchGroup,
-    SwitchLabel,
     Tag,
     TagIcon,
     TagPicker,
@@ -203,7 +201,6 @@ export default defineComponent({
       referencePointPlaceId: ref(defaultPlace.referencePointId),
       distanceUnit,
       selectedDistanceUnit: ref(MilesOrKm.MI),
-      showMapCopy: ref(props.showMap),
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeFilterShortcuts,
@@ -358,7 +355,7 @@ export default defineComponent({
         weekdays: this.defaultSelectedWeekdays,
         hourRanges: this.defaultSelectedHourRanges,
         weeklyHourRanges: this.defaultSelectedWeeklyHourRanges,
-      })
+      });
     },
     updateHourRanges(flattenedHourRanges: string) {
       this.updateFilters({ hourRanges: flattenedHourRanges });
@@ -474,7 +471,6 @@ export default defineComponent({
 <template>
   <div class="pb-1">
     <div class="items-center flex justify-center space-x-2 mb-1">
-      <div class="flex inline-flex"></div>
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -583,31 +579,11 @@ export default defineComponent({
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
-
       <slot></slot>
-
       <div v-if="channelId">
-        <SwitchGroup as="div" class="flex inline-flex items-center">
-          <TailwindSwitch
-            v-model="showMapCopy"
-            :class="[
-              showMapCopy ? 'bg-blue-600' : 'bg-gray-200',
-              'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2',
-            ]"
-            @update:model-value="$emit('toggleShowMap', showMapCopy)"
-          >
-            <span
-              aria-hidden="true"
-              :class="[
-                showMap ? 'translate-x-5' : 'translate-x-0',
-                'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
-              ]"
-            />
-          </TailwindSwitch>
-          <SwitchLabel as="span" class="ml-3">
-            <span class="text-sm font-medium text-gray-900">Show Map</span>
-          </SwitchLabel>
-        </SwitchGroup>
+        <GenericSmallButton @click="$emit('showMap')" :text="'Map'">
+          <MapIcon class="h-4 w-4 mr-2" />
+        </GenericSmallButton>
       </div>
     </div>
     <!-- <CreateButton

@@ -64,6 +64,13 @@ export default defineComponent({
       return "";
     });
 
+    const backToChannel = computed(() => {
+      if (typeof (route.query.backToChannel) === 'string') {
+        return route.query.backToChannel;
+      }
+      return ""
+    })
+
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
     );
@@ -156,6 +163,7 @@ export default defineComponent({
     };
 
     return {
+      backToChannel,
       route,
       router,
       smAndDown,
@@ -398,10 +406,21 @@ export default defineComponent({
       this.colorLocked = true;
     },
     clickCloseMap(){
-      this.$router.push({ 
-        path: "/events/list",
-        query: {...this.$route.query}
-      })
+      if (this.backToChannel) {
+        this.$router.push({
+          name: "SearchEventsInChannel",
+          params: {
+            channelId: this.backToChannel,
+          },
+          query: this.$route.query
+        })
+      } else {
+        this.$router.push({ 
+          path: "/events/list",
+          query: this.$route.query
+        })
+      }
+      
     }
   },
   // created() {

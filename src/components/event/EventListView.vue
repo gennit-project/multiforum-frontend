@@ -109,7 +109,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
-            query: {...route.query}
+            query: route.query
           });
         } else {
           router.push({

@@ -387,7 +387,7 @@ export default defineComponent({
     />
 
     <div class="flex justify-center">
-      <div class="block">
+      <div class="block w-full">
         <TwoSeparatelyScrollingPanes
           v-if="discussionResult && discussionResult.discussions"
         >

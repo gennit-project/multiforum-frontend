@@ -461,7 +461,7 @@ export default defineComponent({
           <span v-if="route.name === 'EventDetail'">&#8226;</span>
           <span
             v-if="!compactMode && route.name === 'EventDetail'"
-            class="underline font-medium text-gray-900 cursor-pointer"
+            class="ml-1 underline font-medium text-gray-900 cursor-pointer"
             @click="confirmDeleteIsOpen = true"
             >Delete</span
           >
@@ -474,17 +474,28 @@ export default defineComponent({
             @click="confirmCancelIsOpen = true"
             >Cancel</span
           >
-          <span v-if="route.name !== 'EventDetail' && !channelId" class="ml-1 mr-1"
+          <span v-if="route.name !== 'EventDetail'" class="ml-1 mr-1"
             >&#8226;</span
           >
 
-
           <router-link
-            v-if="route.name !== 'EventDetail' && !channelId && channelsExceptCurrent.length > 0"
+            v-if="
+              route.name !== 'EventDetail' &&
+              !channelId &&
+              channelsExceptCurrent.length > 0
+            "
             class="underline font-medium text-gray-900 cursor-pointer"
             :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
-          >Permalink</router-link>
+            >Permalink</router-link
+          >
 
+          <router-link
+            v-if="channelId && route.name !== 'EventDetail'"
+            class="underline font-medium text-gray-900 cursor-pointer"
+            :to="`/channels/c/${channelId}/events/e/${eventId}`"
+          >
+            Permalink
+          </router-link>
         </div>
         <div class="time-zone">
           {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}

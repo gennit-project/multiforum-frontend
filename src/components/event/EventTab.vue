@@ -1,11 +1,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import SearchEvents from "./SearchEvents.vue";
 
 export default defineComponent({
   name: "EventTab",
+  components: {
+    SearchEvents,
+  },
 
   setup() {
-    // The only reason I have this component is so the event
+    // The main reason I have this component is so the event
     // tab in a channel will be marked active for the search
     // event component AND the event detail component.
     // They need to both be children of the same route in the router
@@ -16,5 +20,5 @@ export default defineComponent({
 </script>
 
 <template>
- <router-view></router-view>
+  <SearchEvents></SearchEvents>
 </template>

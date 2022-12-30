@@ -39,11 +39,7 @@ export default defineComponent({
       <div class="bg-white mx-auto md:w-2/3">
         <div v-if="!discussionId || !eventId">
           <div  class="block flex justify-center"> 
-
             <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
-              <!-- <ChannelIcon
-                class="inline-flex h-6 w-6 mr-1"
-              /> -->
               {{ channelId }}
             </h1>
           </div>

@@ -76,12 +76,24 @@ export default defineComponent({
       }
     },
     goToMap(){
-      this.router.push({
-        name: "MapView",
-        query: {
-          ...this.$route.query
-        }
-      })
+
+      if (!this.channelId) {
+        this.router.push({
+          name: "MapView",
+          query: {
+            ...this.$route.query,
+            channels: [this.channelId]
+          }
+        })
+      } else {
+        this.router.push({
+          name: "MapView",
+          query: {
+            ...this.$route.query,
+            backToChannel: this.channelId
+          }
+        })
+      }
     }
   }
 });
@@ -100,6 +112,7 @@ export default defineComponent({
         :result-count="resultCount"
         :loaded-event-count="loadedEventCount"
         :create-event-path="createEventPath"
+        @show-map="goToMap"
       >
         <div class="block float-right mx-4 lg:mr-12">
           <div v-if="!channelId" class="flex justify-center">
