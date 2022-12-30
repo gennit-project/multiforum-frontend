@@ -1,5 +1,4 @@
-import { StringValueNode } from 'graphql'
-import ChannelData from './channelTypes'
+import ChannelData from '../channel/channelTypes'
 import { TagData } from './tagTypes'
 import UserData from './userTypes'
 import { EventData } from './eventTypes'

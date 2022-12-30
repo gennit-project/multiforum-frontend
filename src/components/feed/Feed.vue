@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import GoBack from "../GoBack.vue";
+import GoBack from "../generic/GoBack.vue";
 import Breadcrumbs from '@/components/nav/Breadcrumbs.vue';
 import { useRoute } from "vue-router";
 

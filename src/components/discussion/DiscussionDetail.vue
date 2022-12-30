@@ -1,24 +1,24 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/tag/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { relativeTime } from "../../dateTimeUtils";
-import WarningModal from "../WarningModal.vue";
+import WarningModal from "../generic/WarningModal.vue";
 import { DateTime } from "luxon";
 import { DiscussionData } from "@/types/discussionTypes";
 import { ChannelData } from "@/types/channelTypes";
-import ErrorBanner from "../ErrorBanner.vue";
-import CreateButton from "../CreateButton.vue";
-import GenericButton from "../GenericButton.vue";
+import ErrorBanner from "../generic/ErrorBanner.vue";
+import CreateButton from "../generic/CreateButton.vue";
+import GenericButton from "../generic/GenericButton.vue";
 import CommentSection from "../comments/CommentSection.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
-import ProfileAvatar from "@/components/ProfileAvatar.vue";
+import ProfileAvatar from "@/components/user/ProfileAvatar.vue";
 import TextEditor from "@/components/comments/TextEditor.vue";
-import CancelButton from "@/components/CancelButton.vue";
-import SaveButton from "@/components/SaveButton.vue";
+import CancelButton from "@/components/generic/CancelButton.vue";
+import SaveButton from "@/components/generic/SaveButton.vue";
 import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
 import {
   CREATE_COMMENT,

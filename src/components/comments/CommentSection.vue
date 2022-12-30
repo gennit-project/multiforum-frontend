@@ -2,7 +2,7 @@
 import { defineComponent, ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
-// import LoadMore from "../LoadMore.vue";
+// import LoadMore from "../generic/LoadMore.vue";
 import {
   CommentData,
   CreateEditCommentFormValues,
@@ -19,8 +19,8 @@ import {
   SOFT_DELETE_COMMENT
 } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import ErrorBanner from "../ErrorBanner.vue";
-import WarningModal from "../WarningModal.vue";
+import ErrorBanner from "../generic/ErrorBanner.vue";
+import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import type { Ref } from "vue";
 

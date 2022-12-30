@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import CheckCircleIcon from "./icons/CheckCircleIcon.vue";
-import XMarkIcon from "./icons/XmarkIcon.vue";
+import CheckCircleIcon from "../icons/CheckCircleIcon.vue";
+import XMarkIcon from "../icons/XmarkIcon.vue";
 
 export default defineComponent({
   name: "NotificationComponent",

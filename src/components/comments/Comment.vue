@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
 import MdEditor from "md-editor-v3";
-import UpArrowIcon from "../icons/UpArrowIcon.vue";
-import DownArrowIcon from "../icons/DownArrowIcon.vue";
+// import UpArrowIcon from "../icons/UpArrowIcon.vue";
+// import DownArrowIcon from "../icons/DownArrowIcon.vue";
 import {
   CommentData,
   CreateReplyInputData,
@@ -12,8 +12,8 @@ import "md-editor-v3/lib/style.css";
 import { relativeTime } from "../../dateTimeUtils";
 import EmojiExtension from "./EmojiExtension/index.vue";
 import TextEditor from "./TextEditor.vue";
-import CancelButton from "@/components/CancelButton.vue";
-import SaveButton from "@/components/SaveButton.vue";
+import CancelButton from "@/components/generic/CancelButton.vue";
+import SaveButton from "@/components/generic/SaveButton.vue";
 import ChildComments from "./ChildComments.vue";
 
 export default defineComponent({
@@ -21,12 +21,12 @@ export default defineComponent({
   components: {
     CancelButton,
     ChildComments,
-    DownArrowIcon,
+    // DownArrowIcon,
     EmojiExtension,
     MdEditor,
     SaveButton,
     TextEditor,
-    UpArrowIcon,
+    // UpArrowIcon,
   },
   setup(props) {
     let replyCount = computed(() => {

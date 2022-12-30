@@ -18,8 +18,8 @@ import {
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
-import Table from "../Table.vue";
-import TableHead from "../TableHead.vue";
+import Table from "../generic/Table.vue";
+import TableHead from "../generic/TableHead.vue";
 import RefreshIcon from "../icons/RefreshIcon.vue";
 
 export default defineComponent({

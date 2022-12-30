@@ -2,15 +2,15 @@
 import { defineComponent, PropType } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/comments/TextEditor.vue";
-import FormRow from "@/components/FormRow.vue";
-import Form from "@/components/Form.vue";
+import FormRow from "@/components/generic/FormRow.vue";
+import Form from "@/components/generic/Form.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import TagInput from "@/components/TagInput.vue";
+import TagInput from "@/components/tag/TagInput.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import PencilIcon from "@/components/icons/PencilIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
-import ErrorBanner from "@/components/ErrorBanner.vue";
-import TextInput from "@/components/TextInput.vue";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import TextInput from "@/components/generic/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 
 export default defineComponent({

@@ -4,8 +4,8 @@ import { router } from "@/router";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import EventFilterBar from "./EventFilterBar.vue";
-import GenericSmallButton from "../GenericSmallButton.vue";
-import CreateButton from "../CreateButton.vue";
+import GenericSmallButton from "../generic/GenericSmallButton.vue";
+import CreateButton from "../generic/CreateButton.vue";
 import MapIcon from "../icons/MapIcon.vue";
 
 export default defineComponent({

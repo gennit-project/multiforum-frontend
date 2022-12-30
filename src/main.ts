@@ -2,10 +2,7 @@ import { createApp, h, provide } from "vue";
 import App from "./App.vue";
 import { router } from "./router";
 import "./index.css";
-import {
-  ApolloClient,
-  createHttpLink,
-} from "@apollo/client/core";
+import { ApolloClient, createHttpLink } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { createApolloProvider } from "@vue/apollo-option";
 import { onError } from "@apollo/client/link/error";
@@ -16,37 +13,37 @@ import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
 import MdEditor from "md-editor-v3";
-import { library } from '@fortawesome/fontawesome-svg-core'
-import cache from './cache';
-import { createVuetify } from 'vuetify'
-const vuetify = createVuetify()
-// import "highlight.js/styles/github-dark-dimmed.css";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import cache from "./cache";
+import { createVuetify } from "vuetify";
+const vuetify = createVuetify();
+import { createAuth0 } from "@auth0/auth0-vue";
 
-import { faFaceSmile } from '@fortawesome/free-solid-svg-icons'
+import { faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 
-library.add(faFaceSmile)
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faFaceSmile);
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-
-async function loadFonts () {
-  const webFontLoader = await import(/* webpackChunkName: "webfontloader" */'webfontloader')
+async function loadFonts() {
+  const webFontLoader = await import(
+    /* webpackChunkName: "webfontloader" */ "webfontloader"
+  );
 
   webFontLoader.load({
     google: {
-      families: ['Roboto:100,300,400,500,700,900&display=swap'],
+      families: ["Roboto:100,300,400,500,700,900&display=swap"],
     },
-  })
+  });
 }
 
+loadFonts();
 
-loadFonts()
+const { environment, graphqlUrlDev, graphqlUrlProd, clientId } = config;
 
-const { environment, graphqlUrlDev, graphqlUrlProd } = config;
-
-console.log({ environment })
+console.log({ environment });
 
 const httpLink = createHttpLink({
-  uri: environment === 'development' ? graphqlUrlDev : graphqlUrlProd
+  uri: environment === "development" ? graphqlUrlDev : graphqlUrlProd,
 });
 
 const networkErrorLink = onError(({ graphQLErrors, networkError }) => {
@@ -89,12 +86,17 @@ app
   .use(vuetify)
   .use(FloatingVue)
   .use(MdEditor)
-  .component('font-awesome-icon', FontAwesomeIcon)
+  .component("font-awesome-icon", FontAwesomeIcon)
   .use(VueGoogleMaps, {
     load: {
       key: config.googleMapsApiKey,
       libraries: "places",
     },
   })
+  .use(createAuth0({
+    domain: "gennit.us.auth0.com",
+    client_id: clientId,
+    redirect_uri: window.location.origin
+  }))
   .use(apolloProvider)
   .mount("#app");

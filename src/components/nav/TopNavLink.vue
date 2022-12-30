@@ -20,6 +20,7 @@ export default defineComponent({
   <router-link
     :to="to"
     class="
+    text-gray-300
         inline-flex
         items-center
         hover:bg-gray-700 hover:text-white

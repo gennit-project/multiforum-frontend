@@ -2,8 +2,8 @@
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
-import HighlightedSearchTerms from "../HighlightedSearchTerms.vue";
-import Tag from "@/components/Tag.vue";
+import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
+import Tag from "@/components/tag/Tag.vue";
 
 export default defineComponent({
   setup() {},

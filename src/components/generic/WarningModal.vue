@@ -7,41 +7,42 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
-import CheckIcon from "./icons/CheckIcon.vue";
+import ExclamationIcon from "../icons/ExclamationIcon.vue";
 
 export default defineComponent({
-  name: "ModalComponent",
   components: {
-    CheckIcon,
-    TailwindDialog: Dialog,
+    DialogComponent: Dialog,
     DialogPanel,
     DialogTitle,
     TransitionChild,
     TransitionRoot,
+    ExclamationIcon,
   },
   props: {
-    primaryButtonText: {
-      type: String,
-      required: false,
-    },
-    show: {
-      type: Boolean,
-      required: true,
-    },
     title: {
       type: String,
-      required: true,
+      required: true
     },
-    useCustomButtons: {
-      type: Boolean,
-      default: false
-    }
+    body: {
+      type: String,
+      required: true
+    },
+    open: {
+        type: Boolean,
+        default: false
+    },
+    primaryButtonText: {
+      type: String,
+      default: "Delete"
+    },
+  },
+  setup() {
   },
 });
 </script>
 <template>
-  <TransitionRoot @click="$emit('close')" as="template" :show="show">
-    <TailwindDialog as="div" class="relative z-10" @close="$emit('close')">
+  <TransitionRoot as="template" :show="open">
+    <DialogComponent as="div" class="relative z-10" @close="$emit('close')">
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -52,7 +53,6 @@ export default defineComponent({
         leave-to="opacity-0"
       >
         <div
-        
           class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
         />
       </TransitionChild>
@@ -66,12 +66,13 @@ export default defineComponent({
             justify-center
             min-h-full
             p-4
+            text-center
             sm:p-0
           "
         >
           <TransitionChild
             as="template"
-            enter="ease-out duration-200"
+            enter="ease-out duration-300"
             enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             enter-to="opacity-100 translate-y-0 sm:scale-100"
             leave="ease-in duration-200"
@@ -91,47 +92,43 @@ export default defineComponent({
                 shadow-xl
                 transform
                 transition-all
+                sm:my-8 sm:max-w-lg sm:w-full sm:p-6
               "
             >
-              <div>
+              <div class="sm:flex sm:items-start">
                 <div
                   class="
                     mx-auto
-                    flex
+                    flex-shrink-0 flex
                     items-center
                     justify-center
                     h-12
                     w-12
                     rounded-full
-                    bg-green-100
+                    bg-red-100
+                    sm:mx-0 sm:h-10 sm:w-10
                   "
                 >
-                  <slot name="icon">
-                    <CheckIcon
-                      class="h-6 w-6 text-green-600"
-                      aria-hidden="true"
-                    />
-                  </slot>
+                  <ExclamationIcon
+                    class="h-6 w-6 text-red-600"
+                    aria-hidden="true"
+                  />
                 </div>
-                <div class="mt-3 sm:mt-5">
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle
                     as="h3"
-                    class="text-lg text-center leading-6 font-medium text-gray-900"
+                    class="text-lg leading-6 font-medium text-gray-900"
                   >
                     {{ title }}
                   </DialogTitle>
                   <div class="mt-2">
-                    <slot name="content"></slot>
+                    <p class="text-sm text-gray-500">
+                      {{ body }}
+                    </p>
                   </div>
                 </div>
               </div>
-              <div
-                v-if="!useCustomButtons"
-                class="
-                  mt-5
-                  sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense
-                "
-              >
+              <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
                   class="
@@ -143,62 +140,58 @@ export default defineComponent({
                     shadow-sm
                     px-4
                     py-2
-                    bg-indigo-600
+                    bg-red-600
                     text-base
                     font-medium
                     text-white
-                    hover:bg-indigo-700
+                    hover:bg-red-700
                     focus:outline-none
                     focus:ring-2
                     focus:ring-offset-2
-                    focus:ring-indigo-500
-                    sm:col-start-2 sm:text-sm
+                    focus:ring-red-500
+                    sm:ml-3 sm:w-auto sm:text-sm
                   "
-                  @click="()=>{
+                  @click="() => {
                     $emit('close')
                     $emit('primaryButtonClick')
                   }"
                 >
-                  {{ primaryButtonText ? primaryButtonText : 'Close' }}
+                  {{ primaryButtonText }}
                 </button>
-                <slot name="secondaryButton">
-                  <button
-                    type="button"
-                    class="
-                      mt-3
-                      w-full
-                      inline-flex
-                      justify-center
-                      rounded-full
-                      border border-gray-300
-                      shadow-sm
-                      px-4
-                      py-2
-                      bg-white
-                      text-base
-                      font-medium
-                      text-gray-700
-                      hover:bg-gray-50
-                      focus:outline-none
-                      focus:ring-2
-                      focus:ring-offset-2
-                      focus:ring-indigo-500
-                      sm:mt-0 sm:col-start-1 sm:text-sm
-                    "
-                    @click="()=>{
-                      $emit('secondaryButtonClick')
-                      $emit('close')
-                    }"
-                  >
-                    Cancel
-                  </button>
-                </slot>
+                <button
+                  type="button"
+                  class="
+                    mt-3
+                    w-full
+                    inline-flex
+                    justify-center
+                    rounded-full
+                    border border-gray-300
+                    shadow-sm
+                    px-4
+                    py-2
+                    bg-white
+                    text-base
+                    font-medium
+                    text-gray-700
+                    hover:bg-gray-50
+                    focus:outline-none
+                    focus:ring-2
+                    focus:ring-offset-2
+                    focus:ring-blue-500
+                    sm:mt-0 sm:w-auto sm:text-sm
+                  "
+                  @click="$emit('close')"
+                  ref="cancelButtonRef"
+                >
+                  Cancel
+                </button>
               </div>
             </DialogPanel>
           </TransitionChild>
         </div>
       </div>
-    </TailwindDialog>
+    </DialogComponent>
   </TransitionRoot>
 </template>
 

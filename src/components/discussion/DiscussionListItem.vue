@@ -4,8 +4,8 @@ import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
 // import { CommentSectionData } from "../../types/commentTypes";
-import Tag from "@/components/Tag.vue";
-import HighlightedSearchTerms from "@/components/HighlightedSearchTerms.vue";
+import Tag from "@/components/tag/Tag.vue";
+import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
 export default defineComponent({
   setup() {},

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
 import DiscussionListItem from "./DiscussionListItem.vue";
-import LoadMore from "../LoadMore.vue";
+import LoadMore from "../generic/LoadMore.vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute } from "vue-router";
 

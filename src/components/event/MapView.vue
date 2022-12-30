@@ -9,13 +9,13 @@ import PreviewContainer from "./PreviewContainer.vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import XmarkIcon from "../icons/XmarkIcon.vue";
-import CloseButton from "../CloseButton.vue";
+import CloseButton from "../generic/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
 import getEventWhere from "./getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
-import ErrorBanner from "../ErrorBanner.vue";
+import ErrorBanner from "../generic/ErrorBanner.vue";
 
 export default defineComponent({
   name: "MapView",

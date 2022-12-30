@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/tag/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
@@ -12,12 +12,12 @@ import {
   formatDuration,
   getDurationObj,
 } from "../../dateTimeUtils";
-import WarningModal from "../WarningModal.vue";
+import WarningModal from "../generic/WarningModal.vue";
 import { DateTime } from "luxon";
-import ErrorBanner from "../ErrorBanner.vue";
-import GenericButton from "../GenericButton.vue";
+import ErrorBanner from "../generic/ErrorBanner.vue";
+import GenericButton from "../generic/GenericButton.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-import CreateButton from "../CreateButton.vue";
+import CreateButton from "../generic/CreateButton.vue";
 import HomeIcon from "@/components/icons/HomeIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
@@ -25,7 +25,7 @@ import LocationIcon from "@/components/icons/LocationIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import useClipboard from "vue-clipboard3";
 import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
-import Notification from "../Notification.vue";
+import Notification from "../generic/Notification.vue";
 import Comment from "../comments/Comment.vue";
 import LeftArrowIcon from "../icons/LeftArrowIcon.vue";
 

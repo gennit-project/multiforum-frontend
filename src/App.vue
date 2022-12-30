@@ -13,10 +13,10 @@ export default defineComponent({
     });
 
     const showTopNav = computed(() => {
-      return route.name !== 'MapView' && route.name !== 'MapEventPreview'
-    })
+      return route.name !== "MapView" && route.name !== "MapEventPreview";
+    });
 
-    return { channelId, route, showTopNav }
+    return { channelId, route, showTopNav };
   },
   name: "App",
   components: {
@@ -26,30 +26,45 @@ export default defineComponent({
   data() {
     return {
       showMobileDropdown: false,
+      showUserProfileDropdown: false,
     };
   },
   methods: {
+    closeUserProfileDropdown(){
+      this.showUserProfileDropdown = false;
+    },
     toggleMobileDropdown() {
       this.showMobileDropdown = !this.showMobileDropdown;
+    },
+    toggleUserProfileDropdown() {
+      this.showUserProfileDropdown = !this.showUserProfileDropdown;
     },
   },
 });
 </script>
 
 <template>
-  <div class="h-screen">
+  <div class="h-screen" >
     <nav class="bg-black">
-      <TopNav v-if="showTopNav" @toggleMobileDropdown="toggleMobileDropdown" />
-      <SiteSidenav :show-mobile-dropdown="showMobileDropdown" @click="showMobileDropdown = false"/>
+      <TopNav 
+        v-if="showTopNav" 
+        :show-user-profile-dropdown="showUserProfileDropdown"
+        @toggleMobileDropdown="toggleMobileDropdown" 
+        @closeUserProfileDropdown="closeUserProfileDropdown"
+        @toggleUserProfileDropdown="toggleUserProfileDropdown"
+      />
+      <SiteSidenav
+        :show-mobile-dropdown="showMobileDropdown"
+        @click="showMobileDropdown = false"
+      />
     </nav>
     <div v-if="!channelId">
       <router-view></router-view>
     </div>
-    
+
     <router-view v-else></router-view>
   </div>
 </template>
 
 <style lang="scss">
-
 </style>

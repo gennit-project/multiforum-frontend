@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Channel from "./components/channel/Channel.vue";
-import UserProfile from "./components/UserProfile.vue";
+import UserProfile from "./components/user/UserProfile.vue";
 import SearchChannels from "./components/channel/SearchChannels.vue";
 import EventDetail from "./components/event/EventDetail.vue";
 import SearchEvents from "./components/event/SearchEvents.vue";
@@ -11,7 +11,7 @@ import EventTab from "./components/event/EventTab.vue";
 import DiscussionDetail from "./components/discussion/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
-import SiteSettings from "./components/SiteSettings.vue";
+import SiteSettings from "./components/settings/SiteSettings.vue";
 import CreateEvent from "@/components/event/CreateEvent.vue";
 import EditEvent from "@/components/event/EditEvent.vue";
 import CreateDiscussion from "@/components/discussion/CreateDiscussion.vue";
@@ -20,6 +20,9 @@ import CreateChannel from "@/components/channel/CreateChannel.vue";
 import EditChannel from "@/components/channel/EditChannel.vue";
 import MapView from "@/components/event/MapView.vue";
 import EventListView from "@/components/event/EventListView.vue";
+import PageNotFound from "@/components/generic/PageNotFound.vue"
+import LogoutPage from "@/components/auth/LogoutPage.vue"
+import LoggedInUserProfile from "@/components/user/LoggedInUserProfile.vue"
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -27,7 +30,13 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      component: SearchEvents,
+      redirect: {
+        name: "SearchEventsList",
+      },
+    },
+    {
+      path: "/logout",
+      component: LogoutPage
     },
     {
       name: "MapView",
@@ -194,11 +203,11 @@ export const router = createRouter({
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
     { path: "/u/:username", component: UserProfile },
-
+    { path: "/myProfile", component: LoggedInUserProfile },
     { path: "/settings", component: SiteSettings },
     {
       path: "/:catchAll(.*)",
-      component: SearchDiscussions,
+      component: PageNotFound,
     },
   ],
 });

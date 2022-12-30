@@ -4,7 +4,7 @@ import { defineComponent, PropType, computed } from "vue";
 import { ChannelData } from "@/types/channelTypes";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/tag/Tag.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 
 export default defineComponent({

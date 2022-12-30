@@ -1,16 +1,16 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
-import LocationSearchBar from "@/components/LocationSearchBar.vue";
-import TagPicker from "@/components/TagPicker.vue";
-import ChannelPicker from "@/components/ChannelPicker.vue";
-import FilterChip from "@/components/FilterChip.vue";
+import LocationSearchBar from "@/components/event/LocationSearchBar.vue";
+import TagPicker from "@/components/tag/TagPicker.vue";
+import ChannelPicker from "@/components/channel/ChannelPicker.vue";
+import FilterChip from "@/components/generic/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { DateTime } from "luxon";
-import Tag from "@/components/Tag.vue";
-import SelectMenu from "../Select.vue";
-import SearchBar from "../SearchBar.vue";
+import Tag from "@/components/tag/Tag.vue";
+import SelectMenu from "../generic/Select.vue";
+import SearchBar from "../generic/SearchBar.vue";
 import {
   DistanceUnit,
   SearchEventValues,
@@ -29,9 +29,9 @@ import {
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
-import Modal from "../Modal.vue";
+import Modal from "../generic/Modal.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
-import GenericSmallButton from "../GenericSmallButton.vue";
+import GenericSmallButton from "../generic/GenericSmallButton.vue";
 import MapIcon from "../icons/MapIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute } from "vue-router";

@@ -4,8 +4,8 @@ import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
 import { getDatePieces } from "@/utils/dateTimeUtils";
 import { CommentSectionData } from "../../types/commentTypes";
-import Tag from "@/components/Tag.vue";
-import HighlightedSearchTerms from "../HighlightedSearchTerms.vue";
+import Tag from "@/components/tag/Tag.vue";
+import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
 
 export default defineComponent({

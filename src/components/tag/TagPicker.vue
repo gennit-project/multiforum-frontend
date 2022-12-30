@@ -4,7 +4,7 @@ import { defineComponent, PropType, computed } from "vue";
 import { TagData } from "@/types/tagTypes";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { useQuery } from "@vue/apollo-composable";
-import Tag from "@/components/Tag.vue";
+import Tag from "@/components/tag/Tag.vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 
 export default defineComponent({

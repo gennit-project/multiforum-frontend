@@ -1,10 +1,10 @@
 <script lang="ts">
 // This component uses some code from this CodePen: https://codepen.io/foucauld-gaudin/pen/abzBdRz
 import { defineComponent, PropType } from "vue";
-import ChannelPicker from "./ChannelPicker.vue";
-import Tag from "@/components/Tag.vue";
-import TagPicker from "@/components/TagPicker.vue";
-import FloatingDropdown from "./FloatingDropdown.vue";
+import ChannelPicker from "../channel/ChannelPicker.vue";
+import Tag from "@/components/tag/Tag.vue";
+import TagPicker from "@/components/tag/TagPicker.vue";
+import FloatingDropdown from "../generic/floatingDropdown.vue";
 
 export default defineComponent({
   components: {
