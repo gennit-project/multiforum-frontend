@@ -211,13 +211,12 @@ export default defineComponent({
             Channels
           </h1>
         </div>
-        <div class="items-center flex justify-between">
+        <div class="mt-2 items-center flex justify-between">
           <!-- <SearchBar
             class="flex"
             :search-placeholder="'Search channels'"
             @updateSearchInput="updateSearchResult"
           /> -->
-          <div class="flex justify-end items-center space-x-2">
             <FilterChip
               class="align-middle"
               :label="tagLabel"
@@ -234,7 +233,7 @@ export default defineComponent({
               </template>
             </FilterChip>
             <CreateButton :to="createChannelPath" :label="'Create Channel'" />
-          </div>
+
         </div>
       </div>
     </div>
