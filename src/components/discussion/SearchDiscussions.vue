@@ -103,7 +103,7 @@ export default defineComponent({
       };
     });
 
-    let GET_DISCUSSIONS = gql`
+    const GET_DISCUSSIONS = gql`
       query getDiscussions(
         $where: DiscussionWhere
         $resultsOrder: [DiscussionSort!]

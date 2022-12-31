@@ -474,7 +474,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="top-10 pb-36 px-4 lg:px-10 height-constrained-more lg:w-full">
+  <div class="top-10 pb-36 px-4 height-constrained-more lg:w-full">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -485,7 +485,7 @@ export default defineComponent({
       v-else
       ref="discussionDetail"
       :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-      class="max-w-4xl bg-white pb-4 rounded"
+      class="bg-white pb-4 rounded"
     >
       <router-link
         v-if="route.name === 'DiscussionDetail'"
@@ -540,7 +540,7 @@ export default defineComponent({
               <span v-if="route.name === 'DiscussionDetail'"> &#8226;</span>
               <span
                 v-if="!compactMode && route.name === 'DiscussionDetail'"
-                class="underline font-medium text-gray-900 cursor-pointer"
+                class="ml-1 underline font-medium text-gray-900 cursor-pointer"
                 @click="deleteModalIsOpen = true"
                 >Delete</span
               >
@@ -612,109 +612,114 @@ export default defineComponent({
               </div>
             </div>
           </div>
-          <div
-            class="text-gray-600 mt-4"
-            v-if="
-              route.name === 'DiscussionDetail' && discussion.Tags.length > 0
-            "
-          >
-            Tags
-          </div>
-          <Tag
-            class="mt-2"
-            v-for="tag in discussion.Tags"
-            :tag="tag.text"
-            :key="tag.text"
-            :discussionId="discussionId"
-          />
-          <div class="text-gray-600 mt-4">
-            <div
-              v-if="
-                route.name === 'DiscussionDetail' && channelLinks.length > 0
-              "
-              class="mt-2"
-            >
-              Crossposted To Channels
+          <div class="grid grid-cols-12 gap-x-4">
+            <div class="col-span-12 lg:col-span-8">
+              <div
+                v-if="!discussion.body && route.name === 'DiscussionDetail'"
+                class="mt-1 flex space-x-2 py-2"
+              >
+                <ProfileAvatar class="h-5 w-5" />
+                <textarea
+                  v-if="!showEditorInCommentSection"
+                  id="addcomment"
+                  @click="showEditorInCommentSection = true"
+                  name="addcomment"
+                  rows="1"
+                  placeholder="Write a reply"
+                  class="
+                    block
+                    w-full
+                    rounded-full
+                    border-gray-300
+                    shadow-sm
+                    text-sm
+                    max-w-2xl
+                    focus:border-indigo-500 focus:ring-indigo-500
+                  "
+                />
+                <div v-else>
+                  <TextEditor
+                    class="mb-3 h-48"
+                    :placeholder="'Please be kind'"
+                    @update="handleUpdateComment"
+                  />
+                  <!-- <ErrorBanner v-if="createCommentError"
+                             :text="createCommentError.message" /> -->
+                  <div class="flex justify-start">
+                    <CancelButton @click="showEditorInCommentSection = false" />
+                    <SaveButton
+                      @click.prevent="
+                        () => {
+                          handleCreateComment();
+                          showEditorInCommentSection = false;
+                        }
+                      "
+                      :disabled="this.createFormValues.text.length === 0"
+                    />
+                  </div>
+                </div>
+              </div>
+              <CommentSection
+                ref="commentSectionRef"
+                v-if="route.name === 'DiscussionDetail'"
+                :commentSectionId="commentSectionId"
+                :locked="commentSectionIsLocked"
+              />
             </div>
-            <h3
-              v-else-if="
-                route.name !== 'DiscussionDetail' && channelLinks.length > 0
-              "
-              class="text-md"
-            >
-              Comments
-            </h3>
-            <router-link
-              v-for="channel in channelLinks"
-              :key="channel.uniqueName"
-              :to="{
-                name: 'DiscussionDetail',
-                params: {
-                  discussionId,
-                  channelId: channel.uniqueName,
-                },
-              }"
-            >
+
+            <div class="col-span-12 lg:col-span-4 text-gray-900 shadow-sm bg-gray-300 p-4 mr-4 rounded-lg">
+              <div
+                v-if="
+                  route.name === 'DiscussionDetail' &&
+                  discussion.Tags.length > 0
+                "
+              >
+                Tags
+              </div>
               <Tag
                 class="mt-2"
-                :tag="`${channel.uniqueName} (${getCommentCount(
-                  channel.uniqueName
-                )})`"
-                :channel-mode="true"
+                v-for="tag in discussion.Tags"
+                :tag="tag.text"
+                :key="tag.text"
+                :discussionId="discussionId"
               />
-            </router-link>
-          </div>
-          <div
-            v-if="!discussion.body && route.name === 'DiscussionDetail'"
-            class="mt-1 flex space-x-2 py-2"
-          >
-            <ProfileAvatar class="h-5 w-5" />
-            <textarea
-              v-if="!showEditorInCommentSection"
-              id="addcomment"
-              @click="showEditorInCommentSection = true"
-              name="addcomment"
-              rows="1"
-              placeholder="Write a reply"
-              class="
-                block
-                w-full
-                rounded-full
-                border-gray-300
-                shadow-sm
-                text-sm
-                max-w-2xl
-                focus:border-indigo-500 focus:ring-indigo-500
-              "
-            />
-            <div v-else>
-              <TextEditor
-                class="mb-3 h-48"
-                :placeholder="'Please be kind'"
-                @update="handleUpdateComment"
-              />
-              <!-- <ErrorBanner v-if="createCommentError"
-                             :text="createCommentError.message" /> -->
-              <div class="flex justify-start">
-                <CancelButton @click="showEditorInCommentSection = false" />
-                <SaveButton
-                  @click.prevent="
-                    () => {
-                      handleCreateComment();
-                      showEditorInCommentSection = false;
-                    }
-                  "
-                  :disabled="this.createFormValues.text.length === 0"
-                />
+              <div
+                v-if="
+                  route.name === 'DiscussionDetail' && channelLinks.length > 0
+                "
+                class="mt-2"
+              >
+                Crossposted To Channels
               </div>
+              <h3
+                v-else-if="
+                  route.name !== 'DiscussionDetail' && channelLinks.length > 0
+                "
+                class="text-md"
+              >
+                Comments
+              </h3>
+              <router-link
+                v-for="channel in channelLinks"
+                :key="channel.uniqueName"
+                :to="{
+                  name: 'DiscussionDetail',
+                  params: {
+                    discussionId,
+                    channelId: channel.uniqueName,
+                  },
+                }"
+              >
+                <Tag
+                  class="mt-2"
+                  :tag="`${channel.uniqueName} (${getCommentCount(
+                    channel.uniqueName
+                  )})`"
+                  :channel-mode="true"
+                />
+              </router-link>
             </div>
           </div>
-          <CommentSection
-            ref="commentSectionRef"
-            v-if="route.name === 'DiscussionDetail'"
-            :commentSectionId="commentSectionId"
-            :locked="commentSectionIsLocked"
-          />
         </div>
 
         <WarningModal
