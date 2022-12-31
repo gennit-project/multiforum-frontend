@@ -278,6 +278,18 @@ export default defineComponent({
             const existingCommentSectionData =
               readQueryResult?.commentSections[0];
 
+              let existingCommentAggregate =
+            existingCommentSectionData?.CommentsAggregate
+              ? existingCommentSectionData.CommentsAggregate
+              : null;
+          let newCommentAggregate = null;
+          if (existingCommentAggregate) {
+            newCommentAggregate = {
+              ...existingCommentAggregate,
+              count: existingCommentAggregate.count + 1,
+            };
+          }
+
             let rootCommentsCopy = [
               ...(existingCommentSectionData.Comments || []),
             ];
@@ -313,6 +325,9 @@ export default defineComponent({
                   {
                     ...existingCommentSectionData,
                     Comments: rootCommentsCopy,
+                    CommentsAggregate: newCommentAggregate
+                    ? newCommentAggregate
+                    : existingCommentAggregate,
                   },
                 ],
               },
@@ -422,7 +437,7 @@ export default defineComponent({
               query: GET_COMMENT_SECTION,
               data: {
                 ...readQueryResult,
-                posts: [
+                commentSections: [
                   {
                     ...existingCommentSectionData,
                     CommentsAggregate: newCommentAggregate
@@ -548,7 +563,7 @@ export default defineComponent({
         route.name === 'DiscussionDetail'
       "
     >
-      <h2 class="text-xl" id="comments" ref="commentSectionHeader">
+      <h2 class="text-lg mb-2" id="comments" ref="commentSectionHeader">
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
@@ -565,7 +580,7 @@ export default defineComponent({
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
         ref="commentSectionHeader"
-        class="text-xl max-w-2xl"
+        class="text-lg max-w-2xl"
       >
         {{
           `Comments (${commentResult.commentSections[0].CommentsAggregate.count})`
@@ -610,7 +625,6 @@ export default defineComponent({
 </template>
 <style scoped>
 h2 {
-  font-size: 1.65em;
   padding-bottom: 0.3em;
   border-bottom: 1px solid #eaecef;
 }
