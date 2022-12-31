@@ -57,7 +57,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-w-7xl py-1 px-4 lg:px-12">
+  <div class="py-1 px-4 lg:px-12">
     <div class="relative flex items-center justify-between h-10">
       <div class="flex items-center lg:px-0">
         <!-- <SiteLogo/> -->
