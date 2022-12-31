@@ -45,10 +45,10 @@ export default defineComponent({
     const userProfileDropdownRef = ref();
 
     useDetectOutsideClick(userProfileDropdownRef, () => {
-      if (props.showUserProfileDropdown) {
+      if (props.showUserProfileDropdown === true) {
         setTimeout(() => {
           emit("closeUserProfileDropdown");
-        }, "1000");
+        }, "2000");
       }
     });
 
