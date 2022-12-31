@@ -474,30 +474,48 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="top-10 pb-36 px-4 height-constrained-more lg:w-full">
+  <div
+    class="
+      top-10
+      pb-36
+      px-6
+      py-2
+      my-2
+      height-constrained-more
+      lg:w-full
+      bg-gray-50
+      space-y-2
+    "
+  >
+    <h2
+      v-if="route.name !== 'DiscussionDetail'"
+      class="pl-4 mt-2 text-gray-400 text-sm"
+    >
+      Preview
+    </h2>
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
       v-else-if="getDiscussionError"
       :text="getDiscussionError.message"
     />
+    <router-link
+      v-if="route.name === 'DiscussionDetail'"
+      :to="`/channels/c/${channelId}/discussions`"
+      class="underline text-xs text-gray-500 mb-4"
+    >
+      <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+      {{ `Discussion list in c/${channelId}` }}
+    </router-link>
     <div
-      v-else
+      v-if="discussion"
       ref="discussionDetail"
       :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-      class="bg-white pb-4 rounded"
+      class="bg-white p-10 rounded shadow-md"
     >
-      <router-link
-        v-if="route.name === 'DiscussionDetail'"
-        :to="`/channels/c/${channelId}/discussions`"
-        class="underline text-xs text-gray-500 mb-4"
-      >
-        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-        {{ `Discussion list in c/${channelId}` }}
-      </router-link>
-      <div class="mt-4 mb-4 md:flex md:items-center md:justify-between">
+      <div class="mb-4 md:flex md:items-center md:justify-between">
         <div class="flex-1 min-w-0">
-          <h1 class="mt-4 text-2xl max-w-2xl">
+          <h1 class="text-2xl max-w-2xl">
             {{ discussion.title }}
           </h1>
         </div>
@@ -556,7 +574,7 @@ export default defineComponent({
               >
             </div>
           </div>
-          <div v-if="discussion.body" class="body mr-10 max-w-2xl">
+          <div v-if="discussion.body" class="body max-w-2xl">
             <md-editor
               v-if="discussion.body"
               v-model="discussion.body"
@@ -613,10 +631,10 @@ export default defineComponent({
             </div>
           </div>
           <div class="grid grid-cols-12 gap-x-4">
-            <div class="col-span-12 lg:col-span-8">
+            <div class="col-span-12 2xl:col-span-8">
               <div
                 v-if="!discussion.body && route.name === 'DiscussionDetail'"
-                class="mt-1 flex space-x-2 py-2"
+                class="mt-1 flex space-x-2 py-4"
               >
                 <ProfileAvatar class="h-5 w-5" />
                 <textarea
@@ -667,57 +685,49 @@ export default defineComponent({
               />
             </div>
 
-            <div class="col-span-12 lg:col-span-4 text-gray-900 shadow-sm bg-gray-300 p-4 mr-4 rounded-lg">
+            <div class="col-span-12 2xl:col-span-4">
               <div
-                v-if="
-                  route.name === 'DiscussionDetail' &&
-                  discussion.Tags.length > 0
+                class="
+                  rounded-lg
+                  space-y-4
+                  shadow-sm
+                  bg-gray-200
+                  text-gray-900
+                  p-4
+                  mr-4
                 "
               >
-                Tags
-              </div>
-              <Tag
-                class="mt-2"
-                v-for="tag in discussion.Tags"
-                :tag="tag.text"
-                :key="tag.text"
-                :discussionId="discussionId"
-              />
-              <div
-                v-if="
-                  route.name === 'DiscussionDetail' && channelLinks.length > 0
-                "
-                class="mt-2"
-              >
-                Crossposted To Channels
-              </div>
-              <h3
-                v-else-if="
-                  route.name !== 'DiscussionDetail' && channelLinks.length > 0
-                "
-                class="text-md"
-              >
-                Comments
-              </h3>
-              <router-link
-                v-for="channel in channelLinks"
-                :key="channel.uniqueName"
-                :to="{
-                  name: 'DiscussionDetail',
-                  params: {
-                    discussionId,
-                    channelId: channel.uniqueName,
-                  },
-                }"
-              >
+                <div v-if="discussion.Tags.length > 0">Tags</div>
                 <Tag
                   class="mt-2"
-                  :tag="`${channel.uniqueName} (${getCommentCount(
-                    channel.uniqueName
-                  )})`"
-                  :channel-mode="true"
+                  v-for="tag in discussion.Tags"
+                  :tag="tag.text"
+                  :key="tag.text"
+                  :discussionId="discussionId"
                 />
-              </router-link>
+                <div v-if="channelLinks.length > 0">
+                  Crossposted To Channels
+                </div>
+                <router-link
+                  v-for="channel in channelLinks"
+                  :key="channel.uniqueName"
+                  :to="{
+                    name: 'DiscussionDetail',
+                    params: {
+                      discussionId,
+                      channelId: channel.uniqueName,
+                    },
+                  }"
+                >
+                  <Tag
+                    class="mt-2"
+                    :tag="`${channel.uniqueName} (${getCommentCount(
+                      channel.uniqueName
+                    )})`"
+                    :channel-mode="true"
+                  />
+                </router-link>
+              </div>
             </div>
           </div>
         </div>

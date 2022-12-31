@@ -35,6 +35,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <div>
   <div class="flex justify-center ">
       <div class="bg-white mx-auto md:w-2/3">
         <div v-if="!discussionId || !eventId">
@@ -47,10 +48,14 @@ export default defineComponent({
           <ChannelTabs class="block mt-2"/>
         </div>
       </div>
-      <div class="block">
-        <router-view></router-view>
-      </div>
+      
     </div>
   </div>
-  
+  <div class="block bg-gray-50 shadow-inner flex justify-center">
+    <div class=" md:w-2/3">
+      <router-view></router-view>
+    </div>
+    
+  </div>
+</div>
 </template>
