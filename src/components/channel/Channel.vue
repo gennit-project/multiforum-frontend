@@ -36,26 +36,22 @@ export default defineComponent({
 
 <template>
   <div>
-  <div class="flex justify-center ">
-      <div class="bg-white mx-auto md:w-2/3">
+    <div class="flex justify-center bg-white">
+      <div class="mx-auto md:w-2/3">
         <div v-if="!discussionId || !eventId">
-          <div  class="block flex justify-center"> 
+          <div class="block flex justify-center">
             <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
               {{ channelId }}
             </h1>
           </div>
-        <div class="block flex justify-center">
-          <ChannelTabs class="block mt-2"/>
+          <div class="block flex justify-center">
+            <ChannelTabs class="block mt-2" />
+          </div>
         </div>
       </div>
-      
     </div>
-  </div>
-  <div class="block bg-gray-50 shadow-inner flex justify-center">
-    <div class=" md:w-2/3">
+    <div class="block bg-gray-50 shadow-inner flex justify-center">
       <router-view></router-view>
     </div>
-    
   </div>
-</div>
 </template>

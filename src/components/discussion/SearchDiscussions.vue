@@ -321,16 +321,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white">
+  <div>
     <div v-if="!channelId" class="block flex justify-center">
       <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
         Search Discussions
       </h1>
     </div>
 
-    <div class="bg-white rounded px-4 lg:px-12 pr-8 flex justify-center">
+    <div class="rounded px-4 lg:px-12 pr-8 flex justify-center">
       <div class="pt-2 pb-2">
-        <div class="items-center flex justify-between">
+        <div class="items-center flex ">
           <div class="flex items-center space-x-2">
             <SearchBar
               class="flex mr-2 align-middle"
@@ -386,7 +386,7 @@ export default defineComponent({
       :text="discussionError.message"
     />
 
-    <div class="flex justify-center">
+    <div class="flex justify-center px-6">
       <div class="block w-full">
         <TwoSeparatelyScrollingPanes
           v-if="discussionResult && discussionResult.discussions"

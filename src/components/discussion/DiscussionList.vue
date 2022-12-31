@@ -70,7 +70,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="pt-4 w-full">
+  <div class="w-full">
     <p v-if="discussions.length === 0" class="px-4 lg:px-12">There are no results.</p>
     <p v-else class="px-4 lg:px-12">
       Showing {{ discussions.length }} of {{ resultCount }} results
@@ -78,7 +78,7 @@ export default defineComponent({
     <ul
       v-if="discussions.length > 0"
       role="list"
-      class="divide-y divide-gray-200 relative"
+      class="divide-y divide-gray-200 relative my-2 bg-white shadow-md rounded border border-1"
     >
       <DiscussionListItem
         v-for="discussion in discussions"

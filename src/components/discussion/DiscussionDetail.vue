@@ -479,7 +479,6 @@ export default defineComponent({
       top-10
       pb-36
       px-6
-      py-2
       my-2
       height-constrained-more
       lg:w-full
@@ -489,7 +488,7 @@ export default defineComponent({
   >
     <h2
       v-if="route.name !== 'DiscussionDetail'"
-      class="pl-4 mt-2 text-gray-400 text-sm"
+      class="pl-4 text-gray-400 text-sm"
     >
       Preview
     </h2>
@@ -544,7 +543,7 @@ export default defineComponent({
       <div>
         <div>
           <div class="text-xs text-gray-600 mt-4">
-            <div>
+            <div class="mb-2">
               <router-link
                 v-if="discussion.Author"
                 class="text-blue-800 underline"
