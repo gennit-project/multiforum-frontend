@@ -194,7 +194,7 @@ export default defineComponent({
     };
 
     const sendToPreview = (discussionId: string) => {
-      if (discussionId) {
+      if (!route.params.discussionId) {
         if (!channelId.value) {
           router.push({
             name: "SitewideSearchDiscussionPreview",

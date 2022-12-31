@@ -129,7 +129,7 @@ export default defineComponent({
         />
       </p>
       <p class="text-xs font-medium text-slate-600 no-underline">
-        {{ `Posted ${relativeTime} by @${authorUsername}` }}
+        {{ `Posted ${relativeTime} by ${authorUsername}` }}
       </p>
       <div class="text-sm" v-if="!isWithinChannel">
         <Tag
