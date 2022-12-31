@@ -17,6 +17,10 @@ export default defineComponent({
     };
   },
   props: {
+    disableAutoFocus: {
+      type: Boolean,
+      default: false,
+    },
     initialValue: {
       type: String,
       default: "",
@@ -35,9 +39,11 @@ export default defineComponent({
     },
   },
   created() {
-    this.$nextTick(() => {
-      this.$refs.editor.$el.children[1].children[0].children[0].focus();
-    });
+    if (!this.disableAutoFocus) {
+      this.$nextTick(() => {
+        this.$refs.editor.$el.children[1].children[0].children[0].focus();
+      });
+    }
   },
 });
 </script>
@@ -80,7 +86,7 @@ export default defineComponent({
       'preview',
       'htmlPreview',
       'catalog',
-      'github'
+      'github',
     ]"
     @update:model-value="$emit('update', text)"
   >
@@ -102,17 +108,20 @@ export default defineComponent({
   width: 100%;
   padding: 0;
   margin: 0;
-
 }
-#md-editor-v3-preview > p, ul, ol, blockquote {
+#md-editor-v3-preview > p,
+ul,
+ol,
+blockquote {
   font-size: 0.9rem;
   line-height: 1.5em;
   word-break: break-word;
 }
 
-#md-editor-v3-preview > p, ul, ol, li {
+#md-editor-v3-preview > p,
+ul,
+ol,
+li {
   line-height: 1.5em;
 }
-
-
 </style>

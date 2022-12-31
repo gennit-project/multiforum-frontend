@@ -1,5 +1,5 @@
 import {
-    InMemoryCache
+    InMemoryCache, ReactiveVar, makeVar
   } from "@apollo/client/core";
 
 const cache = new InMemoryCache({
@@ -105,8 +105,16 @@ const cache = new InMemoryCache({
             return merged;
           },
         },
+        username: {
+          read(){
+            // Store the username of the logged in user
+            return usernameVar()
+          }
+        }
       },
     },
   },
 });
+
+export const usernameVar: ReactiveVar<string> = makeVar<string>('')
 export default cache

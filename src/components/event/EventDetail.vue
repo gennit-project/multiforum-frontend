@@ -346,7 +346,7 @@ export default defineComponent({
 
       <div class="px-4 text-sm text-gray-700 space-y-2">
         <ul>
-          <li>
+          <li class="hanging-indent">
             <CalendarIcon class="inline h-5 w-5 mr-3 text-gray-700" />{{
               `${getFormattedDateString(
                 eventData.startTime
@@ -356,7 +356,7 @@ export default defineComponent({
               )}`
             }}
           </li>
-          <li v-if="eventData.isInPrivateResidence">
+          <li class="hanging-indent" v-if="eventData.isInPrivateResidence">
             <HomeIcon class="inline" /> This event is in a private residence.
           </li>
 
@@ -366,7 +366,7 @@ export default defineComponent({
               {{ eventData.virtualEventUrl }}
             </span>
           </li>
-          <li v-if="eventData.address">
+          <li class="hanging-indent" v-if="eventData.address">
             <LocationIcon
               class="inline h-5 w-5 mr-2 text-gray-700"
             ></LocationIcon>
@@ -392,6 +392,7 @@ export default defineComponent({
             </span>
           </li>
           <li
+            class="hanging-indent"
             v-if="!eventData.free && eventData.cost && eventData.cost !== '0'"
           >
             <TicketIcon class="inline h-5 w-5 mr-2 text-gray-700" />
@@ -528,6 +529,10 @@ export default defineComponent({
 <style scoped>
 li {
   margin-top: 0.5em;
+}
+.hanging-indent {
+  padding-left: 32px;
+  text-indent: -32px;
 }
 .height-constrained-more {
   max-height: 50vh;

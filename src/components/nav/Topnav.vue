@@ -36,7 +36,7 @@ export default defineComponent({
     return {
       isAuthenticated,
       login: () => {
-        loginWithRedirect();
+        loginWithRedirect( );
       },
     };
   },

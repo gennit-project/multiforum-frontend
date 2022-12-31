@@ -5,6 +5,7 @@ import { useAuth0 } from "@auth0/auth0-vue";
 export default {
   setup() {
     const { loginWithRedirect, user, isAuthenticated } = useAuth0();
+    console.log({user})
 
     return {
       isAuthenticated,
@@ -134,6 +135,13 @@ export default {
                 {{ profile.fields[field] }}
               </dd>
             </div> -->
+            <div class="sm:col-span-2">
+              <dt class="text-sm font-medium text-gray-500">Name</dt>
+              <dd
+                class="mt-1 max-w-prose space-y-5 text-sm text-gray-900"
+                v-html="user.name"
+              />
+            </div>
             <div class="sm:col-span-2">
               <dt class="text-sm font-medium text-gray-500">Email</dt>
               <dd

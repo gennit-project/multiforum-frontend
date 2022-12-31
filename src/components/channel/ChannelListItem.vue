@@ -44,28 +44,24 @@ export default defineComponent({
         relative
         rounded-lg
         bg-white
-        py-2
-        shadow-sm
+        py-4
+        shadow-md
         col-span-12
-        space-x-3
+        px-4
       "
     >
-      <div class="flex items-center">
-        <!-- <ChannelIcon class="h-12 w-12"/> -->
-        
-        <div class="min-w-0">
-          <p class="ml-2">
-            <router-link
-              :to="`/channels/c/${channel.uniqueName}`"
-              class="cursor-pointer"
-            >
-            <h3>{{ channel.uniqueName }}</h3>
-            </router-link>
-          </p>
-        </div>
+      <div >
+        <p >
+          <router-link
+            :to="`/channels/c/${channel.uniqueName}`"
+            class="cursor-pointer"
+          >
+          <h3>{{ channel.uniqueName }}</h3>
+          </router-link>
+        </p>
       </div>
       <div class="mt-1">
-        <p v-if="channel.description" class="text-sm truncate font-normal">
+        <p v-if="channel.description" class="text-sm truncate font-normal text-gray-600 my-1">
           <HighlightedSearchTerms
             :text="channel.description"
             :search-input="searchInput"

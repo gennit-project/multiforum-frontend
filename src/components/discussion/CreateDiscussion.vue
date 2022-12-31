@@ -34,20 +34,6 @@ export default defineComponent({
 
     const formValues = ref(createDiscussionDefaultValues);
 
-    // const getCommentSectionObjects = (newDiscussionId: string) => {
-    //   return selectedChannels.value.map((c) => {
-    //     return {
-    //       id: newDiscussionId + c,
-    //       Discussion: {
-    //         id: newDiscussionId,
-    //       },
-    //       Channel: {
-    //         uniqueName: c,
-    //       },
-    //     };
-    //   });
-    // };
-
     const createDiscussionInput = computed(() => {
       const tagConnections = formValues.value.selectedTags.map(
         (tag: string) => {

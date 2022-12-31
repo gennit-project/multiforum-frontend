@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from "vue";
+import { defineComponent, PropType, computed, ref, nextTick } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
@@ -28,7 +28,6 @@ import { DateTime, Interval } from "luxon";
 
 export default defineComponent({
   setup(props) {
-
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
     // TIME_SIMPLE yields the time in this format: 1:30 PM
     const timeFormat = DateTime.TIME_SIMPLE;
@@ -37,24 +36,29 @@ export default defineComponent({
       // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
       dateFormat: "MM/dd/yyyy",
       defaultStartTimeOption: {
-        label: DateTime.fromISO(props.formValues.startTime).toLocaleString(timeFormat),
+        label: DateTime.fromISO(props.formValues.startTime).toLocaleString(
+          timeFormat
+        ),
         value: props.formValues.startTime,
       },
       defaultEndTimeOption: {
-        label: DateTime.fromISO(props.formValues.endTime).toLocaleString(timeFormat),
+        label: DateTime.fromISO(props.formValues.endTime).toLocaleString(
+          timeFormat
+        ),
         value: props.formValues.endTime,
       },
       formTitle: props.editMode ? "Edit Event" : "Create Event",
       startTime: computed(() => {
-        return new Date(props.formValues.startTime)
+        return new Date(props.formValues.startTime);
       }), // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
       startTimeDay: ref(new Date(props.formValues.startTime)), // Create separate values for the start day and time because they can be changed separately
       endTime: computed(() => {
-        return new Date(props.formValues.endTime)
+        return new Date(props.formValues.endTime);
       }),
       endTimeDay: ref(new Date(props.formValues.endTime)),
       touched: false,
       timeFormat,
+      titleInputRef: ref(null)
     };
   },
   props: {
@@ -112,18 +116,28 @@ export default defineComponent({
     TextInput,
     TicketIcon,
   },
+  created() {
+    nextTick(() => {
+      if (this.titleInputRef){
+        this.titleInputRef?.$el?.children[0].childNodes[0].focus()
+      }
+    });
+  },
   computed: {
     datePickerErrorMessage() {
       if (this.startTime < new Date()) {
-        return 'Are you sure you want the start time to be in the past?'
+        return "Are you sure you want the start time to be in the past?";
       }
       if (this.startTime >= this.endTime) {
-        return 'The start time must be before the end time.'
+        return "The start time must be before the end time.";
       }
-      return ''
+      return "";
     },
     duration() {
-      return this.getDuration(this.startTime.toISOString(), this.endTime.toISOString())
+      return this.getDuration(
+        this.startTime.toISOString(),
+        this.endTime.toISOString()
+      );
     },
     startTimeOptions() {
       const options = [];
@@ -145,21 +159,26 @@ export default defineComponent({
       return options;
     },
     endTimeOptions() {
-      const options = []
+      const options = [];
       const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
-      let currentOption = startTimeObj
-      const end = startTimeObj.plus({ days: 1 })
+      let currentOption = startTimeObj;
+      const end = startTimeObj.plus({ days: 1 });
 
       while (currentOption < end) {
-        const optionAsISO = currentOption.toISO()
-        const duration = this.getDuration(this.startTime.toISOString(), optionAsISO)
+        const optionAsISO = currentOption.toISO();
+        const duration = this.getDuration(
+          this.startTime.toISOString(),
+          optionAsISO
+        );
         options.push({
-          label: `${currentOption.toLocaleString(this.timeFormat)} ${duration ? `(${duration})` : ''}`,
-          value: optionAsISO
-        })
-        currentOption = currentOption.plus({ minutes: 30 })
+          label: `${currentOption.toLocaleString(this.timeFormat)} ${
+            duration ? `(${duration})` : ""
+          }`,
+          value: optionAsISO,
+        });
+        currentOption = currentOption.plus({ minutes: 30 });
       }
-      return options
+      return options;
     },
     needsChanges() {
       // We do these checks:
@@ -200,22 +219,24 @@ export default defineComponent({
   methods: {
     getDuration(startTime: string, endTime: string) {
       if (DateTime.fromISO(startTime) >= DateTime.fromISO(endTime)) {
-        return ''
+        return "";
       }
       // Format time as "1h 30m"
-      const obj = Interval
-        .fromDateTimes(DateTime.fromISO(startTime), DateTime.fromISO(endTime))
+      const obj = Interval.fromDateTimes(
+        DateTime.fromISO(startTime),
+        DateTime.fromISO(endTime)
+      )
         .toDuration()
-        .shiftTo('hours', 'minutes')
-        .toObject()
+        .shiftTo("hours", "minutes")
+        .toObject();
 
       if (!obj.hours) {
-        return `${obj.minutes}m`
+        return `${obj.minutes}m`;
       }
       if (!obj.minutes) {
-        return `${obj.hours}h`
+        return `${obj.hours}h`;
       }
-      return `${obj.hours}h ${obj.minutes}m`
+      return `${obj.hours}h ${obj.minutes}m`;
     },
     toggleCostField() {
       if (this.formValues?.free) {
@@ -264,9 +285,9 @@ export default defineComponent({
       // Convert the date back to a Javascript date for compatibility with the calendar date picker.
       const newStartTime = existingStartTimeObject
         .set({ day, month, year })
-        .toISO()
+        .toISO();
       this.$emit("updateFormValues", { startTime: newStartTime });
-      this.touched = true
+      this.touched = true;
     },
     handleEndDateChange(event: any) {
       const endTimeISO = this.endTime.toISOString();
@@ -278,7 +299,7 @@ export default defineComponent({
         .toISO();
 
       this.$emit("updateFormValues", { endTime: newEndTime });
-      this.touched = true
+      this.touched = true;
     },
     handleStartTimeChange(event: any) {
       const startTimeISO = this.startTime.toISOString();
@@ -289,7 +310,7 @@ export default defineComponent({
         .set({ hour, minute })
         .toJSDate();
       this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
-      this.touched = true
+      this.touched = true;
     },
     handleEndTimeChange(event: any) {
       const endTimeISO = this.endTime.toISOString();
@@ -298,27 +319,30 @@ export default defineComponent({
       const { hour, minute } = newEndTimeObject;
       const newEndTime = existingEndTimeObject.set({ hour, minute });
       this.$emit("updateFormValues", { endTime: newEndTime.toISO() });
-      this.touched = true
+      this.touched = true;
     },
     handleUpdateLocation(event: any) {
       if (!event.place_id) {
-        throw new Error('Could not find a Google place ID based on the form input.')
+        throw new Error(
+          "Could not find a Google place ID based on the form input."
+        );
       }
-      const { place_id, name, formatted_address, geometry: {
-        location: {
-          lat,
-          lng
-        }
-      }
-      } = event
-      this.$emit('updateFormValues', {
+      const {
+        place_id,
+        name,
+        formatted_address,
+        geometry: {
+          location: { lat, lng },
+        },
+      } = event;
+      this.$emit("updateFormValues", {
         placeId: place_id,
         locationName: name,
         address: formatted_address,
         latitude: lat(),
-        longitude: lng()
-      })
-    }
+        longitude: lng(),
+      });
+    },
   },
 });
 </script>
@@ -331,39 +355,57 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <TailwindForm class="pt-8 max-w-3xl" v-else-if="formValues" :form-title="formTitle" :needs-changes="needsChanges"
-      @input="touched = true" @submit="$emit('submit')">
+    <TailwindForm
+      class="pt-8 max-w-3xl"
+      v-else-if="formValues"
+      :form-title="formTitle"
+      :needs-changes="needsChanges"
+      @input="touched = true"
+      @submit="$emit('submit')"
+    >
       <div class="pr-8">
         <FormRow>
           <template v-slot:icon>
             <VTooltip class="inline-flex">
-              <PencilIcon class="inline-flex" :wide="true" /><span class="text-red-500">*</span>
+              <PencilIcon class="inline-flex" :wide="true" /><span
+                class="text-red-500"
+                >*</span
+              >
               <template #popper> Title </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <TextInput :value="formValues.title" :full-width="true" :placeholder="'Add title'"
-              @update="$emit('updateFormValues', { title: $event })" />
+            <TextInput
+              ref="titleInputRef"
+              :value="formValues.title"
+              :full-width="true"
+              :placeholder="'Add title'"
+              @update="$emit('updateFormValues', { title: $event })"
+            />
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
             <VTooltip class="inline-flex">
-              <ChannelIcon class="float-right h-6 w-6" /><span class="text-red-500">*</span>
+              <ChannelIcon class="float-right h-6 w-6" /><span
+                class="text-red-500"
+                >*</span
+              >
               <template #popper> Channels </template>
             </VTooltip>
-
           </template>
           <template v-slot:content>
-            <TagInput :selected-channels="formValues.selectedChannels" :channel-mode="true" @setSelectedTags="
-              $emit('updateFormValues', { selectedChannels: $event })
-            " />
+            <TagInput
+              :selected-channels="formValues.selectedChannels"
+              :channel-mode="true"
+              @setSelectedTags="
+                $emit('updateFormValues', { selectedChannels: $event })
+              "
+            />
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
-
             <VTooltip class="inline-flex">
               <ClockIcon class="float-right h-6" />
               <template #popper> Date and Time </template>
@@ -371,7 +413,8 @@ export default defineComponent({
           </template>
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
-              <DatePicker class="
+              <DatePicker
+                class="
                   focus:ring-blue-500 focus:border-blue-500
                   mt-1
                   pt-2.5
@@ -382,11 +425,20 @@ export default defineComponent({
                   rounded
                   sm:text-sm
                   border-gray-300
-                " v-model="startTimeDay" :input-format="dateFormat" @update:modelValue="handleStartDateChange" />
-              <Dropdown class="w-52" :options="startTimeOptions" :default-option="defaultStartTimeOption"
-                @selected="handleStartTimeChange($event.value)" />
+                "
+                v-model="startTimeDay"
+                :input-format="dateFormat"
+                @update:modelValue="handleStartDateChange"
+              />
+              <Dropdown
+                class="w-52"
+                :options="startTimeOptions"
+                :default-option="defaultStartTimeOption"
+                @selected="handleStartTimeChange($event.value)"
+              />
               <RightArrowIcon />
-              <DatePicker class="
+              <DatePicker
+                class="
                   focus:ring-blue-500 focus:border-blue-500
                   mt-1
                   pt-2.5
@@ -397,10 +449,18 @@ export default defineComponent({
                   rounded
                   sm:text-sm
                   border-gray-300
-                " v-model="endTimeDay" :input-format="dateFormat" :lower-limit="startTime"
-                @update:modelValue="handleEndDateChange" />
-              <Dropdown class="w-52" :options="endTimeOptions" :default-option="defaultEndTimeOption"
-                @selected="handleEndTimeChange($event.value)" />
+                "
+                v-model="endTimeDay"
+                :input-format="dateFormat"
+                :lower-limit="startTime"
+                @update:modelValue="handleEndDateChange"
+              />
+              <Dropdown
+                class="w-52"
+                :options="endTimeOptions"
+                :default-option="defaultEndTimeOption"
+                @selected="handleEndTimeChange($event.value)"
+              />
               <div class="ml-2 mr-2">
                 {{ duration }}
               </div>
@@ -410,103 +470,132 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
             <VTooltip class="inline-flex">
               <LinkIcon class="float-right" />
               <template #popper> Link to Virtual Event </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <TextInput :value="formValues.virtualEventUrl" :use-v-model="true" :full-width="true"
+            <TextInput
+              :value="formValues.virtualEventUrl"
+              :use-v-model="true"
+              :full-width="true"
               :placeholder="'Add a virtual event URL'"
-              @update="$emit('updateFormValues', { virtualEventUrl: $event })" />
-            <ErrorMessage :text="
-              touched &&
-              formValues.virtualEventUrl &&
-              formValues.virtualEventUrl.length > 0 &&
-              !urlIsValid
-                ? 'Must be a valid URL starting with https://'
-                : ''
-            " />
+              @update="$emit('updateFormValues', { virtualEventUrl: $event })"
+            />
+            <ErrorMessage
+              :text="
+                touched &&
+                formValues.virtualEventUrl &&
+                formValues.virtualEventUrl.length > 0 &&
+                !urlIsValid
+                  ? 'Must be a valid URL starting with https://'
+                  : ''
+              "
+            />
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
             <VTooltip class="inline-flex">
               <LocationIcon :wide="true" class="float-right" />
               <template #popper> Location </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <LocationSearchBar :search-placeholder="'Add an address'" :full-width="true"
-              :reference-point-address-name="`${formValues.locationName ? `${formValues.locationName}, `: ''}${formValues.address ? formValues.address : ''}`"
-              @updateLocationInput="handleUpdateLocation" />
+            <LocationSearchBar
+              :search-placeholder="'Add an address'"
+              :full-width="true"
+              :reference-point-address-name="`${
+                formValues.locationName ? `${formValues.locationName}, ` : ''
+              }${formValues.address ? formValues.address : ''}`"
+              @updateLocationInput="handleUpdateLocation"
+            />
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
             <VTooltip class="inline-flex">
               <AnnotationIcon class="float-right" />
               <template #popper> Details </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <TextEditor class="mb-3 h-56" :initial-value="formValues.description" :placeholder="'Add details'"
-              @update="$emit('updateFormValues', { description: $event })" />
+            <TextEditor
+              class="mb-3 h-56"
+              :disable-auto-focus="true"
+              :initial-value="formValues.description"
+              :placeholder="'Add details'"
+              @update="$emit('updateFormValues', { description: $event })"
+            />
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
             <VTooltip class="inline-flex">
               <TagIcon class="float-right h-6" />
               <template #popper> Tags </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <TagInput :selected-tags="formValues.selectedTags" @setSelectedTags="
-              $emit('updateFormValues', { selectedTags: $event })
-            " />
+            <TagInput
+              :selected-tags="formValues.selectedTags"
+              @setSelectedTags="
+                $emit('updateFormValues', { selectedTags: $event })
+              "
+            />
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
             <VTooltip class="inline-flex">
               <HomeIcon class="float-right" />
               <template #popper> Private Residence </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <CheckBox class="align-middle" :checked="formValues.isInPrivateResidence"
-              @input="togglePrivateResidenceField" />
-            <span class="ml-2 align-middle">This event is in a private residence</span>
+            <CheckBox
+              class="align-middle"
+              :checked="formValues.isInPrivateResidence"
+              @input="togglePrivateResidenceField"
+            />
+            <span class="ml-2 align-middle"
+              >This event is in a private residence</span
+            >
           </template>
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-
             <VTooltip class="inline-flex">
               <TicketIcon class="float-right" />
               <template #popper> Cost to Attend </template>
             </VTooltip>
           </template>
           <template v-slot:content>
-            <CheckBox class="align-middle" :checked="formValues.free" @input="toggleCostField" />
+            <CheckBox
+              class="align-middle"
+              :checked="formValues.free"
+              @input="toggleCostField"
+            />
             <span class="ml-2 align-middle">This event is free</span>
-            <TextInput v-show="!formValues.free" :value="formValues.cost" :full-width="true"
-              :placeholder="'Add cost details'" @update="$emit('updateFormValues', { cost: $event })" />
+            <TextInput
+              v-show="!formValues.free"
+              :value="formValues.cost"
+              :full-width="true"
+              :placeholder="'Add cost details'"
+              @update="$emit('updateFormValues', { cost: $event })"
+            />
           </template>
         </FormRow>
       </div>
-      <ErrorBanner v-if="needsChanges && touched" :text="changesRequiredMessage" />
+      <ErrorBanner
+        v-if="needsChanges && touched"
+        :text="changesRequiredMessage"
+      />
       <ErrorBanner v-if="createEventError" :text="createEventError.message" />
       <ErrorBanner v-if="updateEventError" :text="updateEventError.message" />
     </TailwindForm>
   </div>
 </template>
 <style>
-
 </style>

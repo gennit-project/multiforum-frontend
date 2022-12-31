@@ -38,6 +38,16 @@ export const GET_USER = gql`
     }
 }`;
 
+export const DOES_USER_EXIST = gql`
+  query doesUserExist($username: String!) {
+    users(where: {
+      username: $username
+    }) {
+      username
+    }
+  }
+`
+
 export const USER_LOOKUP = gql`
   query getUser($username: String!) {
     getUser(username: $username) {

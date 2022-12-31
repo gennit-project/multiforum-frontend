@@ -20,9 +20,10 @@ import CreateChannel from "@/components/channel/CreateChannel.vue";
 import EditChannel from "@/components/channel/EditChannel.vue";
 import MapView from "@/components/event/MapView.vue";
 import EventListView from "@/components/event/EventListView.vue";
-import PageNotFound from "@/components/generic/PageNotFound.vue"
-import LogoutPage from "@/components/auth/LogoutPage.vue"
-import LoggedInUserProfile from "@/components/user/LoggedInUserProfile.vue"
+import PageNotFound from "@/components/generic/PageNotFound.vue";
+import LogoutPage from "@/components/auth/LogoutPage.vue";
+import LoggedInUserProfile from "@/components/user/LoggedInUserProfile.vue";
+import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -36,7 +37,11 @@ export const router = createRouter({
     },
     {
       path: "/logout",
-      component: LogoutPage
+      component: LogoutPage,
+    },
+    {
+      path: "/createUsername",
+      component: CreateUsernamePage,
     },
     {
       name: "MapView",
@@ -178,8 +183,8 @@ export const router = createRouter({
                   name: "SearchEventPreview",
                   path: "search/:eventId",
                   component: EventDetail,
-                }
-              ]
+                },
+              ],
             },
             {
               name: "CreateEventInChannel",
@@ -203,7 +208,11 @@ export const router = createRouter({
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
     { path: "/u/:username", component: UserProfile },
-    { path: "/myProfile", component: LoggedInUserProfile },
+    {
+      name: "LoggedInUserProfile",
+      path: "/myProfile",
+      component: LoggedInUserProfile,
+    },
     { path: "/settings", component: SiteSettings },
     {
       path: "/:catchAll(.*)",
