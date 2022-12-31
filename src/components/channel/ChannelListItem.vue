@@ -44,10 +44,10 @@ export default defineComponent({
         relative
         rounded-lg
         bg-white
-        py-4
+        py-6
         shadow-md
         col-span-12
-        px-4
+        px-8
       "
     >
       <div >
@@ -56,7 +56,7 @@ export default defineComponent({
             :to="`/channels/c/${channel.uniqueName}`"
             class="cursor-pointer"
           >
-          <h3>{{ channel.uniqueName }}</h3>
+          <h3 class="mb-2">{{ channel.uniqueName }}</h3>
           </router-link>
         </p>
       </div>

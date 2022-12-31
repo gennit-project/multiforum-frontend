@@ -691,7 +691,7 @@ export default defineComponent({
                   rounded-lg
                   space-y-4
                   shadow-sm
-                  bg-gray-200
+                  bg-gray-100
                   text-gray-900
                   p-4
                   mr-4

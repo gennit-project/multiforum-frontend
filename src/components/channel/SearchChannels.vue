@@ -201,9 +201,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white">
-    <div class="mx-auto max-w-5xl bg-white rounded pl-8 pr-8">
-      <div class="mb-4 pt-8">
+  <div class="bg-gray-50">
+    <div class="rounded pl-8 pr-8 bg-white shadow-sm">
+      <div class="mb-4 pt-8  mx-auto max-w-5xl ">
         <div class="block flex justify-center"> 
 
           <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
@@ -211,37 +211,38 @@ export default defineComponent({
             Channels
           </h1>
         </div>
-        <div class="mt-2 items-center flex justify-between">
-          <!-- <SearchBar
-            class="flex"
-            :search-placeholder="'Search channels'"
-            @updateSearchInput="updateSearchResult"
-          /> -->
-            <FilterChip
-              class="align-middle"
-              :label="tagLabel"
-              :highlighted="tagLabel !== defaultLabels.tags"
-            >
-              <template v-slot:icon>
-                <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-              </template>
-              <template v-slot:content>
-                <TagPicker
-                  :selected-tags="selectedTags.value"
-                  @setSelectedTags="setSelectedTags"
-                />
-              </template>
-            </FilterChip>
-            <CreateButton :to="createChannelPath" :label="'Create Channel'" />
-
-        </div>
+        
       </div>
     </div>
-
+    
     <div class="pt-1">
+      <div class="mt-2 flex justify-between mx-auto max-w-5xl">
+        <!-- <SearchBar
+          class="flex"
+          :search-placeholder="'Search channels'"
+          @updateSearchInput="updateSearchResult"
+        /> -->
+          <FilterChip
+            class="align-middle"
+            :label="tagLabel"
+            :highlighted="tagLabel !== defaultLabels.tags"
+          >
+            <template v-slot:icon>
+              <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            </template>
+            <template v-slot:content>
+              <TagPicker
+                :selected-tags="selectedTags.value"
+                @setSelectedTags="setSelectedTags"
+              />
+            </template>
+          </FilterChip>
+          <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+  
+      </div>
       <ErrorBanner class="mx-auto max-w-5xl" v-if="channelError" :text="channelError.message" />
       <ChannelList
-        class="px-8 flex-1 text-xl font-bold mx-auto max-w-5xl"
+        class="flex-1 text-xl font-bold mx-auto max-w-5xl"
         v-if="channelResult && channelResult.channels"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate.count"
@@ -250,7 +251,7 @@ export default defineComponent({
         @filterByTag="filterByTag"
         @loadMore="loadMore"
       />
-      <div class="px-8 flex-1 mx-auto max-w-5xl" v-if="channelLoading">
+      <div class="flex-1 mx-auto max-w-5xl" v-if="channelLoading">
         Loading...
       </div>
     </div>
