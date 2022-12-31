@@ -266,7 +266,22 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="height-constrained-more">
+  <div
+    class="
+      height-constrained-more
+      pb-36
+      px-6
+      lg:w-full
+      bg-gray-50
+      space-y-2
+    "
+  >
+  <h2
+      v-if="route.name !== 'EventDetail'"
+      class="pl-4 text-gray-400 text-sm"
+    >
+      Preview
+    </h2>
     <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
     <ErrorBanner
       class="px-4 lg:px-10"
@@ -281,7 +296,7 @@ export default defineComponent({
     <div
       v-else-if="eventResult && eventResult.events && eventData"
       :class="route.name === 'EventDetail' ? ' overflow-y-scroll' : ''"
-      class="bg-white rounded pb-4 pr-8 px-4 lg:px-10"
+      class="bg-white rounded shadow-md pb-4 pr-8 lg:px-10"
     >
       <ErrorBanner
         class="mt-2 mb-2"
@@ -415,13 +430,14 @@ export default defineComponent({
           :readonly="true"
         />
         <Tag
+          class="mt-2"
           v-for="tag in eventData.Tags"
           :tag="tag.text"
           :key="tag.text"
           :eventId="eventId"
         />
         <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
-          Crossposted To Channels:
+          Crossposted To Channels
         </div>
 
         <router-link

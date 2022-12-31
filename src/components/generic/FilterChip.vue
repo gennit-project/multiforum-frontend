@@ -37,6 +37,7 @@ export default defineComponent({
           text-gray-700
           bg-white
           hover:bg-gray-50
+          whitespace-nowrap
           focus:ring-1 focus:ring-blue-500 focus:border-blue-500
         "
       >

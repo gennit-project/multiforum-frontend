@@ -5,8 +5,8 @@ import { defineComponent } from "vue";
 export default defineComponent({
   props: {
     active: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false,
     },
     text: {
       type: String,
@@ -18,30 +18,26 @@ export default defineComponent({
 </script>
 
 <template>
-
-
   <button
     v-on:keydown.enter.prevent
     type="button"
     :class="[active ? 'ring-1 ring-blue-500 border-blue-500' : '']"
     class="
-      inline-flex
-      items-center
-      rounded-full
-      border border-gray-200
-      bg-white
-      px-4
+      flex inline-flex
+      max-height-3
+      px-3.5
       py-2
+      border
       text-xs
       font-medium
-      leading-4
+      rounded-full
       text-gray-700
-      shadow-sm
+      bg-white
       hover:bg-gray-50
-      focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+      focus:ring-1 focus:ring-blue-500 focus:border-blue-500
     "
   >
-  <slot></slot>
-  {{ text }}
+    <slot></slot>
+    <span class="whitespace-nowrap">{{ text }}</span>
   </button>
 </template>

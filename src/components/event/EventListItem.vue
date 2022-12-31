@@ -30,7 +30,18 @@ export default defineComponent({
       return "";
     });
 
+    const defaultUniqueName = computed(() => {
+      if (props.currentChannelId){
+        return props.currentChannelId
+      }
+      if (props.event.Channels[0]) {
+        return props.event.Channels[0].uniqueName;
+      }
+      return ''
+    })
+
     return {
+      defaultUniqueName,
       eventIdInParams,
       formattedDate,
       timeOfDay,
@@ -98,9 +109,6 @@ export default defineComponent({
     return {
       previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
-      defaultUniqueName: props.event.Channels[0]
-        ? props.event.Channels[0].uniqueName
-        : "cluse",
     };
   },
   components: {

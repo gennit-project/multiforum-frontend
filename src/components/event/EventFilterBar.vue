@@ -470,7 +470,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="pb-1">
-    <div class="items-center flex justify-center space-x-2 mb-1">
+    <div class="items-center flex justify-center space-x-2 mb-1 px-4">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -502,13 +502,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <GenericSmallButton
-        @click="toggleTimeSlotPicker"
-        :active="timeSlotFiltersActive"
-        :text="'Times'"
-      >
-        <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
-      </GenericSmallButton>
+      
       <Modal
         v-if="showTimeSlotPicker"
         :title="'Select Weekly Time Slots'"
@@ -579,13 +573,24 @@ export default defineComponent({
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
-      <slot></slot>
-      <div v-if="channelId">
-        <GenericSmallButton @click="$emit('showMap')" :text="'Map'">
-          <MapIcon class="h-4 w-4 mr-2" />
-        </GenericSmallButton>
+ 
+        <slot></slot>
+        <GenericSmallButton
+        @click="toggleTimeSlotPicker"
+        :active="timeSlotFiltersActive"
+        :text="'Times'"
+      >
+        <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
+      </GenericSmallButton>
+       
+        <div v-if="channelId">
+          <GenericSmallButton @click="$emit('showMap')" :text="'Map'">
+            <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </GenericSmallButton>
+        </div>
       </div>
-    </div>
+      
+
     <!-- <CreateButton
           class="inline-flex float-right"
           :to="createEventPath"
@@ -616,7 +621,7 @@ export default defineComponent({
         @click="updateEventTypeFilter(shortcut)"
       />
     </div>
-    <div>
+    <div class="px-4 block">
       <div
         v-if="filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL"
         class="items-center space-x-2 flex flex-wrap"
