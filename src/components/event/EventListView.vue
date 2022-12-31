@@ -100,7 +100,7 @@ export default defineComponent({
     });
 
     const sendToPreview = (eventId: string, eventLocationId: string) => {
-      if (eventId) {
+      if (!route.params.eventId) {
         if (!channelId.value) {
           router.push({
             name: "SitewideSearchEventPreview",

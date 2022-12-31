@@ -43,40 +43,8 @@ export default defineComponent({
       router, 
     };
   },
-  created() {
-    if (
-      !this.eventId &&
-      this.eventResult &&
-      this.eventResult.events &&
-      this.eventResult.events.length > 0
-    ) {
-      this.sendToPreview(this.eventResult.events[0].id);
-    }
-  },
   methods: {
-    sendToPreview(eventId: string, eventLocationId: string) {
-      if (eventId) {
-        if (!this.channelId) {
-          router.push({
-            name: "SitewideSearchEventPreview",
-            params: {
-              eventId,
-            },
-            hash: `#${eventLocationId ? eventLocationId : ""}`,
-          });
-        } else {
-          router.push({
-            name: "SearchEventPreview",
-            params: {
-              eventId,
-            },
-            hash: `#${eventLocationId ? eventLocationId : ""}`,
-          });
-        }
-      }
-    },
     goToMap(){
-
       if (!this.channelId) {
         this.router.push({
           name: "MapView",
