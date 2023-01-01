@@ -322,7 +322,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="!channelId" class="block flex justify-center">
+    <div v-if="!channelId" class="block flex justify-center bg-white shadow">
       <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
         Search Discussions
       </h1>
@@ -387,7 +387,7 @@ export default defineComponent({
     />
 
     <div class="flex justify-center px-6">
-      <div class="block w-full">
+      <div class="block w-full max-w-7xl">
         <TwoSeparatelyScrollingPanes
           v-if="discussionResult && discussionResult.discussions"
         >

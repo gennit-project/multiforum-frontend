@@ -71,7 +71,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="w-full">
-    <p v-if="discussions.length === 0" class="px-4 lg:px-12">There are no results.</p>
+    <p v-if="discussions.length === 0" class="px-4">There are no results.</p>
     <p v-else class="px-4 lg:px-12">
       Showing {{ discussions.length }} of {{ resultCount }} results
     </p>

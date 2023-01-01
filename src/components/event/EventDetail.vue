@@ -270,7 +270,8 @@ export default defineComponent({
     class="
       height-constrained-more
       pb-36
-      px-6
+      px-4
+      my-2
       lg:w-full
       bg-gray-50
       space-y-2
@@ -282,6 +283,14 @@ export default defineComponent({
     >
       Preview
     </h2>
+    <router-link
+        v-if="route.name === 'EventDetail'"
+        :to="`/channels/c/${channelId}/events`"
+        class="underline text-xs text-gray-500 mb-4"
+      >
+        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        {{ `Event list in c/${channelId}` }}
+      </router-link>
     <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
     <ErrorBanner
       class="px-4 lg:px-10"
@@ -318,14 +327,7 @@ export default defineComponent({
         v-if="eventData.canceled"
         :text="'This event is canceled.'"
       />
-      <router-link
-        v-if="route.name === 'EventDetail'"
-        :to="`/channels/c/${channelId}/events`"
-        class="underline text-xs text-gray-500 mb-4"
-      >
-        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-        {{ `Event list in c/${channelId}` }}
-      </router-link>
+      
       <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4">
         <div class="flex-1 min-w-0">
           <h2

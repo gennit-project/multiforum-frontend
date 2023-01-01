@@ -44,6 +44,7 @@ import {
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
 } from "./eventSearchOptions";
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -90,7 +91,7 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  setup() {
     const defaultFilterLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -199,6 +200,7 @@ export default defineComponent({
       referencePointName: ref(defaultPlace.name),
       referencePointAddress: ref(defaultPlace.address),
       referencePointPlaceId: ref(defaultPlace.referencePointId),
+      route,
       distanceUnit,
       selectedDistanceUnit: ref(MilesOrKm.MI),
       showTimeSlotPicker: ref(false),
@@ -470,7 +472,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="pb-1">
-    <div class="items-center flex justify-center space-x-2 mb-1 px-4">
+    <div v-if="route.name !== 'EventDetail'" class="items-center flex justify-center space-x-2 mb-1 px-4">
       <FilterChip
         class="align-middle"
         v-if="!channelId"
@@ -621,7 +623,7 @@ export default defineComponent({
         @click="updateEventTypeFilter(shortcut)"
       />
     </div>
-    <div class="px-4 block">
+    <div class="px-4 block" v-if="route.name !== 'EventDetail'">
       <div
         v-if="filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL"
         class="items-center space-x-2 flex flex-wrap"

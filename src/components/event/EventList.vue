@@ -118,7 +118,7 @@ export default defineComponent({
     <p class="prose px-4 mt-3" v-if="loadedEventCount && resultCount">
       {{ `Showing ${loadedEventCount} of ${resultCount} results` }}
     </p>
-    <ul
+      <ul
       v-if="events.length > 0"
       role="list"
       class="rounded bg-white divide-y divide-gray-200 mb-4"

@@ -484,6 +484,7 @@ export default defineComponent({
       lg:w-full
       bg-gray-50
       space-y-2
+      max-w-5xl
     "
   >
     <h2
@@ -629,6 +630,7 @@ export default defineComponent({
               </div>
             </div>
           </div>
+
           <div class="grid grid-cols-12 gap-x-4">
             <div class="col-span-12 2xl:col-span-8">
               <div
@@ -676,37 +678,13 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-              <CommentSection
-                ref="commentSectionRef"
-                v-if="route.name === 'DiscussionDetail'"
-                :commentSectionId="commentSectionId"
-                :locked="commentSectionIsLocked"
-              />
-            </div>
-
-            <div class="col-span-12 2xl:col-span-4">
               <div
-                class="
-                  rounded-lg
-                  space-y-4
-                  shadow-sm
-                  bg-gray-100
-                  text-gray-900
-                  p-4
-                  mr-4
+                class="my-4"
+                v-if="
+                  route.name !== 'DiscussionDetail' && channelLinks.length > 0
                 "
               >
-                <div v-if="discussion.Tags.length > 0">Tags</div>
-                <Tag
-                  class="mt-2"
-                  v-for="tag in discussion.Tags"
-                  :tag="tag.text"
-                  :key="tag.text"
-                  :discussionId="discussionId"
-                />
-                <div v-if="channelLinks.length > 0">
-                  Crossposted To Channels
-                </div>
+                <div>Posted in Channels</div>
                 <router-link
                   v-for="channel in channelLinks"
                   :key="channel.uniqueName"
@@ -726,6 +704,65 @@ export default defineComponent({
                     :channel-mode="true"
                   />
                 </router-link>
+              </div>
+              <CommentSection
+                class="mb-2"
+                ref="commentSectionRef"
+                v-if="route.name === 'DiscussionDetail'"
+                :commentSectionId="commentSectionId"
+                :locked="commentSectionIsLocked"
+              />
+            </div>
+
+            <div
+              class="col-span-12 2xl:col-span-4"
+              v-if="discussion.Tags.length > 0 || channelLinks.length > 0"
+            >
+              <div
+                class="
+                  rounded-lg
+                  space-y-4
+                  shadow-sm
+                  bg-gray-100
+                  text-gray-900
+                  p-4
+                  mr-4
+                "
+              >
+                <div v-if="discussion.Tags.length > 0">Tags</div>
+                <Tag
+                  class="mt-2"
+                  v-for="tag in discussion.Tags"
+                  :tag="tag.text"
+                  :key="tag.text"
+                  :discussionId="discussionId"
+                />
+                <div
+                  v-if="
+                    route.name === 'DiscussionDetail' && channelLinks.length > 0
+                  "
+                >
+                  <div>Crossposted To Channels</div>
+                  <router-link
+                    v-for="channel in channelLinks"
+                    :key="channel.uniqueName"
+                    :to="{
+                      name: 'DiscussionDetail',
+                      params: {
+                        discussionId,
+                        channelId: channel.uniqueName,
+                      },
+                    }"
+                  >
+                    <Tag
+                      class="mt-2"
+                      :tag="`${channel.uniqueName} (${getCommentCount(
+                        channel.uniqueName
+                      )})`"
+                      :channel-mode="true"
+                    />
+                  </router-link>
+                </div>
               </div>
             </div>
           </div>

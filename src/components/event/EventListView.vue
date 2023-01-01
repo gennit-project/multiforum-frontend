@@ -219,7 +219,7 @@ export default defineComponent({
           />
           <div class="mx-auto" v-if="eventLoading">Loading...</div>
           <EventPreview
-            v-else-if="smAndDown"
+            v-if="smAndDown"
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />

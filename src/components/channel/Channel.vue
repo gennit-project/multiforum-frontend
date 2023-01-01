@@ -36,7 +36,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="flex justify-center bg-white">
+    <div class="flex justify-center bg-white shadow">
       <div class="mx-auto md:w-2/3">
         <div v-if="!discussionId || !eventId">
           <div class="block flex justify-center">
