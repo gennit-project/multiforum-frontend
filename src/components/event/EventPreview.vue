@@ -98,7 +98,7 @@
                         bg-white
                         py-2
                         px-4
-                        border border-gray-300
+                        border
                         rounded-full
                         shadow-sm
                         text-sm

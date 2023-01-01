@@ -121,8 +121,7 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    :class="[event.id === eventIdInParams ? 'bg-slate-100' : '']"
-    class="relative bg-white pl-4 cursor-pointer"
+    class="relative bg-white pl-6 cursor-pointer border-l-4"
     @click="$emit('openPreview')"
   >
     <router-link :to="previewLink">

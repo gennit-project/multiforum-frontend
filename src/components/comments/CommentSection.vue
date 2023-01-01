@@ -7,7 +7,7 @@ import {
   CommentData,
   CreateEditCommentFormValues,
   CreateReplyInputData,
-  DeleteCommentInputData
+  DeleteCommentInputData,
 } from "@/types/commentTypes";
 import {
   GET_COMMENT_SECTION,
@@ -16,7 +16,7 @@ import {
 import {
   DELETE_COMMENT,
   UPDATE_COMMENT,
-  SOFT_DELETE_COMMENT
+  SOFT_DELETE_COMMENT,
 } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
@@ -32,8 +32,8 @@ export default defineComponent({
     },
     locked: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   components: {
     Comment,
@@ -173,8 +173,8 @@ export default defineComponent({
             CommentsAggregate(existingValue: any) {
               return {
                 ...existingValue,
-                count: existingValue.count - 1
-              }
+                count: existingValue.count - 1,
+              };
             },
           },
         });
@@ -246,7 +246,6 @@ export default defineComponent({
       };
       return [input];
     });
-  
 
     const { mutate: createComment, error: createCommentError } = useMutation(
       CREATE_COMMENT,
@@ -278,17 +277,17 @@ export default defineComponent({
             const existingCommentSectionData =
               readQueryResult?.commentSections[0];
 
-              let existingCommentAggregate =
-            existingCommentSectionData?.CommentsAggregate
-              ? existingCommentSectionData.CommentsAggregate
-              : null;
-          let newCommentAggregate = null;
-          if (existingCommentAggregate) {
-            newCommentAggregate = {
-              ...existingCommentAggregate,
-              count: existingCommentAggregate.count + 1,
-            };
-          }
+            let existingCommentAggregate =
+              existingCommentSectionData?.CommentsAggregate
+                ? existingCommentSectionData.CommentsAggregate
+                : null;
+            let newCommentAggregate = null;
+            if (existingCommentAggregate) {
+              newCommentAggregate = {
+                ...existingCommentAggregate,
+                count: existingCommentAggregate.count + 1,
+              };
+            }
 
             let rootCommentsCopy = [
               ...(existingCommentSectionData.Comments || []),
@@ -326,8 +325,8 @@ export default defineComponent({
                     ...existingCommentSectionData,
                     Comments: rootCommentsCopy,
                     CommentsAggregate: newCommentAggregate
-                    ? newCommentAggregate
-                    : existingCommentAggregate,
+                      ? newCommentAggregate
+                      : existingCommentAggregate,
                   },
                 ],
               },
@@ -356,14 +355,14 @@ export default defineComponent({
               cache.modify({
                 id: cache.identify({
                   __typename: "Comment",
-                  id: createFormValues.value.parentCommentId
+                  id: createFormValues.value.parentCommentId,
                 }),
                 fields: {
                   ChildCommentsAggregate(existingValue: any) {
                     return {
                       ...existingValue,
-                      count: existingValue.count + 1
-                    }
+                      count: existingValue.count + 1,
+                    };
                   },
                 },
               });
@@ -409,7 +408,7 @@ export default defineComponent({
                 },
               });
             }
-            
+
             // Update the total count of comments
             const readCommentSectionQueryResult = cache.readQuery({
               query: GET_COMMENT_SECTION,
@@ -418,11 +417,13 @@ export default defineComponent({
               },
             });
 
-            const existingCommentSectionData = readCommentSectionQueryResult?.posts[0];
+            const existingCommentSectionData =
+              readCommentSectionQueryResult?.posts[0];
 
-            let existingCommentAggregate = existingCommentSectionData?.CommentsAggregate
-              ? existingCommentSectionData.CommentsAggregate
-              : null;
+            let existingCommentAggregate =
+              existingCommentSectionData?.CommentsAggregate
+                ? existingCommentSectionData.CommentsAggregate
+                : null;
 
             let newCommentAggregate = null;
 
@@ -495,7 +496,7 @@ export default defineComponent({
       //   loadMore,
       //   reachedEndOfResults,
       route,
-      softDeleteComment
+      softDeleteComment,
     };
   },
 
@@ -513,7 +514,7 @@ export default defineComponent({
       };
     },
     updateEditInputValues(text: string, isRootComment: boolean) {
-      this.editFormValues.isRootComment = isRootComment
+      this.editFormValues.isRootComment = isRootComment;
       this.editFormValues.text = text;
     },
     handleClickCreate() {
@@ -533,24 +534,24 @@ export default defineComponent({
     handleSaveEdit() {
       this.editComment();
     },
-    handleDeleteComment(){
+    handleDeleteComment() {
       if (this.commentToDeleteReplyCount > 0) {
         // Soft delete the comment if there are replies
         // to allow the replies to remain visible
-        this.softDeleteComment({ id: this.commentToDeleteId })
+        this.softDeleteComment({ id: this.commentToDeleteId });
       }
       if (this.commentToDeleteReplyCount === 0) {
         // Hard delete the comment if there are no replies
         // to avoid cluttering the screen
         this.deleteComment({ id: this.commentToDeleteId });
       }
-    }
+    },
   },
   inheritAttrs: false,
 });
 </script>
 <template>
-  <div class="pt-4">
+  <div class="pt-2">
     <p v-if="commentLoading">Loading comments...</p>
     <ErrorBanner
       class="mt-2"
@@ -575,7 +576,6 @@ export default defineComponent({
     </div>
 
     <div v-else-if="commentResult.commentSections.length > 0">
-      
       <h2
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
@@ -591,21 +591,22 @@ export default defineComponent({
         v-if="locked"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-
-      <Comment
-        v-for="comment in commentResult.commentSections[0].Comments"
-        :key="comment.id"
-        :compact="true"
-        :commentData="comment"
-        :depth="1"
-        :locked="locked"
-        @clickEditComment="handleClickEdit"
-        @deleteComment="handleClickDelete"
-        @createComment="handleClickCreate"
-        @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
-        @updateEditCommentInput="updateEditInputValues"
-        @saveEdit="handleSaveEdit"
-      />
+      <div class="bg-gray-100 shadow-inner py-2 px-3 rounded-md">
+        <Comment
+          v-for="comment in commentResult.commentSections[0].Comments"
+          :key="comment.id"
+          :compact="true"
+          :commentData="comment"
+          :depth="1"
+          :locked="locked"
+          @clickEditComment="handleClickEdit"
+          @deleteComment="handleClickDelete"
+          @createComment="handleClickCreate"
+          @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
+          @updateEditCommentInput="updateEditInputValues"
+          @saveEdit="handleSaveEdit"
+        />
+      </div>
     </div>
     <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">
       <LoadMore

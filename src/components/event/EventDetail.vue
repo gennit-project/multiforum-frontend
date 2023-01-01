@@ -273,7 +273,6 @@ export default defineComponent({
       px-4
       my-2
       lg:w-full
-      bg-gray-50
       space-y-2
     "
   >

@@ -475,17 +475,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="
-      top-10
-      pb-36
-      px-6
-      my-2
-      height-constrained-more
-      lg:w-full
-      bg-gray-50
-      space-y-2
-      max-w-5xl
-    "
+    class="top-10 pb-36 px-6 my-2 height-constrained-more space-y-2 max-w-6xl"
   >
     <h2
       v-if="route.name !== 'DiscussionDetail'"
@@ -544,7 +534,7 @@ export default defineComponent({
       <div>
         <div>
           <div class="text-xs text-gray-600 mt-4">
-            <div class="mb-2">
+            <div class="mb-2 mt-4">
               <router-link
                 v-if="discussion.Author"
                 class="text-blue-800 underline"
@@ -719,6 +709,10 @@ export default defineComponent({
               v-if="discussion.Tags.length > 0 || channelLinks.length > 0"
             >
               <div
+                v-if="
+                  discussion.Tags.length > 0 ||
+                  (route.name === 'DiscussionDetail' && channelLinks.length > 0)
+                "
                 class="
                   rounded-lg
                   space-y-4

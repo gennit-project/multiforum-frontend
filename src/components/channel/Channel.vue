@@ -50,7 +50,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="block bg-gray-50 shadow-inner flex justify-center">
+    <div class="block shadow-inner flex justify-center">
       <router-view></router-view>
     </div>
   </div>

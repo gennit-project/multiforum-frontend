@@ -117,7 +117,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="border my-2 px-6 shadow bg-white rounded-md">
     <div :class="['max-w-3xl my-4']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">
@@ -162,7 +162,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div v-if="compact" class="text-xs text-gray-400 space-x-2">
+      <div v-if="compact" class="text-xs text-gray-400 space-x-2 mt-1">
         <!-- <UpArrowIcon
           class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
         />
@@ -271,12 +271,6 @@ export default defineComponent({
       </div>
       <div
         id="childComments"
-        :class="[
-          'pl-4',
-          highlight
-            ? 'border-l-2 border-gray-200'
-            : 'border-l-2 border-gray-100',
-        ]"
         v-if="replyCount > 0 && showReplies"
       >
         <ChildComments

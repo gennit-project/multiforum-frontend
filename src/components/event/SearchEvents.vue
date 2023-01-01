@@ -67,15 +67,14 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mx-auto ">
+  <div class="mx-auto">
     <div v-if="!channelId" class="block flex justify-center bg-white shadow">
       <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
         Search Events
       </h1>
     </div>
-    <div class="flex justify-center max-w-5xl">
+    <div class="flex justify-center">
       <EventFilterBar
-        class="mt-2 max-w-5xl"
         :channel-id="channelId"
         :result-count="resultCount"
         :loaded-event-count="loadedEventCount"
