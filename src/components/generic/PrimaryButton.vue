@@ -20,7 +20,11 @@ export default defineComponent({
 <template>
   <button
     :disabled="disabled"
-    :class="[disabled ? 'bg-gray-200 cursor-default text-gray-600' : '']"
+    :class="[
+      disabled
+        ? 'bg-gray-200 cursor-default text-gray-600'
+        : 'text-blue-700 bg-blue-100 hover:bg-blue-200',
+    ]"
     class="
       inline-flex
       whitespace-nowrap
@@ -31,9 +35,6 @@ export default defineComponent({
       text-sm
       font-medium
       rounded-full
-      text-blue-700
-      bg-blue-100
-      hover:bg-blue-200
       focus:outline-none
       focus:ring-offset-2
       focus:ring-offset-gray-100

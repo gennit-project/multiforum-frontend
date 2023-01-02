@@ -1,5 +1,12 @@
 import { gql } from '@apollo/client/core';
 
+// This gets a reactive variable in the Apollo cache.
+export const GET_LOCAL_USERNAME = gql`
+  query getLocalUsername {
+    username @client
+  }
+`
+
 export const GET_USER_INFO_FOR_TAGS = gql`
   query getUser($username: String!) {
     getUser(username: $username) {
@@ -44,6 +51,9 @@ export const DOES_USER_EXIST = gql`
       username: $username
     }) {
       username
+      Email {
+        address
+      }
     }
   }
 `

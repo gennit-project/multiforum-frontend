@@ -10,7 +10,10 @@ import {
 } from "@vue/apollo-composable";
 import { TagData } from "@/types/tagTypes";
 import { ChannelData } from "@/types/channelTypes";
-import { CreateEditDiscussionFormValues, DiscussionData } from "@/types/discussionTypes";
+import {
+  CreateEditDiscussionFormValues,
+  DiscussionData,
+} from "@/types/discussionTypes";
 import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 
@@ -92,7 +95,7 @@ export default defineComponent({
         selectedChannels: discussion.Channels.map((channel: ChannelData) => {
           return channel.uniqueName;
         }),
-        author: discussion.Author.username
+        author: discussion.Author.username,
       };
     });
 
@@ -130,7 +133,6 @@ export default defineComponent({
     });
 
     const updateDiscussionInput = computed(() => {
-
       const tagConnections = formValues.value.selectedTags.map(
         (tag: string) => {
           return {
@@ -272,15 +274,16 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditDiscussionFields :edit-mode="true"
-                              :discussion-loading="getDiscussionLoading"
-                              :get-discussion-error="getDiscussionError"
-                              :update-discussion-error="updateDiscussionError"
-                              :form-values="formValues"
-                              @submit="submit"
-                              @updateFormValues="updateFormValues" />
+  <CreateEditDiscussionFields
+    :edit-mode="true"
+    :discussion-loading="getDiscussionLoading"
+    :get-discussion-error="getDiscussionError"
+    :update-discussion-error="updateDiscussionError"
+    :form-values="formValues"
+    @submit="submit"
+    @updateFormValues="updateFormValues"
+  />
 </template>
 
 <style>
-
 </style>

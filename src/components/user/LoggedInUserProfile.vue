@@ -1,11 +1,24 @@
 
   <script>
+  import { computed } from 'vue'
+  import { useQuery } from '@vue/apollo-composable';
+  import { GET_LOCAL_USERNAME } from '@/graphQLData/user/queries';
 import { useAuth0 } from "@auth0/auth0-vue";
 
 export default {
   setup() {
     const { loginWithRedirect, user, isAuthenticated } = useAuth0();
-    console.log({user})
+    const {
+      result: localUsernameResult,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+
+    const username = computed(() => {
+      if (localUsernameResult.value){
+        return localUsernameResult.value.username
+      }
+      return ""
+    })
 
     return {
       isAuthenticated,
@@ -13,6 +26,7 @@ export default {
         loginWithRedirect();
       },
       user,
+      username,
       tabs: [
         { name: "Profile", href: "/myProfile", current: true },
         // { name: 'Calendar', href: '#', current: false },
@@ -79,20 +93,14 @@ export default {
                 <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
                   <h1 class="truncate text-2xl font-bold text-gray-900">
                     {{
-                      user["https://dgraph.io/jwt/claims"]?.username
-                        ? user["https://dgraph.io/jwt/claims"]?.username
-                        : user.name
-                    }}
+                      username }}
                   </h1>
                 </div>
               </div>
             </div>
             <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
               <h1 class="truncate text-2xl font-bold text-gray-900">
-                {{
-                  user["https://dgraph.io/jwt/claims"]?.username
-                    ? user["https://dgraph.io/jwt/claims"]?.username
-                    : user.name
+                {{ username
                 }}
               </h1>
             </div>
@@ -135,13 +143,6 @@ export default {
                 {{ profile.fields[field] }}
               </dd>
             </div> -->
-            <div class="sm:col-span-2">
-              <dt class="text-sm font-medium text-gray-500">Name</dt>
-              <dd
-                class="mt-1 max-w-prose space-y-5 text-sm text-gray-900"
-                v-html="user.name"
-              />
-            </div>
             <div class="sm:col-span-2">
               <dt class="text-sm font-medium text-gray-500">Email</dt>
               <dd
