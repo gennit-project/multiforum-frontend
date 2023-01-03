@@ -24,6 +24,7 @@ import {
   CREATE_COMMENT,
   CREATE_COMMENT_SECTION,
 } from "@/graphQLData/comment/mutations";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
@@ -52,6 +53,18 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
+
+    const {
+      result: localUsernameResult,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username
+      if (username) {
+        return username
+      }
+      return ""
+    })
 
     const discussionId = computed(() => {
       if (typeof route.params.discussionId === "string") {
@@ -248,7 +261,7 @@ export default defineComponent({
             connect: {
               where: {
                 node: {
-                  username: "Alice",
+                  username: username.value,
                 },
               },
             },

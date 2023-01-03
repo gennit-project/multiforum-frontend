@@ -81,8 +81,8 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <div v-else-if="channel" >
-      <div >
+    <div v-else-if="channel">
+      <div>
         <div class="mr-6 shadow">
           <div v-if="channel.description" class="body min-height-min">
             <md-editor
@@ -93,7 +93,9 @@ export default defineComponent({
               preview-only
             />
           </div>
-          <p v-else class="mt-4 pt-4 pb-4 pr-8 pl-8 bg-white rounded">{{'This channel has no description.'}}</p>
+          <p v-else class="mt-4 pt-4 pb-4 pr-8 pl-8 bg-white rounded">
+            {{ "This channel has no description." }}
+          </p>
         </div>
       </div>
 
@@ -133,15 +135,16 @@ export default defineComponent({
         >
           Admins
         </h2>
-        <div class="font-bold text-sm" v-if="channel.Admins.length > 0">
-          <router-link
-            v-for="admin in channel.Admins"
-            :key="admin.username"
-            :to="`/u/${admin.username}`"
-          >
-            {{ `@${admin.username}` }}
-          </router-link>
-        </div>
+        <ul
+          class="font-bold underline text-sm"
+          v-if="channel.Admins.length > 0"
+        >
+          <li v-for="admin in channel.Admins" :key="admin.username">
+            <router-link :key="admin.username" :to="`/u/${admin.username}`">
+              {{ admin.username }}
+            </router-link>
+          </li>
+        </ul>
 
         <p class="text-sm mb-6" v-else>
           This channel does not have any admins.

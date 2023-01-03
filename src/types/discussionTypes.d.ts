@@ -19,7 +19,6 @@ export interface DiscussionData {
 export interface CreateEditDiscussionFormValues {
     title: string;
     body: string;
-    author: string;
     selectedTags: Array[string];
     selectedChannels: Array[string];
 }

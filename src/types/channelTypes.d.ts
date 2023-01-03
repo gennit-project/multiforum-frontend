@@ -18,6 +18,5 @@ export type ChannelData = {
 export type CreateEditChannelFormValues = {
     uniqueName: string;
     description: string;
-    selectedTags: Array[string]
-    username: string;
+    selectedTags: Array[string];
 }

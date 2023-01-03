@@ -2,12 +2,14 @@
 import { defineComponent, ref, computed } from "vue";
 import {
   useMutation,
+  useQuery,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
-import { CREATE_EVENT } from "@/graphQLData/event/mutations"
+import { CREATE_EVENT } from "@/graphQLData/event/mutations";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { apolloClient } from "@/main";
 import { getTimePieces } from "@/utils/dateTimeUtils";
 import { DateTime } from "luxon";
@@ -29,31 +31,46 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
-    const channelId: string = `${route.params.channelId ? route.params.channelId : ''}`;
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
-    const createEventDefaultValues: CreateEditEventFormValues = getDefaultEventFormValues(channelId)
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
 
-    const formValues = ref(createEventDefaultValues)
+    const channelId: string = `${
+      route.params.channelId ? route.params.channelId : ""
+    }`;
+
+    const createEventDefaultValues: CreateEditEventFormValues =
+      getDefaultEventFormValues(channelId);
+
+    const formValues = ref(createEventDefaultValues);
     const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
 
     const startTimePieces = ref(getTimePieces(defaultStartTimeObj));
     // const defaultEndTimeISO = defaultStartTimeObj.plus({ minutes: 30 }).toISO();
 
     const createEventInput = computed(() => {
-      const tagConnections = formValues.value.selectedTags.map((tag: string) => {
-        return {
-          onCreate: {
-            node: {
-              text: tag,
+      const tagConnections = formValues.value.selectedTags.map(
+        (tag: string) => {
+          return {
+            onCreate: {
+              node: {
+                text: tag,
+              },
             },
-          },
-          where: {
-            node: {
-              text: tag,
+            where: {
+              node: {
+                text: tag,
+              },
             },
-          },
-        };
-      });
+          };
+        }
+      );
 
       const channelConnections = formValues.value.selectedChannels.map(
         (channel: string | string[]) => {
@@ -83,7 +100,7 @@ export default defineComponent({
         startTimeHourOfDay: startTimePieces.value.startTimeHourOfDay || 0,
         endTime: formValues.value.endTime || null,
         canceled: false,
-        cost: formValues.value.cost || '',
+        cost: formValues.value.cost || "",
         free: formValues.value.free || false,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
@@ -97,7 +114,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                username: "cluse",
+                username: username.value,
               },
             },
           },
@@ -223,7 +240,7 @@ export default defineComponent({
       createEventError,
       createEventInput,
       formValues,
-      router
+      router,
     };
   },
   methods: {

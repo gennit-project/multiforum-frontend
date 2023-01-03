@@ -9,7 +9,9 @@ import {
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
+import { useQuery } from "@vue/apollo-composable";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "CreateChannel",
@@ -22,13 +24,24 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
+    const {
+      result: localUsernameResult,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username
+      if (username) {
+        return username
+      }
+      return ""
+    })
+
     const channelId: string | string[] = route.params.channelId;
 
     const createChannelDefaultValues: CreateEditChannelFormValues = {
       uniqueName: "",
       description: "",
       selectedTags: [],
-      username: "cluse"
     }
    
     const formValues = ref(createChannelDefaultValues)
@@ -60,7 +73,7 @@ export default defineComponent({
             connect: {
               where: {
                 node: {
-                  username: formValues.value.username,
+                  username: username.value,
                 },
               },
             },

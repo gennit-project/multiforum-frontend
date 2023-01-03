@@ -44,7 +44,7 @@ import {
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
 } from "./eventSearchOptions";
-import { useRoute } from "vue-router";
+import CreateButton from "../generic/CreateButton.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -55,6 +55,7 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
+    CreateButton,
     FilterChip,
     FilterIcon,
     GenericSmallButton,
@@ -601,11 +602,11 @@ export default defineComponent({
     </div>
     <div class="flex justify-center"></div>
     <div class="flex justify-center">
-      <!-- <CreateButton
+      <CreateButton
           class="inline-flex float-right"
           :to="createEventPath"
           :label="'Create Event'"
-        /> -->
+        />
       <div v-if="!channelId" class="flex flex-wrap">
         <Tag
           class="align-middle"

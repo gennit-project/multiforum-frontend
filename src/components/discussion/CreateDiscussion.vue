@@ -1,10 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useMutation, provideApolloClient } from "@vue/apollo-composable";
+import { useMutation, useQuery, provideApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
 import { CREATE_DISCUSSION } from "@/graphQLData/discussion/mutations";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { DiscussionData } from "@/types/discussionTypes";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
@@ -19,6 +20,18 @@ export default defineComponent({
   setup() {
     provideApolloClient(apolloClient);
 
+    const {
+      result: localUsernameResult,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username
+      if (username) {
+        return username
+      }
+      return ""
+    })
+
     const route = useRoute();
     const router = useRouter();
 
@@ -29,7 +42,6 @@ export default defineComponent({
       body: "",
       selectedChannels: channelId ? [channelId] : [],
       selectedTags: [],
-      author: "cluse",
     };
 
     const formValues = ref(createDiscussionDefaultValues);
@@ -77,7 +89,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                username: formValues.value.author,
+                username: username.value,
               },
             },
           },

@@ -22,6 +22,7 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 
 export default defineComponent({
@@ -48,6 +49,17 @@ export default defineComponent({
       // Makes component rerender when comment section ID changes
       return props.commentSectionId;
     });
+    const {
+      result: localUsernameResult,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username
+      if (username) {
+        return username
+      }
+      return ""
+    })
 
     const {
       result: commentResult,
@@ -237,7 +249,7 @@ export default defineComponent({
             connect: {
               where: {
                 node: {
-                  username: "Alice",
+                  username: username.value,
                 },
               },
             },

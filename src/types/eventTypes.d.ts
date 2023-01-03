@@ -18,7 +18,6 @@ export interface CreateEditEventFormValues {
   description: string;
   selectedTags: Array[string];
   selectedChannels: Array[string];
-  poster: string;
   address?: string;
   latitude?: number;
   longitude?: number;

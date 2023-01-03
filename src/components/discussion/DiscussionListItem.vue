@@ -70,7 +70,7 @@ export default defineComponent({
       createdAt: props.discussion.createdAt,
       discussionIdInParams,
       relativeTime: relativeTime(props.discussion.createdAt),
-      authorUsername: props.discussion.Author.username,
+      authorUsername: props.discussion.Author ? props.discussion.Author.username : "Deleted",
       // If we are already within the channel, don't show
       // links to cost channels and don't specify which
       // channel the comments are in.
