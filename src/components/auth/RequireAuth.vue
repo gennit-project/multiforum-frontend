@@ -5,10 +5,11 @@ import { useAuth0 } from "@auth0/auth0-vue";
 export default defineComponent({
 
   setup() {
-    const { isAuthenticated } = useAuth0();
+    const { isAuthenticated, loginWithPopup } = useAuth0();
 
     return {
-      isAuthenticated
+      isAuthenticated,
+      loginWithPopup
     };
   },
 });
@@ -18,7 +19,9 @@ export default defineComponent({
     <div v-if="isAuthenticated">
         <slot name="has-auth"></slot>
     </div>
-    <div v-else name="does-not-have-auth"></div>
+    <div v-else @click="loginWithPopup">
+      <slot name="does-not-have-auth"></slot>
+    </div>
   </div>
 </template>
       

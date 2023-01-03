@@ -11,6 +11,8 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
+import PrimaryButton from "../generic/PrimaryButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
 
@@ -24,6 +26,8 @@ export default defineComponent({
     CreateButton,
     ErrorBanner,
     FilterChip,
+    PrimaryButton,
+    RequireAuth,
     TagPicker,
     TagIcon,
   },
@@ -237,7 +241,17 @@ export default defineComponent({
               />
             </template>
           </FilterChip>
-          <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+          <RequireAuth>
+            <template v-slot:has-auth>
+              <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+            </template>
+            <template v-slot:does-not-have-auth>
+              <PrimaryButton
+                :label="'Create Channel'"
+              />
+            </template>
+          </RequireAuth>
+          
   
       </div>
       <ErrorBanner class="mx-auto max-w-5xl" v-if="channelError" :text="channelError.message" />

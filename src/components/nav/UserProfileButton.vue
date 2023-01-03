@@ -40,9 +40,9 @@ export default defineComponent({
     aria-haspopup="true"
   >
     <span class="sr-only">Open user menu</span>
-    <UserCircle v-if="!isAuthenticated" class="h-8 w-8"/>
+    <UserCircle v-if="!isAuthenticated || !user || !user.picture" class="h-8 w-8"/>
     <img
-      v-else
+      v-else-if="user && user.picture"
       class="h-8 w-8 rounded-full"
       :src="user.picture"
       alt=""

@@ -7,14 +7,13 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import ErrorBanner from "./components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
 import { usernameVar } from "./cache";
-import MainLayout from "./components/layout/MainLayout.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 
 export default defineComponent({
   components: {
     CreateUsernamePage,
     ErrorBanner,
-    MainLayout,
+    
   },
   props: {
     email: {
@@ -50,7 +49,7 @@ export default defineComponent({
       if (!isAuthenticated) {
         return false;
       }
-      if (isAuthenticated && user.value?.email && !localUsernameResult.value.username) {
+      if (isAuthenticated && user.value?.email && !localUsernameResult.value?.username) {
         return true;
       }
       return false;
@@ -71,6 +70,7 @@ export default defineComponent({
       emailError,
       emailLoading,
       hasEmailButNotUsername,
+      isAuthenticated,
       showTopNav,
     };
   },
@@ -103,7 +103,6 @@ export default defineComponent({
       :text="emailError.message"
     ></ErrorBanner>
     <CreateUsernamePage v-if="hasEmailButNotUsername"> </CreateUsernamePage>
-    <MainLayout/>
   </div>
 </template>
 
