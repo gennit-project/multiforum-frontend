@@ -35,6 +35,10 @@ export default defineComponent({
       type: String,
       default: "Delete"
     },
+    secondaryButtonText: {
+      type: String,
+      default: "Cancel"
+    }
   },
   setup() {
   },
@@ -184,7 +188,7 @@ export default defineComponent({
                   @click="$emit('close')"
                   ref="cancelButtonRef"
                 >
-                  Cancel
+                  {{ secondaryButtonText }}
                 </button>
               </div>
             </DialogPanel>

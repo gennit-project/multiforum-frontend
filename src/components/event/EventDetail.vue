@@ -270,30 +270,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="
-      height-constrained-more
-      pb-36
-      px-4
-      my-2
-      lg:w-full
-      space-y-2
-    "
-  >
-  <h2
-      v-if="route.name !== 'EventDetail'"
-      class="pl-4 text-gray-400 text-sm"
-    >
+  <div class="height-constrained-more pb-36 px-4 my-2 lg:w-full space-y-2">
+    <h2 v-if="route.name !== 'EventDetail'" class="pl-4 text-gray-400 text-sm">
       Preview
     </h2>
     <router-link
-        v-if="route.name === 'EventDetail'"
-        :to="`/channels/c/${channelId}/events`"
-        class="underline text-xs text-gray-500 mb-4"
-      >
-        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-        {{ `Event list in c/${channelId}` }}
-      </router-link>
+      v-if="route.name === 'EventDetail'"
+      :to="`/channels/c/${channelId}/events`"
+      class="underline text-xs text-gray-500 mb-4"
+    >
+      <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+      {{ `Event list in c/${channelId}` }}
+    </router-link>
     <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
     <ErrorBanner
       class="px-4 lg:px-10"
@@ -330,7 +318,7 @@ export default defineComponent({
         v-if="eventData.canceled"
         :text="'This event is canceled.'"
       />
-      
+
       <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4">
         <div class="flex-1 min-w-0">
           <h2
@@ -348,11 +336,20 @@ export default defineComponent({
         <div v-if="channelId" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
           <div class="float-right">
             <span>
-              <router-link
-                :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+              <RequireAuth
+                class="flex inline-flex"
+                v-if="eventData.Poster"
+                :require-ownership="true"
+                :owners="[eventData.Poster.username]"
               >
-                <GenericButton :text="'Edit'" />
-              </router-link>
+                <template v-slot:has-auth>
+                  <router-link
+                    :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+                  >
+                    <GenericButton :text="'Edit'" />
+                  </router-link>
+                </template>
+              </RequireAuth>
               <RequireAuth class="flex inline-flex">
                 <template v-slot:has-auth>
                   <CreateButton
@@ -363,10 +360,7 @@ export default defineComponent({
                   />
                 </template>
                 <template v-slot:does-not-have-auth>
-                  <PrimaryButton
-                    class="ml-2"
-                    :label="'Create Event'"
-                  />
+                  <PrimaryButton class="ml-2" :label="'Create Event'" />
                 </template>
               </RequireAuth>
             </span>
@@ -490,22 +484,32 @@ export default defineComponent({
               ? `Edited ${relativeTime("" + eventData.updatedAt)}`
               : ""
           }}
-          <span v-if="route.name === 'EventDetail'">&#8226;</span>
-          <span
-            v-if="!compactMode && route.name === 'EventDetail'"
-            class="ml-1 underline font-medium text-gray-900 cursor-pointer"
-            @click="confirmDeleteIsOpen = true"
-            >Delete</span
+
+          <RequireAuth
+            class="flex inline-flex"
+            v-if="eventData.Poster && route.name === 'EventDetail'"
+            :require-ownership="true"
+            :owners="[eventData.Poster.username]"
           >
-          <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1"
-            >&#8226;</span
-          >
-          <span
-            v-if="!compactMode && !eventData.canceled"
-            class="underline font-medium text-gray-900 cursor-pointer"
-            @click="confirmCancelIsOpen = true"
-            >Cancel</span
-          >
+            <template v-slot:has-auth>
+              <span >&#8226;</span>
+              <span
+                class="ml-1 underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmDeleteIsOpen = true"
+                >Delete</span
+              >
+              <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1"
+                >&#8226;</span
+              >
+              <span
+                v-if="!eventData.canceled"
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmCancelIsOpen = true"
+                >Cancel</span
+              >
+            </template>
+          </RequireAuth>
+
           <span v-if="route.name !== 'EventDetail'" class="ml-1 mr-1"
             >&#8226;</span
           >
@@ -546,6 +550,7 @@ export default defineComponent({
         :body="'Are you sure you want to cancel this event?'"
         :open="confirmCancelIsOpen"
         :primary-button-text="'Yes, cancel the event'"
+        :secondary-button-text="'No'"
         @close="confirmCancelIsOpen = false"
         @primaryButtonClick="cancelEvent"
       />
