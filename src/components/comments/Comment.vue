@@ -15,6 +15,7 @@ import TextEditor from "./TextEditor.vue";
 import CancelButton from "@/components/generic/CancelButton.vue";
 import SaveButton from "@/components/generic/SaveButton.vue";
 import ChildComments from "./ChildComments.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -24,6 +25,7 @@ export default defineComponent({
     // DownArrowIcon,
     EmojiExtension,
     MdEditor,
+    RequireAuth,
     SaveButton,
     TextEditor,
     // UpArrowIcon,
@@ -170,13 +172,23 @@ export default defineComponent({
         <DownArrowIcon
           class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
         /> -->
-        <span
-          v-if="!locked"
-          class="underline cursor-pointer hover:text-black"
-          :class="showReplyEditor ? 'text-black' : ''"
-          @click="showReplyEditor = !showReplyEditor"
-          >Reply</span
+        <RequireAuth
+          class="flex inline-flex"
+          v-if="$route.name === 'DiscussionDetail' && !locked"
         >
+          <template v-slot:has-auth>
+            <span
+              class="underline cursor-pointer hover:text-black"
+              :class="showReplyEditor ? 'text-black' : ''"
+              @click="showReplyEditor = !showReplyEditor"
+              >Reply</span
+            >
+          </template>
+          <template v-slot:does-not-have-auth>
+            <span class="underline cursor-pointer hover:text-black">Reply</span>
+          </template>
+        </RequireAuth>
+
         <span
           class="underline cursor-pointer hover:text-black"
           @click="
@@ -269,10 +281,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div
-        id="childComments"
-        v-if="replyCount > 0 && showReplies"
-      >
+      <div id="childComments" v-if="replyCount > 0 && showReplies">
         <ChildComments
           v-slot="slotProps"
           :parent-comment-id="commentData.id"

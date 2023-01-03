@@ -45,6 +45,8 @@ import {
   defaultSelectedWeeklyHourRanges,
 } from "./eventSearchOptions";
 import CreateButton from "../generic/CreateButton.vue";
+import PrimaryButton from "../generic/PrimaryButton.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -62,6 +64,8 @@ export default defineComponent({
     LocationSearchBar,
     MapIcon,
     Modal,
+    PrimaryButton,
+    RequireAuth,
     SearchBar,
     SelectMenu,
     Tag,
@@ -596,11 +600,21 @@ export default defineComponent({
             <GenericSmallButton class="mx-2" @click="$emit('showMap')" :text="'Map'">
               <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
             </GenericSmallButton>
-            <CreateButton
-              class="inline-flex align-middle"
-              :to="createEventPath"
-              :label="'Create Event'"
-            />
+            <RequireAuth>
+              <template v-slot:has-auth>
+                <CreateButton
+                  class="inline-flex align-middle"
+                  :to="createEventPath"
+                  :label="'Create Event'"
+                />
+              </template>
+              <template v-slot:does-not-have-auth>
+                <PrimaryButton
+                  class="inline-flex align-middle"
+                  :label="'Create Event'"
+                />
+              </template>
+            </RequireAuth>
           </div>
         </div>
       </div>

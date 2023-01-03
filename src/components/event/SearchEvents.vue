@@ -6,6 +6,8 @@ import { DateTime } from "luxon";
 import EventFilterBar from "./EventFilterBar.vue";
 import GenericSmallButton from "../generic/GenericSmallButton.vue";
 import CreateButton from "../generic/CreateButton.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
+import PrimaryButton from "../generic/PrimaryButton.vue";
 import MapIcon from "../icons/MapIcon.vue";
 
 export default defineComponent({
@@ -16,6 +18,8 @@ export default defineComponent({
     CreateButton,
     GenericSmallButton,
     MapIcon,
+    RequireAuth,
+    PrimaryButton,
   },
   setup() {
     const route = useRoute();
@@ -40,30 +44,30 @@ export default defineComponent({
       placeData: null,
       resultCount: ref(0),
       route,
-      router, 
+      router,
     };
   },
   methods: {
-    goToMap(){
+    goToMap() {
       if (!this.channelId) {
         this.router.push({
           name: "MapView",
           query: {
             ...this.$route.query,
-            channels: [this.channelId]
-          }
-        })
+            channels: [this.channelId],
+          },
+        });
       } else {
         this.router.push({
           name: "MapView",
           query: {
             ...this.$route.query,
-            backToChannel: this.channelId
-          }
-        })
+            backToChannel: this.channelId,
+          },
+        });
       }
-    }
-  }
+    },
+  },
 });
 </script>
 <template>
@@ -86,16 +90,26 @@ export default defineComponent({
             <GenericSmallButton @click="goToMap" :text="'Map'">
               <MapIcon class="h-4 w-4 mr-2" />
             </GenericSmallButton>
-            <CreateButton
-              class="align-middle ml-2"
-              :to="createEventPath"
-              :label="'Create Event'"
-            />
+            <RequireAuth>
+              <template v-slot:has-auth>
+                <CreateButton
+                  class="align-middle ml-2"
+                  :to="createEventPath"
+                  :label="'Create Event'"
+                />
+              </template>
+              <template v-slot:does-not-have-auth>
+                <PrimaryButton
+                  class="align-middle ml-2"
+                  :label="'Create Event'"
+                />
+              </template>
+            </RequireAuth>
           </div>
         </div>
       </EventFilterBar>
     </div>
-    <router-view 
+    <router-view
       @updateLoadedEventCount="loadedEventCount = $event"
       @updateResultCount="resultCount = $event"
     ></router-view>

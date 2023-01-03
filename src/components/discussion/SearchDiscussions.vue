@@ -14,6 +14,8 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import TwoSeparatelyScrollingPanes from "../generic/TwoSeparatelyScrollingPanes.vue";
+import PrimaryButton from "../generic/PrimaryButton.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
 import { useDisplay } from "vuetify";
@@ -31,6 +33,8 @@ export default defineComponent({
     DiscussionPreview,
     ErrorBanner,
     FilterChip,
+    PrimaryButton,
+    RequireAuth,
     SearchBar,
     TagPicker,
     TagIcon,
@@ -371,11 +375,21 @@ export default defineComponent({
               </template>
             </FilterChip>
           </div>
-          <CreateButton
-            class="align-middle ml-2"
-            :to="createDiscussionPath"
-            :label="'Create Discussion'"
-          />
+          <RequireAuth class="flex inline-flex">
+            <template v-slot:has-auth>
+              <CreateButton
+                class="align-middle ml-2"
+                :to="createDiscussionPath"
+                :label="'Create Discussion'"
+              />
+            </template>
+            <template v-slot:does-not-have-auth>
+              <PrimaryButton
+                class="align-middle ml-2"
+                  :label="'Create Discussion'"
+                />
+            </template>
+          </RequireAuth>
         </div>
       </div>
     </div>

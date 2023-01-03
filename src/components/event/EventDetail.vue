@@ -28,6 +28,8 @@ import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
 import Notification from "../generic/Notification.vue";
 import Comment from "../comments/Comment.vue";
 import LeftArrowIcon from "../icons/LeftArrowIcon.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
+import PrimaryButton from "../generic/PrimaryButton.vue";
 
 export default defineComponent({
   props: {
@@ -48,6 +50,8 @@ export default defineComponent({
     LocationIcon,
     LinkIcon,
     Notification,
+    RequireAuth,
+    PrimaryButton,
     Tag,
     TicketIcon,
     WarningModal,
@@ -349,12 +353,22 @@ export default defineComponent({
               >
                 <GenericButton :text="'Edit'" />
               </router-link>
-              <CreateButton
-                class="ml-2"
-                v-if="$route.name === 'EventDetail'"
-                :to="`/channels/c/${channelId}/events/create`"
-                :label="'Create Event'"
-              />
+              <RequireAuth class="flex inline-flex">
+                <template v-slot:has-auth>
+                  <CreateButton
+                    class="ml-2"
+                    v-if="$route.name === 'EventDetail'"
+                    :to="`/channels/c/${channelId}/events/create`"
+                    :label="'Create Event'"
+                  />
+                </template>
+                <template v-slot:does-not-have-auth>
+                  <PrimaryButton
+                    class="ml-2"
+                    :label="'Create Event'"
+                  />
+                </template>
+              </RequireAuth>
             </span>
           </div>
         </div>
