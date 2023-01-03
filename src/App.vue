@@ -1,12 +1,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import WithAuth from "./WithAuth.vue";
-import MainLayout from "@/components/layout/MainLayout.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 
 export default defineComponent({
   components: {
-    MainLayout,
     WithAuth
   },
   setup() {
@@ -20,7 +18,6 @@ export default defineComponent({
 <template>
   <div class="h-screen">
     <WithAuth v-if="isAuthenticated && user.email" :email="user.email" />
-    <MainLayout v-else/>
   </div>
 </template>
 

@@ -102,8 +102,8 @@ export default defineComponent({
       v-else-if="emailError"
       :text="emailError.message"
     ></ErrorBanner>
-    <CreateUsernamePage v-else-if="hasEmailButNotUsername"> </CreateUsernamePage>
-    <MainLayout v-else/>
+    <CreateUsernamePage v-if="hasEmailButNotUsername"> </CreateUsernamePage>
+    <MainLayout/>
   </div>
 </template>
 
