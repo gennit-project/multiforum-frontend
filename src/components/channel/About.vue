@@ -5,12 +5,14 @@ import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import MdEditor from "md-editor-v3";
+import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   name: "OverviewPage",
   components: {
     MdEditor,
+    RequireAuth,
     Tag,
   },
   setup() {
@@ -48,6 +50,13 @@ export default defineComponent({
       return [];
     });
 
+    const ownerList = computed(() => {
+      // Used to determine whether the logged in
+      // user should be able to see the buttons for
+      // admin actions
+      return admins.value.map((adminData: any) => adminData.username);
+    });
+
     return {
       admins,
       channel,
@@ -55,6 +64,7 @@ export default defineComponent({
       confirmDeleteIsOpen: ref(false),
       getChannelLoading,
       getChannelError,
+      ownerList,
       router,
       tags,
     };
@@ -145,38 +155,38 @@ export default defineComponent({
             </router-link>
           </li>
         </ul>
-
         <p class="text-sm mb-6" v-else>
           This channel does not have any admins.
-        </p>
-
-        <h2
-          class="
-            text-md
-            leading-
-            mt-6
-            mb-2
-            font-medium
-            text-gray-700
-            border-b border-gray-200
-          "
-        >
-          Admin Actions
-        </h2>
-        <div class="text-sm">
-          <span>
-            <router-link class="underline" :to="`/channels/c/${channelId}/edit`"
+        </p>        
+        <RequireAuth :require-ownership="true" :owners="ownerList">
+          <template v-slot:has-auth>
+            <h2
+              class="
+                text-md
+                leading-
+                mt-6
+                mb-2
+                font-medium
+                text-gray-700
+                border-b border-gray-200
+              "
+            >
+              Admin Actions
+            </h2>
+            <router-link
+              class="underline text-sm"
+              :to="`/channels/c/${channelId}/edit`"
               >Edit</router-link
             >
-          </span>
-          <!-- &#8226;
-          <span
-            class="underline font-medium text-gray-900 cursor-pointer"
-            @click="confirmDeleteIsOpen = true"
-          >
-            Delete
-          </span> -->
-        </div>
+            <!-- &#8226;
+              <span
+                class="underline font-medium text-gray-900 cursor-pointer"
+                @click="confirmDeleteIsOpen = true"
+              >
+                Delete
+              </span> -->
+          </template>
+        </RequireAuth>
       </div>
     </div>
   </div>

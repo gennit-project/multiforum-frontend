@@ -43,6 +43,7 @@ export default defineComponent({
 
     const {
       result: localUsernameResult,
+      loading: localUsernameLoading
     } = useQuery(GET_LOCAL_USERNAME);
 
     const hasEmailButNotUsername = computed(() => {
@@ -71,6 +72,7 @@ export default defineComponent({
       emailLoading,
       hasEmailButNotUsername,
       isAuthenticated,
+      localUsernameLoading,
       showTopNav,
     };
   },
@@ -97,12 +99,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="emailLoading">Loading...</div>
-    <ErrorBanner
-      v-else-if="emailError"
-      :text="emailError.message"
-    ></ErrorBanner>
-    <CreateUsernamePage v-if="hasEmailButNotUsername"> </CreateUsernamePage>
+    <CreateUsernamePage v-if="!localUsernameLoading && !emailLoading && hasEmailButNotUsername"> </CreateUsernamePage>
   </div>
 </template>
 
