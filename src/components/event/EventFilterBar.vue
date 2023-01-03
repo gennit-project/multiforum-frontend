@@ -592,21 +592,22 @@ export default defineComponent({
             <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
           </GenericSmallButton>
 
-          <div v-if="channelId">
-            <GenericSmallButton @click="$emit('showMap')" :text="'Map'">
+          <div v-if="channelId" class="inline-flex align-middle">
+            <GenericSmallButton class="mx-2" @click="$emit('showMap')" :text="'Map'">
               <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
             </GenericSmallButton>
+            <CreateButton
+              class="inline-flex align-middle"
+              :to="createEventPath"
+              :label="'Create Event'"
+            />
           </div>
         </div>
       </div>
     </div>
     <div class="flex justify-center"></div>
     <div class="flex justify-center">
-      <CreateButton
-          class="inline-flex float-right"
-          :to="createEventPath"
-          :label="'Create Event'"
-        />
+      
       <div v-if="!channelId" class="flex flex-wrap">
         <Tag
           class="align-middle"
