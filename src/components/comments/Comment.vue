@@ -188,31 +188,40 @@ export default defineComponent({
             <span class="underline cursor-pointer hover:text-black">Reply</span>
           </template>
         </RequireAuth>
+        <RequireAuth
+          class="flex inline-flex"
+          v-if="commentData.CommentAuthor"
+          :require-ownership="true"
+          :owners="[commentData.CommentAuthor.username]"
+        >
+          <template v-slot:has-auth>
+            <span
+              class="underline cursor-pointer hover:text-black"
+              @click="
+                $emit('deleteComment', {
+                  commentId: commentData.id,
+                  parentCommentId: commentData.ParentComment
+                    ? commentData.ParentComment.id
+                    : '',
+                  replyCount,
+                })
+              "
+              >Delete</span
+            >
+            <span
+              v-if="!showEditCommentField"
+              class="ml-2 underline cursor-pointer hover:text-black"
+              @click="
+                () => {
+                  $emit('clickEditComment', commentData);
+                  showEditCommentField = true;
+                }
+              "
+              >Edit</span
+            >
+          </template>
+        </RequireAuth>
 
-        <span
-          class="underline cursor-pointer hover:text-black"
-          @click="
-            $emit('deleteComment', {
-              commentId: commentData.id,
-              parentCommentId: commentData.ParentComment
-                ? commentData.ParentComment.id
-                : '',
-              replyCount,
-            })
-          "
-          >Delete</span
-        >
-        <span
-          v-if="!showEditCommentField"
-          class="underline cursor-pointer hover:text-black"
-          @click="
-            () => {
-              $emit('clickEditComment', commentData);
-              showEditCommentField = true;
-            }
-          "
-          >Edit</span
-        >
         <span
           v-if="showEditCommentField"
           class="underline cursor-pointer hover:text-black"
