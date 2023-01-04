@@ -1,10 +1,28 @@
-<script setup lang="ts">
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { useAuth0 } from '@auth0/auth0-vue';
+import UserCircle from '@/components/icons/UserCircle.vue'
 
+export default defineComponent({
+  components: {
+    UserCircle
+  },
+  setup(){
+    const { isAuthenticated, user } = useAuth0()
+
+    return {
+      isAuthenticated, user
+    }
+  }
+})
 </script>
 <template>
-<span class="inline-block overflow-hidden rounded-full bg-gray-100">
-    <svg class="h-full w-full text-gray-300" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" />
-    </svg>
-  </span>
+
+  <UserCircle v-if="!isAuthenticated || !user || !user.picture" class="h-8 w-8"/>
+    <img
+      v-else-if="user && user.picture"
+      class="h-8 w-8 rounded-full"
+      :src="user.picture"
+      alt=""
+    />
 </template>

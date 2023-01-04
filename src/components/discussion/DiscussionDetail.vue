@@ -530,11 +530,20 @@ export default defineComponent({
         >
           <div class="float-right">
             <span>
-              <router-link
-                :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+              <RequireAuth
+                class="flex inline-flex"
+                v-if="discussion.Author && route.name === 'DiscussionDetail'"
+                :require-ownership="true"
+                :owners="[discussion.Author.username]"
               >
-                <GenericButton :text="'Edit'" />
-              </router-link>
+                <template v-slot:has-auth>
+                  <router-link
+                    :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+                  >
+                    <GenericButton :text="'Edit'" />
+                  </router-link>
+                </template>
+              </RequireAuth>
               <RequireAuth
                 class="flex inline-flex"
                 v-if="$route.name === 'DiscussionDetail'"
@@ -566,20 +575,36 @@ export default defineComponent({
               >
                 {{ discussion.Author.username }}
               </router-link>
+              <span v-else>[Deleted]</span>
               {{ createdAt }}
               <span v-if="discussion.updatedAt"> &#8226; </span>
               {{ editedAt }}
-              <span v-if="route.name === 'DiscussionDetail'"> &#8226;</span>
-              <span
-                v-if="!compactMode && route.name === 'DiscussionDetail'"
-                class="ml-1 underline font-medium text-gray-900 cursor-pointer"
-                @click="deleteModalIsOpen = true"
-                >Delete</span
+
+              <RequireAuth
+                class="flex inline-flex"
+                v-if="discussion.Author && route.name === 'DiscussionDetail'"
+                :require-ownership="true"
+                :owners="[discussion.Author.username]"
               >
+                <template v-slot:has-auth>
+                  <span> &#8226;</span>
+                  <span
+                    class="
+                      ml-1
+                      underline
+                      font-medium
+                      text-gray-900
+                      cursor-pointer
+                    "
+                    @click="deleteModalIsOpen = true"
+                    >Delete</span
+                  >
+                </template>
+              </RequireAuth>
+
               <span v-if="route.name !== 'DiscussionDetail'" class="ml-1 mr-1"
                 >&#8226;</span
               >
-
               <router-link
                 v-if="route.name !== 'DiscussionDetail'"
                 class="underline font-medium text-gray-900 cursor-pointer"
@@ -682,7 +707,7 @@ export default defineComponent({
                   route.name !== 'DiscussionDetail' && channelLinks.length > 0
                 "
               >
-                <div>Posted in Channels</div>
+                <div>Comments</div>
                 <router-link
                   v-for="channel in channelLinks"
                   :key="channel.uniqueName"
