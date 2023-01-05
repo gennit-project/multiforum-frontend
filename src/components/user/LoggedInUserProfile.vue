@@ -40,7 +40,7 @@ export default {
   <div>
     <div v-if="!isAuthenticated" class="flex justify-center mx-auto m-8">
       <div class="block">
-        <h1 class="text-lg my-2">To see your profile, you have to log in.</h1>
+        <h1 class="text-lg my-2">To see My Profile, you have to log in.</h1>
       </div>
     </div>
     <main

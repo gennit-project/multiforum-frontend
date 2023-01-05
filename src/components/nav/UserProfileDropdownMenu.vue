@@ -100,7 +100,7 @@ export default defineComponent({
       role="menuitem"
       tabindex="-1"
       id="user-menu-item-0"
-      >Your Profile</router-link
+      >My Profile</router-link
     >
     <!-- <router-link
       to="settings"
