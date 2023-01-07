@@ -16,11 +16,13 @@ import {
 } from "@/types/discussionTypes";
 import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "EditDiscussion",
   components: {
     CreateEditDiscussionFields,
+    RequireAuth,
   },
   apollo: {},
   setup() {
@@ -47,6 +49,13 @@ export default defineComponent({
       }
       return getDiscussionResult.value.discussions[0];
     });
+
+    const ownerList = computed(() => {
+      if (discussion.value && discussion.value.Author) {
+        return [discussion.value.Author.username]
+      }
+      return []
+    })
 
     const getDefaultFormValues = () => {
       // If the discussion data is already loaded, start with
@@ -253,6 +262,7 @@ export default defineComponent({
       formValues,
       getDiscussionError,
       getDiscussionLoading,
+      ownerList,
       updateDiscussion,
       updateDiscussionError,
       updateDiscussionInput,
@@ -274,15 +284,24 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditDiscussionFields
-    :edit-mode="true"
-    :discussion-loading="getDiscussionLoading"
-    :get-discussion-error="getDiscussionError"
-    :update-discussion-error="updateDiscussionError"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <RequireAuth :require-ownership="true" :owners="ownerList">
+    <template v-slot:has-auth>
+      <CreateEditDiscussionFields
+        :edit-mode="true"
+        :discussion-loading="getDiscussionLoading"
+        :get-discussion-error="getDiscussionError"
+        :update-discussion-error="updateDiscussionError"
+        :form-values="formValues"
+        @submit="submit"
+        @updateFormValues="updateFormValues"
+      />
+    </template>
+    <template v-slot:does-not-have-auth>
+      <div class="p-8 flex justify-center">
+        You don't have permission to see this page.
+      </div>
+    </template>
+  </RequireAuth>
 </template>
 
 <style>

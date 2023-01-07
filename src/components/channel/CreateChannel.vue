@@ -3,20 +3,19 @@ import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { ChannelData, CreateEditChannelFormValues } from "@/types/channelTypes";
 import { CREATE_CHANNEL } from "@/graphQLData/channel/mutations";
-import {
-  useMutation,
-  provideApolloClient,
-} from "@vue/apollo-composable";
+import { useMutation, provideApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
 import { useQuery } from "@vue/apollo-composable";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import RequireAuth from "../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "CreateChannel",
   components: {
-    CreateEditChannelFields
+    CreateEditChannelFields,
+    RequireAuth,
   },
   apollo: {},
   setup() {
@@ -24,17 +23,15 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
-    const {
-      result: localUsernameResult,
-    } = useQuery(GET_LOCAL_USERNAME);
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
-      let username = localUsernameResult.value?.username
+      let username = localUsernameResult.value?.username;
       if (username) {
-        return username
+        return username;
       }
-      return ""
-    })
+      return "";
+    });
 
     const channelId: string | string[] = route.params.channelId;
 
@@ -42,25 +39,27 @@ export default defineComponent({
       uniqueName: "",
       description: "",
       selectedTags: [],
-    }
-   
-    const formValues = ref(createChannelDefaultValues)
+    };
+
+    const formValues = ref(createChannelDefaultValues);
 
     const createChannelInput = computed(() => {
-      const tagConnections = formValues.value.selectedTags.map((tag: string) => {
-        return {
-          onCreate: {
-            node: {
-              text: tag,
+      const tagConnections = formValues.value.selectedTags.map(
+        (tag: string) => {
+          return {
+            onCreate: {
+              node: {
+                text: tag,
+              },
             },
-          },
-          where: {
-            node: {
-              text: tag,
+            where: {
+              node: {
+                text: tag,
+              },
             },
-          },
-        };
-      });
+          };
+        }
+      );
 
       return [
         {
@@ -160,11 +159,20 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditChannelFields
-    :create-channel-error="createChannelError"
-    :edit-mode="false"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <RequireAuth>
+    <template v-slot:has-auth>
+      <CreateEditChannelFields
+        :create-channel-error="createChannelError"
+        :edit-mode="false"
+        :form-values="formValues"
+        @submit="submit"
+        @updateFormValues="updateFormValues"
+      />
+    </template>
+    <template v-slot:does-not-have-auth>
+      <div class="p-8 flex justify-center">
+        You don't have permission to see this page
+      </div>
+    </template>
+  </RequireAuth>
 </template>

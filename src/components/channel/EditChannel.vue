@@ -7,22 +7,28 @@ import {
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { TagData } from "@/types/tagTypes";
+import { UserData } from "@/types/userTypes";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { UPDATE_CHANNEL } from "@/graphQLData/channel/mutations";
 import { apolloClient } from "@/main";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "EditChannel",
   components: {
     CreateEditChannelFields,
+    RequireAuth,
   },
   apollo: {},
   setup() {
     provideApolloClient(apolloClient);
     const route = useRoute();
     const router = useRouter();
+
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const channelId: string | string[] = route.params.channelId;
 
@@ -64,7 +70,6 @@ export default defineComponent({
           selectedTags: channel.value.Tags.map((tag: TagData) => {
             return tag.text;
           }),
-          username: 'cluse'
         };
       }
 
@@ -72,13 +77,25 @@ export default defineComponent({
         uniqueName: "",
         description: "",
         selectedTags: [],
-        username: "",
       };
     };
 
     const formValues = ref<CreateEditChannelFormValues>(
       getDefaultChannelValues()
     );
+
+    const username = computed(() => {
+      return localUsernameResult.value.username;
+    });
+
+    const ownerList = computed(() => {
+      if (channel.value && channel.value.Admins) {
+        return channel.value.Admins.map((admin: UserData) => {
+          return admin.username;
+        });
+      }
+      return []
+    })
 
     onGetChannelResult((value) => {
       const channel = value.data.channels[0];
@@ -89,7 +106,6 @@ export default defineComponent({
         selectedTags: channel.Tags.map((tag: TagData) => {
           return tag.text;
         }),
-        username: channel.Admins[0]?.username || "",
       };
     });
 
@@ -135,7 +151,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                username: "cluse",
+                username: username.value,
               },
             },
           },
@@ -174,6 +190,7 @@ export default defineComponent({
       getChannelError,
       getChannelLoading,
       getChannelResult,
+      ownerList,
       router,
       updateChannelError,
       updateChannel,
@@ -197,15 +214,25 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditChannelFields
-    :edit-mode="true"
-    :channel-loading="getChannelLoading"
-    :get-channel-error="getChannelError"
-    :update-channel-error="updateChannelError"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <RequireAuth :require-ownership="true" :owners="ownerList">
+    <template v-slot:has-auth>
+      <CreateEditChannelFields
+        :edit-mode="true"
+        :channel-loading="getChannelLoading"
+        :get-channel-error="getChannelError"
+        :update-channel-error="updateChannelError"
+        :form-values="formValues"
+        :owner-list="ownerList"
+        @submit="submit"
+        @updateFormValues="updateFormValues"
+      />
+    </template>
+    <template v-slot:does-not-have-auth>
+      <div class="p-8">
+        You don't have permission to see this page.
+      </div>
+    </template>
+  </RequireAuth>
 </template>
 
 <style>

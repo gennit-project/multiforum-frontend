@@ -15,43 +15,46 @@ export default defineComponent({
       default: () => [],
     },
   },
-
-  setup(props) {
-    const { isAuthenticated, loginWithPopup } = useAuth0();
+  setup() {
+    const { isAuthenticated, loginWithPopup, isLoading } = useAuth0();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
-    const username = computed(() => {
-      let username = localUsernameResult.value?.username;
+    return {
+      isAuthenticated,
+      isLoading,
+      localUsernameResult,
+      loginWithPopup,
+    };
+  },
+  computed: {
+    isOwner() {
+      for (let i = 0; i < this.owners.length; i++) {
+        const owner = this.owners[i];
+
+        if (owner === this.username) {
+          return true;
+        }
+      }
+      return false;
+    },
+    username() {
+      if (!this.localUsernameResult) {
+        return "";
+      }
+      let username = this.localUsernameResult.username;
 
       if (username) {
         return username;
       }
       return "";
-    });
-
-    const isOwner = computed(() => {
-      for (let i = 0; i < props.owners.length; i++) {
-        const owner = props.owners[i];
-
-        if (owner === username.value) {
-          return true;
-        }
-      }
-      return false;
-    });
-
-    return {
-      isAuthenticated,
-      isOwner,
-      loginWithPopup,
-      username,
-    };
+    },
   },
 });
 </script>
   <template>
   <div>
-    <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
+    <div class="p-8 flex justify-center" v-if="isLoading">Loading...</div>
+    <div v-else-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
     </div>
     <div v-else @click="loginWithPopup">

@@ -649,7 +649,7 @@ export default defineComponent({
       </div>
     </div>
     <div class="flex justify-center">
-      <div class="px-4 block" v-if="route.name !== 'EventDetail'">
+      <div class="px-4 block" v-if="route.name === 'SearchEvents' || route.name === 'SearchEventsInChannel' || route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventPreview'">
         <div
           v-if="
             filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL

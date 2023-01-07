@@ -16,12 +16,14 @@ import { DateTime } from "luxon";
 import { EventData } from "@/types/eventTypes";
 import { gql } from "@apollo/client/core";
 import getDefaultEventFormValues from "./defaultEventFormValues";
+import RequireAuth from "../auth/RequireAuth.vue";
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
   name: "CreateEvent",
   components: {
     CreateEditEventFields,
+    RequireAuth
   },
   apollo: {},
   setup() {
@@ -259,11 +261,20 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditEventFields
-    :create-event-error="createEventError"
-    :edit-mode="false"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <RequireAuth>
+    <template v-slot:has-auth>
+      <CreateEditEventFields
+        :create-event-error="createEventError"
+        :edit-mode="false"
+        :form-values="formValues"
+        @submit="submit"
+        @updateFormValues="updateFormValues"
+      />
+    </template>
+    <template v-slot:does-not-have-auth>
+       <div class="p-8 flex justify-center">
+          You don't have permission to see this page.
+       </div>
+    </template>
+</RequireAuth>
 </template>

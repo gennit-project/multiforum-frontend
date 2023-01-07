@@ -1,7 +1,11 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { useMutation, useQuery, provideApolloClient } from "@vue/apollo-composable";
+import {
+  useMutation,
+  useQuery,
+  provideApolloClient,
+} from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
 import { CREATE_DISCUSSION } from "@/graphQLData/discussion/mutations";
@@ -9,33 +13,35 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { DiscussionData } from "@/types/discussionTypes";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
+import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   name: "CreateDiscussion",
   components: {
     CreateEditDiscussionFields,
+    RequireAuth
   },
   apollo: {},
   setup() {
     provideApolloClient(apolloClient);
 
-    const {
-      result: localUsernameResult,
-    } = useQuery(GET_LOCAL_USERNAME);
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
-      let username = localUsernameResult.value?.username
+      let username = localUsernameResult.value?.username;
       if (username) {
-        return username
+        return username;
       }
-      return ""
-    })
+      return "";
+    });
 
     const route = useRoute();
     const router = useRouter();
 
-    const channelId: string = `${route.params.channelId ? route.params.channelId : ''}`;
+    const channelId: string = `${
+      route.params.channelId ? route.params.channelId : ""
+    }`;
 
     const createDiscussionDefaultValues: CreateEditDiscussionFormValues = {
       title: "",
@@ -200,13 +206,22 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditDiscussionFields
-    :create-discussion-error="createDiscussionError"
-    :edit-mode="false"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <RequireAuth>
+    <template v-slot:has-auth>
+      <CreateEditDiscussionFields
+        :create-discussion-error="createDiscussionError"
+        :edit-mode="false"
+        :form-values="formValues"
+        @submit="submit"
+        @updateFormValues="updateFormValues"
+      />
+    </template>
+    <template v-slot:does-not-have-auth>
+      <div class="p-8 flex justify-center">
+        You don't have permission to see this page.
+      </div>
+    </template>
+  </RequireAuth>
 </template>
 
 <style>

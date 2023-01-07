@@ -15,11 +15,13 @@ import { EventData, CreateEditEventFormValues } from "@/types/eventTypes";
 import { DateTime } from "luxon";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
+import RequireAuth from "../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "EditEvent",
   components: {
     CreateEditEventFields,
+    RequireAuth
   },
   apollo: {},
   setup() {
@@ -44,6 +46,13 @@ export default defineComponent({
       }
       return getEventResult.value.events[0];
     });
+
+    const ownerList = computed(() => {
+      if (event.value && event.value.Poster) {
+        return [event.value.Poster.username]
+      }
+      return []
+    })
 
     // Remember the existing tags so that if the user removes
     // one or more tags, we will know to manually disconnect
@@ -72,7 +81,7 @@ export default defineComponent({
 
     const getFormValuesFromEventData = (event: EventData) => {
       return {
-        poster: "cluse",
+        poster: event.Poster?.username || "[Deleted]",
         title: event.title,
         description: event.description || "",
         selectedTags: event.Tags.map((tag: TagData) => {
@@ -303,6 +312,7 @@ export default defineComponent({
       getEventResult,
       formValues,
       channelId,
+      ownerList,
       router,
       updateEvent,
       updateEventError,
@@ -327,13 +337,22 @@ export default defineComponent({
 });
 </script>
 <template>
-  <CreateEditEventFields
-    :edit-mode="true"
-    :event-loading="getEventLoading"
-    :get-event-error="getEventError"
-    :update-post-error="updateEventError"
-    :form-values="formValues"
-    @submit="submit"
-    @updateFormValues="updateFormValues"
-  />
+  <RequireAuth :require-ownership="true" :owners="ownerList">
+    <template v-slot:has-auth>
+      <CreateEditEventFields
+        :edit-mode="true"
+        :event-loading="getEventLoading"
+        :get-event-error="getEventError"
+        :update-post-error="updateEventError"
+        :form-values="formValues"
+        @submit="submit"
+        @updateFormValues="updateFormValues"
+      />
+    </template>
+    <template v-slot:does-not-have-auth>
+      <div class="p-8 flex justify-center">
+        You don't have permission to see this page.
+      </div>
+    </template>
+ </RequireAuth>
 </template>
