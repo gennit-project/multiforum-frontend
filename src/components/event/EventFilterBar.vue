@@ -11,11 +11,7 @@ import { DateTime } from "luxon";
 import Tag from "@/components/tag/Tag.vue";
 import SelectMenu from "../generic/Select.vue";
 import SearchBar from "../generic/SearchBar.vue";
-import {
-  DistanceUnit,
-  SearchEventValues,
-  SetEventTimeRangeOptions,
-} from "@/types/eventTypes";
+import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
 import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
@@ -47,6 +43,7 @@ import {
 import CreateButton from "../generic/CreateButton.vue";
 import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -267,51 +264,28 @@ export default defineComponent({
       }
     },
 
-    handleTimeFilterShortcutClick(shortcut: SetEventTimeRangeOptions) {
-      // type SetEventTimeRangeOptions = {
-      //   beginningOfDateRangeISO: string;
-      //   endOfDateRangeISO: string;
-      //   value: string;
-      // }
-      const { beginningOfDateRangeISO, endOfDateRangeISO } = shortcut;
-
-      if (shortcut.value === this.activeDateShortcut) {
+    handleTimeFilterShortcutClick(shortcut: string) {
+      if (shortcut === this.activeDateShortcut) {
         // If the filter is currently selected, clear it.
         this.activeDateShortcut = this.timeFilterShortcuts.NONE;
-        const newBeginning = DateTime.now().startOf("day").toISO();
-        const newEnd = DateTime.now().plus({ years: 2 }).toISO();
-
         this.updateFilters({
-          beginningOfDateRangeISO: newBeginning,
-          endOfDateRangeISO: newEnd,
-        });
-        this.updateLocalState({
-          beginningOfDateRangeISO: newBeginning,
-          endOfDateRangeISO: newEnd,
-        });
-      } else if (shortcut.value === timeShortcutValues.PAST_EVENTS) {
-        this.activeDateShortcut = shortcut.value;
-        this.updateFilters({
-          beginningOfDateRangeISO,
-          endOfDateRangeISO,
-          resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
-        });
-        this.updateLocalState({
-          beginningOfDateRangeISO,
-          endOfDateRangeISO,
-          resultsOrder: resultOrderTypes.REVERSE_CHRONOLOGICAL,
+          timeShortcut: this.timeFilterShortcuts.NONE,
         });
       } else {
-        this.activeDateShortcut = shortcut.value;
+        // If the filter is not already selected, select it.
+        this.activeDateShortcut = shortcut;
         this.updateFilters({
-          beginningOfDateRangeISO,
-          endOfDateRangeISO,
-          resultsOrder: resultOrderTypes.CHRONOLOGICAL,
+          timeShortcut: shortcut,
         });
+      }
+
+      if (shortcut === this.timeFilterShortcuts.PAST_EVENTS) {
         this.updateLocalState({
-          beginningOfDateRangeISO,
-          endOfDateRangeISO,
-          resultsOrder: resultOrderTypes.CHRONOLOGICAL,
+          resultsOrder: reverseChronologicalOrder,
+        });
+      } else {
+        this.updateLocalState({
+          resultsOrder: chronologicalOrder,
         });
       }
     },
@@ -597,7 +571,11 @@ export default defineComponent({
           </GenericSmallButton>
 
           <div v-if="channelId" class="inline-flex align-middle">
-            <GenericSmallButton class="mx-2" @click="$emit('showMap')" :text="'Map'">
+            <GenericSmallButton
+              class="mx-2"
+              @click="$emit('showMap')"
+              :text="'Open Map'"
+            >
               <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
             </GenericSmallButton>
             <RequireAuth>
@@ -621,7 +599,6 @@ export default defineComponent({
     </div>
     <div class="flex justify-center"></div>
     <div class="flex justify-center">
-      
       <div v-if="!channelId" class="flex flex-wrap">
         <Tag
           class="align-middle"
@@ -630,7 +607,7 @@ export default defineComponent({
           :tag="shortcut.label"
           :active="shortcut.value === activeDateShortcut"
           :hide-icon="true"
-          @click="handleTimeFilterShortcutClick(shortcut)"
+          @click="handleTimeFilterShortcutClick(shortcut.value)"
         />
         <Tag
           class="align-middle"
@@ -649,7 +626,15 @@ export default defineComponent({
       </div>
     </div>
     <div class="flex justify-center">
-      <div class="px-4 block" v-if="route.name === 'SearchEvents' || route.name === 'SearchEventsInChannel' || route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventPreview'">
+      <div
+        class="px-4 block"
+        v-if="
+          route.name === 'SearchEvents' ||
+          route.name === 'SearchEventsInChannel' ||
+          route.name === 'SitewideSearchEventPreview' ||
+          route.name === 'SearchEventPreview'
+        "
+      >
         <div
           v-if="
             filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL

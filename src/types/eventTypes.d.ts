@@ -3,12 +3,6 @@ import UserData from "./userTypes";
 import TagData from "./tagTypes";
 import CommentSectionData from "./commentTypes";
 
-export type SetEventTimeRangeOptions = {
-  beginningOfDateRangeISO: string;
-  endOfDateRangeISO: string;
-  value: string;
-}
-
 export type Point = {
   latitude: number;
   longitude: number;
@@ -116,8 +110,7 @@ export type SearchEventValues = {
   // parameters on the event search pages.
   // These must match because the URL query
   // parameters are used to build the EventWhere.
-  beginningOfDateRangeISO?: string;
-  endOfDateRangeISO?: string;
+  timeShortcut?: string;
   radius?: number;
   latitude?: number;
   longitude?: number;

@@ -62,6 +62,7 @@ export default defineComponent({
           name: "MapView",
           query: {
             ...this.$route.query,
+            channels: [this.channelId],
             backToChannel: this.channelId,
           },
         });
@@ -83,11 +84,11 @@ export default defineComponent({
         :result-count="resultCount"
         :loaded-event-count="loadedEventCount"
         :create-event-path="createEventPath"
-        @show-map="goToMap"
+        @showMap="goToMap"
       >
         <div class="block float-right mx-4 lg:mr-12">
           <div v-if="!channelId" class="flex justify-center">
-            <GenericSmallButton @click="goToMap" :text="'Map'">
+            <GenericSmallButton @click="goToMap" :text="'Open Map'">
               <MapIcon class="h-4 w-4 mr-2" />
             </GenericSmallButton>
             <RequireAuth>

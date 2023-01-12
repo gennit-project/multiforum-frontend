@@ -112,9 +112,15 @@ export default defineComponent({
 
 <template>
   <div class="max-w-5xl">
-    <p class="prose px-4 lg:px-12 mt-3" v-if="events.length === 0 && !showMap">
-      Could not find any events.
-    </p>
+    <div v-if="events.length === 0">
+      <p v-if="!showMap" class="prose px-4 lg:px-12 mt-3" >
+        Could not find any events.
+      </p>
+      <p v-else class="prose px-4 lg:px-12 mt-3">
+        Could not find any events that can be shown on a map.
+      </p>
+    </div>
+    
     <p class="prose px-4 mt-3" v-if="loadedEventCount && resultCount">
       {{ `Showing ${loadedEventCount} of ${resultCount} results` }}
     </p>

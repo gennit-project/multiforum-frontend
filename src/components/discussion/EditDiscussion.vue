@@ -84,7 +84,7 @@ export default defineComponent({
         body: "",
         selectedTags: [],
         selectedChannels: [],
-        author: "cluse",
+        author: "",
       };
     };
 

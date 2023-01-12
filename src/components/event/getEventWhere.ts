@@ -1,18 +1,40 @@
 import LocationFilterTypes from "./locationFilterTypes";
 import { SearchEventValues } from "@/types/eventTypes";
-import { SelectedWeeklyHourRanges } from "@/types/eventTypes";
-import { hourRangesObject, weekdayObject } from "./eventSearchOptions";
-// import {
-//     hourRangesObject,
-//   } from "@/components/event/eventSearchOptions";
+import { hourRangesObject } from "./eventSearchOptions";
+import { timeShortcutValues } from "./eventSearchOptions";
+import { DateTime } from "luxon";
+const now = DateTime.now();
+
+const getStartOfThisWeekend = () => {
+  const startOfWeek = now.startOf("week");
+  return startOfWeek.plus({ days: 5 });
+};
+
+const getStartOfNextWeek = () => {
+  const startOfThisWeek = now.startOf("week");
+  // If today is Sunday, look for events after
+  // the following Sunday
+  return startOfThisWeek.plus({ weeks: 1 });
+};
+
+const defaultStartDateObj = now.startOf("day");
+const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
+const defaultStartDateISO = defaultStartDateObj.toISO();
+const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
+const startOfThisWeekend = getStartOfThisWeekend();
+const startOfNextWeek = getStartOfNextWeek();
+const startOfThisMonth = now.startOf("month");
 
 // The purpose of this function is to convert event filter variables
 // into the EventWhere input object as it is defined in the auto-generated GraphQL
 // documentation for querying events.
-const getEventWhere = (filterValues: SearchEventValues, showMap: boolean) => {
+const getEventWhere = (
+  filterValues: SearchEventValues,
+  showMap: boolean,
+  channelId: string
+) => {
   const {
-    beginningOfDateRangeISO,
-    endOfDateRangeISO,
+    timeShortcut,
     radius,
     tags,
     channels,
@@ -101,10 +123,25 @@ const getEventWhere = (filterValues: SearchEventValues, showMap: boolean) => {
       },
     });
   }
+  const truthyChannels = channels.filter((channel: string) => {
+    // Don't filter for a channel if a channel is an empty string.
+    // This could happen if the query params are `?channels=`.
+    return !!channel;
+  });
 
   // Channel filter
-  if (channels.length > 0) {
-    const matchChannels = channels.reduce(
+  if (channelId) {
+    // If we are in the channel view, only show events from
+    // that channel, even if a channel filter has accidentally
+    // gotten into the query params.
+    conditions.push({
+      Channels: { uniqueName_MATCHES: `(?i)${channelId}` },
+    });
+  } else if (truthyChannels.length > 0) {
+    // If we are in the sitewide event search page,
+    // show events from any channel in the query params.
+
+    const matchChannels = truthyChannels.reduce(
       // Technically a selected channel could be an array
       // of strings, but we expect it to always be a string.
       (prev: any, curr: any) => {
@@ -192,6 +229,50 @@ const getEventWhere = (filterValues: SearchEventValues, showMap: boolean) => {
     conditions.push({
       OR: flattenedTimeFilters,
     });
+  }
+
+  // Filter events by time range based on a selected
+  // time filter shortcut, for example, today or next week.
+  let beginningOfDateRangeISO = defaultStartDateISO;
+  let endOfDateRangeISO = defaultEndDateRangeISO;
+
+  switch (timeShortcut) {
+    case timeShortcutValues.TODAY:
+      beginningOfDateRangeISO = now.startOf("day").toISO();
+      endOfDateRangeISO = now.endOf("day").toISO();
+      break;
+    case timeShortcutValues.NEXT_MONTH:
+      beginningOfDateRangeISO = startOfThisMonth.plus({ months: 1 }).toISO();
+      endOfDateRangeISO = startOfThisMonth.plus({ months: 2 }).toISO();
+      break;
+    case timeShortcutValues.NEXT_WEEK:
+      beginningOfDateRangeISO = startOfNextWeek.toISO();
+      endOfDateRangeISO = startOfNextWeek.plus({ weeks: 1 }).toISO();
+      break;
+    case timeShortcutValues.NEXT_WEEKEND:
+      beginningOfDateRangeISO = startOfNextWeek.plus({ days: 5 }).toISO();
+      endOfDateRangeISO = startOfNextWeek.plus({ weeks: 1 }).toISO();
+      break;
+    case timeShortcutValues.PAST_EVENTS:
+      beginningOfDateRangeISO = now.minus({ years: 2 }).toISO();
+      endOfDateRangeISO = now.startOf("day").toISO();
+      break;
+    case timeShortcutValues.THIS_MONTH:
+      beginningOfDateRangeISO = startOfThisMonth.toISO();
+      endOfDateRangeISO = startOfThisMonth.plus({ months: 1 }).toISO();
+      break;
+    case timeShortcutValues.THIS_WEEKEND:
+      beginningOfDateRangeISO = startOfThisWeekend.toISO();
+      endOfDateRangeISO = startOfThisWeekend.plus({ days: 2 }).toISO();
+      break;
+    case timeShortcutValues.TOMORROW:
+      beginningOfDateRangeISO = now.startOf("day").plus({ days: 1 }).toISO();
+      endOfDateRangeISO = now.endOf("day").plus({ days: 1 }).toISO();
+      break;
+    case timeShortcutValues.NONE:
+      beginningOfDateRangeISO = defaultStartDateISO;
+      endOfDateRangeISO = defaultEndDateRangeISO;
+      break;
   }
 
   return {

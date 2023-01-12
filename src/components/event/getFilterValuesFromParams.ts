@@ -1,13 +1,13 @@
 import { SearchEventValues } from "@/types/eventTypes";
-import { DateTime } from "luxon";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import LocationFilterTypes from "./locationFilterTypes";
 import {
   createDefaultSelectedWeeklyHourRanges,
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
-  hourRangesObject
+  hourRangesObject,
 } from "./eventSearchOptions";
+import { timeShortcutValues } from "./eventSearchOptions";
 
 import { resultOrderTypes } from "./eventSearchOptions";
 
@@ -28,26 +28,15 @@ const getFilterValuesFromParams = function (
   // Take the default filter values from the query
   // in the URL if the values exist.
 
-  const now = DateTime.now();
-  const defaultStartDateObj = now.startOf("day");
-  const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
-  const defaultStartDateISO = defaultStartDateObj.toISO();
-  const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
-
   const cleanedValues: SearchEventValues = {};
 
   for (const key in route.query) {
     const val = route.query[key];
 
     switch (key) {
-      case "beginningOfDateRangeISO":
+      case "timeShortcut":
         if (typeof val === "string") {
-          cleanedValues.beginningOfDateRangeISO = val;
-        }
-        break;
-      case "endOfDateRangeISO":
-        if (typeof val === "string") {
-          cleanedValues.endOfDateRangeISO = val;
+          cleanedValues.timeShortcut = val;
         }
         break;
       case "radius":
@@ -117,16 +106,15 @@ const getFilterValuesFromParams = function (
         // Example value: weekdays=[{"startTimeDayOfWeek":"1"}]
         try {
           const weekdaysInQuery = JSON.parse(val);
-          cleanedValues.weekdays = createDefaultSelectedWeekdays()
+          cleanedValues.weekdays = createDefaultSelectedWeekdays();
 
           for (let i = 0; i < weekdaysInQuery.length; i++) {
-            const obj = weekdaysInQuery[i]
+            const obj = weekdaysInQuery[i];
 
             if (obj && obj.startTimeDayOfWeek) {
-                cleanedValues.weekdays[obj.startTimeDayOfWeek] = true
+              cleanedValues.weekdays[obj.startTimeDayOfWeek] = true;
             }
           }
-          
         } catch (e: any) {
           throw new Error(e);
         }
@@ -135,18 +123,22 @@ const getFilterValuesFromParams = function (
         // Example value: hourRanges=[{"startTimeHourOfDay":"3am-6am"}]
         try {
           const hourRanges = JSON.parse(val);
-          
-          cleanedValues.hourRanges = createDefaultSelectedHourRanges()
+
+          cleanedValues.hourRanges = createDefaultSelectedHourRanges();
 
           for (let i = 0; i < hourRanges.length; i++) {
             const obj = hourRanges[i];
-        
-            if (obj && obj.startTimeHourOfDay !== undefined && hourRangesObject[obj.startTimeHourOfDay]) {
+
+            if (
+              obj &&
+              obj.startTimeHourOfDay !== undefined &&
+              hourRangesObject[obj.startTimeHourOfDay]
+            ) {
               // Due to the way that Neo4j works, it is faster
               // to check for specific hours that an event may
               // begin than it is to check for hour ranges
               // using greater-than or less-than operators.
-        
+
               cleanedValues.hourRanges[obj.startTimeHourOfDay] = true;
             }
           }
@@ -157,18 +149,19 @@ const getFilterValuesFromParams = function (
       case "weeklyHourRanges":
         // Example value: weeklyHourRanges=[{"AND":[{"startTimeHourOfDay":"3am-6am"},{"startTimeDayOfWeek":"4"}]}]
         try {
-            const weeklyHourRangesInQuery = JSON.parse(val);
+          const weeklyHourRangesInQuery = JSON.parse(val);
 
-            cleanedValues.weeklyHourRanges = createDefaultSelectedWeeklyHourRanges();
+          cleanedValues.weeklyHourRanges =
+            createDefaultSelectedWeeklyHourRanges();
 
-            for (let i = 0; i < weeklyHourRangesInQuery.length; i++) {
-              const obj = weeklyHourRangesInQuery[i]
-              const objConditions = obj.AND;
-              const hourOfDay = objConditions[0]?.startTimeHourOfDay;
-              const dayOfWeek = objConditions[1]?.startTimeDayOfWeek;
+          for (let i = 0; i < weeklyHourRangesInQuery.length; i++) {
+            const obj = weeklyHourRangesInQuery[i];
+            const objConditions = obj.AND;
+            const hourOfDay = objConditions[0]?.startTimeHourOfDay;
+            const dayOfWeek = objConditions[1]?.startTimeDayOfWeek;
 
-              cleanedValues.weeklyHourRanges[dayOfWeek][hourOfDay] = true
-            }
+            cleanedValues.weeklyHourRanges[dayOfWeek][hourOfDay] = true;
+          }
         } catch (e: any) {
           throw new Error(e);
         }
@@ -177,8 +170,7 @@ const getFilterValuesFromParams = function (
   }
 
   const {
-    beginningOfDateRangeISO,
-    endOfDateRangeISO,
+    timeShortcut,
     radius,
     latitude,
     longitude,
@@ -195,8 +187,7 @@ const getFilterValuesFromParams = function (
   } = cleanedValues;
 
   return {
-    beginningOfDateRangeISO: beginningOfDateRangeISO || defaultStartDateISO,
-    endOfDateRangeISO: endOfDateRangeISO || defaultEndDateRangeISO,
+    timeShortcut: timeShortcut || timeShortcutValues.NONE,
     radius: radius || 500,
     latitude: latitude || defaultPlace.latitude,
     longitude: longitude || defaultPlace.longitude,

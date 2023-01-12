@@ -16,6 +16,8 @@ import getEventWhere from "./getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
 import ErrorBanner from "../generic/ErrorBanner.vue";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
+import { timeShortcutValues } from "./eventSearchOptions";
 
 export default defineComponent({
   name: "MapView",
@@ -76,15 +78,14 @@ export default defineComponent({
     );
 
     const resultsOrder = computed(() => {
-      // Keep track of results order separately so that query
-      // will be refetched when it changes. Otherwise the query
-      // would only be refetched when a value inside the eventWhere
-      // object is changed.
-      return filterValues.value.resultsOrder;
+      if (filterValues.value.timeShortcut === timeShortcutValues.PAST_EVENTS){
+        return reverseChronologicalOrder
+      }
+      return chronologicalOrder
     });
 
     const eventWhere = computed(() => {
-        return getEventWhere(filterValues.value, false)
+        return getEventWhere(filterValues.value, false, channelId.value)
     })
 
     const {
@@ -99,8 +100,8 @@ export default defineComponent({
       {
         limit: 25,
         offset: 0,
-        where: eventWhere.value,
-        resultsOrder: resultsOrder.value,
+        where: eventWhere,
+        resultsOrder: resultsOrder,
       },
       // {
       //   fetchPolicy: "network-only", // If it is not network only, the list
@@ -465,6 +466,9 @@ export default defineComponent({
           type="button"
           class="
             my-2
+            py-2
+            pr-4
+            pl-2
             cursor-pointer
             bg-white
             rounded-full

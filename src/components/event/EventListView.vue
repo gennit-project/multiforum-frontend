@@ -12,6 +12,8 @@ import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import EventPreview from "./EventPreview.vue";
+import { timeShortcutValues } from "./eventSearchOptions";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
   name: "EventListView",
@@ -39,11 +41,14 @@ export default defineComponent({
     );
 
     const resultsOrder = computed(() => {
-      return filterValues.value.resultsOrder;
+      if (filterValues.value.timeShortcut === timeShortcutValues.PAST_EVENTS) {
+        return reverseChronologicalOrder;
+      }
+      return chronologicalOrder;
     });
 
     const eventWhere = computed(() => {
-      return getEventWhere(filterValues.value, false);
+      return getEventWhere(filterValues.value, false, channelId.value);
     });
 
     const {
@@ -59,8 +64,8 @@ export default defineComponent({
         limit: 25,
         offset: 0,
         where: eventWhere,
-        resultsOrder: resultsOrder.value,
-      },
+        resultsOrder: resultsOrder,
+      }
       // {
       //   fetchPolicy: "network-only", // If it is not network only, the list
       //   // will not update when an event time changes in a way that affects
@@ -95,8 +100,8 @@ export default defineComponent({
       const defaultSelectedEvent = value.data.events[0];
 
       sendToPreview(defaultSelectedEvent.id, "");
-      emit('updateLoadedEventCount', value.data.eventsAggregate?.count)
-      emit('updateResultCount', value.data.events.length)
+      emit("updateLoadedEventCount", value.data.eventsAggregate?.count);
+      emit("updateResultCount", value.data.events.length);
     });
 
     const sendToPreview = (eventId: string, eventLocationId: string) => {
@@ -109,7 +114,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
-            query: route.query
+            query: route.query,
           });
         } else {
           router.push({
@@ -118,7 +123,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
-            query: { ...route.query}
+            query: { ...route.query },
           });
         }
       }
@@ -180,7 +185,10 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", (to: any) => {
       if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams(this.route, this.channelId);
+        this.filterValues = getFilterValuesFromParams(
+          this.route,
+          this.channelId
+        );
       }
     });
   },
@@ -188,7 +196,6 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex justify-center">
-    
     <ErrorBanner
       class="mx-auto block"
       v-if="eventError"

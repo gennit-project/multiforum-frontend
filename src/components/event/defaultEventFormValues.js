@@ -5,7 +5,6 @@ const defaultStartTimeISO = defaultStartTimeObj.toISO();
 
 export default (channelId) => {
   return {
-    poster: "cluse",
     title: "",
     description: "",
     selectedTags: [],
