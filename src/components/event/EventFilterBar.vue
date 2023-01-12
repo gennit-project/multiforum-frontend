@@ -541,7 +541,7 @@ export default defineComponent({
                   :tag="shortcut.label"
                   :active="shortcut.value === activeDateShortcut"
                   :hide-icon="true"
-                  @click="handleTimeFilterShortcutClick(shortcut)"
+                  @click="handleTimeFilterShortcutClick(shortcut.value)"
                 />
                 <Tag
                   class="align-middle"
