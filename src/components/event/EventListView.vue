@@ -183,7 +183,7 @@ export default defineComponent({
     },
   },
   created() {
-    this.$watch("$route.query", (to: any) => {
+    this.$watch("$route.query", () => {
       if (this.route.query) {
         this.filterValues = getFilterValuesFromParams(
           this.route,

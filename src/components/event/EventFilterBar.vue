@@ -7,7 +7,6 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
-import { DateTime } from "luxon";
 import Tag from "@/components/tag/Tag.vue";
 import SelectMenu from "../generic/Select.vue";
 import SearchBar from "../generic/SearchBar.vue";
@@ -20,7 +19,6 @@ import {
   timeShortcutValues,
   distanceUnitOptions,
   eventFilterTypeShortcuts,
-  resultOrderTypes,
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
@@ -212,6 +210,16 @@ export default defineComponent({
       timeSlotFiltersActive: ref(false),
       weekdays,
     };
+  },
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.route.query) {
+        this.filterValues = getFilterValuesFromParams(
+          this.route,
+          this.channelId
+        );
+      }
+    });
   },
   methods: {
     updateFilters(params: SearchEventValues) {
@@ -605,7 +613,7 @@ export default defineComponent({
           v-for="shortcut in timeFilterShortcuts"
           :key="shortcut.label"
           :tag="shortcut.label"
-          :active="shortcut.value === activeDateShortcut"
+          :active="shortcut.value === filterValues.timeShortcut"
           :hide-icon="true"
           @click="handleTimeFilterShortcutClick(shortcut.value)"
         />
