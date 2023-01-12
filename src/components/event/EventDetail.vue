@@ -244,24 +244,6 @@ export default defineComponent({
       );
       return `${formattedStartTimeString} for ${formattedDuration}`;
     },
-    getCalendarData(eventData: EventData) {
-      const {
-        title,
-        description,
-        address,
-        virtualEventUrl,
-        startTime,
-        endTime,
-      } = eventData;
-
-      return {
-        name: title,
-        details: description,
-        location: address || virtualEventUrl,
-        startsAt: startTime,
-        endsAt: endTime,
-      };
-    },
     openLink() {
       window.open(this.eventData.virtualEventUrl, "_blank");
     },
