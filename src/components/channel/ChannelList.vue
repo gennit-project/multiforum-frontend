@@ -43,9 +43,9 @@ export default defineComponent({
 <template>
   <div>
     <p class="text-sm font-normal mt-2" v-if="channels.length === 0">There are no results.</p>
-    <!-- <p class="text-sm font-normal mt-2" v-else>
+    <p class="text-sm font-normal mt-2" v-else>
       Showing {{ channels.length }} of {{ resultCount }} results
-    </p> -->
+    </p>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
       <ChannelListItem
         v-for="channel in channels"
@@ -56,13 +56,13 @@ export default defineComponent({
         @filterByTag="filterByTag"
       />
     </div>
-    <!-- <div  class="grid justify-items-stretch m-10">
+    <div  class="grid justify-items-stretch m-10">
       <LoadMore
         class="justify-self-center font-normal"
         :reached-end-of-results="resultCount === channels.length"
         @loadMore="$emit('loadMore')"
       />
-    </div> -->
+    </div>
     
   </div>
  

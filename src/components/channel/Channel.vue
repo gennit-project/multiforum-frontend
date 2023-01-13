@@ -3,12 +3,14 @@ import ChannelTabs from "./ChannelTabs.vue";
 // import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed } from "vue";
+import SearchEvents from "../event/SearchEvents.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
     // ChannelIcon,
     ChannelTabs,
+    SearchEvents
   },
   setup() {
     const route = useRoute();
@@ -51,7 +53,7 @@ export default defineComponent({
       </div>
     </div>
     <div class="block shadow-inner flex justify-center p-2">
-      <router-view></router-view>
+      <SearchEvents/>
     </div>
   </div>
 </template>

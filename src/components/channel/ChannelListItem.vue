@@ -56,7 +56,12 @@ export default defineComponent({
             :to="`/channels/c/${channel.uniqueName}`"
             class="cursor-pointer"
           >
-          <h3 class="mb-2">{{ channel.uniqueName }}</h3>
+          <h3 class="mb-2">
+            <HighlightedSearchTerms
+              :text="channel.uniqueName"
+              :search-input="searchInput"
+            />
+          </h3>
           </router-link>
         </p>
       </div>
