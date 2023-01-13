@@ -92,7 +92,7 @@ const cache = new InMemoryCache({
           },
         },
         channels: {
-          keyArgs: ['channelWhere', 'eventWhere', 'limit'],
+          keyArgs: ['where', 'limit'],
           merge(existing, incoming, args) {
             let offset = args?.args?.offset;
             if (!offset) {

@@ -2,7 +2,7 @@
 import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import ChannelList from "./ChannelList.vue";
-import { gql } from "@apollo/client/core";
+import { GET_CHANNELS } from "@/graphQLData/channel/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { TagData } from "@/types/tagTypes.d";
 import { ChannelData } from "@/types/channelTypes.d";
@@ -15,6 +15,7 @@ import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
+import SearchBar from "../generic/SearchBar.vue";
 
 interface Ref<T> {
   value: T;
@@ -28,6 +29,7 @@ export default defineComponent({
     FilterChip,
     PrimaryButton,
     RequireAuth,
+    SearchBar,
     TagPicker,
     TagIcon,
   },
@@ -44,6 +46,7 @@ export default defineComponent({
 
     const showModal: Ref<boolean | undefined> = ref(false);
     const selectedFilterOptions: Ref<string> = ref("");
+
     const selectedTags: Ref<Array<string>> = ref(
       route.params.tag && typeof route.params.tag === "string"
         ? [route.params.tag]
@@ -58,56 +61,28 @@ export default defineComponent({
       selectedTags.value = tag;
     };
 
-    const GET_CHANNELS = gql`
-      query getChannels($channelWhere: ChannelWhere, $eventWhere: EventWhere, $limit: Int, $offset: Int) {
-        channelsAggregate(where: $channelWhere) {
-          count
-        }
-        channels(where: $channelWhere, options: {
-          limit: $limit,
-          offset: $offset
-        }) {
-          uniqueName
-          description
-          Tags {
-            text
-          }
-          EventsAggregate(where: $eventWhere) {
-            count
-          }
-          DiscussionsAggregate {
-            count
-          }
-        }
-      }
-    `;
-
-// if (tags.length > 0) {
-//     const matchTags = tags.reduce((prev: any, curr: any) => {
-//       return prev.concat({ text_MATCHES: `(?i)${curr}` });
-//     }, []);
-//     conditions.push({
-//       Tags: {
-//         OR: matchTags,
-//       },
-//     });
-//   }
-
     const channelWhere = computed(() => {
-      return {
+      const tagSearch = {
         Tags_SOME: {
           OR: selectedTags.value.map((tag: string) => {
             return { text_MATCHES: `(?i)${tag}` };
           }),
         },
-        // OR: [
-        //   {
-        //     uniqueName_CONTAINS: searchInput.value,
-        //   },
-        //   {
-        //     description_CONTAINS: searchInput.value,
-        //   },
-        // ],
+      };
+
+      const textSearch = {
+        OR: [
+          {
+            uniqueName_CONTAINS: searchInput.value,
+          },
+          {
+            description_CONTAINS: searchInput.value,
+          },
+        ],
+      };
+
+      return {
+        AND: [tagSearch, textSearch],
       };
     });
 
@@ -135,20 +110,17 @@ export default defineComponent({
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: channelResult.value.channels.length
+          offset: channelResult.value.channels.length,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return previousResult
+          if (!fetchMoreResult) return previousResult;
 
           return {
             ...previousResult,
-            channels: [
-              ...previousResult.channels,
-              ...fetchMoreResult.channels,
-            ],
-          }
-        }
-      })
+            channels: [...previousResult.channels, ...fetchMoreResult.channels],
+          };
+        },
+      });
     };
 
     const { result: tagOptions } = useQuery(GET_TAGS);
@@ -217,25 +189,21 @@ export default defineComponent({
 <template>
   <div class="bg-gray-50">
     <div class="rounded pl-8 pr-8 bg-white shadow-sm">
-      <div class="mb-4 pt-8  mx-auto max-w-5xl ">
-        <div class="block flex justify-center"> 
-
-          <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
-    
-            Channels
-          </h1>
+      <div class="mb-4 pt-8 mx-auto max-w-5xl">
+        <div class="block flex justify-center">
+          <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">Channels</h1>
         </div>
-        
       </div>
     </div>
-    
+
     <div class="pt-1">
       <div class="mt-2 flex justify-between mx-auto max-w-5xl">
-        <!-- <SearchBar
-          class="flex"
-          :search-placeholder="'Search channels'"
-          @updateSearchInput="updateSearchResult"
-        /> -->
+        <div class="flex inline-flex">
+          <SearchBar
+            class="align-middle mr-2"
+            :search-placeholder="'Search channels'"
+            @updateSearchInput="updateSearchResult"
+          />
           <FilterChip
             class="align-middle"
             :label="tagLabel"
@@ -251,25 +219,27 @@ export default defineComponent({
               />
             </template>
           </FilterChip>
-          <RequireAuth>
-            <template v-slot:has-auth>
-              <CreateButton :to="createChannelPath" :label="'Create Channel'" />
-            </template>
-            <template v-slot:does-not-have-auth>
-              <PrimaryButton
-                :label="'Create Channel'"
-              />
-            </template>
-          </RequireAuth>
-          
-  
+        </div>
+
+        <RequireAuth>
+          <template v-slot:has-auth>
+            <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+          </template>
+          <template v-slot:does-not-have-auth>
+            <PrimaryButton :label="'Create Channel'" />
+          </template>
+        </RequireAuth>
       </div>
-      <ErrorBanner class="mx-auto max-w-5xl" v-if="channelError" :text="channelError.message" />
+      <ErrorBanner
+        class="mx-auto max-w-5xl"
+        v-if="channelError"
+        :text="channelError.message"
+      />
       <ChannelList
         class="flex-1 text-xl font-bold mx-auto max-w-5xl"
         v-if="channelResult && channelResult.channels"
         :channels="channelResult.channels"
-        :result-count="channelResult.channelsAggregate.count"
+        :result-count="channelResult.channelsAggregate?.count || 0"
         :search-input="searchInput"
         :selected-tags="selectedTags"
         @filterByTag="filterByTag"

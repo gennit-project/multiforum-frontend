@@ -103,11 +103,6 @@ export default defineComponent({
         where: eventWhere,
         resultsOrder: resultsOrder,
       },
-      // {
-      //   fetchPolicy: "network-only", // If it is not network only, the list
-      //   // will not update when an event time changes in a way that affects
-      //   // which search results it should be returned in.
-      // }
     );
 
     const reachedEndOfResults = ref(false);

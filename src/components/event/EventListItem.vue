@@ -126,7 +126,7 @@ export default defineComponent({
   >
     <router-link :to="previewLink">
       <div class="block">
-        <div class="py-2">
+        <div class="p-4">
           <div class="flex items-center">
             <p class="space-x-2">
               <span class="text-lg font-bold truncate cursor-pointer">

@@ -13,5 +13,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <p class="text-red-800 bg-red-100 p-2 rounded pl-4">{{text}}</p>
+  <p class="text-red-800 bg-red-100 p-2 my-2 rounded pl-4">{{text}}</p>
 </template>
