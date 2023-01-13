@@ -66,7 +66,7 @@ export default defineComponent({
 
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4">
-            <TopNavLink :to="'/events/list'" :label="'Events'">
+            <TopNavLink :to="'/events/list/search'" :label="'Events'">
               <CalendarIcon class="-ml-0.5 h-6 w-4 mr-1" />
             </TopNavLink>
             <TopNavLink :to="'/discussions'" :label="'Discussions'">

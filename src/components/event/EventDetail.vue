@@ -278,7 +278,7 @@ export default defineComponent({
     <div
       v-else-if="eventResult && eventResult.events && eventData"
       :class="route.name === 'EventDetail' ? ' overflow-y-scroll' : ''"
-      class="bg-white rounded shadow-md pb-4 pr-8 lg:px-10"
+      class="bg-white rounded shadow-md py-4 pr-8 lg:px-10"
     >
       <ErrorBanner
         class="mt-2 mb-2"
@@ -420,30 +420,35 @@ export default defineComponent({
           :depth="1"
           :readonly="true"
         />
-        <Tag
-          class="mt-2"
-          v-for="tag in eventData.Tags"
-          :tag="tag.text"
-          :key="tag.text"
-          :eventId="eventId"
-        />
-        <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
-          Crossposted To Channels
-        </div>
-
-        <router-link
-          v-for="channel in channelsExceptCurrent"
-          :key="channel.uniqueName"
-          :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
-        >
-          <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
-        </router-link>
       </div>
+      <div class="mx-4 my-2">
+        <Tag
+        class="mt-2"
+        v-for="tag in eventData.Tags"
+        :tag="tag.text"
+        :key="tag.text"
+        :eventId="eventId"
+      />
+      <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
+        Crossposted To Channels
+      </div>
+
+      <router-link
+        v-for="channel in channelsExceptCurrent"
+        :key="channel.uniqueName"
+        :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+      >
+        <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
+      </router-link>
+      </div>
+        
+      
 
       <div class="text-xs text-gray-600 mt-4 px-4">
         <p v-if="!eventData.virtualEventUrl && !eventData.address">
-          This event won't show in online or in-person search results because it
-          doesn't have a location or a virtual event URL.
+          This event won't show in site-wide search results because it
+          doesn't have a location or a virtual event URL. It will only appear
+          in channel specific search results.
         </p>
         <div class="organizer">
           <router-link

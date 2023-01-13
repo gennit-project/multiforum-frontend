@@ -356,7 +356,7 @@ export default defineComponent({
       </div>
     </div>
     <TailwindForm
-      class="max-w-3xl mt-4"
+      class="mt-4"
       v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"

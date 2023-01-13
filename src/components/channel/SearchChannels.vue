@@ -82,21 +82,32 @@ export default defineComponent({
       }
     `;
 
+// if (tags.length > 0) {
+//     const matchTags = tags.reduce((prev: any, curr: any) => {
+//       return prev.concat({ text_MATCHES: `(?i)${curr}` });
+//     }, []);
+//     conditions.push({
+//       Tags: {
+//         OR: matchTags,
+//       },
+//     });
+//   }
+
     const channelWhere = computed(() => {
       return {
-        Tags: {
+        Tags_SOME: {
           OR: selectedTags.value.map((tag: string) => {
-            return { text: tag };
+            return { text_MATCHES: `(?i)${tag}` };
           }),
         },
-        OR: [
-          {
-            uniqueName_CONTAINS: searchInput.value,
-          },
-          {
-            description_CONTAINS: searchInput.value,
-          },
-        ],
+        // OR: [
+        //   {
+        //     uniqueName_CONTAINS: searchInput.value,
+        //   },
+        //   {
+        //     description_CONTAINS: searchInput.value,
+        //   },
+        // ],
       };
     });
 
@@ -104,7 +115,6 @@ export default defineComponent({
       error: channelError,
       result: channelResult,
       loading: channelLoading,
-      refetch: refetchChannels,
       fetchMore,
       error,
     } = useQuery(GET_CHANNELS, {
@@ -165,12 +175,12 @@ export default defineComponent({
       channelError,
       channelLoading,
       channelResult,
+      channelWhere,
       defaultLabels,
       links,
       loadMore,
       openModal,
       reachedEndOfResults,
-      refetchChannels,
       searchInput,
       setSearchInput,
       setSelectedTags,
@@ -236,7 +246,7 @@ export default defineComponent({
             </template>
             <template v-slot:content>
               <TagPicker
-                :selected-tags="selectedTags.value"
+                :selected-tags="selectedTags"
                 @setSelectedTags="setSelectedTags"
               />
             </template>
@@ -260,8 +270,8 @@ export default defineComponent({
         v-if="channelResult && channelResult.channels"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate.count"
-        :search-input="searchInput.value"
-        :selected-tags="selectedTags.value"
+        :search-input="searchInput"
+        :selected-tags="selectedTags"
         @filterByTag="filterByTag"
         @loadMore="loadMore"
       />

@@ -22,7 +22,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { isAuthenticated, user } = useAuth0();
+    const { isAuthenticated, user, error } = useAuth0();
     const route = useRoute();
     const channelId = computed(() => {
       return route.params.channelId;
@@ -70,6 +70,7 @@ export default defineComponent({
       channelId,
       emailError,
       emailLoading,
+      error,
       hasEmailButNotUsername,
       isAuthenticated,
       localUsernameLoading,
@@ -99,7 +100,8 @@ export default defineComponent({
 
 <template>
   <div>
-    <CreateUsernamePage v-if="!localUsernameLoading && !emailLoading && hasEmailButNotUsername"> </CreateUsernamePage>
+    <ErrorBanner v-if="error" :text="error"/>
+    <CreateUsernamePage v-else-if="!localUsernameLoading && !emailLoading && hasEmailButNotUsername"> </CreateUsernamePage>
   </div>
 </template>
 

@@ -28,7 +28,7 @@ export default defineComponent({
 </script>
 <template>
   <div >
-    <form class="mx-auto max-w-7xl space-y-2 divide-y bg-white px-8 py-4 rounded shadow" autocomplete="off">
+    <form class="mx-auto max-w-4xl space-y-2 divide-y bg-white px-8 py-4 rounded shadow" autocomplete="off">
       <FormRow>
         <template v-slot:content>
           <div class="flow-root">

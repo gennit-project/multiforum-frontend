@@ -1,12 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import SearchEvents from "./SearchEvents.vue";
 
 export default defineComponent({
   name: "EventTab",
-  components: {
-    SearchEvents,
-  },
 
   setup() {
     // The main reason I have this component is so the event
@@ -20,5 +16,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <SearchEvents></SearchEvents>
+  <router-view></router-view>
 </template>

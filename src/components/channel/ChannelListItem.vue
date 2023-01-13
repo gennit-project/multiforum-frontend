@@ -81,7 +81,7 @@ export default defineComponent({
 
           <router-link
             class="underline"
-            :to="`/channels/c/${channel.uniqueName}/events`"
+            :to="`/channels/c/${channel.uniqueName}/events/search`"
           >
             {{ channel.EventsAggregate.count }} Upcoming Events</router-link
           >

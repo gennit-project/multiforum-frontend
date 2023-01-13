@@ -111,12 +111,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-w-5xl">
+  <div>
     <div v-if="events.length === 0">
-      <p v-if="!showMap" class="prose px-4 lg:px-12 mt-3" >
+      <p v-if="!showMap" class="mt-3" >
         Could not find any events.
       </p>
-      <p v-else class="prose px-4 lg:px-12 mt-3">
+      <p v-else class="t-3">
         Could not find any events that can be shown on a map.
       </p>
     </div>

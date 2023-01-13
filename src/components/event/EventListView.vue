@@ -91,15 +91,20 @@ export default defineComponent({
       });
     };
 
+    const selectedEventId = ref('')
+
     onGetEventResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
       if (!value.data || value.data.events.length === 0) {
         return;
       }
-      const defaultSelectedEvent = value.data.events[0];
+      selectedEventId.value = value.data.events[0]?.id;
 
-      sendToPreview(defaultSelectedEvent.id, "");
+      if (selectedEventId.value && value.data.events.length > 0) {
+        sendToPreview(selectedEventId.value, "");
+      }
+      
       emit("updateLoadedEventCount", value.data.eventsAggregate?.count);
       emit("updateResultCount", value.data.events.length);
     });
@@ -134,6 +139,7 @@ export default defineComponent({
     const { smAndDown } = useDisplay();
     return {
       channelId,
+      eventId: selectedEventId,
       eventError,
       eventLoading,
       eventResult,
@@ -158,27 +164,27 @@ export default defineComponent({
       this.previewIsOpen = false;
     },
     filterByTag(tag: string) {
-      const alreadySelected = this.filterValues.selectedTags.includes(tag);
+      const alreadySelected = this.filterValues.tags.includes(tag);
 
       if (alreadySelected) {
-        this.filterValues.selectedTags = this.filterValues.selectedTags.filter(
+        this.filterValues.tags = this.filterValues.tags.filter(
           (t: string) => t !== tag
         );
       } else {
-        this.filterValues.selectedTags.push(tag);
+        this.filterValues.tags.push(tag);
       }
     },
     filterByChannel(channel: string) {
       const alreadySelected =
-        this.filterValues.selectedChannels.includes(channel);
+        this.filterValues.channels.includes(channel);
 
       if (alreadySelected) {
-        this.filterValues.selectedChannels =
-          this.filterValues.selectedChannels.filter(
+        this.filterValues.channels =
+          this.filterValues.channels.filter(
             (c: string) => c !== channel
           );
       } else {
-        this.filterValues.selectedChannels.push(channel);
+        this.filterValues.channels.push(channel);
       }
     },
   },
@@ -201,13 +207,12 @@ export default defineComponent({
       v-if="eventError"
       :text="eventError.message"
     />
+    
     <TwoSeparatelyScrollingPanes
       class="block"
-      v-if="eventResult && eventResult.events"
-      :class="'mx-auto block'"
+      v-if="eventResult && eventResult.events.length > 0"
     >
       <template v-slot:leftpane>
-        <div class="rounded max-w-5xl">
           <EventList
             id="listView"
             :class="[!channelId ? '' : '']"
@@ -226,15 +231,15 @@ export default defineComponent({
           />
           <div class="mx-auto" v-if="eventLoading">Loading...</div>
           <EventPreview
-            v-if="smAndDown"
+            v-if="smAndDown && eventId"
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />
-        </div>
       </template>
       <template v-slot:rightpane>
         <router-view></router-view>
       </template>
     </TwoSeparatelyScrollingPanes>
+    <p v-else>Could not find any events.</p>
   </div>
 </template>

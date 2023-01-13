@@ -564,6 +564,7 @@ export default defineComponent({
           </FilterChip>
           <SearchBar
             class="inline-flex align-middle"
+            :initial-value="filterValues.searchInput"
             :search-placeholder="'Search text'"
             :small="true"
             @updateSearchInput="updateSearchInput"

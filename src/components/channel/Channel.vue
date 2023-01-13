@@ -50,7 +50,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="block shadow-inner flex justify-center">
+    <div class="block shadow-inner flex justify-center p-2">
       <router-view></router-view>
     </div>
   </div>

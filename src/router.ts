@@ -63,12 +63,12 @@ export const router = createRouter({
       children: [
         {
           name: "SearchEventsList",
-          path: "list",
+          path: "list/search",
           component: EventListView,
           children: [
             {
               name: "SitewideSearchEventPreview",
-              path: "search/:eventId",
+              path: ":eventId",
               component: EventDetail,
             },
           ],
@@ -176,12 +176,12 @@ export const router = createRouter({
           children: [
             {
               name: "SearchEventsInChannel",
-              path: "",
+              path: "search",
               component: EventListView,
               children: [
                 {
                   name: "SearchEventPreview",
-                  path: "search/:eventId",
+                  path: ":eventId",
                   component: EventDetail,
                 },
               ],

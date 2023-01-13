@@ -417,7 +417,7 @@ export default defineComponent({
         })
       } else {
         this.$router.push({ 
-          path: "/events/list",
+          path: "/events/list/search",
           query: this.$route.query
         })
       }

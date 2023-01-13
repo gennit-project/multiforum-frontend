@@ -403,15 +403,15 @@ export default defineComponent({
     <div class="flex justify-center px-6">
       <div class="block w-full max-w-7xl">
         <TwoSeparatelyScrollingPanes
-          v-if="discussionResult && discussionResult.discussions"
+          v-if="discussionResult && discussionResult.discussions.length > 0"
         >
           <template v-slot:leftpane>
             <DiscussionList
               :discussions="discussionResult.discussions"
               :channel-id="channelId"
               :result-count="discussionResult.discussionsAggregate.count"
-              :search-input="searchInput.value"
-              :selected-tags="selectedTags.value"
+              :search-input="searchInput"
+              :selected-tags="selectedTags"
               :selected-channels="selectedChannels"
               @filterByTag="filterByTag"
               @filterByChannel="filterByChannel"
@@ -429,6 +429,7 @@ export default defineComponent({
             <router-view></router-view>
           </template>
         </TwoSeparatelyScrollingPanes>
+        <p v-else>Could not find any results.</p>
       </div>
     </div>
   </div>

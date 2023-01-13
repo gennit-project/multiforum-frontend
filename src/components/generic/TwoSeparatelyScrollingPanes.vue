@@ -17,16 +17,16 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="lg:flex lg:flex-row">
+    <div class="flex flex-row ">
         <div 
           :class="[!smAndDown ? 'constrain-height' : '']"
           class="
-            lg:w-2/5 lg:overflow-y-auto
-            flex flex-col flex-grow
+            lg:overflow-y-auto
+            min-w-left
         ">
             <slot name="leftpane"></slot>
         </div>
-        <div v-if="!smAndDown" class="lg:w-3/5 lg:max-h-screen lg:overflow-y-auto">
+        <div v-if="!smAndDown" class="lg:max-h-screen lg:overflow-y-auto min-w-right">
             <slot name="rightpane"></slot>
         </div>
     </div>
@@ -35,5 +35,11 @@ export default defineComponent({
 .constrain-height {
     max-height: 86vh;
     height: 100% - 200px;
+}
+.min-w-left {
+    width: 500px;
+}
+.min-w-right {
+    width: 800px;
 }
 </style>
