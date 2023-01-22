@@ -127,7 +127,7 @@ export default defineComponent({
       <ul
       v-if="events.length > 0"
       role="list"
-      class="rounded bg-white divide-y divide-gray-200 mb-4"
+      class="rounded bg-white mb-4"
     >
       <EventListItem
         :ref="`#${event.id}`"

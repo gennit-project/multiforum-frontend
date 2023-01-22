@@ -31,19 +31,20 @@ export default defineComponent({
     });
 
     const defaultUniqueName = computed(() => {
-      if (props.currentChannelId){
-        return props.currentChannelId
+      if (props.currentChannelId) {
+        return props.currentChannelId;
       }
       if (props.event.Channels[0]) {
         return props.event.Channels[0].uniqueName;
       }
-      return ''
-    })
+      return "";
+    });
 
     return {
       defaultUniqueName,
       eventIdInParams,
       formattedDate,
+      route,
       timeOfDay,
     };
   },
@@ -107,7 +108,8 @@ export default defineComponent({
   },
   data(props) {
     return {
-      previewIsOpen: false,
+      hover:           false,
+      previewIsOpen:   false,
       isWithinChannel: props.currentChannelId ? true : false,
     };
   },
@@ -121,12 +123,15 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    class="relative bg-white pl-6 cursor-pointer border-l-4"
+    :class="hover || event.id === route.params.eventId ? 'border-blue-500' : 'border-blue-200'"
+    class="relative bg-white pl-6 cursor-pointer border-l-4 "
     @click="$emit('openPreview')"
+    @mouseenter="hover = true"
+    @mouseleave="hover = false"
   >
     <router-link :to="previewLink">
       <div class="block">
-        <div class="p-4">
+        <div class="py-4">
           <div class="flex items-center">
             <p class="space-x-2">
               <span class="text-lg font-bold truncate cursor-pointer">

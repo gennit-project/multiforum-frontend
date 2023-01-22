@@ -11,6 +11,9 @@ export default defineComponent({
     // I have placed the useQuery hook in this component, then
     // this component is conditionally rendered in the Comment component.
 
+    // (Another workaround would by to use the lazy query option.
+    // I may refactor it to use the lazy query.)
+
     // This query needs to be conditional because we shouldn't
     // always load all of the replies.
     const {

@@ -155,6 +155,18 @@ export default defineComponent({
     };
   },
   methods: {
+    updateFilters(params: SearchEventValues) {
+      const existingQuery = this.$route.query;
+      // Updating the URL params causes the events
+      // to be refetched by the EventListView
+      // and MapView components
+      this.$router.replace({
+        query: {
+          ...existingQuery,
+          ...params,
+        },
+      });
+    },
     openPreview() {
       if (this.smAndDown) {
         this.previewIsOpen = true;
@@ -173,6 +185,8 @@ export default defineComponent({
       } else {
         this.filterValues.tags.push(tag);
       }
+      this.updateFilters({ tags: tag });
+      console.log('filtered by tag ', this.filterValues.tags)
     },
     filterByChannel(channel: string) {
       const alreadySelected =

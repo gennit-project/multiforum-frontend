@@ -86,6 +86,7 @@ export default defineComponent({
     });
 
     const showAddressCopiedNotification = ref(false);
+
     const copyAddress = async () => {
       try {
         await toClipboard(
@@ -99,6 +100,7 @@ export default defineComponent({
         showAddressCopiedNotification.value = false;
       }, 2000);
     };
+
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
         return [];
@@ -123,11 +125,6 @@ export default defineComponent({
     } else {
       throw new Error("Event ID is not a string.");
     }
-
-    // const isCreatorOfEvent = () => {
-    //   const username = getUsername(user)
-    //   return username === organizerOfEvent
-    // }
 
     const confirmDeleteIsOpen = ref(false);
     const confirmCancelIsOpen = ref(false);
@@ -252,10 +249,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="height-constrained-more pb-36 px-4 my-2 lg:w-full space-y-2">
-    <h2 v-if="route.name !== 'EventDetail'" class="pl-4 text-gray-400 text-sm">
-      Preview
-    </h2>
+  <div class="height-constrained-more pb-36 px-4 lg:w-full space-y-2">
     <router-link
       v-if="route.name === 'EventDetail'"
       :to="`/channels/c/${channelId}/events`"
@@ -300,8 +294,11 @@ export default defineComponent({
         v-if="eventData.canceled"
         :text="'This event is canceled.'"
       />
-
+      <h2 v-if="route.name !== 'EventDetail'" class="pl-4 text-gray-400 text-sm">
+        Preview
+      </h2>
       <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4">
+       
         <div class="flex-1 min-w-0">
           <h2
             class="
