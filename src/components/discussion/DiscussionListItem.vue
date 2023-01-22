@@ -106,11 +106,11 @@ export default defineComponent({
   <li
     :class="[
       discussion.id === discussionIdInParams
-        ? 'bg-slate-100'
-        : 'hover:bg-slate-100',
+        ? 'border-blue-500'
+        : 'border-blue-200',
       channelIdInParams ? 'hover:bg-gray-100' : '',
     ]"
-    class="relative bg-white py-2 px-4 lg:px-12 cursor-pointer rounded"
+    class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 lg:px-12 cursor-pointer"
     @click="$emit('openPreview')"
   >
     <router-link :to="previewLink">

@@ -78,7 +78,7 @@ export default defineComponent({
     <ul
       v-if="discussions.length > 0"
       role="list"
-      class="divide-y divide-gray-200 relative my-2 bg-white shadow-md rounded border border-1"
+      class="relative my-2 bg-white shadow-md rounded border border-1"
     >
       <DiscussionListItem
         v-for="discussion in discussions"
