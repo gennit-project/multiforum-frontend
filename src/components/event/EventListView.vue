@@ -119,7 +119,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
-            query: route.query,
+            query: {...route.query},
           });
         } else {
           router.push({
@@ -186,7 +186,6 @@ export default defineComponent({
         this.filterValues.tags.push(tag);
       }
       this.updateFilters({ tags: tag });
-      console.log('filtered by tag ', this.filterValues.tags)
     },
     filterByChannel(channel: string) {
       const alreadySelected =

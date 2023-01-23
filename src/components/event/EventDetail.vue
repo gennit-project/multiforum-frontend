@@ -252,7 +252,7 @@ export default defineComponent({
   <div class="height-constrained-more pb-36 px-4 lg:w-full space-y-2">
     <router-link
       v-if="route.name === 'EventDetail'"
-      :to="`/channels/c/${channelId}/events`"
+      :to="`/channels/c/${channelId}/events/search`"
       class="underline text-xs text-gray-500 mb-4"
     >
       <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />

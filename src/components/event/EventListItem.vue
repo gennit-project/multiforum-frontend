@@ -7,6 +7,7 @@ import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
+import { SearchEventValues } from "@/types/eventTypes";
 
 export default defineComponent({
   setup(props) {
@@ -105,6 +106,54 @@ export default defineComponent({
     getChannel(commentSection: CommentSectionData) {
       return commentSection.Channel.uniqueName;
     },
+    handleClickTag(tagText: string){
+      const currentQuery = this.$route.query;
+
+      if (currentQuery.tags){
+        if (typeof currentQuery.tags === 'string' && tagText === currentQuery.tags) {
+          // If we're already filtering by the tag, clear it.
+          const newQuery = {...this.$route.query};
+          delete newQuery['tags']
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+        } else if (typeof currentQuery.tags === 'object' && currentQuery.tags.includes(tagText)){
+          // If we're already filtering by multiple tags including this tag,
+          // remove only this tag.
+          const newQuery = {...this.$route.query};
+          newQuery.tags = newQuery.tags.filter((tag: string) => {
+            return tag !== tagText;
+          })
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+        } else {
+          // If we are not already filtering by the tag,
+          // overwrite existing tag filters with it.
+          this.updateFilters({ tags: [tagText] })
+        }
+      } else {
+        this.updateFilters({ tags: [tagText] })
+      }
+    },
+    updateFilters(params: SearchEventValues) {
+      const existingQuery = this.$route.query;
+      // Updating the URL params causes the events
+      // to be refetched by the EventListView
+      // and MapView components
+      this.$router.replace({
+        query: {
+          ...existingQuery,
+          ...params,
+        },
+      });
+    },
   },
   data(props) {
     return {
@@ -124,14 +173,14 @@ export default defineComponent({
   <li
     :ref="`#${event.id}`"
     :class="hover || event.id === route.params.eventId ? 'border-blue-500' : 'border-blue-200'"
-    class="relative bg-white pl-6 cursor-pointer border-l-4 "
+    class="relative bg-white pl-6 cursor-pointer border-l-4 py-2"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
     <router-link :to="previewLink">
       <div class="block">
-        <div class="py-4">
+        <div class="py-1">
           <div class="flex items-center">
             <p class="space-x-2">
               <span class="text-lg font-bold truncate cursor-pointer">
@@ -220,16 +269,19 @@ export default defineComponent({
             {{ i === event.CommentSections.length - 1 ? "" : "•" }}
           </router-link>
         </div> -->
-          <Tag
-            :key="tag"
-            :active="!!selectedTagsMap[tag.text]"
-            v-for="tag in event.Tags"
-            :tag="tag.text"
-            @click="$emit('filterByTag', tag.text)"
-          />
         </div>
       </div>
     </router-link>
+    <Tag
+      class="mb-2"
+      :key="tag"
+      :active="!!selectedTagsMap[tag.text]"
+      v-for="tag in event.Tags"
+      :tag="tag.text"
+      @click="() => {
+        handleClickTag(tag.text)
+      }"
+    />
   </li>
 </template>
 <style>
