@@ -116,7 +116,7 @@ export default defineComponent({
       return getTagLabel(filterValues.value.tags);
     });
 
-    const activeDateShortcut = ref(timeShortcutValues.NONE);
+    const activeDateShortcut = ref(route.query.timeShortcut);
 
     const titleCase = (str: string) => {
       if (!str) {
