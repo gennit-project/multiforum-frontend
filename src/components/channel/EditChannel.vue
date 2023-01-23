@@ -49,12 +49,7 @@ export default defineComponent({
     });
 
     const existingTags = computed(() => {
-      if (
-        !getChannelLoading.value ||
-        !getChannelError.value ||
-        !getChannelResult.value.channels ||
-        !getChannelResult.value.channels[0].Tags
-      ) {
+      if (!channel.value || !channel.value.Tags) {
         return [];
       }
       return channel.value.Tags.map((tag: TagData) => {
