@@ -54,7 +54,6 @@ export default defineComponent({
           name: "MapView",
           query: {
             ...this.$route.query,
-            channels: [this.channelId],
           },
         });
       } else {
