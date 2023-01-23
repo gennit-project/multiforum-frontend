@@ -220,10 +220,10 @@ export default defineComponent({
       v-if="eventError"
       :text="eventError.message"
     />
-    
+    <p v-else-if="eventLoading">Loading...</p>
     <TwoSeparatelyScrollingPanes
       class="block"
-      v-if="eventResult && eventResult.events.length > 0"
+      v-else-if="eventResult && eventResult.events.length > 0"
     >
       <template v-slot:leftpane>
           <EventList
@@ -253,6 +253,5 @@ export default defineComponent({
         <router-view></router-view>
       </template>
     </TwoSeparatelyScrollingPanes>
-    <p v-else>Could not find any events.</p>
   </div>
 </template>
