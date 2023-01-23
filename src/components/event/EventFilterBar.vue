@@ -502,6 +502,7 @@ export default defineComponent({
             :title="'Select Weekly Time Slots'"
             :show="showTimeSlotPicker"
             :use-custom-buttons="true"
+            @close="showTimeSlotPicker = false"
           >
             <template v-slot:icon>
               <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
