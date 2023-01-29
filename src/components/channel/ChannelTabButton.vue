@@ -18,6 +18,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    active: {
+      type: Boolean,
+      required: true
+    }
   },
   computed: {
     getCurrentPage: function() {
@@ -30,7 +34,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    :class="[currentPage ? 'currentPage' : '']"
+    :class="[currentPage ? 'currentPage' : '', active ? 'border-blue-500 text-blue-600' : '']"
     class="
       link
       border-transparent

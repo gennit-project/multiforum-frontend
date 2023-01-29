@@ -1,23 +1,27 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import ChannelTabButton from "@/components/channel/ChannelTabButton.vue";
-import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "channelTabs",
   components: {
     ChannelTabButton,
   },
-  setup() {
-    const route = useRoute();
+  props: {
+    route: {
+      type:     Object,
+      required: true
+    }
+  },
+  setup(props) {
 
     const channelId = computed(() => {
-      return route.params.channelId;
+      return props.route.params.channelId;
     });
 
     return {
       channelId,
-      route,
+      currentRoute: props.route,
       tabRoutes: {
         discussions: `/channels/c/${channelId.value}/discussions`,
         events: `/channels/c/${channelId.value}/events/search`,
@@ -72,12 +76,18 @@ export default defineComponent({
         <ChannelTabButton 
           :to="tabRoutes.discussions" 
           :label="'Discussions'"
+          :active="route.path.includes('discussions')"
         />
         <ChannelTabButton 
           :to="tabRoutes.events" 
           :label="'Events'" 
+          :active="route.path.includes('events')"
         />
-        <ChannelTabButton :to="tabRoutes.about" :label="'About'" />
+        <ChannelTabButton
+          :to="tabRoutes.about"
+          :label="'About'"
+          :active="route.path.includes('about')"
+        />
       </nav>
     </div>
     <div class="border-b border-gray-200 width-full"></div>

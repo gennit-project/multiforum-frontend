@@ -2,7 +2,7 @@
 import ChannelTabs from "./ChannelTabs.vue";
 // import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import SearchEvents from "../event/SearchEvents.vue";
 
 export default defineComponent({
@@ -13,25 +13,31 @@ export default defineComponent({
     SearchEvents
   },
   setup() {
-    const route = useRoute();
+    const route = ref(useRoute())
 
     const channelId = computed(() => {
-      return route.params.channelId;
+      return route.value.params.channelId;
     });
 
     const discussionId = computed(() => {
-      return route.params.discussionId;
+      return route.value.params.discussionId;
     });
 
     const eventId = computed(() => {
-      return route.params.eventId;
+      return route.value.params.eventId;
     });
 
     return {
       channelId,
       discussionId,
       eventId,
+      route,
     };
+  },
+  created() {
+    this.$watch("$route", (newRoute: any) => {
+      this.route = newRoute
+    });
   },
 });
 </script>
@@ -47,7 +53,7 @@ export default defineComponent({
             </h1>
           </div>
           <div class="block flex justify-center">
-            <ChannelTabs class="block mt-2" />
+            <ChannelTabs class="block mt-2" :route="route"/>
           </div>
         </div>
       </div>
