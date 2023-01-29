@@ -142,6 +142,13 @@ export default defineComponent({
         this.updateFilters({ tags: [tagText] })
       }
     },
+    goToPreviewLink(){
+      const existingQuery = this.$route.query;
+      this.$router.push({
+        path: this.previewLink,
+        query: existingQuery
+      })
+    },
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
       // Updating the URL params causes the events
@@ -178,7 +185,7 @@ export default defineComponent({
     @mouseenter="hover = true"
     @mouseleave="hover = false"
   >
-    <router-link :to="previewLink">
+    <div @click="goToPreviewLink">
       <div class="block">
         <div class="py-1">
           <div class="flex items-center">
@@ -271,7 +278,7 @@ export default defineComponent({
         </div> -->
         </div>
       </div>
-    </router-link>
+    </div>
     <Tag
       class="mb-2"
       :key="tag"
