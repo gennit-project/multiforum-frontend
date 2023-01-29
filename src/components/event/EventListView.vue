@@ -102,15 +102,15 @@ export default defineComponent({
       selectedEventId.value = value.data.events[0]?.id;
 
       if (selectedEventId.value && value.data.events.length > 0) {
-        sendToPreview(selectedEventId.value, "");
+        sendToPreview(selectedEventId.value);
       }
       
       emit("updateLoadedEventCount", value.data.eventsAggregate?.count);
       emit("updateResultCount", value.data.events.length);
     });
 
-    const sendToPreview = (eventId: string, eventLocationId: string) => {
-      if (!route.params.eventId) {
+    const sendToPreview = (eventId: string, eventLocationId: string = '') => {
+      // if (!route.params.eventId) {
         if (!channelId.value) {
           router.push({
             name: "SitewideSearchEventPreview",
@@ -118,7 +118,7 @@ export default defineComponent({
               ...route.params,
               eventId,
             },
-            hash: `#${eventLocationId ? eventLocationId : ""}`,
+            hash: `#${eventLocationId}`,
             query: {...route.query},
           });
         } else {
@@ -127,11 +127,11 @@ export default defineComponent({
             params: {
               eventId,
             },
-            hash: `#${eventLocationId ? eventLocationId : ""}`,
+            hash: `#${eventLocationId}`,
             query: { ...route.query },
           });
         }
-      }
+      // }
     };
 
     const previewIsOpen = ref(false);
