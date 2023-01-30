@@ -36,6 +36,7 @@ export default defineComponent({
   },
   created() {
     this.$watch("$route", (newRoute: any) => {
+      console.log('resetting route', newRoute)
       this.route = newRoute
     });
   },
@@ -59,7 +60,7 @@ export default defineComponent({
       </div>
     </div>
     <div class="block shadow-inner flex justify-center p-2">
-      <SearchEvents/>
+      <router-view></router-view>
     </div>
   </div>
 </template>

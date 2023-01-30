@@ -23,6 +23,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    console.log('route name in search events' , route.name)
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -67,6 +68,14 @@ export default defineComponent({
         });
       }
     },
+    setLoadedEventCount(event: any){
+      console.log('set loaded event count ', event)
+      this.loadedEventCount = event
+    },
+    setResultCount(event: any) {
+      console.log('set result count ',event)
+      this.resultCount = event
+    }
   },
 });
 </script>
@@ -74,7 +83,7 @@ export default defineComponent({
   <div class="mx-auto">
     <div class="flex justify-center">
       <EventFilterBar
-        v-if="route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventPreview'"
+        v-if="route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventPreview' || route.name === 'SearchEventsInChannel'"
         :channel-id="channelId"
         :result-count="resultCount"
         :loaded-event-count="loadedEventCount"
@@ -106,8 +115,8 @@ export default defineComponent({
       </EventFilterBar>
     </div>
     <router-view
-      @updateLoadedEventCount="loadedEventCount = $event"
-      @updateResultCount="resultCount = $event"
+      @updateLoadedEventCount="setLoadedEventCount"
+      @updateResultCount="setResultCount"
     ></router-view>
   </div>
 </template>

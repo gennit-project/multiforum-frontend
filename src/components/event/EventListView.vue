@@ -29,6 +29,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
+    console.log('event list view route name ', route.name)
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -94,6 +95,10 @@ export default defineComponent({
     const selectedEventId = ref('')
 
     onGetEventResult((value) => {
+      console.log('on get event result ', {
+              resultsOrder,
+              eventWhere
+            })
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
       if (!value.data || value.data.events.length === 0) {
@@ -105,8 +110,8 @@ export default defineComponent({
         sendToPreview(selectedEventId.value);
       }
       
-      emit("updateLoadedEventCount", value.data.eventsAggregate?.count);
-      emit("updateResultCount", value.data.events.length);
+      emit("updateLoadedEventCount", value.data.events.length);
+      emit("updateResultCount", value.data.eventsAggregate?.count);
     });
 
     const sendToPreview = (eventId: string, eventLocationId: string = '') => {
@@ -223,7 +228,7 @@ export default defineComponent({
     <p v-else-if="eventLoading">Loading...</p>
     <TwoSeparatelyScrollingPanes
       class="block"
-      v-else-if="eventResult && eventResult.events.length > 0"
+      v-else-if="eventResult"
     >
       <template v-slot:leftpane>
           <EventList

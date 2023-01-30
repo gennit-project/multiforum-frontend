@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, Ref } from "vue";
 import Tag from "@/components/tag/Tag.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
-import { GET_EVENT } from "@/graphQLData/event/queries";
+import { GET_EVENT, GET_EVENTS } from "@/graphQLData/event/queries";
 import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
 import { EventData } from "@/types/eventTypes";
 import {
@@ -30,6 +30,11 @@ import Comment from "../comments/Comment.vue";
 import LeftArrowIcon from "../icons/LeftArrowIcon.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import PrimaryButton from "../generic/PrimaryButton.vue";
+import getEventWhere from "@/components/event/getEventWhere";
+import { SearchEventValues } from "@/types/eventTypes";
+import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
+import { timeShortcutValues } from "./eventSearchOptions";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 
 export default defineComponent({
   props: {
@@ -56,7 +61,7 @@ export default defineComponent({
     TicketIcon,
     WarningModal,
   },
-  setup() {
+  setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
     const { toClipboard } = useClipboard();
@@ -65,7 +70,10 @@ export default defineComponent({
       return route.params.eventId;
     });
     const channelId = computed(() => {
-      return route.params.channelId;
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
     });
 
     const {
@@ -86,6 +94,21 @@ export default defineComponent({
     });
 
     const showAddressCopiedNotification = ref(false);
+
+    const filterValues: Ref<SearchEventValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
+
+    const resultsOrder = computed(() => {
+      if (filterValues.value.timeShortcut === timeShortcutValues.PAST_EVENTS) {
+        return reverseChronologicalOrder;
+      }
+      return chronologicalOrder;
+    });
+
+    const eventWhere = computed(() => {
+      return getEventWhere(filterValues.value, false, channelId.value);
+    });
 
     const copyAddress = async () => {
       try {
@@ -150,6 +173,42 @@ export default defineComponent({
             },
           },
         });
+        const readQueryResult = cache.readQuery({
+              query: GET_EVENTS,
+              variables: {
+                resultsOrder: resultsOrder.value,
+                eventWhere: eventWhere.value,
+                limit: 25,
+                offset: 0,
+              }
+            });
+            console.log('read query result ', {
+              resultsOrder,
+              eventWhere
+            })
+
+        // let existingCommentAggregate =
+        //   existingCommentSectionData?.CommentsAggregate
+        //     ? existingCommentSectionData.CommentsAggregate
+        //     : null;
+        // cache.writeQuery({
+        //   query: GET_COMMENT_SECTION,
+        //   data: {
+        //     ...readQueryResult,
+        //     commentSections: [
+        //       {
+        //         ...existingCommentSectionData,
+        //         Comments: rootCommentsCopy,
+        //         CommentsAggregate: newCommentAggregate
+        //           ? newCommentAggregate
+        //           : existingCommentAggregate,
+        //       },
+        //     ],
+        //   },
+        //   variables: {
+        //     id: props.commentSectionId,
+        //   },
+        // });
       },
     });
 

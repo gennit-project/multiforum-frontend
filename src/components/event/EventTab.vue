@@ -1,9 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import SearchEvents from "./SearchEvents.vue";
 
 export default defineComponent({
   name: "EventTab",
-
+  components: {
+    SearchEvents
+  },
   setup() {
     // The main reason I have this component is so the event
     // tab in a channel will be marked active for the search
@@ -16,5 +19,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <router-view></router-view>
+  <SearchEvents/>
 </template>
