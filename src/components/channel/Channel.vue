@@ -36,7 +36,6 @@ export default defineComponent({
   },
   created() {
     this.$watch("$route", (newRoute: any) => {
-      console.log('resetting route', newRoute)
       this.route = newRoute
     });
   },

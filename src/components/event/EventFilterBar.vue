@@ -92,7 +92,6 @@ export default defineComponent({
   },
 
   setup() {
-    console.log('event filter bar')
     const defaultFilterLabels = {
       channels: "Channels",
       tags: "Tags",

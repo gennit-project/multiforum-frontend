@@ -173,42 +173,6 @@ export default defineComponent({
             },
           },
         });
-        const readQueryResult = cache.readQuery({
-              query: GET_EVENTS,
-              variables: {
-                resultsOrder: resultsOrder.value,
-                eventWhere: eventWhere.value,
-                limit: 25,
-                offset: 0,
-              }
-            });
-            console.log('read query result ', {
-              resultsOrder,
-              eventWhere
-            })
-
-        // let existingCommentAggregate =
-        //   existingCommentSectionData?.CommentsAggregate
-        //     ? existingCommentSectionData.CommentsAggregate
-        //     : null;
-        // cache.writeQuery({
-        //   query: GET_COMMENT_SECTION,
-        //   data: {
-        //     ...readQueryResult,
-        //     commentSections: [
-        //       {
-        //         ...existingCommentSectionData,
-        //         Comments: rootCommentsCopy,
-        //         CommentsAggregate: newCommentAggregate
-        //           ? newCommentAggregate
-        //           : existingCommentAggregate,
-        //       },
-        //     ],
-        //   },
-        //   variables: {
-        //     id: props.commentSectionId,
-        //   },
-        // });
       },
     });
 

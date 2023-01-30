@@ -29,7 +29,6 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
-    console.log('event list view route name ', route.name)
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -66,12 +65,13 @@ export default defineComponent({
         offset: 0,
         where: eventWhere,
         resultsOrder: resultsOrder,
+      },
+      {
+        fetchPolicy: "network-only", 
+      // If it is not network only, the list
+      // will not update when an event is updated or deleted in a way that affects
+      // which search results it should be returned in.
       }
-      // {
-      //   fetchPolicy: "network-only", // If it is not network only, the list
-      //   // will not update when an event time changes in a way that affects
-      //   // which search results it should be returned in.
-      // }
     );
 
     const reachedEndOfResults = ref(false);
@@ -95,10 +95,6 @@ export default defineComponent({
     const selectedEventId = ref('')
 
     onGetEventResult((value) => {
-      console.log('on get event result ', {
-              resultsOrder,
-              eventWhere
-            })
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
       if (!value.data || value.data.events.length === 0) {

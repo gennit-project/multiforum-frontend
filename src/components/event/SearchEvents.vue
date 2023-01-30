@@ -23,7 +23,6 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    console.log('route name in search events' , route.name)
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -69,11 +68,9 @@ export default defineComponent({
       }
     },
     setLoadedEventCount(event: any){
-      console.log('set loaded event count ', event)
       this.loadedEventCount = event
     },
     setResultCount(event: any) {
-      console.log('set result count ',event)
       this.resultCount = event
     }
   },
