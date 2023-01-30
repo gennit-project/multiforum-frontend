@@ -137,7 +137,7 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
-    const { smAndDown } = useDisplay();
+    const { mdAndDown } = useDisplay();
     return {
       channelId,
       eventId: selectedEventId,
@@ -148,11 +148,11 @@ export default defineComponent({
       filterValues,
       getFilterValuesFromParams,
       loadMore,
+      mdAndDown,
       previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
-      route,
-      smAndDown,
+      route
     };
   },
   methods: {
@@ -169,7 +169,7 @@ export default defineComponent({
       });
     },
     openPreview() {
-      if (this.smAndDown) {
+      if (this.mdAndDown) {
         this.previewIsOpen = true;
       }
     },
@@ -245,7 +245,7 @@ export default defineComponent({
           />
           <div class="mx-auto" v-if="eventLoading">Loading...</div>
           <EventPreview
-            v-if="smAndDown && eventId"
+            v-if="eventId"
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />
