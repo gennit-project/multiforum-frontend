@@ -523,7 +523,6 @@ export default defineComponent({
 
           <router-link
             v-if="
-              route.name !== 'EventDetail' &&
               !channelId &&
               channelsExceptCurrent.length > 0
             "
