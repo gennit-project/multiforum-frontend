@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, nextTick, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/comments/TextEditor.vue";
 import FormRow from "@/components/generic/FormRow.vue";
@@ -15,7 +15,18 @@ import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 
 export default defineComponent({
   name: "CreateEditDiscussionFields",
-
+  components: {
+    TailwindForm: Form,
+    FormRow,
+    TextEditor,
+    TextInput,
+    ChannelIcon,
+    TagInput,
+    PencilIcon,
+    AnnotationIcon,
+    ErrorBanner,
+    TagIcon,
+  },
   props: {
     editMode: {
       type: Boolean,
@@ -52,6 +63,7 @@ export default defineComponent({
     return {
       formTitle: props.editMode ? "Edit Discussion" : "Create Discussion",
       touched: false,
+      titleInputRef: ref(null)
     };
   },
   computed: {
@@ -78,17 +90,14 @@ export default defineComponent({
       return "";
     },
   },
-  components: {
-    TailwindForm: Form,
-    FormRow,
-    TextEditor,
-    TextInput,
-    ChannelIcon,
-    TagInput,
-    PencilIcon,
-    AnnotationIcon,
-    ErrorBanner,
-    TagIcon,
+  created() {
+    nextTick(() => {
+      console.log('i ran')
+      if (this.titleInputRef){
+        console.log('ref children ',this.titleInputRef?.$el?.children[0].childNodes[0])
+        this.titleInputRef?.$el?.children[0].childNodes[0].focus()
+      }
+    });
   },
 });
 </script>
@@ -122,6 +131,7 @@ export default defineComponent({
             </template>
             <template v-slot:content>
               <TextInput
+                ref="titleInputRef"
                 :value="formValues.title"
                 :placeholder="'Add title'"
                 :full-width="true"
@@ -161,6 +171,7 @@ export default defineComponent({
             <template v-slot:content>
               <TextEditor
                 class="mb-3 h-56"
+                :disable-auto-focus="true"
                 :initial-value="formValues.body || ''"
                 :placeholder="'Add details'"
                 @update="$emit('updateFormValues', { body: $event })"
