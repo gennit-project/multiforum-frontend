@@ -92,9 +92,7 @@ export default defineComponent({
   },
   created() {
     nextTick(() => {
-      console.log('i ran')
       if (this.titleInputRef){
-        console.log('ref children ',this.titleInputRef?.$el?.children[0].childNodes[0])
         this.titleInputRef?.$el?.children[0].childNodes[0].focus()
       }
     });

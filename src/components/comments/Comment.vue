@@ -102,6 +102,9 @@ export default defineComponent({
   },
   computed: {
     createdAtFormatted() {
+      console.log('text ', this.commentData.text)
+      console.log('created at ', this.commentData.createdAt)
+      console.log('updated at ', this.commentData.updatedAt)
       if (!this.commentData.createdAt) {
         return "";
       }
@@ -119,7 +122,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="border my-2 px-6 shadow bg-white rounded-md">
+  <div class="my-2 px-6 border-l-2 bg-white">
     <div :class="['max-w-3xl my-4']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">
@@ -133,13 +136,14 @@ export default defineComponent({
                 {{ commentData.CommentAuthor.username }}
               </router-link>
               <span v-else class="underline font-bold">[Deleted]</span>
+              <span class="ml-1">&middot;</span>
               {{ createdAtFormatted }}
-              <span v-if="commentData.updatedAt"> &#8226; </span>
+              <span v-if="commentData.updatedAt"> &middot; </span>
               {{ editedAtFormatted }}
             </span>
             <md-editor
               v-if="commentData.text && !showEditCommentField"
-              class="max-w-2xl"
+              class="max-w-2xl small-text"
               v-model="textCopy"
               previewTheme="vuepress"
               language="en-US"
@@ -258,7 +262,7 @@ export default defineComponent({
       </div>
       <div
         v-if="compact && showReplyEditor"
-        class="mt-1 border-t-2 flex space-x-2"
+        class="mt-1 flex space-x-2"
         :class="compact ? 'px-3' : 'lg:px-6'"
       >
         <div>
@@ -326,6 +330,12 @@ export default defineComponent({
 .text-tiny {
   font-size: 0.9em;
   margin-bottom: 0;
+}
+
+.small-text {
+  #md-editor-v3-preview > p, li {
+    font-size: 0.9em;
+  }
 }
 
 .md-content .md-preview,

@@ -29,6 +29,7 @@ import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import MdEditor from "md-editor-v3";
 import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
+import { useDisplay } from "vuetify";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -57,7 +58,6 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    console.log({ route: route.name });
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -415,6 +415,8 @@ export default defineComponent({
       });
     });
 
+    const { lgAndUp } = useDisplay()
+
     return {
       channelId,
       channelLinks,
@@ -436,6 +438,7 @@ export default defineComponent({
       deleteDiscussionError,
       editedAt,
       discussion,
+      lgAndUp,
       relativeTime,
       route,
       router,
@@ -477,7 +480,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="top-10 pb-36 px-6 my-2 height-constrained-more space-y-2">
+  <div 
+    :class="route.name === 'DiscussionDetail' && lgAndUp ? 'large-width' : ''"
+    class="top-10 pb-36 px-6 my-2 height-constrained-more space-y-2"
+    >
     <h2
       v-if="route.name !== 'DiscussionDetail'"
       class="pl-4 text-gray-400 text-sm"
@@ -833,6 +839,9 @@ export default defineComponent({
 .height-constrained-more {
   max-height: 84vh;
   height: 100% - 100px;
+}
+.large-width {
+  width: 1200px;
 }
 
 h1 {
