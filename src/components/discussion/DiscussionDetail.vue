@@ -57,6 +57,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
+    console.log({ route: route.name });
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -163,27 +164,14 @@ export default defineComponent({
 
       // On the discussion detail page, hide the current channel because
       // that would link to the current page.
-      if (route.name === "DiscussionDetail") {
-        return discussion.value.Channels.filter((channel: ChannelData) => {
-          return channel.uniqueName !== channelId.value;
-        });
-      }
 
-      if (route.name === "SearchDiscussionPreview") {
-        return discussion.value.Channels.filter((channel: ChannelData) => {
-          return channel.uniqueName === channelId.value;
-        });
-      }
-
-      // On the preview, show all of the links as options, sorted by
-      // comment count.
-      return [...discussion.value.Channels].sort(
-        (a: ChannelData, b: ChannelData) => {
-          const countA = getCommentCount(a.uniqueName);
-          const countB = getCommentCount(b.uniqueName);
-          return countB - countA;
-        }
-      );
+      return discussion.value.Channels.filter((channel: ChannelData) => {
+        return channel.uniqueName !== channelId.value;
+      }).sort((a: ChannelData, b: ChannelData) => {
+        const countA = getCommentCount(a.uniqueName);
+        const countB = getCommentCount(b.uniqueName);
+        return countB - countA;
+      });
     });
 
     const {
@@ -489,9 +477,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="top-10 pb-36 px-6 my-2 height-constrained-more space-y-2 max-w-6xl"
-  >
+  <div class="top-10 pb-36 px-6 my-2 height-constrained-more space-y-2">
     <h2
       v-if="route.name !== 'DiscussionDetail'"
       class="pl-4 text-gray-400 text-sm"
@@ -707,26 +693,39 @@ export default defineComponent({
                   route.name !== 'DiscussionDetail' && channelLinks.length > 0
                 "
               >
-                <div>Comments</div>
-                <router-link
-                  v-for="channel in channelLinks"
-                  :key="channel.uniqueName"
-                  :to="{
-                    name: 'DiscussionDetail',
-                    params: {
-                      discussionId,
-                      channelId: channel.uniqueName,
-                    },
-                  }"
-                >
-                  <Tag
-                    class="mt-2"
-                    :tag="`${channel.uniqueName} (${getCommentCount(
-                      channel.uniqueName
-                    )})`"
-                    :channel-mode="true"
-                  />
-                </router-link>
+                <h2 class="text-lg">Comments</h2>
+                <ul class="list-disc pl-3">
+                  <li v-for="channel in channelLinks" :key="channel.uniqueName">
+                    <router-link
+                      class="mr-1 underline"
+                      :to="{
+                        name: 'DiscussionDetail',
+                        params: {
+                          discussionId,
+                          channelId: channel.uniqueName,
+                        },
+                      }"
+                    >
+                      {{ `${getCommentCount(channel.uniqueName)} comments` }}
+                    </router-link>
+                    in
+                    <router-link
+                      :to="{
+                        name: 'DiscussionDetail',
+                        params: {
+                          discussionId,
+                          channelId: channel.uniqueName,
+                        },
+                      }"
+                    >
+                      <Tag
+                        class="mt-2"
+                        :tag="channel.uniqueName"
+                        :channel-mode="true"
+                      />
+                    </router-link>
+                  </li>
+                </ul>
               </div>
               <CommentSection
                 class="mb-2"
@@ -756,7 +755,7 @@ export default defineComponent({
                   mr-4
                 "
               >
-                <div v-if="discussion.Tags.length > 0">Tags</div>
+                <h2 v-if="discussion.Tags.length > 0" class="text-lg">Tags</h2>
                 <Tag
                   class="mt-2"
                   v-for="tag in discussion.Tags"
@@ -766,29 +765,48 @@ export default defineComponent({
                 />
                 <div
                   v-if="
-                    route.name === 'DiscussionDetail' && channelLinks.length > 0
+                    (route.name === 'DiscussionDetail' ||
+                      route.name === 'SearchDiscussionPreview') &&
+                    channelLinks.length > 0
                   "
                 >
-                  <div>Crossposted To Channels</div>
-                  <router-link
-                    v-for="channel in channelLinks"
-                    :key="channel.uniqueName"
-                    :to="{
-                      name: 'DiscussionDetail',
-                      params: {
-                        discussionId,
-                        channelId: channel.uniqueName,
-                      },
-                    }"
-                  >
-                    <Tag
-                      class="mt-2"
-                      :tag="`${channel.uniqueName} (${getCommentCount(
-                        channel.uniqueName
-                      )})`"
-                      :channel-mode="true"
-                    />
-                  </router-link>
+                  <div class="text-lg mb-2">Crossposted To Channels</div>
+
+                  <ul class="list-disc pl-3">
+                    <li
+                      v-for="channel in channelLinks"
+                      :key="channel.uniqueName"
+                    >
+                      <router-link
+                        class="mr-1 underline"
+                        :to="{
+                          name: 'DiscussionDetail',
+                          params: {
+                            discussionId,
+                            channelId: channel.uniqueName,
+                          },
+                        }"
+                      >
+                        {{ `${getCommentCount(channel.uniqueName)} comments` }}
+                      </router-link>
+                      in
+                      <router-link
+                        :to="{
+                          name: 'DiscussionDetail',
+                          params: {
+                            discussionId,
+                            channelId: channel.uniqueName,
+                          },
+                        }"
+                      >
+                        <Tag
+                          class="mt-2"
+                          :tag="channel.uniqueName"
+                          :channel-mode="true"
+                        />
+                      </router-link>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>

@@ -401,7 +401,7 @@ export default defineComponent({
     />
 
     <div class="flex justify-center px-6">
-      <div class="block w-full max-w-7xl">
+      <div class="block w-full">
         <TwoSeparatelyScrollingPanes
           v-if="discussionResult && discussionResult.discussions.length > 0"
         >
@@ -429,7 +429,6 @@ export default defineComponent({
             <router-view></router-view>
           </template>
         </TwoSeparatelyScrollingPanes>
-        <p v-else>Could not find any results.</p>
       </div>
     </div>
   </div>
