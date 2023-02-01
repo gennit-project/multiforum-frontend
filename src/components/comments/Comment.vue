@@ -16,6 +16,7 @@ import CancelButton from "@/components/generic/CancelButton.vue";
 import SaveButton from "@/components/generic/SaveButton.vue";
 import ChildComments from "./ChildComments.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
+import UserCircle from "@/components/icons/UserCircle.vue";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -29,6 +30,7 @@ export default defineComponent({
     SaveButton,
     TextEditor,
     // UpArrowIcon,
+    UserCircle,
   },
   setup(props) {
     let replyCount = computed(() => {
@@ -102,9 +104,6 @@ export default defineComponent({
   },
   computed: {
     createdAtFormatted() {
-      console.log('text ', this.commentData.text)
-      console.log('created at ', this.commentData.createdAt)
-      console.log('updated at ', this.commentData.updatedAt)
       if (!this.commentData.createdAt) {
         return "";
       }
@@ -122,12 +121,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="my-2 px-6 border-l-2 bg-white">
+  <div class="my-2 px-6 bg-white">
     <div :class="['max-w-3xl my-4']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">
           <div>
-            <span class="text-tiny">
+            <UserCircle class="h-8 w-8 profile-picture" />
+            <span class="text-tiny username-text">
               <router-link
                 v-if="commentData.CommentAuthor"
                 class="underline font-bold"
@@ -141,159 +141,170 @@ export default defineComponent({
               <span v-if="commentData.updatedAt"> &middot; </span>
               {{ editedAtFormatted }}
             </span>
-            <md-editor
+            <div
               v-if="commentData.text && !showEditCommentField"
-              class="max-w-2xl small-text"
-              v-model="textCopy"
-              previewTheme="vuepress"
-              language="en-US"
-              :noMermaid="true"
-              preview-only
-            />
-            <TextEditor
-              id="editExistingComment"
-              class="h-48"
-              v-if="!readonly && showEditCommentField"
-              :initial-value="commentData.text"
-              :editor-id="editorId"
-              @update="updateExistingComment($event, depth)"
+              class="comment-border"
             >
-              <template #defToolbars>
-                <emoji-extension
-                  :editor-id="editorId"
-                  @on-change="updateText"
-                />
-              </template>
-            </TextEditor>
-          </div>
-        </div>
-      </div>
-      <div v-if="compact" class="text-xs text-gray-400 space-x-2 mt-1">
-        <!-- <UpArrowIcon
-          class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-        />
-        <span>{{ "0" }}</span>
-        <DownArrowIcon
-          class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-        /> -->
-        <RequireAuth
-          class="flex inline-flex"
-          v-if="$route.name === 'DiscussionDetail' && !locked"
-        >
-          <template v-slot:has-auth>
-            <span
-              class="underline cursor-pointer hover:text-black"
-              :class="showReplyEditor ? 'text-black' : ''"
-              @click="showReplyEditor = !showReplyEditor"
-              >Reply</span
-            >
-          </template>
-          <template v-slot:does-not-have-auth>
-            <span class="underline cursor-pointer hover:text-black">Reply</span>
-          </template>
-        </RequireAuth>
-        <RequireAuth
-          class="flex inline-flex"
-          v-if="commentData.CommentAuthor"
-          :require-ownership="true"
-          :owners="[commentData.CommentAuthor.username]"
-        >
-          <template v-slot:has-auth>
-            <span
-              class="underline cursor-pointer hover:text-black"
-              @click="
-                $emit('deleteComment', {
-                  commentId: commentData.id,
-                  parentCommentId: commentData.ParentComment
-                    ? commentData.ParentComment.id
-                    : '',
-                  replyCount,
-                })
-              "
-              >Delete</span
-            >
-            <span
-              v-if="!showEditCommentField"
-              class="ml-2 underline cursor-pointer hover:text-black"
-              @click="
-                () => {
-                  $emit('clickEditComment', commentData);
-                  showEditCommentField = true;
-                }
-              "
-              >Edit</span
-            >
-          </template>
-        </RequireAuth>
+              <md-editor
+                class="max-w-2xl small-text"
+                v-model="textCopy"
+                previewTheme="vuepress"
+                language="en-US"
+                :noMermaid="true"
+                preview-only
+              />
+              <TextEditor
+                id="editExistingComment"
+                class="h-48 inline-flex"
+                v-if="!readonly && showEditCommentField"
+                :initial-value="commentData.text"
+                :editor-id="editorId"
+                @update="updateExistingComment($event, depth)"
+              >
+                <template #defToolbars>
+                  <emoji-extension
+                    :editor-id="editorId"
+                    @on-change="updateText"
+                  />
+                </template>
+              </TextEditor>
+              <div v-if="compact" class="text-xs text-gray-400 space-x-2">
+                <!-- <UpArrowIcon
+                class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
+              />
+              <span>{{ "0" }}</span>
+              <DownArrowIcon
+                class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
+              /> -->
+                <RequireAuth
+                  class="flex inline-flex"
+                  v-if="$route.name === 'DiscussionDetail' && !locked"
+                >
+                  <template v-slot:has-auth>
+                    <span
+                      class="underline cursor-pointer hover:text-black"
+                      :class="showReplyEditor ? 'text-black' : ''"
+                      @click="showReplyEditor = !showReplyEditor"
+                      >Reply</span
+                    >
+                  </template>
+                  <template v-slot:does-not-have-auth>
+                    <span class="underline cursor-pointer hover:text-black"
+                      >Reply</span
+                    >
+                  </template>
+                </RequireAuth>
+                <RequireAuth
+                  class="flex inline-flex"
+                  v-if="commentData.CommentAuthor"
+                  :require-ownership="true"
+                  :owners="[commentData.CommentAuthor.username]"
+                >
+                  <template v-slot:has-auth>
+                    <span
+                      class="underline cursor-pointer hover:text-black"
+                      @click="
+                        $emit('deleteComment', {
+                          commentId: commentData.id,
+                          parentCommentId: commentData.ParentComment
+                            ? commentData.ParentComment.id
+                            : '',
+                          replyCount,
+                        })
+                      "
+                      >Delete</span
+                    >
+                    <span
+                      v-if="!showEditCommentField"
+                      class="ml-2 underline cursor-pointer hover:text-black"
+                      @click="
+                        () => {
+                          $emit('clickEditComment', commentData);
+                          showEditCommentField = true;
+                        }
+                      "
+                      >Edit</span
+                    >
+                  </template>
+                </RequireAuth>
 
-        <span
-          v-if="showEditCommentField"
-          class="underline cursor-pointer hover:text-black"
-          @click="showEditCommentField = false"
-          >Cancel</span
-        >
-        <span
-          v-if="showEditCommentField"
-          class="underline cursor-pointer hover:text-black"
-          @click="
-            () => {
-              $emit('saveEdit');
-              showEditCommentField = false;
-            }
-          "
-          >Save</span
-        >
-        <span
-          v-if="showReplies && replyCount > 0"
-          class="underline cursor-pointer hover:text-black"
-          @click="showReplies = false"
-          >{{
-            `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
-          }}</span
-        >
-        <span
-          v-if="!showReplies"
-          class="underline cursor-pointer hover:text-black"
-          @click="showReplies = true"
-          >{{
-            `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
-          }}</span
-        >
-      </div>
-      <div
-        v-if="compact && showReplyEditor"
-        class="mt-1 flex space-x-2"
-        :class="compact ? 'px-3' : 'lg:px-6'"
-      >
-        <div>
-          <TextEditor
-            class="my-3 h-48"
-            :placeholder="'Please be kind'"
-            @update="
-              updateNewComment({
-                text: $event,
-                parentCommentId: commentData.id,
-                depth: depth + 1,
-              })
-            "
-          />
-          <!-- <ErrorBanner v-if="createCommentError"
-                           :text="createCommentError.message" /> -->
-          <div class="flex justify-start">
-            <CancelButton @click="showReplyEditor = false" />
-            <SaveButton
-              @click.prevent="
-                () => {
-                  $emit('createComment', parentCommentId);
-                  showReplyEditor = false;
-                }
-              "
-              :disabled="commentData.text.length === 0"
-            >
-            </SaveButton>
+                <span
+                  v-if="showEditCommentField"
+                  class="underline cursor-pointer hover:text-black"
+                  @click="showEditCommentField = false"
+                  >Cancel</span
+                >
+                <span
+                  v-if="showEditCommentField"
+                  class="underline cursor-pointer hover:text-black"
+                  @click="
+                    () => {
+                      $emit('saveEdit');
+                      showEditCommentField = false;
+                    }
+                  "
+                  >Save</span
+                >
+                <span
+                  v-if="showReplies && replyCount > 0"
+                  class="underline cursor-pointer hover:text-black"
+                  @click="showReplies = false"
+                  >{{
+                    `Hide ${replyCount} ${
+                      replyCount === 1 ? "Reply" : "Replies"
+                    }`
+                  }}</span
+                >
+                <span
+                  v-if="!showReplies"
+                  class="underline cursor-pointer hover:text-black"
+                  @click="showReplies = true"
+                  >{{
+                    `Show ${replyCount} ${
+                      replyCount === 1 ? "Reply" : "Replies"
+                    }`
+                  }}</span
+                >
+              </div>
+              <div
+                v-if="compact && showReplyEditor"
+                class="mt-1 flex space-x-2"
+                :class="compact ? 'px-3' : 'lg:px-6'"
+              >
+                <div>
+                  <TextEditor
+                    class="my-3 h-48"
+                    :placeholder="'Please be kind'"
+                    @update="
+                      updateNewComment({
+                        text: $event,
+                        parentCommentId: commentData.id,
+                        depth: depth + 1,
+                      })
+                    "
+                  />
+                  <!-- <ErrorBanner v-if="createCommentError"
+                                 :text="createCommentError.message" /> -->
+                  <div class="flex justify-start">
+                    <CancelButton @click="showReplyEditor = false" />
+                    <SaveButton
+                      @click.prevent="
+                        () => {
+                          $emit('createComment', parentCommentId);
+                          showReplyEditor = false;
+                        }
+                      "
+                      :disabled="commentData.text.length === 0"
+                    >
+                    </SaveButton>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div id="childComments" v-if="replyCount > 0 && showReplies">
         <ChildComments
           v-slot="slotProps"
@@ -333,7 +344,8 @@ export default defineComponent({
 }
 
 .small-text {
-  #md-editor-v3-preview > p, li {
+  #md-editor-v3-preview > p,
+  li {
     font-size: 0.9em;
   }
 }
@@ -380,5 +392,21 @@ export default defineComponent({
   ul {
     margin: 0.1em;
   }
+}
+.profile-picture {
+  position: relative;
+  left: -3em;
+  top: 0.7em;
+  z-index: 1;
+}
+.username-text {
+  position: relative;
+  left: -2.5em;
+}
+.comment-border {
+  border-left: 2px solid #d4d4d4;
+  position: relative;
+  left: -2em;
+  padding-left: 2em;
 }
 </style>
