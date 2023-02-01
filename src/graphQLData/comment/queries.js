@@ -53,6 +53,10 @@ export const GET_COMMENT_SECTION = gql`
                 count
               }
             }
+            ReplyUpvotes
+            UpvotedByUsers {
+              username
+            }
       }
     }
 }
@@ -80,6 +84,10 @@ query getCommentWithReplies($id: ID!){
       }
       ChildCommentsAggregate {
         count
+      }
+      ReplyUpvotes
+      UpvotedByUsers {
+        username
       }
 		}
 	}

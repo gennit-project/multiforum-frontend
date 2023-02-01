@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
 import MdEditor from "md-editor-v3";
-// import UpArrowIcon from "../icons/UpArrowIcon.vue";
-// import DownArrowIcon from "../icons/DownArrowIcon.vue";
+import UpArrowIcon from "../icons/UpArrowIcon.vue";
+import DownArrowIcon from "../icons/DownArrowIcon.vue";
 import {
   CommentData,
   CreateReplyInputData,
@@ -23,13 +23,13 @@ export default defineComponent({
   components: {
     CancelButton,
     ChildComments,
-    // DownArrowIcon,
+    DownArrowIcon,
     EmojiExtension,
     MdEditor,
     RequireAuth,
     SaveButton,
     TextEditor,
-    // UpArrowIcon,
+    UpArrowIcon,
     UserCircle,
   },
   setup(props) {
@@ -168,14 +168,23 @@ export default defineComponent({
                   />
                 </template>
               </TextEditor>
-              <div v-if="compact" class="text-xs text-gray-400 space-x-2">
-                <!-- <UpArrowIcon
-                class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-              />
-              <span>{{ "0" }}</span>
-              <DownArrowIcon
-                class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-              /> -->
+              <div v-if="compact" class="flex align-center text-xs text-gray-400 space-x-2">
+                <VTooltip class="inline-flex">
+                  <UpArrowIcon
+                    class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
+                  />
+                  <template #popper>This comment adds to the discussion</template>
+                </VTooltip>
+                
+                <span class="inline-flex pt-0.5">{{ "0" }}</span>
+
+                <VTooltip>
+                  <DownArrowIcon
+                    class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
+                  />
+                  <template #popper>This comment does not add to the discussion</template>
+                </VTooltip>
+                
                 <RequireAuth
                   class="flex inline-flex"
                   v-if="$route.name === 'DiscussionDetail' && !locked"
