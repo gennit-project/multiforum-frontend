@@ -1,5 +1,73 @@
 import { gql } from "@apollo/client/core";
 
+export const DOWNVOTE_COMMENT = gql`
+  mutation downvoteComment($id: ID!, $username: String){
+    updateComments(where: 
+      {
+        id: $id
+      },
+      disconnect: {
+        UpvotedByUsers: {
+          where: {
+            node: {
+              username: $username
+            }
+          }
+        }
+      }) {
+      comments {
+        id
+        CommentAuthor {
+          ... on User {
+            username
+          }
+        }
+        text
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+      }
+    } 
+  }
+`
+
+export const UPVOTE_COMMENT = gql`
+  mutation upvoteComment($id: ID!, $username: String){
+    updateComments(where: 
+      {
+        id: $id
+      },
+      connect: {
+        UpvotedByUsers: {
+          where: {
+            node: {
+              username: $username
+            }
+          }
+        }
+      }) {
+      comments {
+        id
+        CommentAuthor {
+          ... on User {
+            username
+          }
+        }
+        text
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+      }
+    }
+  }
+`
+
 export const CREATE_COMMENT = gql`
   mutation createComment(
     $createCommentInput: [CommentCreateInput!]!
@@ -10,6 +78,12 @@ export const CREATE_COMMENT = gql`
         text
         Channel {
           uniqueName
+        }
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
         }
         CommentAuthor {
           ... on User {
@@ -32,6 +106,12 @@ export const CREATE_COMMENT = gql`
             ... on User {
               username
             }
+          }
+          UpvotedByUsers {
+            username
+          }
+          UpvotedByUsersAggregate {
+            count
           }
         }
       }

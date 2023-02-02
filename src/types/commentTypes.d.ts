@@ -48,4 +48,8 @@ export type CommentData = {
   updatedAt?: string
   createdAt: string
   Tags?: [TagData]
+  UpvotedByUsers: [UserData]
+  UpvotedByUsersAggregate?: {
+    count: number
+  }
 }

@@ -1,22 +1,29 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, computed } from "vue";
+import { useQuery } from "@vue/apollo-composable";
 import RequireAuth from "../auth/RequireAuth.vue";
 import CancelButton from "@/components/generic/CancelButton.vue";
 import SaveButton from "@/components/generic/SaveButton.vue";
-import UpArrowIcon from "../icons/UpArrowIcon.vue";
-import DownArrowIcon from "../icons/DownArrowIcon.vue";
 import TextEditor from "./TextEditor.vue";
 import { CommentData } from "@/types/commentTypes";
+import { useMutation } from "@vue/apollo-composable";
+import {
+  UPVOTE_COMMENT,
+  DOWNVOTE_COMMENT,
+} from "@/graphQLData/comment/mutations";
+import ErrorBanner from "../generic/ErrorBanner.vue";
+import Votes from "./Votes.vue";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
     CancelButton,
-    DownArrowIcon,
+    ErrorBanner,
     RequireAuth,
     SaveButton,
     TextEditor,
-    UpArrowIcon,
+    VotesComponent: Votes,
   },
   props: {
     commentData: {
@@ -52,40 +59,79 @@ export default defineComponent({
       default: false,
     },
   },
+  setup(props) {
+
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
+      UPVOTE_COMMENT,
+      () => ({
+        variables: {
+          id: props.commentData.id,
+          username: props.commentData.CommentAuthor?.username,
+        },
+      })
+    );
+
+    const { mutate: downvoteComment, error: downvoteCommentError } =
+      useMutation(DOWNVOTE_COMMENT, () => ({
+        variables: {
+          id: props.commentData.id,
+          username: props.commentData.CommentAuthor?.username,
+        },
+      }));
+
+    const loggedInUserUpvoted = computed(() => {
+      if (localUsernameLoading.value || !localUsernameResult.value ) {
+        return false
+      }
+      const match = props.commentData.UpvotedByUsers.filter((user: any) => {
+        return user.username === localUsernameResult.value.username
+      }).length === 1
+      return match
+    })
+
+    return {
+      upvoteComment,
+      upvoteCommentError,
+      downvoteComment,
+      downvoteCommentError,
+      loggedInUserUpvoted
+    };
+  },
+  methods: {
+    upvoteCommentMethod(input: any){
+      this.upvoteComment(input)
+    }
+  }
 });
 </script>
 <template>
   <div>
     <div class="flex align-center text-xs text-gray-400 space-x-2">
-      <VTooltip class="inline-flex">
-        <UpArrowIcon
-          class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-        />
-        <template #popper>This comment adds to the discussion</template>
-      </VTooltip>
-
-      <span class="inline-flex pt-0.5">{{ "0" }}</span>
-
-      <VTooltip>
-        <DownArrowIcon
-          class="text-gray-400 h-5 inline-flex hover:text-black cursor-pointer"
-        />
-        <template #popper>This comment does not add to the discussion</template>
-      </VTooltip>
-
-      <RequireAuth
-        class="flex inline-flex"
-        v-if="$route.name === 'DiscussionDetail' && !locked"
-      >
+      <RequireAuth v-if="!locked">
         <template v-slot:has-auth>
-          <span
-            class="underline cursor-pointer hover:text-black"
-            :class="showReplyEditor ? 'text-black' : ''"
-            @click="$emit('toggleShowReplyEditor')"
-            >Reply</span
-          >
+          <div class="flex inline-flex">
+            <VotesComponent
+              :count="commentData.UpvotedByUsersAggregate?.count"
+              :upvote-active="loggedInUserUpvoted"
+              :downvote-active="false"
+              @upvote="upvoteCommentMethod"
+              @downvote="downvoteComment"
+            />
+            <span
+              class="ml-2 underline cursor-pointer hover:text-black"
+              :class="showReplyEditor ? 'text-black' : ''"
+              @click="$emit('toggleShowReplyEditor')"
+              >Reply</span
+            >
+          </div>
         </template>
         <template v-slot:does-not-have-auth>
+          <VotesComponent :count="commentData.UpvotedByUsersAggregate?.count" />
           <span class="underline cursor-pointer hover:text-black">Reply</span>
         </template>
       </RequireAuth>
@@ -170,8 +216,6 @@ export default defineComponent({
             })
           "
         />
-        <!-- <ErrorBanner v-if="createCommentError"
-                         :text="createCommentError.message" /> -->
         <div class="flex justify-start">
           <CancelButton @click="$emit('hideReplyEditor')" />
           <SaveButton
@@ -187,10 +231,12 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <ErrorBanner v-if="upvoteCommentError" :text="upvoteCommentError.message" />
+    <ErrorBanner
+      v-if="downvoteCommentError"
+      :text="downvoteCommentError.message"
+    />
   </div>
 </template>
-
-
-
 <style>
 </style>

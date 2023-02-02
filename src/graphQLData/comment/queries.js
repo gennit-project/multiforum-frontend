@@ -31,6 +31,12 @@ export const GET_COMMENT_SECTION = gql`
             Channel {
               uniqueName
             }
+            UpvotedByUsers {
+              username
+            }
+            UpvotedByUsersAggregate {
+              count
+            }
             CommentAuthor {
               ... on User {
                 username
@@ -49,13 +55,15 @@ export const GET_COMMENT_SECTION = gql`
                   username
                 }
               }
+              UpvotedByUsers {
+                  username
+              }
+              UpvotedByUsersAggregate {
+                count
+              } 
               ChildCommentsAggregate {
                 count
               }
-            }
-            ReplyUpvotes
-            UpvotedByUsers {
-              username
             }
       }
     }
@@ -71,8 +79,20 @@ query getCommentWithReplies($id: ID!){
     ChildCommentsAggregate {
       count
     }
+    UpvotedByUsers {
+      username
+    }
+    UpvotedByUsersAggregate {
+      count
+    } 
 		ChildComments {
 			id
+      UpvotedByUsers {
+        username
+      }
+      UpvotedByUsersAggregate {
+        count
+      } 
       CommentAuthor {
         ... on User {
           username
@@ -85,7 +105,6 @@ query getCommentWithReplies($id: ID!){
       ChildCommentsAggregate {
         count
       }
-      ReplyUpvotes
       UpvotedByUsers {
         username
       }

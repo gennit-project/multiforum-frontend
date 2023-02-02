@@ -73,6 +73,9 @@ export default defineComponent({
     },
   },
   methods: {
+    createComment(parentCommentId: string){
+      this.$emit("createComment", parentCommentId)
+    },
     handleClickDelete(input: DeleteCommentInputData) {
       this.$emit("deleteComment", input);
     },
@@ -115,8 +118,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-6 bg-white">
-    <div :class="['max-w-3xl my-4']">
+  <div class="px-4 bg-white">
+    <div :class="['max-w-3xl my-1']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">
           <div>
@@ -136,7 +139,6 @@ export default defineComponent({
               {{ editedAtFormatted }}
             </span>
             <div
-              
               class="comment-border"
             >
               <md-editor
@@ -174,7 +176,9 @@ export default defineComponent({
                 :show-replies="showReplies"
                 :show-reply-editor="showReplyEditor"
                 @clickEditComment="handleClickEdit"
+                @createComment="createComment"
                 @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
+                @hideReplyEditor="showReplyEditor = false"
                 @deleteComment="handleClickDelete"
                 @hideReplies="showReplies = false"
                 @saveEdit="$emit('saveEdit')"
@@ -183,34 +187,35 @@ export default defineComponent({
                 @showReplies="showReplies = true"
                 @updateNewComment="updateNewComment"
               />
+              <div id="childComments" v-if="replyCount > 0 && showReplies">
+                <ChildComments
+                  v-slot="slotProps"
+                  :parent-comment-id="commentData.id"
+                  @mouseenter="highlight = true"
+                  @mouseleave="highlight = false"
+                >
+                  <Comment
+                    v-for="(childComment, i) in slotProps.comments"
+                    :key="i"
+                    :compact="true"
+                    :commentData="childComment"
+                    :depth="depth + 1"
+                    :locked="locked"
+                    :parentCommentId="commentData.id"
+                    @clickEditComment="$emit('clickEditComment', $event)"
+                    @deleteComment="handleClickDelete"
+                    @createComment="$emit('createComment')"
+                    @saveEdit="$emit('saveEdit')"
+                    @updateCreateReplyCommentInput="updateNewComment"
+                    @updateEditCommentInput="updateExistingComment"
+                  />
+                </ChildComments>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="childComments" v-if="replyCount > 0 && showReplies">
-        <ChildComments
-          v-slot="slotProps"
-          :parent-comment-id="commentData.id"
-          @mouseenter="highlight = true"
-          @mouseleave="highlight = false"
-        >
-          <Comment
-            v-for="(childComment, i) in slotProps.comments"
-            :key="i"
-            :compact="true"
-            :commentData="childComment"
-            :depth="depth + 1"
-            :locked="locked"
-            :parentCommentId="commentData.id"
-            @clickEditComment="$emit('clickEditComment', $event)"
-            @deleteComment="handleClickDelete"
-            @createComment="$emit('createComment')"
-            @saveEdit="$emit('saveEdit')"
-            @updateCreateReplyCommentInput="updateNewComment"
-            @updateEditCommentInput="updateExistingComment"
-          />
-        </ChildComments>
+      
       </div>
     </div>
   </div>
@@ -287,7 +292,7 @@ export default defineComponent({
   left: -2.5em;
 }
 .comment-border {
-  border-left: 2px solid #d4d4d4;
+  border-left: 2px solid #e2e2e2;
   position: relative;
   left: -2em;
   padding-left: 2em;
