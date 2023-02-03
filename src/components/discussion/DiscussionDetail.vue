@@ -415,7 +415,7 @@ export default defineComponent({
       });
     });
 
-    const { lgAndUp } = useDisplay()
+    const { lgAndUp, mdAndUp } = useDisplay()
 
     return {
       channelId,
@@ -439,6 +439,7 @@ export default defineComponent({
       editedAt,
       discussion,
       lgAndUp,
+      mdAndUp,
       relativeTime,
       route,
       router,
@@ -481,8 +482,8 @@ export default defineComponent({
 
 <template>
   <div 
-    :class="route.name === 'DiscussionDetail' && lgAndUp ? 'large-width' : ''"
-    class="top-10 pb-36 px-6 my-2 height-constrained-more space-y-2"
+    :class="route.name === 'DiscussionDetail' && mdAndUp ? 'large-width' : ''"
+    class="top-10 pb-36 my-2 height-constrained-more space-y-2"
     >
     <h2
       v-if="route.name !== 'DiscussionDetail'"
@@ -642,6 +643,7 @@ export default defineComponent({
                       class="
                         block
                         w-full
+                        h-10
                         rounded-full
                         border-gray-300
                         shadow-sm
@@ -660,6 +662,7 @@ export default defineComponent({
                       class="
                         block
                         w-full
+                        h-10
                         rounded-full
                         border-gray-300
                         shadow-sm
@@ -671,7 +674,7 @@ export default defineComponent({
                   </template>
                 </RequireAuth>
 
-                <div v-else>
+                <div v-else class="overflow-x-scroll max-w-2xl">
                   <TextEditor
                     class="mb-3 h-48"
                     :placeholder="'Please be kind'"
