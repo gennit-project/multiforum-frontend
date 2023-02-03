@@ -332,10 +332,10 @@ export default defineComponent({
       </h1>
     </div>
 
-    <div class="rounded px-4 lg:px-12 pr-8 flex justify-center">
+    <div class="rounded px-4 lg:px-12 pr-8">
       <div class="pt-2 pb-2">
-        <div class="items-center flex ">
-          <div class="flex items-center space-x-2">
+        <div class="items-center">
+          <div class="flex items-center inline-flex space-x-2">
             <SearchBar
               class="flex mr-2 align-middle"
               :small="true"

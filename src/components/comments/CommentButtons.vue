@@ -9,7 +9,7 @@ import { CommentData } from "@/types/commentTypes";
 import { useMutation } from "@vue/apollo-composable";
 import {
   UPVOTE_COMMENT,
-  DOWNVOTE_COMMENT,
+  UNDO_UPVOTE_COMMENT,
 } from "@/graphQLData/comment/mutations";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import Votes from "./Votes.vue";
@@ -77,7 +77,7 @@ export default defineComponent({
     );
 
     const { mutate: downvoteComment, error: downvoteCommentError } =
-      useMutation(DOWNVOTE_COMMENT, () => ({
+      useMutation(UNDO_UPVOTE_COMMENT, () => ({
         variables: {
           id: props.commentData.id,
           username: props.commentData.CommentAuthor?.username,

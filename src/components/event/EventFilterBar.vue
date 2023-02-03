@@ -458,7 +458,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="p-2 space-y-1 flex-justify-center">
+  <div class="p-2 space-y-1">
     <div
       v-if="route.name !== 'EventDetail'"
       class="items-center flex justify-center space-x-2 px-4"

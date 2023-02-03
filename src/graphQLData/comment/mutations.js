@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client/core";
 
-export const DOWNVOTE_COMMENT = gql`
+export const UNDO_UPVOTE_COMMENT = gql`
   mutation downvoteComment($id: ID!, $username: String){
     updateComments(where: 
       {
