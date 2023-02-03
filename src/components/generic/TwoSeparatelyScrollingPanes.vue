@@ -17,6 +17,7 @@ export default defineComponent({
 </script>
 
 <template>
+    <div class="flex justify-center">
     <div class="flex flex-row ">
         <div 
           :class="[!mdAndDown ? 'constrain-height' : '']"
@@ -30,6 +31,7 @@ export default defineComponent({
             <slot name="rightpane"></slot>
         </div>
     </div>
+</div>
 </template>
 <style>
 .constrain-height {

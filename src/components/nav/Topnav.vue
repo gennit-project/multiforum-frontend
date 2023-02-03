@@ -31,12 +31,12 @@ export default defineComponent({
     },
   },
   setup() {
-    const { isAuthenticated, loginWithRedirect } = useAuth0();
+    const { isAuthenticated, loginWithPopup } = useAuth0();
 
     return {
       isAuthenticated,
       login: () => {
-        loginWithRedirect( );
+        loginWithPopup( );
       },
     };
   },
