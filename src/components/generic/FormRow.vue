@@ -21,6 +21,7 @@ export default defineComponent({
       sm:gap-4
       sm:items-start
       mt-1
+      px-4
     "
   >
     <label
@@ -33,6 +34,7 @@ export default defineComponent({
         text-gray-700
         sm:mt-px sm:pt-2
         align-right
+        
       "
     >
       {{ sectionTitle }}

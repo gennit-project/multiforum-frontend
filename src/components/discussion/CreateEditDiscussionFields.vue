@@ -100,7 +100,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex justify-center">
+  <div>
     <div v-if="discussionLoading">Loading...</div>
     <div v-else-if="getDiscussionError">
       <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">

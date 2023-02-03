@@ -28,8 +28,8 @@ export default defineComponent({
 </script>
 <template>
   <div >
-    <form class="mx-auto max-w-4xl space-y-2 divide-y bg-white px-8 py-4 rounded shadow" autocomplete="off">
-      <FormRow>
+    <form class="mx-auto max-w-4xl space-y-2 divide-y bg-white xs:px-2 sm:px-4 md:px-8 py-4 rounded shadow" autocomplete="off">
+      <FormRow class="xs:mx-2 sm:mx-4 md:mx-">
         <template v-slot:content>
           <div class="flow-root">
             <FormTitle class="float-left"> {{ formTitle }} </FormTitle>
