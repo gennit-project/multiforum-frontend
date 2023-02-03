@@ -101,6 +101,9 @@ export default defineComponent({
     };
   },
   methods: {
+    downvoteCommentMethod(){
+      this.$emit('openModProfileModal')
+    },
     undoUpvoteCommentMethod(input: any) {
       this.undoUpvoteComment(input);
     },
@@ -120,6 +123,7 @@ export default defineComponent({
               :count="commentData.UpvotedByUsersAggregate?.count"
               :upvote-active="loggedInUserUpvoted"
               :downvote-active="false"
+              @downvote="downvoteCommentMethod"
               @upvote="upvoteCommentMethod"
               @undoUpvote="undoUpvoteComment"
             />

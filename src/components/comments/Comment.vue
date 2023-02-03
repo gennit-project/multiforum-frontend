@@ -12,7 +12,9 @@ import EmojiExtension from "./EmojiExtension/index.vue";
 import TextEditor from "./TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
 import UserCircle from "@/components/icons/UserCircle.vue";
-import CommentButtons from "./CommentButtons.vue"
+import CommentButtons from "./CommentButtons.vue";
+import WarningModal from "../generic/WarningModal.vue";
+
 export default defineComponent({
   name: "CommentComponent",
   components: {
@@ -22,6 +24,7 @@ export default defineComponent({
     MdEditor,
     TextEditor,
     UserCircle,
+    WarningModal,
   },
   setup(props) {
     let replyCount = computed(() => {
@@ -41,6 +44,7 @@ export default defineComponent({
       relativeTime,
       replyCount,
       showEditCommentField: ref(false),
+      showModProfileModal: ref(false),
       showReplies: ref(true),
       showReplyEditor: ref(false),
       textCopy,
@@ -73,14 +77,14 @@ export default defineComponent({
     },
   },
   methods: {
-    createComment(parentCommentId: string){
-      this.$emit("createComment", parentCommentId)
+    createComment(parentCommentId: string) {
+      this.$emit("createComment", parentCommentId);
     },
     handleClickDelete(input: DeleteCommentInputData) {
       this.$emit("deleteComment", input);
     },
-    handleClickEdit(commentData: CommentData){
-      this.$emit("clickEditComment", commentData)
+    handleClickEdit(commentData: CommentData) {
+      this.$emit("clickEditComment", commentData);
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
@@ -97,6 +101,9 @@ export default defineComponent({
     },
     updateText(text: string) {
       this.textCopy = text;
+    },
+    handleCreateModProfileClick() {
+      console.log("clicked mod button");
     },
   },
   computed: {
@@ -138,11 +145,9 @@ export default defineComponent({
               <span v-if="commentData.updatedAt"> &middot; </span>
               {{ editedAtFormatted }}
             </span>
-            <div
-              class="comment-border"
-            >
+            <div class="comment-border">
               <md-editor
-              v-if="commentData.text && !showEditCommentField"
+                v-if="commentData.text && !showEditCommentField"
                 class="max-w-2xl small-text"
                 v-model="textCopy"
                 previewTheme="vuepress"
@@ -181,6 +186,7 @@ export default defineComponent({
                 @hideReplyEditor="showReplyEditor = false"
                 @deleteComment="handleClickDelete"
                 @hideReplies="showReplies = false"
+                @openModProfileModal="showModProfileModal = true"
                 @saveEdit="$emit('saveEdit')"
                 @showEditCommentField="showEditCommentField = true"
                 @hideEditCommentField="showEditCommentField = false"
@@ -210,14 +216,20 @@ export default defineComponent({
                     @updateEditCommentInput="updateExistingComment"
                   />
                 </ChildComments>
+              </div>
             </div>
           </div>
         </div>
       </div>
-
-      
-      </div>
     </div>
+    <WarningModal
+      :title="'Create Mod Profile'"
+      :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
+      :open="showModProfileModal"
+      :primaryButtonText="'Yes, create a mod profile'"
+      @close="showModProfileModal = false"
+      @primaryButtonClick="handleCreateModProfileClick"
+    />
   </div>
 </template>
 <style lang="scss">

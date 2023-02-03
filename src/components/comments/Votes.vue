@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import DownArrowIcon from "../icons/DownArrowIcon.vue";
 
@@ -23,16 +23,18 @@ export default defineComponent({
       default: 0,
     },
   },
-  setup() {},
+  setup() {
+    return { showModProfileModal: ref(false) };
+  },
   methods: {
-    clickUpvote(){
-      if (!this.upvoteActive){
-        this.$emit('upvote')
+    clickUpvote() {
+      if (!this.upvoteActive) {
+        this.$emit("upvote");
       } else {
-        this.$emit('undoUpvote')
+        this.$emit("undoUpvote");
       }
-    }
-  }
+    },
+  },
 });
 </script>
 <template>
@@ -46,9 +48,7 @@ export default defineComponent({
       <template #popper>This comment adds to the discussion</template>
     </VTooltip>
     <span
-      :class="
-        upvoteActive || downvoteActive ? 'text-black' : 'text-gray-400'
-      "
+      :class="upvoteActive || downvoteActive ? 'text-black' : 'text-gray-400'"
       class="inline-flex pt-0.5"
       >{{ count }}</span
     >
