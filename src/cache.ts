@@ -2,6 +2,19 @@ import {
     InMemoryCache, ReactiveVar, makeVar
   } from "@apollo/client/core";
 
+
+const standardMerge = (existing: any, incoming: any, args: any) => {
+  let offset = args?.args?.offset;
+  if (!offset) {
+    offset = 0
+  }
+  const merged = existing ? existing.slice(0) : [];
+  for (let i = 0; i < incoming.length; ++i) {
+    merged[i] = incoming[i];
+  }
+  return merged;
+}
+
 const cache = new InMemoryCache({
   typePolicies: {
     Tag: {
@@ -40,10 +53,6 @@ const cache = new InMemoryCache({
         },
       },
     },
-    // Comments: {
-    //   keyFields: ["id"],
-    //   merge: false
-    // },
     CommentSections: {
       keyFields: ["id"],
       fields: {
@@ -63,47 +72,15 @@ const cache = new InMemoryCache({
           // Concatenate the incoming list items with
           // the existing list items.
           // More info: https://www.apollographql.com/docs/react/pagination/core-api/
-          merge(existing, incoming, args) {
-            let offset = args?.args?.offset;
-            if (!offset) {
-              offset = 0
-            }
-            // Slicing is necessary because the existing data is
-            // immutable.
-            const merged = existing ? existing.slice(0) : [];
-            for (let i = 0; i < incoming.length; ++i) {
-              merged[offset + i] = incoming[i];
-            }
-            return merged;
-          },
+          merge: standardMerge
         },
         discussions: {
           keyArgs: ['where', 'resultsOrder'],
-          merge(existing, incoming, args) {
-            let offset = args?.args?.offset;
-            if (!offset) {
-              offset = 0
-            }
-            const merged = existing ? existing.slice(0) : [];
-            for (let i = 0; i < incoming.length; ++i) {
-              merged[i] = incoming[i];
-            }
-            return merged;
-          },
+          merge: standardMerge
         },
         channels: {
           keyArgs: ['where', 'limit'],
-          merge(existing, incoming, args) {
-            let offset = args?.args?.offset;
-            if (!offset) {
-              offset = 0
-            }
-            const merged = existing ? existing.slice(0) : [];
-            for (let i = 0; i < incoming.length; ++i) {
-              merged[offset + i] = incoming[i];
-            }
-            return merged;
-          },
+          merge: standardMerge
         },
         username: {
           read(){

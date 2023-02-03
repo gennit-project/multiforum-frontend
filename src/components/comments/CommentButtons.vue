@@ -76,7 +76,7 @@ export default defineComponent({
       })
     );
 
-    const { mutate: downvoteComment, error: downvoteCommentError } =
+    const { mutate: undoUpvoteComment, error: undoUpvoteCommentError } =
       useMutation(UNDO_UPVOTE_COMMENT, () => ({
         variables: {
           id: props.commentData.id,
@@ -97,12 +97,15 @@ export default defineComponent({
     return {
       upvoteComment,
       upvoteCommentError,
-      downvoteComment,
-      downvoteCommentError,
+      undoUpvoteComment,
+      undoUpvoteCommentError,
       loggedInUserUpvoted
     };
   },
   methods: {
+    undoUpvoteCommentMethod(input: any) {
+      this.undoUpvoteComment(input)
+    },
     upvoteCommentMethod(input: any){
       this.upvoteComment(input)
     }
@@ -120,7 +123,7 @@ export default defineComponent({
               :upvote-active="loggedInUserUpvoted"
               :downvote-active="false"
               @upvote="upvoteCommentMethod"
-              @downvote="downvoteComment"
+              @undoUpvote="undoUpvoteComment"
             />
             <span
               class="ml-2 underline cursor-pointer hover:text-black"
@@ -233,8 +236,8 @@ export default defineComponent({
     </div>
     <ErrorBanner v-if="upvoteCommentError" :text="upvoteCommentError.message" />
     <ErrorBanner
-      v-if="downvoteCommentError"
-      :text="downvoteCommentError.message"
+      v-if="undoUpvoteCommentError"
+      :text="undoUpvoteCommentError.message"
     />
   </div>
 </template>

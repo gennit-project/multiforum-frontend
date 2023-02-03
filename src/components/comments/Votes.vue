@@ -24,6 +24,15 @@ export default defineComponent({
     },
   },
   setup() {},
+  methods: {
+    clickUpvote(){
+      if (!this.upvoteActive){
+        this.$emit('upvote')
+      } else {
+        this.$emit('undoUpvote')
+      }
+    }
+  }
 });
 </script>
 <template>
@@ -32,7 +41,7 @@ export default defineComponent({
       <UpArrowIcon
         :class="upvoteActive ? 'text-black' : 'text-gray-400'"
         class="h-4 inline-flex hover:text-black cursor-pointer"
-        @click="$emit('upvote')"
+        @click="clickUpvote"
       />
       <template #popper>This comment adds to the discussion</template>
     </VTooltip>
