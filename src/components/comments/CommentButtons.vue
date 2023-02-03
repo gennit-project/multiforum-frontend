@@ -60,11 +60,8 @@ export default defineComponent({
     },
   },
   setup(props) {
-
-    const {
-      result: localUsernameResult,
-      loading: localUsernameLoading
-    } = useQuery(GET_LOCAL_USERNAME);
+    const { result: localUsernameResult, loading: localUsernameLoading } =
+      useQuery(GET_LOCAL_USERNAME);
 
     const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
       UPVOTE_COMMENT,
@@ -85,31 +82,32 @@ export default defineComponent({
       }));
 
     const loggedInUserUpvoted = computed(() => {
-      if (localUsernameLoading.value || !localUsernameResult.value ) {
-        return false
+      if (localUsernameLoading.value || !localUsernameResult.value) {
+        return false;
       }
-      const match = props.commentData.UpvotedByUsers.filter((user: any) => {
-        return user.username === localUsernameResult.value.username
-      }).length === 1
-      return match
-    })
+      const match =
+        props.commentData.UpvotedByUsers.filter((user: any) => {
+          return user.username === localUsernameResult.value.username;
+        }).length === 1;
+      return match;
+    });
 
     return {
       upvoteComment,
       upvoteCommentError,
       undoUpvoteComment,
       undoUpvoteCommentError,
-      loggedInUserUpvoted
+      loggedInUserUpvoted,
     };
   },
   methods: {
     undoUpvoteCommentMethod(input: any) {
-      this.undoUpvoteComment(input)
+      this.undoUpvoteComment(input);
     },
-    upvoteCommentMethod(input: any){
-      this.upvoteComment(input)
-    }
-  }
+    upvoteCommentMethod(input: any) {
+      this.upvoteComment(input);
+    },
+  },
 });
 </script>
 <template>
@@ -138,6 +136,7 @@ export default defineComponent({
           <span class="underline cursor-pointer hover:text-black">Reply</span>
         </template>
       </RequireAuth>
+
       <RequireAuth
         class="flex inline-flex"
         v-if="commentData.CommentAuthor"
@@ -171,7 +170,12 @@ export default defineComponent({
           >
         </template>
       </RequireAuth>
-
+      <span
+        class="underline cursor-pointer hover:text-black"
+        v-if="loggedInUserUpvoted"
+        @click="undoUpvoteCommentMethod"
+        >Unvote</span
+      >
       <span
         v-if="showEditCommentField"
         class="underline cursor-pointer hover:text-black"
