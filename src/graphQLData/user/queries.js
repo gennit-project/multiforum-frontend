@@ -7,6 +7,12 @@ export const GET_LOCAL_USERNAME = gql`
   }
 `
 
+export const GET_LOCAL_MOD_PROFILE_NAME = gql`
+  query getLocalModProfileName {
+    modProfileName @client
+  }
+`
+
 export const GET_USER_INFO_FOR_TAGS = gql`
   query getUser($username: String!) {
     getUser(username: $username) {

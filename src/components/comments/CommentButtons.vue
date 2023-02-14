@@ -1,19 +1,23 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { useQuery } from "@vue/apollo-composable";
 import RequireAuth from "../auth/RequireAuth.vue";
 import CancelButton from "@/components/generic/CancelButton.vue";
 import SaveButton from "@/components/generic/SaveButton.vue";
 import TextEditor from "./TextEditor.vue";
 import { CommentData } from "@/types/commentTypes";
-import { useMutation } from "@vue/apollo-composable";
 import {
   UPVOTE_COMMENT,
   UNDO_UPVOTE_COMMENT,
+  UNDO_DOWNVOTE_COMMENT
 } from "@/graphQLData/comment/mutations";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import Votes from "./Votes.vue";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations"
+import { GET_LOCAL_USERNAME, GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
+import { modProfileNameVar } from "@/cache";
+import { generateSlug } from "random-word-slugs"
+import { useQuery, useMutation } from "@vue/apollo-composable";
 
 export default defineComponent({
   name: "CommentButtons",
@@ -60,8 +64,69 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { result: localUsernameResult, loading: localUsernameLoading } =
-      useQuery(GET_LOCAL_USERNAME);
+    const { 
+      result: localModProfileNameResult, 
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError
+     } =
+      useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return ''
+      }
+      return localUsernameResult.value
+    })
+
+    const randomWords = generateSlug(4, { format: 'camel' })
+
+    const {
+      mutate: createModProfile,
+      onDone: onDoneCreateModProfile
+    } = useMutation(CREATE_MOD_PROFILE, () => ({
+      variables: {
+        displayName: randomWords,
+        username: username.value?.username,
+      },
+    }));
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return ''
+      }
+      return localModProfileNameResult.value.modProfileName;
+    })
+
+    const {
+      mutate: downvoteComment,
+      onDone: onDoneDownvotingComment
+    } = useMutation(DOWNVOTE_COMMENT, () => ({
+      variables: {
+        id: props.commentData.id,
+        displayName: loggedInUserModName.value,
+      }
+    }))
+
+    onDoneDownvotingComment(() => {
+      console.log('done downvoting comment')
+    })
+
+    onDoneCreateModProfile((data: any) => {
+      console.log('finished creating mod profile', data)
+      const newModProfileName = data.updateUsers.users[0].ModerationProfile.displayName
+      modProfileNameVar(newModProfileName)
+      downvoteComment()
+      console.log('downvoted comment with variables ', {
+        id: props.commentData.id,
+        displayName: loggedInUserModName.value,
+      })
+    })
 
     const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
       UPVOTE_COMMENT,
@@ -81,6 +146,14 @@ export default defineComponent({
         },
       }));
 
+    const { mutate: undoDownvoteComment, error: undoDownvoteCommentError } =
+      useMutation(UNDO_DOWNVOTE_COMMENT, () => ({
+        variables: {
+          id: props.commentData.id,
+          displayName: localModProfileNameResult.value?.modProfileName || ''
+        },
+      }));
+
     const loggedInUserUpvoted = computed(() => {
       if (localUsernameLoading.value || !localUsernameResult.value) {
         return false;
@@ -92,24 +165,36 @@ export default defineComponent({
       return match;
     });
 
+    const loggedInUserDownvoted = computed(() => {
+      if (localModProfileNameLoading.value || !localModProfileNameResult.value) {
+        return false;
+      }
+      const mods = props.commentData.DownvotedByModerators
+      const loggedInMod = localModProfileNameResult.value.modProfileName
+      console.log({
+        mods,
+        loggedInMod
+      })
+      const match =
+        mods.filter((mod: any) => {
+          return mod.displayName === loggedInMod;
+        }).length === 1;
+      return match;
+    });
+
     return {
       upvoteComment,
       upvoteCommentError,
+      undoDownvoteComment,
+      undoDownvoteCommentError,
       undoUpvoteComment,
       undoUpvoteCommentError,
+      loggedInUserDownvoted,
       loggedInUserUpvoted,
+      createModProfile,
+      downvoteComment,
+      loggedInUserModName,
     };
-  },
-  methods: {
-    downvoteCommentMethod(){
-      this.$emit('openModProfileModal')
-    },
-    undoUpvoteCommentMethod(input: any) {
-      this.undoUpvoteComment(input);
-    },
-    upvoteCommentMethod(input: any) {
-      this.upvoteComment(input);
-    },
   },
 });
 </script>
@@ -120,12 +205,15 @@ export default defineComponent({
         <template v-slot:has-auth>
           <div class="flex inline-flex">
             <VotesComponent
-              :count="commentData.UpvotedByUsersAggregate?.count"
+              :downvote-count="commentData.DownvotedByModeratorsAggregate?.count || 0"
+              :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
               :upvote-active="loggedInUserUpvoted"
-              :downvote-active="false"
-              @downvote="downvoteCommentMethod"
-              @upvote="upvoteCommentMethod"
+              :downvote-active="loggedInUserDownvoted"
+              :has-mod-profile="!!loggedInUserModName"
+              @downvote="downvoteComment"
+              @upvote="upvoteComment"
               @undoUpvote="undoUpvoteComment"
+              @undoDownvote="undoDownvoteComment"
             />
             <span
               class="ml-2 underline cursor-pointer hover:text-black"
@@ -177,7 +265,13 @@ export default defineComponent({
       <span
         class="underline cursor-pointer hover:text-black"
         v-if="loggedInUserUpvoted"
-        @click="undoUpvoteCommentMethod"
+        @click="() => undoUpvoteComment()"
+        >Unvote</span
+      >
+      <span
+        class="underline cursor-pointer hover:text-black"
+        v-if="loggedInUserDownvoted"
+        @click="() => undoDownvoteComment()"
         >Unvote</span
       >
       <span

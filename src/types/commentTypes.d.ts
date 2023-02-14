@@ -1,6 +1,7 @@
 import ChannelData from '../channel/channelTypes'
 import { TagData } from './tagTypes'
 import UserData from './userTypes'
+import ModeratorData from './userTypes';
 import { EventData } from './eventTypes'
 import { DiscussionData } from './discussionTypes'
 
@@ -49,7 +50,11 @@ export type CommentData = {
   createdAt: string
   Tags?: [TagData]
   UpvotedByUsers: [UserData]
+  DownvotedByModerators: [ModeratorData]
   UpvotedByUsersAggregate?: {
+    count: number
+  }
+  DownvotedByModeratorsAggregate?: {
     count: number
   }
 }

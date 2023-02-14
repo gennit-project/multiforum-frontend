@@ -87,6 +87,17 @@ const cache = new InMemoryCache({
             // Store the username of the logged in user
             return usernameVar()
           }
+        },
+        modProfileId: {
+          read(){
+            return modProfileIdVar()
+          }
+        },
+        modProfileName: {
+          read(){
+            // Store the mod profile name of the logged in user
+            return modProfileNameVar()
+          }
         }
       },
     },
@@ -94,4 +105,6 @@ const cache = new InMemoryCache({
 });
 
 export const usernameVar: ReactiveVar<string> = makeVar<string>('')
+export const modProfileIdVar: ReactiveVar<string> = makeVar<string>('')
+export const modProfileNameVar: ReactiveVar<string> = makeVar<string>('')
 export default cache

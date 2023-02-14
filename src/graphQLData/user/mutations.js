@@ -12,3 +12,27 @@ export const CREATE_USER = gql`
     }
 }
 `;
+
+export const CREATE_MOD_PROFILE = gql`
+  mutation createModProfile($username: String!, $displayName: String!){
+    updateUsers (
+        where: {
+            username: $username
+        },
+        create: {
+            ModerationProfile: {
+                node: {
+                    displayName: $displayName
+                }
+            }
+        }
+    ) {
+        users {
+            username
+            ModerationProfile {
+                displayName
+            }
+        }
+    }
+}
+`

@@ -37,6 +37,12 @@ export const GET_COMMENT_SECTION = gql`
             UpvotedByUsersAggregate {
               count
             }
+            DownvotedByModerators {
+              displayName
+            }
+            DownvotedByModeratorsAggregate {
+              count
+            } 
             CommentAuthor {
               ... on User {
                 username
@@ -61,6 +67,12 @@ export const GET_COMMENT_SECTION = gql`
               UpvotedByUsersAggregate {
                 count
               } 
+              DownvotedByModerators {
+                displayName
+              }
+              DownvotedByModeratorsAggregate {
+                count
+              }
               ChildCommentsAggregate {
                 count
               }
@@ -85,6 +97,12 @@ query getCommentWithReplies($id: ID!){
     UpvotedByUsersAggregate {
       count
     } 
+    DownvotedByModerators {
+      displayName
+    }
+    DownvotedByModeratorsAggregate {
+      count
+    }
 		ChildComments {
 			id
       UpvotedByUsers {
@@ -93,6 +111,12 @@ query getCommentWithReplies($id: ID!){
       UpvotedByUsersAggregate {
         count
       } 
+      DownvotedByModerators {
+        displayName
+      }
+      DownvotedByModeratorsAggregate {
+        count
+      }
       CommentAuthor {
         ... on User {
           username
@@ -104,9 +128,6 @@ query getCommentWithReplies($id: ID!){
       }
       ChildCommentsAggregate {
         count
-      }
-      UpvotedByUsers {
-        username
       }
 		}
 	}

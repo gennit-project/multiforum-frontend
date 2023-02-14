@@ -11,7 +11,7 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import ExclamationIcon from "../icons/ExclamationIcon.vue";
 import PrimaryButton from "../generic/PrimaryButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import { usernameVar } from "@/cache";
+import { usernameVar, modProfileNameVar } from "@/cache";
 
 // This is a separate component for two reasons:
 // - The useQuery hook cannot be rendered conditionally
@@ -98,8 +98,10 @@ export default defineComponent({
         if (!email) {
           throw new Error("Could not link the email to the user.");
         }
+
       }
       usernameVar(userInDatabase);
+      modProfileNameVar()
       router.push({
         name: "LoggedInUserProfile",
       });

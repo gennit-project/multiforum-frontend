@@ -6,14 +6,13 @@ import { GET_EMAIL } from "@/graphQLData/email/queries";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import ErrorBanner from "./components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
-import { usernameVar } from "./cache";
+import { usernameVar, modProfileNameVar } from "./cache";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 
 export default defineComponent({
   components: {
     CreateUsernamePage,
     ErrorBanner,
-    
   },
   props: {
     email: {
@@ -57,7 +56,22 @@ export default defineComponent({
     });
 
     onResult(() => {
-       const username = emailResult.value.emails[0]?.User?.username;
+      let user = null;
+      let modProfile = null;
+      let username = '';
+      let modProfileName = '';
+
+      user = emailResult.value.emails[0]?.User;
+
+      if (user) {
+        username = user.username;
+        modProfile = user.ModerationProfile;
+
+        if (modProfile) {
+          modProfileName = modProfile.displayName
+          modProfileNameVar(modProfileName)
+        }
+      }
 
        if (username) {
         // Add user to application state to make the authenticated user's

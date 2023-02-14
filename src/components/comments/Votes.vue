@@ -18,18 +18,49 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    count: {
+    downvoteCount: {
+      type: Number,
+      default: 0
+    },
+    upvoteCount: {
       type: Number,
       default: 0,
     },
+    hasModProfile: {
+      type: Boolean,
+      default: false
+    }
   },
   setup() {
     return { showModProfileModal: ref(false) };
   },
   methods: {
+    clickDownvote(){
+      if (this.hasModProfile) {
+        console.log('mod id found.')
+        if (!this.downvoteActive) {
+          this.$emit('downvote')
+
+          if (this.upvoteActive) {
+            this.$emit('undoUpvote')
+          }
+        } else {
+          console.log('undoing downvote')
+          this.$emit('undoDownvote')
+        }
+      } else {
+        // Create mod profile, then downvote comment
+        console.log('mod id not found. showing mod profile option')
+        this.showModProfileModal = true;
+      }
+    },
     clickUpvote() {
       if (!this.upvoteActive) {
         this.$emit("upvote");
+
+        if (this.downvoteActive) {
+          this.$emit("undoDownvote")
+        }
       } else {
         this.$emit("undoUpvote");
       }
@@ -50,13 +81,13 @@ export default defineComponent({
     <span
       :class="upvoteActive || downvoteActive ? 'text-black' : 'text-gray-400'"
       class="inline-flex pt-0.5"
-      >{{ count }}</span
+      >{{ upvoteCount - downvoteCount }}</span
     >
     <VTooltip>
       <DownArrowIcon
         :class="downvoteActive ? 'text-black' : 'text-gray-400'"
         class="h-4 inline-flex hover:text-black cursor-pointer"
-        @click="$emit('downvote')"
+        @click="clickDownvote"
       />
       <template #popper>This comment does not add to the discussion</template>
     </VTooltip>

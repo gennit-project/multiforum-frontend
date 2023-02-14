@@ -1,7 +1,47 @@
 import { gql } from "@apollo/client/core";
 
+export const UNDO_DOWNVOTE_COMMENT = gql`
+  mutation undoDownvoteComment($id: ID!, $displayName: String) {
+    updateComments(where: {
+        id: $id
+      },
+      disconnect: {
+        DownvotedByModerators: {
+          where: {
+            node: {
+              displayName: $displayName
+            }
+          }
+        }
+      }
+    ) {
+      comments {
+        id
+        CommentAuthor {
+          ... on User {
+            username
+          }
+        }
+        text
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
+      }
+    }
+  }
+`
+
 export const UNDO_UPVOTE_COMMENT = gql`
-  mutation downvoteComment($id: ID!, $username: String){
+  mutation undoUpvoteComment($id: ID!, $username: String){
     updateComments(where: 
       {
         id: $id
@@ -29,8 +69,53 @@ export const UNDO_UPVOTE_COMMENT = gql`
         UpvotedByUsersAggregate {
           count
         }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     } 
+  }
+`
+
+export const DOWNVOTE_COMMENT = gql`
+  mutation downvoteComment($id: ID!, $displayName: String){
+    updateComments(where: {
+      id: $id
+    },
+    connect: {
+        DownvotedByModerators: {
+          where: {
+            node: {
+              displayName: $displayName
+            }
+          }
+        }
+      }) {
+        comments {
+          id
+          CommentAuthor {
+            ... on User {
+              username
+            }
+          }
+          text
+          UpvotedByUsers {
+            username
+          }
+          UpvotedByUsersAggregate {
+            count
+          }
+          DownvotedByModerators {
+            displayName
+          }
+          DownvotedByModeratorsAggregate {
+            count
+          }
+        }
+      }
   }
 `
 
@@ -63,6 +148,12 @@ export const UPVOTE_COMMENT = gql`
         UpvotedByUsersAggregate {
           count
         }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }
@@ -83,6 +174,12 @@ export const CREATE_COMMENT = gql`
           username
         }
         UpvotedByUsersAggregate {
+          count
+        }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
           count
         }
         CommentAuthor {
@@ -113,11 +210,17 @@ export const CREATE_COMMENT = gql`
           UpvotedByUsersAggregate {
             count
           }
+          DownvotedByModerators {
+            displayName
+          }
+          DownvotedByModeratorsAggregate {
+            count
+          }
         }
       }
     }
   }`
-  
+
 
 export const CREATE_COMMENT_SECTION = gql`
 mutation createCommentSection(
