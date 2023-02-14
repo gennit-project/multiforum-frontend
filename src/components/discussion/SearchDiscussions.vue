@@ -247,7 +247,7 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
-    const { smAndDown } = useDisplay();
+    const { lgAndDown } = useDisplay();
 
     return {
       channelId,
@@ -259,6 +259,7 @@ export default defineComponent({
       discussionError,
       discussionLoading,
       discussionResult,
+      lgAndDown,
       loadMore,
       previewIsOpen,
       reachedEndOfResults,
@@ -271,7 +272,6 @@ export default defineComponent({
       selectedFilterOptions,
       selectedTags,
       sendToPreview,
-      smAndDown,
       tagLabel,
     };
   },
@@ -313,9 +313,7 @@ export default defineComponent({
       this.previewIsOpen = false;
     },
     openPreview() {
-      if (this.smAndDown) {
-        this.previewIsOpen = true;
-      }
+      this.previewIsOpen = true;
     },
     setSelectedChannels(channels: Array<string>) {
       this.selectedChannels = channels;
@@ -420,7 +418,7 @@ export default defineComponent({
             />
             <div class="px-4 lg:px-12" v-if="discussionLoading">Loading...</div>
             <DiscussionPreview
-              v-else-if="smAndDown"
+              v-else-if="lgAndDown"
               :isOpen="previewIsOpen"
               @closePreview="closePreview"
             />
