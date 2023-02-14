@@ -18,11 +18,13 @@ import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import { modProfileNameVar } from "@/cache";
 import { generateSlug } from "random-word-slugs"
 import { useQuery, useMutation } from "@vue/apollo-composable";
+import EllipsisVertical from "../icons/EllipsisVertical.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
     CancelButton,
+    EllipsisVertical,
     ErrorBanner,
     RequireAuth,
     SaveButton,
@@ -104,8 +106,7 @@ export default defineComponent({
     })
 
     const {
-      mutate: downvoteComment,
-      onDone: onDoneDownvotingComment
+      mutate: downvoteComment
     } = useMutation(DOWNVOTE_COMMENT, () => ({
       variables: {
         id: props.commentData.id,
@@ -113,19 +114,10 @@ export default defineComponent({
       }
     }))
 
-    onDoneDownvotingComment(() => {
-      console.log('done downvoting comment')
-    })
-
     onDoneCreateModProfile((data: any) => {
-      console.log('finished creating mod profile', data)
       const newModProfileName = data.updateUsers.users[0].ModerationProfile.displayName
       modProfileNameVar(newModProfileName)
       downvoteComment()
-      console.log('downvoted comment with variables ', {
-        id: props.commentData.id,
-        displayName: loggedInUserModName.value,
-      })
     })
 
     const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
@@ -171,10 +163,6 @@ export default defineComponent({
       }
       const mods = props.commentData.DownvotedByModerators
       const loggedInMod = localModProfileNameResult.value.modProfileName
-      console.log({
-        mods,
-        loggedInMod
-      })
       const match =
         mods.filter((mod: any) => {
           return mod.displayName === loggedInMod;

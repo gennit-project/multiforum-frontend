@@ -37,7 +37,6 @@ export default defineComponent({
   methods: {
     clickDownvote(){
       if (this.hasModProfile) {
-        console.log('mod id found.')
         if (!this.downvoteActive) {
           this.$emit('downvote')
 
@@ -45,12 +44,10 @@ export default defineComponent({
             this.$emit('undoUpvote')
           }
         } else {
-          console.log('undoing downvote')
           this.$emit('undoDownvote')
         }
       } else {
         // Create mod profile, then downvote comment
-        console.log('mod id not found. showing mod profile option')
         this.showModProfileModal = true;
       }
     },

@@ -27,7 +27,6 @@ export default defineComponent({
     WarningModal,
   },
   setup(props) {
-    console.log('comment data ', props.commentData)
     let replyCount = computed(() => {
       if (props.commentData.ChildCommentsAggregate) {
         return props.commentData.ChildCommentsAggregate.count;
@@ -103,11 +102,10 @@ export default defineComponent({
     updateText(text: string) {
       this.textCopy = text;
     },
-    async handleCreateModProfileClick(data: any) {
+    async handleCreateModProfileClick() {
       await this.createModProfile()
       // modProfileNameVar()
       // this.downvote()
-      console.log("clicked mod button, result is ", data);
       this.showModProfileModal = false;
       // show snack
     },
