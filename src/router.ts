@@ -24,6 +24,8 @@ import PageNotFound from "@/components/generic/PageNotFound.vue";
 import LogoutPage from "@/components/auth/LogoutPage.vue";
 import LoggedInUserProfile from "@/components/user/LoggedInUserProfile.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
+import CommentPermalink from "@/components/comments/CommentPermalink.vue";
+import CommentModHistory from "@/components/comments/CommentModHistory.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -55,7 +57,6 @@ export const router = createRouter({
         },
       ],
     },
-
     {
       name: "SearchEvents",
       path: "/events",
@@ -161,6 +162,18 @@ export const router = createRouter({
               name: "DiscussionDetail",
               path: "d/:discussionId",
               component: DiscussionDetail,
+              children: [
+                {
+                  name: "DiscussionCommentPermalink",
+                  path: "comments/:commentId",
+                  component: CommentPermalink,
+                  children: [{
+                    name: "DiscussionCommentModHistory",
+                    path: "modhistory",
+                    component: CommentModHistory
+                  }]
+                }
+              ]
             },
             {
               name: "EditDiscussion",

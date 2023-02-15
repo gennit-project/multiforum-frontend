@@ -175,7 +175,6 @@ export default defineComponent({
                 </template>
               </TextEditor>
               <CommentButtons
-                v-if="compact"
                 :comment-data="commentData"
                 :depth="depth"
                 :locked="locked"

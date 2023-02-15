@@ -82,6 +82,67 @@ export const GET_COMMENT_SECTION = gql`
 }
 `
 
+// Used for comment permalink page
+export const GET_COMMENT_AND_REPLIES = gql`
+query getCommentWithReplies($id: ID!){
+	comments(where: {
+		id: $id
+	}){
+    id
+    text
+    CommentAuthor {
+      ... on User {
+        username
+      }
+    }
+    createdAt
+    updatedAt
+    ChildCommentsAggregate {
+      count
+    }
+    UpvotedByUsers {
+      username
+    }
+    UpvotedByUsersAggregate {
+      count
+    } 
+    DownvotedByModerators {
+      displayName
+    }
+    DownvotedByModeratorsAggregate {
+      count
+    }
+		ChildComments {
+			id
+      UpvotedByUsers {
+        username
+      }
+      UpvotedByUsersAggregate {
+        count
+      } 
+      DownvotedByModerators {
+        displayName
+      }
+      DownvotedByModeratorsAggregate {
+        count
+      }
+      CommentAuthor {
+        ... on User {
+          username
+        }
+      }
+			text
+      ParentComment {
+        id
+      }
+      ChildCommentsAggregate {
+        count
+      }
+		}
+	}
+}
+`
+
 export const GET_COMMENT_REPLIES = gql`
 query getCommentWithReplies($id: ID!){
 	comments(where: {

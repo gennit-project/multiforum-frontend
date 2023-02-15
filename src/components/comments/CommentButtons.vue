@@ -3,22 +3,27 @@ import { defineComponent, PropType, computed } from "vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import CancelButton from "@/components/generic/CancelButton.vue";
 import SaveButton from "@/components/generic/SaveButton.vue";
+import MenuButton from "../generic/MenuButton.vue";
 import TextEditor from "./TextEditor.vue";
 import { CommentData } from "@/types/commentTypes";
 import {
   UPVOTE_COMMENT,
   UNDO_UPVOTE_COMMENT,
-  UNDO_DOWNVOTE_COMMENT
+  UNDO_DOWNVOTE_COMMENT,
 } from "@/graphQLData/comment/mutations";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import Votes from "./Votes.vue";
-import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations"
-import { GET_LOCAL_USERNAME, GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
+import {
+  GET_LOCAL_USERNAME,
+  GET_LOCAL_MOD_PROFILE_NAME,
+} from "@/graphQLData/user/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import { modProfileNameVar } from "@/cache";
-import { generateSlug } from "random-word-slugs"
+import { generateSlug } from "random-word-slugs";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import EllipsisVertical from "../icons/EllipsisVertical.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "CommentButtons",
@@ -26,6 +31,7 @@ export default defineComponent({
     CancelButton,
     EllipsisVertical,
     ErrorBanner,
+    MenuButton,
     RequireAuth,
     SaveButton,
     TextEditor,
@@ -66,59 +72,56 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const { 
-      result: localModProfileNameResult, 
+    const route = useRoute();
+    const {
+      result: localModProfileNameResult,
       loading: localModProfileNameLoading,
-      error: localModProfileNameError
-     } =
-      useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
     const {
       result: localUsernameResult,
       loading: localUsernameLoading,
-      error: localUsernameError
+      error: localUsernameError,
     } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
       if (localUsernameLoading.value || localUsernameError.value) {
-        return ''
+        return "";
       }
-      return localUsernameResult.value
-    })
+      return localUsernameResult.value;
+    });
 
-    const randomWords = generateSlug(4, { format: 'camel' })
+    const randomWords = generateSlug(4, { format: "camel" });
 
-    const {
-      mutate: createModProfile,
-      onDone: onDoneCreateModProfile
-    } = useMutation(CREATE_MOD_PROFILE, () => ({
-      variables: {
-        displayName: randomWords,
-        username: username.value?.username,
-      },
-    }));
+    const { mutate: createModProfile, onDone: onDoneCreateModProfile } =
+      useMutation(CREATE_MOD_PROFILE, () => ({
+        variables: {
+          displayName: randomWords,
+          username: username.value?.username,
+        },
+      }));
 
     const loggedInUserModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
-        return ''
+        return "";
       }
       return localModProfileNameResult.value.modProfileName;
-    })
+    });
 
-    const {
-      mutate: downvoteComment
-    } = useMutation(DOWNVOTE_COMMENT, () => ({
+    const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT, () => ({
       variables: {
         id: props.commentData.id,
         displayName: loggedInUserModName.value,
-      }
-    }))
+      },
+    }));
 
     onDoneCreateModProfile((data: any) => {
-      const newModProfileName = data.updateUsers.users[0].ModerationProfile.displayName
-      modProfileNameVar(newModProfileName)
-      downvoteComment()
-    })
+      const newModProfileName =
+        data.updateUsers.users[0].ModerationProfile.displayName;
+      modProfileNameVar(newModProfileName);
+      downvoteComment();
+    });
 
     const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
       UPVOTE_COMMENT,
@@ -142,7 +145,7 @@ export default defineComponent({
       useMutation(UNDO_DOWNVOTE_COMMENT, () => ({
         variables: {
           id: props.commentData.id,
-          displayName: localModProfileNameResult.value?.modProfileName || ''
+          displayName: localModProfileNameResult.value?.modProfileName || "",
         },
       }));
 
@@ -158,11 +161,14 @@ export default defineComponent({
     });
 
     const loggedInUserDownvoted = computed(() => {
-      if (localModProfileNameLoading.value || !localModProfileNameResult.value) {
+      if (
+        localModProfileNameLoading.value ||
+        !localModProfileNameResult.value
+      ) {
         return false;
       }
-      const mods = props.commentData.DownvotedByModerators
-      const loggedInMod = localModProfileNameResult.value.modProfileName
+      const mods = props.commentData.DownvotedByModerators;
+      const loggedInMod = localModProfileNameResult.value.modProfileName;
       const match =
         mods.filter((mod: any) => {
           return mod.displayName === loggedInMod;
@@ -182,6 +188,7 @@ export default defineComponent({
       createModProfile,
       downvoteComment,
       loggedInUserModName,
+      route,
     };
   },
 });
@@ -193,7 +200,9 @@ export default defineComponent({
         <template v-slot:has-auth>
           <div class="flex inline-flex">
             <VotesComponent
-              :downvote-count="commentData.DownvotedByModeratorsAggregate?.count || 0"
+              :downvote-count="
+                commentData.DownvotedByModeratorsAggregate?.count || 0
+              "
               :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
               :upvote-active="loggedInUserUpvoted"
               :downvote-active="loggedInUserDownvoted"
@@ -207,7 +216,8 @@ export default defineComponent({
               class="ml-2 underline cursor-pointer hover:text-black"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
-              >Reply</span
+            >
+              Reply</span
             >
           </div>
         </template>
@@ -250,6 +260,24 @@ export default defineComponent({
           >
         </template>
       </RequireAuth>
+      <router-link
+        v-if="route.name !== 'DiscussionCommentPermalink'"
+        :to="`${route.path}/comments/${commentData.id}`"
+        class="ml-2 underline cursor-pointer hover:text-black"
+      >
+        Permalink
+      </router-link>
+
+      <MenuButton
+        :items="[
+          {
+            label: 'Mod History',
+            value: `${route.path}/modhistory`,
+          },
+        ]"
+      >
+        <EllipsisVertical class="h-4 w-4 cursor-pointer hover:text-black" />
+      </MenuButton>
       <span
         class="underline cursor-pointer hover:text-black"
         v-if="loggedInUserUpvoted"

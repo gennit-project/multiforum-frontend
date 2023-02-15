@@ -9,7 +9,6 @@ import { relativeTime } from "../../dateTimeUtils";
 import WarningModal from "../generic/WarningModal.vue";
 import { DateTime } from "luxon";
 import { DiscussionData } from "@/types/discussionTypes";
-import { ChannelData } from "@/types/channelTypes";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import CreateButton from "../generic/CreateButton.vue";
 import GenericButton from "../generic/GenericButton.vue";
@@ -30,19 +29,24 @@ import MdEditor from "md-editor-v3";
 import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import { useDisplay } from "vuetify";
+import { ChannelData } from "@/types/channelTypes";
+import CrosspostList from "./CrosspostList.vue";
+import DiscussionTags from "./DiscussionTags.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
-    ProfileAvatar,
     CancelButton,
     CommentSection,
     CreateButton,
+    CrosspostList,
+    DiscussionTags,
     ErrorBanner,
     GenericButton,
     LeftArrowIcon,
     MdEditor,
     PrimaryButton,
+    ProfileAvatar,
     RequireAuth,
     SaveButton,
     Tag,
@@ -156,7 +160,6 @@ export default defineComponent({
         ? commentSectionForChannel.CommentsAggregate.count
         : 0;
     };
-
     const channelLinks = computed(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
         return [];
@@ -173,7 +176,6 @@ export default defineComponent({
         return countB - countA;
       });
     });
-
     const {
       mutate: deleteDiscussion,
       error: deleteDiscussionError,
@@ -482,315 +484,249 @@ export default defineComponent({
 
 <template>
   <div class="flex justify-center">
-  <div
-    :class="route.name === 'DiscussionDetail' && mdAndUp ? 'large-width' : 'w-full mx-4'"
-    class="top-10 pb-36 my-2 space-y-2"
-  >
-    <h2
-      v-if="route.name !== 'DiscussionDetail'"
-      class="pl-4 text-gray-400 text-sm"
+    <div
+      :class="
+        route.name === 'DiscussionDetail' && mdAndUp
+          ? 'large-width'
+          : 'w-full mx-4'
+      "
+      class="top-10 pb-36 my-2 space-y-2"
     >
-      Preview
-    </h2>
-    <p v-if="getDiscussionLoading">Loading...</p>
-    <ErrorBanner
-      class="mt-2"
-      v-else-if="getDiscussionError"
-      :text="getDiscussionError.message"
-    />
-    <router-link
-      v-if="route.name === 'DiscussionDetail'"
-      :to="`/channels/c/${channelId}/discussions`"
-      class="underline text-xs text-gray-500 mb-4"
-    >
-      <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-      {{ `Discussion list in c/${channelId}` }}
-    </router-link>
-    <div>
-      <div
-        v-if="discussion"
-        ref="discussionDetail"
-        :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-        class="bg-white p-10 rounded shadow-md"
+      <h2
+        v-if="route.name !== 'DiscussionDetail'"
+        class="pl-4 text-gray-400 text-sm"
       >
-        <div class="mb-4 md:flex md:items-center md:justify-between">
-          <div class="flex-1 min-w-0">
-            <h1 class="text-2xl max-w-2xl">
-              {{ discussion.title }}
-            </h1>
-          </div>
-          <div
-            v-if="!compactMode && channelId"
-            class="flex-shrink-0 flex md:mx-4"
-          >
-            <div class="float-right">
-              <span>
-                <RequireAuth
-                  class="flex inline-flex"
-                  v-if="discussion.Author && route.name === 'DiscussionDetail'"
-                  :require-ownership="true"
-                  :owners="[discussion.Author.username]"
-                >
-                  <template v-slot:has-auth>
-                    <router-link
-                      :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
-                    >
-                      <GenericButton :text="'Edit'" />
-                    </router-link>
-                  </template>
-                </RequireAuth>
-                <RequireAuth
-                  class="flex inline-flex"
-                  v-if="$route.name === 'DiscussionDetail'"
-                >
-                  <template v-slot:has-auth>
-                    <CreateButton
-                      class="ml-2"
-                      :to="`/channels/c/${channelId}/discussions/create`"
-                      :label="'Create Discussion'"
-                    />
-                  </template>
-                  <template v-slot:does-not-have-auth>
-                    <PrimaryButton class="ml-2" :label="'Create Discussion'" />
-                  </template>
-                </RequireAuth>
-              </span>
+        Preview
+      </h2>
+      <p v-if="getDiscussionLoading">Loading...</p>
+      <ErrorBanner
+        class="mt-2"
+        v-else-if="getDiscussionError"
+        :text="getDiscussionError.message"
+      />
+      <router-link
+        v-if="
+          route.name !== 'SitewideSearchDiscussionPreview' &&
+          route.name !== 'SearchDiscussionPreview'
+        "
+        :to="`/channels/c/${channelId}/discussions`"
+        class="underline text-xs text-gray-500 mb-4"
+      >
+        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        {{ `Discussion list in c/${channelId}` }}
+      </router-link>
+      <div>
+        <div
+          v-if="discussion"
+          ref="discussionDetail"
+          :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
+          class="bg-white p-10 rounded shadow-md"
+        >
+          <div class="mb-4 md:flex md:items-center md:justify-between">
+            <div class="flex-1 min-w-0">
+              <h1 class="text-2xl max-w-2xl">
+                {{ discussion.title }}
+              </h1>
             </div>
-          </div>
-        </div>
-
-        <div>
-          <div>
-            <div class="text-xs text-gray-600 mt-4">
-              <div class="mb-2 mt-4">
-                <router-link
-                  v-if="discussion.Author"
-                  class="text-blue-800 underline"
-                  :to="`/u/${discussion.Author.username}`"
-                >
-                  {{ discussion.Author.username }}
-                </router-link>
-                <span v-else>[Deleted]</span>
-                {{ createdAt }}
-                <span v-if="discussion.updatedAt"> &#8226; </span>
-                {{ editedAt }}
-
-                <RequireAuth
-                  class="flex inline-flex"
-                  v-if="discussion.Author && route.name === 'DiscussionDetail'"
-                  :require-ownership="true"
-                  :owners="[discussion.Author.username]"
-                >
-                  <template v-slot:has-auth>
-                    <span> &#8226;</span>
-                    <span
-                      class="
-                        ml-1
-                        underline
-                        font-medium
-                        text-gray-900
-                        cursor-pointer
-                      "
-                      @click="deleteModalIsOpen = true"
-                      >Delete</span
-                    >
-                  </template>
-                </RequireAuth>
-
-                <span v-if="route.name !== 'DiscussionDetail'" class="ml-1 mr-1"
-                  >&#8226;</span
-                >
-                <router-link
-                  v-if="route.name !== 'DiscussionDetail' && channelLinks[0]"
-                  class="underline font-medium text-gray-900 cursor-pointer"
-                  :to="`/channels/c/${channelLinks[0].uniqueName}/discussions/d/${discussionId}`"
-                  >Permalink</router-link
-                >
-              </div>
-            </div>
-            <div v-if="discussion.body" class="body max-w-2xl">
-              <md-editor
-                v-if="discussion.body"
-                v-model="discussion.body"
-                previewTheme="vuepress"
-                codeTheme="vuepress"
-                language="en-US"
-                :noMermaid="true"
-                preview-only
-              />
-            </div>
-
-            <div class="grid grid-cols-12 gap-x-4">
-              <div class="col-span-12 2xl:col-span-8">
-                <div
-                  v-if="route.name === 'DiscussionDetail'"
-                  class="mt-1 flex space-x-2 py-4"
-                >
-                  <ProfileAvatar class="h-5 w-5" />
-
+            <div
+              v-if="!compactMode && channelId"
+              class="flex-shrink-0 flex md:mx-4"
+            >
+              <div class="float-right">
+                <span>
                   <RequireAuth
-                    class="w-full"
+                    class="flex inline-flex"
                     v-if="
-                      $route.name === 'DiscussionDetail' &&
-                      !showEditorInCommentSection
+                      discussion.Author && route.name === 'DiscussionDetail'
                     "
+                    :require-ownership="true"
+                    :owners="[discussion.Author.username]"
                   >
                     <template v-slot:has-auth>
-                      <textarea
-                        id="addComment"
-                        @click="showEditorInCommentSection = true"
-                        name="addcomment"
-                        rows="1"
-                        placeholder="Write a reply"
-                        class="
-                          block
-                          w-full
-                          h-10
-                          rounded-full
-                          border-gray-300
-                          shadow-sm
-                          text-sm
-                          max-w-2xl
-                          focus:border-indigo-500 focus:ring-indigo-500
-                        "
+                      <router-link
+                        :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
+                      >
+                        <GenericButton :text="'Edit'" />
+                      </router-link>
+                    </template>
+                  </RequireAuth>
+                  <RequireAuth
+                    class="flex inline-flex"
+                    v-if="$route.name === 'DiscussionDetail'"
+                  >
+                    <template v-slot:has-auth>
+                      <CreateButton
+                        class="ml-2"
+                        :to="`/channels/c/${channelId}/discussions/create`"
+                        :label="'Create Discussion'"
                       />
                     </template>
                     <template v-slot:does-not-have-auth>
-                      <textarea
-                        id="addCommentLoginPrompt"
-                        name="addcomment"
-                        rows="1"
-                        placeholder="Write a reply"
-                        class="
-                          block
-                          w-full
-                          h-10
-                          rounded-full
-                          border-gray-300
-                          shadow-sm
-                          text-sm
-                          max-w-2xl
-                          focus:border-indigo-500 focus:ring-indigo-500
-                        "
+                      <PrimaryButton
+                        class="ml-2"
+                        :label="'Create Discussion'"
                       />
                     </template>
                   </RequireAuth>
+                </span>
+              </div>
+            </div>
+          </div>
 
-                  <div v-else class="overflow-x-scroll max-w-2xl">
-                    <TextEditor
-                      class="mb-3 h-48"
-                      :placeholder="'Please be kind'"
-                      @update="handleUpdateComment"
-                    />
-                    <!-- <ErrorBanner v-if="createCommentError"
-                             :text="createCommentError.message" /> -->
-                    <div class="flex justify-start">
-                      <CancelButton
-                        @click="showEditorInCommentSection = false"
-                      />
-                      <SaveButton
-                        @click.prevent="
-                          () => {
-                            handleCreateComment();
-                            showEditorInCommentSection = false;
-                          }
+          <div>
+            <div>
+              <div class="text-xs text-gray-600 mt-4">
+                <div class="mb-2 mt-4">
+                  <router-link
+                    v-if="discussion.Author"
+                    class="text-blue-800 underline"
+                    :to="`/u/${discussion.Author.username}`"
+                  >
+                    {{ discussion.Author.username }}
+                  </router-link>
+                  <span v-else>[Deleted]</span>
+                  {{ createdAt }}
+                  <span v-if="discussion.updatedAt"> &#8226; </span>
+                  {{ editedAt }}
+
+                  <RequireAuth
+                    class="flex inline-flex"
+                    v-if="
+                      discussion.Author && route.name === 'DiscussionDetail'
+                    "
+                    :require-ownership="true"
+                    :owners="[discussion.Author.username]"
+                  >
+                    <template v-slot:has-auth>
+                      <span> &#8226;</span>
+                      <span
+                        class="
+                          ml-1
+                          underline
+                          font-medium
+                          text-gray-900
+                          cursor-pointer
                         "
-                        :disabled="this.createFormValues.text.length === 0"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div
-                  class="my-4"
-                  v-if="
-                    route.name !== 'DiscussionDetail' && channelLinks.length > 0
-                  "
-                >
-                  <h2 class="text-lg">Comments</h2>
-                  <ul class="list-disc pl-3">
-                    <li
-                      v-for="channel in channelLinks"
-                      :key="channel.uniqueName"
-                    >
-                      <router-link
-                        class="mr-1 underline"
-                        :to="{
-                          name: 'DiscussionDetail',
-                          params: {
-                            discussionId,
-                            channelId: channel.uniqueName,
-                          },
-                        }"
+                        @click="deleteModalIsOpen = true"
+                        >Delete</span
                       >
-                        {{ `${getCommentCount(channel.uniqueName)} comments` }}
-                      </router-link>
-                      in
-                      <router-link
-                        :to="{
-                          name: 'DiscussionDetail',
-                          params: {
-                            discussionId,
-                            channelId: channel.uniqueName,
-                          },
-                        }"
-                      >
-                        <Tag
-                          class="mt-2"
-                          :tag="channel.uniqueName"
-                          :channel-mode="true"
-                        />
-                      </router-link>
-                    </li>
-                  </ul>
+                    </template>
+                  </RequireAuth>
+
+                  <span
+                    v-if="route.name !== 'DiscussionDetail'"
+                    class="ml-1 mr-1"
+                    >&#8226;</span
+                  >
+                  <router-link
+                    v-if="route.name !== 'DiscussionDetail' && channelLinks[0]"
+                    class="underline font-medium text-gray-900 cursor-pointer"
+                    :to="`/channels/c/${channelLinks[0].uniqueName}/discussions/d/${discussionId}`"
+                    >Permalink</router-link
+                  >
                 </div>
-                <CommentSection
-                  class="mb-2"
-                  ref="commentSectionRef"
-                  v-if="route.name === 'DiscussionDetail'"
-                  :commentSectionId="commentSectionId"
-                  :locked="commentSectionIsLocked"
+              </div>
+              <div v-if="discussion.body" class="body max-w-2xl">
+                <md-editor
+                  v-if="discussion.body"
+                  v-model="discussion.body"
+                  previewTheme="vuepress"
+                  codeTheme="vuepress"
+                  language="en-US"
+                  :noMermaid="true"
+                  preview-only
                 />
               </div>
 
-              <div
-                class="col-span-12 2xl:col-span-4"
-                v-if="discussion.Tags.length > 0 || channelLinks.length > 0"
-              >
-                <div
-                  v-if="
-                    discussion.Tags.length > 0 ||
-                    (route.name === 'DiscussionDetail' &&
-                      channelLinks.length > 0)
-                  "
-                  class="
-                    rounded-lg
-                    space-y-4
-                    shadow-sm
-                    bg-gray-100
-                    text-gray-900
-                    p-4
-                    mr-4
-                  "
-                >
-                  <h2 v-if="discussion.Tags.length > 0" class="text-lg">
-                    Tags
-                  </h2>
-                  <Tag
-                    class="mt-2"
-                    v-for="tag in discussion.Tags"
-                    :tag="tag.text"
-                    :key="tag.text"
-                    :discussionId="discussionId"
-                  />
+              <div class="grid grid-cols-12 gap-x-4">
+                <div class="col-span-12 2xl:col-span-8">
                   <div
+                    v-if="route.name === 'DiscussionDetail'"
+                    class="mt-1 flex space-x-2 py-4"
+                  >
+                    <ProfileAvatar class="h-5 w-5" />
+
+                    <RequireAuth
+                      class="w-full"
+                      v-if="
+                        $route.name === 'DiscussionDetail' &&
+                        !showEditorInCommentSection
+                      "
+                    >
+                      <template v-slot:has-auth>
+                        <textarea
+                          id="addComment"
+                          @click="showEditorInCommentSection = true"
+                          name="addcomment"
+                          rows="1"
+                          placeholder="Write a reply"
+                          class="
+                            block
+                            w-full
+                            h-10
+                            rounded-full
+                            border-gray-300
+                            shadow-sm
+                            text-sm
+                            max-w-2xl
+                            focus:border-indigo-500 focus:ring-indigo-500
+                          "
+                        />
+                      </template>
+                      <template v-slot:does-not-have-auth>
+                        <textarea
+                          id="addCommentLoginPrompt"
+                          name="addcomment"
+                          rows="1"
+                          placeholder="Write a reply"
+                          class="
+                            block
+                            w-full
+                            h-10
+                            rounded-full
+                            border-gray-300
+                            shadow-sm
+                            text-sm
+                            max-w-2xl
+                            focus:border-indigo-500 focus:ring-indigo-500
+                          "
+                        />
+                      </template>
+                    </RequireAuth>
+
+                    <div v-else class="overflow-x-scroll max-w-2xl">
+                      <TextEditor
+                        class="mb-3 h-48"
+                        :placeholder="'Please be kind'"
+                        @update="handleUpdateComment"
+                      />
+                      <!-- <ErrorBanner v-if="createCommentError"
+                             :text="createCommentError.message" /> -->
+                      <div class="flex justify-start">
+                        <CancelButton
+                          @click="showEditorInCommentSection = false"
+                        />
+                        <SaveButton
+                          @click.prevent="
+                            () => {
+                              handleCreateComment();
+                              showEditorInCommentSection = false;
+                            }
+                          "
+                          :disabled="this.createFormValues.text.length === 0"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="my-4"
                     v-if="
-                      (route.name === 'DiscussionDetail' ||
+                      (route.name === 'SitewideSearchDiscussionPreview' ||
                         route.name === 'SearchDiscussionPreview') &&
                       channelLinks.length > 0
                     "
                   >
-                    <div class="text-lg mb-2">Crossposted To Channels</div>
-
+                    <h2 class="text-lg">Comments</h2>
                     <ul class="list-disc pl-3">
                       <li
                         v-for="channel in channelLinks"
@@ -829,31 +765,58 @@ export default defineComponent({
                       </li>
                     </ul>
                   </div>
+                  <CommentSection
+                    class="mb-2"
+                    ref="commentSectionRef"
+                    v-if="route.name === 'DiscussionDetail'"
+                    :commentSectionId="commentSectionId"
+                    :locked="commentSectionIsLocked"
+                  />
+                  <router-view></router-view>
+                </div>
+                <div
+                  class="col-span-12 2xl:col-span-4 bg-blue-50 p-4"
+                  v-if="discussion.Tags.length > 0 || channelLinks.length > 0"
+                >
+                  <DiscussionTags
+                    v-if="discussion.Tags.length > 0"
+                    :discussion-id="discussionId"
+                    :tags="discussion.Tags"
+                    :route-name="route.name"
+                  />
+                  <CrosspostList
+                    v-if="
+                      (route.name === 'DiscussionDetail' ||
+                        route.name === 'SearchDiscussionPreview') &&
+                      channelLinks.length > 0
+                    "
+                    :channel-links="channelLinks"
+                    :discussion-id="discussionId"
+                    :get-comment-count="getCommentCount"
+                  />
                 </div>
               </div>
             </div>
-          </div>
 
-          <WarningModal
-            :title="'Delete Discussion'"
-            :body="'Are you sure you want to delete this discussion?'"
-            :open="deleteModalIsOpen"
-            @close="deleteModalIsOpen = false"
-            @primaryButtonClick="deleteDiscussion"
-          />
+            <WarningModal
+              :title="'Delete Discussion'"
+              :body="'Are you sure you want to delete this discussion?'"
+              :open="deleteModalIsOpen"
+              @close="deleteModalIsOpen = false"
+              @primaryButtonClick="deleteDiscussion"
+            />
+          </div>
         </div>
+        <ErrorBanner
+          class="mt-2"
+          v-if="deleteDiscussionError"
+          :text="deleteDiscussionError.message"
+        />
       </div>
-      <ErrorBanner
-        class="mt-2"
-        v-if="deleteDiscussionError"
-        :text="deleteDiscussionError.message"
-      />
     </div>
   </div>
-</div>
 </template>
 <style>
-
 .large-width {
   width: 1200px;
 }
