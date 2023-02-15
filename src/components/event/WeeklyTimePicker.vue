@@ -6,7 +6,6 @@ import {
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
-  hourRangesObject,
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
   createDefaultSelectedWeeklyHourRanges,

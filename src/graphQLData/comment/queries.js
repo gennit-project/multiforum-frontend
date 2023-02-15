@@ -108,6 +108,7 @@ query getCommentWithReplies($id: ID!){
     } 
     DownvotedByModerators {
       displayName
+      createdAt
     }
     DownvotedByModeratorsAggregate {
       count

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import UpArrowIcon from "../icons/UpArrowIcon.vue";
 import DownArrowIcon from "../icons/DownArrowIcon.vue";
 
@@ -32,10 +32,11 @@ export default defineComponent({
     }
   },
   setup() {
-    return { showModProfileModal: ref(false) };
+    return {  };
   },
   methods: {
     clickDownvote(){
+      console.log('clicked downvote')
       if (this.hasModProfile) {
         if (!this.downvoteActive) {
           this.$emit('downvote')
@@ -48,7 +49,7 @@ export default defineComponent({
         }
       } else {
         // Create mod profile, then downvote comment
-        this.showModProfileModal = true;
+        this.$emit('openModProfile')
       }
     },
     clickUpvote() {

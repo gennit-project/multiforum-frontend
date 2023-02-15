@@ -7,6 +7,7 @@ import {
   DeleteCommentInputData,
 } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
+import { useQuery, useMutation } from "@vue/apollo-composable";
 import { relativeTime } from "../../dateTimeUtils";
 import EmojiExtension from "./EmojiExtension/index.vue";
 import TextEditor from "./TextEditor.vue";
@@ -14,6 +15,12 @@ import ChildComments from "./ChildComments.vue";
 import UserCircle from "@/components/icons/UserCircle.vue";
 import CommentButtons from "./CommentButtons.vue";
 import WarningModal from "../generic/WarningModal.vue";
+import { generateSlug } from "random-word-slugs";
+import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
+import {
+  GET_LOCAL_USERNAME,
+} from "@/graphQLData/user/queries";
+import { modProfileNameVar } from "@/cache";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -37,8 +44,39 @@ export default defineComponent({
     const textCopy = computed(() => {
       return props.commentData.text;
     });
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value;
+    });
+
+    const randomWords = generateSlug(4, { format: "camel" });
+
+    const { mutate: createModProfile, onDone: onDoneCreateModProfile } =
+      useMutation(CREATE_MOD_PROFILE, () => ({
+        variables: {
+          displayName: randomWords,
+          username: username.value?.username,
+        },
+      }));
+
+    onDoneCreateModProfile((data: any) => {
+      console.log('done creating ', data)
+      const updatedUser = data.data.updateUsers.users[0]
+      console.log('updated user', updatedUser)
+      const newModProfileName = updatedUser.ModerationProfile.displayName;
+      modProfileNameVar(newModProfileName);
+    });
 
     return {
+      createModProfile,
       editorId: "texteditor",
       highlight: ref(false),
       relativeTime,
@@ -189,6 +227,7 @@ export default defineComponent({
                 @hideReplyEditor="showReplyEditor = false"
                 @deleteComment="handleClickDelete"
                 @hideReplies="showReplies = false"
+                @openModProfile="this.showModProfileModal = true;"
                 @saveEdit="$emit('saveEdit')"
                 @showEditCommentField="showEditCommentField = true"
                 @hideEditCommentField="showEditCommentField = false"

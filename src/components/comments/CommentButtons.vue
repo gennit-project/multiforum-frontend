@@ -13,14 +13,11 @@ import {
 } from "@/graphQLData/comment/mutations";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import Votes from "./Votes.vue";
-import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import {
-  GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
+  GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
-import { modProfileNameVar } from "@/cache";
-import { generateSlug } from "random-word-slugs";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import EllipsisVertical from "../icons/EllipsisVertical.vue";
 import { useRoute } from "vue-router";
@@ -73,34 +70,15 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+
+    const { result: localUsernameResult, loading: localUsernameLoading } =
+      useQuery(GET_LOCAL_USERNAME);
+
     const {
       result: localModProfileNameResult,
       loading: localModProfileNameLoading,
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
-
-    const {
-      result: localUsernameResult,
-      loading: localUsernameLoading,
-      error: localUsernameError,
-    } = useQuery(GET_LOCAL_USERNAME);
-
-    const username = computed(() => {
-      if (localUsernameLoading.value || localUsernameError.value) {
-        return "";
-      }
-      return localUsernameResult.value;
-    });
-
-    const randomWords = generateSlug(4, { format: "camel" });
-
-    const { mutate: createModProfile, onDone: onDoneCreateModProfile } =
-      useMutation(CREATE_MOD_PROFILE, () => ({
-        variables: {
-          displayName: randomWords,
-          username: username.value?.username,
-        },
-      }));
 
     const loggedInUserModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
@@ -115,13 +93,6 @@ export default defineComponent({
         displayName: loggedInUserModName.value,
       },
     }));
-
-    onDoneCreateModProfile((data: any) => {
-      const newModProfileName =
-        data.updateUsers.users[0].ModerationProfile.displayName;
-      modProfileNameVar(newModProfileName);
-      downvoteComment();
-    });
 
     const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
       UPVOTE_COMMENT,
@@ -185,7 +156,6 @@ export default defineComponent({
       undoUpvoteCommentError,
       loggedInUserDownvoted,
       loggedInUserUpvoted,
-      createModProfile,
       downvoteComment,
       loggedInUserModName,
       route,
@@ -209,6 +179,7 @@ export default defineComponent({
               :has-mod-profile="!!loggedInUserModName"
               @downvote="downvoteComment"
               @upvote="upvoteComment"
+              @openModProfile="$emit('openModProfile')"
               @undoUpvote="undoUpvoteComment"
               @undoDownvote="undoDownvoteComment"
             />
@@ -260,24 +231,22 @@ export default defineComponent({
           >
         </template>
       </RequireAuth>
-      <router-link
+      <span
         v-if="route.name !== 'DiscussionCommentPermalink'"
         :to="`${route.path}/comments/${commentData.id}`"
+        @click="$router.push({
+          name:'DiscussionCommentPermalink',
+          params: {
+            ...route.params,
+            commentId: commentData.id
+          }
+        })"
         class="ml-2 underline cursor-pointer hover:text-black"
       >
         Permalink
-      </router-link>
+      </span>
 
-      <MenuButton
-        :items="[
-          {
-            label: 'Mod History',
-            value: `${route.path}/modhistory`,
-          },
-        ]"
-      >
-        <EllipsisVertical class="h-4 w-4 cursor-pointer hover:text-black" />
-      </MenuButton>
+      
       <span
         class="underline cursor-pointer hover:text-black"
         v-if="loggedInUserUpvoted"
@@ -323,6 +292,16 @@ export default defineComponent({
           `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
         }}</span
       >
+      <MenuButton
+        :items="[
+          {
+            label: 'Mod History',
+            value: `${route.path}/modhistory`,
+          },
+        ]"
+      >
+        <EllipsisVertical class="h-4 w-4 cursor-pointer hover:text-black" />
+      </MenuButton>
     </div>
     <div v-if="showReplyEditor" class="mt-1 flex space-x-2 px-3">
       <div>

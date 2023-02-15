@@ -44,15 +44,20 @@ export default defineComponent({
 <template>
   <div>
     <h2 class="text-lg text-gray-500 mt-4">Comment Permalink</h2>
-    <hr/>
+    <hr />
     <div v-if="commentLoading">Loading...</div>
     <ErrorBanner v-if="commentError" :text="commentError.message" />
-    <Comment
-      class="ml-6"
-      v-else-if="commentResult && commentResult.comments && commentResult.comments.length > 0"
-      :commentData="commentResult.comments[0]"
-      :depth="1"
-    />
-    <CommentModHistory v-if="route.name === 'DiscussionCommentModHistory'" />
+    <div v-else-if="commentResult && commentResult.comments">
+      <Comment
+        class="ml-6"
+        :commentData="commentResult.comments[0]"
+        :depth="1"
+      />
+      <div v-if="route.name === 'DiscussionCommentModHistory'">
+        <h2 class="text-lg text-gray-500 mt-6">Mod History</h2>
+        <hr />
+        <CommentModHistory :comment-data="commentResult.comments[0]" />
+      </div>
+    </div>
   </div>
 </template>
