@@ -5,11 +5,14 @@ import { useDisplay } from 'vuetify'
 export default defineComponent({
 
     setup() {
-        const { lgAndDown, lgAndUp } = useDisplay();
+        const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
 
         return {
             lgAndDown,
-            lgAndUp
+            lgAndUp,
+            mdAndDown,
+            mdAndUp,
+            xlAndUp,
         };
     },
     components: {
@@ -20,9 +23,15 @@ export default defineComponent({
 <template>
     <div class="flex flex-row ">
         <div 
-          :class="[lgAndDown ? '' : 'constrain-height min-w-left']"
+          :class="[
+            lgAndUp ? '' : 'constrain-height', 
+            lgAndUp ? 'min-w-left-lg' : 'min-w-left-md', 
+            mdAndDown ? 'w-full' : ''
+            ]
+          "
           class="
             lg:overflow-y-auto
+            
         ">
             <slot name="leftpane"></slot>
         </div>
@@ -36,10 +45,13 @@ export default defineComponent({
     max-height: 86vh;
     height: 100% - 200px;
 }
-.min-w-left {
+.min-w-left-lg {
     width: 500px;
 }
+.min-w-left-md {
+    width: 300px;
+}
 .min-w-right {
-    width: 900px;
+    width: 700px;
 }
 </style>

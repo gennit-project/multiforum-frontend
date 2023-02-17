@@ -328,12 +328,12 @@ export default defineComponent({
   <div :class="[ lgAndUp ? 'px-8' : 'px-4']">
 
     <ErrorBanner
-      class="mx-auto max-w-5xl"
+      class="max-w-5xl"
       v-if="discussionError"
       :text="discussionError.message"
     />
 
-    <div class="flex justify-center">
+    <div class="flex">
 
       <div class="block">
         <h1 v-if="!channelId" class="text-2xl block mt-6 text-black ">

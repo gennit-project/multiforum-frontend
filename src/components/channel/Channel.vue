@@ -44,15 +44,14 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="flex justify-center bg-white shadow">
-      <div class="mx-auto md:w-2/3">
+    <div class="flex bg-white shadow">
+      <div>
         <div v-if="!discussionId || !eventId">
-          <div class="block flex justify-center">
+          
             <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
               {{ channelId }}
             </h1>
-          </div>
-          <div class="block flex justify-center">
+          <div class="block">
             <ChannelTabs class="block mt-2" :route="route"/>
           </div>
         </div>
