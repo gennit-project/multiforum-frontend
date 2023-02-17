@@ -57,34 +57,20 @@ export default defineComponent({
             leave-from="translate-x-0"
             leave-to="translate-x-full"
           >
-          <DialogPanel class="pointer-events-auto w-screen max-w-xl">
+            <DialogPanel class="pointer-events-auto w-screen max-w-xl">
               <div
-                class="
-                  h-full
-                  divide-y divide-gray-200
-                  flex flex-col
-                  bg-white
-                  shadow-xl
-                "
+                class="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl"
               >
                 <div
                   class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
                 >
                   <div>
                     <div class="flex items-start justify-between">
-                      
                       <div class="h-7 flex items-center">
                         <button
                           :ref="cancelButtonRef"
                           type="button"
-                          class="
-                            bg-white
-                            ml-8
-                            rounded-full
-                            text-gray-400
-                            hover:text-gray-500
-                            focus:outline-none focus:ring-2 focus:ring-blue-500
-                          "
+                          class="bg-white ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           @click="$emit('closePreview')"
                         >
                           <span class="sr-only">Close panel</span>
@@ -94,59 +80,20 @@ export default defineComponent({
                     </div>
                   </div>
                   <div class="relative flex-1 mx-8">
-                    <DiscussionDetail :compact-mode="true"/>
+                    <DiscussionDetail :compact-mode="true" />
                   </div>
                 </div>
                 <div class="flex-shrink-0 px-4 py-4 flex justify-end">
                   <button
                     type="button"
-                    class="
-                      bg-white
-                      py-2
-                      px-4
-                      border border-gray-300
-                      rounded-full
-                      shadow-sm
-                      text-sm
-                      font-medium
-                      text-gray-700
-                      hover:bg-gray-50
-                      focus:outline-none
-                      focus:ring-2
-                      focus:ring-offset-2
-                      focus:ring-blue-500
-                    "
+                    class="bg-white py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     @click="$emit('closePreview')"
                   >
                     Close
                   </button>
-                  <!-- <button
-                    type="submit"
-                    class="
-                      ml-4
-                      inline-flex
-                      justify-center
-                      py-2
-                      px-4
-                      border border-transparent
-                      shadow-sm
-                      text-sm
-                      font-medium
-                      rounded-full
-                      text-white
-                      bg-blue-600
-                      hover:bg-blue-700
-                      focus:outline-none
-                      focus:ring-2
-                      focus:ring-offset-2
-                      focus:ring-blue-500
-                    "
-                  >
-                    Save
-                  </button> -->
                 </div>
               </div>
-          </DialogPanel>
+            </DialogPanel>
           </TransitionChild>
         </div>
       </div>

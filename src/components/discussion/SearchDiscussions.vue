@@ -247,7 +247,7 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
-    const { lgAndDown } = useDisplay();
+    const { lgAndDown, lgAndUp } = useDisplay();
 
     return {
       channelId,
@@ -260,6 +260,7 @@ export default defineComponent({
       discussionLoading,
       discussionResult,
       lgAndDown,
+      lgAndUp,
       loadMore,
       previewIsOpen,
       reachedEndOfResults,
@@ -324,82 +325,80 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="!channelId" class="block flex justify-center bg-white shadow">
-      <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
-        Search Discussions
-      </h1>
-    </div>
 
-    <div class="rounded px-4 lg:px-12 pr-8">
-      <div class="pt-2 pb-2">
-        <div class="items-center">
-          <div class="flex items-center inline-flex space-x-2">
-            <SearchBar
-              class="flex mr-2 align-middle"
-              :small="true"
-              :search-placeholder="'Search discussions'"
-              @updateSearchInput="updateSearchResult"
-            />
-            <FilterChip
-              class="align-middle"
-              v-if="!channelId"
-              :label="channelLabel"
-              :highlighted="channelLabel !== defaultLabels.channels"
-            >
-              <template v-slot:icon>
-                <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-              </template>
-              <template v-slot:content>
-                <ChannelPicker
-                  :selected-channels="selectedChannels"
-                  @setSelectedChannels="setSelectedChannels"
-                />
-              </template>
-            </FilterChip>
-
-            <FilterChip
-              class="align-middle"
-              :label="tagLabel"
-              :highlighted="tagLabel !== defaultLabels.tags"
-            >
-              <template v-slot:icon>
-                <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-              </template>
-              <template v-slot:content>
-                <TagPicker
-                  :selected-tags="selectedTags.value"
-                  @setSelectedTags="setSelectedTags"
-                />
-              </template>
-            </FilterChip>
-          </div>
-          <RequireAuth class="flex inline-flex">
-            <template v-slot:has-auth>
-              <CreateButton
-                class="align-middle ml-2"
-                :to="createDiscussionPath"
-                :label="'Create Discussion'"
-              />
-            </template>
-            <template v-slot:does-not-have-auth>
-              <PrimaryButton
-                class="align-middle ml-2"
-                  :label="'Create Discussion'"
-                />
-            </template>
-          </RequireAuth>
-        </div>
-      </div>
-    </div>
-    
     <ErrorBanner
       class="mx-auto max-w-5xl"
       v-if="discussionError"
       :text="discussionError.message"
     />
 
-    <div class="flex justify-center px-6">
-      <div class="block w-full">
+    <div class="flex justify-center">
+
+      <div class="block">
+        <h1 v-if="!channelId" class="text-2xl block mt-6 text-black ">
+          Search Discussions
+        </h1>
+        <div class="rounded pr-8">
+          <div class="py-2">
+            <div class="items-center">
+              <div class="flex items-center inline-flex">
+                <SearchBar
+                  class="flex mr-2 align-middle"
+                  :small="true"
+                  :search-placeholder="'Search discussions'"
+                  @updateSearchInput="updateSearchResult"
+                />
+                <FilterChip
+                  class="align-middle mr-2"
+                  v-if="!channelId"
+                  :label="channelLabel"
+                  :highlighted="channelLabel !== defaultLabels.channels"
+                >
+                  <template v-slot:icon>
+                    <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+                  </template>
+                  <template v-slot:content>
+                    <ChannelPicker
+                      :selected-channels="selectedChannels"
+                      @setSelectedChannels="setSelectedChannels"
+                    />
+                  </template>
+                </FilterChip>
+    
+                <FilterChip
+                  class="align-middle"
+                  :label="tagLabel"
+                  :highlighted="tagLabel !== defaultLabels.tags"
+                >
+                  <template v-slot:icon>
+                    <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+                  </template>
+                  <template v-slot:content>
+                    <TagPicker
+                      :selected-tags="selectedTags.value"
+                      @setSelectedTags="setSelectedTags"
+                    />
+                  </template>
+                </FilterChip>
+              </div>
+              <RequireAuth class="flex inline-flex">
+                <template v-slot:has-auth>
+                  <CreateButton
+                    class="align-middle ml-2"
+                    :to="createDiscussionPath"
+                    :label="'Create Discussion'"
+                  />
+                </template>
+                <template v-slot:does-not-have-auth>
+                  <PrimaryButton
+                    class="align-middle ml-2"
+                      :label="'Create Discussion'"
+                    />
+                </template>
+              </RequireAuth>
+            </div>
+          </div>
+        </div>
         <TwoSeparatelyScrollingPanes
           v-if="discussionResult && discussionResult.discussions.length > 0"
         >
@@ -416,7 +415,7 @@ export default defineComponent({
               @loadMore="loadMore"
               @openPreview="openPreview"
             />
-            <div class="px-4 lg:px-12" v-if="discussionLoading">Loading...</div>
+            <div class="px-4" v-if="discussionLoading">Loading...</div>
             <DiscussionPreview
               v-else-if="lgAndDown"
               :isOpen="previewIsOpen"
@@ -434,5 +433,8 @@ export default defineComponent({
 <style>
 .height-constrained {
   max-height: 50px;
+}
+.min-w-lg {
+  min-width: 1300px;
 }
 </style>

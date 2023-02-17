@@ -5,10 +5,11 @@ import { useDisplay } from 'vuetify'
 export default defineComponent({
 
     setup() {
-        const { mdAndDown } = useDisplay();
+        const { lgAndDown, lgAndUp } = useDisplay();
 
         return {
-            mdAndDown
+            lgAndDown,
+            lgAndUp
         };
     },
     components: {
@@ -17,21 +18,18 @@ export default defineComponent({
 </script>
 
 <template>
-    <div class="flex justify-center">
     <div class="flex flex-row ">
         <div 
-          :class="[!mdAndDown ? 'constrain-height' : '']"
+          :class="[lgAndDown ? 'w-full' : 'constrain-height min-w-left']"
           class="
             lg:overflow-y-auto
-            min-w-left
         ">
             <slot name="leftpane"></slot>
         </div>
-        <div v-if="!mdAndDown" class="lg:max-h-screen lg:overflow-y-auto min-w-right">
+        <div v-if="lgAndUp" class="lg:max-h-screen lg:overflow-y-auto min-w-right">
             <slot name="rightpane"></slot>
         </div>
     </div>
-</div>
 </template>
 <style>
 .constrain-height {
