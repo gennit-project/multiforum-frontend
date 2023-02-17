@@ -2,13 +2,35 @@
 import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 import { GET_USER } from "@/graphQLData/user/queries";
+import {
+  GET_LOCAL_MOD_PROFILE_NAME,
+} from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import ProfileAvatar from "./ProfileAvatar.vue";
+import { relativeTime } from "@/utils/dateTimeUtils";
 
 export default defineComponent({
+  components: {
+    ErrorBanner,
+    ProfileAvatar,
+  },
   setup() {
     const route = useRoute();
+
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      console.log(localModProfileNameResult.value)
+      return localModProfileNameResult.value.modProfileName;
+    });
 
     const username = computed(() => {
       if (typeof route.params.username === 'string') {
@@ -35,6 +57,7 @@ export default defineComponent({
         return null
       }
       if (result.value && result.value.users.length > 0) {
+        console.log({user: result.value.users[0]})
         return result.value.users[0]
       }
       return null
@@ -44,6 +67,8 @@ export default defineComponent({
       error,
       links,
       loading,
+      loggedInUserModName,
+      relativeTime,
       result,
       route,
       tabs: [
@@ -57,10 +82,7 @@ export default defineComponent({
       username
     };
   },
-  components: {
-    ErrorBanner,
-    ProfileAvatar
-  },
+
 });
 </script>
 
@@ -115,18 +137,20 @@ export default defineComponent({
               "
             >
               <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
-                <h1 class="truncate text-2xl font-bold text-gray-900">
+                <h1 class="truncate text-2xl sm:mt-10 mb-2 font-bold text-gray-900">
                   {{
                     username }}
                 </h1>
+                {{ `Created ${relativeTime(user.createdAt)}` }}
               </div>
             </div>
           </div>
           <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
-            <h1 class="truncate text-2xl font-bold text-gray-900">
+            <h1 class="truncate text-2xl mb-2 sm:mt-10 font-bold text-gray-900">
               {{ username
               }}
             </h1>
+            {{ `Joined ${relativeTime(user.createdAt)}` }}
           </div>
           <ul class="m-4 list-disc">
             <li>
@@ -139,6 +163,7 @@ export default defineComponent({
               {{ `${user.EventsAggregate.count} events` }}
             </li>
           </ul>
+          <router-link class="underline text-sm text-gray-500" v-if="loggedInUserModName" :to="`/mod/${loggedInUserModName}`">Go to mod profile</router-link>
         </div>
         
       </div>

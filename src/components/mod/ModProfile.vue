@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import ProfileAvatar from "@/components/user/ProfileAvatar.vue";
 import { useQuery } from "@vue/apollo-composable";
-import { GET_MOD } from "@/graphQLData/user/queries";
+import { GET_MOD } from "@/graphQLData/mod/queries";
 import UsernameLabel from "../generic/UsernameLabel.vue";
 import { relativeTime } from "@/utils/dateTimeUtils";
 
@@ -79,20 +79,21 @@ export default defineComponent({
                 :src="mod.picture"
                 alt="User profile picture"
               />
-              <ProfileAvatar v-else :user="mod" class="h-24 w-24" />
+              <ProfileAvatar v-else :user="mod" class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32" />
             </div>
             <div
               class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
             >
               <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
-                <h1 class="truncate text-2xl font-bold text-gray-900">
+                <h1 class="truncate text-2xl mb-2 lg:mt-10 font-bold text-gray-900">
                   {{ modId }}
                 </h1>
+                {{ `Created ${relativeTime(mod.createdAt)}` }}
               </div>
             </div>
           </div>
           <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
-            <h1 class="truncate text-2xl font-bold text-gray-900 flex justify-content">
+            <h1 class="truncate text-2xl mb-2 lg:mt-10 font-bold text-gray-900 flex justify-content">
               {{ modId }}<UsernameLabel :text="'MOD'" />
             </h1>
             {{ `Created ${relativeTime(mod.createdAt)}` }}
