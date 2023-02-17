@@ -43,7 +43,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div >
     <div class="flex bg-white shadow">
       <div>
         <div v-if="!discussionId || !eventId">
@@ -57,7 +57,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="block shadow-inner p-2">
+    <div class="block shadow-inner p-2 flex justify-center">
       <router-view></router-view>
     </div>
   </div>

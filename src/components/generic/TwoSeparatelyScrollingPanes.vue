@@ -24,7 +24,7 @@ export default defineComponent({
     <div class="flex flex-row ">
         <div 
           :class="[
-            lgAndUp ? '' : 'constrain-height', 
+            lgAndUp ? 'constrain-height' : '', 
             lgAndUp ? 'min-w-left-lg' : 'min-w-left-md', 
             mdAndDown ? 'w-full' : ''
             ]

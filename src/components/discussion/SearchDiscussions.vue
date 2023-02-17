@@ -327,79 +327,77 @@ export default defineComponent({
 <template>
   <div :class="[ lgAndUp ? 'px-8' : 'px-4']">
 
-    <ErrorBanner
+    
+  <div class="flex justify-center">
+     <div>
+      <ErrorBanner
       class="max-w-5xl"
       v-if="discussionError"
       :text="discussionError.message"
     />
-
-    <div class="flex">
-
-      <div class="block">
-        <h1 v-if="!channelId" class="text-2xl block mt-6 text-black ">
-          Search Discussions
-        </h1>
-        <div class="rounded pr-8">
-          <div class="py-2">
-            <div class="items-center">
-              <div class="flex items-center inline-flex">
-                <SearchBar
-                  class="flex mr-2 align-middle"
-                  :small="true"
-                  :search-placeholder="'Search discussions'"
-                  @updateSearchInput="updateSearchResult"
-                />
-                <FilterChip
-                  class="align-middle mr-2"
-                  v-if="!channelId"
-                  :label="channelLabel"
-                  :highlighted="channelLabel !== defaultLabels.channels"
-                >
-                  <template v-slot:icon>
-                    <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-                  </template>
-                  <template v-slot:content>
-                    <ChannelPicker
-                      :selected-channels="selectedChannels"
-                      @setSelectedChannels="setSelectedChannels"
-                    />
-                  </template>
-                </FilterChip>
-    
-                <FilterChip
-                  class="align-middle"
-                  :label="tagLabel"
-                  :highlighted="tagLabel !== defaultLabels.tags"
-                >
-                  <template v-slot:icon>
-                    <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-                  </template>
-                  <template v-slot:content>
-                    <TagPicker
-                      :selected-tags="selectedTags.value"
-                      @setSelectedTags="setSelectedTags"
-                    />
-                  </template>
-                </FilterChip>
-              </div>
-              <RequireAuth class="flex inline-flex">
-                <template v-slot:has-auth>
-                  <CreateButton
-                    class="align-middle ml-2"
-                    :to="createDiscussionPath"
-                    :label="'Create Discussion'"
+      <div class="rounded pr-8">
+        <div class="py-2">
+          <div class="items-center">
+            <div class="flex items-center inline-flex">
+              <SearchBar
+                class="flex mr-2 align-middle"
+                :small="true"
+                :search-placeholder="'Search discussions'"
+                @updateSearchInput="updateSearchResult"
+              />
+              <FilterChip
+                class="align-middle mr-2"
+                v-if="!channelId"
+                :label="channelLabel"
+                :highlighted="channelLabel !== defaultLabels.channels"
+              >
+                <template v-slot:icon>
+                  <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+                </template>
+                <template v-slot:content>
+                  <ChannelPicker
+                    :selected-channels="selectedChannels"
+                    @setSelectedChannels="setSelectedChannels"
                   />
                 </template>
-                <template v-slot:does-not-have-auth>
-                  <PrimaryButton
-                    class="align-middle ml-2"
-                      :label="'Create Discussion'"
-                    />
+              </FilterChip>
+  
+              <FilterChip
+                class="align-middle"
+                :label="tagLabel"
+                :highlighted="tagLabel !== defaultLabels.tags"
+              >
+                <template v-slot:icon>
+                  <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
                 </template>
-              </RequireAuth>
+                <template v-slot:content>
+                  <TagPicker
+                    :selected-tags="selectedTags.value"
+                    @setSelectedTags="setSelectedTags"
+                  />
+                </template>
+              </FilterChip>
             </div>
+            <RequireAuth class="flex inline-flex">
+              <template v-slot:has-auth>
+                <CreateButton
+                  class="align-middle ml-2"
+                  :to="createDiscussionPath"
+                  :label="'Create Discussion'"
+                />
+              </template>
+              <template v-slot:does-not-have-auth>
+                <PrimaryButton
+                  class="align-middle ml-2"
+                    :label="'Create Discussion'"
+                  />
+              </template>
+            </RequireAuth>
           </div>
         </div>
+     </div>
+
+      <div >
         <TwoSeparatelyScrollingPanes
           v-if="discussionResult && discussionResult.discussions.length > 0"
         >
@@ -427,6 +425,7 @@ export default defineComponent({
             <router-view></router-view>
           </template>
         </TwoSeparatelyScrollingPanes>
+      </div>
       </div>
     </div>
   </div>
