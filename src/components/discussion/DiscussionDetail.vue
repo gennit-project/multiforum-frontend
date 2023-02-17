@@ -30,17 +30,15 @@ import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import { useDisplay } from "vuetify";
 import { ChannelData } from "@/types/channelTypes";
-import CrosspostList from "./CrosspostList.vue";
-import DiscussionTags from "./DiscussionTags.vue";
+import ChannelLink from "./ChannelLink.vue"
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     CancelButton,
+    ChannelLink,
     CommentSection,
     CreateButton,
-    CrosspostList,
-    DiscussionTags,
     ErrorBanner,
     GenericButton,
     LeftArrowIcon,
@@ -49,7 +47,6 @@ export default defineComponent({
     ProfileAvatar,
     RequireAuth,
     SaveButton,
-    Tag,
     TextEditor,
     WarningModal,
   },
@@ -698,36 +695,18 @@ export default defineComponent({
               >
                 <h2 class="text-lg">Comments</h2>
                 <ul class="list-disc pl-3">
-                  <li v-for="channel in channelLinks" :key="channel.uniqueName">
-                    <router-link
-                      class="mr-1 underline"
-                      :to="{
-                        name: 'DiscussionDetail',
-                        params: {
-                          discussionId,
-                          channelId: channel.uniqueName,
-                        },
-                      }"
-                    >
-                      {{ `${getCommentCount(channel.uniqueName)} comments` }}
-                    </router-link>
-                    in
-                    <router-link
-                      :to="{
-                        name: 'DiscussionDetail',
-                        params: {
-                          discussionId,
-                          channelId: channel.uniqueName,
-                        },
-                      }"
-                    >
-                      <Tag
-                        class="mt-2"
-                        :tag="channel.uniqueName"
-                        :channel-mode="true"
-                      />
-                    </router-link>
-                  </li>
+                  <ChannelLink
+                    v-if="channelId"
+                    :channelId="channelId"
+                    :comment-count="getCommentCount(channelId)"
+                    :discussionId="discussionId"
+                  />
+                  <ChannelLink 
+                    v-for="channel in channelLinks" :key="channel.uniqueName"
+                    :channelId="channel.uniqueName" 
+                    :comment-count="getCommentCount(channel.uniqueName)"
+                    :discussionId="discussionId"
+                  />
                 </ul>
               </div>
               <CommentSection
