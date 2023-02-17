@@ -20,7 +20,7 @@ export default defineComponent({
 <template>
     <div class="flex flex-row ">
         <div 
-          :class="[lgAndDown ? 'w-full' : 'constrain-height min-w-left']"
+          :class="[lgAndDown ? '' : 'constrain-height min-w-left']"
           class="
             lg:overflow-y-auto
         ">
@@ -40,6 +40,6 @@ export default defineComponent({
     width: 500px;
 }
 .min-w-right {
-    width: 800px;
+    width: 900px;
 }
 </style>
