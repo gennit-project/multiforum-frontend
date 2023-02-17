@@ -22,10 +22,10 @@ import MapView from "@/components/event/MapView.vue";
 import EventListView from "@/components/event/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import LogoutPage from "@/components/auth/LogoutPage.vue";
-import LoggedInUserProfile from "@/components/user/LoggedInUserProfile.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 import CommentPermalink from "@/components/comments/CommentPermalink.vue";
 import CommentModHistory from "@/components/comments/CommentModHistory.vue";
+import ModProfile from "@/components/mod/ModProfile.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -221,11 +221,7 @@ export const router = createRouter({
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
     { path: "/u/:username", component: UserProfile },
-    {
-      name: "LoggedInUserProfile",
-      path: "/myProfile",
-      component: LoggedInUserProfile,
-    },
+    { path: "/mod/:modId", component: ModProfile},
     { path: "/settings", component: SiteSettings },
     {
       path: "/:catchAll(.*)",

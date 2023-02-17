@@ -29,16 +29,16 @@ export const GET_USER_INFO_FOR_TAGS = gql`
 
 export const GET_USER = gql`
   query getBasicUserInfo($username: String!) {
-    getUser(username: $username) {
+    users(
+      where: {username: $username}
+    ) {
       username
+      createdAt
       name
       location
       pronouns
       bio
       isAdmin
-      ModeratorOfChannels {
-        url
-      }
       CommentsAggregate {
         count
       }
@@ -50,6 +50,28 @@ export const GET_USER = gql`
       }
     }
 }`;
+
+export const GET_MOD = gql`
+  query getMod($displayName: String!) {
+    moderationProfiles(where: {
+      displayName: $displayName
+    }) {
+      displayName
+      createdAt
+      DownvotedCommentsAggregate {
+        count
+        __typename
+      }
+      DownvotedDiscussionsAggregate {
+        count
+        __typename
+      }
+      AuthoredReportsAggregate {
+        count
+        __typename
+      } 
+    }
+  }`
 
 export const DOES_USER_EXIST = gql`
   query doesUserExist($username: String!) {

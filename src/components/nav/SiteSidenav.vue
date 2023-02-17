@@ -4,7 +4,7 @@ import { useAuth0 } from "@auth0/auth0-vue";
 
 export default defineComponent({
   setup() {
-    const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
+    const { isAuthenticated, logout, loginWithRedirect, user } = useAuth0();
 
     return {
       isAuthenticated,
@@ -14,6 +14,7 @@ export default defineComponent({
       logout: () => {
         logout({ returnTo: "http://localhost:5173/logout" });
       },
+      user
     };
   },
   props: {
@@ -79,7 +80,7 @@ export default defineComponent({
       </router-link>
       <router-link
         v-if="isAuthenticated"
-        to="/myProfile"
+        :to="`u/${user.username}`"
         class="
           text-gray-300
           hover:bg-gray-700 hover:text-white

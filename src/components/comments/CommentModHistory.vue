@@ -18,10 +18,6 @@ export default defineComponent({
     },
   },
   setup(props: any) {
-    console.log({
-      commentData: props.commentData,
-    });
-
     return {
       mods: props.commentData.DownvotedByModerators,
       headers: ["Moderator", "Mod Age", "Downvote Reason"],
@@ -54,9 +50,9 @@ export default defineComponent({
           v-for="(mod, i) in mods"
         >
           <td
-            class="px-2 py-2 text-left whitespace-nowrap text-sm text-gray-500"
+            class="px-2 py-2 text-left whitespace-nowrap text-sm text-gray-500 underline"
           >
-            {{ mod.displayName }}
+            <router-link :to="`/mod/${mod.displayName}`">{{ mod.displayName }}</router-link>
           </td>
           <td
             class="px-2 py-2 text-left whitespace-nowrap text-sm text-gray-500"

@@ -36,7 +36,6 @@ export default defineComponent({
   },
   methods: {
     clickDownvote(){
-      console.log('clicked downvote')
       if (this.hasModProfile) {
         if (!this.downvoteActive) {
           this.$emit('downvote')

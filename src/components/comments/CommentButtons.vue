@@ -147,7 +147,19 @@ export default defineComponent({
       return match;
     });
 
+    const commentMenuItems = computed(() => {
+      const out = []
+      if (!route.path.includes('modhistory')){
+         out.push({
+            label: 'Mod History',
+            value: route.path.includes('comments') ? `${route.path}/modhistory`: `${route.path}/comments/${props.commentData.id}/modhistory`,
+          })
+      }
+      return out
+    })
+
     return {
+      commentMenuItems,
       upvoteComment,
       upvoteCommentError,
       undoDownvoteComment,
@@ -193,8 +205,17 @@ export default defineComponent({
           </div>
         </template>
         <template v-slot:does-not-have-auth>
-          <VotesComponent :count="commentData.UpvotedByUsersAggregate?.count" />
-          <span class="underline cursor-pointer hover:text-black">Reply</span>
+          <div class="flex inline-flex">
+            <VotesComponent
+              :downvote-count="
+                commentData.DownvotedByModeratorsAggregate?.count || 0
+              "
+              :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
+            />
+            <span class="ml-2 underline cursor-pointer hover:text-black"
+              >Reply</span
+            >
+          </div>
         </template>
       </RequireAuth>
 
@@ -234,19 +255,20 @@ export default defineComponent({
       <span
         v-if="route.name !== 'DiscussionCommentPermalink'"
         :to="`${route.path}/comments/${commentData.id}`"
-        @click="$router.push({
-          name:'DiscussionCommentPermalink',
-          params: {
-            ...route.params,
-            commentId: commentData.id
-          }
-        })"
+        @click="
+          $router.push({
+            name: 'DiscussionCommentPermalink',
+            params: {
+              ...route.params,
+              commentId: commentData.id,
+            },
+          })
+        "
         class="ml-2 underline cursor-pointer hover:text-black"
       >
         Permalink
       </span>
 
-      
       <span
         class="underline cursor-pointer hover:text-black"
         v-if="loggedInUserUpvoted"
@@ -293,12 +315,8 @@ export default defineComponent({
         }}</span
       >
       <MenuButton
-        :items="[
-          {
-            label: 'Mod History',
-            value: `${route.path}/modhistory`,
-          },
-        ]"
+        v-if="commentMenuItems.length > 0"
+        :items="commentMenuItems"
       >
         <EllipsisVertical class="h-4 w-4 cursor-pointer hover:text-black" />
       </MenuButton>
@@ -338,5 +356,4 @@ export default defineComponent({
     />
   </div>
 </template>
-<style>
-</style>
+<style></style>

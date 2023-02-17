@@ -68,9 +68,8 @@ export default defineComponent({
       }));
 
     onDoneCreateModProfile((data: any) => {
-      console.log('done creating ', data)
       const updatedUser = data.data.updateUsers.users[0]
-      console.log('updated user', updatedUser)
+      
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
     });

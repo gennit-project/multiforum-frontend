@@ -103,7 +103,7 @@ export default defineComponent({
       usernameVar(userInDatabase);
       modProfileNameVar()
       router.push({
-        name: "LoggedInUserProfile",
+        name: "UserProfile",
       });
     });
 

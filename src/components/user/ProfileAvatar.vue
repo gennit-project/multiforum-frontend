@@ -18,7 +18,7 @@ export default defineComponent({
 </script>
 <template>
 
-  <UserCircle v-if="!isAuthenticated || !user || !user.picture" class="h-8 w-8"/>
+  <UserCircle v-if="!isAuthenticated || !user || !user.picture"/>
     <img
       v-else-if="user && user.picture"
       class="h-8 w-8 rounded-full"

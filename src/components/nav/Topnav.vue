@@ -1,15 +1,16 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import TopNavLink from "@/components/nav/TopNavLink.vue";
 import MobileMenuButton from "@/components/nav/MobileMenuButton.vue";
 // import NotificationButton from '@/components/nav/NotificationButton.vue'
 import UserProfileDropdownMenu from "@/components/nav/UserProfileDropdownMenu.vue";
-import UserProfileButton from "@/components/nav/UserProfileButton.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 // import FeedIcon from "@/components/icons/FeedIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
+import { useQuery } from "@vue/apollo-composable";
+import { GET_LOCAL_USERNAME, GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "TopNav",
@@ -18,40 +19,41 @@ export default defineComponent({
     MobileMenuButton,
     // NotificationButton,
     UserProfileDropdownMenu,
-    UserProfileButton,
     ChannelIcon,
     CalendarIcon,
     // FeedIcon,
     DiscussionIcon,
   },
-  props: {
-    showUserProfileDropdown: {
-      type: Boolean,
-      default: false,
-    },
-  },
   setup() {
     const { isAuthenticated, loginWithPopup } = useAuth0();
+
+    const { result } = useQuery(GET_LOCAL_USERNAME);
+    const username = computed(() => {
+      let username = result.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
+    const { result: modNameResult } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const modName = computed(() => {
+      let modName = modNameResult.value?.modProfileName;
+      if (modName) {
+        return modName;
+      }
+      return "";
+    });
 
     return {
       isAuthenticated,
       login: () => {
         loginWithPopup( );
       },
+      modName,
+      username,
     };
-  },
-  data() {
-    return {
-      showMobileDropdown: false,
-    };
-  },
-  methods: {
-    closeUserProfileDropdown() {
-      this.$emit("closeUserProfileDropdown");
-    },
-    toggleUserProfileDropdown() {
-      this.$emit("toggleUserProfileDropdown");
-    },
   },
 });
 </script>
@@ -102,17 +104,11 @@ export default defineComponent({
       <div class="flex lg:hidden">
         <MobileMenuButton @click="$emit('toggleMobileDropdown')" />
       </div>
-      <div v-if="isAuthenticated" class="hidden lg:block lg:ml-4">
+      <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">
         <div class="flex items-center">
           <!-- <NotificationButton/> -->
           <div class="ml-4 relative flex-shrink-0">
-            <div @click="toggleUserProfileDropdown">
-              <UserProfileButton />
-            </div>
-            <UserProfileDropdownMenu
-              @closeUserProfileDropdown="closeUserProfileDropdown"
-              :show-user-profile-dropdown="showUserProfileDropdown"
-            />
+            <UserProfileDropdownMenu :username="username" :mod-name="modName"/>
           </div>
         </div>
       </div>

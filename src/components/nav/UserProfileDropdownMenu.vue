@@ -1,123 +1,69 @@
 <script>
-import {
-  defineComponent,
-  ref,
-  onBeforeUnmount,
-  onMounted,
-  nextTick,
-} from "vue";
+import { defineComponent } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
+import MenuButton from "../generic/MenuButton.vue";
+import ProfileAvatar from "../user/ProfileAvatar.vue";
 
 export default defineComponent({
+  components: {
+    MenuButton,
+    ProfileAvatar
+},
   props: {
-    showUserProfileDropdown: {
-      type: Boolean,
-      default: false,
+    modName: {
+      type: String,
+      default: "",
     },
+    username: {
+      type: String,
+      required: true,
+    }
   },
-  setup(props, { emit }) {
-    const { logout } = useAuth0();
+  setup(props) {
+    const { isAuthenticated, logout } = useAuth0();
 
-    const useDetectOutsideClick = (component, callback) => {
-      // Used code from this tutorial https://dev.to/erefor/vue-3-tip-detect-click-outside-4e4k
-      if (!component) return;
-      const listener = (event) => {
-        if (
-          event.target !== component.value &&
-          event.composedPath().includes(component.value)
-        ) {
-          return;
-        }
-        if (typeof callback === "function") {
-          callback();
-        }
-      };
-      onMounted(() => {
-        window.addEventListener("click", listener);
-      });
-      onBeforeUnmount(() => {
-        window.removeEventListener("click", listener);
-      });
+    let menuItems = [
+      {
+        label: 'My Profile',
+        value: `/u/${props.username}`,
+      },
+      {
+        label: 'Sign out',
+        value: '/logout',
+      },
+    ]
 
-      return { listener };
-    };
-
-    const userProfileDropdownRef = ref();
-
-    useDetectOutsideClick(userProfileDropdownRef, () => {
-      if (props.showUserProfileDropdown === true) {
-        setTimeout(() => {
-          emit("closeUserProfileDropdown");
-        }, "2000");
-      }
-    });
+    if (props.modName) {
+      menuItems = [
+        {
+          label: 'My Profile',
+          value: `/u/${props.username}`,
+        },
+        {
+          label: 'My Mod Profile',
+          value: `/mod/${props.modName}`,
+        },
+        {
+          label: 'Sign out',
+          value: '/logout',
+        },
+      ]
+    }
 
     return {
-      userProfileDropdownRef,
+      isAuthenticated,
       logout: () => {
         logout({ returnTo: "http://localhost:5173/logout" });
       },
+      menuItems
     };
   },
 });
 </script>
 <template>
-  <!--
-    Dropdown menu, show/hide based on menu state.
-
-    Entering: "transition ease-out duration-100"
-    From: "transform opacity-0 scale-95"
-    To: "transform opacity-100 scale-100"
-    Leaving: "transition ease-in duration-75"
-    From: "transform opacity-100 scale-100"
-    To: "transform opacity-0 scale-95"
--->
-  <div
-    v-if="showUserProfileDropdown"
-    ref="userProfileDropdownRef"
-    class="
-      origin-top-right
-      absolute
-      right-0
-      mt-2
-      w-48
-      rounded-md
-      shadow-lg
-      py-1
-      bg-white
-      ring-1 ring-black ring-opacity-5
-      focus:outline-none
-      z-10
-    "
-    role="menu"
-    aria-orientation="vertical"
-    aria-labelledby="user-menu-button"
-    tabindex="-1"
+  <MenuButton
+    :items="menuItems"
   >
-    <router-link
-      to="/myProfile"
-      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      role="menuitem"
-      tabindex="-1"
-      id="user-menu-item-0"
-      >My Profile</router-link
-    >
-    <!-- <router-link
-      to="settings"
-      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      role="menuitem"
-      tabindex="-1"
-      id="user-menu-item-1"
-      >Settings</router-link
-    > -->
-    <router-link
-      to="/logout"
-      @click="logout"
-      class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-      role="menuitem"
-      tabindex="-1"
-      id="user-menu-item-2"
-      >Sign out</router-link
-    >
-  </div>
+<ProfileAvatar />
+</MenuButton>
 </template>
