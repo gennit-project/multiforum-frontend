@@ -247,7 +247,7 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
-    const { lgAndDown, lgAndUp } = useDisplay();
+    const { lgAndDown, lgAndUp, mdAndDown } = useDisplay();
 
     return {
       channelId,
@@ -262,6 +262,7 @@ export default defineComponent({
       lgAndDown,
       lgAndUp,
       loadMore,
+      mdAndDown,
       previewIsOpen,
       reachedEndOfResults,
       refetchDiscussions,
@@ -324,7 +325,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div :class="[ lgAndUp ? 'px-8' : 'px-4']">
 
     <ErrorBanner
       class="mx-auto max-w-5xl"
@@ -417,7 +418,7 @@ export default defineComponent({
             />
             <div class="px-4" v-if="discussionLoading">Loading...</div>
             <DiscussionPreview
-              v-else-if="lgAndDown"
+              v-else-if="mdAndDown"
               :isOpen="previewIsOpen"
               @closePreview="closePreview"
             />
