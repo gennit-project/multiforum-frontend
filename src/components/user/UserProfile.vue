@@ -28,7 +28,6 @@ export default defineComponent({
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
         return "";
       }
-      console.log(localModProfileNameResult.value)
       return localModProfileNameResult.value.modProfileName;
     });
 
@@ -57,7 +56,6 @@ export default defineComponent({
         return null
       }
       if (result.value && result.value.users.length > 0) {
-        console.log({user: result.value.users[0]})
         return result.value.users[0]
       }
       return null
@@ -170,14 +168,15 @@ export default defineComponent({
       
 
       <!-- Tabs -->
-      <div class="mt-6 sm:mt-2 2xl:mt-5">
-        <div class="border-b border-gray-200">
+      <div class="mt-6 sm:mt-2 2xl:mt-5 bg-white">
+        <div class="border-b border-gray-200 bg-gray-100">
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-              <a
+              <router-link
                 v-for="tab in tabs"
+
                 :key="tab.name"
-                :href="`${route.path}/${tab.href}`"
+                :to="`/u/${username}/${tab.href}`"
                 :class="[
                   tab.current
                     ? 'border-blue-500 text-gray-900'
@@ -185,10 +184,13 @@ export default defineComponent({
                   'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                 ]"
                 :aria-current="tab.current ? 'page' : undefined"
-                >{{ tab.name }}</a
+                >{{ tab.name }}</router-link
               >
             </nav>
           </div>
+        </div>
+        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
+          <router-view></router-view>
         </div>
       </div>
       </article>

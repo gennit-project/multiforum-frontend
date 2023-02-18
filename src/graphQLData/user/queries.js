@@ -63,8 +63,25 @@ export const GET_USER_COMMENTS = gql`
         createdAt
         updatedAt
         deleted
+        CommentAuthor {
+          ... on User {
+            username
+          }
+        }
         Channel {
           uniqueName
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+        UpvotedByUsers {
+          username
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
+        DownvotedByModerators {
+          displayName
         }
       }
     }

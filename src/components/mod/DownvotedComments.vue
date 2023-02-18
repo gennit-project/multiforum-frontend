@@ -18,7 +18,6 @@ export default defineComponent({
       if (typeof route.params.modId === "string") {
         return route.params.modId;
       }
-      console.log({route})
       return "";
     });
 

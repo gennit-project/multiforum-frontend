@@ -28,6 +28,9 @@ import CommentModHistory from "@/components/comments/CommentModHistory.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
 import DownvotedDiscussions from "@/components/mod/DownvotedDiscussions.vue";
 import DownvotedComments from "@/components/mod/DownvotedComments.vue";
+import UserComments from "@/components/user/UserComments.vue"
+import UserDiscussions from "@/components/user/UserDiscussions.vue"
+import UserEvents from "@/components/user/UserEvents.vue"
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -222,7 +225,33 @@ export const router = createRouter({
     },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
-    { path: "/u/:username", component: UserProfile },
+    { 
+      path: "/u/:username", 
+      component: UserProfile,
+      children: [
+        
+        {
+          name: "UserAuthoredDiscussions",
+          path: "discussions",
+          component: UserDiscussions
+        },
+        {
+          name: "UserPostedEvents",
+          path: "events",
+          component: UserEvents
+        },
+        {
+          name: "UserAuthoredComments",
+          path: "comments",
+          component: UserComments
+        },
+        {
+          name: "UserAuthoredComments",
+          path: "",
+          component: UserComments
+        },
+      ]
+    },
     { 
       path: "/mod/:modId", 
       component: ModProfile,
