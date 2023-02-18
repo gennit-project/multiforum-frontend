@@ -12,7 +12,6 @@ export default defineComponent({
   },
 
   setup() {
-    console.log('i ran')
     const route = useRoute();
 
     const username = computed(() => {
