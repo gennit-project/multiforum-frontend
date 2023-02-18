@@ -44,7 +44,7 @@ export default defineComponent({
           value: `/mod/${props.modName}`,
         },
         {
-          label: 'Sign out',
+          label: 'Sign Out',
           value: '/logout',
         },
       ]

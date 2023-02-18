@@ -26,6 +26,8 @@ import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 import CommentPermalink from "@/components/comments/CommentPermalink.vue";
 import CommentModHistory from "@/components/comments/CommentModHistory.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
+import DownvotedDiscussions from "@/components/mod/DownvotedDiscussions.vue";
+import DownvotedComments from "@/components/mod/DownvotedComments.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -221,7 +223,22 @@ export const router = createRouter({
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
     { path: "/u/:username", component: UserProfile },
-    { path: "/mod/:modId", component: ModProfile},
+    { 
+      path: "/mod/:modId", 
+      component: ModProfile,
+      children: [
+        {
+          name: "ModProfileDownvotedDiscussions",
+          path: "downvoted/discussions",
+          component: DownvotedDiscussions
+        },
+        {
+          name: "ModProfileDownvotedComments",
+          path: "",
+          component: DownvotedComments 
+        }
+      ]
+    },
     { path: "/settings", component: SiteSettings },
     {
       path: "/:catchAll(.*)",

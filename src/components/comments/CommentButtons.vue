@@ -253,7 +253,7 @@ export default defineComponent({
         </template>
       </RequireAuth>
       <span
-        v-if="route.name !== 'DiscussionCommentPermalink'"
+        v-if="route.params.channelId && route.name !== 'DiscussionCommentPermalink'"
         :to="`${route.path}/comments/${commentData.id}`"
         @click="
           $router.push({

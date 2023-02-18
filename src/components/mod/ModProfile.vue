@@ -43,7 +43,7 @@ export default defineComponent({
       tabs: [
         { name: "Downvoted Comments", href: "comments", current: true },
         { name: "Downvoted Discussions", href: "discussions", current: false },
-        { name: "Authored Reports", href: "reports", current: false },
+        // { name: "Authored Reports", href: "reports", current: false },
       ],
     };
   },
@@ -56,13 +56,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-1text-xl font-bold">
+  <div class="flex-1">
     <div v-if="loading">Loading...</div>
     <ErrorBanner :text="error.message" v-else-if="error" :error="error" />
     <div v-else-if="!mod">
       <p class="m-4">Mod profile not found.</p>
     </div>
-    <article v-else>
+    <article v-else >
       <div>
         <div>
           <div
@@ -107,16 +107,15 @@ export default defineComponent({
                 `${mod.DownvotedDiscussionsAggregate.count} downvoted discussions`
               }}
             </li>
-            <li>
+            <!-- <li>
               {{ `${mod.AuthoredReportsAggregate.count} authored reports` }}
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
 
-      <!-- Tabs -->
-      <div class="mt-6 sm:mt-2 2xl:mt-5">
-        <div class="border-b border-gray-200">
+      <div class="mt-6 sm:mt-2 2xl:mt-5 bg-white">
+        <div class="border-b border-gray-200 bg-gray-100">
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <nav class="-mb-px flex space-x-8" aria-label="Tabs">
               <a
@@ -134,6 +133,9 @@ export default defineComponent({
               >
             </nav>
           </div>
+        </div>
+        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
+          <router-view></router-view>
         </div>
       </div>
     </article>

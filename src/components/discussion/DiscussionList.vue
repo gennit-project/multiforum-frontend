@@ -70,15 +70,16 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full">
+  <div class="w-full h-full shadow-md">
     <p v-if="discussions.length === 0" class="px-4">There are no results.</p>
     <p v-else class="sm:px-4">
       Showing {{ discussions.length }} of {{ resultCount }} results
     </p>
+    <div class="h-full bg-white">
     <ul
       v-if="discussions.length > 0"
       role="list"
-      class="relative my-2 bg-white shadow-md rounded border border-1"
+      class="relative my-2 bg-white rounded border border-1"
     >
       <DiscussionListItem
         v-for="discussion in discussions"
@@ -100,5 +101,6 @@ export default defineComponent({
         @loadMore="$emit('loadMore')"
       />
     </div>
+  </div>
   </div>
 </template>

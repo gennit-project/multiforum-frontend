@@ -51,6 +51,73 @@ export const GET_USER = gql`
     }
 }`;
 
+export const GET_USER_COMMENTS = gql`
+  query getUserComments($username: String!) {
+    users(
+      where: {username: $username}
+    ) {
+      username
+      Comments {
+        id
+        text
+        createdAt
+        updatedAt
+        deleted
+        Channel {
+          uniqueName
+        }
+      }
+    }
+  }`
+
+export const GET_USER_DISCUSSIONS = gql`
+  query getUserDiscussions($username: String!) {
+    users(
+      where: {username: $username}
+    ) {
+      username
+      Discussions {
+        id
+        title
+        body
+        createdAt
+        updatedAt
+        deleted
+        Channel {
+          uniqueName
+        }
+      }
+    }
+  }`
+
+export const GET_USER_EVENTS = gql`
+  query getUserEvents($username: String!) {
+    users(
+      where: {username: $username}
+    ) {
+      username
+      Events {
+        id
+        title
+        startTime
+        endTime
+        locationName
+        address
+        virtualEventUrl
+        location {
+          latitude
+          longitude
+        }
+        createdAt
+        updatedAt
+        deleted
+        Channel {
+          uniqueName
+        }
+      }
+    }
+  }`
+
 export const DOES_USER_EXIST = gql`
   query doesUserExist($username: String!) {
     users(where: {

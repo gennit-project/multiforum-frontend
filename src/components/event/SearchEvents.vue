@@ -77,7 +77,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mx-auto">
+  <div>
     <div class="flex justify-center">
       <EventFilterBar
         v-if="route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventPreview' || route.name === 'SearchEventsInChannel'"
