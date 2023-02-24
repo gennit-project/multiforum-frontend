@@ -17,9 +17,7 @@ import CommentButtons from "./CommentButtons.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
-import {
-  GET_LOCAL_USERNAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { modProfileNameVar } from "@/cache";
 
 export default defineComponent({
@@ -68,8 +66,8 @@ export default defineComponent({
       }));
 
     onDoneCreateModProfile((data: any) => {
-      const updatedUser = data.data.updateUsers.users[0]
-      
+      const updatedUser = data.data.updateUsers.users[0];
+
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
     });
@@ -112,6 +110,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    showChannel: {
+      type: Boolean,
+      default: false,
+    }
   },
   methods: {
     createComment(parentCommentId: string) {
@@ -140,7 +142,7 @@ export default defineComponent({
       this.textCopy = text;
     },
     async handleCreateModProfileClick() {
-      await this.createModProfile()
+      await this.createModProfile();
       // modProfileNameVar()
       // this.downvote()
       this.showModProfileModal = false;
@@ -154,7 +156,7 @@ export default defineComponent({
       }
       return `${this.compact ? "" : "posted "}${this.relativeTime(
         this.commentData.createdAt
-      )}`;
+      )}${this.showChannel ? " in c/" + this.commentData.CommentSection.Channel.uniqueName : ""}`;
     },
     editedAtFormatted() {
       if (!this.commentData.updatedAt) {
@@ -226,7 +228,7 @@ export default defineComponent({
                 @hideReplyEditor="showReplyEditor = false"
                 @deleteComment="handleClickDelete"
                 @hideReplies="showReplies = false"
-                @openModProfile="this.showModProfileModal = true;"
+                @openModProfile="this.showModProfileModal = true"
                 @saveEdit="$emit('saveEdit')"
                 @showEditCommentField="showEditCommentField = true"
                 @hideEditCommentField="showEditCommentField = false"

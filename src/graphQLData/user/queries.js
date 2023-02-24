@@ -68,6 +68,12 @@ export const GET_USER_COMMENTS = gql`
             username
           }
         }
+        CommentSection {
+          id
+          Channel {
+            uniqueName
+          }
+        }
         Channel {
           uniqueName
         }
