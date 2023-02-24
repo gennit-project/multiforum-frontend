@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { DiscussionData } from "../../types/discussionTypes";
+import { EventData } from "../../types/eventTypes";
+import { TagData } from "../../types/tagTypes"
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
 // import { CommentSectionData } from "../../types/commentTypes";
@@ -10,8 +11,8 @@ import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.
 export default defineComponent({
   setup() {},
   props: {
-    discussion: {
-      type: Object as PropType<DiscussionData>,
+    event: {
+      type: Object as PropType<EventData>,
       required: true,
     },
     searchInput: {
@@ -39,25 +40,24 @@ export default defineComponent({
     const route = useRoute();
 
     const defaultUniqueName = computed(() => {
-      if (!props.discussion.Channels || !props.discussion.Channels[0]) {
+      if (!props.event.Channels || !props.event.Channels[0]) {
         return "";
       }
-      return props.discussion.Channels[0].uniqueName;
+      return props.event.Channels[0].uniqueName;
     });
     return {
       previewIsOpen: false,
-      defaultUniqueName, //props.discussion.CommentSections[0].Channel.uniqueName,
-      title: props.discussion.title,
-      body: props.discussion.body || "",
-      createdAt: props.discussion.createdAt,
-      relativeTime: relativeTime(props.discussion.createdAt),
-      authorUsername: props.discussion.Author
-        ? props.discussion.Author.username
+      defaultUniqueName, //props.event.CommentSections[0].Channel.uniqueName,
+      title: props.event.title,
+      createdAt: props.event.createdAt,
+      relativeTime: relativeTime(props.event.createdAt),
+      poster: props.event.Poster
+        ? props.event.Poster.username
         : "Deleted",
       // If we are already within the channel, don't show
       // links to cost channels and don't specify which
       // channel the comments are in.
-      tags: props.discussion.Tags.map((tag) => {
+      tags: props.event.Tags.map((tag: TagData) => {
         return tag.text;
       }),
       route,
@@ -65,13 +65,13 @@ export default defineComponent({
   },
   computed: {
     previewLink() {
-      if (!this.discussion) {
+      if (!this.event) {
         return "";
       }
       if (this.isWithinChannel) {
-        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
+        return `/channels/c/${this.defaultUniqueName}/events/search/${this.event.id}`;
       }
-      return `/discussions/search/${this.discussion.id}`;
+      return `/events/search/${this.event.id}`;
     },
   },
   // methods: {
@@ -87,10 +87,10 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative bg-white py-2 cursor-pointer list-none"
+    class="relative bg-white py-2 list-none"
     @click="$emit('openPreview')"
   >
-    <p class="text-lg font-bold cursor-pointer">
+    <p class="text-lg font-bold ">
       <HighlightedSearchTerms :text="title" :search-input="searchInput" />
     </p>
 
@@ -105,16 +105,16 @@ export default defineComponent({
       />
     </p>
     <p class="text-xs font-medium text-slate-600 no-underline">
-      {{ `Posted ${relativeTime} by ${authorUsername}` }}
+      {{ `Posted ${relativeTime} by ${poster}` }}
     </p>
     <div class="text-sm space-x-2 my-2">
       <router-link
         class="underline text-gray-500 hover:text-gray-700"
-        v-for="(channel, i) in discussion.Channels"
+        v-for="(channel, i) in event.Channels"
         :key="i"
-        :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussion.id}`"
+        :to="`/channels/c/${channel.uniqueName}/events/e/${event.id}`"
       >
-      {{ `c/${channel.uniqueName}` }}
+        {{ `c/${channel.uniqueName}` }}
       </router-link>
     </div>
   </li>

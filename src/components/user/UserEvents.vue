@@ -1,14 +1,14 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import { GET_USER_COMMENTS } from "@/graphQLData/user/queries";
+import { GET_USER_EVENTS } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
-import Comment from "@/components/comments/Comment.vue";
+import EventListItemInProfile from "./EventItemInProfile.vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
-  name: "DownvotedComments",
+  name: "DownvotedEvents",
   components: {
-    Comment,
+    EventListItemInProfile,
   },
 
   setup() {
@@ -22,7 +22,7 @@ export default defineComponent({
     });
 
     const { result, loading, error } = useQuery(
-      GET_USER_COMMENTS,
+      GET_USER_EVENTS,
       () => ({
         username: username.value,
       })
@@ -38,16 +38,15 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    events
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">Error</div>
     <div v-else-if="result && result.users.length === 0">No results</div>
-    <Comment
+    <EventListItemInProfile
       v-else-if="result && result.users.length > 0"
-      v-for="comment in result.users[0].Comments"
-      :key="comment.id"
-      :comment-data="comment"
-      :depth="0"
+      v-for="event in result.users[0].Events"
+      :current-channel-id="''"
+      :key="event.id"
+      :event="event"
     />
   </div>
 </template>

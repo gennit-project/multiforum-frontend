@@ -121,7 +121,7 @@ export default defineComponent({
       }));
 
     const loggedInUserUpvoted = computed(() => {
-      if (localUsernameLoading.value || !localUsernameResult.value) {
+      if (localUsernameLoading.value || !localUsernameResult.value || !props.commentData.UpvotedByUsers) {
         return false;
       }
       const match =
@@ -134,7 +134,8 @@ export default defineComponent({
     const loggedInUserDownvoted = computed(() => {
       if (
         localModProfileNameLoading.value ||
-        !localModProfileNameResult.value
+        !localModProfileNameResult.value ||
+        !props.commentData.DownvotedByModerators
       ) {
         return false;
       }

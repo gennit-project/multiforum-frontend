@@ -137,10 +137,16 @@ export const GET_USER_EVENTS = gql`
           latitude
           longitude
         }
+        Poster {
+          username
+        }
+        Tags {
+          text
+        }
         createdAt
         updatedAt
         deleted
-        Channel {
+        Channels {
           uniqueName
         }
       }
