@@ -37,7 +37,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div>discussions
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">Error</div>
     <div v-else-if="result && result.users.length === 0">No results</div>

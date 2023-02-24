@@ -229,7 +229,6 @@ export const router = createRouter({
       path: "/u/:username", 
       component: UserProfile,
       children: [
-        
         {
           name: "UserAuthoredDiscussions",
           path: "discussions",
@@ -243,13 +242,10 @@ export const router = createRouter({
         {
           name: "UserAuthoredComments",
           path: "comments",
+          alias: "",
           component: UserComments
         },
-        {
-          name: "UserAuthoredComments",
-          path: "",
-          component: UserComments
-        },
+
       ]
     },
     { 

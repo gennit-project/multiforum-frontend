@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import ChannelTabButton from "@/components/channel/ChannelTabButton.vue";
+import TabButton from "@/components/generic/TabButton.vue";
 
 export default defineComponent({
   name: "channelTabs",
   components: {
-    ChannelTabButton,
+    TabButton,
   },
   props: {
     route: {
@@ -73,17 +73,17 @@ export default defineComponent({
         class="-mb-px text-lg max-w-7xl space-x-8 px-4 lg:px-12"
         aria-label="Tabs"
       >
-        <ChannelTabButton 
+        <TabButton 
           :to="tabRoutes.discussions" 
           :label="'Discussions'"
           :active="route.path.includes('discussions')"
         />
-        <ChannelTabButton 
+        <TabButton 
           :to="tabRoutes.events" 
           :label="'Events'" 
           :active="route.path.includes('events')"
         />
-        <ChannelTabButton
+        <TabButton
           :to="tabRoutes.about"
           :label="'About'"
           :active="route.path.includes('about')"

@@ -2,16 +2,16 @@
 import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 import { GET_USER } from "@/graphQLData/user/queries";
-import {
-  GET_LOCAL_MOD_PROFILE_NAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import ProfileAvatar from "./ProfileAvatar.vue";
 import { relativeTime } from "@/utils/dateTimeUtils";
+import TabButton from "@/components/generic/TabButton.vue";
 
 export default defineComponent({
   components: {
+    TabButton,
     ErrorBanner,
     ProfileAvatar,
   },
@@ -32,10 +32,10 @@ export default defineComponent({
     });
 
     const username = computed(() => {
-      if (typeof route.params.username === 'string') {
-        return route.params.username
+      if (typeof route.params.username === "string") {
+        return route.params.username;
       }
-      return ''
+      return "";
     });
 
     const { result, loading, error } = useQuery(GET_USER, () => ({
@@ -53,13 +53,13 @@ export default defineComponent({
 
     const user = computed(() => {
       if (loading.value || error.value) {
-        return null
+        return null;
       }
       if (result.value && result.value.users.length > 0) {
-        return result.value.users[0]
+        return result.value.users[0];
       }
-      return null
-    })
+      return null;
+    });
 
     return {
       error,
@@ -71,16 +71,15 @@ export default defineComponent({
       route,
       tabs: [
         { name: "Comments", href: "comments", current: true },
-        { name: "Discussions", href:"discussions", current: false },
+        { name: "Discussions", href: "discussions", current: false },
         { name: "Events", href: "events", current: false },
         // { name: 'Calendar', href: '#', current: false },
         // { name: 'Recognition', href: '#', current: false },
       ],
       user,
-      username
+      username,
     };
   },
-
 });
 </script>
 
@@ -91,108 +90,95 @@ export default defineComponent({
     <div v-else-if="!user">
       <p class="mt-4">User not found.</p>
     </div>
-    <main v-else >
-      <article class="relative
-        z-0
-        flex-1
-        overflow-y-auto
-        focus:outline-none
-        xl:order-last">
-      <div>
+    <main v-else>
+      <article
+        class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
+      >
         <div>
-          <div
-            class="h-32 w-full object-cover lg:h-48 user-background"
-            alt="background pattern"
-          />
-        </div>
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
-            <div  class="flex">
-              <img
-                v-if="user.picture"
-                class="
-                  h-24
-                  w-24
-                  rounded-full
-                  ring-4 ring-white
-                  sm:h-32 sm:w-32
-                "
-                :src="user.picture"
-                alt="User profile picture"
-              />
-              <ProfileAvatar v-else :user="user" class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32"/>
-            </div>
+          <div>
             <div
-              class="
-                mt-6
-                sm:flex
-                sm:min-w-0
-                sm:flex-1
-                sm:items-center
-                sm:justify-end
-                sm:space-x-6
-                sm:pb-1
-              "
-            >
-              <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
-                <h1 class="truncate text-2xl sm:mt-10 mb-2 font-bold text-gray-900">
-                  {{
-                    username }}
-                </h1>
-                {{ `Created ${relativeTime(user.createdAt)}` }}
+              class="h-32 w-full object-cover lg:h-48 user-background"
+              alt="background pattern"
+            />
+          </div>
+          <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
+              <div class="flex">
+                <img
+                  v-if="user.picture"
+                  class="h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32"
+                  :src="user.picture"
+                  alt="User profile picture"
+                />
+                <ProfileAvatar
+                  v-else
+                  :user="user"
+                  class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32"
+                />
+              </div>
+              <div
+                class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
+              >
+                <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
+                  <h1
+                    class="truncate text-2xl sm:mt-10 mb-2 font-bold text-gray-900"
+                  >
+                    {{ username }}
+                  </h1>
+                  {{ `Created ${relativeTime(user.createdAt)}` }}
+                </div>
               </div>
             </div>
-          </div>
-          <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
-            <h1 class="truncate text-2xl mb-2 sm:mt-10 font-bold text-gray-900">
-              {{ username
-              }}
-            </h1>
-            {{ `Joined ${relativeTime(user.createdAt)}` }}
-          </div>
-          <ul class="m-4 list-disc">
-            <li>
-              {{ `${user.CommentsAggregate.count} comments` }}
-            </li>
-            <li>
-              {{ `${user.DiscussionsAggregate.count} discussions` }}
-            </li>
-            <li>
-              {{ `${user.EventsAggregate.count} events` }}
-            </li>
-          </ul>
-          <router-link class="underline text-sm text-gray-500" v-if="loggedInUserModName" :to="`/mod/${loggedInUserModName}`">Go to mod profile</router-link>
-        </div>
-        
-      </div>
-      
-
-      <!-- Tabs -->
-      <div class="mt-6 sm:mt-2 2xl:mt-5 bg-white">
-        <div class="border-b border-gray-200 bg-gray-100">
-          <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-              <router-link
-                v-for="tab in tabs"
-
-                :key="tab.name"
-                :to="`/u/${username}/${tab.href}`"
-                :class="[
-                  tab.current
-                    ? 'border-blue-500 text-gray-900'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300',
-                  'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
-                ]"
-                :aria-current="tab.current ? 'page' : undefined"
-                >{{ tab.name }}</router-link
+            <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
+              <h1
+                class="truncate text-2xl mb-2 sm:mt-10 font-bold text-gray-900"
               >
-            </nav>
+                {{ username }}
+              </h1>
+              {{ `Joined ${relativeTime(user.createdAt)}` }}
+            </div>
+            <ul class="m-4 list-disc">
+              <li>
+                {{ `${user.CommentsAggregate.count} comments` }}
+              </li>
+              <li>
+                {{ `${user.DiscussionsAggregate.count} discussions` }}
+              </li>
+              <li>
+                {{ `${user.EventsAggregate.count} events` }}
+              </li>
+            </ul>
+            <router-link
+              class="underline text-sm text-gray-500"
+              v-if="loggedInUserModName"
+              :to="`/mod/${loggedInUserModName}`"
+              >Go to mod profile</router-link
+            >
           </div>
         </div>
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
-          <router-view></router-view>
+
+        <!-- Tabs -->
+        <div class="mt-6 sm:mt-2 2xl:mt-5 bg-white">
+          <div class="border-b border-gray-200 bg-gray-100">
+            <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+              <nav
+                class="-mb-px text-lg max-w-7xl space-x-8"
+                aria-label="Tabs"
+              >
+                <TabButton
+                  v-for="tab in tabs"
+                  :key="tab.name"
+                  :to="`/u/${username}/${tab.href}`"
+                  :label="tab.name"
+                  :active="route.path.includes(tab.name.toLowerCase())"
+                />
+              </nav>
+            </div>
+          </div>
+          <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
+            <router-view></router-view>
+          </div>
         </div>
-      </div>
       </article>
     </main>
   </div>

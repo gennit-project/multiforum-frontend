@@ -3,14 +3,12 @@ import ChannelTabs from "./ChannelTabs.vue";
 // import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
-import SearchEvents from "../event/SearchEvents.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
     // ChannelIcon,
     ChannelTabs,
-    SearchEvents
   },
   setup() {
     const route = ref(useRoute())
