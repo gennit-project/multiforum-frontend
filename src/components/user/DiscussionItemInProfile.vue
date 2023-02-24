@@ -14,10 +14,6 @@ export default defineComponent({
       type: Object as PropType<DiscussionData>,
       required: true,
     },
-    currentChannelId: {
-      type: String,
-      required: true,
-    },
     searchInput: {
       type: String,
       default: "",
@@ -42,22 +38,9 @@ export default defineComponent({
   data(props) {
     const route = useRoute();
 
-    const channelIdInParams = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
-
-    const discussionIdInParams = computed(() => {
-      if (typeof route.params.discussionId === "string") {
-        return route.params.discussionId;
-      }
-      return "";
-    });
     const defaultUniqueName = computed(() => {
-      if (channelIdInParams.value) {
-        return channelIdInParams.value;
+      if (!props.discussion.Channels || !props.discussion.Channels[0]) {
+        return "";
       }
       return props.discussion.Channels[0].uniqueName;
     });
@@ -66,19 +49,18 @@ export default defineComponent({
       defaultUniqueName, //props.discussion.CommentSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body || "",
-      channelIdInParams,
       createdAt: props.discussion.createdAt,
-      discussionIdInParams,
       relativeTime: relativeTime(props.discussion.createdAt),
-      authorUsername: props.discussion.Author ? props.discussion.Author.username : "Deleted",
+      authorUsername: props.discussion.Author
+        ? props.discussion.Author.username
+        : "Deleted",
       // If we are already within the channel, don't show
       // links to cost channels and don't specify which
       // channel the comments are in.
-      isWithinChannel: props.currentChannelId ? true : false,
       tags: props.discussion.Tags.map((tag) => {
         return tag.text;
       }),
-      route
+      route,
     };
   },
   computed: {
@@ -105,46 +87,40 @@ export default defineComponent({
 
 <template>
   <li
-    :class="[
-      discussion.id === discussionIdInParams
-        ? 'border-blue-500'
-        : 'border-blue-200',
-      channelIdInParams ? 'hover:bg-gray-100' : '',
-    ]"
-    class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 lg:px-12 cursor-pointer"
+    class="relative bg-white py-2 cursor-pointer list-none"
     @click="$emit('openPreview')"
   >
-    <router-link :to="previewLink">
-      <p class="text-lg font-bold cursor-pointer">
-        <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-      </p>
+    <p class="text-lg font-bold cursor-pointer">
+      <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+    </p>
 
-      <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
-        <Tag
-          class="my-1"
-          :active="selectedTags.includes(tag)"
-          :key="tag"
-          v-for="tag in tags"
-          :tag="tag"
-          @click="$emit('filterByTag', tag)"
-        />
-      </p>
-      <p class="text-xs font-medium text-slate-600 no-underline">
-        {{ `Posted ${relativeTime} by ${authorUsername}` }}
-      </p>
-      <div class="text-sm" v-if="!isWithinChannel">
+    <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+      <Tag
+        class="my-1"
+        :active="selectedTags.includes(tag)"
+        :key="tag"
+        v-for="tag in tags"
+        :tag="tag"
+        @click="$emit('filterByTag', tag)"
+      />
+    </p>
+    <p class="text-xs font-medium text-slate-600 no-underline">
+      {{ `Posted ${relativeTime} by ${authorUsername}` }}
+    </p>
+    <div class="text-sm">
+      <router-link
+        v-for="(channel, i) in discussion.Channels"
+        :key="i"
+        :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussion.id}`"
+      >
         <Tag
           class="my-1"
           :active="selectedChannels.includes(channel.uniqueName)"
-          :key="i"
           :channel-mode="true"
-          v-for="(channel, i) in discussion.Channels"
           :tag="channel.uniqueName"
-          @click="$emit('filterByChannel', channel.uniqueName)"
         />
-      </div>
-      
-    </router-link>
+      </router-link>
+    </div>
   </li>
 </template>
 <style>

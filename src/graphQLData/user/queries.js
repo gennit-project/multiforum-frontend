@@ -95,13 +95,19 @@ export const GET_USER_DISCUSSIONS = gql`
       username
       Discussions {
         id
+        Author {
+          username
+        }
         title
         body
         createdAt
         updatedAt
         deleted
-        Channel {
+        Channels {
           uniqueName
+        }
+        Tags {
+          text
         }
       }
     }
