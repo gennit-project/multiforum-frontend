@@ -91,18 +91,15 @@ export default defineComponent({
     class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 space-x-2 cursor-pointer flex"
     @click="$emit('openPreview')"
   >
-    <VTooltip class="inline-flex mt-1 mr-1">
-      <span
-        >{{
-          (discussion.UpvotedByUsersAggregate?.count || 0) -
-          (discussion.DownvotedByModeratorsAggregate?.count || 0)
-        }}
-        </span
-      >
-      <template #popper>
+    <span class="mt-1 mr-2"
+      >{{
+        (discussion.UpvotedByUsersAggregate?.count || 0) -
+        (discussion.DownvotedByModeratorsAggregate?.count || 0)
+      }}
+      <v-tooltip activator="parent" location="top">
         <span>{{ "Sum of votes in all channels, deduped by user" }}</span>
-      </template>
-    </VTooltip>
+      </v-tooltip>
+    </span>
 
     <router-link :to="previewLink">
       <p class="text-lg font-bold cursor-pointer">

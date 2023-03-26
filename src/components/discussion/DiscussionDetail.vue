@@ -620,14 +620,14 @@ export default defineComponent({
                   </RequireAuth>
 
                   <span
-                    v-if="route.name !== 'DiscussionDetail'"
+                    v-if="route.name !== 'DiscussionDetail' && (channelId || channelLinks[0])"
                     class="ml-1 mr-1"
                     >&#8226;</span
                   >
                   <router-link
-                    v-if="route.name !== 'DiscussionDetail' && channelLinks[0]"
+                    v-if="route.name !== 'DiscussionDetail' && (channelId || channelLinks[0])"
                     class="underline font-medium text-gray-900 cursor-pointer"
-                    :to="`/channels/c/${channelLinks[0].uniqueName}/discussions/d/${discussionId}`"
+                    :to="`/channels/c/${channelLinks[0] ? channelLinks[0] : channelId}/discussions/d/${discussionId}`"
                     >Permalink</router-link
                   >
                 </div>

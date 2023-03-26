@@ -22,7 +22,6 @@ export default defineComponent({
     },
   },
   setup() {
-    console.log("vote buttons ran");
     return {};
   },
   methods: {

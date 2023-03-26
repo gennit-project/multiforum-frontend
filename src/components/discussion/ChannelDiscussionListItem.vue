@@ -101,19 +101,10 @@ export default defineComponent({
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
-    if (localModProfileNameError){
-      console.log("error getting local mod profile name", localModProfileNameError)
-    }
-
     const loggedInUserModName = computed(() => {
-      if (
-        isLoading ||
-        error ||
-        !isAuthenticated
-      ) {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
         return "";
       }
-      console.log("found mod name ", localModProfileNameResult.value)
       return localModProfileNameResult.value.modProfileName;
     });
 
@@ -216,7 +207,6 @@ export default defineComponent({
         },
 
         update: (cache: any, result: any) => {
-          console.log("result - create comment section complete", result);
           cache.modify({
             fields: {
               discussions() {
@@ -286,24 +276,6 @@ export default defineComponent({
       return match;
     });
 
-    console.log({
-      discussionUpvotes: props.discussion.UpvotedByUsersAggregate?.count,
-      discussionDownvotes:
-        props.discussion.DownvotedByModeratorsAggregate?.count,
-      commentSectionUpvotes: props.discussion.CommentSections[0]
-        ? props.discussion.CommentSections[0].UpvotedByUsersAggregate?.count
-        : 0,
-      commentSectionDownvotes: props.discussion.CommentSections[0]
-        ? props.discussion.CommentSections[0].DownvotedByModeratorsAggregate
-            ?.count
-        : 0,
-    });
-
-    console.log({
-      discussion: props.discussion,
-      commentSection: props.commentSection,
-    });
-
     return {
       createCommentSection,
       createCommentSectionError,
@@ -359,18 +331,13 @@ export default defineComponent({
   inheritAttrs: false,
   methods: {
     handleClickUp() {
-      console.log("clicked upvote");
       if (this.loggedInUserUpvoted) {
-        console.log("undoing upvote");
         this.undoUpvote();
       } else {
-        console.log("upvoting");
         this.upvote();
       }
     },
     handleClickDown() {
-      console.log("clicked downvote");
-      console.log("this.loggedInUserModName", this.loggedInUserModName)
       if (this.loggedInUserModName) {
         if (!this.loggedInUserDownvoted) {
           this.$emit("downvote");
@@ -386,38 +353,30 @@ export default defineComponent({
       }
     },
     createCommentSectionIfNoneExists() {
-      console.log("createCommentSectionIfNoneExists");
       if (this.discussion.CommentSections.length > 0) {
-        console.log("commentSection exists");
         return;
       }
-      console.log("commentSection does not exist");
       this.createCommentSection();
     },
     downvote() {
-      console.log("downvote ran");
       // Note: Voting in the sitewide discussion page is not allowed.
       // We only collect the sitewide votes for ranking purposes. It basically
       // shows the sum of all votes in all channels.
-
       this.downvoteDiscussion(); // counts toward sitewide ranking
       this.createCommentSectionIfNoneExists();
       this.downvoteCommentSection(); // counts toward ranking within channel
     },
     upvote() {
-      console.log("upvote ran");
       this.upvoteDiscussion(); // counts toward sitewide ranking
       this.createCommentSectionIfNoneExists();
       this.upvoteCommentSection(); // counts toward ranking within channel
     },
     undoUpvote() {
-      console.log("undo upvote ran");
       this.undoUpvoteDiscussion(); // counts toward sitewide ranking
       this.createCommentSectionIfNoneExists();
       this.undoUpvoteCommentSection(); // counts toward ranking within channel
     },
     undoDownvote() {
-      console.log("undo downvote ran");
       this.undoDownvoteDiscussion(); // counts toward sitewide ranking
       this.createCommentSectionIfNoneExists();
       this.undoDownvoteCommentSection(); // counts toward ranking within channel
@@ -437,6 +396,7 @@ export default defineComponent({
     @click="$emit('openPreview')"
   >
     <VoteButtons
+      class="mt-2 mr-1"
       :downvote-count="
         commentSection.DownvotedByModeratorsAggregate?.count || 0
       "
