@@ -19,6 +19,8 @@ import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { modProfileNameVar } from "@/cache";
+import { getLinksInText } from "../utils";
+import LinkPreview from "../generic/LinkPreview.vue";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -26,6 +28,7 @@ export default defineComponent({
     CommentButtons,
     ChildComments,
     EmojiExtension,
+    LinkPreview,
     MdEditor,
     TextEditor,
     UserCircle,
@@ -72,10 +75,18 @@ export default defineComponent({
       modProfileNameVar(newModProfileName);
     });
 
+    const linksInText = computed(() => {
+      if (!props.commentData || !props.commentData.text) {
+        return [];
+      }
+      return getLinksInText(props.commentData.text);
+    });
+
     return {
       createModProfile,
       editorId: "texteditor",
       highlight: ref(false),
+      linksInText,
       relativeTime,
       replyCount,
       showEditCommentField: ref(false),
@@ -234,6 +245,15 @@ export default defineComponent({
                 @hideEditCommentField="showEditCommentField = false"
                 @showReplies="showReplies = true"
                 @updateNewComment="updateNewComment"
+              />
+              <h2 v-if="linksInText && linksInText.length > 0" class="text-lg mb-2">
+                Link Previews
+              </h2>
+              <LinkPreview
+                v-for="(link, i) in linksInText"
+                :key="i"
+                class="mb-2"
+                :url="link"
               />
               <div id="childComments" v-if="replyCount > 0 && showReplies">
                 <ChildComments

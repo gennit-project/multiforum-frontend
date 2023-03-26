@@ -30,7 +30,9 @@ import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import { useDisplay } from "vuetify";
 import { ChannelData } from "@/types/channelTypes";
-import ChannelLink from "./ChannelLink.vue"
+import ChannelLink from "./ChannelLink.vue";
+import LinkPreview from "../generic/LinkPreview.vue";
+import { getLinksInText } from "@/components/utils";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -42,6 +44,7 @@ export default defineComponent({
     ErrorBanner,
     GenericButton,
     LeftArrowIcon,
+    LinkPreview,
     MdEditor,
     PrimaryButton,
     ProfileAvatar,
@@ -414,6 +417,14 @@ export default defineComponent({
       });
     });
 
+    const linksInBody = computed(() => {
+      if (!discussion.value) {
+        return [];
+      }
+      const links = getLinksInText(discussion.value.body);
+      return links;
+    });
+
     const { lgAndUp, mdAndUp } = useDisplay();
 
     return {
@@ -438,6 +449,7 @@ export default defineComponent({
       editedAt,
       discussion,
       lgAndUp,
+      linksInBody,
       mdAndUp,
       relativeTime,
       route,
@@ -480,7 +492,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex justify-center" :class="route.name == 'DiscussionDetail' ? 'px-4' : ''">
+  <div
+    class="flex justify-center"
+    :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"
+  >
     <div
       :class="
         route.name === 'DiscussionDetail' && mdAndUp
@@ -490,7 +505,7 @@ export default defineComponent({
       class="top-10 pb-36 my-2 space-y-2"
     >
       <h2
-      v-if="route.name !== 'DiscussionDetail'"
+        v-if="route.name !== 'DiscussionDetail'"
         class="pl-4 text-gray-400 text-sm"
       >
         Preview
@@ -701,14 +716,24 @@ export default defineComponent({
                     :comment-count="getCommentCount(channelId)"
                     :discussionId="discussionId"
                   />
-                  <ChannelLink 
-                    v-for="channel in channelLinks" :key="channel.uniqueName"
-                    :channelId="channel.uniqueName" 
+                  <ChannelLink
+                    v-for="channel in channelLinks"
+                    :key="channel.uniqueName"
+                    :channelId="channel.uniqueName"
                     :comment-count="getCommentCount(channel.uniqueName)"
                     :discussionId="discussionId"
                   />
                 </ul>
               </div>
+              <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">
+                Link Previews
+              </h2>
+              <LinkPreview
+                v-for="(link, i) in linksInBody"
+                :key="i"
+                class="mb-2"
+                :url="link"
+              />
               <CommentSection
                 class="mb-2"
                 ref="commentSectionRef"

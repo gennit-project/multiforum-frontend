@@ -273,6 +273,7 @@ export default defineComponent({
   inheritAttrs: false,
   methods: {
     downvote() {
+        console.log("clicked downvote")
       // Note: Voting in the sitewide discussion page is not allowed.
       // We only collect the sitewide votes for ranking purposes. It basically
       // shows the sum of all votes in all channels.
@@ -280,14 +281,17 @@ export default defineComponent({
       this.downvoteCommentSection(); // counts toward ranking within channel
     },
     upvote() {
+        console.log("clicked upvote")
       this.upvoteDiscussion(); // counts toward sitewide ranking
       this.upvoteCommentSection(); // counts toward ranking within channel
     },
     undoUpvote() {
+        console.log("clicked undo upvote")
       this.undoUpvoteDiscussion(); // counts toward sitewide ranking
       this.undoUpvoteCommentSection(); // counts toward ranking within channel
     },
     undoDownvote() {
+        console.log("clicked undo downvote")
       this.undoDownvoteDiscussion(); // counts toward sitewide ranking
       this.undoDownvoteCommentSection(); // counts toward ranking within channel
     },

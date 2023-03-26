@@ -8,6 +8,12 @@ export const getTagLabel = (selectedTags: Array<String>) => {
   return `Tags (${selectedTags.length})`
 };
 
+export const getLinksInText = (text: string = '') => {
+  return text.match(
+    /https?:\/\/[^\s]+/g
+  ) as string[];
+}
+
 export const getChannelLabel = (selectedChannels: Array<string>) => {
     if (selectedChannels.length === 0) {
       return "Channels"
