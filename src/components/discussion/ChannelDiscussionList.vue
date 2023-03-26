@@ -27,6 +27,7 @@ export default defineComponent({
 
     const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
       query getDiscussions(
+        $channelId: String
         $where: DiscussionWhere
         $resultsOrder: [DiscussionSort!]
         $offset: Int
@@ -55,14 +56,26 @@ export default defineComponent({
           ChannelsAggregate {
             count
           }
-          CommentSections {
+          UpvotedByUsersAggregate {
+            count
+          }
+          DownvotedByModeratorsAggregate {
+            count
+          }
+          CommentSections(where: { Channel: { uniqueName: $channelId } }) {
             id
             __typename
             UpvotedByUsersAggregate {
               count
             }
+            UpvotedByUsers {
+              username
+            }
             DownvotedByModeratorsAggregate {
               count
+            }
+            DownvotedByModerators {
+              displayName
             }
             OriginalPost {
               ... on Discussion {
@@ -230,9 +243,7 @@ export default defineComponent({
         Showing {{ discussionResult.discussions.length }} of
         {{ resultCount }} results
       </p>
-      <div
-        class="h-full bg-white"
-      >
+      <div class="h-full bg-white">
         <ul role="list" class="relative my-2 bg-white rounded border border-1">
           <ChannelDiscussionListItem
             v-for="discussion in discussionResult.discussions"

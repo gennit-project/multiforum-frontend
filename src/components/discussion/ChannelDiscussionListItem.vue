@@ -198,6 +198,19 @@ export default defineComponent({
       return match;
     });
 
+    console.log({
+      discussionUpvotes: props.discussion.UpvotedByUsersAggregate?.count,
+      discussionDownvotes: props.discussion.DownvotedByModeratorsAggregate?.count,
+      commentSectionUpvotes:
+        props.commentSection.UpvotedByUsersAggregate?.count,
+      commentSectionDownvotes: props.commentSection.DownvotedByModeratorsAggregate?.count,
+    })
+
+    console.log({
+      discussion: props.discussion,
+      commentSection: props.commentSection
+    })
+
     return {
       loggedInUserUpvoted,
       loggedInUserDownvoted,
@@ -310,6 +323,7 @@ export default defineComponent({
     @click="$emit('openPreview')"
   >
     <VoteButtons
+      v-if="commentSection"
       :downvote-count="
         commentSection.DownvotedByModeratorsAggregate?.count || 0
       "

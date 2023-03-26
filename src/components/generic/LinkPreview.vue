@@ -13,6 +13,7 @@ export default {
       title: "",
       description: "",
       imageUrl: "",
+      htmlInferredImages: [],
       apiKey: config.openGraphApiKey,
       showImage: true,
     };
@@ -31,6 +32,10 @@ export default {
           this.title = data.hybridGraph.title || data.hybridGraph.url;
           this.description = data.hybridGraph.description || "";
           this.imageUrl = data.hybridGraph.image || "";
+
+          if (data.htmlInferred.images) {
+            this.htmlInferredImages = data.htmlInferred.images;
+          }
         })
         .catch((error) => console.error(error));
     },

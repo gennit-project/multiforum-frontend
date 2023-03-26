@@ -13,7 +13,7 @@ export const getLinksInText = (text: string) => {
     return [];
   }
   const matches = text.match(
-    /https?:\/\/[^\s]+/g
+    /https?:\/\/(?!(?:.*\.(?:jpe?g|gif|png)))[^\s]+/g
   ) as string[];
   if (matches) {
     return matches;
