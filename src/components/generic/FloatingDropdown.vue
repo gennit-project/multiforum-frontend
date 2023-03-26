@@ -9,7 +9,7 @@ export default defineComponent({
 </script>
 
 <template>
-<VDropdown
+<v-menu
   :distance="6"
 >
   <!-- This will be the popover reference (for the events and position) -->
@@ -21,6 +21,6 @@ export default defineComponent({
   <template #popper>
     <slot name="content"/>
   </template>
-</VDropdown>
+</v-menu>
 </template>
 

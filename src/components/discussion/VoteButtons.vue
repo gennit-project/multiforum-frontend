@@ -1,14 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import UpArrowIcon from "../icons/UpArrowIcon.vue";
-import DownArrowIcon from "../icons/DownArrowIcon.vue";
 
 export default defineComponent({
   name: "VoteComponent",
-  components: {
-    DownArrowIcon,
-    UpArrowIcon,
-  },
   props: {
     downvoteActive: {
       type: Boolean,
@@ -26,70 +20,50 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
-    hasModProfile: {
-      type: Boolean,
-      default: false,
-    },
   },
   setup() {
+    console.log("vote buttons ran");
     return {};
   },
   methods: {
-    clickDownvote() {
-      if (this.hasModProfile) {
-        if (!this.downvoteActive) {
-          this.$emit("downvote");
-
-          if (this.upvoteActive) {
-            this.$emit("undoUpvote");
-          }
-        } else {
-          this.$emit("undoDownvote");
-        }
-      } else {
-        // Create mod profile, then downvote comment
-        this.$emit("openModProfile");
-      }
+    clickDown() {
+      this.$emit("clickDown");
     },
-    clickUpvote() {
-      if (!this.upvoteActive) {
-        this.$emit("upvote");
-
-        if (this.downvoteActive) {
-          this.$emit("undoDownvote");
-        }
-      } else {
-        this.$emit("undoUpvote");
-      }
+    clickUp() {
+      this.$emit("clickUp");
     },
   },
 });
 </script>
 <template>
   <div class="flex flex-col">
-    <VTooltip class="inline-flex">
-      <UpArrowIcon
-        class="h-6 w-6 hover:text-black cursor-pointer"
+    <span class="inline-flex">
+      <i
+        class="fa-solid fa-sort-up w-4 hover:text-black cursor-pointer"
         :class="[upvoteActive ? 'text-black' : 'text-gray-400']"
-        @click="clickUpvote"
-      />
-      <template #popper>This post should be more visible to others</template>
-    </VTooltip>
+        @click="clickUp"
+      ></i>
+      <v-tooltip activator="parent" location="top"
+        >This post should be more visible to others</v-tooltip
+      >
+    </span>
 
     <span
-      class="flex justify-center"
+      class="inline-flex "
       :class="downvoteActive ? 'text-black' : 'text-gray-400'"
       >{{ upvoteCount - downvoteCount }}</span
     >
 
-    <VTooltip>
-      <DownArrowIcon
-        class="h-6 w-6 hover:text-black cursor-pointer"
+    <span class="inline-flex">
+      <i
+        class="fa-solid fa-sort-down  w-4 hover:text-black cursor-pointer"
         :class="[downvoteActive ? 'text-black' : 'text-gray-400']"
-        @click="clickDownvote"
-      />
-      <template #popper>This post should be less visible to others</template>
-    </VTooltip>
+        @click="clickDown"
+      ></i>
+      <v-tooltip activator="parent" location="top"
+        >This post should be less visible to others</v-tooltip
+      >
+    </span>
   </div>
 </template>
 <style scoped></style>

@@ -243,6 +243,18 @@ mutation createCommentSection(
       CommentsAggregate {
         count
       }
+      UpvotedByUsers {
+        username
+      }
+      UpvotedByUsersAggregate {
+        count
+      }
+      DownvotedByModerators {
+        displayName
+      }
+      DownvotedByModeratorsAggregate {
+        count
+      }
       Comments {
         id
         text

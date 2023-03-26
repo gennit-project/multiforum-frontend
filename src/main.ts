@@ -9,18 +9,24 @@ import { onError } from "@apollo/client/link/error";
 import { logErrorMessages } from "@vue/apollo-util";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
-import FloatingVue from "floating-vue";
+// import FloatingVue from "floating-vue";
 import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
 import MdEditor from "md-editor-v3";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import cache from "./cache";
 import { createVuetify } from "vuetify";
-const vuetify = createVuetify();
+import * as components from 'vuetify/components'
+import * as directives from 'vuetify/directives'
 import { createAuth0 } from "@auth0/auth0-vue";
+import '@fortawesome/fontawesome-free/css/all.css';
+
 
 import { faFaceSmile } from "@fortawesome/free-solid-svg-icons";
-
+const vuetify = createVuetify({
+  components,
+  directives,
+})
 library.add(faFaceSmile);
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
@@ -84,7 +90,7 @@ const app = createApp({
 app
   .use(router)
   .use(vuetify)
-  .use(FloatingVue)
+  // .use(FloatingVue)
   .use(MdEditor)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(VueGoogleMaps, {

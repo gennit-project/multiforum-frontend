@@ -16,6 +16,7 @@ import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
 import SearchBar from "../generic/SearchBar.vue";
+import ImageChip from "../generic/ImageChip.vue";
 
 interface Ref<T> {
   value: T;
@@ -27,6 +28,7 @@ export default defineComponent({
     CreateButton,
     ErrorBanner,
     FilterChip,
+    ImageChip,
     PrimaryButton,
     RequireAuth,
     SearchBar,

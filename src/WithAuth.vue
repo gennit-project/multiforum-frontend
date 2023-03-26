@@ -68,6 +68,7 @@ export default defineComponent({
         modProfile = user.ModerationProfile;
 
         if (modProfile) {
+          console.log('setting modProfile', modProfile)
           modProfileName = modProfile.displayName
           modProfileNameVar(modProfileName)
         }

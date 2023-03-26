@@ -11,7 +11,9 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
+import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import {
   DOWNVOTE_DISCUSSION,
   UPVOTE_DISCUSSION,
@@ -71,6 +73,24 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const { isAuthenticated, error, isLoading } = useAuth0();
+    const channelIdInParams = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
+    const discussionIdInParams = computed(() => {
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
+    });
+    const defaultUniqueName = computed(() => {
+      if (channelIdInParams.value) {
+        return channelIdInParams.value;
+      }
+      return props.discussion.Channels[0].uniqueName;
+    });
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
       useQuery(GET_LOCAL_USERNAME);
@@ -81,16 +101,19 @@ export default defineComponent({
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
+    if (localModProfileNameError){
+      console.log("error getting local mod profile name", localModProfileNameError)
+    }
+
     const loggedInUserModName = computed(() => {
       if (
         isLoading ||
         error ||
-        !isAuthenticated ||
-        localModProfileNameLoading.value ||
-        localModProfileNameError.value
+        !isAuthenticated
       ) {
         return "";
       }
+      console.log("found mod name ", localModProfileNameResult.value)
       return localModProfileNameResult.value.modProfileName;
     });
 
@@ -166,6 +189,71 @@ export default defineComponent({
       },
     }));
 
+    const { mutate: createCommentSection, error: createCommentSectionError } =
+      useMutation(CREATE_COMMENT_SECTION, () => ({
+        errorPolicy: "all",
+        variables: {
+          createCommentSectionInput: [
+            {
+              OriginalPost: {
+                Discussion: {
+                  connect: {
+                    where: {
+                      node: {
+                        id: discussionIdInParams.value,
+                      },
+                    },
+                  },
+                },
+              },
+              Channel: {
+                connect: {
+                  where: { node: { uniqueName: channelIdInParams.value } },
+                },
+              },
+            },
+          ],
+        },
+
+        update: (cache: any, result: any) => {
+          console.log("result - create comment section complete", result);
+          cache.modify({
+            fields: {
+              discussions() {
+                const readQueryResult = cache.readQuery({
+                  query: GET_DISCUSSION,
+                  variables: {
+                    id: discussionIdInParams.value,
+                  },
+                });
+                if (readQueryResult) {
+                  const existingDiscussion = readQueryResult.discussions[0];
+                  const newCommentSection =
+                    result.data?.createCommentSections?.commentSections[0];
+                  cache.writeQuery({
+                    query: GET_DISCUSSION,
+                    data: {
+                      discussions: [
+                        {
+                          ...existingDiscussion,
+                          CommentSections: [
+                            ...existingDiscussion.CommentSections,
+                            newCommentSection,
+                          ],
+                        },
+                      ],
+                    },
+                    variables: {
+                      id: discussionIdInParams.value,
+                    },
+                  });
+                }
+              },
+            },
+          });
+        },
+      }));
+
     const loggedInUserUpvoted = computed(() => {
       if (
         localUsernameLoading.value ||
@@ -200,18 +288,27 @@ export default defineComponent({
 
     console.log({
       discussionUpvotes: props.discussion.UpvotedByUsersAggregate?.count,
-      discussionDownvotes: props.discussion.DownvotedByModeratorsAggregate?.count,
-      commentSectionUpvotes:
-        props.commentSection.UpvotedByUsersAggregate?.count,
-      commentSectionDownvotes: props.commentSection.DownvotedByModeratorsAggregate?.count,
-    })
+      discussionDownvotes:
+        props.discussion.DownvotedByModeratorsAggregate?.count,
+      commentSectionUpvotes: props.discussion.CommentSections[0]
+        ? props.discussion.CommentSections[0].UpvotedByUsersAggregate?.count
+        : 0,
+      commentSectionDownvotes: props.discussion.CommentSections[0]
+        ? props.discussion.CommentSections[0].DownvotedByModeratorsAggregate
+            ?.count
+        : 0,
+    });
 
     console.log({
       discussion: props.discussion,
-      commentSection: props.commentSection
-    })
+      commentSection: props.commentSection,
+    });
 
     return {
+      createCommentSection,
+      createCommentSectionError,
+      defaultUniqueName, //props.discussion.CommentSectionSections[0].Channel.uniqueName,
+      discussionIdInParams,
       loggedInUserUpvoted,
       loggedInUserDownvoted,
       loggedInUserModName,
@@ -236,35 +333,11 @@ export default defineComponent({
   },
 
   data(props) {
-    const route = useRoute();
-
-    const channelIdInParams = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
-
-    const discussionIdInParams = computed(() => {
-      if (typeof route.params.discussionId === "string") {
-        return route.params.discussionId;
-      }
-      return "";
-    });
-    const defaultUniqueName = computed(() => {
-      if (channelIdInParams.value) {
-        return channelIdInParams.value;
-      }
-      return props.discussion.Channels[0].uniqueName;
-    });
     return {
       previewIsOpen: false,
-      defaultUniqueName, //props.discussion.CommentSectionSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body || "",
-      channelIdInParams,
       createdAt: props.discussion.createdAt,
-      discussionIdInParams,
       relativeTime: relativeTime(props.discussion.createdAt),
       authorUsername: props.discussion.Author
         ? props.discussion.Author.username
@@ -285,27 +358,68 @@ export default defineComponent({
   },
   inheritAttrs: false,
   methods: {
+    handleClickUp() {
+      console.log("clicked upvote");
+      if (this.loggedInUserUpvoted) {
+        console.log("undoing upvote");
+        this.undoUpvote();
+      } else {
+        console.log("upvoting");
+        this.upvote();
+      }
+    },
+    handleClickDown() {
+      console.log("clicked downvote");
+      console.log("this.loggedInUserModName", this.loggedInUserModName)
+      if (this.loggedInUserModName) {
+        if (!this.loggedInUserDownvoted) {
+          this.$emit("downvote");
+
+          this.downvote()
+        } else {
+          this.$emit("undoDownvote");
+          this.undoDownvote();
+        }
+      } else {
+        // Create mod profile, then downvote comment
+        this.$emit("openModProfile");
+      }
+    },
+    createCommentSectionIfNoneExists() {
+      console.log("createCommentSectionIfNoneExists");
+      if (this.discussion.CommentSections.length > 0) {
+        console.log("commentSection exists");
+        return;
+      }
+      console.log("commentSection does not exist");
+      this.createCommentSection();
+    },
     downvote() {
-        console.log("clicked downvote")
+      console.log("downvote ran");
       // Note: Voting in the sitewide discussion page is not allowed.
       // We only collect the sitewide votes for ranking purposes. It basically
       // shows the sum of all votes in all channels.
+
       this.downvoteDiscussion(); // counts toward sitewide ranking
+      this.createCommentSectionIfNoneExists();
       this.downvoteCommentSection(); // counts toward ranking within channel
     },
     upvote() {
-        console.log("clicked upvote")
+      console.log("upvote ran");
       this.upvoteDiscussion(); // counts toward sitewide ranking
+      this.createCommentSectionIfNoneExists();
       this.upvoteCommentSection(); // counts toward ranking within channel
     },
     undoUpvote() {
-        console.log("clicked undo upvote")
+      console.log("undo upvote ran");
       this.undoUpvoteDiscussion(); // counts toward sitewide ranking
+      this.createCommentSectionIfNoneExists();
       this.undoUpvoteCommentSection(); // counts toward ranking within channel
     },
     undoDownvote() {
-        console.log("clicked undo downvote")
+      console.log("undo downvote ran");
       this.undoDownvoteDiscussion(); // counts toward sitewide ranking
+      this.createCommentSectionIfNoneExists();
       this.undoDownvoteCommentSection(); // counts toward ranking within channel
     },
   },
@@ -323,7 +437,6 @@ export default defineComponent({
     @click="$emit('openPreview')"
   >
     <VoteButtons
-      v-if="commentSection"
       :downvote-count="
         commentSection.DownvotedByModeratorsAggregate?.count || 0
       "
@@ -331,11 +444,8 @@ export default defineComponent({
       :upvote-active="loggedInUserUpvoted"
       :downvote-active="loggedInUserDownvoted"
       :has-mod-profile="!!loggedInUserModName"
-      @downvote="downvote"
-      @upvote="upvote"
-      @openModProfile="$emit('openModProfile')"
-      @undoUpvote="undoUpvote"
-      @undoDownvote="undoDownvote"
+      @clickUp="handleClickUp"
+      @clickDown="handleClickDown"
     />
     <router-link :to="previewLink">
       <p class="text-lg font-bold cursor-pointer">

@@ -22,7 +22,7 @@ export default defineComponent({
 
 <template>
   <div class="inline-flex items-center">
-    <VDropdown>
+    <v-menu>
       <button
         :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
         class="
@@ -49,6 +49,6 @@ export default defineComponent({
       <template #popper >
         <slot name="content"></slot>
       </template>
-    </VDropdown>
+    </v-menu>
   </div>
 </template>
