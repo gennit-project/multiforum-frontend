@@ -28,9 +28,9 @@ export default {
       fetch(endpoint)
         .then((response) => response.json())
         .then((data) => {
-          this.title = data.hybridGraph.title;
-          this.description = data.hybridGraph.description;
-          this.imageUrl = data.hybridGraph.image;
+          this.title = data.hybridGraph.title || data.hybridGraph.url;
+          this.description = data.hybridGraph.description || "";
+          this.imageUrl = data.hybridGraph.image || "";
         })
         .catch((error) => console.error(error));
     },

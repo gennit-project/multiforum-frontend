@@ -80,7 +80,7 @@ export default defineComponent({
   <div>
     <div class="flex justify-center">
       <EventFilterBar
-        v-if="route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventPreview' || route.name === 'SearchEventsInChannel'"
+        v-if="route.name === 'SitewideSearchEventPreview' || route.name === 'SearchEventsList' || route.name === 'SearchEventPreview' || route.name === 'SearchEventsInChannel'"
         :channel-id="channelId"
         :result-count="resultCount"
         :loaded-event-count="loadedEventCount"
