@@ -43,7 +43,7 @@ export default {
     <a :href="url" target="_blank" rel="noopener">
       <img
         v-if="imageUrl && showImage"
-        class="w-full"
+        class="h-30"
         :src="imageUrl"
         :alt="title"
         @error="showImage = false"
