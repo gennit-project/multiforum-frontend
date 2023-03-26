@@ -19,6 +19,8 @@ import * as directives from 'vuetify/directives'
 import { createAuth0 } from "@auth0/auth0-vue";
 import '@fortawesome/fontawesome-free/css/all.css';
 
+import '@vuepic/vue-datepicker/dist/main.css'
+
 
 import { faFaceSmile } from "@fortawesome/free-solid-svg-icons";
 const vuetify = createVuetify({

@@ -19,12 +19,12 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import HomeIcon from "@/components/icons/HomeIcon.vue";
-import DatePicker from "vue3-datepicker";
 import Select from "../generic/Select.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import RightArrowIcon from "@/components/icons/RightArrowIcon.vue";
 import { DateTime, Interval } from "luxon";
+import DatePicker from "@vuepic/vue-datepicker";
 
 export default defineComponent({
   setup(props) {
@@ -367,9 +367,9 @@ export default defineComponent({
         <FormRow>
           <template v-slot:icon>
             <PencilIcon class="inline-flex" :wide="true" /><span
-                class="text-red-500"
-                >*</span
-              >
+              class="text-red-500"
+              >*</span
+            >
             <v-tooltip activator="parent" location="top">Title</v-tooltip>
           </template>
           <template v-slot:content>
@@ -400,35 +400,39 @@ export default defineComponent({
             />
           </template>
         </FormRow>
+
         <FormRow>
           <template v-slot:icon>
             <ClockIcon class="float-right h-6" />
             <v-tooltip activator="parent" location="top">Time</v-tooltip>
           </template>
+
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
               <DatePicker
-                class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
                 v-model="startTimeDay"
-                :input-format="dateFormat"
+                :text-input="true"
+                :is-24="false"
+                :enable-time-picker="false"
                 @update:modelValue="handleStartDateChange"
               />
               <Dropdown
-                class="w-52"
+                class="w-72"
                 :options="startTimeOptions"
                 :default-option="defaultStartTimeOption"
                 @selected="handleStartTimeChange($event.value)"
               />
               <RightArrowIcon />
               <DatePicker
-                class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
                 v-model="endTimeDay"
-                :input-format="dateFormat"
-                :lower-limit="startTime"
+                :text-input="true"
+                :is-24="false"
+                :lower-limit="startTimeDay"
+                :enable-time-picker="false"
                 @update:modelValue="handleEndDateChange"
               />
               <Dropdown
-                class="w-52"
+                class="w-72"
                 :options="endTimeOptions"
                 :default-option="defaultEndTimeOption"
                 @selected="handleEndTimeChange($event.value)"
@@ -498,9 +502,8 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            
-              <TagIcon class="float-right h-6" />
-              <v-tooltip activator="parent" location="top">Tags</v-tooltip>
+            <TagIcon class="float-right h-6" />
+            <v-tooltip activator="parent" location="top">Tags</v-tooltip>
           </template>
           <template v-slot:content>
             <TagInput
@@ -513,11 +516,11 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            
-              <HomeIcon class="float-right" />
-              <v-tooltip activator="parent" location="top"
-                >Private Residence</v-tooltip>
-                </template> 
+            <HomeIcon class="float-right" />
+            <v-tooltip activator="parent" location="top"
+              >Private Residence</v-tooltip
+            >
+          </template>
           <template v-slot:content>
             <CheckBox
               class="align-middle"
