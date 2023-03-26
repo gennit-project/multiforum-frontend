@@ -3,19 +3,13 @@ import { defineComponent, PropType, computed } from "vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
-// import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
 export default defineComponent({
-  setup() {},
   props: {
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
-    },
-    currentChannelId: {
-      type: String,
       required: true,
     },
     searchInput: {
@@ -36,18 +30,19 @@ export default defineComponent({
     },
   },
   components: {
-    Tag,
     HighlightedSearchTerms,
+    Tag,
   },
-  data(props) {
+  setup() {
     const route = useRoute();
 
-    const channelIdInParams = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
+    return {
+      route,
+    };
+  },
+
+  data(props) {
+    const route = useRoute();
 
     const discussionIdInParams = computed(() => {
       if (typeof route.params.discussionId === "string") {
@@ -56,29 +51,22 @@ export default defineComponent({
       return "";
     });
     const defaultUniqueName = computed(() => {
-      if (channelIdInParams.value) {
-        return channelIdInParams.value;
-      }
       return props.discussion.Channels[0].uniqueName;
     });
     return {
       previewIsOpen: false,
-      defaultUniqueName, //props.discussion.CommentSections[0].Channel.uniqueName,
+      defaultUniqueName, //props.discussion.DiscussionSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body || "",
-      channelIdInParams,
       createdAt: props.discussion.createdAt,
       discussionIdInParams,
       relativeTime: relativeTime(props.discussion.createdAt),
-      authorUsername: props.discussion.Author ? props.discussion.Author.username : "Deleted",
-      // If we are already within the channel, don't show
-      // links to cost channels and don't specify which
-      // channel the comments are in.
-      isWithinChannel: props.currentChannelId ? true : false,
+      authorUsername: props.discussion.Author
+        ? props.discussion.Author.username
+        : "Deleted",
       tags: props.discussion.Tags.map((tag) => {
         return tag.text;
       }),
-      route
     };
   },
   computed: {
@@ -86,19 +74,9 @@ export default defineComponent({
       if (!this.discussion) {
         return "";
       }
-      if (this.isWithinChannel) {
-        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
-      }
       return `/discussions/search/${this.discussion.id}`;
     },
   },
-  // methods: {
-  // getCommentCount(commentSection: CommentSectionData) {
-  //   const count = commentSection.CommentsAggregate.count;
-  //   return ` ${count} comment${count === 1 ? "" : "s"}`;
-  // },
-
-  // },
   inheritAttrs: false,
 });
 </script>
@@ -109,11 +87,23 @@ export default defineComponent({
       discussion.id === discussionIdInParams
         ? 'border-blue-500'
         : 'border-blue-200',
-      channelIdInParams ? 'hover:bg-gray-100' : '',
     ]"
-    class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 lg:px-12 cursor-pointer"
+    class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 space-x-2 cursor-pointer flex"
     @click="$emit('openPreview')"
   >
+    <VTooltip class="inline-flex mt-1 mr-1">
+      <span
+        >{{
+          (discussion.UpvotedByUsersAggregate?.count || 0) -
+          (discussion.DownvotedByModeratorsAggregate?.count || 0)
+        }}
+        </span
+      >
+      <template #popper>
+        <span>{{ "Sum of votes in all channels, deduped by user" }}</span>
+      </template>
+    </VTooltip>
+
     <router-link :to="previewLink">
       <p class="text-lg font-bold cursor-pointer">
         <HighlightedSearchTerms :text="title" :search-input="searchInput" />
@@ -132,7 +122,7 @@ export default defineComponent({
       <p class="text-xs font-medium text-slate-600 no-underline">
         {{ `Posted ${relativeTime} by ${authorUsername}` }}
       </p>
-      <div class="text-sm" v-if="!isWithinChannel">
+      <div class="text-sm">
         <Tag
           class="my-1"
           :active="selectedChannels.includes(channel.uniqueName)"
@@ -143,7 +133,6 @@ export default defineComponent({
           @click="$emit('filterByChannel', channel.uniqueName)"
         />
       </div>
-      
     </router-link>
   </li>
 </template>

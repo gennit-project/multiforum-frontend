@@ -12,6 +12,10 @@ export type CommentSectionData = {
   }
   OriginalPost: EventData | DiscussionData
   Channel: ChannelData
+  UpvotedByUsers: [UserData];
+  UpvotedByUsersAggregate: {count};
+  DownvotedByModerators: [ModProfile];
+  DownvotedByModeratorsAggregate: {count};
 }
 
 export type CreateEditCommentFormValues = {
