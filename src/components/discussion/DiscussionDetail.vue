@@ -643,7 +643,15 @@ export default defineComponent({
                   preview-only
                 />
               </div>
-
+              <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">
+                Link Previews
+              </h2>
+              <LinkPreview
+                v-for="(link, i) in linksInBody"
+                :key="i"
+                class="mb-2"
+                :url="link"
+              />
               <div
                 v-if="route.name === 'DiscussionDetail'"
                 class="mt-1 flex space-x-2 py-4"
@@ -725,15 +733,7 @@ export default defineComponent({
                   />
                 </ul>
               </div>
-              <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">
-                Link Previews
-              </h2>
-              <LinkPreview
-                v-for="(link, i) in linksInBody"
-                :key="i"
-                class="mb-2"
-                :url="link"
-              />
+              
               <CommentSection
                 class="mb-2"
                 ref="commentSectionRef"
