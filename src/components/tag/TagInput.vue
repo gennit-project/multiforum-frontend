@@ -80,6 +80,7 @@ export default defineComponent({
           relative
           rounded-md
           shadow-sm
+          bg-white
           border border-gray-300
         "
       >

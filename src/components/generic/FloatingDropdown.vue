@@ -1,26 +1,40 @@
 <script lang="ts">
-import { defineComponent } from "vue"
+import { defineComponent, ref } from "vue";
 
 export default defineComponent({
-    setup() {
-        
-    },
-})
+
+  setup() {
+    const showMenu = ref(false);
+
+    const handleClick = (event: MouseEvent) => {
+      event.preventDefault();
+      showMenu.value = true;
+    };
+
+    return {
+      showMenu,
+      handleClick,
+    };
+  },
+});
 </script>
 
 <template>
-<v-menu
-  :distance="6"
->
-  <!-- This will be the popover reference (for the events and position) -->
-  <button @click.prevent class="w-full">
-    <slot name="button"/>
-  </button>
-
-  <!-- This will be the content of the popover -->
-  <template #popper>
-    <slot name="content"/>
-  </template>
-</v-menu>
+<div>
+  <v-menu 
+    v-model="showMenu"  
+    :close-on-content-click="false"
+    location="bottom"
+  >
+    <template v-slot:activator="{ props }">
+      <div v-bind="props">
+        <slot name="button" v-bind="props" />
+      </div>
+      
+    </template>
+    <v-card> <slot name="content"></slot></v-card>
+   
+  </v-menu>
+</div>
 </template>
 

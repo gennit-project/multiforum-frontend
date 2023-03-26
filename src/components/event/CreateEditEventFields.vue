@@ -58,7 +58,7 @@ export default defineComponent({
       endTimeDay: ref(new Date(props.formValues.endTime)),
       touched: false,
       timeFormat,
-      titleInputRef: ref(null)
+      titleInputRef: ref(null),
     };
   },
   props: {
@@ -118,8 +118,8 @@ export default defineComponent({
   },
   created() {
     nextTick(() => {
-      if (this.titleInputRef){
-        this.titleInputRef?.$el?.children[0].childNodes[0].focus()
+      if (this.titleInputRef) {
+        this.titleInputRef?.$el?.children[0].childNodes[0].focus();
       }
     });
   },
@@ -366,13 +366,11 @@ export default defineComponent({
       <div class="pr-8">
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <PencilIcon class="inline-flex" :wide="true" /><span
+            <PencilIcon class="inline-flex" :wide="true" /><span
                 class="text-red-500"
                 >*</span
               >
-              <template #popper> Title </template>
-            </VTooltip>
+            <v-tooltip activator="parent" location="top">Title</v-tooltip>
           </template>
           <template v-slot:content>
             <TextInput
@@ -386,13 +384,11 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <ChannelIcon class="float-right h-6 w-6" /><span
-                class="text-red-500"
-                >*</span
-              >
-              <template #popper> Channels </template>
-            </VTooltip>
+            <ChannelIcon class="float-right h-6 w-6" /><span
+              class="text-red-500"
+              >*</span
+            >
+            <v-tooltip activator="parent" location="top">Channels</v-tooltip>
           </template>
           <template v-slot:content>
             <TagInput
@@ -406,26 +402,13 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <ClockIcon class="float-right h-6" />
-              <template #popper> Date and Time </template>
-            </VTooltip>
+            <ClockIcon class="float-right h-6" />
+            <v-tooltip activator="parent" location="top">Time</v-tooltip>
           </template>
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
               <DatePicker
-                class="
-                  focus:ring-blue-500 focus:border-blue-500
-                  mt-1
-                  pt-2.5
-                  pb-2.5
-                  flex-1
-                  block
-                  min-w-0
-                  rounded
-                  sm:text-sm
-                  border-gray-300
-                "
+                class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
                 v-model="startTimeDay"
                 :input-format="dateFormat"
                 @update:modelValue="handleStartDateChange"
@@ -438,18 +421,7 @@ export default defineComponent({
               />
               <RightArrowIcon />
               <DatePicker
-                class="
-                  focus:ring-blue-500 focus:border-blue-500
-                  mt-1
-                  pt-2.5
-                  pb-2.5
-                  flex-1
-                  block
-                  min-w-0
-                  rounded
-                  sm:text-sm
-                  border-gray-300
-                "
+                class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
                 v-model="endTimeDay"
                 :input-format="dateFormat"
                 :lower-limit="startTime"
@@ -470,10 +442,8 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <LinkIcon class="float-right" />
-              <template #popper> Link to Virtual Event </template>
-            </VTooltip>
+            <LinkIcon class="float-right" />
+            <v-tooltip activator="parent" location="top">Link</v-tooltip>
           </template>
           <template v-slot:content>
             <TextInput
@@ -497,10 +467,8 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <LocationIcon :wide="true" class="float-right" />
-              <template #popper> Location </template>
-            </VTooltip>
+            <LocationIcon :wide="true" class="float-right" />
+            <v-tooltip activator="parent" location="top">Location</v-tooltip>
           </template>
           <template v-slot:content>
             <LocationSearchBar
@@ -515,10 +483,8 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <AnnotationIcon class="float-right" />
-              <template #popper> Details </template>
-            </VTooltip>
+            <AnnotationIcon class="float-right" />
+            <v-tooltip activator="parent" location="top">Details</v-tooltip>
           </template>
           <template v-slot:content>
             <TextEditor
@@ -532,10 +498,9 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
+            
               <TagIcon class="float-right h-6" />
-              <template #popper> Tags </template>
-            </VTooltip>
+              <v-tooltip activator="parent" location="top">Tags</v-tooltip>
           </template>
           <template v-slot:content>
             <TagInput
@@ -548,11 +513,11 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <VTooltip class="inline-flex">
+            
               <HomeIcon class="float-right" />
-              <template #popper> Private Residence </template>
-            </VTooltip>
-          </template>
+              <v-tooltip activator="parent" location="top"
+                >Private Residence</v-tooltip>
+                </template> 
           <template v-slot:content>
             <CheckBox
               class="align-middle"
@@ -597,5 +562,4 @@ export default defineComponent({
     </TailwindForm>
   </div>
 </template>
-<style>
-</style>
+<style></style>

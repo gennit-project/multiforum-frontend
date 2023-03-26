@@ -9,8 +9,6 @@ import { onError } from "@apollo/client/link/error";
 import { logErrorMessages } from "@vue/apollo-util";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
-// import FloatingVue from "floating-vue";
-import "floating-vue/dist/style.css";
 import "@github/markdown-toolbar-element";
 import MdEditor from "md-editor-v3";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -90,7 +88,6 @@ const app = createApp({
 app
   .use(router)
   .use(vuetify)
-  // .use(FloatingVue)
   .use(MdEditor)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(VueGoogleMaps, {
