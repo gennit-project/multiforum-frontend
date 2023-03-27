@@ -65,7 +65,7 @@ export default defineComponent({
           :to="tabRoutes.about"
           :label="'About'"
           :active="route.path.includes('about')"
-          ><i class="fa-outline fa-house-chimney-window"></i
+          ><i class="fa-solid fa-house-chimney-window"></i
         ></TabButton>
         <TabButton
           :to="tabRoutes.discussions"
