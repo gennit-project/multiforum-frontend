@@ -77,7 +77,7 @@
     minimatch "^3.1.2"
     strip-json-comments "^3.1.1"
 
-"@fawmi/vue-google-maps@^0.9.72":
+"@fawmi/vue-google-maps@^0.9.79":
   version "0.9.79"
   resolved "https://registry.yarnpkg.com/@fawmi/vue-google-maps/-/vue-google-maps-0.9.79.tgz#0e43bd2a2d0e3309219d400bc06efad4134104a8"
   integrity sha512-SnITonfrBfT/7uESF8SCs1DRWHSJyr/K0bPv9taONAUp/YiggmlwHOwAzA63UeDl8vP0bBmT56MYC1bZmAdUjQ==
@@ -130,7 +130,7 @@
   resolved "https://registry.yarnpkg.com/@github/markdown-toolbar-element/-/markdown-toolbar-element-2.1.1.tgz#08a0696be1006b42b6b29560104f1bca20341b06"
   integrity sha512-J++rpd5H9baztabJQB82h26jtueOeBRSTqetk9Cri+Lj/s28ndu6Tovn0uHQaOKtBWDobFunk9b5pP5vcqt7cA==
 
-"@googlemaps/js-api-loader@^1.14.3":
+"@googlemaps/js-api-loader@^1.15.1":
   version "1.15.1"
   resolved "https://registry.yarnpkg.com/@googlemaps/js-api-loader/-/js-api-loader-1.15.1.tgz#7d5f1d55a4ec5c99b1d8f0708f3a46b83a71384c"
   integrity sha512-AsnEgNsB7S/VdrHGEQUaUM2e5tmjFGKBAfzR/AqO8O7TPq/jQGvoRw5liPBw4EMF38RDsHmKDV89q/X+qiUREQ==

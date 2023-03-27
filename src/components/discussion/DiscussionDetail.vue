@@ -299,6 +299,7 @@ export default defineComponent({
       },
 
       update: (cache: any, result: any) => {
+        // when comment section is created, update discussion in cache to add it there
         cache.modify({
           fields: {
             discussions() {

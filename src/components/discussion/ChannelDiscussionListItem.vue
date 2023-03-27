@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType, computed, ref } from "vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { CommentSectionData } from "../../types/commentTypes";
 import { relativeTime } from "../../dateTimeUtils";
@@ -23,6 +23,7 @@ import {
   UNDO_UPVOTE_COMMENT_SECTION,
   UNDO_DOWNVOTE_COMMENT_SECTION,
 } from "@/graphQLData/discussion/mutations";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 
 export default defineComponent({
@@ -139,12 +140,14 @@ export default defineComponent({
       },
     }));
 
+    const relevantCommentSection = ref(props.commentSection);
+
     const {
       mutate: downvoteCommentSection,
       error: downvoteCommentSectionError,
     } = useMutation(DOWNVOTE_COMMENT_SECTION, () => ({
       variables: {
-        id: props.commentSection.id,
+        id: relevantCommentSection.value.id,
         displayName: loggedInUserModName.value,
       },
     }));
@@ -152,7 +155,7 @@ export default defineComponent({
     const { mutate: upvoteCommentSection, error: upvoteCommentSectionError } =
       useMutation(UPVOTE_COMMENT_SECTION, () => ({
         variables: {
-          id: props.commentSection.id,
+          id: relevantCommentSection.value.id,
           username: localUsernameResult.value?.username || "",
         },
       }));
@@ -177,58 +180,113 @@ export default defineComponent({
       },
     }));
 
-    const { mutate: createCommentSection, error: createCommentSectionError } =
-      useMutation(CREATE_COMMENT_SECTION, () => ({
-        errorPolicy: "all",
-        variables: {
-          createCommentSectionInput: [
-            {
-              OriginalPost: {
-                Discussion: {
-                  connect: {
-                    where: {
-                      node: {
-                        id: discussionIdInParams.value,
-                      },
+    const {
+      mutate: createCommentSection,
+      error: createCommentSectionError,
+      onDone: createCommentSectionOnDone,
+    } = useMutation(CREATE_COMMENT_SECTION, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentSectionInput: [
+          {
+            OriginalPost: {
+              Discussion: {
+                connect: {
+                  where: {
+                    node: {
+                      id: discussionIdInParams.value,
                     },
                   },
                 },
               },
-              Channel: {
-                connect: {
-                  where: { node: { uniqueName: channelIdInParams.value } },
-                },
+            },
+            Channel: {
+              connect: {
+                where: { node: { uniqueName: channelIdInParams.value } },
               },
             },
-          ],
-        },
-      }));
+          },
+        ],
+      },
+      update: (cache: any, result: any) => {
+        // when comment section is created, update discussion in cache to add it there
+        cache.modify({
+          fields: {
+            discussions() {
+              const readQueryResult = cache.readQuery({
+                query: GET_DISCUSSION,
+                variables: {
+                  id: discussionIdInParams.value,
+                },
+              });
+              if (readQueryResult) {
+                const existingDiscussion = readQueryResult.discussions[0];
+                const newCommentSection =
+                  result.data?.createCommentSections?.commentSections[0];
+                cache.writeQuery({
+                  query: GET_DISCUSSION,
+                  data: {
+                    discussions: [
+                      {
+                        ...existingDiscussion,
+                        CommentSections: [
+                          ...existingDiscussion.CommentSections,
+                          newCommentSection,
+                        ],
+                      },
+                    ],
+                  },
+                  variables: {
+                    id: discussionIdInParams.value,
+                  },
+                });
+              }
+            },
+          },
+        });
+      },
+    }));
+
+    createCommentSectionOnDone((result) => {
+      console.log("new comment section data", result.data);
+      const newCommentSection =
+        result.data?.createCommentSections.commentSections[0];
+
+      if (newCommentSection) {
+        relevantCommentSection.value = newCommentSection;
+        console.log("set id to ", newCommentSection.id);
+      } else {
+        console.error("new comment section not created");
+      }
+    });
 
     const loggedInUserUpvoted = computed(() => {
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !props.discussion.CommentSections[0]
+        !relevantCommentSection.value.id
       ) {
         return false;
       }
+      const users = relevantCommentSection.value.UpvotedByUsers || [];
+      const loggedInUser = localUsernameResult.value.username;
       const match =
-        props.discussion.CommentSections[0].UpvotedByUsers.filter(
-          (user: any) => {
-            return user.username === localUsernameResult.value.username;
-          }
-        ).length === 1;
+        users.filter((user: any) => {
+          return user.username === loggedInUser;
+        }).length === 1;
       return match;
     });
+
     const loggedInUserDownvoted = computed(() => {
+      console.log("relevantCommentSection.value", relevantCommentSection.value)
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !props.discussion.CommentSections[0]
+        !relevantCommentSection.value.id
       ) {
         return false;
       }
-      const mods = props.commentSection.DownvotedByModerators;
+      const mods = relevantCommentSection.value.DownvotedByModerators || [];
       const loggedInMod = localModProfileNameResult.value.modProfileName;
       const match =
         mods.filter((mod: any) => {
@@ -237,14 +295,6 @@ export default defineComponent({
       return match;
     });
 
-    // const getDownvoteCount = () => {
-    //   if (props.discussion.CommentSections[0]) {
-    //     return props.discussion.CommentSections[0]
-    //       .DownvotedByModeratorsAggregate?.count;
-    //   }
-    //   return 0;
-    // };
-
     const downvoteCount = computed(() => {
       if (props.discussion.CommentSections[0]) {
         return props.discussion.CommentSections[0]
@@ -252,14 +302,6 @@ export default defineComponent({
       }
       return 0;
     });
-
-    // const getUpvoteCount = () => {
-    //   if (props.discussion.CommentSections[0]) {
-    //     return props.discussion.CommentSections[0].UpvotedByUsersAggregate
-    //       ?.count;
-    //   }
-    //   return 0;
-    // };
 
     const upvoteCount = computed(() => {
       if (props.discussion.CommentSections[0]) {
@@ -270,6 +312,7 @@ export default defineComponent({
     });
 
     return {
+      relevantCommentSection,
       createCommentSection,
       createCommentSectionError,
       defaultUniqueName, //props.discussion.CommentSectionSections[0].Channel.uniqueName,
@@ -348,33 +391,40 @@ export default defineComponent({
         // this.openModProfile()
       }
     },
-    createCommentSectionIfNoneExists() {
-      if (this.discussion.CommentSections.length > 0) {
-        return;
-      }
-      this.createCommentSection();
-    },
-    downvote() {
+    async downvote() {
       // Note: Voting in the sitewide discussion page is not allowed.
       // We only collect the sitewide votes for ranking purposes. It basically
       // shows the sum of all votes in all channels.
       this.downvoteDiscussion(); // counts toward sitewide ranking
-      this.createCommentSectionIfNoneExists();
-      this.downvoteCommentSection(); // counts toward ranking within channel
+
+      if (this.relevantCommentSection.id) {
+        console.log(
+          "downvoting comment section",
+          this.relevantCommentSection.id
+        );
+        this.downvoteCommentSection(); // counts toward ranking within channel
+      } else {
+        await this.createCommentSection();
+        this.downvoteCommentSection(); // counts toward ranking within channel
+      }
     },
-    upvote() {
+    async upvote() {
       this.upvoteDiscussion(); // counts toward sitewide ranking
-      this.createCommentSectionIfNoneExists();
-      this.upvoteCommentSection(); // counts toward ranking within channel
+
+      if (this.relevantCommentSection.id) {
+        console.log("upvoting comment section", this.relevantCommentSection.id);
+        this.upvoteCommentSection(); // counts toward ranking within channel
+      } else {
+        await this.createCommentSection();
+        this.upvoteCommentSection(); // counts toward ranking within channel
+      }
     },
     undoUpvote() {
       this.undoUpvoteDiscussion(); // counts toward sitewide ranking
-      this.createCommentSectionIfNoneExists();
       this.undoUpvoteCommentSection(); // counts toward ranking within channel
     },
     undoDownvote() {
       this.undoDownvoteDiscussion(); // counts toward sitewide ranking
-      this.createCommentSectionIfNoneExists();
       this.undoDownvoteCommentSection(); // counts toward ranking within channel
     },
   },
@@ -388,10 +438,11 @@ export default defineComponent({
         ? 'border-blue-500'
         : 'border-blue-200',
     ]"
-    class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 space-x-2 cursor-pointer flex"
+    class="hover:border-blue-500 border-l-4 border-b-1 relative bg-white py-3 px-4 space-x-2 cursor-pointer flex"
     @click="$emit('openPreview')"
   >
     <VoteButtons
+      class="mx-2 my-1"
       :downvote-count="downvoteCount"
       :upvote-count="upvoteCount"
       :upvote-active="loggedInUserUpvoted"

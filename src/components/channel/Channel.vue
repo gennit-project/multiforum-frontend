@@ -44,14 +44,17 @@ export default defineComponent({
   <div >
     <div class="flex bg-white shadow">
       <div>
-        <div v-if="!discussionId || !eventId">
-          
-            <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">
+        <div v-if="!discussionId || !eventId" class="flex items-center">
+          <div class="w-24 h-24 border border-blue-100 m-6 bg-gray-100"  id="channelAvatar">
+
+          </div>
+            <h1 class="text-2xl text-black no-underline">
               {{ channelId }}
             </h1>
-          <div class="block">
-            <ChannelTabs class="block mt-2" :route="route"/>
-          </div>
+          
+        </div>
+        <div class="block">
+          <ChannelTabs class="block" :route="route"/>
         </div>
       </div>
     </div>

@@ -26,7 +26,10 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const router = useRouter()
-    const loader = new Loader({ apiKey: config.googleMapsApiKey })
+    const loader = new Loader({ 
+      apiKey: config.googleMapsApiKey,
+      version: "weekly",
+    })
     const mobileMapDiv = ref(null)
     const desktopMapDiv = ref(null)
     let map = ref(null)

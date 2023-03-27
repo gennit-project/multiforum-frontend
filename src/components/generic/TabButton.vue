@@ -47,9 +47,10 @@ export default defineComponent({
       border-b-2
       font-medium
       text-sm
+      space-x-2
     "
   >
-    <span>{{ label }}</span>
+    <slot></slot><span>{{ label }}</span>
   </router-link>
 </template>
 <style>

@@ -198,8 +198,12 @@ export default defineComponent({
         },
       }));
 
-    onDoneCreateModProfile((data: any) => {
-      const updatedUser = data.data.updateUsers.users[0];
+    onDoneCreateModProfile(({ data }) => {
+      console.log('tried to to create profile for username ,',username.value?.username)
+
+      const updatedUser = data.updateUsers.users[0];
+      console.log('data ', data)
+      
 
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
@@ -268,6 +272,7 @@ export default defineComponent({
       this.$emit("filterByChannel", channel);
     },
     async handleCreateModProfileClick() {
+      console.log('clicked handle create mod profile ')
       await this.createModProfile();
       modProfileNameVar()
       this.downvote()
