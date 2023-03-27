@@ -66,7 +66,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col w-6">
     <span class="inline-flex">
       <i
         class="fa-solid fa-sort-up w-4 hover:text-black cursor-pointer"
@@ -78,7 +78,7 @@ export default defineComponent({
       >
     </span>
     <span
-      class="justify-center mx-4"
+      class="justify-center"
       :class="downvoteActive || upvoteActive ? 'text-black' : 'text-gray-400'"
       >{{ upvoteCount - downvoteCount }}</span
     >
