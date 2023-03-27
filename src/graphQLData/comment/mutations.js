@@ -296,6 +296,18 @@ export const UPDATE_COMMENT = gql`
         }
         createdAt
         updatedAt
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }
