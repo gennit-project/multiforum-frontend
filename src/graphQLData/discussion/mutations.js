@@ -44,6 +44,12 @@ export const UPDATE_DISCUSSION = gql`
         Tags {
           text
         }
+        UpvotedByUsersAggregate {
+          count
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }
@@ -70,6 +76,12 @@ export const UPVOTE_DISCUSSION = gql`
     ) {
       discussions {
         id
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
       }
     }
   }
@@ -87,6 +99,12 @@ export const UPVOTE_COMMENT_SECTION = gql`
     ) {
       commentSections {
         id
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
       }
     }
   }
@@ -105,7 +123,14 @@ export const UNDO_UPVOTE_DISCUSSION = gql`
     ) {
       discussions {
         id
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
       }
+      
     }
   }`
 
@@ -122,6 +147,12 @@ export const UNDO_UPVOTE_COMMENT_SECTION = gql`
     ) {
       commentSections {
         id
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
       }
     }
   }`
@@ -139,6 +170,12 @@ export const DOWNVOTE_DISCUSSION = gql`
     ) {
       discussions {
         id
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }
@@ -156,6 +193,12 @@ export const DOWNVOTE_COMMENT_SECTION = gql`
     ) {
       commentSections {
         id
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }
@@ -174,6 +217,12 @@ export const UNDO_DOWNVOTE_DISCUSSION = gql`
     ) {
       commentSections {
         id
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }
@@ -191,6 +240,12 @@ export const UNDO_DOWNVOTE_COMMENT_SECTION = gql`
     ) {
       commentSections {
         id
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
     }
   }

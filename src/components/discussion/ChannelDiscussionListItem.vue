@@ -13,7 +13,6 @@ import {
 } from "@/graphQLData/user/queries";
 import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import {
   DOWNVOTE_DISCUSSION,
   UPVOTE_DISCUSSION,
@@ -24,7 +23,6 @@ import {
   UNDO_UPVOTE_COMMENT_SECTION,
   UNDO_DOWNVOTE_COMMENT_SECTION,
 } from "@/graphQLData/discussion/mutations";
-import { useAuth0 } from "@auth0/auth0-vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 
 export default defineComponent({
@@ -72,7 +70,6 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const { isAuthenticated, error, isLoading } = useAuth0();
     const channelIdInParams = computed(() => {
       if (typeof route.params.channelId === "string") {
         return route.params.channelId;
@@ -205,65 +202,29 @@ export default defineComponent({
             },
           ],
         },
-
-        update: (cache: any, result: any) => {
-          cache.modify({
-            fields: {
-              discussions() {
-                const readQueryResult = cache.readQuery({
-                  query: GET_DISCUSSION,
-                  variables: {
-                    id: discussionIdInParams.value,
-                  },
-                });
-                if (readQueryResult) {
-                  const existingDiscussion = readQueryResult.discussions[0];
-                  const newCommentSection =
-                    result.data?.createCommentSections?.commentSections[0];
-                  cache.writeQuery({
-                    query: GET_DISCUSSION,
-                    data: {
-                      discussions: [
-                        {
-                          ...existingDiscussion,
-                          CommentSections: [
-                            ...existingDiscussion.CommentSections,
-                            newCommentSection,
-                          ],
-                        },
-                      ],
-                    },
-                    variables: {
-                      id: discussionIdInParams.value,
-                    },
-                  });
-                }
-              },
-            },
-          });
-        },
       }));
 
     const loggedInUserUpvoted = computed(() => {
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !props.commentSection.UpvotedByUsers
+        !props.discussion.CommentSections[0]
       ) {
         return false;
       }
       const match =
-        props.commentSection.UpvotedByUsers.filter((user: any) => {
-          return user.username === localUsernameResult.value.username;
-        }).length === 1;
+        props.discussion.CommentSections[0].UpvotedByUsers.filter(
+          (user: any) => {
+            return user.username === localUsernameResult.value.username;
+          }
+        ).length === 1;
       return match;
     });
-
     const loggedInUserDownvoted = computed(() => {
       if (
-        localModProfileNameLoading.value ||
-        !localModProfileNameResult.value ||
-        !props.commentSection.DownvotedByModerators
+        localUsernameLoading.value ||
+        !localUsernameResult.value ||
+        !props.discussion.CommentSections[0]
       ) {
         return false;
       }
@@ -276,15 +237,50 @@ export default defineComponent({
       return match;
     });
 
+    // const getDownvoteCount = () => {
+    //   if (props.discussion.CommentSections[0]) {
+    //     return props.discussion.CommentSections[0]
+    //       .DownvotedByModeratorsAggregate?.count;
+    //   }
+    //   return 0;
+    // };
+
+    const downvoteCount = computed(() => {
+      if (props.discussion.CommentSections[0]) {
+        return props.discussion.CommentSections[0]
+          .DownvotedByModeratorsAggregate?.count;
+      }
+      return 0;
+    });
+
+    // const getUpvoteCount = () => {
+    //   if (props.discussion.CommentSections[0]) {
+    //     return props.discussion.CommentSections[0].UpvotedByUsersAggregate
+    //       ?.count;
+    //   }
+    //   return 0;
+    // };
+
+    const upvoteCount = computed(() => {
+      if (props.discussion.CommentSections[0]) {
+        return props.discussion.CommentSections[0].UpvotedByUsersAggregate
+          ?.count;
+      }
+      return 0;
+    });
+
     return {
       createCommentSection,
       createCommentSectionError,
       defaultUniqueName, //props.discussion.CommentSectionSections[0].Channel.uniqueName,
       discussionIdInParams,
+      downvoteCount,
+      // getDownvoteCount,
       loggedInUserUpvoted,
       loggedInUserDownvoted,
       loggedInUserModName,
       upvoteCommentSection,
+      // getUpvoteCount,
       downvoteCommentSection,
       undoUpvoteCommentSection,
       undoDownvoteCommentSection,
@@ -293,6 +289,7 @@ export default defineComponent({
       undoUpvoteDiscussion,
       undoDownvoteDiscussion,
       upvoteCommentSectionError,
+      upvoteCount,
       undoUpvoteCommentSectionError,
       downvoteCommentSectionError,
       undoDownvoteCommentSectionError,
@@ -306,14 +303,16 @@ export default defineComponent({
 
   data(props) {
     return {
+      authorUsername: props.discussion.Author
+        ? props.discussion.Author.username
+        : "Deleted",
       previewIsOpen: false,
       title: props.discussion.title,
       body: props.discussion.body || "",
       createdAt: props.discussion.createdAt,
+      // downvoteCount: this.getDownvoteCount(),
       relativeTime: relativeTime(props.discussion.createdAt),
-      authorUsername: props.discussion.Author
-        ? props.discussion.Author.username
-        : "Deleted",
+      // upvoteCount: this.getUpvoteCount(),
       tags: props.discussion.Tags.map((tag) => {
         return tag.text;
       }),
@@ -340,16 +339,13 @@ export default defineComponent({
     handleClickDown() {
       if (this.loggedInUserModName) {
         if (!this.loggedInUserDownvoted) {
-          this.$emit("downvote");
-
-          this.downvote()
+          this.downvote();
         } else {
-          this.$emit("undoDownvote");
           this.undoDownvote();
         }
       } else {
         // Create mod profile, then downvote comment
-        this.$emit("openModProfile");
+        // this.openModProfile()
       }
     },
     createCommentSectionIfNoneExists() {
@@ -396,16 +392,16 @@ export default defineComponent({
     @click="$emit('openPreview')"
   >
     <VoteButtons
-      class="mt-2 mr-1"
-      :downvote-count="
-        commentSection.DownvotedByModeratorsAggregate?.count || 0
-      "
-      :upvote-count="commentSection.UpvotedByUsersAggregate?.count || 0"
+      :downvote-count="downvoteCount"
+      :upvote-count="upvoteCount"
       :upvote-active="loggedInUserUpvoted"
       :downvote-active="loggedInUserDownvoted"
       :has-mod-profile="!!loggedInUserModName"
-      @clickUp="handleClickUp"
-      @clickDown="handleClickDown"
+      @downvote="downvote"
+      @upvote="upvote"
+      @openModProfile="$emit('openModProfile')"
+      @undoUpvote="undoUpvote"
+      @undoDownvote="undoDownvote"
     />
     <router-link :to="previewLink">
       <p class="text-lg font-bold cursor-pointer">

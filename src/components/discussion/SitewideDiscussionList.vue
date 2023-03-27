@@ -55,6 +55,18 @@ export default defineComponent({
           ChannelsAggregate {
             count
           }
+          UpvotedByUsers {
+            username
+          }
+          UpvotedByUsersAggregate {
+            count
+          }
+          DownvotedByModeratorsAggregate {
+            count
+          }
+          DownvotedByModerators {
+            displayName
+          }
           CommentSections {
             id
             __typename

@@ -1,14 +1,8 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import UpArrowIcon from "../icons/UpArrowIcon.vue";
-import DownArrowIcon from "../icons/DownArrowIcon.vue";
 
 export default defineComponent({
   name: "VoteComponent",
-  components: {
-    DownArrowIcon,
-    UpArrowIcon,
-  },
   props: {
     downvoteActive: {
       type: Boolean,
@@ -20,7 +14,7 @@ export default defineComponent({
     },
     downvoteCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     upvoteCount: {
       type: Number,
@@ -28,27 +22,27 @@ export default defineComponent({
     },
     hasModProfile: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup() {
-    return {  };
+    return {};
   },
   methods: {
-    clickDownvote(){
+    clickDownvote() {
       if (this.hasModProfile) {
         if (!this.downvoteActive) {
-          this.$emit('downvote')
+          this.$emit("downvote");
 
           if (this.upvoteActive) {
-            this.$emit('undoUpvote')
+            this.$emit("undoUpvote");
           }
         } else {
-          this.$emit('undoDownvote')
+          this.$emit("undoDownvote");
         }
       } else {
         // Create mod profile, then downvote comment
-        this.$emit('openModProfile')
+        this.$emit("openModProfile");
       }
     },
     clickUpvote() {
@@ -56,7 +50,7 @@ export default defineComponent({
         this.$emit("upvote");
 
         if (this.downvoteActive) {
-          this.$emit("undoDownvote")
+          this.$emit("undoDownvote");
         }
       } else {
         this.$emit("undoUpvote");
@@ -67,28 +61,31 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex align-center space-x-2">
-    <VTooltip class="inline-flex">
-      <UpArrowIcon
-        :class="upvoteActive ? 'text-black' : 'text-gray-400'"
-        class="h-4 inline-flex hover:text-black cursor-pointer"
+    <span>
+      <i
+        class="fa-solid fa-arrow-up w-4 hover:text-black cursor-pointer"
+        :class="[upvoteActive ? 'text-black' : 'text-gray-400']"
         @click="clickUpvote"
-      />
-      <template #popper>This comment adds to the discussion</template>
-    </VTooltip>
+      ></i>
+      <v-tooltip activator="parent" location="top"
+        >This comment should be more visible to others</v-tooltip
+      >
+    </span>
     <span
       :class="upvoteActive || downvoteActive ? 'text-black' : 'text-gray-400'"
       class="inline-flex pt-0.5"
       >{{ upvoteCount - downvoteCount }}</span
     >
-    <VTooltip>
-      <DownArrowIcon
-        :class="downvoteActive ? 'text-black' : 'text-gray-400'"
-        class="h-4 inline-flex hover:text-black cursor-pointer"
+    <span>
+      <i
+        class="fa-solid fa-arrow-down w-4 hover:text-black cursor-pointer"
+        :class="[downvoteActive ? 'text-black' : 'text-gray-400']"
         @click="clickDownvote"
-      />
-      <template #popper>This comment does not add to the discussion</template>
-    </VTooltip>
+      ></i>
+      <v-tooltip activator="parent" location="top"
+        >This comment should be less visible to others</v-tooltip
+      >
+    </span>
   </div>
 </template>
-<style scoped>
-</style>
+<style scoped></style>

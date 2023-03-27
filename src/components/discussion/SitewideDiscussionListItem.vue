@@ -91,7 +91,7 @@ export default defineComponent({
     class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 space-x-2 cursor-pointer flex"
     @click="$emit('openPreview')"
   >
-    <span class="mt-1 mr-2"
+    <span class="mt-1 w-6"
       >{{
         (discussion.UpvotedByUsersAggregate?.count || 0) -
         (discussion.DownvotedByModeratorsAggregate?.count || 0)

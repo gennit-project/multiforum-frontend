@@ -6,7 +6,12 @@ import ErrorBanner from "../generic/ErrorBanner.vue";
 import { gql } from "@apollo/client/core";
 import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute, useRouter } from "vue-router";
-import { useQuery } from "@vue/apollo-composable";
+import WarningModal from "../generic/WarningModal.vue";
+import { useQuery, useMutation } from "@vue/apollo-composable";
+import { generateSlug } from "random-word-slugs";
+import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { modProfileNameVar } from "@/cache";
 
 export default defineComponent({
   // The reason we have separate components for the sidewide discussion
@@ -56,26 +61,34 @@ export default defineComponent({
           ChannelsAggregate {
             count
           }
+         
+          UpvotedByUsers {
+            username
+          }
           UpvotedByUsersAggregate {
             count
           }
           DownvotedByModeratorsAggregate {
             count
           }
+          DownvotedByModerators {
+            displayName
+          }
           CommentSections(where: { Channel: { uniqueName: $channelId } }) {
             id
             __typename
-            UpvotedByUsersAggregate {
-              count
-            }
+            
             UpvotedByUsers {
               username
             }
-            DownvotedByModeratorsAggregate {
+            UpvotedByUsersAggregate {
               count
             }
             DownvotedByModerators {
               displayName
+            }
+            DownvotedByModeratorsAggregate {
+              count
             }
             OriginalPost {
               ... on Discussion {
@@ -160,7 +173,39 @@ export default defineComponent({
 
       sendToPreview(defaultSelectedDiscussion.id);
     });
+
+
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value;
+    });
+
+    const randomWords = generateSlug(4, { format: "camel" });
+
+    const { mutate: createModProfile, onDone: onDoneCreateModProfile } =
+      useMutation(CREATE_MOD_PROFILE, () => ({
+        variables: {
+          displayName: randomWords,
+          username: username.value?.username,
+        },
+      }));
+
+    onDoneCreateModProfile((data: any) => {
+      const updatedUser = data.data.updateUsers.users[0];
+
+      const newModProfileName = updatedUser.ModerationProfile.displayName;
+      modProfileNameVar(newModProfileName);
+    });
     return {
+      createModProfile,
       discussionError,
       discussionLoading,
       discussionResult,
@@ -168,6 +213,7 @@ export default defineComponent({
       reachedEndOfResults,
       refetchDiscussions,
       selectedDiscussion: {} as DiscussionData,
+      showModProfileModal: ref(false),
     };
   },
   props: {
@@ -207,6 +253,7 @@ export default defineComponent({
     ChannelDiscussionListItem,
     ErrorBanner,
     LoadMore,
+    WarningModal
   },
   methods: {
     openPreview(data: DiscussionData) {
@@ -219,6 +266,13 @@ export default defineComponent({
     },
     filterByChannel(channel: string) {
       this.$emit("filterByChannel", channel);
+    },
+    async handleCreateModProfileClick() {
+      await this.createModProfile();
+      modProfileNameVar()
+      this.downvote()
+      this.showModProfileModal = false;
+      // show snack
     },
   },
   inheritAttrs: false,
@@ -253,6 +307,7 @@ export default defineComponent({
             :search-input="searchInput"
             :selected-tags="selectedTags"
             :selected-channels="selectedChannels"
+            @openModProfile="this.showModProfileModal = true"
             @filterByTag="filterByTag"
             @filterByChannel="filterByChannel"
             @openPreview="openPreview"
@@ -272,5 +327,13 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <WarningModal
+      :title="'Create Mod Profile'"
+      :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
+      :open="showModProfileModal"
+      :primaryButtonText="'Yes, create a mod profile'"
+      @close="showModProfileModal = false"
+      @primaryButtonClick="handleCreateModProfileClick"
+    />
   </div>
 </template>

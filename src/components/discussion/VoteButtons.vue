@@ -1,8 +1,14 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import UpArrowIcon from "../icons/UpArrowIcon.vue";
+import DownArrowIcon from "../icons/DownArrowIcon.vue";
 
 export default defineComponent({
   name: "VoteComponent",
+  components: {
+    DownArrowIcon,
+    UpArrowIcon,
+  },
   props: {
     downvoteActive: {
       type: Boolean,
@@ -20,16 +26,41 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    hasModProfile: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     return {};
   },
   methods: {
-    clickDown() {
-      this.$emit("clickDown");
+    clickDownvote() {
+      if (this.hasModProfile) {
+        if (!this.downvoteActive) {
+          this.$emit("downvote");
+
+          if (this.upvoteActive) {
+            this.$emit("undoUpvote");
+          }
+        } else {
+          this.$emit("undoDownvote");
+        }
+      } else {
+        // Create mod profile, then downvote comment
+        this.$emit("openModProfile");
+      }
     },
-    clickUp() {
-      this.$emit("clickUp");
+    clickUpvote() {
+      if (!this.upvoteActive) {
+        this.$emit("upvote");
+
+        if (this.downvoteActive) {
+          this.$emit("undoDownvote");
+        }
+      } else {
+        this.$emit("undoUpvote");
+      }
     },
   },
 });
@@ -40,16 +71,15 @@ export default defineComponent({
       <i
         class="fa-solid fa-sort-up w-4 hover:text-black cursor-pointer"
         :class="[upvoteActive ? 'text-black' : 'text-gray-400']"
-        @click="clickUp"
+        @click="clickUpvote"
       ></i>
       <v-tooltip activator="parent" location="top"
         >This post should be more visible to others</v-tooltip
       >
     </span>
-
     <span
-      class="inline-flex "
-      :class="downvoteActive ? 'text-black' : 'text-gray-400'"
+      class="justify-center mx-4"
+      :class="downvoteActive || upvoteActive ? 'text-black' : 'text-gray-400'"
       >{{ upvoteCount - downvoteCount }}</span
     >
 
@@ -57,7 +87,7 @@ export default defineComponent({
       <i
         class="fa-solid fa-sort-down  w-4 hover:text-black cursor-pointer"
         :class="[downvoteActive ? 'text-black' : 'text-gray-400']"
-        @click="clickDown"
+        @click="clickDownvote"
       ></i>
       <v-tooltip activator="parent" location="top"
         >This post should be less visible to others</v-tooltip

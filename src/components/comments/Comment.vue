@@ -124,7 +124,7 @@ export default defineComponent({
     showChannel: {
       type: Boolean,
       default: false,
-    }
+    },
   },
   methods: {
     createComment(parentCommentId: string) {
@@ -154,8 +154,8 @@ export default defineComponent({
     },
     async handleCreateModProfileClick() {
       await this.createModProfile();
-      // modProfileNameVar()
-      // this.downvote()
+      modProfileNameVar()
+      this.downvote()
       this.showModProfileModal = false;
       // show snack
     },
@@ -167,7 +167,11 @@ export default defineComponent({
       }
       return `${this.compact ? "" : "posted "}${this.relativeTime(
         this.commentData.createdAt
-      )}${this.showChannel ? " in c/" + this.commentData.CommentSection.Channel.uniqueName : ""}`;
+      )}${
+        this.showChannel
+          ? " in c/" + this.commentData.CommentSection.Channel.uniqueName
+          : ""
+      }`;
     },
     editedAtFormatted() {
       if (!this.commentData.updatedAt) {
@@ -246,7 +250,10 @@ export default defineComponent({
                 @showReplies="showReplies = true"
                 @updateNewComment="updateNewComment"
               />
-              <h2 v-if="linksInText && linksInText.length > 0" class="text-lg mb-2">
+              <h2
+                v-if="linksInText && linksInText.length > 0"
+                class="text-lg mb-2"
+              >
                 Link Previews
               </h2>
               <LinkPreview

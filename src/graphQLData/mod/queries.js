@@ -42,17 +42,17 @@ query getModDownvotedComments($displayName: String!) {
       Channel {
         uniqueName
       }
-      UpvotedByUsersAggregate {
-        count
-      }
       UpvotedByUsers {
         username
       }
-      DownvotedByModeratorsAggregate {
+      UpvotedByUsersAggregate {
         count
       }
       DownvotedByModerators {
         displayName
+      }
+      DownvotedByModeratorsAggregate {
+        count
       }
     }
   }
