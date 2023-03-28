@@ -1,12 +1,14 @@
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 
 export default defineComponent({
   components: {
-    ChevronDownIcon
+    ChevronDownIcon,
   },
-  setup() {},
+  setup() {
+    return { showMenu: ref(false) };
+  },
   props: {
     label: {
       type: String,
@@ -14,41 +16,36 @@ export default defineComponent({
     },
     highlighted: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 });
 </script>
 
 <template>
   <div class="inline-flex items-center">
-    <v-menu>
-      <button
-        :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
-        class="
-          inline-flex
-          max-height-3
-          px-3.5
-          py-2
-          border
-          text-xs
-          font-medium
-          rounded-full
-          text-gray-700
-          bg-white
-          hover:bg-gray-50
-          whitespace-nowrap
-          focus:ring-1 focus:ring-blue-500 focus:border-blue-500
-        "
-      >
-        <slot name="icon"></slot>
+    <v-menu
+      v-model="showMenu"
+      :close-on-content-click="false"
+      location="bottom"
+    >
+      <template v-slot:activator="{ props }">
+        <div v-bind="props">
+          <button
+            :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
+            class="inline-flex max-height-3 px-3.5 py-2 border text-xs font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          >
+            <slot name="icon"></slot>
 
-        {{ label }}
-        <ChevronDownIcon class="-mr-1 ml-1 mt-0.5 h-3 w-3" aria-hidden="true" />
-      </button>
-      <template #popper >
-        <slot name="content"></slot>
+            {{ label }}
+            <ChevronDownIcon
+              class="-mr-1 ml-1 mt-0.5 h-3 w-3"
+              aria-hidden="true"
+            />
+          </button>
+        </div>
       </template>
+      <v-card> <slot name="content"></slot></v-card>
     </v-menu>
   </div>
 </template>

@@ -7,7 +7,6 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
-import Tag from "@/components/tag/Tag.vue";
 import SelectMenu from "../generic/Select.vue";
 import SearchBar from "../generic/SearchBar.vue";
 import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
@@ -15,16 +14,12 @@ import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
   MilesOrKm,
-  timeFilterShortcuts,
-  timeShortcutValues,
   distanceUnitOptions,
-  eventFilterTypeShortcuts,
 } from "@/components/event/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/WeeklyTimePicker.vue";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import Modal from "../generic/Modal.vue";
-import FilterIcon from "@/components/icons/FilterIcon.vue";
 import GenericSmallButton from "../generic/GenericSmallButton.vue";
 import MapIcon from "../icons/MapIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
@@ -41,7 +36,8 @@ import {
 import CreateButton from "../generic/CreateButton.vue";
 import PrimaryButton from "../generic/PrimaryButton.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
+import FilterIcon from "@/components/icons/FilterIcon.vue";
+import GenericButton from "../generic/GenericButton.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -55,6 +51,7 @@ export default defineComponent({
     CreateButton,
     FilterChip,
     FilterIcon,
+    GenericButton,
     GenericSmallButton,
     LocationSearchBar,
     MapIcon,
@@ -63,7 +60,6 @@ export default defineComponent({
     RequireAuth,
     SearchBar,
     SelectMenu,
-    Tag,
     TagIcon,
     TagPicker,
     WeeklyTimePicker,
@@ -92,6 +88,7 @@ export default defineComponent({
   },
 
   setup() {
+    console.log("EventFilterBar setup");
     const defaultFilterLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -118,21 +115,9 @@ export default defineComponent({
 
     const activeDateShortcut = ref(route.query.timeShortcut);
 
-    const titleCase = (str: string) => {
-      if (!str) {
-        return "";
-      }
-      return str
-        .split("_")
-        .filter((x) => x.length > 0)
-        .map((x) => x.charAt(0).toUpperCase() + x.slice(1).toLowerCase())
-        .join(" ");
-    };
-
     const moreFiltersLabel = computed(() => {
       const labels = [];
       const locationFilter = filterValues.value.locationFilter;
-      const timeShortcut = activeDateShortcut.value;
       if (locationFilter !== LocationFilterTypes.NONE) {
         if (locationFilter === LocationFilterTypes.ONLY_VIRTUAL) {
           labels.push("Online events");
@@ -144,9 +129,6 @@ export default defineComponent({
         ) {
           labels.push("In-person events");
         }
-      }
-      if (timeShortcut !== timeShortcutValues.NONE) {
-        labels.push(titleCase(timeShortcut));
       }
 
       if (labels.length === 0) {
@@ -190,9 +172,9 @@ export default defineComponent({
       distanceOptionsForKilometers,
       distanceOptionsForMiles,
       distanceUnitOptions,
+      drawerIsOpen: ref(false),
       filterValues,
       hourRanges,
-      eventFilterTypeShortcuts,
       LocationFilterTypes,
       MI_KM_RATIO: 1.609,
       MilesOrKm,
@@ -205,8 +187,6 @@ export default defineComponent({
       selectedDistanceUnit: ref(MilesOrKm.MI),
       showTimeSlotPicker: ref(false),
       tagLabel,
-      timeFilterShortcuts,
-      timeShortcutValues,
       timeSlotFiltersActive: ref(false),
       weekdays,
     };
@@ -222,6 +202,13 @@ export default defineComponent({
     });
   },
   methods: {
+    handleClickMoreFilters() {
+      console.log("handleClickMoreFilters");
+      this.drawerIsOpen = true;
+    },
+    handleCloseFilters() {
+      this.drawerIsOpen = false;
+    },
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
       // Updating the URL params causes the events
@@ -269,32 +256,6 @@ export default defineComponent({
         this.referencePointAddress = placeData.formatted_address;
       } catch (e: any) {
         throw new Error(e);
-      }
-    },
-
-    handleTimeFilterShortcutClick(shortcut: string) {
-      if (shortcut === this.activeDateShortcut) {
-        // If the filter is currently selected, clear it.
-        this.activeDateShortcut = this.timeFilterShortcuts.NONE;
-        this.updateFilters({
-          timeShortcut: this.timeFilterShortcuts.NONE,
-        });
-      } else {
-        // If the filter is not already selected, select it.
-        this.activeDateShortcut = shortcut;
-        this.updateFilters({
-          timeShortcut: shortcut,
-        });
-      }
-
-      if (shortcut === this.timeFilterShortcuts.PAST_EVENTS) {
-        this.updateLocalState({
-          resultsOrder: reverseChronologicalOrder,
-        });
-      } else {
-        this.updateLocalState({
-          resultsOrder: chronologicalOrder,
-        });
       }
     },
     updateSelectedDistanceUnit(unitOption: DistanceUnit) {
@@ -381,79 +342,6 @@ export default defineComponent({
     toggleTimeSlotPicker() {
       this.showTimeSlotPicker = !this.showTimeSlotPicker;
     },
-    updateEventTypeFilter(e: any) {
-      if (e.locationFilterType === LocationFilterTypes.ONLY_VIRTUAL) {
-        if (
-          this.activeEventFilterTypeShortcut ===
-          LocationFilterTypes.ONLY_VIRTUAL
-        ) {
-          // If the online-only filter was already selected, clear it.
-
-          this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
-          this.updateLocalState({
-            locationFilter: LocationFilterTypes.NONE,
-          });
-          this.updateFilters({
-            locationFilter: LocationFilterTypes.NONE,
-          });
-        } else {
-          this.activeEventFilterTypeShortcut = LocationFilterTypes.ONLY_VIRTUAL;
-          this.updateLocalState({
-            locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
-          });
-          this.updateFilters({
-            locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
-          });
-        }
-      }
-      if (e.locationFilterType === LocationFilterTypes.ONLY_WITH_ADDRESS) {
-        if (
-          this.activeEventFilterTypeShortcut ===
-            LocationFilterTypes.ONLY_WITH_ADDRESS ||
-          this.activeEventFilterTypeShortcut ===
-            LocationFilterTypes.WITHIN_RADIUS
-        ) {
-          // If an in-person filter is already selected, clear it.
-
-          this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
-          this.updateLocalState({
-            locationFilter: LocationFilterTypes.NONE,
-          });
-          this.updateFilters({
-            locationFilter: LocationFilterTypes.NONE,
-          });
-        } else {
-          // There are two filter types for in-person events - ONLY_WITH_ADDRESS,
-          // which filters for events that have a physical address, and WITHIN_RADIUS,
-          // which filters for events whose physical address is within a certain
-          // radius of a reference point address.
-
-          // Affects the values in the query sent to the back end
-          if (this.filterValues.radius !== 0) {
-            // If a radius is set, assume WITHIN_RADIUS should be used. Otherwise,
-            // assume ONLY_WITH_ADDRESS should be used.
-
-            this.activeEventFilterTypeShortcut =
-              LocationFilterTypes.WITHIN_RADIUS;
-            this.updateLocalState({
-              locationFilter: LocationFilterTypes.WITHIN_RADIUS,
-            });
-            this.updateFilters({
-              locationFilter: LocationFilterTypes.WITHIN_RADIUS,
-            });
-          } else {
-            this.activeEventFilterTypeShortcut =
-              LocationFilterTypes.ONLY_WITH_ADDRESS;
-            this.updateLocalState({
-              locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
-            });
-            this.updateFilters({
-              locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
-            });
-          }
-        }
-      }
-    },
   },
 });
 </script>
@@ -465,104 +353,8 @@ export default defineComponent({
     >
       <div class="flex justify-center">
         <div class="flex flex-wrap space-x-1 items-center">
-          <FilterChip
-            class="align-middle"
-            v-if="!channelId"
-            :label="channelLabel"
-            :highlighted="channelLabel !== defaultFilterLabels.channels"
-          >
-            <template v-slot:icon>
-              <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </template>
-            <template v-slot:content>
-              <ChannelPicker
-                :selected-channels="filterValues.channels"
-                @setSelectedChannels="setSelectedChannels"
-              />
-            </template>
-          </FilterChip>
-          <FilterChip
-            class="align-middle"
-            :label="tagLabel"
-            :highlighted="tagLabel !== defaultFilterLabels.tags"
-          >
-            <template v-slot:icon>
-              <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </template>
-            <template v-slot:content>
-              <TagPicker
-                :selected-tags="filterValues.tags"
-                @setSelectedTags="setSelectedTags"
-              />
-            </template>
-          </FilterChip>
+          
 
-          <Modal
-            v-if="showTimeSlotPicker"
-            :title="'Select Weekly Time Slots'"
-            :show="showTimeSlotPicker"
-            :use-custom-buttons="true"
-            @close="showTimeSlotPicker = false"
-          >
-            <template v-slot:icon>
-              <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
-            </template>
-            <template v-slot:content>
-              <WeeklyTimePicker
-                class="py-2 px-8"
-                :selected-weekdays="filterValues.weekdays"
-                :selected-hour-ranges="filterValues.hourRanges"
-                :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
-                @updateWeekdays="updateWeekdays"
-                @updateHourRanges="updateHourRanges"
-                @updateTimeSlots="updateTimeSlots"
-                @resetTimeSlots="resetTimeSlots"
-                @close="toggleTimeSlotPicker"
-              />
-            </template>
-          </Modal>
-          <FilterChip
-            v-if="channelId"
-            class="align-middle"
-            :label="moreFiltersLabel"
-            :highlighted="
-              activeEventFilterTypeShortcut !== timeShortcutValues.NONE ||
-              filterValues.locationFilter !== LocationFilterTypes.NONE
-            "
-          >
-            <template v-slot:icon>
-              <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </template>
-            <template v-slot:content>
-              <div class="flex flex-wrap tagpicker">
-                <Tag
-                  class="align-middle"
-                  v-for="shortcut in timeFilterShortcuts"
-                  :key="shortcut.label"
-                  :tag="shortcut.label"
-                  :active="shortcut.value === activeDateShortcut"
-                  :hide-icon="true"
-                  @click="handleTimeFilterShortcutClick(shortcut.value)"
-                />
-                <Tag
-                  class="align-middle"
-                  v-for="shortcut in eventFilterTypeShortcuts"
-                  :key="shortcut.label"
-                  :tag="shortcut.label"
-                  :hide-icon="true"
-                  :active="
-                    shortcut.locationFilterType ===
-                      activeEventFilterTypeShortcut ||
-                    (shortcut.locationFilterType ===
-                      LocationFilterTypes.ONLY_WITH_ADDRESS &&
-                      filterValues.locationFilter ===
-                        LocationFilterTypes.WITHIN_RADIUS)
-                  "
-                  @click="updateEventTypeFilter(shortcut)"
-                />
-              </div>
-            </template>
-          </FilterChip>
           <SearchBar
             class="inline-flex align-middle"
             :initial-value="filterValues.searchInput"
@@ -570,15 +362,15 @@ export default defineComponent({
             :small="true"
             @updateSearchInput="updateSearchInput"
           />
+          <GenericButton
+            class="align-middle ml-2"
+            :text="'Filters'"
+            @click="handleClickMoreFilters"
+          >
+            <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+          </GenericButton>
 
           <slot></slot>
-          <GenericSmallButton
-            @click="toggleTimeSlotPicker"
-            :active="timeSlotFiltersActive"
-            :text="'Times'"
-          >
-            <ClockIcon class="-ml-0.5 w-4 h-4 mr-2" aria-hidden="true" />
-          </GenericSmallButton>
 
           <div v-if="channelId" class="inline-flex align-middle">
             <GenericSmallButton
@@ -608,93 +400,117 @@ export default defineComponent({
       </div>
     </div>
     <div class="flex justify-center"></div>
-    <div class="flex justify-center">
-      <div v-if="!channelId" class="flex flex-wrap">
-        <Tag
-          class="align-middle"
-          v-for="shortcut in timeFilterShortcuts"
-          :key="shortcut.label"
-          :tag="shortcut.label"
-          :active="shortcut.value === filterValues.timeShortcut"
-          :hide-icon="true"
-          @click="handleTimeFilterShortcutClick(shortcut.value)"
-        />
-        <Tag
-          class="align-middle"
-          v-for="shortcut in eventFilterTypeShortcuts"
-          :key="shortcut.label"
-          :tag="shortcut.label"
-          :hide-icon="true"
-          :active="
-            shortcut.locationFilterType === activeEventFilterTypeShortcut ||
-            (shortcut.locationFilterType ===
-              LocationFilterTypes.ONLY_WITH_ADDRESS &&
-              filterValues.locationFilter === LocationFilterTypes.WITHIN_RADIUS)
-          "
-          @click="updateEventTypeFilter(shortcut)"
-        />
-      </div>
-    </div>
-    <div class="flex justify-center">
+  </div>
+  <div class="flex justify-center">
+    <div class="px-4 block">
       <div
-        class="px-4 block"
-        v-if="
-          route.name === 'SearchEvents' ||
-          route.name === 'SearchEventsInChannel' ||
-          route.name === 'SitewideSearchEventPreview' ||
-          route.name === 'SearchEventPreview'
-        "
+        v-if="filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL"
+        class="items-center space-x-2 flex flex-wrap bold"
       >
-        <div
-          v-if="
-            filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL
-          "
-          class="items-center space-x-2 flex flex-wrap"
-        >
-          Showing {{ loadedEventCount }} online of {{ resultCount }} results
-        </div>
-        <div
-          v-else-if="filterValues.locationFilter === LocationFilterTypes.NONE"
-        >
-          Showing {{ loadedEventCount }} of {{ resultCount }} results
-        </div>
-        <div v-else class="items-center space-x-2 flex flex-wrap">
-          <div class="inline-block">
-            Showing {{ loadedEventCount }} of {{ resultCount }} results within
-          </div>
-          <SelectMenu
-            v-if="distanceUnit === MilesOrKm.KM"
-            class="ml-2 w-36 inline-block"
-            :options="distanceOptionsForKilometers"
-            :default-option="defaultKilometerSelection"
-            @selected="updateSelectedDistance"
-          />
-          <SelectMenu
-            v-if="distanceUnit === MilesOrKm.MI"
-            class="ml-2 w-36 inline-block"
-            :options="distanceOptionsForMiles"
-            :default-option="defaultMileSelection"
-            @selected="updateSelectedDistance"
-          />
-          <SelectMenu
-            class="mr-4 w-18"
-            :options="distanceUnitOptions"
-            :default-option="{
-              label: distanceUnit,
-              value: distanceUnit,
-            }"
-            @selected="updateSelectedDistanceUnit"
-          />
-          <div class="inline-block">of</div>
-          <LocationSearchBar
-            class="flex flex-wrap"
-            :search-placeholder="referencePointAddress"
-            :reference-point-address-name="referencePointName"
-            @updateLocationInput="updateLocationInput"
-          />
-        </div>
+        {{ resultCount }} results
+      </div>
+      <div
+        v-else-if="filterValues.locationFilter === LocationFilterTypes.NONE"
+        class="items-center space-x-2 flex flex-wrap bold"
+      >
+        {{ resultCount }} results
+      </div>
+      <div v-else class="items-center space-x-2 flex flex-wrap bold">
+        <div class="inline-block">{{ resultCount }} results</div>
+       
       </div>
     </div>
+    <sl-drawer
+      label="Event Filters"
+      placement="start"
+      class="drawer-placement-start"
+      :open="drawerIsOpen"
+      @sl-after-hide="handleCloseFilters"
+    >
+    <SelectMenu
+    v-if="distanceUnit === MilesOrKm.KM"
+    class="ml-2 w-36 inline-block"
+    :options="distanceOptionsForKilometers"
+    :default-option="defaultKilometerSelection"
+    @selected="updateSelectedDistance"
+  />
+  <SelectMenu
+    v-if="distanceUnit === MilesOrKm.MI"
+    class="ml-2 w-36 inline-block"
+    :options="distanceOptionsForMiles"
+    :default-option="defaultMileSelection"
+    @selected="updateSelectedDistance"
+  />
+  <SelectMenu
+    class="mr-4 w-18"
+    :options="distanceUnitOptions"
+    :default-option="{
+      label: distanceUnit,
+      value: distanceUnit,
+    }"
+    @selected="updateSelectedDistanceUnit"
+  />
+  <div class="inline-block">of</div>
+  <LocationSearchBar
+    class="flex flex-wrap"
+    :search-placeholder="referencePointAddress"
+    :reference-point-address-name="referencePointName"
+    @updateLocationInput="updateLocationInput"
+  />
+      <FilterChip
+        class="align-middle"
+        v-if="!channelId"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels"
+      >
+        <template v-slot:icon>
+          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+        </template>
+        <template v-slot:content>
+          <ChannelPicker
+            :selected-channels="filterValues.channels"
+            @setSelectedChannels="setSelectedChannels"
+          />
+        </template>
+      </FilterChip>
+      <FilterChip
+        class="align-middle"
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultFilterLabels.tags"
+      >
+        <template v-slot:icon>
+          <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+        </template>
+        <template v-slot:content>
+          <TagPicker
+            :selected-tags="filterValues.tags"
+            @setSelectedTags="setSelectedTags"
+          />
+        </template>
+      </FilterChip>
+      <h2>Time Filters</h2>
+
+      <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
+
+      <WeeklyTimePicker
+        class="py-2 px-8"
+        :selected-weekdays="filterValues.weekdays"
+        :selected-hour-ranges="filterValues.hourRanges"
+        :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
+        @updateWeekdays="updateWeekdays"
+        @updateHourRanges="updateHourRanges"
+        @updateTimeSlots="updateTimeSlots"
+        @resetTimeSlots="resetTimeSlots"
+        @close="toggleTimeSlotPicker"
+      />
+      <div slot="footer">
+        <GenericButton
+          class="align-middle ml-2"
+          :text="'Close'"
+          @click="handleCloseFilters"
+        />
+      </div>
+    </sl-drawer>
   </div>
 </template>
 <style>

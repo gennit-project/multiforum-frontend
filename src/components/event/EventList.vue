@@ -121,9 +121,9 @@ export default defineComponent({
       </p>
     </div>
     
-    <p class="prose px-4 mt-3" v-if="loadedEventCount && resultCount">
+    <!-- <p class="prose px-4 mt-3" v-if="loadedEventCount && resultCount">
       {{ `Showing ${loadedEventCount} of ${resultCount} results` }}
-    </p>
+    </p> -->
       <ul
       v-if="events.length > 0"
       role="list"

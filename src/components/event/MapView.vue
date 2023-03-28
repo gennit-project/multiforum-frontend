@@ -53,7 +53,6 @@ export default defineComponent({
     EventMap,
     EventPreview,
     PreviewContainer,
-    XmarkIcon,
   },
   setup() {
     const { smAndDown } = useDisplay();
@@ -396,22 +395,22 @@ export default defineComponent({
       this.selectedEvent = event;
       this.colorLocked = true;
     },
-    clickCloseMap() {
-      if (this.backToChannel) {
-        this.$router.push({
-          name: "SearchEventsInChannel",
-          params: {
-            channelId: this.backToChannel,
-          },
-          query: this.$route.query,
-        });
-      } else {
-        this.$router.push({
-          path: "/events/list/search",
-          query: this.$route.query,
-        });
-      }
-    },
+    // clickCloseMap() {
+    //   if (this.backToChannel) {
+    //     this.$router.push({
+    //       name: "SearchEventsInChannel",
+    //       params: {
+    //         channelId: this.backToChannel,
+    //       },
+    //       query: this.$route.query,
+    //     });
+    //   } else {
+    //     this.$router.push({
+    //       path: "/events/list/search",
+    //       query: this.$route.query,
+    //     });
+    //   }
+    // },
   },
   // created() {
   //       this.$watch(
@@ -457,7 +456,7 @@ export default defineComponent({
         class="overflow-y-auto flex-col flex-grow border border-2"
         style="width: 34vw"
       >
-        <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
+        <!-- <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
           <button
             type="button"
             class="my-2 py-2 pr-4 pl-2 cursor-pointer bg-white rounded-full inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 align-middle"
@@ -465,7 +464,7 @@ export default defineComponent({
             <XmarkIcon class="h-5 w-5 mt-0.5" aria-hidden="true" />
             Close Map
           </button>
-        </div>
+        </div> -->
         <slot name="search"></slot>
         <EventList
           class="mt-8"
