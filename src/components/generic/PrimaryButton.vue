@@ -41,6 +41,6 @@ export default defineComponent({
       focus:ring-blue-500
     "
   >
-    {{ label }}
+    <slot></slot>{{ label }}
   </button>
 </template>

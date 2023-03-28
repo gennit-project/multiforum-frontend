@@ -15,13 +15,8 @@ export default defineComponent({
       return route.params.channelId;
     });
 
-    const showTopNav = computed(() => {
-      return route.name !== "MapView" && route.name !== "MapEventPreview";
-    });
-
     return {
       channelId,
-      showTopNav,
     };
   },
   name: "WithAuth",
@@ -49,7 +44,6 @@ export default defineComponent({
   <div>
     <nav class="bg-black">
       <TopNav
-        v-if="showTopNav"
         :show-user-profile-dropdown="showUserProfileDropdown"
         @toggleMobileDropdown="toggleMobileDropdown"
         @closeUserProfileDropdown="closeUserProfileDropdown"

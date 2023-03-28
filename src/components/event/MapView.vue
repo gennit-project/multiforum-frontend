@@ -67,26 +67,26 @@ export default defineComponent({
     });
 
     const backToChannel = computed(() => {
-      if (typeof (route.query.backToChannel) === 'string') {
+      if (typeof route.query.backToChannel === "string") {
         return route.query.backToChannel;
       }
-      return ""
-    })
+      return "";
+    });
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
     );
 
     const resultsOrder = computed(() => {
-      if (filterValues.value.timeShortcut === timeShortcutValues.PAST_EVENTS){
-        return reverseChronologicalOrder
+      if (filterValues.value.timeShortcut === timeShortcutValues.PAST_EVENTS) {
+        return reverseChronologicalOrder;
       }
-      return chronologicalOrder
+      return chronologicalOrder;
     });
 
     const eventWhere = computed(() => {
-        return getEventWhere(filterValues.value, false, channelId.value)
-    })
+      return getEventWhere(filterValues.value, false, channelId.value);
+    });
 
     const {
       error: eventError,
@@ -95,15 +95,12 @@ export default defineComponent({
       refetch: refetchEvents,
       onResult: onGetEventResult,
       fetchMore,
-    } = useQuery(
-      GET_EVENTS,
-      {
-        limit: 25,
-        offset: 0,
-        where: eventWhere,
-        resultsOrder: resultsOrder,
-      },
-    );
+    } = useQuery(GET_EVENTS, {
+      limit: 25,
+      offset: 0,
+      where: eventWhere,
+      resultsOrder: resultsOrder,
+    });
 
     const reachedEndOfResults = ref(false);
 
@@ -128,7 +125,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
-            query: route.query
+            query: route.query,
           });
         } else {
           router.push({
@@ -137,7 +134,7 @@ export default defineComponent({
               eventId,
             },
             hash: `#${eventLocationId ? eventLocationId : ""}`,
-            query: route.query
+            query: route.query,
           });
         }
       }
@@ -173,12 +170,10 @@ export default defineComponent({
       previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
-      sendToPreview
+      sendToPreview,
     };
   },
   data() {
-    
-
     return {
       highlightedMarker: null,
       mobileMarkerMap: {} as any,
@@ -210,13 +205,13 @@ export default defineComponent({
       this.desktopMarkerMap = data.markerMap;
     },
     updateMapCenter(placeData: any) {
-        const coords = {
-          lat: placeData.geometry.location.lat(),
-          lng: placeData.geometry.location.lng(),
-        };
+      const coords = {
+        lat: placeData.geometry.location.lat(),
+        lng: placeData.geometry.location.lng(),
+      };
 
-        this.mobileMap.setCenter(coords);
-        this.desktopMap.setCenter(coords);
+      this.mobileMap.setCenter(coords);
+      this.desktopMap.setCenter(coords);
     },
     highlightEventOnMap({
       eventId,
@@ -321,7 +316,7 @@ export default defineComponent({
       eventData: EventData,
       clickedMapMarker: boolean | false
     ) {
-      this.sendToPreview( eventId, eventLocationId);
+      this.sendToPreview(eventId, eventLocationId);
 
       this.highlightedEventLocationId = eventLocationId;
 
@@ -401,23 +396,22 @@ export default defineComponent({
       this.selectedEvent = event;
       this.colorLocked = true;
     },
-    clickCloseMap(){
+    clickCloseMap() {
       if (this.backToChannel) {
         this.$router.push({
           name: "SearchEventsInChannel",
           params: {
             channelId: this.backToChannel,
           },
-          query: this.$route.query
-        })
+          query: this.$route.query,
+        });
       } else {
-        this.$router.push({ 
+        this.$router.push({
           path: "/events/list/search",
-          query: this.$route.query
-        })
+          query: this.$route.query,
+        });
       }
-      
-    }
+    },
   },
   // created() {
   //       this.$watch(
@@ -438,7 +432,10 @@ export default defineComponent({
       v-else-if="eventError"
       :text="eventError.message"
     />
-    <div id="mapViewMobileWidth" v-else-if="smAndDown && eventResult && eventResult.events">
+    <div
+      id="mapViewMobileWidth"
+      v-else-if="smAndDown && eventResult && eventResult.events"
+    >
       <EventMap
         v-if="eventResult.events.length > 0"
         :events="eventResult.events"
@@ -451,37 +448,27 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
     </div>
-    <div  v-else-if="!smAndDown && eventResult && eventResult.events" id="mapViewFullScreen" class="flex flex-row">
+    <div
+      v-else-if="!smAndDown && eventResult && eventResult.events"
+      id="mapViewFullScreen"
+      class="flex flex-row"
+    >
       <div
-        class="h-full max-h-screen overflow-y-auto flex-col flex-grow border border-2"
+        class="overflow-y-auto flex-col flex-grow border border-2"
         style="width: 34vw"
       >
-      <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
-        <button
-          type="button"
-          class="
-            my-2
-            py-2
-            pr-4
-            pl-2
-            cursor-pointer
-            bg-white
-            rounded-full
-            inline-flex
-            text-gray-400
-            hover:text-gray-500
-            focus:outline-none
-            focus:ring-2
-            focus:ring-offset-2
-            focus:ring-indigo-500
-            align-middle
-          "
-        >
-          <XmarkIcon class="h-5 w-5 mt-0.5" aria-hidden="true" />
-          Close Map
-        </button>
-      </div>
+        <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
+          <button
+            type="button"
+            class="my-2 py-2 pr-4 pl-2 cursor-pointer bg-white rounded-full inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 align-middle"
+          >
+            <XmarkIcon class="h-5 w-5 mt-0.5" aria-hidden="true" />
+            Close Map
+          </button>
+        </div>
+        <slot name="search"></slot>
         <EventList
+          class="mt-8"
           key="highlightedEventId"
           :events="eventResult.events"
           :channel-id="channelId"
@@ -501,7 +488,8 @@ export default defineComponent({
         />
       </div>
       <div style="right: 0; width: 66vw">
-        <EventMap
+        <slot name="map-buttons"></slot>
+        <!-- <EventMap
           class="fixed"
           v-if="eventResult.events.length > 0"
           :events="eventResult.events"
@@ -512,7 +500,7 @@ export default defineComponent({
           @open-preview="openPreview"
           @lockColors="colorLocked = true"
           @setMarkerData="setMarkerData"
-        />
+        /> -->
       </div>
     </div>
     <EventPreview

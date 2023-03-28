@@ -51,18 +51,6 @@ export const router = createRouter({
       component: CreateUsernamePage,
     },
     {
-      name: "MapView",
-      path: "/map",
-      component: MapView,
-      children: [
-        {
-          name: "MapEventPreview",
-          path: "/map/search/:eventId",
-          component: EventDetail,
-        },
-      ],
-    },
-    {
       name: "SearchEvents",
       path: "/events",
       component: SearchEvents,
@@ -73,7 +61,7 @@ export const router = createRouter({
           component: EventListView,
           children: [
             {
-              name: "SitewideSearchEventPreview",
+              name: "MapEventPreview",
               path: ":eventId",
               component: EventDetail,
             },
