@@ -88,7 +88,6 @@ export default defineComponent({
   },
 
   setup() {
-    console.log("EventFilterBar setup");
     const defaultFilterLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -203,7 +202,6 @@ export default defineComponent({
   },
   methods: {
     handleClickMoreFilters() {
-      console.log("handleClickMoreFilters");
       this.drawerIsOpen = true;
     },
     handleCloseFilters() {

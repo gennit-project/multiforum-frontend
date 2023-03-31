@@ -3,7 +3,6 @@ import { defineComponent, PropType, computed, ref } from "vue";
 import ChannelDiscussionListItem from "./ChannelDiscussionListItem.vue";
 import LoadMore from "../generic/LoadMore.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import { gql } from "@apollo/client/core";
 import { DiscussionData } from "../../types/discussionTypes";
 import { useRoute, useRouter } from "vue-router";
 import WarningModal from "../generic/WarningModal.vue";
@@ -11,7 +10,10 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
 import { modProfileNameVar } from "@/cache";
+
+const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
   // The reason we have separate components for the sidewide discussion
@@ -30,76 +32,20 @@ export default defineComponent({
       return "";
     });
 
-    const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
-      query getDiscussions(
-        $channelId: String
-        $where: DiscussionWhere
-        $resultsOrder: [DiscussionSort!]
-        $offset: Int
-        $limit: Int
-      ) {
-        discussionsAggregate(where: $where) {
-          count
-        }
-        discussions(
-          where: $where
-          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
-        ) {
-          id
-          Channels {
-            uniqueName
-          }
-          title
-          body
-          createdAt
-          Author {
-            username
-          }
-          Tags {
-            text
-          }
-          ChannelsAggregate {
-            count
-          }
-         
-          UpvotedByUsers {
-            username
-          }
-          UpvotedByUsersAggregate {
-            count
-          }
-          DownvotedByModeratorsAggregate {
-            count
-          }
-          DownvotedByModerators {
-            displayName
-          }
-          CommentSections(where: { Channel: { uniqueName: $channelId } }) {
-            id
-            __typename
-            
-            UpvotedByUsers {
-              username
-            }
-            UpvotedByUsersAggregate {
-              count
-            }
-            DownvotedByModerators {
-              displayName
-            }
-            DownvotedByModeratorsAggregate {
-              count
-            }
-            OriginalPost {
-              ... on Discussion {
-                id
-                title
-              }
-            }
-          }
-        }
-      }
-    `;
+    const discussionQueryFilters = computed(() => {
+      // We pass the current filters as a prop
+      // to the discussion list item so that the Apollo
+      // cache be updated properly when the user
+      // votes from the list view.
+      return {
+        where: props.discussionWhere,
+        limit: DISCUSSION_PAGE_LIMIT,
+        offset: 0,
+        resultsOrder: {
+          createdAt: "DESC",
+        },
+      };
+    });
 
     const {
       result: discussionResult,
@@ -111,12 +57,7 @@ export default defineComponent({
     } = useQuery(
       GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
       {
-        where: props.discussionWhere,
-        limit: 25,
-        offset: 0,
-        resultsOrder: {
-          createdAt: "DESC",
-        },
+        ...discussionQueryFilters.value,
       },
       {
         fetchPolicy: "network-only",
@@ -174,7 +115,6 @@ export default defineComponent({
       sendToPreview(defaultSelectedDiscussion.id);
     });
 
-
     const {
       result: localUsernameResult,
       loading: localUsernameLoading,
@@ -199,11 +139,7 @@ export default defineComponent({
       }));
 
     onDoneCreateModProfile(({ data }) => {
-      console.log('tried to to create profile for username ,',username.value?.username)
-
       const updatedUser = data.updateUsers.users[0];
-      console.log('data ', data)
-      
 
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
@@ -213,6 +149,7 @@ export default defineComponent({
       discussionError,
       discussionLoading,
       discussionResult,
+      discussionQueryFilters,
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
@@ -257,7 +194,7 @@ export default defineComponent({
     ChannelDiscussionListItem,
     ErrorBanner,
     LoadMore,
-    WarningModal
+    WarningModal,
   },
   methods: {
     openPreview(data: DiscussionData) {
@@ -272,10 +209,10 @@ export default defineComponent({
       this.$emit("filterByChannel", channel);
     },
     async handleCreateModProfileClick() {
-      console.log('clicked handle create mod profile ')
+      console.log("clicked handle create mod profile ");
       await this.createModProfile();
-      modProfileNameVar()
-      this.downvote()
+      modProfileNameVar();
+      this.downvote();
       this.showModProfileModal = false;
       // show snack
     },
@@ -308,6 +245,7 @@ export default defineComponent({
             v-for="discussion in discussionResult.discussions"
             :key="discussion.id"
             :discussion="discussion"
+            :discussion-query-filters="discussionQueryFilters"
             :comment-section="discussion.CommentSections[0]"
             :search-input="searchInput"
             :selected-tags="selectedTags"

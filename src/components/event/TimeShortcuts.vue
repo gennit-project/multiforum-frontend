@@ -71,10 +71,6 @@ export default defineComponent({
       };
     },
     handleTimeFilterShortcutClick(shortcut: string) {
-        console.log({
-            shortcut,
-            activeDateShortcut: this.activeDateShortcut,
-        })
       if (shortcut === this.activeDateShortcut) {
         // If the filter is currently selected, clear it.
         this.activeDateShortcut = this.timeFilterShortcuts.NONE;

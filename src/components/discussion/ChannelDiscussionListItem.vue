@@ -23,11 +23,17 @@ import {
   UNDO_UPVOTE_COMMENT_SECTION,
   UNDO_DOWNVOTE_COMMENT_SECTION,
 } from "@/graphQLData/discussion/mutations";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 
 export default defineComponent({
   props: {
+    discussionQueryFilters: {
+      type: Object as PropType<Object>,
+      default: () => {
+        return {};
+      },
+    },
     commentSection: {
       type: Object as PropType<CommentSectionData>,
       required: false,
@@ -140,7 +146,9 @@ export default defineComponent({
       },
     }));
 
-    const relevantCommentSection = ref(props.commentSection);
+    const relevantCommentSection = computed(() => {
+      return props.commentSection;
+    });
 
     const {
       mutate: downvoteCommentSection,
@@ -157,6 +165,72 @@ export default defineComponent({
         variables: {
           id: relevantCommentSection.value.id,
           username: localUsernameResult.value?.username || "",
+        },
+        update: (cache: any, result: any) => {
+          // when comment section is upvoted, update discussion in cache to add it there
+          console.log("result", result);
+          cache.modify({
+            fields: {
+              discussions() {
+                const newCommentSection =
+                  result.data.updateCommentSections.commentSections[0];
+                // when comment section is created, update discussion in cache to add it there
+                const readQueryResult = cache.readQuery({
+                  query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+                  variables: {
+                    ...props.discussionQueryFilters,
+                  },
+                });
+                const existingDiscussions = readQueryResult?.discussions || [];
+                const discussionToUpdate = existingDiscussions.find(
+                  (discussion: any) =>
+                    discussion.id === discussionIdInParams.value
+                );
+                const newDiscussion = {
+                  ...discussionToUpdate,
+                  CommentSections: [
+                    ...discussionToUpdate.CommentSections,
+                    newCommentSection,
+                  ],
+                };
+                console.log({
+                  readQueryResult,
+                  existingDiscussions,
+                  discussionToUpdate,
+                  newDiscussion,
+                  output: {
+                    ...readQueryResult,
+                    discussions: [
+                      ...existingDiscussions.filter(
+                        (discussion: any) =>
+                          discussion.id !== discussionIdInParams.value
+                      ),
+                      newDiscussion,
+                    ],
+                  },
+                });
+
+                if (readQueryResult) {
+                  cache.writeQuery({
+                    query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+                    data: {
+                      ...readQueryResult,
+                      discussions: [
+                        ...existingDiscussions.filter(
+                          (discussion: any) =>
+                            discussion.id !== discussionIdInParams.value
+                        ),
+                        newDiscussion,
+                      ],
+                    },
+                    variables: {
+                      ...props.discussionQueryFilters,
+                    },
+                  });
+                }
+              },
+            },
+          });
         },
       }));
 
@@ -208,53 +282,14 @@ export default defineComponent({
           },
         ],
       },
-      update: (cache: any, result: any) => {
-        // when comment section is created, update discussion in cache to add it there
-        cache.modify({
-          fields: {
-            discussions() {
-              const readQueryResult = cache.readQuery({
-                query: GET_DISCUSSION,
-                variables: {
-                  id: discussionIdInParams.value,
-                },
-              });
-              if (readQueryResult) {
-                const existingDiscussion = readQueryResult.discussions[0];
-                const newCommentSection =
-                  result.data?.createCommentSections?.commentSections[0];
-                cache.writeQuery({
-                  query: GET_DISCUSSION,
-                  data: {
-                    discussions: [
-                      {
-                        ...existingDiscussion,
-                        CommentSections: [
-                          ...existingDiscussion.CommentSections,
-                          newCommentSection,
-                        ],
-                      },
-                    ],
-                  },
-                  variables: {
-                    id: discussionIdInParams.value,
-                  },
-                });
-              }
-            },
-          },
-        });
-      },
     }));
 
     createCommentSectionOnDone((result) => {
-      console.log("new comment section data", result.data);
       const newCommentSection =
         result.data?.createCommentSections.commentSections[0];
 
       if (newCommentSection) {
         relevantCommentSection.value = newCommentSection;
-        console.log("set id to ", newCommentSection.id);
       } else {
         console.error("new comment section not created");
       }
@@ -268,7 +303,10 @@ export default defineComponent({
       ) {
         return false;
       }
+      console.log("update logged in user upvoted");
       const users = relevantCommentSection.value.UpvotedByUsers || [];
+
+      console.log("relevant comment section is ", relevantCommentSection.value);
       const loggedInUser = localUsernameResult.value.username;
       const match =
         users.filter((user: any) => {
@@ -278,7 +316,6 @@ export default defineComponent({
     });
 
     const loggedInUserDownvoted = computed(() => {
-      console.log("relevantCommentSection.value", relevantCommentSection.value)
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
@@ -398,10 +435,6 @@ export default defineComponent({
       this.downvoteDiscussion(); // counts toward sitewide ranking
 
       if (this.relevantCommentSection.id) {
-        console.log(
-          "downvoting comment section",
-          this.relevantCommentSection.id
-        );
         this.downvoteCommentSection(); // counts toward ranking within channel
       } else {
         await this.createCommentSection();
@@ -412,7 +445,6 @@ export default defineComponent({
       this.upvoteDiscussion(); // counts toward sitewide ranking
 
       if (this.relevantCommentSection.id) {
-        console.log("upvoting comment section", this.relevantCommentSection.id);
         this.upvoteCommentSection(); // counts toward ranking within channel
       } else {
         await this.createCommentSection();

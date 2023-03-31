@@ -105,6 +105,21 @@ export const UPVOTE_COMMENT_SECTION = gql`
         UpvotedByUsersAggregate {
           count
         }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
+        OriginalPost {
+          ... on Discussion {
+            id
+            title
+            Author {
+              username
+            }
+          }
+        }
       }
     }
   }

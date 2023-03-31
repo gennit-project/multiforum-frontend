@@ -25,7 +25,6 @@ export default defineComponent({
     DiscussionIcon,
   },
   setup() {
-    console.log('top nav')
     const { isAuthenticated, loginWithPopup } = useAuth0();
 
     const { result } = useQuery(GET_LOCAL_USERNAME);
