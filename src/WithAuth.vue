@@ -115,7 +115,6 @@ export default defineComponent({
 <template>
   <div>
     <ErrorBanner v-if="error" :text="error"/>
-    <CreateUsernamePage v-else-if="!localUsernameLoading && !emailLoading && hasEmailButNotUsername"> </CreateUsernamePage>
   </div>
 </template>
 

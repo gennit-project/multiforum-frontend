@@ -209,7 +209,6 @@ export default defineComponent({
       this.$emit("filterByChannel", channel);
     },
     async handleCreateModProfileClick() {
-      console.log("clicked handle create mod profile ");
       await this.createModProfile();
       modProfileNameVar();
       this.downvote();

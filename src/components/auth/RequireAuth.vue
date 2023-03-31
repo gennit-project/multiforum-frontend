@@ -53,8 +53,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="isLoading">Loading...</div>
-    <div v-else-if="isAuthenticated && (!requireOwnership || isOwner)">
+    <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
     </div>
     <div v-else @click="loginWithPopup">

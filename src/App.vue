@@ -19,7 +19,8 @@ export default defineComponent({
 
 <template>
   <div class="h-screen">
-    <WithAuth v-if="isAuthenticated && user?.email" :email="user.email" />
+    <div v-if="isLoading">Loading...</div>
+    <WithAuth v-else-if="isAuthenticated && user?.email" :email="user.email" />
     <MainLayout />
   </div>
 </template>
