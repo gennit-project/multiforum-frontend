@@ -157,74 +157,73 @@ export default defineComponent({
       return props.commentSection?.id || "";
     });
 
+    const updateQueryResult = (cache: any, result: any) => {
+      // when comment section is upvoted, update discussion in cache to add it there.
+      // The query result has to be updated so that when the user clicks
+      // upvote or downvote, the arrow will appear black, indicating that
+      // the logged in user has clicked it. The score will also be updated
+      // and highlighted.
+
+      cache.modify({
+        fields: {
+          discussions() {
+            const newCommentSection =
+              result.data.updateCommentSections.commentSections[0];
+
+            // when comment section is created, update discussion in cache to add it there
+            const readQueryResult = cache.readQuery({
+              query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+              variables: {
+                ...props.discussionQueryFilters,
+              },
+            });
+
+            const existingDiscussions = readQueryResult?.discussions || [];
+
+            const discussionToUpdate = existingDiscussions.find(
+              (discussion: any) => discussion.id === discussionIdInParams.value
+            );
+
+            const existingCommentSections = discussionToUpdate.CommentSections;
+
+            const newDiscussion = {
+              ...discussionToUpdate,
+              CommentSections: [...existingCommentSections, newCommentSection],
+            };
+
+            if (readQueryResult) {
+              cache.writeQuery({
+                query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+                data: {
+                  ...readQueryResult,
+                  discussions: [
+                    ...existingDiscussions.filter(
+                      (discussion: any) =>
+                        discussion.id !== discussionIdInParams.value
+                    ),
+                    newDiscussion,
+                  ],
+                },
+                variables: {
+                  ...props.discussionQueryFilters,
+                },
+              });
+            }
+          },
+        },
+      });
+    };
+
     const {
       mutate: downvoteCommentSection,
       error: downvoteCommentSectionError,
     } = useMutation(DOWNVOTE_COMMENT_SECTION, () => ({
-      variables: {
-        id: commentSectionId.value,
-        displayName: loggedInUserModName.value,
-      },
+      update: updateQueryResult,
     }));
 
     const { mutate: upvoteCommentSection, error: upvoteCommentSectionError } =
       useMutation(UPVOTE_COMMENT_SECTION, () => ({
-        update: (cache: any, result: any) => {
-          // when comment section is upvoted, update discussion in cache to add it there
-          cache.modify({
-            fields: {
-              discussions() {
-                const newCommentSection =
-                  result.data.updateCommentSections.commentSections[0];
-
-                // when comment section is created, update discussion in cache to add it there
-                const readQueryResult = cache.readQuery({
-                  query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
-                  variables: {
-                    ...props.discussionQueryFilters,
-                  },
-                });
-
-                const existingDiscussions = readQueryResult?.discussions || [];
-
-                const discussionToUpdate = existingDiscussions.find(
-                  (discussion: any) =>
-                    discussion.id === discussionIdInParams.value
-                );
-
-                const existingCommentSections = discussionToUpdate
-                  .CommentSections;
-
-                const newDiscussion = {
-                  ...discussionToUpdate,
-                  CommentSections: [
-                    ...existingCommentSections,
-                    newCommentSection,
-                  ],
-                };
-
-                if (readQueryResult) {
-                  cache.writeQuery({
-                    query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
-                    data: {
-                      ...readQueryResult,
-                      discussions: [
-                        ...existingDiscussions.filter(
-                          (discussion: any) =>
-                            discussion.id !== discussionIdInParams.value
-                        ),
-                        newDiscussion,
-                      ],
-                    },
-                    variables: {
-                      ...props.discussionQueryFilters,
-                    },
-                  });
-                }
-              },
-            },
-          });
-        },
+        update: updateQueryResult,
       }));
 
     const {
@@ -247,35 +246,32 @@ export default defineComponent({
       },
     }));
 
-    const {
-      mutate: createCommentSection,
-      error: createCommentSectionError,
-    } = useMutation(CREATE_COMMENT_SECTION, () => ({
-      errorPolicy: "all",
-      variables: {
-        createCommentSectionInput: [
-          {
-            OriginalPost: {
-              Discussion: {
-                connect: {
-                  where: {
-                    node: {
-                      id: discussionIdInParams.value,
+    const { mutate: createCommentSection, error: createCommentSectionError } =
+      useMutation(CREATE_COMMENT_SECTION, () => ({
+        errorPolicy: "all",
+        variables: {
+          createCommentSectionInput: [
+            {
+              OriginalPost: {
+                Discussion: {
+                  connect: {
+                    where: {
+                      node: {
+                        id: discussionIdInParams.value,
+                      },
                     },
                   },
                 },
               },
-            },
-            Channel: {
-              connect: {
-                where: { node: { uniqueName: channelIdInParams.value } },
+              Channel: {
+                connect: {
+                  where: { node: { uniqueName: channelIdInParams.value } },
+                },
               },
             },
-          },
-        ],
-      },
-    }));
-
+          ],
+        },
+      }));
 
     const loggedInUserUpvoted = computed(() => {
       if (
@@ -415,22 +411,34 @@ export default defineComponent({
       // shows the sum of all votes in all channels.
       this.downvoteDiscussion(); // counts toward sitewide ranking
 
-      if (!this.username) {
-        throw new Error("Username is required to downvote")
+      if (!this.loggedInUserModName) {
+        throw new Error("Username is required to downvote");
       }
 
       if (this.commentSection.id) {
-        this.downvoteCommentSection(); // counts toward ranking within channel
+        this.downvoteCommentSection({
+          id: this.commentSection.id,
+          displayName: this.loggedInUserModName || "",
+        }); // counts toward ranking within channel
       } else {
-        await this.createCommentSection();
-        this.downvoteCommentSection(); // counts toward ranking within channel
+        const newCommentSection = await this.createCommentSection();
+        const newCommentSectionId =
+          newCommentSection.data.createCommentSections.commentSections[0].id;
+
+        // We pass the variables in at the last minute
+        // so that we can use the new comment section id
+        // that was just created.
+        this.downvoteCommentSection({
+          id: newCommentSectionId,
+          displayName: this.loggedInUserModName || "",
+        }); // counts toward ranking within channel
       }
     },
     async upvote() {
       this.upvoteDiscussion(); // counts toward sitewide ranking
 
       if (!this.username) {
-        throw new Error("Username is required to upvote")
+        throw new Error("Username is required to upvote");
       }
 
       if (this.commentSection.id) {
@@ -440,9 +448,13 @@ export default defineComponent({
         }); // counts toward ranking within channel
       } else {
         const newCommentSection = await this.createCommentSection();
-        const newCommentSectionId = newCommentSection.data.createCommentSections
-          .commentSections[0].id;
+        const newCommentSectionId =
+          newCommentSection.data.createCommentSections.commentSections[0].id;
+
         this.upvoteCommentSection({
+          // We pass the variables in at the last minute
+          // so that we can use the new comment section id
+          // that was just created.
           id: newCommentSectionId,
           username: this.username || "",
         }); // counts toward ranking within channel

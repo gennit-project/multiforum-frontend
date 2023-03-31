@@ -208,11 +208,26 @@ export const DOWNVOTE_COMMENT_SECTION = gql`
     ) {
       commentSections {
         id
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
         DownvotedByModerators {
           displayName
         }
         DownvotedByModeratorsAggregate {
           count
+        }
+        OriginalPost {
+          ... on Discussion {
+            id
+            title
+            Author {
+              username
+            }
+          }
         }
       }
     }

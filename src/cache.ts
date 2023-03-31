@@ -39,7 +39,17 @@ const cache = new InMemoryCache({
         },
         CommentSections: {
           merge: false
-        }
+        },
+        DownvotedByModerators: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
+        UpvotedByUsers: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
       },
     },
     Event: {
@@ -53,9 +63,18 @@ const cache = new InMemoryCache({
         },
       },
     },
-    CommentSections: {
-      keyFields: ["id"],
+    CommentSection: {
       fields: {
+        DownvotedByModerators: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
+        UpvotedByUsers: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
         Comments: {
           merge: false,
         }
