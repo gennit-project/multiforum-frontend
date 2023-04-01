@@ -3,7 +3,7 @@ const now = DateTime.now();
 const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
 const defaultStartTimeISO = defaultStartTimeObj.toISO();
 
-export default (channelId) => {
+export default (channelId: string) => {
   return {
     title: "",
     description: "",

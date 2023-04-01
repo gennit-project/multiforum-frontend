@@ -358,10 +358,10 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.51.tgz#cfd70924a25a3fd32b218e5e420e6897e1ac4f40"
   integrity sha512-CuPgU6f3eT/XgKKPqKd/gLZV1Xmvf1a2R5POBOGQa6uv82xpls89HU5zKeVoyR8XzHd1RGNOlQlvUe3CFkjWNQ==
 
-"@types/google.maps@^3.49.2":
-  version "3.50.5"
-  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.50.5.tgz#a0d12675b547205fc163c4b8d999db305ba3862a"
-  integrity sha512-RuZf1MJtctGlpW+Gd4a/eGtAufUDjMf+eyN1l+B3fbe2YLScJbg8KEljJfb+6vnSPFAeM1/48geVIEg3vqOkxw==
+"@types/google.maps@^3.52.4":
+  version "3.52.4"
+  resolved "https://registry.yarnpkg.com/@types/google.maps/-/google.maps-3.52.4.tgz#01d640d7c49f153570b22fe337a35aea7ac41eb9"
+  integrity sha512-FXtZsLDX7fbxJ03zbze3MdUjaH4Y/zRmW8O65LNIWEHJ7RqddrabusRm/U3zF1ifmqe8y4oPqBvs+vBG8kv0yQ==
 
 "@types/json-schema@*", "@types/json-schema@^7.0.8", "@types/json-schema@^7.0.9":
   version "7.0.11"

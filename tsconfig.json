@@ -17,10 +17,10 @@
     "baseUrl": ".",
     "types": [
       "webpack-env",
-      "@types/google.maps",
-      "@types/luxon",
-      "@types/markdown-it",
-      "@types/node",
+      "google.maps",
+      "luxon",
+      "markdown-it",
+      "node",
       "vite/client",
     ],
     "paths": {

@@ -1,8 +1,24 @@
-<script lang="js">
-import { defineComponent, onMounted, ref } from "vue";
+<script lang="ts">
+import { defineComponent, onMounted, ref, SetupContext } from "vue";
 import { Loader } from '@googlemaps/js-api-loader';
 import { useRouter } from 'vue-router'
 import config from "@/config";
+
+interface Event {
+  location: {
+    latitude: number;
+    longitude: number;
+  };
+  id: string;
+}
+
+interface MarkerMap {
+  [key: string]: {
+    marker: google.maps.Marker;
+    events: { [key: string]: Event };
+    numberOfEvents: number;
+  };
+}
 
 export default defineComponent({
   name: "EventMap",
@@ -12,7 +28,7 @@ export default defineComponent({
       required: true
     },
     events: {
-      type: Array,
+      type: Array as () => Event[],
       default: () => { return [] },
     },
     previewIsOpen: {
@@ -24,20 +40,26 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props, { emit }) {
+    // The Google map requires that the styles have to be set
+    // when the map is rendered and they can't change based on props.
+    // And if we render both mobile and desktop maps with the same map div,
+    // with the same ref, and just hide one with CSS, that doesn't work because
+    // all markers get painted on both maps twice. That's bad because if a
+    // map marker is highlighted, it calls the maps API excessively, and the markers
+    // appear to be un-highlighted due the duplicated and overlapping map
+    // markers. So the workaround is to create two different maps
+    // for desktop and mobile, which reference two different map divs.
+    setup(props, { emit }: SetupContext) {
     const router = useRouter()
     const loader = new Loader({ 
       apiKey: config.googleMapsApiKey,
       version: "weekly",
     })
-    const mobileMapDiv = ref(null)
-    const desktopMapDiv = ref(null)
-    let map = ref(null)
+    const mobileMapDiv = ref<HTMLElement | null>(null)
+    const desktopMapDiv = ref<HTMLElement | null>(null)
+    const map = ref<google.maps.Map | null>(null)
 
-    // Only have one marker per location, even if multiple
-    // events are at the location.
-    let markerMap = {};
-
+    let markerMap: MarkerMap = {};
 
     onMounted(async () => {
       await loader.load()
@@ -47,32 +69,21 @@ export default defineComponent({
         zoom: 7,
         mapTypeId: "terrain"
       }
-      /* eslint-disable */
+      
       if (props.useMobileStyles) {
-        // The Google map requires that the styles have to be set
-        // when the map is rendered and they can't change based on props.
-        // And if we render both mobile and desktop maps with the same map div,
-        // with the same ref, and just hide one with CSS, that doesn't work because
-        // all markers get painted on both maps twice. That's bad because if a
-        // map marker is highlighted, it calls the maps API excessively, and the markers
-        // appear to be un-highlighted due the duplicated and overlapping map
-        // markers. So the workaround is to create two different maps
-        // for desktop and mobile, which reference two different map divs.
-        map.value = new google.maps.Map(mobileMapDiv.value, mapConfig)
+        map.value = new google.maps.Map(mobileMapDiv.value!, mapConfig)
       } else {
-        map.value = new google.maps.Map(desktopMapDiv.value, mapConfig)
+        map.value = new google.maps.Map(desktopMapDiv.value!, mapConfig)
       }
 
       let bounds = new google.maps.LatLngBounds();
 
       const infowindow = new google.maps.InfoWindow()
-      /* eslint-enable */
 
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i];
 
         if (event.location) {
-          // eslint-disable-next-line
           const marker = new google.maps.Marker({
             position: {
               lat: event.location.latitude,
@@ -87,9 +98,7 @@ export default defineComponent({
             }
           });
 
-          // Extend the map bounds to include each marker's position
-          // as shown in this Stack Overflow answer https://stackoverflow.com/questions/15719951/auto-center-map-with-multiple-markers-in-google-maps-api-v3
-          bounds.extend(marker.position);
+          bounds.extend(marker.getPosition()!);
 
           const eventLocationId = event.location.latitude.toString() + event.location.longitude.toString();
 
@@ -97,7 +106,6 @@ export default defineComponent({
             emit("openPreview", event, true)
             emit("lockColors")
           })
-
 
           marker.addListener("mouseover", () => {
             if (!props.colorLocked) {

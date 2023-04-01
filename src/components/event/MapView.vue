@@ -488,7 +488,7 @@ export default defineComponent({
       </div>
       <div style="right: 0; width: 66vw">
         <slot name="map-buttons"></slot>
-        <!-- <EventMap
+        <EventMap
           class="fixed"
           v-if="eventResult.events.length > 0"
           :events="eventResult.events"
@@ -499,7 +499,7 @@ export default defineComponent({
           @open-preview="openPreview"
           @lockColors="colorLocked = true"
           @setMarkerData="setMarkerData"
-        /> -->
+        />
       </div>
     </div>
     <EventPreview
