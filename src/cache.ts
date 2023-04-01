@@ -52,6 +52,21 @@ const cache = new InMemoryCache({
         },
       },
     },
+    Comment: {
+      keyFields: ["id"],
+      fields: {
+        DownvotedByModerators: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
+        UpvotedByUsers: {
+          merge(existing, incoming) {
+            return incoming;
+          }
+        },
+      }
+    },
     Event: {
       keyFields: ["id"],
       fields: {
