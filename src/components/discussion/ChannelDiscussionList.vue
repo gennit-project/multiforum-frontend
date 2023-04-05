@@ -64,13 +64,6 @@ export default defineComponent({
       }
     );
 
-    const resultCount = computed(() => {
-      if (discussionLoading || !discussionResult.value) {
-        return 0;
-      }
-      return discussionResult.value.DiscussionsAggregate?.aggregate?.count;
-    });
-
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
@@ -151,6 +144,7 @@ export default defineComponent({
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
     });
+    
     return {
       createModProfile,
       discussionError,
@@ -160,7 +154,6 @@ export default defineComponent({
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
-      resultCount,
       selectedDiscussion: {} as DiscussionData,
       showModProfileModal: ref(false),
     };
@@ -240,7 +233,7 @@ export default defineComponent({
     <div v-else>
       <p class="sm:px-4">
         Showing {{ discussionResult.discussions.length }} of
-        {{ resultCount }} results
+        {{ discussionResult.discussionsAggregate?.count }} results
       </p>
       <div class="h-full bg-white">
         <ul role="list" class="relative my-2 bg-white rounded border border-1">
@@ -266,7 +259,7 @@ export default defineComponent({
           <LoadMore
             class="justify-self-center"
             :reached-end-of-results="
-              resultCount === discussionResult.discussions.length
+              discussionResult.discussionsAggregate?.count === discussionResult.discussions.length
             "
             @loadMore="$emit('loadMore')"
           />

@@ -197,7 +197,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div class="pt-1">
+    <div class="pt-1 px-4">
       <div class="mt-2 flex justify-between mx-auto max-w-5xl">
         <div class="flex inline-flex">
           <SearchBar

@@ -232,7 +232,7 @@ export default defineComponent({
       :text="discussionError.message"
     />
     <p
-      v-else-if="discussionResult && discussionResult.discussions.length > 0"
+      v-else-if="discussionResult && discussionResult.discussions.length === 0"
       class="px-4"
     >
       There are no results.
