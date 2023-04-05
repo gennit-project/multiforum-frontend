@@ -28,7 +28,6 @@ export default defineComponent({
     CreateButton,
     ErrorBanner,
     FilterChip,
-    ImageChip,
     PrimaryButton,
     RequireAuth,
     SearchBar,
@@ -65,7 +64,7 @@ export default defineComponent({
 
     const channelWhere = computed(() => {
       const tagSearch = {
-        TagsConnection: {
+        Tags: {
           OR: selectedTags.value.map((tag: string) => {
             return { text_MATCHES: `(?i)${tag}` };
           }),

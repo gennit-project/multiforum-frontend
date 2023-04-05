@@ -200,7 +200,6 @@ export default defineComponent({
       this.createDiscussion();
     },
     updateFormValues(data: CreateEditDiscussionFormValues) {
-      console.log("data", data)
       const existingValues = this.formValues;
 
       this.formValues = {

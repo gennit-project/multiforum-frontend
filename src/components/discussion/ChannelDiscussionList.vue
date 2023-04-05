@@ -64,6 +64,13 @@ export default defineComponent({
       }
     );
 
+    const resultCount = computed(() => {
+      if (discussionLoading || !discussionResult.value) {
+        return 0;
+      }
+      return discussionResult.value.DiscussionsAggregate?.aggregate?.count;
+    });
+
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
@@ -153,6 +160,7 @@ export default defineComponent({
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
+      resultCount,
       selectedDiscussion: {} as DiscussionData,
       showModProfileModal: ref(false),
     };
@@ -163,10 +171,6 @@ export default defineComponent({
       default: () => {
         return {};
       },
-    },
-    resultCount: {
-      type: Number,
-      default: 0,
     },
     searchInput: {
       type: String,

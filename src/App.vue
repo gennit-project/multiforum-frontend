@@ -10,7 +10,7 @@ export default defineComponent({
     WithAuth,
   },
   setup() {
-    const { isAuthenticated, user, loading } = useAuth0();
+    const { isAuthenticated, user, isLoading } = useAuth0();
 
     const emailFromAuth0 = computed(() => {
       // The reason why we get the email in this parent
@@ -29,7 +29,7 @@ export default defineComponent({
       return "";
     });
 
-    return { emailFromAuth0, loading };
+    return { emailFromAuth0, isLoading };
   },
   name: "App",
 });
@@ -37,8 +37,8 @@ export default defineComponent({
 
 <template>
   <div class="h-screen">
-    <div v-if="loading">Loading...</div>
-    <WithAuth v-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
+    <div v-if="isLoading">Loading...</div>
+    <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
       <MainLayout />
     </WithAuth>
     <MainLayout v-else />
