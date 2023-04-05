@@ -134,7 +134,12 @@ export default defineComponent({
                         ...existingDiscussion,
                         CommentSections: [
                           ...existingDiscussion.CommentSections,
-                          newCommentSection,
+                          {
+                            ...newCommentSection,
+                            id: newCommentSection.id,
+                            Channel: newCommentSection.Channel,
+                            OriginalPost: newCommentSection.OriginalPost,
+                          },
                         ],
                       },
                     ],
@@ -258,10 +263,10 @@ export default defineComponent({
       commentSectionIsLocked,
       createComment,
       createCommentError,
+      createCommentSection,
       createFormValues,
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
-      showEditorInCommentSection: ref(false),
       showRootCommentEditor: ref(false),
     };
   },
@@ -279,7 +284,7 @@ export default defineComponent({
             "Cannot create comment section because there is no channel ID."
           );
         }
-        if (!this.discussionId) {
+        if (!this.discussion.id) {
           throw new Error(
             "Cannot create comment section because there is no discussion ID."
           );

@@ -207,12 +207,15 @@ export default defineComponent({
           :discussion="discussion"
           :channelId="channelId"
         />
-        <CommentSection
-          class="mb-2"
-          ref="commentSectionRef"
+        <div
+          class="mb-2 my-4 bg-white px-10 py-6 rounded shadow-md"
           v-if="route.name === 'DiscussionDetail'"
-          :commentSectionId="commentSectionId"
-        />
+        >
+          <CommentSection
+            ref="commentSectionRef"
+            :commentSectionId="commentSectionId"
+          />
+        </div>
       </div>
     </div>
   </div>
