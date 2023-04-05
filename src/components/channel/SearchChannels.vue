@@ -65,7 +65,7 @@ export default defineComponent({
 
     const channelWhere = computed(() => {
       const tagSearch = {
-        Tags_SOME: {
+        TagsConnection: {
           OR: selectedTags.value.map((tag: string) => {
             return { text_MATCHES: `(?i)${tag}` };
           }),

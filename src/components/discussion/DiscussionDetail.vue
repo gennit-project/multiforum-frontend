@@ -1,57 +1,31 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import Tag from "@/components/tag/Tag.vue";
-import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
-import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { relativeTime } from "../../dateTimeUtils";
-import WarningModal from "../generic/WarningModal.vue";
-import { DateTime } from "luxon";
 import { DiscussionData } from "@/types/discussionTypes";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import CreateButton from "../generic/CreateButton.vue";
-import GenericButton from "../generic/GenericButton.vue";
-import CommentSection from "../comments/CommentSection.vue";
 import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
-import ProfileAvatar from "@/components/user/ProfileAvatar.vue";
-import TextEditor from "@/components/comments/TextEditor.vue";
-import CancelButton from "@/components/generic/CancelButton.vue";
-import SaveButton from "@/components/generic/SaveButton.vue";
-import { CommentData, CreateEditCommentFormValues } from "@/types/commentTypes";
-import {
-  CREATE_COMMENT,
-  CREATE_COMMENT_SECTION,
-} from "@/graphQLData/comment/mutations";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-import MdEditor from "md-editor-v3";
-import PrimaryButton from "../generic/PrimaryButton.vue";
-import RequireAuth from "../auth/RequireAuth.vue";
 import { useDisplay } from "vuetify";
+import DiscussionBody from "./DiscussionBody.vue";
+import DiscussionHeader from "./DiscussionHeader.vue";
+import CommentSection from "../comments/CommentSection.vue";
+import ChannelLinks from "./ChannelLinks.vue";
+import CreateRootCommentForm from "./CreateRootCommentForm.vue";
+
 import { ChannelData } from "@/types/channelTypes";
-import ChannelLink from "./ChannelLink.vue";
-import LinkPreview from "../generic/LinkPreview.vue";
-import { getLinksInText } from "@/components/utils";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
-    CancelButton,
-    ChannelLink,
+    ChannelLinks,
+    CreateRootCommentForm,
     CommentSection,
-    CreateButton,
+    DiscussionBody,
+    DiscussionHeader,
     ErrorBanner,
-    GenericButton,
     LeftArrowIcon,
-    LinkPreview,
-    MdEditor,
-    PrimaryButton,
-    ProfileAvatar,
-    RequireAuth,
-    SaveButton,
-    TextEditor,
-    WarningModal,
   },
   props: {
     compactMode: {
@@ -62,16 +36,6 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-
-    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
-
-    const username = computed(() => {
-      let username = localUsernameResult.value?.username;
-      if (username) {
-        return username;
-      }
-      return "";
-    });
 
     const discussionId = computed(() => {
       if (typeof route.params.discussionId === "string") {
@@ -104,50 +68,10 @@ export default defineComponent({
       return getDiscussionResult.value.discussions[0];
     });
 
-    const editedAt = computed(() => {
-      if (
-        getDiscussionError.value ||
-        getDiscussionLoading.value ||
-        !discussion.value.updatedAt
-      ) {
-        return "";
-      }
-      return `Edited ${relativeTime(discussion.value.updatedAt)}`;
-    });
-
-    const createdAt = computed(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value) {
-        return "";
-      }
-      return `posted ${relativeTime(discussion.value.createdAt)}`;
-    });
-
-    // Update this ID when creating the first comment and comment
-    // section to go with it
-    const newCommentSectionId = ref("");
-
-    const commentSectionId = computed(() => {
-      if (!discussion.value) {
-        return "";
-      }
-      if (discussion.value.CommentSections) {
-        const commentSection = discussion.value.CommentSections.find(
-          (commentSection) => {
-            if (commentSection && commentSection.Channel) {
-              return commentSection.Channel.uniqueName === channelId.value;
-            }
-            return false;
-          }
-        );
-        if (commentSection) {
-          return commentSection.id;
-        }
-      }
-      return newCommentSectionId.value;
-    });
+    const { lgAndUp, mdAndUp } = useDisplay();
 
     const getCommentCount = (channelId: string) => {
-      const commentSections = discussion.value.CommentSections;
+      const commentSections = discussion.value?.CommentSections;
 
       const commentSectionForChannel = commentSections.find((cs: any) => {
         return cs.Channel?.uniqueName === channelId;
@@ -160,7 +84,8 @@ export default defineComponent({
         ? commentSectionForChannel.CommentsAggregate.count
         : 0;
     };
-    const channelLinks = computed(() => {
+
+    const channelLinks = computed<ChannelData[]>(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
         return [];
       }
@@ -176,318 +101,42 @@ export default defineComponent({
         return countB - countA;
       });
     });
-    const {
-      mutate: deleteDiscussion,
-      error: deleteDiscussionError,
-      onDone: onDoneDeleting,
-    } = useMutation(DELETE_DISCUSSION, {
-      variables: {
-        id: discussionId.value,
-      },
-      update: (cache: any) => {
-        cache.modify({
-          fields: {
-            discussions(existingDiscussionRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField;
-
-              return existingDiscussionRefs.filter((ref) => {
-                return readField("id", ref) !== discussionId.value;
-              });
-            },
-          },
-        });
-      },
-    });
-
-    onDoneDeleting(() => {
-      if (channelId.value) {
-        router.push({
-          name: "SearchDiscussionsInChannel",
-          params: {
-            channelId: channelId.value,
-          },
-        });
-      }
-    });
-
-    const deleteModalIsOpen = ref(false);
-    // const showScrollToCommentsButton = ref(true)
-
-    const createCommentDefaultValues: CreateEditCommentFormValues = {
-      text: "",
-      isRootComment: true,
-      depth: 1,
-    };
-
-    const createFormValues = ref<CreateEditCommentFormValues>(
-      createCommentDefaultValues
-    );
-
-    const createCommentInput = computed(() => {
-      //   const tagConnections = formValues.value.tags.map(
-      //     (tag: string) => {
-      //       return {
-      //         onCreate: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //         where: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //       };
-      //     }
-      //   );
-
-      let input = {
-        isRootComment: true,
-
-        text: createFormValues.value.text || "",
-        // Tags: {
-        //   connectOrCreate: tagConnections,
-        // },
-        CommentAuthor: {
-          User: {
-            connect: {
-              where: {
-                node: {
-                  username: username.value,
-                },
-              },
-            },
-          },
-        },
-        CommentSection: {
-          connect: {
-            where: {
-              node: {
-                id: commentSectionId.value,
-              },
-            },
-          },
-        },
-      };
-
-      return [input];
-    });
-    const {
-      mutate: createCommentSection,
-      onDone: onDoneCreatingCommentSection,
-    } = useMutation(CREATE_COMMENT_SECTION, () => ({
-      errorPolicy: "all",
-      variables: {
-        createCommentSectionInput: [
-          {
-            OriginalPost: {
-              Discussion: {
-                connect: {
-                  where: {
-                    node: {
-                      id: discussionId.value,
-                    },
-                  },
-                },
-              },
-            },
-            Channel: {
-              connect: { where: { node: { uniqueName: channelId.value } } },
-            },
-          },
-        ],
-      },
-
-      update: (cache: any, result: any) => {
-        // when comment section is created, update discussion in cache to add it there
-        cache.modify({
-          fields: {
-            discussions() {
-              const readQueryResult = cache.readQuery({
-                query: GET_DISCUSSION,
-                variables: {
-                  id: discussionId.value,
-                },
-              });
-              if (readQueryResult) {
-                const existingDiscussion = readQueryResult.discussions[0];
-                const newCommentSection =
-                  result.data?.createCommentSections?.commentSections[0];
-                cache.writeQuery({
-                  query: GET_DISCUSSION,
-                  data: {
-                    discussions: [
-                      {
-                        ...existingDiscussion,
-                        CommentSections: [
-                          ...existingDiscussion.CommentSections,
-                          newCommentSection,
-                        ],
-                      },
-                    ],
-                  },
-                  variables: {
-                    id: discussionId.value,
-                  },
-                });
-              }
-            },
-          },
-        });
-      },
-    }));
-
-    const { mutate: createComment, error: createCommentError } = useMutation(
-      CREATE_COMMENT,
-      () => ({
-        errorPolicy: "all",
-        variables: {
-          createCommentInput: createCommentInput.value,
-        },
-        update: (cache: any, result: any) => {
-          // This is the logic for updating the cache
-          // after replying to a comment. For the logic
-          // to create a root level comment, see the
-          // parent component.
-          const newComment: CommentData =
-            result.data?.createComments?.comments[0];
-          // Will use readQuery and writeQuery to update the cache
-          // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
-
-          const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
-            variables: {
-              id: commentSectionId.value,
-            },
-          });
-
-          const existingCommentSectionData =
-            readQueryResult?.commentSections[0];
-          //commentResult.commentSections[0].CommentsConnection.edges"
-          //   :key="comment.node.id"
-          let rootCommentsCopy = [
-            newComment,
-            ...(existingCommentSectionData?.Comments || []),
-          ];
-          let existingCommentAggregate =
-            existingCommentSectionData?.CommentsAggregate
-              ? existingCommentSectionData.CommentsAggregate
-              : null;
-          let newCommentAggregate = null;
-          if (existingCommentAggregate) {
-            newCommentAggregate = {
-              ...existingCommentAggregate,
-              count: existingCommentAggregate.count + 1,
-            };
-          }
-          cache.writeQuery({
-            query: GET_COMMENT_SECTION,
-            data: {
-              ...readQueryResult,
-              commentSections: [
-                {
-                  ...existingCommentSectionData,
-                  Comments: rootCommentsCopy,
-                  CommentsAggregate: newCommentAggregate
-                    ? newCommentAggregate
-                    : existingCommentAggregate,
-                },
-              ],
-            },
-            variables: {
-              id: commentSectionId.value,
-            },
-          });
-        },
-      })
-    );
 
     const commentSectionRef = ref<InstanceType<typeof CommentSection>>();
 
-    onDoneCreatingCommentSection((cs: any) => {
-      const data = cs.data.createCommentSections?.commentSections[0];
-      newCommentSectionId.value = data.id;
-    });
-
-    const commentSectionIsLocked = computed(() => {
-      if (!discussion.value) {
-        return false;
+    const commentSectionId = computed(() => {
+      if (discussion.value?.CommentSections) {
+        const commentSection = discussion.value.CommentSections.find(
+          (commentSection) => {
+            if (commentSection && commentSection.Channel) {
+              return commentSection.Channel.uniqueName === channelId.value;
+            }
+            return false;
+          }
+        );
+        if (commentSection) {
+          return commentSection.id;
+        }
       }
-      return !discussion.value.Channels.find((c) => {
-        return c.uniqueName === channelId.value;
-      });
+      return "";
     });
-
-    const linksInBody = computed(() => {
-      if (!discussion.value) {
-        return [];
-      }
-      const links = getLinksInText(discussion.value.body);
-      return links;
-    });
-
-    const { lgAndUp, mdAndUp } = useDisplay();
 
     return {
       channelId,
       channelLinks,
       commentSectionId,
-      commentSectionIsLocked,
       commentSectionRef,
-      createComment,
-      createCommentError,
-      createCommentSection,
-      createFormValues,
-      createdAt,
-      deleteModalIsOpen,
-      getCommentCount,
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
       discussionId,
-      deleteDiscussion,
-      deleteDiscussionError,
-      editedAt,
       discussion,
       lgAndUp,
-      linksInBody,
       mdAndUp,
       relativeTime,
       route,
       router,
-      showCreateCommentModal: ref(false),
-      showEditorInCommentSection: ref(false),
-      showRootCommentEditor: ref(false),
     };
-  },
-  methods: {
-    getFormattedDateString(startTime: string) {
-      const startTimeObj = DateTime.fromISO(startTime);
-
-      return startTimeObj.toFormat("cccc LLLL d yyyy");
-    },
-    async handleCreateComment() {
-      if (!this.commentSectionId) {
-        if (!this.channelId) {
-          throw new Error(
-            "Cannot create comment section because there is no channel ID."
-          );
-        }
-        if (!this.discussionId) {
-          throw new Error(
-            "Cannot create comment section because there is no discussion ID."
-          );
-        }
-        await this.createCommentSection();
-      }
-      this.createComment();
-    },
-    handleUpdateComment(event: any) {
-      this.createFormValues.text = event;
-    },
-    updateCreateInputValuesForRootComment(text: string) {
-      this.createFormValues.text = text;
-    },
   },
 });
 </script>
@@ -535,230 +184,34 @@ export default defineComponent({
           :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
           class="bg-white p-10 rounded shadow-md"
         >
-          <div class="mb-4 md:flex md:items-center md:justify-between">
-            <div class="flex-1 min-w-0">
-              <h1 class="text-2xl max-w-2xl">
-                {{ discussion.title }}
-              </h1>
-            </div>
-            <div
-              v-if="!compactMode && channelId"
-              class="flex-shrink-0 flex md:mx-4"
-            >
-              <div class="float-right">
-                <span>
-                  <RequireAuth
-                    class="flex inline-flex"
-                    v-if="
-                      discussion.Author && route.name === 'DiscussionDetail'
-                    "
-                    :require-ownership="true"
-                    :owners="[discussion.Author.username]"
-                  >
-                    <template v-slot:has-auth>
-                      <router-link
-                        :to="`/channels/c/${channelId}/discussions/d/${discussionId}/edit`"
-                      >
-                        <GenericButton :text="'Edit'" />
-                      </router-link>
-                    </template>
-                  </RequireAuth>
-                  <RequireAuth
-                    class="flex inline-flex"
-                    v-if="$route.name === 'DiscussionDetail'"
-                  >
-                    <template v-slot:has-auth>
-                      <CreateButton
-                        class="ml-2"
-                        :to="`/channels/c/${channelId}/discussions/create`"
-                        :label="'Create Discussion'"
-                      />
-                    </template>
-                    <template v-slot:does-not-have-auth>
-                      <PrimaryButton
-                        class="ml-2"
-                        :label="'Create Discussion'"
-                      />
-                    </template>
-                  </RequireAuth>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div>
-              <div class="text-xs text-gray-600 mt-4">
-                <div class="mb-2 mt-4">
-                  <router-link
-                    v-if="discussion.Author"
-                    class="text-blue-800 underline"
-                    :to="`/u/${discussion.Author.username}`"
-                  >
-                    {{ discussion.Author.username }}
-                  </router-link>
-                  <span v-else>[Deleted]</span>
-                  {{ createdAt }}
-                  <span v-if="discussion.updatedAt"> &#8226; </span>
-                  {{ editedAt }}
-
-                  <RequireAuth
-                    class="flex inline-flex"
-                    v-if="
-                      discussion.Author && route.name === 'DiscussionDetail'
-                    "
-                    :require-ownership="true"
-                    :owners="[discussion.Author.username]"
-                  >
-                    <template v-slot:has-auth>
-                      <span> &#8226;</span>
-                      <span
-                        class="ml-1 underline font-medium text-gray-900 cursor-pointer"
-                        @click="deleteModalIsOpen = true"
-                        >Delete</span
-                      >
-                    </template>
-                  </RequireAuth>
-
-                  <span
-                    v-if="route.name !== 'DiscussionDetail' && (channelId || channelLinks[0])"
-                    class="ml-1 mr-1"
-                    >&#8226;</span
-                  >
-                  <router-link
-                    v-if="route.name !== 'DiscussionDetail' && (channelId || channelLinks[0])"
-                    class="underline font-medium text-gray-900 cursor-pointer"
-                    :to="`/channels/c/${channelLinks[0] ? channelLinks[0] : channelId}/discussions/d/${discussionId}`"
-                    >Permalink</router-link
-                  >
-                </div>
-              </div>
-              <div v-if="discussion.body" class="body max-w-2xl">
-                <md-editor
-                  v-if="discussion.body"
-                  v-model="discussion.body"
-                  previewTheme="vuepress"
-                  codeTheme="vuepress"
-                  language="en-US"
-                  :noMermaid="true"
-                  preview-only
-                />
-              </div>
-              <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">
-                Link Previews
-              </h2>
-              <div v-if="linksInBody.length > 0">
-              <LinkPreview
-                v-for="(link, i) in linksInBody"
-                :key="i"
-                class="mb-2"
-                :url="link"
-              />
-            </div>
-              <div
-                v-if="route.name === 'DiscussionDetail'"
-                class="mt-1 flex space-x-2 py-4"
-              >
-                <ProfileAvatar class="h-5 w-5" />
-
-                <RequireAuth
-                  class="w-full"
-                  v-if="
-                    $route.name === 'DiscussionDetail' &&
-                    !showEditorInCommentSection
-                  "
-                >
-                  <template v-slot:has-auth>
-                    <textarea
-                      id="addComment"
-                      @click="showEditorInCommentSection = true"
-                      name="addcomment"
-                      rows="1"
-                      placeholder="Write a reply"
-                      class="block w-full h-10 rounded-full border-gray-300 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
-                    />
-                  </template>
-                  <template v-slot:does-not-have-auth>
-                    <textarea
-                      id="addCommentLoginPrompt"
-                      name="addcomment"
-                      rows="1"
-                      placeholder="Write a reply"
-                      class="block w-full h-10 rounded-full border-gray-300 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
-                    />
-                  </template>
-                </RequireAuth>
-
-                <div v-else class="overflow-x-scroll max-w-2xl">
-                  <TextEditor
-                    class="mb-3 h-48"
-                    :placeholder="'Please be kind'"
-                    @update="handleUpdateComment"
-                  />
-                  <!-- <ErrorBanner v-if="createCommentError"
-                             :text="createCommentError.message" /> -->
-                  <div class="flex justify-start">
-                    <CancelButton @click="showEditorInCommentSection = false" />
-                    <SaveButton
-                      @click.prevent="
-                        () => {
-                          handleCreateComment();
-                          showEditorInCommentSection = false;
-                        }
-                      "
-                      :disabled="this.createFormValues.text.length === 0"
-                    />
-                  </div>
-                </div>
-              </div>
-              <div
-                class="my-4"
-                v-if="
-                  (route.name === 'SitewideSearchDiscussionPreview' ||
-                    route.name === 'SearchDiscussionPreview') &&
-                  channelLinks.length > 0
-                "
-              >
-                <h2 class="text-lg">Comments</h2>
-                <ul class="list-disc pl-3">
-                  <ChannelLink
-                    v-if="channelId"
-                    :channelId="channelId"
-                    :comment-count="getCommentCount(channelId)"
-                    :discussionId="discussionId"
-                  />
-                  <ChannelLink
-                    v-for="channel in channelLinks"
-                    :key="channel.uniqueName"
-                    :channelId="channel.uniqueName"
-                    :comment-count="getCommentCount(channel.uniqueName)"
-                    :discussionId="discussionId"
-                  />
-                </ul>
-              </div>
-              
-              <CommentSection
-                class="mb-2"
-                ref="commentSectionRef"
-                v-if="route.name === 'DiscussionDetail'"
-                :commentSectionId="commentSectionId"
-                :locked="commentSectionIsLocked"
-              />
-            </div>
-
-            <WarningModal
-              :title="'Delete Discussion'"
-              :body="'Are you sure you want to delete this discussion?'"
-              :open="deleteModalIsOpen"
-              @close="deleteModalIsOpen = false"
-              @primaryButtonClick="deleteDiscussion"
-            />
-          </div>
+          <DiscussionHeader
+            v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
+            :discussion="discussion"
+            :channel-id="channelId || channelLinks[0]?.uniqueName"
+            :compact-mode="compactMode"
+          />
+          <DiscussionBody
+            :discussion="discussion"
+            :channel-id="channelId"
+            :comment-section-id="commentSectionId"
+          />
+          <CreateRootCommentForm
+            v-if="route.name === 'DiscussionDetail'"
+            :discussion="discussion"
+            :channel-id="channelId"
+          />
         </div>
-        <ErrorBanner
-          class="mt-2"
-          v-if="deleteDiscussionError"
-          :text="deleteDiscussionError.message"
+        <ChannelLinks
+          class="my-4"
+          v-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0"
+          :discussion="discussion"
+          :channelId="channelId"
+        />
+        <CommentSection
+          class="mb-2"
+          ref="commentSectionRef"
+          v-if="route.name === 'DiscussionDetail'"
+          :commentSectionId="commentSectionId"
         />
       </div>
     </div>
@@ -766,7 +219,7 @@ export default defineComponent({
 </template>
 <style>
 .large-width {
-  width: 1200px;
+  width: 900px;
 }
 
 h1 {

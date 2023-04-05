@@ -31,10 +31,6 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    locked: {
-      type: Boolean,
-      default: false,
-    },
   },
   components: {
     Comment,
@@ -49,17 +45,15 @@ export default defineComponent({
       // Makes component rerender when comment section ID changes
       return props.commentSectionId;
     });
-    const {
-      result: localUsernameResult,
-    } = useQuery(GET_LOCAL_USERNAME);
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
-      let username = localUsernameResult.value?.username
+      let username = localUsernameResult.value?.username;
       if (username) {
-        return username
+        return username;
       }
-      return ""
-    })
+      return "";
+    });
 
     const {
       result: commentResult,
@@ -468,27 +462,6 @@ export default defineComponent({
       })
     );
 
-    // const reachedEndOfResults = ref(false);
-
-    // const loadMore = () => {
-    //   fetchMore({
-    //     variables: {
-    //       offset: commentResult.value.comments.length,
-    //     },
-    //     updateQuery: (previousResult, { fetchMoreResult }) => {
-    //       if (!fetchMoreResult) return previousResult;
-
-    //       return {
-    //         ...previousResult,
-    //         comments: [
-    //           ...previousResult.comments,
-    //           ...fetchMoreResult.comments,
-    //         ],
-    //       };
-    //     },
-    //   });
-    // };
-
     return {
       commentError,
       commentLoading,
@@ -503,10 +476,9 @@ export default defineComponent({
       editComment,
       deleteComment,
       editFormValues,
+      locked: ref(false),
       parentOfCommentToDelete,
       showDeleteCommentModal: ref(false),
-      //   loadMore,
-      //   reachedEndOfResults,
       route,
       softDeleteComment,
     };
