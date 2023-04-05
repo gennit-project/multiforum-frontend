@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, nextTick, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
-import TextEditor from "@/components/comments/TextEditor.vue";
+import TextEditor from "@/components/generic/TextEditor.vue";
 import FormRow from "@/components/generic/FormRow.vue";
 import Form from "@/components/generic/Form.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";

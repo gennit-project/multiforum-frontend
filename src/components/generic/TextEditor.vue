@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import MdEditor from "md-editor-v3";
-import EmojiExtension from "./EmojiExtension/index.vue";
+import EmojiExtension from "../comments/EmojiExtension/index.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -41,7 +41,7 @@ export default defineComponent({
   created() {
     if (!this.disableAutoFocus) {
       this.$nextTick(() => {
-        this.$refs.editor.$el.children[1].children[0].children[0].focus();
+        this.$refs.editor.$el.children[4].children[0].children[0].focus()
       });
     }
   },

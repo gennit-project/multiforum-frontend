@@ -3,7 +3,7 @@ import { defineComponent, PropType, computed, ref, nextTick } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import TextEditor from "@/components/comments/TextEditor.vue";
+import TextEditor from "@/components/generic/TextEditor.vue";
 import FormRow from "@/components/generic/FormRow.vue";
 import Form from "@/components/generic/Form.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";

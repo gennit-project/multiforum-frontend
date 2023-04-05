@@ -13,7 +13,7 @@ import { CommentData } from "@/types/commentTypes";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import ProfileAvatar from "../user/ProfileAvatar.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
-import TextEditor from "../comments/TextEditor.vue";
+import TextEditor from "../generic/TextEditor.vue";
 import CancelButton from "../generic/CancelButton.vue";
 import SaveButton from "../generic/SaveButton.vue";
 

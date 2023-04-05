@@ -10,7 +10,7 @@ import "md-editor-v3/lib/style.css";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { relativeTime } from "../../dateTimeUtils";
 import EmojiExtension from "./EmojiExtension/index.vue";
-import TextEditor from "./TextEditor.vue";
+import TextEditor from "../generic/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
 import UserCircle from "@/components/icons/UserCircle.vue";
 import CommentButtons from "./CommentButtons.vue";

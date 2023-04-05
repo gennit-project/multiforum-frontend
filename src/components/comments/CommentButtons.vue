@@ -4,7 +4,7 @@ import RequireAuth from "../auth/RequireAuth.vue";
 import CancelButton from "@/components/generic/CancelButton.vue";
 import SaveButton from "@/components/generic/SaveButton.vue";
 import MenuButton from "../generic/MenuButton.vue";
-import TextEditor from "./TextEditor.vue";
+import TextEditor from "../generic/TextEditor.vue";
 import { CommentData } from "@/types/commentTypes";
 import {
   UPVOTE_COMMENT,
