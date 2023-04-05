@@ -19,7 +19,7 @@ export default defineComponent({
       channelId,
     };
   },
-  name: "WithAuth",
+  name: "MainLayout",
   methods: {
     closeUserProfileDropdown() {
       this.showUserProfileDropdown = false;

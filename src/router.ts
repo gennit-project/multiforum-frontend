@@ -216,6 +216,7 @@ export const router = createRouter({
     { 
       path: "/u/:username", 
       component: UserProfile,
+      name: "UserProfile",
       children: [
         {
           name: "UserAuthoredDiscussions",

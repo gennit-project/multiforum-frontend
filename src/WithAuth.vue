@@ -14,14 +14,25 @@ export default defineComponent({
     CreateUsernamePage,
     ErrorBanner,
   },
-  props: {
-    email: {
+  props:{
+    emailFromAuth0: {
       type: String,
       required: true,
     },
   },
   setup(props) {
-    const { isAuthenticated, user, error } = useAuth0();
+    const { 
+      isAuthenticated, 
+      user, 
+      error,
+     } = useAuth0();
+     console.log('props ',{
+      isAuthenticated, 
+      user, 
+      error,
+      emailFromAuth0: props.emailFromAuth0,
+     })
+    
     const route = useRoute();
     const channelId = computed(() => {
       return route.params.channelId;
@@ -31,18 +42,19 @@ export default defineComponent({
       return route.name !== "MapView" && route.name !== "MapEventPreview";
     });
 
+   
     const {
       result: emailResult,
       error: emailError,
       loading: emailLoading,
-      onResult
+      onResult: onEmailResult,
     } = useQuery(GET_EMAIL, {
-      emailAddress: props.email,
+      emailAddress: props.emailFromAuth0,
     });
 
     const {
       result: localUsernameResult,
-      loading: localUsernameLoading
+      loading: localUsernameLoading,
     } = useQuery(GET_LOCAL_USERNAME);
 
     const hasEmailButNotUsername = computed(() => {
@@ -50,18 +62,22 @@ export default defineComponent({
         return false;
       }
       if (isAuthenticated && user.value?.email && !localUsernameResult.value?.username) {
+        console.log('hasEmailButNotUsername', true)
         return true;
       }
       return false;
     });
 
-    onResult(() => {
+    onEmailResult((data) => {
+      console.log('data', data)
+      console.log("tried to get username for email ", props.emailFromAuth0)
       let user = null;
       let modProfile = null;
       let username = '';
       let modProfileName = '';
 
       user = emailResult.value.emails[0]?.User;
+      console.log('user', emailResult.value)
 
       if (user) {
         username = user.username;
@@ -74,6 +90,7 @@ export default defineComponent({
       }
 
        if (username) {
+        console.log('username', username)
         // Add user to application state to make the authenticated user's
         // username available throughout the app.
         usernameVar(username)
@@ -114,7 +131,13 @@ export default defineComponent({
 
 <template>
   <div>
-    <ErrorBanner v-if="error" :text="error"/>
+    <div v-if="isAuthenticated && hasEmailButNotUsername">
+      <CreateUsernamePage/>
+    </div> 
+    <ErrorBanner v-else-if="error" :text="error"/>
+    <div v-else>
+      <slot></slot>
+    </div>
   </div>
 </template>
 

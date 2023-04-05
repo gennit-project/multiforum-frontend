@@ -187,14 +187,20 @@ export default defineComponent({
       createDiscussionInput,
       formValues,
       router,
+      username
     };
   },
 
   methods: {
     async submit() {
+      if (!this.username){
+        console.error("No username found")
+        return
+      }
       this.createDiscussion();
     },
     updateFormValues(data: CreateEditDiscussionFormValues) {
+      console.log("data", data)
       const existingValues = this.formValues;
 
       this.formValues = {
