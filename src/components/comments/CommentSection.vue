@@ -87,37 +87,6 @@ export default defineComponent({
     );
 
     const updateCommentInput = computed(() => {
-      //   const tagConnections = formValues.value.Tags.map(
-      //     (tag: string) => {
-      //       return {
-      //         onCreate: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //         where: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //       };
-      //     }
-      //   );
-
-      //   const tagDisconnections = existingTags.value
-      //     .filter((tag: string) => {
-      //       return !formValues.value.selectedTags.includes(tag);
-      //     })
-      //     .map((tag: string) => {
-      //       return {
-      //         where: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //       };
-      //     });
-
       return {
         text: editFormValues.value?.text || "",
         isRootComment: editFormValues.value?.isRootComment,
@@ -261,6 +230,7 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
+          console.log("result", result);
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
 
@@ -424,7 +394,7 @@ export default defineComponent({
             });
 
             const existingCommentSectionData =
-              readCommentSectionQueryResult?.posts[0];
+              readCommentSectionQueryResult?.commentSections[0];
 
             let existingCommentAggregate =
               existingCommentSectionData?.CommentsAggregate
