@@ -153,11 +153,17 @@ export default defineComponent({
       this.textCopy = text;
     },
     async handleCreateModProfileClick() {
-      await this.createModProfile();
-      modProfileNameVar()
-      this.downvote()
+      const result = await this.createModProfile();
+
+      const modProfileName =
+        result.data.updateUsers.users[0].ModerationProfile.displayName;
+
+      modProfileNameVar();
+      this.$emit("downvoteComment", {
+        commentId: this.commentData.id,
+        modProfileName,
+      });
       this.showModProfileModal = false;
-      // show snack
     },
   },
   computed: {

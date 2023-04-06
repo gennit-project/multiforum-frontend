@@ -7,6 +7,7 @@ import MenuButton from "../generic/MenuButton.vue";
 import TextEditor from "../generic/TextEditor.vue";
 import { CommentData } from "@/types/commentTypes";
 import {
+  DOWNVOTE_COMMENT,
   UPVOTE_COMMENT,
   UNDO_UPVOTE_COMMENT,
   UNDO_DOWNVOTE_COMMENT,
@@ -17,7 +18,6 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
-import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import EllipsisVertical from "../icons/EllipsisVertical.vue";
 import { useRoute } from "vue-router";
@@ -80,6 +80,14 @@ export default defineComponent({
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
+
+    const username = computed(() => {
+      if (localUsernameLoading.value) {
+        return "";
+      }
+      return localUsernameResult.value?.username || "";
+    });
+
     const loggedInUserModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
         return "";
@@ -90,7 +98,7 @@ export default defineComponent({
     const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT, () => ({
       variables: {
         id: props.commentData.id,
-        displayName: loggedInUserModName.value,
+        displayName: loggedInUserModName.value
       },
     }));
 
@@ -99,7 +107,7 @@ export default defineComponent({
       () => ({
         variables: {
           id: props.commentData.id,
-          username: props.commentData.CommentAuthor?.username,
+          username: username.value
         },
       })
     );
@@ -108,7 +116,7 @@ export default defineComponent({
       useMutation(UNDO_UPVOTE_COMMENT, () => ({
         variables: {
           id: props.commentData.id,
-          username: props.commentData.CommentAuthor?.username,
+          username: username.value,
         },
       }));
 
@@ -116,12 +124,16 @@ export default defineComponent({
       useMutation(UNDO_DOWNVOTE_COMMENT, () => ({
         variables: {
           id: props.commentData.id,
-          displayName: localModProfileNameResult.value?.modProfileName || "",
+          displayName: loggedInUserModName.value,
         },
       }));
 
     const loggedInUserUpvoted = computed(() => {
-      if (localUsernameLoading.value || !localUsernameResult.value || !props.commentData.UpvotedByUsers) {
+      if (
+        localUsernameLoading.value ||
+        !localUsernameResult.value ||
+        !props.commentData.UpvotedByUsers
+      ) {
         return false;
       }
       const match =
@@ -149,15 +161,17 @@ export default defineComponent({
     });
 
     const commentMenuItems = computed(() => {
-      const out = []
-      if (!route.path.includes('modhistory')){
-         out.push({
-            label: 'Mod History',
-            value: route.path.includes('comments') ? `${route.path}/modhistory`: `${route.path}/comments/${props.commentData.id}/modhistory`,
-          })
+      const out = [];
+      if (!route.path.includes("modhistory")) {
+        out.push({
+          label: "Mod History",
+          value: route.path.includes("comments")
+            ? `${route.path}/modhistory`
+            : `${route.path}/comments/${props.commentData.id}/modhistory`,
+        });
       }
-      return out
-    })
+      return out;
+    });
 
     return {
       commentMenuItems,
@@ -254,7 +268,9 @@ export default defineComponent({
         </template>
       </RequireAuth>
       <span
-        v-if="route.params.channelId && route.name !== 'DiscussionCommentPermalink'"
+        v-if="
+          route.params.channelId && route.name !== 'DiscussionCommentPermalink'
+        "
         :to="`${route.path}/comments/${commentData.id}`"
         @click="
           $router.push({
@@ -315,10 +331,7 @@ export default defineComponent({
           `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
         }}</span
       >
-      <MenuButton
-        v-if="commentMenuItems.length > 0"
-        :items="commentMenuItems"
-      >
+      <MenuButton v-if="commentMenuItems.length > 0" :items="commentMenuItems">
         <EllipsisVertical class="h-4 w-4 cursor-pointer hover:text-black" />
       </MenuButton>
     </div>

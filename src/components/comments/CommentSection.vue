@@ -13,6 +13,7 @@ import {
   GET_COMMENT_SECTION,
   GET_COMMENT_REPLIES,
 } from "@/graphQLData/comment/queries";
+import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
   DELETE_COMMENT,
   UPDATE_COMMENT,
@@ -22,7 +23,10 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import {
+  GET_LOCAL_USERNAME,
+  GET_LOCAL_MOD_PROFILE_NAME,
+} from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 
 export default defineComponent({
@@ -230,7 +234,6 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
-          console.log("result", result);
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
 
@@ -432,6 +435,21 @@ export default defineComponent({
       })
     );
 
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
+    const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT);
+
     return {
       commentError,
       commentLoading,
@@ -443,10 +461,12 @@ export default defineComponent({
       createCommentError,
       createCommentInput,
       createFormValues,
-      editComment,
       deleteComment,
+      downvoteComment,
+      editComment,
       editFormValues,
       locked: ref(false),
+      loggedInUserModName,
       parentOfCommentToDelete,
       showDeleteCommentModal: ref(false),
       route,
@@ -499,6 +519,26 @@ export default defineComponent({
         // to avoid cluttering the screen
         this.deleteComment({ id: this.commentToDeleteId });
       }
+    },
+    handleDownvoteComment({
+      commentId,
+      modProfileName,
+    }: {
+      commentId: string;
+      modProfileName: string;
+    }) {
+      if (!commentId) {
+        throw new Error("commentId is required to downvote a comment");
+      }
+      if (!modProfileName) {
+        throw new Error(
+          "loggedInUserModName is required to downvote a comment"
+        );
+      }
+      this.downvoteComment({
+        id: commentId,
+        displayName: modProfileName,
+      });
     },
   },
   inheritAttrs: false,
@@ -555,6 +595,7 @@ export default defineComponent({
           :locked="locked"
           @clickEditComment="handleClickEdit"
           @deleteComment="handleClickDelete"
+          @downvoteComment="handleDownvoteComment"
           @createComment="handleClickCreate"
           @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
           @updateEditCommentInput="updateEditInputValues"
