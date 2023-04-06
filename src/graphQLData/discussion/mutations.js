@@ -82,6 +82,9 @@ export const UPVOTE_DISCUSSION = gql`
         UpvotedByUsersAggregate {
           count
         }
+        CommentSections {
+          id
+        }
       }
     }
   }

@@ -267,6 +267,8 @@ export default defineComponent({
   >
     <DiscussionVotes
       :discussion="discussion"
+      :discussion-query-filters="discussionQueryFilters"
+      :comment-section="commentSection"
     />
     <router-link :to="previewLink">
       <p class="text-lg font-bold cursor-pointer">

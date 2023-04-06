@@ -2,11 +2,8 @@
 import { defineComponent, PropType, computed, ref } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
 import { CommentSectionData } from "../../../types/commentTypes";
-import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
-import Tag from "@/components/tag/Tag.vue";
-import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
@@ -29,23 +26,11 @@ export default defineComponent({
   props: {
     discussionQueryFilters: {
       type: Object as PropType<Object>,
-      default: () => {
-        return {};
-      },
+      required: true
     },
     commentSection: {
       type: Object as PropType<CommentSectionData>,
-      required: false,
-      default: () => {
-        return {
-          id: "",
-          DiscussionId: "",
-          ChannelId: "",
-          Channel: {
-            uniqueName: "",
-          },
-        };
-      },
+      required: true
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
