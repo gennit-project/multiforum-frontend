@@ -2,14 +2,14 @@
 import { defineComponent, computed, PropType, ref } from "vue";
 import { DiscussionData } from "@/types/discussionTypes";
 import { useMutation } from "@vue/apollo-composable";
-import GenericButton from "../generic/GenericButton.vue";
+import GenericButton from "../../generic/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { useRoute, useRouter } from "vue-router";
 import { relativeTime } from "@/dateTimeUtils";
 import { DateTime } from "luxon";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
-import WarningModal from "../generic/WarningModal.vue";
-import ErrorBanner from "../generic/ErrorBanner.vue";
+import WarningModal from "../../generic/WarningModal.vue";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
 
 export default defineComponent({
   components: {

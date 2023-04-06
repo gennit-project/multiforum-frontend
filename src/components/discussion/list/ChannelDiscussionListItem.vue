@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
-import { DiscussionData } from "../../types/discussionTypes";
-import { CommentSectionData } from "../../types/commentTypes";
-import { relativeTime } from "../../dateTimeUtils";
+import { DiscussionData } from "../../../types/discussionTypes";
+import { CommentSectionData } from "../../../types/commentTypes";
+import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
-import DiscussionVotes from "./DiscussionVotes.vue";
+import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@/graphQLData/user/queries";
 import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import ErrorBanner from "../generic/ErrorBanner.vue";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
 
 export default defineComponent({
   props: {

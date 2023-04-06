@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
-import { DiscussionData } from "../../types/discussionTypes";
-import { CommentSectionData } from "../../types/commentTypes";
-import { relativeTime } from "../../dateTimeUtils";
+import { DiscussionData } from "../../../types/discussionTypes";
+import { CommentSectionData } from "../../../types/commentTypes";
+import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
 import Tag from "@/components/tag/Tag.vue";

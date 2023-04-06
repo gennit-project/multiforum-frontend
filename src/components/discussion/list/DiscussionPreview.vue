@@ -8,7 +8,7 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
-import DiscussionDetail from "./DiscussionDetail.vue";
+import DiscussionDetail from "../detail/DiscussionDetail.vue";
 
 export default defineComponent({
   components: {

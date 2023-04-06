@@ -11,11 +11,11 @@ import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { DiscussionData } from "@/types/discussionTypes";
 import { CommentData } from "@/types/commentTypes";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
-import ProfileAvatar from "../user/ProfileAvatar.vue";
-import RequireAuth from "../auth/RequireAuth.vue";
-import TextEditor from "../generic/TextEditor.vue";
-import CancelButton from "../generic/CancelButton.vue";
-import SaveButton from "../generic/SaveButton.vue";
+import ProfileAvatar from "../../user/ProfileAvatar.vue";
+import RequireAuth from "../../auth/RequireAuth.vue";
+import TextEditor from "../../generic/TextEditor.vue";
+import CancelButton from "../../generic/CancelButton.vue";
+import SaveButton from "../../generic/SaveButton.vue";
 
 export default defineComponent({
   components: {

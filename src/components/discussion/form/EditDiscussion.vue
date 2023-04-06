@@ -16,7 +16,7 @@ import {
 } from "@/types/discussionTypes";
 import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
-import RequireAuth from "../auth/RequireAuth.vue";
+import RequireAuth from "../../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "EditDiscussion",

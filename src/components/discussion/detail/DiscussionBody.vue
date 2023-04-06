@@ -2,7 +2,7 @@
 import { defineComponent, computed, PropType } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
-import LinkPreview from "../generic/LinkPreview.vue";
+import LinkPreview from "../../generic/LinkPreview.vue";
 import MdEditor from "md-editor-v3";
 import { ChannelData } from "@/types/channelTypes";
 import { useRoute } from "vue-router";

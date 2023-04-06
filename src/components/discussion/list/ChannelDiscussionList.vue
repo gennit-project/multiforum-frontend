@@ -1,11 +1,11 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import ChannelDiscussionListItem from "./ChannelDiscussionListItem.vue";
-import LoadMore from "../generic/LoadMore.vue";
-import ErrorBanner from "../generic/ErrorBanner.vue";
-import { DiscussionData } from "../../types/discussionTypes";
+import LoadMore from "../../generic/LoadMore.vue";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
+import { DiscussionData } from "../../../types/discussionTypes";
 import { useRoute, useRouter } from "vue-router";
-import WarningModal from "../generic/WarningModal.vue";
+import WarningModal from "../../generic/WarningModal.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";

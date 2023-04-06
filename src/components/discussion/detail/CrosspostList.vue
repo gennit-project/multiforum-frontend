@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
 import { ChannelData } from "@/types/channelTypes";
-import Tag from "../tag/Tag.vue";
+import Tag from "../../tag/Tag.vue";
 
 export default defineComponent({
   name: "CrosspostList",

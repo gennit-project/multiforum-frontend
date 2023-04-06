@@ -13,7 +13,7 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { DiscussionData } from "@/types/discussionTypes";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
-import RequireAuth from "../auth/RequireAuth.vue";
+import RequireAuth from "../../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({

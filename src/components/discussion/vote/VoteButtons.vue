@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import UpArrowIcon from "../icons/UpArrowIcon.vue";
-import DownArrowIcon from "../icons/DownArrowIcon.vue";
+import UpArrowIcon from "../../icons/UpArrowIcon.vue";
+import DownArrowIcon from "../../icons/DownArrowIcon.vue";
 
 export default defineComponent({
   name: "VoteComponent",

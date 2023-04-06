@@ -1,9 +1,9 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from "vue";
-import ErrorBanner from "../generic/ErrorBanner.vue";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
 import SitewideDiscussionListItem from "./SitewideDiscussionListItem.vue";
-import LoadMore from "../generic/LoadMore.vue";
-import { DiscussionData } from "../../types/discussionTypes";
+import LoadMore from "../../generic/LoadMore.vue";
+import { DiscussionData } from "../../../types/discussionTypes";
 import { gql } from "@apollo/client/core";
 import { useQuery } from "@vue/apollo-composable";
 import { useRouter, useRoute } from "vue-router";
