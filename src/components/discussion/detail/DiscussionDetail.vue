@@ -13,6 +13,7 @@ import DiscussionHeader from "./DiscussionHeader.vue";
 import CommentSection from "../../comments/CommentSection.vue";
 import ChannelLinks from "./ChannelLinks.vue";
 import CreateRootCommentForm from "@/components/discussion/detail/CreateRootCommentForm.vue";
+import DiscussionVotes from "../vote/DiscussionVotes.vue";
 
 import { ChannelData } from "@/types/channelTypes";
 import "md-editor-v3/lib/style.css";
@@ -24,6 +25,7 @@ export default defineComponent({
     CommentSection,
     DiscussionBody,
     DiscussionHeader,
+    DiscussionVotes,
     ErrorBanner,
     LeftArrowIcon,
   },
@@ -174,47 +176,54 @@ export default defineComponent({
         :to="`/channels/c/${channelId}/discussions`"
         class="underline text-xs text-gray-500 mb-4"
       >
-        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+      <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
         {{ `Discussion list in c/${channelId}` }}
       </router-link>
-      <div>
-        <div
-          v-if="discussion"
-          ref="discussionDetail"
-          :class="route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''"
-          class="bg-white p-10 rounded shadow-md"
-        >
-          <DiscussionHeader
-            v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
-            :discussion="discussion"
-            :channel-id="channelId || channelLinks[0]?.uniqueName"
-            :compact-mode="compactMode"
-          />
-          <DiscussionBody
-            :discussion="discussion"
-            :channel-id="channelId"
-            :comment-section-id="commentSectionId"
-          />
-          <CreateRootCommentForm
-            v-if="route.name === 'DiscussionDetail'"
-            :discussion="discussion"
-            :channel-id="channelId"
-          />
-        </div>
-        <ChannelLinks
-          class="my-4"
-          v-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0"
+      <div v-if="discussion" class="flex">
+        <DiscussionVotes
           :discussion="discussion"
-          :channelId="channelId"
+          :comment-section="discussion.CommentSections[0]"
         />
-        <div
-          class="mb-2 my-4 bg-white px-10 py-6 rounded shadow-md"
-          v-if="route.name === 'DiscussionDetail'"
-        >
-          <CommentSection
-            ref="commentSectionRef"
-            :commentSectionId="commentSectionId"
+        <div class="w-full">
+          <div
+            ref="discussionDetail"
+            :class="
+              route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''
+            "
+            class="bg-white p-10 rounded shadow-md"
+          >
+            <DiscussionHeader
+              v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
+              :discussion="discussion"
+              :channel-id="channelId || channelLinks[0]?.uniqueName"
+              :compact-mode="compactMode"
+            />
+            <DiscussionBody
+              :discussion="discussion"
+              :channel-id="channelId"
+              :comment-section-id="commentSectionId"
+            />
+            <CreateRootCommentForm
+              v-if="route.name === 'DiscussionDetail'"
+              :discussion="discussion"
+              :channel-id="channelId"
+            />
+          </div>
+          <ChannelLinks
+            class="my-4"
+            v-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0"
+            :discussion="discussion"
+            :channelId="channelId"
           />
+          <div
+            class="mb-2 my-4 bg-white px-10 py-6 rounded shadow-md"
+            v-if="route.name === 'DiscussionDetail'"
+          >
+            <CommentSection
+              ref="commentSectionRef"
+              :commentSectionId="commentSectionId"
+            />
+          </div>
         </div>
       </div>
     </div>

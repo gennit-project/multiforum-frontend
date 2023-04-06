@@ -26,7 +26,7 @@ export default defineComponent({
   props: {
     discussionQueryFilters: {
       type: Object as PropType<Object>,
-      required: true
+      required: false
     },
     commentSection: {
       type: Object as PropType<CommentSectionData>,
@@ -128,6 +128,11 @@ export default defineComponent({
       // upvote or downvote, the arrow will appear black, indicating that
       // the logged in user has clicked it. The score will also be updated
       // and highlighted.
+
+      if (!props.discussionQueryFilters) {
+        // If we are not on the discussion list view, we don't need to update the query result
+        return;
+      }
 
       cache.modify({
         fields: {
