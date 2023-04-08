@@ -8,7 +8,8 @@ export default defineComponent({
     UserCircle
   },
   setup() {
-    const { loginWithRedirect, user, isAuthenticated } = useAuth0();
+    const { loginWithRedirect, user, isAuthenticated, isLoading } = useAuth0();
+
 
     return {
       login: () => {
@@ -16,6 +17,7 @@ export default defineComponent({
       },
       user,
       isAuthenticated,
+      isLoading,
     };
   },
 });
@@ -40,12 +42,12 @@ export default defineComponent({
     aria-haspopup="true"
   >
     <span class="sr-only">Open user menu</span>
-    <UserCircle v-if="!isAuthenticated || !user || !user.picture" class="h-8 w-8"/>
-    <img
+    <!-- <UserCircle v-if="isLoading || !isAuthenticated || !user || !user.picture" class="h-8 w-8"/> -->
+    <!-- <img
       v-else-if="user && user.picture"
       class="h-8 w-8 rounded-full"
       :src="user.picture"
-      alt=""
-    />
+      alt="User profile picture"
+    /> -->
   </button>
 </template>

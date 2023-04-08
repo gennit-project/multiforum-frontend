@@ -1,28 +1,31 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useAuth0 } from '@auth0/auth0-vue';
-import UserCircle from '@/components/icons/UserCircle.vue'
+import { defineComponent } from "vue";
+import { useAuth0 } from "@auth0/auth0-vue";
+import UserCircle from "@/components/icons/UserCircle.vue";
 
 export default defineComponent({
   components: {
-    UserCircle
+    UserCircle,
   },
-  setup(){
-    const { isAuthenticated, user } = useAuth0()
+  setup() {
+    const { isAuthenticated, user, isLoading, error } = useAuth0();
 
     return {
-      isAuthenticated, user
-    }
-  }
-})
+      error,
+      isAuthenticated,
+      user,
+      isLoading,
+      imgUrl: user?.value?.picture || "",
+    };
+  },
+});
 </script>
 <template>
-
-  <UserCircle v-if="!isAuthenticated || !user || !user.picture"/>
-    <img
-      v-else-if="user && user.picture"
-      class="h-8 w-8 rounded-full"
-      :src="user.picture"
-      alt=""
-    />
+  <UserCircle class="h-8 w-8" v-if="isLoading || !isAuthenticated" />
+  <img
+    v-else
+    class="h-8 w-8 rounded-full"
+    :src="`${imgUrl}`"
+    alt="User profile picture"
+  />
 </template>
