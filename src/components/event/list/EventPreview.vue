@@ -7,7 +7,7 @@
     TransitionRoot,
   } from "@headlessui/vue";
   import XIcon from "@/components/icons/XmarkIcon.vue";
-  import EventDetail from "./EventDetail.vue";
+  import EventDetail from "../detail/EventDetail.vue";
   
   export default defineComponent({
     components: {

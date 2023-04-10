@@ -16,7 +16,7 @@ import { DateTime } from "luxon";
 import { EventData } from "@/types/eventTypes";
 import { gql } from "@apollo/client/core";
 import getDefaultEventFormValues from "./defaultEventFormValues";
-import RequireAuth from "../auth/RequireAuth.vue";
+import RequireAuth from "../../auth/RequireAuth.vue";
 // import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 
 export default defineComponent({

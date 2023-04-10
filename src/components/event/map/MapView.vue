@@ -2,22 +2,21 @@
 import { defineComponent, PropType, ref, Ref, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
-import EventPreview from "./EventPreview.vue";
-import EventList from "./EventList.vue";
+import EventPreview from "../list/EventPreview.vue";
+import EventList from "../list/EventList.vue";
 import EventMap from "./Map.vue";
-import PreviewContainer from "./PreviewContainer.vue";
+import PreviewContainer from "../list/PreviewContainer.vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import XmarkIcon from "../icons/XmarkIcon.vue";
-import CloseButton from "../generic/CloseButton.vue";
+import CloseButton from "../../generic/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "./getEventWhere";
+import getEventWhere from "../list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
-import ErrorBanner from "../generic/ErrorBanner.vue";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
-import { timeShortcutValues } from "./eventSearchOptions";
+import { getFilterValuesFromParams } from "../list/getFilterValuesFromParams";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
+import { chronologicalOrder, reverseChronologicalOrder } from "../list/filterStrings";
+import { timeShortcutValues } from "../list/eventSearchOptions";
 
 export default defineComponent({
   name: "MapView",
@@ -97,7 +96,7 @@ export default defineComponent({
     } = useQuery(GET_EVENTS, {
       limit: 25,
       offset: 0,
-      where: eventWhere,
+      // where: eventWhere,
       resultsOrder: resultsOrder,
     });
 

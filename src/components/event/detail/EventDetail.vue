@@ -5,19 +5,19 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { GET_EVENT, GET_EVENTS } from "@/graphQLData/event/queries";
-import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
+
 import { EventData } from "@/types/eventTypes";
 import {
   relativeTime,
   formatDuration,
   getDurationObj,
-} from "../../dateTimeUtils";
-import WarningModal from "../generic/WarningModal.vue";
+} from "../../../dateTimeUtils";
+import WarningModal from "../../generic/WarningModal.vue";
 import { DateTime } from "luxon";
-import ErrorBanner from "../generic/ErrorBanner.vue";
-import GenericButton from "../generic/GenericButton.vue";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
+import GenericButton from "../../generic/GenericButton.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-import CreateButton from "../generic/CreateButton.vue";
+import CreateButton from "../../generic/CreateButton.vue";
 import HomeIcon from "@/components/icons/HomeIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
@@ -25,16 +25,20 @@ import LocationIcon from "@/components/icons/LocationIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import useClipboard from "vue-clipboard3";
 import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
-import Notification from "../generic/Notification.vue";
-import Comment from "../comments/Comment.vue";
-import LeftArrowIcon from "../icons/LeftArrowIcon.vue";
-import RequireAuth from "../auth/RequireAuth.vue";
-import PrimaryButton from "../generic/PrimaryButton.vue";
-import getEventWhere from "@/components/event/getEventWhere";
+import Notification from "../../generic/Notification.vue";
+import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
+import RequireAuth from "../../auth/RequireAuth.vue";
+import PrimaryButton from "../../generic/PrimaryButton.vue";
+import getEventWhere from "@/components/event/list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
-import { timeShortcutValues } from "./eventSearchOptions";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
+import { getFilterValuesFromParams } from "../list/getFilterValuesFromParams";
+import { timeShortcutValues } from "../list/eventSearchOptions";
+import {
+  chronologicalOrder,
+  reverseChronologicalOrder,
+} from "../list/filterStrings";
+import EventFooter from "./EventFooter.vue";
+import MdEditor from "md-editor-v3";
 
 export default defineComponent({
   props: {
@@ -46,20 +50,20 @@ export default defineComponent({
   components: {
     CalendarIcon,
     ClipboardIcon,
-    Comment,
     CreateButton,
     ErrorBanner,
+    EventFooter,
     GenericButton,
     HomeIcon,
     LeftArrowIcon,
     LocationIcon,
     LinkIcon,
+    MdEditor,
     Notification,
     RequireAuth,
     PrimaryButton,
     Tag,
     TicketIcon,
-    WarningModal,
   },
   setup(props, { emit }) {
     const route = useRoute();
@@ -149,56 +153,6 @@ export default defineComponent({
       throw new Error("Event ID is not a string.");
     }
 
-    const confirmDeleteIsOpen = ref(false);
-    const confirmCancelIsOpen = ref(false);
-
-    const {
-      mutate: deleteEvent,
-      error: deleteEventError,
-      onDone: onDoneDeleting,
-      // @ts-ignore
-    } = useMutation(DELETE_EVENT, {
-      variables: {
-        id: eventId.value,
-      },
-      update: (cache: any) => {
-        cache.modify({
-          fields: {
-            events(existingEventRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField;
-
-              return existingEventRefs.filter((ref) => {
-                return readField("id", ref) !== eventId.value;
-              });
-            },
-          },
-        });
-      },
-    });
-
-    const { mutate: cancelEvent, error: cancelEventError } = useMutation(
-      CANCEL_EVENT,
-      {
-        variables: {
-          id: eventId.value,
-          updateEventInput: {
-            canceled: true,
-          },
-        },
-      }
-    );
-
-    onDoneDeleting(() => {
-      if (channelId.value) {
-        router.push({
-          name: "SearchEventsInChannel",
-          params: {
-            channelId: channelId.value,
-          },
-        });
-      }
-    });
-
     const eventIsInThePast = computed(() => {
       if (!eventData.value) {
         return false;
@@ -220,10 +174,6 @@ export default defineComponent({
     });
 
     return {
-      cancelEvent,
-      cancelEventError,
-      confirmCancelIsOpen,
-      confirmDeleteIsOpen,
       copyAddress,
       eventData,
       eventResult,
@@ -234,20 +184,30 @@ export default defineComponent({
       channelId,
       channelsExceptCurrent,
       commentSectionId,
-      deleteEvent,
-      deleteEventError,
+
       locationText,
       relativeTime,
       route,
       showAddressCopiedNotification,
     };
   },
-  methods: {
-    getTimeZone(startTime: string) {
-      const startTimeObj = DateTime.fromISO(startTime);
-
-      return startTimeObj.zoneName;
+  computed: {
+    createdAtFormatted() {
+      if (!this.eventData.createdAt) {
+        return "";
+      }
+      return `${this.compactMode ? "" : "posted "}${this.relativeTime(
+        this.eventData.createdAt
+      )}`;
     },
+    editedAtFormatted() {
+      if (!this.eventData.updatedAt) {
+        return "";
+      }
+      return `Edited ${this.relativeTime(this.eventData.updatedAt)}`;
+    },
+  },
+  methods: {
     getFormattedDateString(startTime: string) {
       const startTimeObj = DateTime.fromISO(startTime);
 
@@ -299,16 +259,6 @@ export default defineComponent({
     >
       <ErrorBanner
         class="mt-2 mb-2"
-        v-if="deleteEventError"
-        :text="deleteEventError.message"
-      />
-      <ErrorBanner
-        class="mt-2 mb-2"
-        v-if="cancelEventError"
-        :text="cancelEventError.message"
-      />
-      <ErrorBanner
-        class="mt-2 mb-2"
         v-if="eventIsInThePast"
         :text="'This event is in the past.'"
       />
@@ -317,20 +267,16 @@ export default defineComponent({
         v-if="eventData.canceled"
         :text="'This event is canceled.'"
       />
-      <h2 v-if="route.name !== 'EventDetail'" class="pl-4 text-gray-400 text-sm">
+      <h2
+        v-if="route.name !== 'EventDetail'"
+        class="pl-4 text-gray-400 text-sm"
+      >
         Preview
       </h2>
       <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4">
-       
         <div class="flex-1 min-w-0">
           <h2
-            class="
-              text-xl
-              font-bold
-              leading-7
-              text-gray-900
-              sm:text-3xl sm:tracking-tight sm:truncate
-            "
+            class="text-xl font-bold leading-7 text-gray-900 sm:text-3xl sm:tracking-tight sm:truncate"
           >
             {{ eventData.title }}
           </h2>
@@ -427,138 +373,53 @@ export default defineComponent({
         </ul>
       </div>
       <div class="px-4 lg:px-10">
-        <Comment
-          v-if="eventData.description"
-          :comment-data="{
-            id: eventData.id,
-            CommentAuthor: eventData.Poster ? eventData.Poster.username : '',
-            text: eventData.description,
-            createdAt: eventData.createdAt,
-            updatedAt: eventData.updatedAt,
-            isRootComment: false,
-          }"
-          :depth="1"
-          :readonly="true"
-        />
-      </div>
-      <div class="mx-4 my-2">
-        <Tag
-        class="mt-2"
-        v-for="tag in eventData.Tags"
-        :tag="tag.text"
-        :key="tag.text"
-        :eventId="eventId"
-      />
-      <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
-        Crossposted To Channels
-      </div>
-
-      <router-link
-        v-for="channel in channelsExceptCurrent"
-        :key="channel.uniqueName"
-        :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
-      >
-        <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
-      </router-link>
-      </div>
-        
-      
-
-      <div class="text-xs text-gray-600 mt-4 px-4">
-        <p v-if="!eventData.virtualEventUrl && !eventData.address">
-          This event won't show in site-wide search results because it
-          doesn't have a location or a virtual event URL. It will only appear
-          in channel specific search results.
-        </p>
-        <div class="organizer">
+        <span class="text-tiny username-text">
           <router-link
             v-if="eventData.Poster"
-            class="text-gray-800 underline"
+            class="underline font-bold"
             :to="`/u/${eventData.Poster.username}`"
           >
             {{ eventData.Poster.username }}
           </router-link>
-          {{
-            `${
-              eventData.createdAt
-                ? `posted this event ${relativeTime("" + eventData.createdAt)}`
-                : ""
-            }`
-          }}
-          <span v-if="eventData.updatedAt"> &#8226; </span>
-          {{
-            eventData.updatedAt
-              ? `Edited ${relativeTime("" + eventData.updatedAt)}`
-              : ""
-          }}
-
-          <RequireAuth
-            class="flex inline-flex"
-            v-if="eventData.Poster && route.name === 'EventDetail'"
-            :require-ownership="true"
-            :owners="[eventData.Poster.username]"
-          >
-            <template v-slot:has-auth>
-              <span >&#8226;</span>
-              <span
-                class="ml-1 underline font-medium text-gray-900 cursor-pointer"
-                @click="confirmDeleteIsOpen = true"
-                >Delete</span
-              >
-              <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1"
-                >&#8226;</span
-              >
-              <span
-                v-if="!eventData.canceled"
-                class="underline font-medium text-gray-900 cursor-pointer"
-                @click="confirmCancelIsOpen = true"
-                >Cancel</span
-              >
-            </template>
-          </RequireAuth>
-
-          <span v-if="route.name !== 'EventDetail'" class="ml-1 mr-1"
-            >&#8226;</span
-          >
-
-          <router-link
-            v-if="
-              !channelId &&
-              channelsExceptCurrent.length > 0
-            "
-            class="underline font-medium text-gray-900 cursor-pointer"
-            :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
-            >Permalink</router-link
-          >
-
-          <router-link
-            v-if="channelId && route.name !== 'EventDetail'"
-            class="underline font-medium text-gray-900 cursor-pointer"
-            :to="`/channels/c/${channelId}/events/e/${eventId}`"
-          >
-            Permalink
-          </router-link>
-        </div>
-        <div class="time-zone">
-          {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
-        </div>
+          <span v-else class="underline font-bold">[Deleted]</span>
+          <span class="ml-1">&middot;</span>
+          {{ createdAtFormatted }}
+          <span v-if="eventData.updatedAt"> &middot; </span>
+          {{ editedAtFormatted }}
+        </span>
+        <md-editor
+          v-if="eventData.description"
+          class="max-w-2xl small-text"
+          v-model="eventData.description"
+          previewTheme="vuepress"
+          language="en-US"
+          :noMermaid="true"
+          preview-only
+        />
       </div>
+      <div class="mx-4 my-2">
+        <Tag
+          class="mt-2"
+          v-for="tag in eventData.Tags"
+          :tag="tag.text"
+          :key="tag.text"
+          :eventId="eventId"
+        />
+        <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
+          Crossposted To Channels
+        </div>
 
-      <WarningModal
-        :title="'Delete Event'"
-        :body="'Are you sure you want to delete this event?'"
-        :open="confirmDeleteIsOpen"
-        @close="confirmDeleteIsOpen = false"
-        @primaryButtonClick="deleteEvent"
-      />
-      <WarningModal
-        :title="'Cancel Event'"
-        :body="'Are you sure you want to cancel this event?'"
-        :open="confirmCancelIsOpen"
-        :primary-button-text="'Yes, cancel the event'"
-        :secondary-button-text="'No'"
-        @close="confirmCancelIsOpen = false"
-        @primaryButtonClick="cancelEvent"
+        <router-link
+          v-for="channel in channelsExceptCurrent"
+          :key="channel.uniqueName"
+          :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+        >
+          <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
+        </router-link>
+      </div>
+      <EventFooter
+        :event-data="eventData"
+        :channels-except-current="channelsExceptCurrent"
       />
       <Notification
         :show="showAddressCopiedNotification"

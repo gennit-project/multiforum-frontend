@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 import { useRoute } from "vue-router";
-import { reverseChronologicalOrder, chronologicalOrder } from "./filterStrings";
-import { timeFilterShortcuts } from "./eventSearchOptions";
-import { eventFilterTypeShortcuts } from "./eventSearchOptions";
-import LocationFilterTypes from "./locationFilterTypes";
-import { getFilterValuesFromParams } from "@/components/event/getFilterValuesFromParams";
+import { reverseChronologicalOrder, chronologicalOrder } from "@/components/event/list/filterStrings";
+import { timeFilterShortcuts } from "@/components/event/list/eventSearchOptions";
+import { eventFilterTypeShortcuts } from "../list/eventSearchOptions";
+import LocationFilterTypes from "../list/locationFilterTypes";
+import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
 import { SearchEventValues } from "@/types/eventTypes";
-import Tag from "../tag/Tag.vue";
+import Tag from "../../tag/Tag.vue";
 
 export default defineComponent({
   name: "SearchEvents",

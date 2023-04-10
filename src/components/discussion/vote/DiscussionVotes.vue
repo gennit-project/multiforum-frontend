@@ -30,7 +30,7 @@ export default defineComponent({
     },
     commentSection: {
       type: Object as PropType<CommentSectionData>,
-      required: true
+      required: false
     },
     discussion: {
       type: Object as PropType<DiscussionData>,

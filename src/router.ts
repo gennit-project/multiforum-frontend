@@ -2,24 +2,24 @@ import { createRouter, createWebHistory } from "vue-router";
 import Channel from "./components/channel/Channel.vue";
 import UserProfile from "./components/user/UserProfile.vue";
 import SearchChannels from "./components/channel/SearchChannels.vue";
-import EventDetail from "./components/event/EventDetail.vue";
-import SearchEvents from "./components/event/SearchEvents.vue";
+import EventDetail from "./components/event/detail/EventDetail.vue";
+import SearchEvents from "./components/event/list/SearchEvents.vue";
 import Feed from "./components/feed/Feed.vue";
 import SearchFeeds from "./components/feed/SearchFeeds.vue";
-import DiscussionTab from "./components/channel/DiscussionTab.vue";
-import EventTab from "./components/event/EventTab.vue";
+import DiscussionTab from "@/components/channel/DiscussionTab.vue"
+import EventTab from "@/components/channel/EventTab.vue";
 import DiscussionDetail from "./components/discussion/detail/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/list/SearchDiscussions.vue";
 import About from "./components/channel/About.vue";
 import SiteSettings from "./components/settings/SiteSettings.vue";
-import CreateEvent from "@/components/event/CreateEvent.vue";
-import EditEvent from "@/components/event/EditEvent.vue";
+import CreateEvent from "@/components/event/form/CreateEvent.vue";
+import EditEvent from "@/components/event/form/EditEvent.vue";
 import CreateDiscussion from "@/components/discussion/form/CreateDiscussion.vue";
 import EditDiscussion from "@/components/discussion/form/EditDiscussion.vue";
 import CreateChannel from "@/components/channel/CreateChannel.vue";
 import EditChannel from "@/components/channel/EditChannel.vue";
-import MapView from "@/components/event/MapView.vue";
-import EventListView from "@/components/event/EventListView.vue";
+import MapView from "@/components/event/map/MapView.vue";
+import EventListView from "@/components/event/list/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import LogoutPage from "@/components/auth/LogoutPage.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
@@ -31,16 +31,14 @@ import DownvotedComments from "@/components/mod/DownvotedComments.vue";
 import UserComments from "@/components/user/UserComments.vue"
 import UserDiscussions from "@/components/user/UserDiscussions.vue"
 import UserEvents from "@/components/user/UserEvents.vue"
-
+import HomePage from "@/components/nav/HomePage.vue";
 export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: "active",
   routes: [
     {
       path: "/",
-      redirect: {
-        name: "SearchEventsList",
-      },
+      component: HomePage,
     },
     {
       path: "/logout",
@@ -50,6 +48,19 @@ export const router = createRouter({
       path: "/createUsername",
       component: CreateUsernamePage,
     },
+    {
+      name: "MapView",
+      path: "/map",
+      component: MapView,
+      children: [
+        {
+          name: "MapEventPreview",
+          path: "/map/search/:eventId",
+          component: EventDetail,
+        },
+      ],
+    },
+
     {
       name: "SearchEvents",
       path: "/events",
@@ -61,7 +72,7 @@ export const router = createRouter({
           component: EventListView,
           children: [
             {
-              name: "MapEventPreview",
+              name: "SitewideSearchEventPreview",
               path: ":eventId",
               component: EventDetail,
             },
@@ -213,7 +224,8 @@ export const router = createRouter({
     },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
-    { 
+    { path: "/u/:username", component: UserProfile },
+    {
       path: "/u/:username", 
       component: UserProfile,
       name: "UserProfile",

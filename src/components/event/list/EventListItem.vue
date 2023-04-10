@@ -3,9 +3,9 @@ import { defineComponent, PropType, computed } from "vue";
 import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
 import { getDatePieces } from "@/utils/dateTimeUtils";
-import { CommentSectionData } from "../../types/commentTypes";
+import { CommentSectionData } from "../../../types/commentTypes";
 import Tag from "@/components/tag/Tag.vue";
-import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
+import HighlightedSearchTerms from "../../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
 import { SearchEventValues } from "@/types/eventTypes";
 

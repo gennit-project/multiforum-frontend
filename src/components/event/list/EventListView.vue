@@ -3,14 +3,14 @@ import { defineComponent, computed, ref, Ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import EventList from "./EventList.vue";
-import TwoSeparatelyScrollingPanes from "../generic/TwoSeparatelyScrollingPanes.vue";
+import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPanes.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "@/components/event/getEventWhere";
+import getEventWhere from "@/components/event/list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
-import ErrorBanner from "../generic/ErrorBanner.vue";
+import ErrorBanner from "../../generic/ErrorBanner.vue";
 import EventPreview from "./EventPreview.vue";
 import { timeShortcutValues } from "./eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
@@ -63,7 +63,7 @@ export default defineComponent({
       {
         limit: 25,
         offset: 0,
-        where: eventWhere,
+        // where: eventWhere,
         resultsOrder: resultsOrder,
       },
       {

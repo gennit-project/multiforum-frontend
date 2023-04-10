@@ -9,7 +9,7 @@ import {
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
   createDefaultSelectedWeeklyHourRanges,
-} from "./eventSearchOptions";
+} from "@/components/event/list/eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
   SelectedWeekdays,
@@ -17,9 +17,9 @@ import {
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
-import Table from "../generic/Table.vue";
-import TableHead from "../generic/TableHead.vue";
-import RefreshIcon from "../icons/RefreshIcon.vue";
+import Table from "../../generic/Table.vue";
+import TableHead from "../../generic/TableHead.vue";
+import RefreshIcon from "../../icons/RefreshIcon.vue";
 
 export default defineComponent({
   props: {
