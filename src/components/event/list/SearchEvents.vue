@@ -96,12 +96,19 @@ export default defineComponent({
 <template>
   <div>
     <div class="flex justify-center"></div>
-
-    <!-- <router-view
+    <EventFilterBar
+    :channel-id="channelId"
+    :result-count="resultCount"
+    :loaded-event-count="loadedEventCount"
+    :create-event-path="createEventPath"
+    @showMap="goToMap"
+  >
+  </EventFilterBar>
+    <router-view
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"
-    ></router-view> -->
-    <MapView
+    ></router-view>
+    <!-- <MapView
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"
     >
@@ -121,7 +128,7 @@ export default defineComponent({
       <template v-slot:map-buttons>
         <TimeShortcuts/>
       </template>
-    </MapView>
+    </MapView> -->
     <sl-drawer
       label="Event Filters"
       placement="start"

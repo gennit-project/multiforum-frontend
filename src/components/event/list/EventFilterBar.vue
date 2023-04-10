@@ -343,171 +343,172 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="space-y-1">
-    <div
-      v-if="route.name !== 'EventDetail'"
-      class="items-center flex justify-center space-x-2 px-4"
-    >
-      <div class="flex justify-center">
-        <div class="flex flex-wrap space-x-1 items-center">
-          
-
-          <SearchBar
-            class="inline-flex align-middle"
-            :initial-value="filterValues.searchInput"
-            :search-placeholder="'Search text'"
-            :small="true"
-            @updateSearchInput="updateSearchInput"
-          />
-          <GenericButton
-            class="align-middle ml-2"
-            :text="'Filters'"
-            @click="handleClickMoreFilters"
-          >
-            <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
-          </GenericButton>
-
-          <slot></slot>
-
-          <div v-if="channelId" class="inline-flex align-middle">
-            <GenericSmallButton
-              class="mx-2"
-              @click="$emit('showMap')"
-              :text="'Open Map'"
+  <div>
+    <div class="space-y-1">
+      <div
+        v-if="route.name !== 'EventDetail'"
+        class="items-center flex justify-center space-x-2 px-4"
+      >
+        <div class="flex justify-center">
+          <div class="flex flex-wrap space-x-1 items-center">
+            <SearchBar
+              class="inline-flex align-middle"
+              :initial-value="filterValues.searchInput"
+              :search-placeholder="'Search text'"
+              :small="true"
+              @updateSearchInput="updateSearchInput"
+            />
+            <GenericButton
+              class="align-middle ml-2"
+              :text="'Filters'"
+              @click="handleClickMoreFilters"
             >
-              <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </GenericSmallButton>
-            <RequireAuth>
-              <template v-slot:has-auth>
-                <CreateButton
-                  class="inline-flex align-middle"
-                  :to="createEventPath"
-                  :label="'Create Event'"
-                />
-              </template>
-              <template v-slot:does-not-have-auth>
-                <PrimaryButton
-                  class="inline-flex align-middle"
-                  :label="'Create Event'"
-                />
-              </template>
-            </RequireAuth>
+              <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+            </GenericButton>
+
+            <slot></slot>
+
+            <div v-if="channelId" class="inline-flex align-middle">
+              <GenericSmallButton
+                class="mx-2"
+                @click="$emit('showMap')"
+                :text="'Open Map'"
+              >
+                <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
+              </GenericSmallButton>
+              <RequireAuth>
+                <template v-slot:has-auth>
+                  <CreateButton
+                    class="inline-flex align-middle"
+                    :to="createEventPath"
+                    :label="'Create Event'"
+                  />
+                </template>
+                <template v-slot:does-not-have-auth>
+                  <PrimaryButton
+                    class="inline-flex align-middle"
+                    :label="'Create Event'"
+                  />
+                </template>
+              </RequireAuth>
+            </div>
           </div>
         </div>
       </div>
+      <div class="flex justify-center"></div>
     </div>
-    <div class="flex justify-center"></div>
-  </div>
-  <div class="flex justify-center">
-    <div class="px-4 block">
-      <div
-        v-if="filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL"
-        class="items-center space-x-2 flex flex-wrap bold"
-      >
-        {{ resultCount }} results
+    <div class="flex justify-center">
+      <div class="px-4 block">
+        <div
+          v-if="
+            filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL
+          "
+          class="items-center space-x-2 flex flex-wrap bold"
+        >
+          {{ resultCount }} results
+        </div>
+        <div
+          v-else-if="filterValues.locationFilter === LocationFilterTypes.NONE"
+          class="items-center space-x-2 flex flex-wrap bold"
+        >
+          {{ resultCount }} results
+        </div>
+        <div v-else class="items-center space-x-2 flex flex-wrap bold">
+          <div class="inline-block">{{ resultCount }} results</div>
+        </div>
       </div>
-      <div
-        v-else-if="filterValues.locationFilter === LocationFilterTypes.NONE"
-        class="items-center space-x-2 flex flex-wrap bold"
+      <sl-drawer
+        label="Event Filters"
+        placement="start"
+        class="drawer-placement-start"
+        :open="drawerIsOpen"
+        @sl-after-hide="handleCloseFilters"
       >
-        {{ resultCount }} results
-      </div>
-      <div v-else class="items-center space-x-2 flex flex-wrap bold">
-        <div class="inline-block">{{ resultCount }} results</div>
-       
-      </div>
-    </div>
-    <sl-drawer
-      label="Event Filters"
-      placement="start"
-      class="drawer-placement-start"
-      :open="drawerIsOpen"
-      @sl-after-hide="handleCloseFilters"
-    >
-    <SelectMenu
-    v-if="distanceUnit === MilesOrKm.KM"
-    class="ml-2 w-36 inline-block"
-    :options="distanceOptionsForKilometers"
-    :default-option="defaultKilometerSelection"
-    @selected="updateSelectedDistance"
-  />
-  <SelectMenu
-    v-if="distanceUnit === MilesOrKm.MI"
-    class="ml-2 w-36 inline-block"
-    :options="distanceOptionsForMiles"
-    :default-option="defaultMileSelection"
-    @selected="updateSelectedDistance"
-  />
-  <SelectMenu
-    class="mr-4 w-18"
-    :options="distanceUnitOptions"
-    :default-option="{
-      label: distanceUnit,
-      value: distanceUnit,
-    }"
-    @selected="updateSelectedDistanceUnit"
-  />
-  <div class="inline-block">of</div>
-  <LocationSearchBar
-    class="flex flex-wrap"
-    :search-placeholder="referencePointAddress"
-    :reference-point-address-name="referencePointName"
-    @updateLocationInput="updateLocationInput"
-  />
-      <FilterChip
-        class="align-middle"
-        v-if="!channelId"
-        :label="channelLabel"
-        :highlighted="channelLabel !== defaultFilterLabels.channels"
-      >
-        <template v-slot:icon>
-          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-        </template>
-        <template v-slot:content>
-          <ChannelPicker
-            :selected-channels="filterValues.channels"
-            @setSelectedChannels="setSelectedChannels"
-          />
-        </template>
-      </FilterChip>
-      <FilterChip
-        class="align-middle"
-        :label="tagLabel"
-        :highlighted="tagLabel !== defaultFilterLabels.tags"
-      >
-        <template v-slot:icon>
-          <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-        </template>
-        <template v-slot:content>
-          <TagPicker
-            :selected-tags="filterValues.tags"
-            @setSelectedTags="setSelectedTags"
-          />
-        </template>
-      </FilterChip>
-      <h2>Time Filters</h2>
-
-      <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
-
-      <WeeklyTimePicker
-        class="py-2 px-8"
-        :selected-weekdays="filterValues.weekdays"
-        :selected-hour-ranges="filterValues.hourRanges"
-        :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
-        @updateWeekdays="updateWeekdays"
-        @updateHourRanges="updateHourRanges"
-        @updateTimeSlots="updateTimeSlots"
-        @resetTimeSlots="resetTimeSlots"
-        @close="toggleTimeSlotPicker"
-      />
-      <div slot="footer">
-        <GenericButton
-          class="align-middle ml-2"
-          :text="'Close'"
-          @click="handleCloseFilters"
+        <SelectMenu
+          v-if="distanceUnit === MilesOrKm.KM"
+          class="ml-2 w-36 inline-block"
+          :options="distanceOptionsForKilometers"
+          :default-option="defaultKilometerSelection"
+          @selected="updateSelectedDistance"
         />
-      </div>
-    </sl-drawer>
+        <SelectMenu
+          v-if="distanceUnit === MilesOrKm.MI"
+          class="ml-2 w-36 inline-block"
+          :options="distanceOptionsForMiles"
+          :default-option="defaultMileSelection"
+          @selected="updateSelectedDistance"
+        />
+        <SelectMenu
+          class="mr-4 w-18"
+          :options="distanceUnitOptions"
+          :default-option="{
+            label: distanceUnit,
+            value: distanceUnit,
+          }"
+          @selected="updateSelectedDistanceUnit"
+        />
+        <div class="inline-block">of</div>
+        <LocationSearchBar
+          class="flex flex-wrap"
+          :search-placeholder="referencePointAddress"
+          :reference-point-address-name="referencePointName"
+          @updateLocationInput="updateLocationInput"
+        />
+        <FilterChip
+          class="align-middle"
+          v-if="!channelId"
+          :label="channelLabel"
+          :highlighted="channelLabel !== defaultFilterLabels.channels"
+        >
+          <template v-slot:icon>
+            <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </template>
+          <template v-slot:content>
+            <ChannelPicker
+              :selected-channels="filterValues.channels"
+              @setSelectedChannels="setSelectedChannels"
+            />
+          </template>
+        </FilterChip>
+        <FilterChip
+          class="align-middle"
+          :label="tagLabel"
+          :highlighted="tagLabel !== defaultFilterLabels.tags"
+        >
+          <template v-slot:icon>
+            <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </template>
+          <template v-slot:content>
+            <TagPicker
+              :selected-tags="filterValues.tags"
+              @setSelectedTags="setSelectedTags"
+            />
+          </template>
+        </FilterChip>
+        <h2>Time Filters</h2>
+
+        <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
+
+        <WeeklyTimePicker
+          class="py-2 px-8"
+          :selected-weekdays="filterValues.weekdays"
+          :selected-hour-ranges="filterValues.hourRanges"
+          :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
+          @updateWeekdays="updateWeekdays"
+          @updateHourRanges="updateHourRanges"
+          @updateTimeSlots="updateTimeSlots"
+          @resetTimeSlots="resetTimeSlots"
+          @close="toggleTimeSlotPicker"
+        />
+        <div slot="footer">
+          <GenericButton
+            class="align-middle ml-2"
+            :text="'Close'"
+            @click="handleCloseFilters"
+          />
+        </div>
+      </sl-drawer>
+    </div>
   </div>
 </template>
 <style>

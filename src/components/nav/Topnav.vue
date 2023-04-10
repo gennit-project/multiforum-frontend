@@ -73,7 +73,7 @@ export default defineComponent({
             <TopNavLink :to="'/events/list/search'" :label="'Online Events'">
               <CalendarIcon class="-ml-0.5 h-6 w-4 mr-1" />
             </TopNavLink>
-            <TopNavLink :to="'/events/list/search'" :label="'In-person Events'">
+            <TopNavLink :to="'/map'" :label="'In-person Events'">
               <LocationIcon class="-ml-0.5 h-6 w-4 mr-1" />
             </TopNavLink>
             <TopNavLink :to="'/discussions'" :label="'Discussions'">
@@ -82,9 +82,6 @@ export default defineComponent({
             <TopNavLink :to="'/channels'" :label="'Channels'">
               <ChannelIcon class="-ml-0.5 h-6 w-4 mr-1" />
             </TopNavLink>
-            <!-- <TopNavLink :to="'/feeds'" :label="'Feeds'">
-              <FeedIcon />
-            </TopNavLink> -->
           </div>
         </div>
       </div>
