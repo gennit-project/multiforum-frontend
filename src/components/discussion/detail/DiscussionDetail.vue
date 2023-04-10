@@ -181,6 +181,7 @@ export default defineComponent({
       </router-link>
       <div v-if="discussion" class="flex">
         <DiscussionVotes
+          v-if="route.name === 'DiscussionDetail'"
           :discussion="discussion"
           :comment-section="discussion.CommentSections[0]"
         />

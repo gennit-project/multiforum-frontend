@@ -201,7 +201,7 @@ export default defineComponent({
       error: undoUpvoteCommentSectionError,
     } = useMutation(UNDO_UPVOTE_COMMENT_SECTION, () => ({
       variables: {
-        id: props.commentSection.id,
+        id: props.commentSection?.id || "",
         username: localUsernameResult.value?.username || "",
       },
     }));
@@ -211,7 +211,7 @@ export default defineComponent({
       error: undoDownvoteCommentSectionError,
     } = useMutation(UNDO_DOWNVOTE_COMMENT_SECTION, () => ({
       variables: {
-        id: props.commentSection.id,
+        id: props.commentSection?.id || "",
         displayName: localModProfileNameResult.value?.modProfileName || "",
       },
     }));
@@ -251,7 +251,7 @@ export default defineComponent({
       ) {
         return false;
       }
-      const users = props.commentSection.UpvotedByUsers || [];
+      const users = props.commentSection?.UpvotedByUsers || [];
 
       const loggedInUser = localUsernameResult.value.username;
       const match =
@@ -269,7 +269,7 @@ export default defineComponent({
       ) {
         return false;
       }
-      const mods = props.commentSection.DownvotedByModerators || [];
+      const mods = props.commentSection?.DownvotedByModerators || [];
       const loggedInMod = localModProfileNameResult.value.modProfileName;
       const match =
         mods.filter((mod: any) => {
@@ -304,7 +304,7 @@ export default defineComponent({
       loggedInUserDownvoted,
       loggedInUserModName,
       commentSectionMutations: {
-        create: createCommentSectionError,
+        create: createCommentSection,
         upvote: upvoteCommentSection,
         downvote: downvoteCommentSection,
         undoUpvote: undoUpvoteCommentSection,

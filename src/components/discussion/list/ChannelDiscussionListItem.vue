@@ -231,27 +231,6 @@ export default defineComponent({
     },
   },
   inheritAttrs: false,
-  methods: {
-    handleClickUp() {
-      if (this.loggedInUserUpvoted) {
-        this.undoUpvote();
-      } else {
-        this.upvote();
-      }
-    },
-    handleClickDown() {
-      if (this.loggedInUserModName) {
-        if (!this.loggedInUserDownvoted) {
-          this.downvote();
-        } else {
-          this.undoDownvote();
-        }
-      } else {
-        // Create mod profile, then downvote comment
-        // this.openModProfile()
-      }
-    },
-  },
 });
 </script>
 
