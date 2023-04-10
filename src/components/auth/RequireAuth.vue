@@ -16,12 +16,11 @@ export default defineComponent({
     },
   },
   setup() {
-    const { isAuthenticated, isLoading, loginWithPopup } = useAuth0();
+    const { isAuthenticated, loginWithPopup } = useAuth0();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     return {
       isAuthenticated,
-      isLoading,
       localUsernameResult,
       loginWithPopup,
     };
@@ -51,7 +50,7 @@ export default defineComponent({
   },
 });
 </script>
-<template>
+  <template>
   <div>
     <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
@@ -61,3 +60,4 @@ export default defineComponent({
     </div>
   </div>
 </template>
+      
