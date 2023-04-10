@@ -4,12 +4,6 @@ import ChannelDiscussionList from "./ChannelDiscussionList.vue";
 import SitewideDiscussionList from "./SitewideDiscussionList.vue";
 import DiscussionPreview from "./DiscussionPreview.vue";
 import { useRoute, useRouter } from "vue-router";
-import TagPicker from "@/components/tag/TagPicker.vue";
-import ChannelPicker from "../../channel/ChannelPicker.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import SearchBar from "@/components/generic/SearchBar.vue";
-import TagIcon from "@/components/icons/TagIcon.vue";
-import FilterChip from "@/components/generic/FilterChip.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPanes.vue";
 import PrimaryButton from "../../generic/PrimaryButton.vue";
@@ -17,6 +11,10 @@ import RequireAuth from "../../auth/RequireAuth.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
 import { useDisplay } from "vuetify";
+import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
+import { SearchDiscussionValues } from "@/types/discussionTypes";
+import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
+import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
 
 interface Ref<T> {
   value: T;
@@ -25,18 +23,12 @@ interface Ref<T> {
 export default defineComponent({
   components: {
     ChannelDiscussionList,
-    ChannelIcon,
-    ChannelPicker,
     CreateButton,
+    DiscussionFilterBar,
     DiscussionPreview,
-    
-    FilterChip,
     PrimaryButton,
     RequireAuth,
-    SearchBar,
     SitewideDiscussionList,
-    TagPicker,
-    TagIcon,
     TwoSeparatelyScrollingPanes,
   },
   setup() {
@@ -49,6 +41,7 @@ export default defineComponent({
       }
       return "";
     });
+
     const discussionId = computed(() => {
       if (typeof route.params.discussionId === "string") {
         return route.params.discussionId;
@@ -56,51 +49,20 @@ export default defineComponent({
       return "";
     });
 
-    const defaultSelectedChannels = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return [route.params.channelId];
-      }
-      return [];
-    });
+    const filterValues: Ref<SearchDiscussionValues> = ref(getFilterValuesFromParams(route, channelId.value));
 
-    const selectedFilterOptions: Ref<string> = ref("");
     const selectedTags: Ref<Array<string>> = ref(
       route.params.tag && typeof route.params.tag === "string"
         ? [route.params.tag]
         : []
     );
 
-    const selectedChannels = ref(defaultSelectedChannels.value);
-    const searchInput: Ref<string> = ref("");
-
-    const setSearchInput = (input: string) => {
-      searchInput.value = input;
-    };
     const setSelectedTags = (tag: Array<string>) => {
       selectedTags.value = tag;
     };
 
     const discussionWhere = computed(() => {
-      return {
-        Tags: {
-          OR: selectedTags.value.map((tag: string) => {
-            return { text: tag };
-          }),
-        },
-        Channels: {
-          OR: selectedChannels.value.map((channel: string) => {
-            return { uniqueName: channel };
-          }),
-        },
-        OR: [
-          {
-            title_CONTAINS: searchInput.value,
-          },
-          {
-            body_CONTAINS: searchInput.value,
-          },
-        ],
-      };
+      return getDiscussionWhere(filterValues.value, channelId.value);
     });
 
     const defaultLabels = {
@@ -109,7 +71,7 @@ export default defineComponent({
     };
 
     const channelLabel = computed(() => {
-      return getChannelLabel(selectedChannels.value);
+      return getChannelLabel(filterValues.value.channels);
     });
 
     const tagLabel = computed(() => {
@@ -132,44 +94,54 @@ export default defineComponent({
       defaultLabels,
       discussionId,
       discussionWhere,
+      filterValues,
       lgAndDown,
       lgAndUp,
       mdAndDown,
       previewIsOpen,
+      route,
       router,
-      searchInput,
-      setSearchInput,
       setSelectedTags,
-      selectedChannels,
-      selectedFilterOptions,
       selectedTags,
       tagLabel,
     };
   },
-
   methods: {
-    updateSearchResult(input: string) {
-      this.setSearchInput(input);
+    updateFilters(params: SearchDiscussionValues) {
+      const existingQuery = this.$route.query;
+      // Updating the URL params causes the events
+      // to be refetched by the EventListView
+      // and MapView components
+      this.$router.replace({
+        query: {
+          ...existingQuery,
+          ...params,
+        },
+      });
     },
     filterByTag(tag: string) {
-      const alreadySelected = this.selectedTags.includes(tag);
+      const alreadySelected = this.filterValues.tags.includes(tag);
 
       if (alreadySelected) {
-        this.selectedTags = this.selectedTags.filter((t: string) => t !== tag);
+        this.filterValues.tags = this.filterValues.tags.filter(
+          (t: string) => t !== tag
+        );
       } else {
-        this.selectedTags.push(tag);
+        this.filterValues.tags.push(tag);
       }
+      this.updateFilters({ tags: tag });
     },
     filterByChannel(channel: string) {
-      const alreadySelected = this.selectedChannels.includes(channel);
+      const alreadySelected = this.filterValues.channels.includes(channel);
 
       if (alreadySelected) {
-        this.selectedChannels = this.selectedChannels.filter(
+        this.filterValues.channels = this.filterValues.channels.filter(
           (c: string) => c !== channel
         );
       } else {
-        this.selectedChannels.push(channel);
+        this.filterValues.channels.push(channel);
       }
+      this.updateFilters({ channels: channel });
     },
     closePreview() {
       this.previewIsOpen = false;
@@ -181,6 +153,17 @@ export default defineComponent({
       this.selectedChannels = channels;
     },
   },
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.$route.query) {
+        this.filterValues = getFilterValuesFromParams(
+          this.route,
+          this.channelId
+        );
+      }
+    });
+    
+  },
 });
 </script>
 
@@ -191,46 +174,7 @@ export default defineComponent({
         <div class="rounded pr-8">
           <div class="py-2">
             <div class="items-center">
-              <div class="flex items-center inline-flex">
-                <SearchBar
-                  class="flex mr-2 align-middle"
-                  :small="true"
-                  :search-placeholder="'Search discussions'"
-                  @updateSearchInput="updateSearchResult"
-                />
-                <FilterChip
-                  class="align-middle mr-2"
-                  v-if="!channelId"
-                  :label="channelLabel"
-                  :highlighted="channelLabel !== defaultLabels.channels"
-                >
-                  <template v-slot:icon>
-                    <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-                  </template>
-                  <template v-slot:content>
-                    <ChannelPicker
-                      :selected-channels="selectedChannels"
-                      @setSelectedChannels="setSelectedChannels"
-                    />
-                  </template>
-                </FilterChip>
-
-                <FilterChip
-                  class="align-middle"
-                  :label="tagLabel"
-                  :highlighted="tagLabel !== defaultLabels.tags"
-                >
-                  <template v-slot:icon>
-                    <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-                  </template>
-                  <template v-slot:content>
-                    <TagPicker
-                      :selected-tags="selectedTags.value"
-                      @setSelectedTags="setSelectedTags"
-                    />
-                  </template>
-                </FilterChip>
-              </div>
+              <DiscussionFilterBar />
               <RequireAuth class="flex inline-flex">
                 <template v-slot:has-auth>
                   <CreateButton
@@ -249,17 +193,15 @@ export default defineComponent({
             </div>
           </div>
         </div>
-
         <div>
-          <TwoSeparatelyScrollingPanes
-          >
+          <TwoSeparatelyScrollingPanes>
             <template v-slot:leftpane>
               <SitewideDiscussionList
                 v-if="!channelId"
                 :discussion-where="discussionWhere"
-                :search-input="searchInput"
-                :selected-tags="selectedTags"
-                :selected-channels="selectedChannels"
+                :search-input="filterValues.searchInput"
+                :selected-tags="filterValues.tags"
+                :selected-channels="filterValues.channels"
                 @filterByTag="filterByTag"
                 @filterByChannel="filterByChannel"
                 @openPreview="openPreview"
@@ -268,9 +210,9 @@ export default defineComponent({
                 v-else
                 :channel-id="channelId"
                 :discussion-where="discussionWhere"
-                :search-input="searchInput"
-                :selected-tags="selectedTags"
-                :selected-channels="selectedChannels"
+                :search-input="filterValues.searchInput"
+                :selected-tags="filterValues.tags"
+                :selected-channels="filterValues.channels"
                 @filterByTag="filterByTag"
                 @filterByChannel="filterByChannel"
                 @openPreview="openPreview"

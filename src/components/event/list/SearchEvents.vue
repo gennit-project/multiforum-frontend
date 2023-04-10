@@ -57,7 +57,6 @@ export default defineComponent({
       }
     },
     handleClickMoreFilters() {
-      console.log("handleClickMoreFilters");
       this.drawerIsOpen = true;
     },
     handleCloseFilters() {

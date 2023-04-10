@@ -200,6 +200,7 @@ export default defineComponent({
       } else {
         this.filterValues.channels.push(channel);
       }
+      this.updateFilters({ channels: channel });
     },
   },
   created() {

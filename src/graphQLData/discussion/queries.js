@@ -1,5 +1,60 @@
 import { gql } from "@apollo/client/core";
 
+export const SITEWIDE_GET_DISCUSSIONS = gql`
+      query getDiscussions(
+        $where: DiscussionWhere
+        $resultsOrder: [DiscussionSort!]
+        $offset: Int
+        $limit: Int
+      ) {
+        discussionsAggregate(where: $where) {
+          count
+        }
+        discussions(
+          where: $where
+          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+        ) {
+          id
+          Channels {
+            uniqueName
+          }
+          title
+          body
+          createdAt
+          Author {
+            username
+          }
+          Tags {
+            text
+          }
+          ChannelsAggregate {
+            count
+          }
+          UpvotedByUsers {
+            username
+          }
+          UpvotedByUsersAggregate {
+            count
+          }
+          DownvotedByModeratorsAggregate {
+            count
+          }
+          DownvotedByModerators {
+            displayName
+          }
+          CommentSections {
+            id
+            __typename
+            OriginalPost {
+              ... on Discussion {
+                id
+                title
+              }
+            }
+          }
+        }
+      }
+    `;
 
 export const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
 query getDiscussions(

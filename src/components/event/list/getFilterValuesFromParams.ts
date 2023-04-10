@@ -32,11 +32,11 @@ const getFilterValuesFromParams = function (
 
   // For the online events list, only include
   // events with a virtual event URL.
-  if (route.name === "SitewideSearchEventPreview") {
+  if (route?.name === "SitewideSearchEventPreview") {
     cleanedValues.hasVirtualEventUrl = true;
   }
 
-  for (const key in route.query) {
+  for (const key in route?.query || {}) {
     const val = route.query[key];
 
     switch (key) {
@@ -209,6 +209,9 @@ const getFilterValuesFromParams = function (
       weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
     resultsOrder: resultsOrder || chronologicalOrder,
     locationFilter:
+    // If there is a location filter in the query params,
+    // use it. Within a channel, don't filter by distance.
+    // If we are listing virtual events, don't filter by distance.
       locationFilter ||
       (channelId || hasVirtualEventUrl
         ? LocationFilterTypes.NONE

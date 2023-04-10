@@ -1,12 +1,15 @@
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
+import { computed, defineComponent, PropType, Ref, ref } from "vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import SitewideDiscussionListItem from "./SitewideDiscussionListItem.vue";
 import LoadMore from "../../generic/LoadMore.vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { gql } from "@apollo/client/core";
+import { SITEWIDE_GET_DISCUSSIONS } from "@/graphQLData/discussion/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useRouter, useRoute } from "vue-router";
+import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import { SearchDiscussionValues } from "@/types/discussionTypes";
+import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 
 export default defineComponent({
   // The reason we have separate components for the sidewide discussion
@@ -14,7 +17,7 @@ export default defineComponent({
   // list needs the query to get discussions to return more information,
   // specifically the comment section data, which is needed to display
   // the vote buttons.
-  setup(props) {
+  setup() {
     const router = useRouter();
     const route = useRoute();
 
@@ -25,61 +28,13 @@ export default defineComponent({
       return "";
     });
 
-    const GET_DISCUSSIONS = gql`
-      query getDiscussions(
-        $where: DiscussionWhere
-        $resultsOrder: [DiscussionSort!]
-        $offset: Int
-        $limit: Int
-      ) {
-        discussionsAggregate(where: $where) {
-          count
-        }
-        discussions(
-          where: $where
-          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
-        ) {
-          id
-          Channels {
-            uniqueName
-          }
-          title
-          body
-          createdAt
-          Author {
-            username
-          }
-          Tags {
-            text
-          }
-          ChannelsAggregate {
-            count
-          }
-          UpvotedByUsers {
-            username
-          }
-          UpvotedByUsersAggregate {
-            count
-          }
-          DownvotedByModeratorsAggregate {
-            count
-          }
-          DownvotedByModerators {
-            displayName
-          }
-          CommentSections {
-            id
-            __typename
-            OriginalPost {
-              ... on Discussion {
-                id
-                title
-              }
-            }
-          }
-        }
-      }
-    `;
+    const filterValues: Ref<SearchDiscussionValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
+
+    const discussionWhere = computed(() => {
+      return getDiscussionWhere(filterValues.value, channelId.value);
+    });
 
     const {
       result: discussionResult,
@@ -89,9 +44,9 @@ export default defineComponent({
       onResult: onGetDiscussionResult,
       fetchMore,
     } = useQuery(
-      GET_DISCUSSIONS,
+      SITEWIDE_GET_DISCUSSIONS,
       {
-        where: props.discussionWhere,
+        where: discussionWhere,
         limit: 25,
         offset: 0,
         resultsOrder: {
@@ -157,6 +112,7 @@ export default defineComponent({
       discussionError,
       discussionLoading,
       discussionResult,
+      filterValues,
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
@@ -193,6 +149,14 @@ export default defineComponent({
     };
   },
   created() {
+    this.$watch("$route.query", () => {
+      if (this.$route.query) {
+        this.filterValues = getFilterValuesFromParams(
+          this.$route,
+          this.channelId
+        );
+      }
+    });
     if (
       !this.discussionId &&
       this.discussionResult &&
@@ -218,6 +182,18 @@ export default defineComponent({
     },
     filterByChannel(channel: string) {
       this.$emit("filterByChannel", channel);
+    },
+    updateFilters(params: SearchDiscussionValues) {
+      const existingQuery = this.$route.query;
+      // Updating the URL params causes the events
+      // to be refetched by the EventListView
+      // and MapView components
+      this.$router.replace({
+        query: {
+          ...existingQuery,
+          ...params,
+        },
+      });
     },
   },
   inheritAttrs: false,
@@ -273,6 +249,5 @@ export default defineComponent({
         />
       </div>
     </div>
-    
   </div>
 </template>

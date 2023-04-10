@@ -68,7 +68,7 @@ export default defineComponent({
     <div class="relative flex items-center justify-between h-10">
       <div class="flex items-center lg:px-0">
         <div class="text-white flex">
-          <ChannelIcon class="h-5 w-5 mr-1 text-blue-400" /> gennit
+          <ChannelIcon class="h-5 w-5 mr-1 text-blue-400" /> topical
         </div>
 
         <div class="hidden lg:block lg:ml-6">
