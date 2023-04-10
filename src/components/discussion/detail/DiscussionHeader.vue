@@ -10,13 +10,15 @@ import { DateTime } from "luxon";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import WarningModal from "../../generic/WarningModal.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 
 export default defineComponent({
   components: {
-   
+    CreateButton,
     ErrorBanner,
     GenericButton,
-    
+    PrimaryButton,
     RequireAuth,
     WarningModal,
   },
@@ -108,11 +110,11 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div class="flex-1 min-w-0">
-      <h1 class="md:flex md:items-center md:justify-between">
+    <div class="flex justify-between min-w-0">
+      <h2 class="text-xl font-bold leading-7 text-gray-900 sm:text-3xl sm:tracking-tight sm:truncate">
         {{ discussion.title }}
-      </h1>
-      <span>
+      </h2>
+      <div>
         <RequireAuth
           class="flex inline-flex"
           v-if="discussion.Author && route.name === 'DiscussionDetail'"
@@ -127,7 +129,19 @@ export default defineComponent({
             </router-link>
           </template>
         </RequireAuth>
-      </span>
+        <RequireAuth class="flex inline-flex">
+          <template v-slot:has-auth>
+            <CreateButton
+              class="ml-2"
+              :to="`/channels/c/${channelId}/discussions/create`"
+              :label="'Create Discussion'"
+            />
+          </template>
+          <template v-slot:does-not-have-auth>
+            <PrimaryButton class="ml-2" :label="'Create Discussion'" />
+          </template>
+        </RequireAuth>
+      </div>
     </div>
     <div class="text-xs text-gray-600 mt-4">
       <div class="mb-2 mt-4">
