@@ -90,14 +90,12 @@ export default defineComponent({
         <div class="sm:mt-5 space-y-4 sm:space-y-5">
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
-                <PencilIcon class="float-right h-6 w-6" /><span
-                  v-if="!editMode"
-                  class="text-red-500"
-                  >*</span
-                >
-                <template #popper> Title </template>
-              </VTooltip>
+              <span
+                v-if="!editMode"
+                class="text-red-500"
+                >*</span
+              ><PencilIcon class="float-right h-6 w-6" />
+              <v-tooltip activator="parent" location="top"> Title </v-tooltip>
             </template>
             <template v-slot:content>
               <TextInput
@@ -111,10 +109,8 @@ export default defineComponent({
           </FormRow>
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
-                <TagIcon class="float-right h-6 w-6" />
-                <template #popper> Tags </template>
-              </VTooltip>
+              <TagIcon class="float-right h-6 w-6" />
+              <v-tooltip activator="parent" location="top"> Tags </v-tooltip>
             </template>
             <template v-slot:content>
               <TagInput
@@ -127,10 +123,10 @@ export default defineComponent({
           </FormRow>
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
-                <AnnotationIcon class="float-right h-6 w-6" />
-                <template #popper> Description </template>
-              </VTooltip>
+              <AnnotationIcon class="float-right h-6 w-6" />
+              <v-tooltip activator="parent" location="top">
+                Description
+              </v-tooltip>
             </template>
             <template v-slot:content>
               <TextEditor

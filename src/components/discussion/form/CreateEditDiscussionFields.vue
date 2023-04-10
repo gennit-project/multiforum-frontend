@@ -63,7 +63,7 @@ export default defineComponent({
     return {
       formTitle: props.editMode ? "Edit Discussion" : "Create Discussion",
       touched: false,
-      titleInputRef: ref(null)
+      titleInputRef: ref(null),
     };
   },
   computed: {
@@ -92,8 +92,8 @@ export default defineComponent({
   },
   created() {
     nextTick(() => {
-      if (this.titleInputRef){
-        this.titleInputRef?.$el?.children[0].childNodes[0].focus()
+      if (this.titleInputRef) {
+        this.titleInputRef?.$el?.children[0].childNodes[0].focus();
       }
     });
   },
@@ -119,13 +119,11 @@ export default defineComponent({
         <div class="mt-6">
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
-                <PencilIcon class="inline-flex h-6 w-6" /><span
-                  class="text-red-500"
-                  >*</span
-                >
-                <template #popper> Title </template>
-              </VTooltip>
+              <PencilIcon class="inline-flex float-right h-6 w-6" /><span
+                class="text-red-500"
+                >*</span
+              >
+              <v-tooltip activator="parent" location="top">Title</v-tooltip>
             </template>
             <template v-slot:content>
               <TextInput
@@ -140,13 +138,14 @@ export default defineComponent({
 
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
+             
                 <ChannelIcon class="float-right h-6 w-6" /><span
                   class="text-red-500"
                   >*</span
                 >
-                <template #popper> Channels </template>
-              </VTooltip>
+                <v-tooltip activator="parent" location="top">
+                  Channels
+                </v-tooltip>
             </template>
             <template v-slot:content>
               <TagInput
@@ -161,10 +160,10 @@ export default defineComponent({
 
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
                 <AnnotationIcon class="inline-flex h-6 w-6" />
-                <template #popper> Details </template>
-              </VTooltip>
+                <v-tooltip activator="parent" location="top">
+                  Details
+                </v-tooltip>
             </template>
             <template v-slot:content>
               <TextEditor
@@ -179,10 +178,11 @@ export default defineComponent({
 
           <FormRow>
             <template v-slot:icon>
-              <VTooltip class="inline-flex">
+              
                 <TagIcon class="inline-flex h-6 w-6" />
-                <template #popper> Tags </template>
-              </VTooltip>
+                <v-tooltip activator="parent" location="top">
+                  Tags
+                </v-tooltip>
             </template>
             <template v-slot:content>
               <TagInput

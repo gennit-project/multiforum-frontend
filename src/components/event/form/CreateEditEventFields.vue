@@ -366,10 +366,10 @@ export default defineComponent({
       <div class="pr-8">
         <FormRow>
           <template v-slot:icon>
-            <PencilIcon class="inline-flex" :wide="true" /><span
-                class="text-red-500"
-                >*</span
-              >
+            <PencilIcon class="inline-flex float-right h-6 w-6" /><span
+              class="text-red-500"
+              >*</span
+            >
             <v-tooltip activator="parent" location="top">Title</v-tooltip>
           </template>
           <template v-slot:content>
