@@ -234,9 +234,9 @@ export default defineComponent({
               } ${event.locationName || ""}`
             }}
           </p>
-          <div v-if="event.virtualEventUrl">
-            <Tag :tag="'Online event'" />
-          </div>
+          <p v-if="event.virtualEventUrl">
+           Online event
+          </p>
 
           <div class="text-sm" v-if="!isWithinChannel">
             <Tag
@@ -248,8 +248,18 @@ export default defineComponent({
               :tag="channel.uniqueName"
               @click="$emit('filterByChannel', channel.uniqueName)"
             />
+           
           </div>
-
+          <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+            <Tag
+              class="my-1"
+              :active="selectedTags.includes(tag)"
+              :key="tag"
+              v-for="tag in event.Tags"
+              :tag="tag.text"
+              @click="$emit('filterByTag', tag)"
+            />
+          </p>
           <!-- <div class="text-sm">
           <router-link
             v-if="isWithinChannel && event.CommentSections[0]"
@@ -279,16 +289,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <Tag
-      class="mb-2"
-      :key="tag"
-      :active="!!selectedTagsMap[tag.text]"
-      v-for="tag in event.Tags"
-      :tag="tag.text"
-      @click="() => {
-        handleClickTag(tag.text)
-      }"
-    />
+   
   </li>
 </template>
 <style>
