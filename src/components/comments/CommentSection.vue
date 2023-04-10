@@ -222,6 +222,15 @@ export default defineComponent({
             },
           },
         },
+        UpvotedByUsers: {
+          connect: {
+            where: {
+              node: {
+                username: username.value,
+              },
+            },
+          },
+        },
       };
       return [input];
     });
