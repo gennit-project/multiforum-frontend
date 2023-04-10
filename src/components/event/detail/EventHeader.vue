@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
 import GenericButton from "@/components/generic/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
@@ -13,6 +13,9 @@ import LocationIcon from "@/components/icons/LocationIcon.vue";
 import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
 import useClipboard from "vue-clipboard3";
+import Notification from "@/components/generic/Notification.vue";
+import { DateTime } from "luxon";
+import { formatDuration, getDurationObj } from "../../../dateTimeUtils";
 
 export default defineComponent({
   name: "EventHeader",
@@ -24,6 +27,7 @@ export default defineComponent({
     HomeIcon,
     LinkIcon,
     LocationIcon,
+    Notification,
     RequireAuth,
     PrimaryButton,
     TicketIcon,
@@ -34,7 +38,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props: any) {
     const route = useRoute();
     const { toClipboard } = useClipboard();
 
@@ -69,11 +73,29 @@ export default defineComponent({
     });
 
     return {
-        copyAddress,
+      copyAddress,
       eventId,
       channelId,
       showAddressCopiedNotification,
     };
+  },
+  methods: {
+    getFormattedDateString(startTime: string) {
+      const startTimeObj = DateTime.fromISO(startTime);
+
+      return startTimeObj.toFormat("cccc LLLL d yyyy");
+    },
+    getFormattedTimeString(startTime: string, endTime: string) {
+      const eventDurationObj = getDurationObj(startTime, endTime);
+      const formattedDuration = formatDuration(eventDurationObj);
+
+      const startTimeObj = DateTime.fromISO(startTime);
+
+      const formattedStartTimeString = startTimeObj.toLocaleString(
+        DateTime.TIME_SIMPLE
+      );
+      return `${formattedStartTimeString} for ${formattedDuration}`;
+    },
   },
 });
 </script>
@@ -108,7 +130,6 @@ export default defineComponent({
             <template v-slot:has-auth>
               <CreateButton
                 class="ml-2"
-                v-if="$route.name === 'EventDetail'"
                 :to="`/channels/c/${channelId}/events/create`"
                 :label="'Create Event'"
               />
@@ -172,5 +193,10 @@ export default defineComponent({
         {{ eventData.cost }}
       </li>
     </ul>
+    <Notification
+      :show="showAddressCopiedNotification"
+      :title="'Copied to clipboard!'"
+      @closeNotification="showAddressCopiedNotification = false"
+    />
   </div>
 </template>

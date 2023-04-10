@@ -24,7 +24,7 @@ import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import RightArrowIcon from "@/components/icons/RightArrowIcon.vue";
 import { DateTime, Interval } from "luxon";
-import DatePicker from "@/components/generic/DatePicker.vue";
+import DatePicker from "vue3-datepicker";
 
 export default defineComponent({
   setup(props) {
@@ -408,25 +408,25 @@ export default defineComponent({
           <template v-slot:content>
             <div class="sm:inline-block md:flex items-center md:space-x-2">
               <DatePicker
-                class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
-                v-model="startTimeDay"
-                :input-format="dateFormat"
-                @update:modelValue="handleStartDateChange"
-              />
-              <Dropdown
-                class="w-52"
-                :options="startTimeOptions"
-                :default-option="defaultStartTimeOption"
-                @selected="handleStartTimeChange($event.value)"
-              />
-              <RightArrowIcon />
-              <DatePicker
-                class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
-                v-model="endTimeDay"
-                :input-format="dateFormat"
-                :lower-limit="startTime"
-                @update:modelValue="handleEndDateChange"
-              />
+              class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
+              v-model="startTimeDay"
+              :input-format="dateFormat"
+              @update:modelValue="handleStartDateChange"
+            />
+            <Dropdown
+              class="w-52"
+              :options="startTimeOptions"
+              :default-option="defaultStartTimeOption"
+              @selected="handleStartTimeChange($event.value)"
+            />
+            <RightArrowIcon />
+            <DatePicker
+              class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
+              v-model="endTimeDay"
+              :input-format="dateFormat"
+              :lower-limit="startTime"
+              @update:modelValue="handleEndDateChange"
+            />
               <Dropdown
                 class="w-52"
                 :options="endTimeOptions"

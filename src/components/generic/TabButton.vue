@@ -2,14 +2,8 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {
-
-  },
+  setup() {},
   props: {
-    currentPage: {
-      type: Boolean,
-      default: false
-    },
     to: {
       type: String,
       required: true,
@@ -18,47 +12,29 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    active: {
+    isActive: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
-  computed: {
-    getCurrentPage: function() {
-      return this.$route.name;
-    }
-  }
 });
 </script>
 
 <template>
   <router-link
     :to="to"
-    :class="[currentPage ? 'currentPage' : '', active ? 'border-blue-500 text-blue-600' : '']"
-    class="
-      link
-      border-transparent
-      text-gray-500
-      hover:text-blue-600 hover:border-blue-500
-      group
-      inline-flex
-      items-center
-      py-2
-      border-b-2
-      font-medium
-      text-sm
-      space-x-2
-    "
+    class="link hover:text-blue-600 hover:border-blue-500 group inline-flex items-center py-2 border-b-2 font-medium text-sm space-x-2"
+    :class="[
+      isActive
+        ? 'text-blue-600 border-blue-500'
+        : 'text-gray-500 border-transparent',
+    ]"
   >
     <slot></slot><span>{{ label }}</span>
   </router-link>
 </template>
 <style>
-.link.active {
-  @apply border-blue-500 text-blue-600
-}
 .link.currentPage {
-  @apply border-blue-500 text-blue-600
+  @apply border-blue-500 text-blue-600;
 }
 </style>
-

@@ -20,7 +20,6 @@ export default defineComponent({
 
     return {
       channelId,
-      currentRoute: props.route,
       tabRoutes: {
         discussions: `/channels/c/${channelId.value}/discussions`,
         events: `/channels/c/${channelId.value}/events/search`,
@@ -46,7 +45,6 @@ export default defineComponent({
   <div>
     <div class="sm:hidden">
       <label for="tabs" class="sr-only">Select a tab</label>
-      <!-- Use an "onChange" listener to redirect the user to the selected tab uniqueName. -->
       <select
         v-model="selectedTab"
         @change="redirect($event)"
@@ -64,21 +62,22 @@ export default defineComponent({
         <TabButton
           :to="tabRoutes.about"
           :label="'About'"
-          :active="route.path.includes('about')"
+          :is-active="$route.path.includes('about')"
           ><i class="fa-solid fa-house-chimney-window"></i
         ></TabButton>
         <TabButton
           :to="tabRoutes.discussions"
           :label="'Discussions'"
-          :active="route.path.includes('discussions')"
+          :is-active="$route.path.includes('discussions')"
           ><i class="fa-solid fa-comments"></i
         ></TabButton>
         <TabButton
           :to="tabRoutes.events"
           :label="'Events'"
-          :active="route.path.includes('events')"
-          ><i class="fa-solid fa-calendar"></i
-        ></TabButton>
+          :is-active="route.name.includes('Event')"
+        >
+          <i class="fa-solid fa-calendar"></i>
+        </TabButton>
       </nav>
     </div>
     <div class="border-b border-gray-200 width-full"></div>

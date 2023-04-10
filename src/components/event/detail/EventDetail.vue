@@ -6,15 +6,10 @@ import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { GET_EVENT } from "@/graphQLData/event/queries";
 import { EventData } from "@/types/eventTypes";
-import {
-  relativeTime,
-  formatDuration,
-  getDurationObj,
-} from "../../../dateTimeUtils";
+import { relativeTime } from "../../../dateTimeUtils";
 import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
-import Notification from "../../generic/Notification.vue";
 import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
 import getEventWhere from "@/components/event/list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
@@ -41,13 +36,11 @@ export default defineComponent({
     EventHeader,
     LeftArrowIcon,
     MdEditor,
-    Notification,
     Tag,
   },
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
-    
 
     const eventId = computed(() => {
       return route.params.eventId;
@@ -76,7 +69,6 @@ export default defineComponent({
       return eventResult.value.events[0];
     });
 
-
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
     );
@@ -91,8 +83,6 @@ export default defineComponent({
     const eventWhere = computed(() => {
       return getEventWhere(filterValues.value, false, channelId.value);
     });
-
-    
 
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
@@ -155,22 +145,6 @@ export default defineComponent({
     };
   },
   methods: {
-    getFormattedDateString(startTime: string) {
-      const startTimeObj = DateTime.fromISO(startTime);
-
-      return startTimeObj.toFormat("cccc LLLL d yyyy");
-    },
-    getFormattedTimeString(startTime: string, endTime: string) {
-      const eventDurationObj = getDurationObj(startTime, endTime);
-      const formattedDuration = formatDuration(eventDurationObj);
-
-      const startTimeObj = DateTime.fromISO(startTime);
-
-      const formattedStartTimeString = startTimeObj.toLocaleString(
-        DateTime.TIME_SIMPLE
-      );
-      return `${formattedStartTimeString} for ${formattedDuration}`;
-    },
     openLink() {
       window.open(this.eventData.virtualEventUrl, "_blank");
     },
@@ -220,9 +194,7 @@ export default defineComponent({
       >
         Preview
       </h2>
-      <EventHeader 
-       :event-data="eventData"
-      />
+      <EventHeader :event-data="eventData" />
       <div class="px-4 lg:px-10">
         <md-editor
           v-if="eventData.description"
@@ -257,11 +229,6 @@ export default defineComponent({
       <EventFooter
         :event-data="eventData"
         :channels-except-current="channelsExceptCurrent"
-      />
-      <Notification
-        :show="showAddressCopiedNotification"
-        :title="'Copied to clipboard!'"
-        @closeNotification="showAddressCopiedNotification = false"
       />
     </div>
   </div>
