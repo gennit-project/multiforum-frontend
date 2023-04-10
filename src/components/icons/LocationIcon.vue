@@ -12,7 +12,7 @@ export default defineComponent({
 </script>
 <template>
   <svg
-    class="-ml-0.5 h-6 w-6"
+    class="-ml-0.5"
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"

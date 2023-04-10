@@ -435,7 +435,7 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <LocationIcon :wide="true" class="float-right" />
+            <LocationIcon :wide="true" class="float-right h-6 w-6" />
             <v-tooltip activator="parent" location="top">Location</v-tooltip>
           </template>
           <template v-slot:content>

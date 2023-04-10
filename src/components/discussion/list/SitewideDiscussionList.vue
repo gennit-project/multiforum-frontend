@@ -200,7 +200,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full h-full shadow-md">
+  <div class="w-full h-full">
     <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       class="max-w-5xl"
@@ -219,9 +219,9 @@ export default defineComponent({
     </p>
     <div
       v-if="discussionResult && discussionResult.discussions.length > 0"
-      class="h-full bg-white"
+      class="h-full"
     >
-      <ul role="list" class="relative my-2 bg-white rounded border border-1">
+      <ul role="list" class="relative my-2 mr-2">
         <SitewideDiscussionListItem
           v-for="discussion in discussionResult.discussions"
           :key="discussion.id"

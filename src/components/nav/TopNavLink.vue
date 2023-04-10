@@ -23,26 +23,28 @@ export default defineComponent({
     text-gray-300
         inline-flex
         items-center
-        hover:bg-gray-700 hover:text-white
-        px-3
-        py-1
+        hover:bg-blue-700 hover:text-white
+        px-4
+        py-2
         rounded-full
-        text-xs
+        text-sm
         font-medium
         "
     active-class="
         inline-flex
         items-center
-        bg-gray-800
+        bg-blue-900
         text-white
-        px-3
-        py-1
+        px-4
+        py-2
         rounded-full
-        text-smxs
+        text-sm
         font-medium
         "
   >
+  <div class="text-blue-400">
     <slot />
+  </div>
     {{ label }}
   </router-link>
 </template>
