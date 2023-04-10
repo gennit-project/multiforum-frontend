@@ -75,37 +75,10 @@ export default defineComponent({
 <template>
   <div>
     <div class="flex justify-center"></div>
-    <EventFilterBar
-      :result-count="resultCount"
-      :loaded-event-count="loadedEventCount"
-      @showMap="goToMap"
-    >
-    </EventFilterBar>
     <router-view
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"
     ></router-view>
-    <!-- <MapView
-      @updateLoadedEventCount="setLoadedEventCount"
-      @updateResultCount="setResultCount"
-    >
-      <template v-slot:search>
-        <div class="block float-right mx-4 lg:mr-12">
-          <div class="flex justify-center">
-            <GenericButton
-              class="align-middle ml-2"
-              :text="'More Filters'"
-              @click="handleClickMoreFilters"
-            >
-              <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
-            </GenericButton>
-          </div>
-        </div>
-      </template>
-      <template v-slot:map-buttons>
-        <TimeShortcuts/>
-      </template>
-    </MapView> -->
     <sl-drawer
       label="Event Filters"
       placement="start"

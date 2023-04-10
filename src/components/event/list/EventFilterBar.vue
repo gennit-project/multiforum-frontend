@@ -367,30 +367,6 @@ export default defineComponent({
 
             <slot></slot>
 
-            <div v-if="channelId" class="inline-flex align-middle">
-              <GenericSmallButton
-                class="mx-2"
-                @click="$emit('showMap')"
-                :text="'Open Map'"
-              >
-                <MapIcon class="-ml-0.5 w-4 h-4 mr-2" />
-              </GenericSmallButton>
-              <RequireAuth>
-                <template v-slot:has-auth>
-                  <CreateButton
-                    class="inline-flex align-middle"
-                    :to="createEventPath"
-                    :label="'Create Event'"
-                  />
-                </template>
-                <template v-slot:does-not-have-auth>
-                  <PrimaryButton
-                    class="inline-flex align-middle"
-                    :label="'Create Event'"
-                  />
-                </template>
-              </RequireAuth>
-            </div>
             <RequireAuth class="flex inline-flex">
               <template v-slot:has-auth>
                 <CreateButton
