@@ -15,7 +15,10 @@ import getEventWhere from "../list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "../list/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import { chronologicalOrder, reverseChronologicalOrder } from "../list/filterStrings";
+import {
+  chronologicalOrder,
+  reverseChronologicalOrder,
+} from "../list/filterStrings";
 import { timeShortcutValues } from "../list/eventSearchOptions";
 import EventFilterBar from "../list/EventFilterBar.vue";
 
@@ -154,13 +157,9 @@ export default defineComponent({
         },
       });
     };
-    const createEventPath = channelId.value
-      ? `/channels/c/${channelId.value}/events/create`
-      : "/events/create";
 
     return {
       backToChannel,
-      createEventPath,
       route,
       router,
       smAndDown,
@@ -433,10 +432,9 @@ export default defineComponent({
 <template>
   <div class="mx-auto">
     <EventFilterBar
-        :channel-id="channelId"
-        :result-count="resultCount"
-        :loaded-event-count="loadedEventCount"
-        :create-event-path="createEventPath"
+      :channel-id="channelId"
+      :result-count="resultCount"
+      :loaded-event-count="loadedEventCount"
     />
     <div v-if="eventLoading">Loading...</div>
     <ErrorBanner

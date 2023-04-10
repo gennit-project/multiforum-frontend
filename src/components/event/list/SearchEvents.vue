@@ -4,31 +4,15 @@ import { router } from "@/router";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import EventFilterBar from "./EventFilterBar.vue";
-import GenericSmallButton from "../../generic/GenericSmallButton.vue";
-// import CreateButton from "../generic/CreateButton.vue";
-// import RequireAuth from "../auth/RequireAuth.vue";
 import GenericButton from "../../generic/GenericButton.vue";
-// import PrimaryButton from "@/components/generic/PrimaryButton.vue";
-import MapIcon from "../../icons/MapIcon.vue";
-import FilterIcon from "../../icons/FilterIcon.vue";
 import "@shoelace-style/shoelace/dist/components/drawer/drawer.js";
-import MapView from "../map/MapView.vue";
-import TimeShortcuts from "./TimeShortcuts.vue";
 
 export default defineComponent({
   name: "SearchEvents",
 
   components: {
-    // CreateButton,
     EventFilterBar,
-    FilterIcon,
     GenericButton,
-    // GenericSmallButton,
-    // MapIcon,
-    MapView,
-    // PrimaryButton,
-    // RequireAuth,
-    TimeShortcuts
   },
   setup() {
     const route = useRoute();
@@ -41,13 +25,8 @@ export default defineComponent({
     });
     const now = DateTime.now();
 
-    const createEventPath = channelId.value
-      ? `/channels/c/${channelId.value}/events/create`
-      : "/events/create";
-
     return {
       channelId,
-      createEventPath,
       drawerIsOpen: ref(false),
       loadedEventCount: ref(0),
       now,
@@ -97,13 +76,11 @@ export default defineComponent({
   <div>
     <div class="flex justify-center"></div>
     <EventFilterBar
-    :channel-id="channelId"
-    :result-count="resultCount"
-    :loaded-event-count="loadedEventCount"
-    :create-event-path="createEventPath"
-    @showMap="goToMap"
-  >
-  </EventFilterBar>
+      :result-count="resultCount"
+      :loaded-event-count="loadedEventCount"
+      @showMap="goToMap"
+    >
+    </EventFilterBar>
     <router-view
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"
@@ -137,13 +114,10 @@ export default defineComponent({
       @sl-after-hide="handleCloseFilters"
     >
       <EventFilterBar
-        :channel-id="channelId"
         :result-count="resultCount"
         :loaded-event-count="loadedEventCount"
-        :create-event-path="createEventPath"
         @showMap="goToMap"
-      >
-      </EventFilterBar>
+      />
       <div slot="footer">
         <GenericButton
           class="align-middle ml-2"

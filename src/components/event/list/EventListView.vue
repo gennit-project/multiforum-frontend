@@ -14,6 +14,7 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import EventPreview from "./EventPreview.vue";
 import { timeShortcutValues } from "./eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
+import EventFilterBar from "./EventFilterBar.vue";
 
 export default defineComponent({
   name: "EventListView",
@@ -22,6 +23,7 @@ export default defineComponent({
   // components consume the query params.
   components: {
     ErrorBanner,
+    EventFilterBar,
     EventList,
     EventPreview,
     TwoSeparatelyScrollingPanes,
@@ -67,10 +69,10 @@ export default defineComponent({
         resultsOrder: resultsOrder,
       },
       {
-        fetchPolicy: "network-only", 
-      // If it is not network only, the list
-      // will not update when an event is updated or deleted in a way that affects
-      // which search results it should be returned in.
+        fetchPolicy: "network-only",
+        // If it is not network only, the list
+        // will not update when an event is updated or deleted in a way that affects
+        // which search results it should be returned in.
       }
     );
 
@@ -92,7 +94,7 @@ export default defineComponent({
       });
     };
 
-    const selectedEventId = ref('')
+    const selectedEventId = ref("");
 
     onGetEventResult((value) => {
       // If the preview pane is blank, fill it with the details
@@ -105,33 +107,33 @@ export default defineComponent({
       if (selectedEventId.value && value.data.events.length > 0) {
         sendToPreview(selectedEventId.value);
       }
-      
+
       emit("updateLoadedEventCount", value.data.events.length);
       emit("updateResultCount", value.data.eventsAggregate?.count);
     });
 
-    const sendToPreview = (eventId: string, eventLocationId: string = '') => {
+    const sendToPreview = (eventId: string, eventLocationId: string = "") => {
       // if (!route.params.eventId) {
-        if (!channelId.value) {
-          router.push({
-            name: "SitewideSearchEventPreview",
-            params: {
-              ...route.params,
-              eventId,
-            },
-            hash: `#${eventLocationId}`,
-            query: {...route.query},
-          });
-        } else {
-          router.push({
-            name: "SearchEventPreview",
-            params: {
-              eventId,
-            },
-            hash: `#${eventLocationId}`,
-            query: { ...route.query },
-          });
-        }
+      if (!channelId.value) {
+        router.push({
+          name: "SitewideSearchEventPreview",
+          params: {
+            ...route.params,
+            eventId,
+          },
+          hash: `#${eventLocationId}`,
+          query: { ...route.query },
+        });
+      } else {
+        router.push({
+          name: "SearchEventPreview",
+          params: {
+            eventId,
+          },
+          hash: `#${eventLocationId}`,
+          query: { ...route.query },
+        });
+      }
       // }
     };
 
@@ -152,7 +154,7 @@ export default defineComponent({
       previewIsOpen,
       reachedEndOfResults,
       refetchEvents,
-      route
+      route,
     };
   },
   methods: {
@@ -189,14 +191,12 @@ export default defineComponent({
       this.updateFilters({ tags: tag });
     },
     filterByChannel(channel: string) {
-      const alreadySelected =
-        this.filterValues.channels.includes(channel);
+      const alreadySelected = this.filterValues.channels.includes(channel);
 
       if (alreadySelected) {
-        this.filterValues.channels =
-          this.filterValues.channels.filter(
-            (c: string) => c !== channel
-          );
+        this.filterValues.channels = this.filterValues.channels.filter(
+          (c: string) => c !== channel
+        );
       } else {
         this.filterValues.channels.push(channel);
       }
@@ -215,18 +215,20 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex justify-center">
-    <ErrorBanner
-      class="mx-auto block"
-      v-if="eventError"
-      :text="eventError.message"
+  <div>
+    <EventFilterBar
+      :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
+      :loaded-event-count="eventResult?.events.length"
     />
-    <p v-else-if="eventLoading">Loading...</p>
-    <TwoSeparatelyScrollingPanes
-      class="block"
-      v-else-if="eventResult"
-    >
-      <template v-slot:leftpane>
+    <div class="flex justify-center">
+      <ErrorBanner
+        class="mx-auto block"
+        v-if="eventError"
+        :text="eventError.message"
+      />
+      <p v-else-if="eventLoading">Loading...</p>
+      <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
+        <template v-slot:leftpane>
           <EventList
             id="listView"
             :class="[!channelId ? '' : '']"
@@ -249,10 +251,11 @@ export default defineComponent({
             :isOpen="previewIsOpen"
             @closePreview="closePreview"
           />
-      </template>
-      <template v-slot:rightpane>
-        <router-view></router-view>
-      </template>
-    </TwoSeparatelyScrollingPanes>
+        </template>
+        <template v-slot:rightpane>
+          <router-view></router-view>
+        </template>
+      </TwoSeparatelyScrollingPanes>
+    </div>
   </div>
 </template>

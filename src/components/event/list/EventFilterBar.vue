@@ -64,14 +64,6 @@ export default defineComponent({
     WeeklyTimePicker,
   },
   props: {
-    channelId: {
-      type: String,
-      default: "",
-    },
-    createEventPath: {
-      type: String,
-      required: true,
-    },
     showMap: {
       type: Boolean,
       default: false,
@@ -98,6 +90,11 @@ export default defineComponent({
       return "";
     });
     const route = useRoute();
+
+    const createEventPath = channelId.value
+      ? `/channels/c/${channelId.value}/events/create`
+      : "/events/create";
+
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
@@ -160,7 +157,9 @@ export default defineComponent({
     return {
       activeDateShortcut,
       activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
+      channelId,
       channelLabel,
+      createEventPath,
       defaultFilterLabels,
       defaultKilometerSelection,
       defaultMileSelection,
