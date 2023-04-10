@@ -167,7 +167,7 @@ export default defineComponent({
                   :key="tab.name"
                   :to="`/u/${username}/${tab.href}`"
                   :label="tab.name"
-                  :active="route.path.includes(tab.name.toLowerCase())"
+                  :is-active="route.path.includes(tab.name.toLowerCase())"
                 />
               </nav>
             </div>

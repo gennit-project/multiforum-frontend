@@ -392,6 +392,21 @@ export default defineComponent({
                 </template>
               </RequireAuth>
             </div>
+            <RequireAuth class="flex inline-flex">
+              <template v-slot:has-auth>
+                <CreateButton
+                  class="align-middle ml-2"
+                  :to="createEventPath"
+                  :label="'Create Event'"
+                />
+              </template>
+              <template v-slot:does-not-have-auth>
+                <PrimaryButton
+                  class="align-middle ml-2"
+                  :label="'Create Event'"
+                />
+              </template>
+            </RequireAuth>
           </div>
         </div>
       </div>
