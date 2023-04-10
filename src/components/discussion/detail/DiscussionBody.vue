@@ -6,11 +6,13 @@ import LinkPreview from "../../generic/LinkPreview.vue";
 import MdEditor from "md-editor-v3";
 import { ChannelData } from "@/types/channelTypes";
 import { useRoute } from "vue-router";
+import Tag from "../../tag/Tag.vue";
 
 export default defineComponent({
   components: {
     LinkPreview,
     MdEditor,
+    Tag
   },
   props: {
     channelId: {
@@ -90,6 +92,12 @@ export default defineComponent({
         preview-only
       />
     </div>
+    <Tag
+          class="mt-2"
+          v-for="tag in discussion.Tags"
+          :tag="tag.text"
+          :key="tag.text"
+        />
     <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">Link Previews</h2>
     <div v-if="linksInBody.length > 0">
       <LinkPreview
