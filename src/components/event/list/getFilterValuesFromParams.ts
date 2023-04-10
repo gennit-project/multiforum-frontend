@@ -30,6 +30,12 @@ const getFilterValuesFromParams = function (
 
   const cleanedValues: SearchEventValues = {};
 
+  // For the online events list, only include
+  // events with a virtual event URL.
+  if (route.name === "SitewideSearchEventPreview") {
+    cleanedValues.hasVirtualEventUrl = true;
+  }
+
   for (const key in route.query) {
     const val = route.query[key];
 
@@ -184,6 +190,7 @@ const getFilterValuesFromParams = function (
     weeklyHourRanges,
     resultsOrder,
     locationFilter,
+    hasVirtualEventUrl
   } = cleanedValues;
 
   return {
@@ -203,9 +210,10 @@ const getFilterValuesFromParams = function (
     resultsOrder: resultsOrder || chronologicalOrder,
     locationFilter:
       locationFilter ||
-      (channelId
+      (channelId || hasVirtualEventUrl
         ? LocationFilterTypes.NONE
         : LocationFilterTypes.WITHIN_RADIUS),
+    hasVirtualEventUrl: hasVirtualEventUrl || false
   };
 };
 

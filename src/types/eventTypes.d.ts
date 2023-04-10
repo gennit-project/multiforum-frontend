@@ -124,4 +124,5 @@ export type SearchEventValues = {
   showCanceledEvents?: boolean;
   free?: boolean;
   resultsOrder?: any;
+  hasVirtualEventUrl?: boolean;
 };

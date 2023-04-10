@@ -10,21 +10,6 @@ const getStartOfThisWeekend = () => {
   return startOfWeek.plus({ days: 5 });
 };
 
-const getStartOfNextWeek = () => {
-  const startOfThisWeek = now.startOf("week");
-  // If today is Sunday, look for events after
-  // the following Sunday
-  return startOfThisWeek.plus({ weeks: 1 });
-};
-
-const defaultStartDateObj = now.startOf("day");
-const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
-const defaultStartDateISO = defaultStartDateObj.toISO();
-const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
-const startOfThisWeekend = getStartOfThisWeekend();
-const startOfNextWeek = getStartOfNextWeek();
-const startOfThisMonth = now.startOf("month");
-
 // The purpose of this function is to convert event filter variables
 // into the EventWhere input object as it is defined in the auto-generated GraphQL
 // documentation for querying events.
@@ -47,6 +32,7 @@ const getEventWhere = (
     latitude,
     longitude,
     free,
+    hasVirtualEventUrl,
   } = filterValues;
 
   // These conditions will be added to the filter
@@ -56,6 +42,10 @@ const getEventWhere = (
   // Free event filter
   if (free) {
     conditions.push({ free: true });
+  }
+
+  if (hasVirtualEventUrl) {
+    conditions.push({ virtualEventUrl_NOT: null });
   }
 
   // Text search filter
@@ -230,6 +220,21 @@ const getEventWhere = (
       OR: flattenedTimeFilters,
     });
   }
+
+  const getStartOfNextWeek = () => {
+    const startOfThisWeek = now.startOf("week");
+    // If today is Sunday, look for events after
+    // the following Sunday
+    return startOfThisWeek.plus({ weeks: 1 });
+  };
+
+  const defaultStartDateObj = now.startOf("day");
+  const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
+  const defaultStartDateISO = defaultStartDateObj.toISO();
+  const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();
+  const startOfThisWeekend = getStartOfThisWeekend();
+  const startOfNextWeek = getStartOfNextWeek();
+  const startOfThisMonth = now.startOf("month");
 
   // Filter events by time range based on a selected
   // time filter shortcut, for example, today or next week.
