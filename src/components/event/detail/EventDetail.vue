@@ -1,34 +1,21 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 import Tag from "@/components/tag/Tag.vue";
-import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
-import { GET_EVENT, GET_EVENTS } from "@/graphQLData/event/queries";
-
+import { GET_EVENT } from "@/graphQLData/event/queries";
 import { EventData } from "@/types/eventTypes";
 import {
   relativeTime,
   formatDuration,
   getDurationObj,
 } from "../../../dateTimeUtils";
-import WarningModal from "../../generic/WarningModal.vue";
 import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import GenericButton from "../../generic/GenericButton.vue";
-import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-import CreateButton from "../../generic/CreateButton.vue";
-import HomeIcon from "@/components/icons/HomeIcon.vue";
-import TicketIcon from "@/components/icons/TicketIcon.vue";
 import "md-editor-v3/lib/style.css";
-import LocationIcon from "@/components/icons/LocationIcon.vue";
-import LinkIcon from "@/components/icons/LinkIcon.vue";
-import useClipboard from "vue-clipboard3";
-import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
 import Notification from "../../generic/Notification.vue";
 import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
-import RequireAuth from "../../auth/RequireAuth.vue";
-import PrimaryButton from "../../generic/PrimaryButton.vue";
 import getEventWhere from "@/components/event/list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "../list/getFilterValuesFromParams";
@@ -39,6 +26,7 @@ import {
 } from "../list/filterStrings";
 import EventFooter from "./EventFooter.vue";
 import MdEditor from "md-editor-v3";
+import EventHeader from "./EventHeader.vue";
 
 export default defineComponent({
   props: {
@@ -48,27 +36,18 @@ export default defineComponent({
     },
   },
   components: {
-    CalendarIcon,
-    ClipboardIcon,
-    CreateButton,
     ErrorBanner,
     EventFooter,
-    GenericButton,
-    HomeIcon,
+    EventHeader,
     LeftArrowIcon,
-    LocationIcon,
-    LinkIcon,
     MdEditor,
     Notification,
-    RequireAuth,
-    PrimaryButton,
     Tag,
-    TicketIcon,
   },
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
-    const { toClipboard } = useClipboard();
+    
 
     const eventId = computed(() => {
       return route.params.eventId;
@@ -97,7 +76,6 @@ export default defineComponent({
       return eventResult.value.events[0];
     });
 
-    const showAddressCopiedNotification = ref(false);
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
@@ -114,19 +92,7 @@ export default defineComponent({
       return getEventWhere(filterValues.value, false, channelId.value);
     });
 
-    const copyAddress = async () => {
-      try {
-        await toClipboard(
-          eventData.value?.address ? eventData.value.address : ""
-        );
-        showAddressCopiedNotification.value = true;
-      } catch (e: any) {
-        throw new Error(e);
-      }
-      setTimeout(() => {
-        showAddressCopiedNotification.value = false;
-      }, 2000);
-    };
+    
 
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
@@ -174,7 +140,6 @@ export default defineComponent({
     });
 
     return {
-      copyAddress,
       eventData,
       eventResult,
       eventError,
@@ -184,11 +149,9 @@ export default defineComponent({
       channelId,
       channelsExceptCurrent,
       commentSectionId,
-
       locationText,
       relativeTime,
       route,
-      showAddressCopiedNotification,
     };
   },
   methods: {

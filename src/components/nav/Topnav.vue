@@ -8,6 +8,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 // import FeedIcon from "@/components/icons/FeedIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
+import LocationIcon from "@/components/icons/LocationIcon.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_LOCAL_USERNAME, GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
@@ -16,6 +17,7 @@ export default defineComponent({
   name: "TopNav",
   components: {
     TopNavLink,
+    LocationIcon,
     MobileMenuButton,
     // NotificationButton,
     UserProfileDropdownMenu,
@@ -68,8 +70,11 @@ export default defineComponent({
 
         <div class="hidden lg:block lg:ml-6">
           <div class="flex space-x-4">
-            <TopNavLink :to="'/events/list/search'" :label="'Events'">
+            <TopNavLink :to="'/events/list/search'" :label="'Online Events'">
               <CalendarIcon class="-ml-0.5 h-6 w-4 mr-1" />
+            </TopNavLink>
+            <TopNavLink :to="'/events/list/search'" :label="'In-person Events'">
+              <LocationIcon class="-ml-0.5 h-6 w-4 mr-1" />
             </TopNavLink>
             <TopNavLink :to="'/discussions'" :label="'Discussions'">
               <DiscussionIcon />

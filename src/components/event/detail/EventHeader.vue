@@ -1,19 +1,58 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType, computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { EventData } from "@/types/eventTypes";
+import GenericButton from "@/components/generic/GenericButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import CalendarIcon from "@/components/icons/CalendarIcon.vue";
+import HomeIcon from "@/components/icons/HomeIcon.vue";
+import LinkIcon from "@/components/icons/LinkIcon.vue";
+import LocationIcon from "@/components/icons/LocationIcon.vue";
+import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
+import TicketIcon from "@/components/icons/TicketIcon.vue";
+import useClipboard from "vue-clipboard3";
 
 export default defineComponent({
   name: "EventHeader",
+  components: {
+    CalendarIcon,
+    ClipboardIcon,
+    CreateButton,
+    GenericButton,
+    HomeIcon,
+    LinkIcon,
+    LocationIcon,
+    RequireAuth,
+    PrimaryButton,
+    TicketIcon,
+  },
   props: {
     eventData: {
       type: Object as PropType<EventData>,
       required: true,
     },
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
-    const router = useRouter();
+    const { toClipboard } = useClipboard();
+
+    const showAddressCopiedNotification = ref(false);
+
+    const copyAddress = async () => {
+      try {
+        await toClipboard(
+          props.eventData.address ? props.eventData.address : ""
+        );
+        showAddressCopiedNotification.value = true;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+      setTimeout(() => {
+        showAddressCopiedNotification.value = false;
+      }, 2000);
+    };
 
     const eventId = computed(() => {
       if (typeof route.params.eventId === "string") {
@@ -30,8 +69,10 @@ export default defineComponent({
     });
 
     return {
+        copyAddress,
       eventId,
       channelId,
+      showAddressCopiedNotification,
     };
   },
 });
