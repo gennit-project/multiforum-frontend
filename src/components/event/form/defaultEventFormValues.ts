@@ -1,9 +1,11 @@
 import { DateTime } from "luxon";
+import { CreateEditEventFormValues } from "@/types/eventTypes";
+
 const now = DateTime.now();
 const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
 const defaultStartTimeISO = defaultStartTimeObj.toISO();
 
-export default (channelId: string) => {
+function getDefaultEventFormValues(channelId: string): CreateEditEventFormValues {
   return {
     title: "",
     description: "",
@@ -16,16 +18,18 @@ export default (channelId: string) => {
     locationName: "",
     isInPrivateResidence: false,
     virtualEventUrl: "",
-    startTime: defaultStartTimeISO,
+    startTime: defaultStartTimeISO || "",
     startTimeYear: "",
     startTimeMonth: "",
     startTimeDayOfMonth: "",
     startTimeDayOfWeek: "",
     startTimeHourOfDay: 0,
-    endTime: DateTime.fromISO(defaultStartTimeISO).plus({ hours: 2 }).toISO(),
+    endTime: defaultStartTimeISO ? DateTime.fromISO(defaultStartTimeISO).plus({ hours: 2 }).toISO() : "",
     canceled: false,
     deleted: false,
     free: true,
     cost: "",
   }
 }
+
+export default getDefaultEventFormValues;

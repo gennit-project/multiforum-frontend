@@ -28,7 +28,13 @@ export default defineComponent({
     provideApolloClient(apolloClient);
     const route = useRoute();
     const router = useRouter();
-    const channelId: string | string[] = route.params.channelId;
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
+
     const eventId: string | string[] = route.params.eventId;
 
     const {
@@ -79,9 +85,8 @@ export default defineComponent({
       });
     });
 
-    const getFormValuesFromEventData = (event: EventData) => {
+    function getFormValuesFromEventData(event: EventData): CreateEditEventFormValues  {
       return {
-        poster: event.Poster?.username || "[Deleted]",
         title: event.title,
         description: event.description || "",
         selectedTags: event.Tags.map((tag: TagData) => {
@@ -91,7 +96,6 @@ export default defineComponent({
           return channel.uniqueName;
         }),
         address: event.address,
-        location: event.location,
         placeId: event.placeId,
         locationName: event.locationName,
         isInPrivateResidence: event.isInPrivateResidence,
@@ -108,9 +112,9 @@ export default defineComponent({
         cost: event.cost,
         free: event.free,
       };
-    };
+    }
 
-    const getDefaultFormValues = () => {
+    function getDefaultFormValues(): CreateEditEventFormValues {
       // If the event data is already loaded, start with
       // the existing values. This will be used if you load the page,
       // navigate away and come back.
@@ -120,8 +124,8 @@ export default defineComponent({
       // If the event data is loading, start with empty values. These
       // will be overwritten by onGetEventResult function when the event
       // data is loaded.
-      return getDefaultEventFormValues(channelId);
-    };
+      return getDefaultEventFormValues(channelId.value);
+    }
 
     const formValues = ref<CreateEditEventFormValues>(getDefaultFormValues());
 

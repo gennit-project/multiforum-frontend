@@ -19,43 +19,39 @@ import TagIcon from "@/components/icons/TagIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import HomeIcon from "@/components/icons/HomeIcon.vue";
-import Select from "@/components/generic/Select.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import RightArrowIcon from "@/components/icons/RightArrowIcon.vue";
 import { DateTime, Interval } from "luxon";
-import DatePicker from "vue3-datepicker";
 
 export default defineComponent({
   setup(props) {
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
     // TIME_SIMPLE yields the time in this format: 1:30 PM
-    const timeFormat = DateTime.TIME_SIMPLE;
+    
+    // But this format is required by the date
+    // picker component.
+    const timeFormat = "yyyy-MM-dd'T'HH:mm";
+
+    const startTime = computed(() => {
+        return new Date(props.formValues.startTime);
+    })
+
+    const formattedStartTime = ref(DateTime.fromISO(props.formValues.startTime).toFormat(timeFormat))
+        
+    const endTime =  computed(() => {
+        return new Date(props.formValues.endTime);
+      })
+
+    const formattedEndTime = ref(DateTime.fromISO(props.formValues.endTime).toFormat(timeFormat))
 
     return {
       // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
-      dateFormat: "MM/dd/yyyy",
-      defaultStartTimeOption: {
-        label: DateTime.fromISO(props.formValues.startTime).toLocaleString(
-          timeFormat
-        ),
-        value: props.formValues.startTime,
-      },
-      defaultEndTimeOption: {
-        label: DateTime.fromISO(props.formValues.endTime).toLocaleString(
-          timeFormat
-        ),
-        value: props.formValues.endTime,
-      },
       formTitle: props.editMode ? "Edit Event" : "Create Event",
-      startTime: computed(() => {
-        return new Date(props.formValues.startTime);
-      }), // The value is stored as a Javascript Date object, but converted to a Luxon DateTime object for manipulation.
-      startTimeDay: ref(new Date(props.formValues.startTime)), // Create separate values for the start day and time because they can be changed separately
-      endTime: computed(() => {
-        return new Date(props.formValues.endTime);
-      }),
-      endTimeDay: ref(new Date(props.formValues.endTime)),
+      startTime,
+      formattedStartTime,
+      endTime,
+      formattedEndTime,
       touched: false,
       timeFormat,
       titleInputRef: ref(null),
@@ -98,7 +94,6 @@ export default defineComponent({
     ChannelIcon,
     CheckBox,
     ClockIcon,
-    DatePicker,
     ErrorBanner,
     ErrorMessage,
     HomeIcon,
@@ -109,7 +104,6 @@ export default defineComponent({
     LocationSearchBar,
     PencilIcon,
     RightArrowIcon,
-    Dropdown: Select,
     TagIcon,
     TagInput,
     TextEditor,
@@ -277,9 +271,8 @@ export default defineComponent({
     handleStartDateChange(event: any) {
       const startTimeISO = this.startTime.toISOString();
       const existingStartTimeObject = DateTime.fromISO(startTimeISO);
-      const newStartTimeObject = DateTime.fromISO(
-        event.toISOString()
-      ).toObject();
+      const newStartTimeObject = DateTime.fromFormat(event, this.timeFormat).toObject();
+
       const { day, month, year } = newStartTimeObject;
       // Only change the day/month/year so that we still keep the hours and minutes set by the time picker.
       // Convert the date back to a Javascript date for compatibility with the calendar date picker.
@@ -292,33 +285,14 @@ export default defineComponent({
     handleEndDateChange(event: any) {
       const endTimeISO = this.endTime.toISOString();
       const existingEndTimeObject = DateTime.fromISO(endTimeISO);
-      const newEndTimeObject = DateTime.fromISO(event.toISOString()).toObject();
+      const newEndTimeObject = DateTime.fromFormat(event, this.timeFormat).toObject();
+     
       const { day, month, year } = newEndTimeObject;
       const newEndTime = existingEndTimeObject
         .set({ day, month, year })
         .toISO();
 
       this.$emit("updateFormValues", { endTime: newEndTime });
-      this.touched = true;
-    },
-    handleStartTimeChange(event: any) {
-      const startTimeISO = this.startTime.toISOString();
-      const existingStartTimeObject = DateTime.fromISO(startTimeISO);
-      const newStartTimeObject = DateTime.fromISO(event).toObject();
-      const { hour, minute } = newStartTimeObject;
-      const newStartTime = existingStartTimeObject
-        .set({ hour, minute })
-        .toJSDate();
-      this.$emit("updateFormValues", { startTime: newStartTime.toISOString() });
-      this.touched = true;
-    },
-    handleEndTimeChange(event: any) {
-      const endTimeISO = this.endTime.toISOString();
-      const existingEndTimeObject = DateTime.fromISO(endTimeISO);
-      const newEndTimeObject = DateTime.fromISO(event).toObject();
-      const { hour, minute } = newEndTimeObject;
-      const newEndTime = existingEndTimeObject.set({ hour, minute });
-      this.$emit("updateFormValues", { endTime: newEndTime.toISO() });
       this.touched = true;
     },
     handleUpdateLocation(event: any) {
@@ -406,34 +380,28 @@ export default defineComponent({
             <v-tooltip activator="parent" location="top">Time</v-tooltip>
           </template>
           <template v-slot:content>
-            <div class="sm:inline-block md:flex items-center md:space-x-2">
-              <DatePicker
-              class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
-              v-model="startTimeDay"
-              :input-format="dateFormat"
-              @update:modelValue="handleStartDateChange"
-            />
-            <Dropdown
-              class="w-52"
-              :options="startTimeOptions"
-              :default-option="defaultStartTimeOption"
-              @selected="handleStartTimeChange($event.value)"
-            />
-            <RightArrowIcon />
-            <DatePicker
-              class="focus:ring-blue-500 focus:border-blue-500 mt-1 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
-              v-model="endTimeDay"
-              :input-format="dateFormat"
-              :lower-limit="startTime"
-              @update:modelValue="handleEndDateChange"
-            />
-              <Dropdown
-                class="w-52"
-                :options="endTimeOptions"
-                :default-option="defaultEndTimeOption"
-                @selected="handleEndTimeChange($event.value)"
-              />
-              <div class="ml-2 mr-2">
+            <div class="sm:inline-block md:flex items-center my-2 space-x-2">
+              <sl-input
+                class="sl-input cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                type="datetime-local"
+                placeholder="Date"
+                v-model="formattedStartTime"
+                :input-format="timeFormat"
+                @update:model-value="handleStartDateChange"
+              >
+              </sl-input>
+              <RightArrowIcon />
+              <sl-input
+                class="sl-input cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                type="datetime-local"
+                placeholder="Date"
+                v-model="formattedEndTime"
+                :input-format="timeFormat"
+                :lower-limit="startTime"
+                @update:model-value="handleEndDateChange"
+              >
+              </sl-input>
+              <div>
                 {{ duration }}
               </div>
             </div>
@@ -498,9 +466,8 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            
-              <TagIcon class="float-right h-6" />
-              <v-tooltip activator="parent" location="top">Tags</v-tooltip>
+            <TagIcon class="float-right h-6" />
+            <v-tooltip activator="parent" location="top">Tags</v-tooltip>
           </template>
           <template v-slot:content>
             <TagInput
@@ -513,11 +480,11 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            
-              <HomeIcon class="float-right" />
-              <v-tooltip activator="parent" location="top"
-                >Private Residence</v-tooltip>
-                </template> 
+            <HomeIcon class="float-right" />
+            <v-tooltip activator="parent" location="top"
+              >Private Residence</v-tooltip
+            >
+          </template>
           <template v-slot:content>
             <CheckBox
               class="align-middle"
@@ -562,4 +529,27 @@ export default defineComponent({
     </TailwindForm>
   </div>
 </template>
-<style></style>
+<style lang="scss">
+sl-input {
+  border: 0 !important;
+  padding: 0 !important;
+  margin: 0, 0, 0, 0;
+  border-color: blue;
+  &::focus {
+    border: 0 !important;
+    outline: 0 !important;
+  }
+}
+.sl-input::part(base):focus-visible {
+  box-shadow: 0 0 0 3px rgba(7, 3, 255, 0.33);
+}
+.sl-input::part(input) {
+  border: 0 !important;
+  margin: 0, 0, 0, 0;
+  font-family: 'Inter', sans-serif;
+  color: #000000;
+  border-color: blue;
+  font-size: 0.875rem;
+}
+
+</style>
