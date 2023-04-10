@@ -89,7 +89,6 @@ export default defineComponent({
         : 'border-blue-200',
     ]"
     class="hover:border-blue-500 border-l-4 relative bg-white py-2 px-4 space-x-2 cursor-pointer flex"
-    @click="$emit('openPreview')"
   >
     <span class="mt-1 w-6"
       >{{
@@ -101,11 +100,12 @@ export default defineComponent({
       </v-tooltip>
     </span>
 
-    <router-link :to="previewLink">
-      <p class="text-lg font-bold cursor-pointer">
-        <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-      </p>
-
+    <div>
+      <router-link :to="previewLink" @click="$emit('openPreview')">
+        <p class="text-lg font-bold cursor-pointer">
+          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+        </p>
+      </router-link>
       <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
         <Tag
           class="my-1"
@@ -130,7 +130,7 @@ export default defineComponent({
           @click="$emit('filterByChannel', channel.uniqueName)"
         />
       </div>
-    </router-link>
+    </div>
   </li>
 </template>
 <style>
