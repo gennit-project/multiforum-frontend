@@ -431,15 +431,16 @@ export default defineComponent({
     //   }
     // },
   },
-  // created() {
-  //       this.$watch(
-  //       () => this.$route.params,
-  //       ()=> {
-  //       // (toParams, previousParams) => {
-  //           // react to route changes...
-  //       }
-  //       )
-  //   },
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.route.query) {
+        this.filterValues = getFilterValuesFromParams(
+          this.route,
+          this.channelId
+        );
+      }
+    });
+  },
 });
 </script>
 <template>
@@ -485,7 +486,7 @@ export default defineComponent({
           </button>
         </div> -->
         <div class="flex justify-between mt-6 mr-4">
-          <EventFilterBar />
+          <EventFilterBar class="w-full m-6"/>
           <RequireAuth class="flex inline-flex">
             <template v-slot:has-auth>
               <CreateButton
@@ -514,8 +515,8 @@ export default defineComponent({
           :search-input="searchInput"
           :highlighted-event-location-id="highlightedEventLocationId"
           :highlighted-event-id="highlightedEventId"
-          :selected-tags="selectedTags"
-          :selected-channels="selectedChannels"
+          :selected-tags="filterValues.tags"
+          :selected-channels="filterValues.channels"
           :show-map="true"
           :loaded-event-count="eventResult.events.length"
           :result-count="eventResult.eventsAggregate?.count"

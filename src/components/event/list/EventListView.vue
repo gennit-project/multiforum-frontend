@@ -231,6 +231,7 @@ export default defineComponent({
 <template>
   <div class="mt-6">
     <div class="flex justify-center">
+      <EventFilterBar />
       <ErrorBanner
         class="mx-auto block"
         v-if="eventError"
@@ -240,7 +241,7 @@ export default defineComponent({
       <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
         <template v-slot:leftpane>
           <div class="flex justify-between m-4">
-            <EventFilterBar />
+            
             <RequireAuth class="flex inline-flex">
               <template v-slot:has-auth>
                 <CreateButton

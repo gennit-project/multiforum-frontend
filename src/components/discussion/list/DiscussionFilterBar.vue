@@ -54,7 +54,7 @@ export default defineComponent({
     });
     const route = useRoute();
 
-    const filterValues: Ref<SearcDiscussionValues> = ref(
+    const filterValues: Ref<SearchDiscussionValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
     );
 
