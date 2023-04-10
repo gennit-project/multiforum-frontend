@@ -179,8 +179,8 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    :class="hover || event.id === route.params.eventId ? 'border-blue-500' : 'border-blue-200'"
-    class="relative bg-white pl-6 cursor-pointer border-l-4 py-2"
+    :class="hover || event.id === route.params.eventId ? 'border-blue-500 shadow-lg' : 'border-blue-200 shadow-sm'"
+    class="relative bg-white pl-6 cursor-pointer border-l-4 m-3 rounded-lg  \"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
