@@ -9,7 +9,6 @@ import "@shoelace-style/shoelace/dist/components/drawer/drawer.js";
 
 export default defineComponent({
   name: "SearchEvents",
-
   components: {
     EventFilterBar,
     GenericButton,
@@ -31,7 +30,6 @@ export default defineComponent({
       loadedEventCount: ref(0),
       now,
       placeData: null,
-      resultCount: ref(0),
       route,
       router,
     };
@@ -78,26 +76,6 @@ export default defineComponent({
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"
     ></router-view>
-    <sl-drawer
-      label="Event Filters"
-      placement="start"
-      class="drawer-placement-start"
-      :open="drawerIsOpen"
-      @sl-after-hide="handleCloseFilters"
-    >
-      <EventFilterBar
-        :result-count="resultCount"
-        :loaded-event-count="loadedEventCount"
-        @showMap="goToMap"
-      />
-      <div slot="footer">
-        <GenericButton
-          class="align-middle ml-2"
-          :text="'Close'"
-          @click="handleCloseFilters"
-        />
-      </div>
-    </sl-drawer>
   </div>
 </template>
 

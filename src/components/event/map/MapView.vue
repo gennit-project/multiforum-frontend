@@ -21,6 +21,10 @@ import {
 } from "../list/filterStrings";
 import { timeShortcutValues } from "../list/eventSearchOptions";
 import EventFilterBar from "../list/EventFilterBar.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import EventResultCount from "@/components/event/list/EventResultCount.vue";
 
 export default defineComponent({
   name: "MapView",
@@ -51,12 +55,16 @@ export default defineComponent({
   },
   components: {
     CloseButton,
+    CreateButton,
     ErrorBanner,
     EventFilterBar,
     EventList,
     EventMap,
     EventPreview,
+    EventResultCount,
     PreviewContainer,
+    PrimaryButton,
+    RequireAuth,
   },
   setup() {
     const { smAndDown } = useDisplay();
@@ -158,8 +166,13 @@ export default defineComponent({
       });
     };
 
+    const createEventPath = channelId.value
+      ? `/channels/c/${channelId.value}/events/create`
+      : "/events/create";
+
     return {
       backToChannel,
+      createEventPath,
       route,
       router,
       smAndDown,
@@ -431,11 +444,6 @@ export default defineComponent({
 </script>
 <template>
   <div class="mx-auto">
-    <EventFilterBar
-      :channel-id="channelId"
-      :result-count="resultCount"
-      :loaded-event-count="loadedEventCount"
-    />
     <div v-if="eventLoading">Loading...</div>
     <ErrorBanner
       class="block"
@@ -476,7 +484,28 @@ export default defineComponent({
             Close Map
           </button>
         </div> -->
-        <slot name="search"></slot>
+        <div class="flex justify-between mt-6 mr-4">
+          <EventFilterBar />
+          <RequireAuth class="flex inline-flex">
+            <template v-slot:has-auth>
+              <CreateButton
+                class="align-middle ml-2"
+                :to="createEventPath"
+                :label="'Create Event'"
+              />
+            </template>
+            <template v-slot:does-not-have-auth>
+              <PrimaryButton
+                class="align-middle ml-2"
+                :label="'Create Event'"
+              />
+            </template>
+          </RequireAuth>
+        </div>
+        <EventResultCount
+          :result-count="resultCount"
+          :filter-values="filterValues"
+        />
         <EventList
           class="mt-8"
           key="highlightedEventId"

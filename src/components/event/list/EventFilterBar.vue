@@ -19,10 +19,7 @@ import {
 import LocationFilterTypes from "../list/locationFilterTypes";
 import WeeklyTimePicker from "@/components/event/list/WeeklyTimePicker.vue";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
-import Modal from "../../generic/Modal.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
-import GenericSmallButton from "../../generic/GenericSmallButton.vue";
-import MapIcon from "../../icons/MapIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute } from "vue-router";
 import {
@@ -34,9 +31,6 @@ import {
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
 } from "../list/eventSearchOptions";
-import CreateButton from "../../generic/CreateButton.vue";
-import PrimaryButton from "../../generic/PrimaryButton.vue";
-import RequireAuth from "../../auth/RequireAuth.vue";
 import GenericButton from "@/components/generic/GenericButton.vue";
 
 export default defineComponent({
@@ -48,15 +42,10 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
-    CreateButton,
     FilterChip,
     FilterIcon,
     GenericButton,
-    GenericSmallButton,
     LocationSearchBar,
-    MapIcon,
-    PrimaryButton,
-    RequireAuth,
     SearchBar,
     SelectMenu,
     TagIcon,
@@ -67,10 +56,6 @@ export default defineComponent({
     showMap: {
       type: Boolean,
       default: false,
-    },
-    loadedEventCount: {
-      type: Number,
-      default: 0,
     },
     resultCount: {
       type: Number,
@@ -90,11 +75,6 @@ export default defineComponent({
       return "";
     });
     const route = useRoute();
-
-    const createEventPath = channelId.value
-      ? `/channels/c/${channelId.value}/events/create`
-      : "/events/create";
-
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
@@ -159,7 +139,6 @@ export default defineComponent({
       activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
       channelId,
       channelLabel,
-      createEventPath,
       defaultFilterLabels,
       defaultKilometerSelection,
       defaultMileSelection,
@@ -364,49 +343,12 @@ export default defineComponent({
             >
               <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
             </GenericButton>
-
-            <slot></slot>
-
-            <RequireAuth class="flex inline-flex">
-              <template v-slot:has-auth>
-                <CreateButton
-                  class="align-middle ml-2"
-                  :to="createEventPath"
-                  :label="'Create Event'"
-                />
-              </template>
-              <template v-slot:does-not-have-auth>
-                <PrimaryButton
-                  class="align-middle ml-2"
-                  :label="'Create Event'"
-                />
-              </template>
-            </RequireAuth>
           </div>
         </div>
       </div>
       <div class="flex justify-center"></div>
     </div>
     <div class="flex justify-center">
-      <div class="px-4 block">
-        <div
-          v-if="
-            filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL
-          "
-          class="items-center space-x-2 flex flex-wrap bold"
-        >
-          {{ resultCount }} results
-        </div>
-        <div
-          v-else-if="filterValues.locationFilter === LocationFilterTypes.NONE"
-          class="items-center space-x-2 flex flex-wrap bold"
-        >
-          {{ resultCount }} results
-        </div>
-        <div v-else class="items-center space-x-2 flex flex-wrap bold">
-          <div class="inline-block">{{ resultCount }} results</div>
-        </div>
-      </div>
       <sl-drawer
         label="Event Filters"
         placement="start"

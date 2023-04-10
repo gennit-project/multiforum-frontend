@@ -15,6 +15,10 @@ import EventPreview from "./EventPreview.vue";
 import { timeShortcutValues } from "./eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import EventFilterBar from "./EventFilterBar.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import EventResultCount from "./EventResultCount.vue";
 
 export default defineComponent({
   name: "EventListView",
@@ -22,10 +26,14 @@ export default defineComponent({
   // params, while the MapView and EventListView
   // components consume the query params.
   components: {
+    CreateButton,
     ErrorBanner,
     EventFilterBar,
     EventList,
     EventPreview,
+    EventResultCount,
+    PrimaryButton,
+    RequireAuth,
     TwoSeparatelyScrollingPanes,
   },
   setup(props, { emit }) {
@@ -139,9 +147,14 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
+    const createEventPath = channelId.value
+      ? `/channels/c/${channelId.value}/events/create`
+      : "/events/create";
+
     const { mdAndDown } = useDisplay();
     return {
       channelId,
+      createEventPath,
       eventId: selectedEventId,
       eventError,
       eventLoading,
@@ -216,11 +229,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <EventFilterBar
-      :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
-      :loaded-event-count="eventResult?.events.length"
-    />
+  <div class="mt-6">
     <div class="flex justify-center">
       <ErrorBanner
         class="mx-auto block"
@@ -230,6 +239,28 @@ export default defineComponent({
       <p v-else-if="eventLoading">Loading...</p>
       <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
         <template v-slot:leftpane>
+          <div class="flex justify-between m-4">
+            <EventFilterBar />
+            <RequireAuth class="flex inline-flex">
+              <template v-slot:has-auth>
+                <CreateButton
+                  class="align-middle ml-2"
+                  :to="createEventPath"
+                  :label="'Create Event'"
+                />
+              </template>
+              <template v-slot:does-not-have-auth>
+                <PrimaryButton
+                  class="align-middle ml-2"
+                  :label="'Create Event'"
+                />
+              </template>
+            </RequireAuth>
+          </div>
+          <EventResultCount
+            :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
+            :filter-values="filterValues"
+          />
           <EventList
             id="listView"
             :class="[!channelId ? '' : '']"

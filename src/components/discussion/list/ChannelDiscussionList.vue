@@ -13,6 +13,7 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
 import { modProfileNameVar } from "@/cache";
 
+
 const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
