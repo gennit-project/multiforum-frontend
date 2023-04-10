@@ -98,7 +98,7 @@ export default defineComponent({
     } = useQuery(GET_EVENTS, {
       limit: 25,
       offset: 0,
-      // where: eventWhere,
+      where: eventWhere,
       resultsOrder: resultsOrder,
     });
 

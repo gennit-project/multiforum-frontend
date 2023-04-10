@@ -263,32 +263,32 @@ export default defineComponent({
         : 'border-blue-200',
     ]"
     class="hover:border-blue-500 border-l-4 border-b-1 relative bg-white py-3 px-4 space-x-2 cursor-pointer flex"
-    @click="$emit('openPreview')"
   >
     <DiscussionVotes
       :discussion="discussion"
       :discussion-query-filters="discussionQueryFilters"
       :comment-section="commentSection"
     />
-    <router-link :to="previewLink">
+    <div>
+    <router-link :to="previewLink"  @click="$emit('openPreview')">
       <p class="text-lg font-bold cursor-pointer">
         <HighlightedSearchTerms :text="title" :search-input="searchInput" />
       </p>
-
-      <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
-        <Tag
-          class="my-1"
-          :active="selectedTags.includes(tag)"
-          :key="tag"
-          v-for="tag in tags"
-          :tag="tag"
-          @click="$emit('filterByTag', tag)"
-        />
-      </p>
-      <p class="text-xs font-medium text-slate-600 no-underline">
-        {{ `Posted ${relativeTime} by ${authorUsername}` }}
-      </p>
     </router-link>
+    <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+      <Tag
+        class="my-1"
+        :active="selectedTags.includes(tag)"
+        :key="tag"
+        v-for="tag in tags"
+        :tag="tag"
+        @click="$emit('filterByTag', tag)"
+      />
+    </p>
+    <p class="text-xs font-medium text-slate-600 no-underline">
+      {{ `Posted ${relativeTime} by ${authorUsername}` }}
+    </p>
+  </div>
     <ErrorBanner
       v-if="errorMessage"
       :text="errorMessage"

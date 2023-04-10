@@ -63,7 +63,7 @@ export default defineComponent({
       {
         limit: 25,
         offset: 0,
-        // where: eventWhere,
+        where: eventWhere,
         resultsOrder: resultsOrder,
       },
       {

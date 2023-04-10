@@ -11,7 +11,10 @@ import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
-import { GET_LOCAL_USERNAME, GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import {
+  GET_LOCAL_USERNAME,
+  GET_LOCAL_MOD_PROFILE_NAME,
+} from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "TopNav",
@@ -51,7 +54,7 @@ export default defineComponent({
     return {
       isAuthenticated,
       login: () => {
-        loginWithPopup( );
+        loginWithPopup();
       },
       modName,
       username,
@@ -86,20 +89,12 @@ export default defineComponent({
         </div>
       </div>
       <div class="items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2">
-        <button 
-        class="
-        text-gray-300
-            inline-flex
-            items-center
-            hover:bg-gray-700 hover:text-white
-            px-3
-            py-1
-            rounded-full
-            text-xs
-            font-medium
-            "
-        v-if="!isAuthenticated" @click="login">
-        Log In
+        <button
+          class="text-gray-300 inline-flex items-center hover:bg-gray-700 hover:text-white px-3 py-1 rounded-full text-xs font-medium"
+          v-if="!isAuthenticated"
+          @click="login"
+        >
+          Log In
         </button>
       </div>
       <!-- <TopNavSearchBar/> -->
@@ -110,7 +105,7 @@ export default defineComponent({
         <div class="flex items-center">
           <!-- <NotificationButton/> -->
           <div class="ml-4 relative flex-shrink-0">
-            <UserProfileDropdownMenu :username="username" :mod-name="modName"/>
+            <UserProfileDropdownMenu :username="username" :mod-name="modName" />
           </div>
         </div>
       </div>

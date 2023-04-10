@@ -3,11 +3,15 @@ import { defineComponent, computed } from "vue";
 import MainLayout from "./components/layout/MainLayout.vue";
 import WithAuth from "./WithAuth.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
+import TopNav from "@/components/nav/Topnav.vue";
+import SiteSidenav from "@/components/nav/SiteSidenav.vue";
 
 export default defineComponent({
   components: {
     MainLayout,
     WithAuth,
+    SiteSidenav,
+    TopNav,
   },
   setup() {
     const { isAuthenticated, user, isLoading } = useAuth0();
@@ -32,12 +36,41 @@ export default defineComponent({
     return { emailFromAuth0, isLoading };
   },
   name: "App",
+  methods: {
+    closeUserProfileDropdown() {
+      this.showUserProfileDropdown = false;
+    },
+    toggleMobileDropdown() {
+      this.showMobileDropdown = !this.showMobileDropdown;
+    },
+    toggleUserProfileDropdown() {
+      this.showUserProfileDropdown = !this.showUserProfileDropdown;
+    },
+  },
+  data() {
+    return {
+      showMobileDropdown: false,
+      showUserProfileDropdown: false,
+    };
+  },
 });
 </script>
 
 <template>
   <div class="h-screen">
-    <div v-if="isLoading">Loading...</div>
+    <nav class="bg-black">
+      <TopNav
+        :show-user-profile-dropdown="showUserProfileDropdown"
+        @toggleMobileDropdown="toggleMobileDropdown"
+        @closeUserProfileDropdown="closeUserProfileDropdown"
+        @toggleUserProfileDropdown="toggleUserProfileDropdown"
+      />
+      <SiteSidenav
+        :show-mobile-dropdown="showMobileDropdown"
+        @click="showMobileDropdown = false"
+      />
+    </nav>
+    <div v-if="isLoading" class="flex justify-center mt-8">Loading...</div>
     <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
       <MainLayout />
     </WithAuth>
