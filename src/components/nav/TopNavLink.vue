@@ -19,32 +19,22 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="
-    text-gray-300
-        inline-flex
-        items-center
-        hover:bg-blue-700 hover:text-white
-        px-4
-        py-2
-        rounded-full
-        text-sm
-        font-medium
-        "
+    class="group inline-flex items-center px-4 py-3 text-xs font-medium hover:text-blue-500 hover:border-blue-500"
     active-class="
         inline-flex
         items-center
-        bg-blue-900
-        text-white
+        border-b-2
+        border-blue-500
+        text-blue-500
         px-4
-        py-2
-        rounded-full
-        text-sm
+        py-3
+        text-xs
         font-medium
         "
   >
-  <div class="text-blue-400">
-    <slot />
-  </div>
+    <div>
+      <slot />
+    </div>
     {{ label }}
   </router-link>
 </template>

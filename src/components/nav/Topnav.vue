@@ -64,26 +64,26 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="py-3 px-4 lg:px-12">
-    <div class="relative flex items-center justify-between h-10">
+  <div class="px-4 lg:px-12">
+    <div class="relative flex items-center justify-between">
       <div class="flex items-center lg:px-0">
-        <div class="text-white flex text-xl">
+        <div class="text-gray-700 flex text-lg">
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /> topical
         </div>
 
         <div class="hidden lg:block lg:ml-12">
           <div class="flex space-x-4">
             <TopNavLink :to="'/events/list/search'" :label="'Online Events'">
-              <CalendarIcon class="-ml-0.5 h-6 w-6 mr-1" />
+              <CalendarIcon class="-ml-0.5 h-4 w-4 mr-1" />
             </TopNavLink>
             <TopNavLink :to="'/map'" :label="'In-person Events'">
-              <LocationIcon class="-ml-0.5 h-6 w-6 mr-1" />
+              <LocationIcon class="-ml-0.5 h-4 w-4 mr-1" />
             </TopNavLink>
             <TopNavLink :to="'/discussions'" :label="'Discussions'">
-              <DiscussionIcon class="-ml-0.5 h-6 w-6 mr-1" />
+              <DiscussionIcon class="-ml-0.5 h-4 w-4 mr-1" />
             </TopNavLink>
             <TopNavLink :to="'/channels'" :label="'Channels'">
-              <ChannelIcon class="-ml-0.5 h-6 w-6 mr-1" />
+              <ChannelIcon class="-ml-0.5 h-4 w-4 mr-1" />
             </TopNavLink>
           </div>
         </div>

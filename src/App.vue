@@ -58,7 +58,7 @@ export default defineComponent({
 
 <template>
   <div class="h-screen">
-    <nav class="bg-blue-950">
+    <nav class="bg-white shadow-sm border-b-2">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
         @toggleMobileDropdown="toggleMobileDropdown"
