@@ -51,7 +51,5 @@ export default defineComponent({
 .min-w-left-md {
     width: 300px;
 }
-.min-w-right {
-    width: 700px;
-}
+
 </style>

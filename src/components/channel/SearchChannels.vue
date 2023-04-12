@@ -189,14 +189,6 @@ export default defineComponent({
 
 <template>
   <div class="bg-gray-50">
-    <div class="rounded pl-8 pr-8 bg-white shadow-sm">
-      <div class="mb-4 pt-8 mx-auto max-w-5xl">
-        <div class="block flex justify-center">
-          <h1 class="px-4 lg:px-12 text-2xl block mt-6 text-black">Channels</h1>
-        </div>
-      </div>
-    </div>
-
     <div class="pt-1 px-4">
       <div class="mt-2 flex justify-between mx-auto max-w-5xl">
         <div class="flex inline-flex">

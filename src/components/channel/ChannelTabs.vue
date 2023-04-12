@@ -58,7 +58,7 @@ export default defineComponent({
       </select>
     </div>
     <div class="hidden sm:block">
-      <nav class="-mb-px text-lg max-w-7xl space-x-8 px-6" aria-label="Tabs">
+      <nav class="-mb-px text-lg max-w-7xl space-x-8" aria-label="Tabs">
         <TabButton
           :to="tabRoutes.about"
           :label="'About'"
@@ -80,6 +80,6 @@ export default defineComponent({
         </TabButton>
       </nav>
     </div>
-    <div class="border-b border-gray-200 width-full"></div>
+    <div class="width-full"></div>
   </div>
 </template>

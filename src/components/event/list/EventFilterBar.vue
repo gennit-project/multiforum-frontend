@@ -321,7 +321,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="flex items-center inline-flex">
     <div class="space-y-1">
       <div
         v-if="route.name !== 'EventDetail'"

@@ -229,66 +229,76 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-6">
+  <div class="mx-auto ">
     <div class="flex justify-center">
-      <EventFilterBar />
-      <ErrorBanner
-        class="mx-auto block"
-        v-if="eventError"
-        :text="eventError.message"
-      />
-      <p v-else-if="eventLoading">Loading...</p>
-      <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
-        <template v-slot:leftpane>
-          <div class="flex justify-between m-4">
-            
-            <RequireAuth class="flex inline-flex">
-              <template v-slot:has-auth>
-                <CreateButton
-                  class="align-middle ml-2"
-                  :to="createEventPath"
-                  :label="'Create Event'"
-                />
-              </template>
-              <template v-slot:does-not-have-auth>
-                <PrimaryButton
-                  class="align-middle ml-2"
-                  :label="'Create Event'"
-                />
-              </template>
-            </RequireAuth>
+      <div>
+        <div class="rounded pr-8">
+          <div class="py-2">
+            <div class="items-center">
+              <EventFilterBar />
+              <RequireAuth class="flex inline-flex">
+                <template v-slot:has-auth>
+                  <CreateButton
+                    class="align-middle ml-2"
+                    :to="createEventPath"
+                    :label="'Create Event'"
+                  />
+                </template>
+                <template v-slot:does-not-have-auth>
+                  <PrimaryButton
+                    class="align-middle ml-2"
+                    :label="'Create Event'"
+                  />
+                </template>
+              </RequireAuth>
+            </div>
           </div>
-          <EventResultCount
-            :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
-            :filter-values="filterValues"
-          />
-          <EventList
-            id="listView"
-            :class="[!channelId ? '' : '']"
-            class="relative"
-            :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
-            :events="eventResult.events"
-            :channel-id="channelId"
-            :search-input="filterValues.searchInput"
-            :selected-tags="filterValues.tags"
-            :selected-channels="filterValues.channels"
-            :show-map="false"
-            @filterByTag="filterByTag"
-            @filterByChannel="filterByChannel"
-            @loadMore="loadMore"
-            @openPreview="openPreview"
-          />
-          <div class="mx-auto" v-if="eventLoading">Loading...</div>
-          <EventPreview
-            v-if="eventId"
-            :isOpen="previewIsOpen"
-            @closePreview="closePreview"
-          />
-        </template>
-        <template v-slot:rightpane>
-          <router-view></router-view>
-        </template>
-      </TwoSeparatelyScrollingPanes>
+        </div>
+
+        <ErrorBanner
+          class="mx-auto block"
+          v-if="eventError"
+          :text="eventError.message"
+        />
+        <p v-else-if="eventLoading">Loading...</p>
+        <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
+          <template v-slot:leftpane>
+            <EventResultCount
+              :result-count="
+                eventResult ? eventResult.eventsAggregate?.count : 0
+              "
+              :filter-values="filterValues"
+            />
+            <EventList
+              id="listView"
+              :class="[!channelId ? '' : '']"
+              class="relative"
+              :result-count="
+                eventResult ? eventResult.eventsAggregate?.count : 0
+              "
+              :events="eventResult.events"
+              :channel-id="channelId"
+              :search-input="filterValues.searchInput"
+              :selected-tags="filterValues.tags"
+              :selected-channels="filterValues.channels"
+              :show-map="false"
+              @filterByTag="filterByTag"
+              @filterByChannel="filterByChannel"
+              @loadMore="loadMore"
+              @openPreview="openPreview"
+            />
+            <div class="mx-auto" v-if="eventLoading">Loading...</div>
+            <EventPreview
+              v-if="eventId"
+              :isOpen="previewIsOpen"
+              @closePreview="closePreview"
+            />
+          </template>
+          <template v-slot:rightpane>
+            <router-view></router-view>
+          </template>
+        </TwoSeparatelyScrollingPanes>
+      </div>
     </div>
   </div>
 </template>
