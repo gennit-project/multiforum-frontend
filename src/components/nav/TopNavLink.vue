@@ -19,18 +19,33 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="group inline-flex items-center px-4 py-3 text-xs font-medium hover:text-blue-500 hover:border-blue-500"
+    class="
+      group 
+      inline-flex 
+      items-center 
+      px-4 
+      py-3 
+      text-xs 
+      font-medium 
+      border-b-3
+      border-transparent
+      dark:text-white 
+      hover:text-blue-500 
+      hover:border-blue-500
+      hover:dark:text-gray-200
+    "
     active-class="
-        inline-flex
-        items-center
-        border-b-2
-        border-blue-500
-        text-blue-500
-        px-4
-        py-3
-        text-xs
-        font-medium
-        "
+      inline-flex
+      items-center
+      border-b-2
+      border-blue-500
+      dark:border-blue-500
+      text-blue-500
+      px-4
+      py-3
+      text-xs
+      font-medium
+      "
   >
     <div>
       <slot />

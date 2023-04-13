@@ -20,12 +20,25 @@ import { createAuth0 } from "@auth0/auth0-vue";
 import '@fortawesome/fontawesome-free/css/all.css';
 
 
-import { faFaceSmile } from "@fortawesome/free-solid-svg-icons";
+import { 
+  faFaceSmile,
+  faSun,
+  faMoon,
+  faChevronDown,
+  faDesktop
+ } from "@fortawesome/free-solid-svg-icons";
+
 const vuetify = createVuetify({
   components,
   directives,
 })
+
 library.add(faFaceSmile);
+library.add(faSun);
+library.add(faMoon);
+library.add(faChevronDown);
+library.add(faDesktop);
+
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 async function loadFonts() {

@@ -2,25 +2,25 @@
 import { defineComponent, PropType, ref, Ref, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
-import EventPreview from "../list/EventPreview.vue";
-import EventList from "../list/EventList.vue";
+import EventPreview from "./EventPreview.vue";
+import EventList from "./EventList.vue";
 import EventMap from "./Map.vue";
-import PreviewContainer from "../list/PreviewContainer.vue";
+import PreviewContainer from "./PreviewContainer.vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import CloseButton from "../../generic/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "../list/getEventWhere";
+import getEventWhere from "./getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "../list/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import {
   chronologicalOrder,
   reverseChronologicalOrder,
-} from "../list/filterStrings";
-import { timeShortcutValues } from "../list/eventSearchOptions";
-import EventFilterBar from "../list/EventFilterBar.vue";
+} from "./filterStrings";
+import { timeShortcutValues } from "./eventSearchOptions";
+import EventFilterBar from "./EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";

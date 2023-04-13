@@ -9,6 +9,7 @@ import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 // import FeedIcon from "@/components/icons/FeedIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
+import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
 import {
@@ -19,6 +20,7 @@ import {
 export default defineComponent({
   name: "TopNav",
   components: {
+    ThemeSwitcher,
     TopNavLink,
     LocationIcon,
     MobileMenuButton,
@@ -64,11 +66,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-4 lg:px-12">
+  <div class="px-4 lg:px-12 bg-white dark:bg-gray-800">
     <div class="relative flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="text-gray-700 flex text-lg">
-          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /> topical
+          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="dark:text-white">topical</span>
         </div>
 
         <div class="hidden lg:block lg:ml-12">
@@ -88,7 +90,9 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2">
+      <div
+        class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
+      >
         <button
           class="text-gray-300 inline-flex items-center hover:bg-gray-700 hover:text-white px-3 py-1 rounded-full text-xs font-medium"
           v-if="!isAuthenticated"
@@ -98,14 +102,20 @@ export default defineComponent({
         </button>
       </div>
       <!-- <TopNavSearchBar/> -->
-      <div class="flex lg:hidden">
-        <MobileMenuButton @click="$emit('toggleMobileDropdown')" />
-      </div>
-      <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">
-        <div class="flex items-center">
-          <!-- <NotificationButton/> -->
-          <div class="ml-4 relative flex-shrink-0">
-            <UserProfileDropdownMenu :username="username" :mod-name="modName" />
+      <div class="flex items-center">
+        <ThemeSwitcher />
+        <div class="flex lg:hidden">
+          <MobileMenuButton @click="$emit('toggleMobileDropdown')" />
+        </div>
+        <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">
+          <div class="flex items-center">
+            <!-- <NotificationButton/> -->
+            <div class="relative flex-shrink-0">
+              <UserProfileDropdownMenu
+                :username="username"
+                :mod-name="modName"
+              />
+            </div>
           </div>
         </div>
       </div>

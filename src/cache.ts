@@ -132,7 +132,7 @@ const cache = new InMemoryCache({
             // Store the mod profile name of the logged in user
             return modProfileNameVar()
           }
-        }
+        },
       },
     },
   },
