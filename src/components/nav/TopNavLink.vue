@@ -39,8 +39,10 @@ export default defineComponent({
       items-center
       border-b-2
       border-blue-500
-      dark:border-blue-500
       text-blue-500
+      dark:text-blue-400
+      dark:border-blue-400
+      hover:dark:text-blue-400
       px-4
       py-3
       text-xs

@@ -16,7 +16,6 @@ import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
 import SearchBar from "../generic/SearchBar.vue";
-import ImageChip from "../generic/ImageChip.vue";
 
 interface Ref<T> {
   value: T;
@@ -188,10 +187,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-50">
-    <div class="pt-1 px-4">
-      <div class="mt-2 flex justify-between mx-auto max-w-5xl">
-        <div class="flex inline-flex">
+  <div class="bg-gray-100 dark:bg-black">
+    <div class="px-4">
+      <div class="pt-2 flex justify-between mx-auto max-w-5xl">
+        <div class="flex inline-flex py-2">
           <SearchBar
             class="align-middle mr-2"
             :search-placeholder="'Search channels'"

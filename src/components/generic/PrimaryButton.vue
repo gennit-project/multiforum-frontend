@@ -19,28 +19,29 @@ export default defineComponent({
 </script>
 <template>
   <button
-    :disabled="disabled"
-    :class="[
-      disabled
-        ? 'bg-gray-200 cursor-default text-gray-600'
-        : 'text-blue-700 bg-blue-100 hover:bg-blue-200',
-    ]"
-    class="
-      inline-flex
-      whitespace-nowrap
-      items-center
-      max-height-4
-      px-4
-      py-2
-      text-sm
-      font-medium
-      rounded-full
-      focus:outline-none
-      focus:ring-offset-2
-      focus:ring-offset-gray-100
-      focus:ring-blue-500
-    "
-  >
-    <slot></slot>{{ label }}
-  </button>
+  :disabled="disabled"
+  :class="[
+    disabled
+      ? 'bg-gray-200 cursor-default text-gray-600'
+      : 'text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-white dark:bg-blue-700 dark:hover:bg-blue-600',
+    'dark:bg-opacity-60' // class for controlling the background opacity in dark mode
+  ]"
+  class="
+    inline-flex
+    whitespace-nowrap
+    items-center
+    max-height-4
+    px-4
+    py-2
+    text-sm
+    font-medium
+    rounded-full
+    focus:outline-none
+    focus:ring-offset-2
+    focus:ring-offset-gray-100
+    focus:ring-blue-500
+  "
+>
+  <slot></slot>{{ label }}
+</button>
 </template>

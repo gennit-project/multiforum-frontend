@@ -40,7 +40,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-1 mb-1">
+  <div>
     <label for="search" class="sr-only">Search</label>
     <div class="relative items-center">
       <div
@@ -76,18 +76,19 @@ export default defineComponent({
         class="
           pl-10
           pr-3
-          py-4
-          border border-gray-200
-          rounded-full
+          py-2
+          rounded-md
           leading-5
           bg-white
+          dark:bg-black
+          dark:text-white
           placeholder-gray-500
           focus:outline-none
-          focus:placeholder-gray-400
           focus:ring-1
           focus:ring-blue-500
           focus:border-blue-500
-          text-xs
+          border border-gray-300
+          text-sm
         "
         :placeholder="searchPlaceholder"
         @keyup="updateSearchInput"

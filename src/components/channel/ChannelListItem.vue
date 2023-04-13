@@ -44,6 +44,8 @@ export default defineComponent({
         relative
         rounded-lg
         bg-white
+        dark:bg-gray-800
+        dark:text-gray-200
         py-6
         shadow-md
         col-span-12
@@ -105,6 +107,6 @@ export default defineComponent({
 
 <style>
 .huge {
-  font-size: 3rem;
+  font-size: 2rem;
 }
 </style>

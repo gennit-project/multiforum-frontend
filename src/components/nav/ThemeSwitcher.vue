@@ -9,6 +9,7 @@ export default defineComponent({
 
   setup() {
     // On page load or when changing themes, best to add inline in `head` to avoid FOUC
+    // Taken from https://tailwindcss.com/docs/dark-mode
     const updateTheme = () => {
       if (
         localStorage.theme === "dark" ||
@@ -20,6 +21,7 @@ export default defineComponent({
         document.documentElement.classList.remove("dark");
       }
     };
+    updateTheme()
     return {
       updateTheme,
     };
