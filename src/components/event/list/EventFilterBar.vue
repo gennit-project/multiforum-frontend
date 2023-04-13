@@ -353,6 +353,7 @@ export default defineComponent({
         label="Event Filters"
         placement="start"
         class="drawer-placement-start"
+        :style="{ '--size': '50vw' }"
         :open="drawerIsOpen"
         @sl-after-hide="handleCloseFilters"
       >
