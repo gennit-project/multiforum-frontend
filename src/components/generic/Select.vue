@@ -43,7 +43,7 @@ export default defineComponent({
     <div class="mt-1 relative">
       <ListboxButton
         class="
-          bg-white
+          bg-white dark:bg-black
           relative
           w-full
           border border-gray-300
@@ -80,7 +80,7 @@ export default defineComponent({
           z-10
           mt-1
           w-full
-          bg-white
+          bg-white dark:bg-black
           shadow-lg
           max-h-60
           rounded-md

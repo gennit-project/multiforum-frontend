@@ -16,10 +16,11 @@ export default defineComponent({
     :disabled="disabled"
     v-on:keydown.enter.prevent
     :class="[
-      disabled
-        ? 'bg-gray-200 cursor-default text-gray-600'
-        : 'text-white hover:bg-blue-700 bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
-    ]"
+    disabled
+      ? 'bg-gray-200 cursor-default text-gray-600'
+      : 'text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-white dark:bg-blue-700 dark:hover:bg-blue-600',
+    'dark:bg-opacity-60' // class for controlling the background opacity in dark mode
+  ]"
     class="
       ml-3
       inline-flex

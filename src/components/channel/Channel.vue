@@ -41,7 +41,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white shadow-md">
+  <div class="bg-white dark:bg-black shadow-md">
     <div class="flex">
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"

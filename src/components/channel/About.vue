@@ -103,7 +103,7 @@ export default defineComponent({
               preview-only
             />
           </div>
-          <p v-else class="mt-4 pt-4 pb-4 pr-8 pl-8 bg-white rounded">
+          <p v-else class="mt-4 pt-4 pb-4 pr-8 pl-8 bg-white dark:bg-black rounded">
             {{ "This channel has no description." }}
           </p>
         </div>

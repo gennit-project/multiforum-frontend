@@ -30,7 +30,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="rounded-lg space-y-4 shadow-md bg-white text-gray-900 p-4 mr-4 narrow"
+    class="rounded-lg space-y-4 shadow-md bg-white dark:bg-black text-gray-900 p-4 mr-4 narrow"
   >
     <div class="text-lg mb-2">Crossposted To Channels</div>
 

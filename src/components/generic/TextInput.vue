@@ -46,12 +46,12 @@ export default defineComponent({
         :disabled="disabled"
         type="text"
         :class="[
-          disabled ? 'text-gray-600 bg-gray-100 bg-clip-padding' : '',
+          disabled ? 'text-gray-600 bg-gray-100 dark:bg-gray-800 bg-clip-padding' : '',
           invalid
             ? 'border-red-300 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500'
             : 'focus:ring-blue-500 focus:border-blue-500',
         ]"
-        class="pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300"
+        class="pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300 dark:bg-black dark:text-gray-100 dark:border-gray-700"
       />
       <div
         v-if="invalid"

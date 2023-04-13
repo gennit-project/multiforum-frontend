@@ -87,7 +87,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative bg-white py-2 list-none"
+    class="relative bg-white dark:bg-black py-2 list-none"
     @click="$emit('openPreview')"
   >
     <p class="text-lg font-bold ">

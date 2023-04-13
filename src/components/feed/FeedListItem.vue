@@ -22,7 +22,7 @@ export default defineComponent({
   <li
     class="
       relative
-      bg-white
+      bg-white dark:bg-black
       py-5
       px-4
     "

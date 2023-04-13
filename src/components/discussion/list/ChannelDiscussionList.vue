@@ -236,7 +236,7 @@ export default defineComponent({
         Showing {{ discussionResult.discussions.length }} of
         {{ discussionResult.discussionsAggregate?.count }} results
       </p>
-      <div class="h-full bg-white">
+      <div class="h-full bg-white dark:bg-black">
         <ul role="list" class="relative my-2 bg-white rounded border border-1">
           <ChannelDiscussionListItem
             v-for="discussion in discussionResult.discussions"

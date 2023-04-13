@@ -80,8 +80,7 @@ export default defineComponent({
           relative
           rounded-md
           shadow-sm
-          bg-white
-          border border-gray-300
+          bg-white dark:bg-black
         "
       >
         <Tag
@@ -95,7 +94,7 @@ export default defineComponent({
           @delete="deleteTag($event)"
         />
         <input
-          class="flex-1 block min-w-0 pl-3 pt-2 pb-2 rounded sm:text-sm"
+          class="flex-1 block min-w-0 pl-3 pt-2 pb-2 rounded sm:text-sm dark:bg-black dark:text-gray-100 border-gray-300 dark:border-gray-800"
           v-model="currentInput"
           :placeholder="channelMode ? 'Add channels' : 'Add tags'"
           @keypress.enter="saveTag"

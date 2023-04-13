@@ -191,7 +191,7 @@ export default defineComponent({
             :class="
               route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''
             "
-            class="bg-white p-10 rounded shadow-md"
+            class="bg-white dark:bg-black p-10 rounded shadow-md"
           >
             <DiscussionHeader
               v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"

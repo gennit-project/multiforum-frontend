@@ -11,8 +11,12 @@ export default defineComponent({
   <button
     type="button"
     v-on:keydown.enter.prevent
+    :class="[
+    'text-gray-700 bg-gray-100 hover:bg-gray-200 dark:text-white dark:bg-gray-700 dark:hover:bg-gray-600',
+    'dark:bg-opacity-60' // class for controlling the background opacity in dark mode
+  ]"
     class="
-      bg-white
+      bg-white dark:bg-black
       py-2
       px-4
       border border-gray-300

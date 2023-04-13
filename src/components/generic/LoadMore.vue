@@ -14,7 +14,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="prose">
+  <div >
     <p class="mt-4" v-if="reachedEndOfResults">Reached the end of the results.</p>
 
     <button v-else :class="!reachedEndOfResults ? 'underline' : ''" class="justify-self-center"

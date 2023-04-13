@@ -51,7 +51,7 @@ export default defineComponent({
   <md-editor
     v-model="text"
     ref="editor"
-    class="rounded-lg"
+    class="rounded-lg dark:bg-gray-950 dark:text-gray-200 dark:border-gray-800"
     :editor-id="editorId"
     :preview="false"
     language="en-US"
@@ -124,5 +124,7 @@ ol,
 li {
   line-height: 1.5em;
 }
-
+.md-editor-footer {
+  display: none;
+}
 </style>

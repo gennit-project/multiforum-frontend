@@ -16,6 +16,16 @@ export default defineComponent({
   setup() {
     const { isAuthenticated, user, isLoading } = useAuth0();
 
+    document.addEventListener('DOMContentLoaded', () => {
+    const storedTheme = localStorage.getItem('theme');
+
+    if (storedTheme === 'light') {
+      document.body.classList.add('light');
+    } else if (storedTheme === 'dark') {
+      document.body.classList.add('dark');
+    }
+  });
+
     const emailFromAuth0 = computed(() => {
       // The reason why we get the email in this parent
       // component is because we need to look up the username
@@ -58,7 +68,7 @@ export default defineComponent({
 
 <template>
   <div class="h-screen">
-    <nav class="bg-white shadow-sm">
+    <nav class="shadow-sm">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
         @toggleMobileDropdown="toggleMobileDropdown"
@@ -80,6 +90,20 @@ export default defineComponent({
 
 <style lang="scss">
 body {
-  @apply bg-gray-100;
+  @media (prefers-color-scheme: dark) {
+    background-color: #333;
+  }
+
+  @media (prefers-color-scheme: light) {
+    background-color: #fff;
+  }
+
+  &.dark {
+    @apply bg-black;
+  }
+
+  &.light {
+    @apply bg-white;
+  }
 }
 </style>

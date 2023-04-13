@@ -73,7 +73,7 @@ export default defineComponent({
       clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
       this.active ? 'text-white' : '',
       !this.active && channelMode ? 'text-blue-900 bg-blue-50 hover:bg-blue-100' : '',
-      !this.active && !channelMode ? 'text-slate-600 bg-white border border-1 hover:bg-slate-200' : '',
+      !this.active && !channelMode ? 'text-slate-600 bg-white dark:bg-black border border-1 hover:bg-slate-200' : '',
       this.active && channelMode ? 'bg-blue-900 hover:bg-blue-700' : '',
       this.active && !channelMode ? 'bg-slate-700 hover:bg-slate-600' : '',
       'pl-3 font-medium tag rounded-full shadow-sm',

@@ -64,7 +64,7 @@ export default defineComponent({
                   h-full
                   divide-y divide-gray-200
                   flex flex-col
-                  bg-white
+                  bg-white dark:bg-black
                   shadow-xl
                 "
               >
@@ -80,7 +80,7 @@ export default defineComponent({
                         <button
                           type="button"
                           class="
-                            bg-white
+                            bg-white dark:bg-black
                             rounded-full
                             text-gray-400
                             hover:text-gray-500

@@ -32,6 +32,7 @@ export default defineComponent({
         text-sm
         font-medium
         text-gray-700
+        dark:text-gray-200
         sm:mt-px sm:pt-2
         align-right
         
@@ -46,6 +47,7 @@ export default defineComponent({
         text-sm
         font-medium
         text-gray-700
+        dark:text-gray-200
         sm:mt-px sm:pt-2
         align-right
       "

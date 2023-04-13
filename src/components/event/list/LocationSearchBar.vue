@@ -71,7 +71,7 @@ export default defineComponent({
           border border-gray-300
           rounded-md
           leading-5
-          bg-white
+          bg-white dark:bg-black
           placeholder-gray-500
           focus:outline-none
           focus:placeholder-gray-400

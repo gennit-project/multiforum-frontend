@@ -189,7 +189,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-4 bg-white">
+  <div class="px-4 bg-white dark:bg-black">
     <div :class="['max-w-3xl my-1']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">

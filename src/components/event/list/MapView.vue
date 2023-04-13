@@ -479,7 +479,7 @@ export default defineComponent({
         <!-- <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
           <button
             type="button"
-            class="my-2 py-2 pr-4 pl-2 cursor-pointer bg-white rounded-full inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 align-middle"
+            class="my-2 py-2 pr-4 pl-2 cursor-pointer bg-white dark:bg-black rounded-full inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 align-middle"
           >
             <XmarkIcon class="h-5 w-5 mt-0.5" aria-hidden="true" />
             Close Map

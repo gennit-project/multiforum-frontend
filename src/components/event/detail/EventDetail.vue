@@ -176,7 +176,7 @@ export default defineComponent({
     <div
       v-else-if="eventResult && eventResult.events && eventData"
       :class="route.name === 'EventDetail' ? ' overflow-y-scroll' : ''"
-      class="bg-white rounded shadow-md py-4 pr-8 lg:px-10"
+      class="bg-white dark:bg-black rounded shadow-md py-4 pr-8 lg:px-10"
     >
       <ErrorBanner
         class="mt-2 mb-2"
