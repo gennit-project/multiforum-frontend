@@ -180,6 +180,7 @@ export default defineComponent({
       eventLoading,
       eventResult,
       filterValues,
+      getFilterValuesFromParams,
       loadedEventCount: ref(0),
       resultsOrder,
       eventWhere,
@@ -208,11 +209,41 @@ export default defineComponent({
     };
   },
   methods: {
-    filterByTag(tag: string) {
-      this.$emit("filterByTag", tag);
+    updateFilters(params: SearchEventValues) {
+      const existingQuery = this.$route.query;
+      // Updating the URL params causes the events
+      // to be refetched by the EventListView
+      // and MapView components
+      this.$router.replace({
+        query: {
+          ...existingQuery,
+          ...params,
+        },
+      });
     },
     filterByChannel(channel: string) {
-      this.$emit("filterByChannel", channel);
+      const alreadySelected = this.filterValues.channels.includes(channel);
+
+      if (alreadySelected) {
+        this.filterValues.channels = this.filterValues.channels.filter(
+          (c: string) => c !== channel
+        );
+      } else {
+        this.filterValues.channels.push(channel);
+      }
+      this.updateFilters({ channels: channel });
+    },
+    filterByTag(tag: string) {
+      const alreadySelected = this.filterValues.tags.includes(tag);
+
+      if (alreadySelected) {
+        this.filterValues.tags = this.filterValues.tags.filter(
+          (t: string) => t !== tag
+        );
+      } else {
+        this.filterValues.tags.push(tag);
+      }
+      this.updateFilters({ tags: tag });
     },
     setMarkerData(data: any) {
       this.mobileMap = data.map;
@@ -512,12 +543,11 @@ export default defineComponent({
           key="highlightedEventId"
           :events="eventResult.events"
           :channel-id="channelId"
-          :search-input="searchInput"
           :highlighted-event-location-id="highlightedEventLocationId"
           :highlighted-event-id="highlightedEventId"
+          :search-input="filterValues.searchInput"
           :selected-tags="filterValues.tags"
           :selected-channels="filterValues.channels"
-          :show-map="true"
           :loaded-event-count="eventResult.events.length"
           :result-count="eventResult.eventsAggregate?.count"
           @filterByTag="filterByTag"
