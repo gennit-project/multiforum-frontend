@@ -3,6 +3,11 @@ import {
   } from "@apollo/client/core";
 
 
+export const usernameVar: ReactiveVar<string> = makeVar<string>('')
+export const modProfileIdVar: ReactiveVar<string> = makeVar<string>('')
+export const modProfileNameVar: ReactiveVar<string> = makeVar<string>('')
+export const themeVar: ReactiveVar<string> = makeVar<string>(localStorage.getItem('theme') || 'light')
+
 const standardMerge = (existing: any, incoming: any, args: any) => {
   let offset = args?.args?.offset;
   if (!offset) {
@@ -97,6 +102,11 @@ const cache = new InMemoryCache({
     },
     Query: {
       fields: {
+        theme: {
+          read() {
+            return themeVar();
+          },
+        },
         events: {
           // Only consider it a different query if
           // the filters have changed, because we expect
@@ -138,7 +148,4 @@ const cache = new InMemoryCache({
   },
 });
 
-export const usernameVar: ReactiveVar<string> = makeVar<string>('')
-export const modProfileIdVar: ReactiveVar<string> = makeVar<string>('')
-export const modProfileNameVar: ReactiveVar<string> = makeVar<string>('')
 export default cache

@@ -21,6 +21,8 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
 import LinkPreview from "../generic/LinkPreview.vue";
+import { gql } from "@apollo/client/core";
+
 
 export default defineComponent({
   name: "CommentComponent",
@@ -35,6 +37,26 @@ export default defineComponent({
     WarningModal,
   },
   setup(props) {
+    const GET_THEME = gql`
+      query getTheme {
+        theme @client
+      }
+    `;
+
+    const {
+      result: themeResult,
+      loading: themeLoading,
+      error: themeError,
+    } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      if (themeLoading.value || themeError.value) {
+        return "";
+      }
+      console.log(themeResult.value.theme)
+      return themeResult.value.theme;
+    })
+
     let replyCount = computed(() => {
       if (props.commentData.ChildCommentsAggregate) {
         return props.commentData.ChildCommentsAggregate.count;
@@ -94,6 +116,8 @@ export default defineComponent({
       showReplies: ref(true),
       showReplyEditor: ref(false),
       textCopy,
+      themeLoading,
+      theme,
     };
   },
   props: {
@@ -198,24 +222,24 @@ export default defineComponent({
             <span class="text-tiny username-text">
               <router-link
                 v-if="commentData.CommentAuthor"
-                class="underline font-bold"
+                class="font-bold  dark:text-gray-200"
                 :to="`/u/${commentData.CommentAuthor.username}`"
               >
                 {{ commentData.CommentAuthor.username }}
               </router-link>
-              <span v-else class="underline font-bold">[Deleted]</span>
+              <span v-else class="font-bold">[Deleted]</span>
               <span class="ml-1">&middot;</span>
               {{ createdAtFormatted }}
               <span v-if="commentData.updatedAt"> &middot; </span>
               {{ editedAtFormatted }}
             </span>
-            <div class="comment-border">
+            <div class="comment-border" v-if="!themeLoading">
               <md-editor
                 v-if="commentData.text && !showEditCommentField"
                 class="max-w-2xl small-text"
                 v-model="textCopy"
                 previewTheme="vuepress"
-                theme="dark"
+               
                 language="en-US"
                 :noMermaid="true"
                 preview-only
@@ -309,6 +333,7 @@ export default defineComponent({
   </div>
 </template>
 <style lang="scss">
+
 .bullet {
   text-indent: -2.1em;
   padding-left: 2.1em;
@@ -332,6 +357,47 @@ export default defineComponent({
   width: 100%;
   padding: 0;
   margin: 0;
+}
+.bg-dark {
+  @apply bg-gray-900;
+}
+
+.text-dark {
+  @apply text-gray-200;
+}
+
+.bg-light {
+  @apply bg-white;
+}
+
+.text-light {
+  @apply text-gray-900;
+}
+
+/* Apply the user's preferred color scheme by default */
+@media (prefers-color-scheme: dark) {
+  #md-editor-v3-preview,
+  #md-editor-v3-preview-wrapper {
+    @apply bg-dark text-dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #md-editor-v3-preview,
+  #md-editor-v3-preview-wrapper {
+    @apply bg-light text-light;
+  }
+}
+
+/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
+body.dark > #md-editor-v3-preview,
+body.dark > #md-editor-v3-preview-wrapper {
+  @apply text-dark bg-dark;
+}
+
+body.light > #md-editor-v3-preview,
+body.light > #md-editor-v3-preview-wrapper {
+  @apply text-light bg-light;
 }
 #md-editor-v3-preview {
   p,
@@ -380,9 +446,11 @@ export default defineComponent({
   left: -2.5em;
 }
 .comment-border {
-  border-left: 2px solid #e2e2e2;
+  border-left: 1px solid #aeacac;
   position: relative;
   left: -2em;
   padding-left: 2em;
 }
+
+
 </style>

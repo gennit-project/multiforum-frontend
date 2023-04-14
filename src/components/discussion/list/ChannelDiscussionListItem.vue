@@ -241,7 +241,7 @@ export default defineComponent({
         ? 'border-blue-500'
         : 'border-blue-200',
     ]"
-    class="hover:border-blue-500 border-l-4 border-b-1 relative bg-gray-100 dark:bg-slate-800  py-3 px-4 space-x-2 cursor-pointer flex"
+    class="hover:border-blue-500 rounded border-l-4 border-b-1 relative bg-gray-100 dark:bg-gray-800 py-3 px-4 space-x-2 cursor-pointer flex dark:border"
   >
     <DiscussionVotes
       :discussion="discussion"
@@ -249,29 +249,26 @@ export default defineComponent({
       :comment-section="commentSection"
     />
     <div>
-    <router-link :to="previewLink"  @click="$emit('openPreview')">
-      <p class="text-lg font-bold cursor-pointer">
-        <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+      <router-link :to="previewLink" @click="$emit('openPreview')">
+        <p class="text-lg font-bold cursor-pointer">
+          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+        </p>
+      </router-link>
+      <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+        <Tag
+          class="my-1"
+          :active="selectedTags.includes(tag)"
+          :key="tag"
+          v-for="tag in tags"
+          :tag="tag"
+          @click="$emit('filterByTag', tag)"
+        />
       </p>
-    </router-link>
-    <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
-      <Tag
-        class="my-1"
-        :active="selectedTags.includes(tag)"
-        :key="tag"
-        v-for="tag in tags"
-        :tag="tag"
-        @click="$emit('filterByTag', tag)"
-      />
-    </p>
-    <p class="text-xs font-medium text-slate-600 no-underline">
-      {{ `Posted ${relativeTime} by ${authorUsername}` }}
-    </p>
-  </div>
-    <ErrorBanner
-      v-if="errorMessage"
-      :text="errorMessage"
-    />
+      <p class="text-xs font-medium text-slate-600 no-underline">
+        {{ `Posted ${relativeTime} by ${authorUsername}` }}
+      </p>
+    </div>
+    <ErrorBanner v-if="errorMessage" :text="errorMessage" />
   </li>
 </template>
 <style>

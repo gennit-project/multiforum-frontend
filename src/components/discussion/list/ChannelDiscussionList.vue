@@ -218,7 +218,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full h-full shadow-md">
+  <div class="w-full h-full shadow-md ">
     <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       class="max-w-5xl"
@@ -237,7 +237,7 @@ export default defineComponent({
         {{ discussionResult.discussionsAggregate?.count }} results
       </p>
       <div class="h-full  ">
-        <ul role="list" class="relative my-2  rounded border border-1">
+        <ul role="list" class="relative my-2 rounded space-y-2">
           <ChannelDiscussionListItem
             v-for="discussion in discussionResult.discussions"
             :key="discussion.id"

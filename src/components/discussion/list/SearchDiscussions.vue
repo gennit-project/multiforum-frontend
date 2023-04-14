@@ -169,7 +169,7 @@ export default defineComponent({
 
 <template>
   <div :class="[lgAndUp ? 'px-8' : 'px-4']">
-    <div class="flex justify-center">
+    <div class="flex justify-center ">
       <div>
         <div class="rounded pr-8">
           <div class="py-2">
@@ -193,7 +193,7 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <div>
+        <div class="w-full">
           <TwoSeparatelyScrollingPanes>
             <template v-slot:leftpane>
               <SitewideDiscussionList

@@ -144,24 +144,27 @@ export default defineComponent({
 </script>
 
 <template>
+  <div>
+    <h2
+    v-if="route.name !== 'DiscussionDetail'"
+    class="text-sm"
+  >
+    Preview
+  </h2>
   <div
-    class="flex justify-center"
+    class="flex justify-center rounded-lg my-10"
     :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"
   >
+
     <div
       :class="
         route.name === 'DiscussionDetail' && mdAndUp
           ? 'large-width'
           : 'w-full mx-4'
       "
-      class="top-10 pb-36 my-2 space-y-2"
+      class="pb-36 space-y-2"
     >
-      <h2
-        v-if="route.name !== 'DiscussionDetail'"
-        class="pl-4 text-sm"
-      >
-        Preview
-      </h2>
+      
       <p v-if="getDiscussionLoading">Loading...</p>
       <ErrorBanner
         class="mt-2"
@@ -191,7 +194,6 @@ export default defineComponent({
             :class="
               route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''
             "
-            class="  p-10 rounded shadow-md"
           >
             <DiscussionHeader
               v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
@@ -217,7 +219,7 @@ export default defineComponent({
             :channelId="channelId"
           />
           <div
-            class="mb-2 my-4  px-10 py-6 rounded shadow-md"
+            class="mb-2 my-4 py-6"
             v-if="route.name === 'DiscussionDetail'"
           >
             <CommentSection
@@ -228,6 +230,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
+  </div>
   </div>
 </template>
 <style>

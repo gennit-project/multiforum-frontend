@@ -63,8 +63,8 @@ export default defineComponent({
   <div class="flex align-center space-x-2">
     <span>
       <i
-        class="fa-solid fa-arrow-up w-4 hover:text-black cursor-pointer"
-        :class="[upvoteActive ? 'text-black' : 'text-gray-400']"
+        class="fa-solid fa-arrow-up w-4 hover:text-blue-500 cursor-pointer"
+        :class="[upvoteActive ? 'text-blue-500' : 'text-gray-400']"
         @click="clickUpvote"
       ></i>
       <v-tooltip activator="parent" location="top"
@@ -72,14 +72,14 @@ export default defineComponent({
       >
     </span>
     <span
-      :class="upvoteActive || downvoteActive ? 'text-black' : 'text-gray-400'"
+      :class="upvoteActive || downvoteActive ? 'text-blue-500' : 'text-gray-200'"
       class="inline-flex pt-0.5"
       >{{ upvoteCount - downvoteCount }}</span
     >
     <span>
       <i
-        class="fa-solid fa-arrow-down w-4 hover:text-black cursor-pointer"
-        :class="[downvoteActive ? 'text-black' : 'text-gray-400']"
+        class="fa-solid fa-arrow-down w-4 hover:text-blue-500 cursor-pointer"
+        :class="[downvoteActive ? 'text-blue-500' : 'text-gray-400']"
         @click="clickDownvote"
       ></i>
       <v-tooltip activator="parent" location="top"

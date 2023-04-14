@@ -57,43 +57,43 @@ export default defineComponent({
             leave-from="translate-x-0"
             leave-to="translate-x-full"
           >
-            <DialogPanel class="pointer-events-auto w-screen max-w-xl">
+          <DialogPanel class="pointer-events-auto w-screen max-w-xl">
+            <div
+              class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-gray-900 dark:text-gray-200"
+            >
               <div
-                class="h-full divide-y divide-gray-200 flex flex-col   shadow-xl"
+                class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
               >
-                <div
-                  class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
-                >
-                  <div>
-                    <div class="flex items-start justify-between">
-                      <div class="h-7 flex items-center">
-                        <button
-                          :ref="cancelButtonRef"
-                          type="button"
-                          class="  ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                          @click="$emit('closePreview')"
-                        >
-                          <span class="sr-only">Close panel</span>
-                          <XIcon class="h-6 w-6" aria-hidden="true" />
-                        </button>
-                      </div>
+                <div>
+                  <div class="flex items-start justify-between">
+                    <div class="h-7 flex items-center">
+                      <button
+                        :ref="cancelButtonRef"
+                        type="button"
+                        class="ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @click="$emit('closePreview')"
+                      >
+                        <span class="sr-only">Close panel</span>
+                        <XIcon class="h-6 w-6" aria-hidden="true" />
+                      </button>
                     </div>
                   </div>
-                  <div class="relative flex-1 mx-8">
-                    <DiscussionDetail :compact-mode="true" />
-                  </div>
                 </div>
-                <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-                  <button
-                    type="button"
-                    class="  py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                    @click="$emit('closePreview')"
-                  >
-                    Close
-                  </button>
+                <div class="relative flex-1 mx-8">
+                  <DiscussionDetail :compact-mode="true" />
                 </div>
               </div>
-            </DialogPanel>
+              <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+                <button
+                  type="button"
+                  class="py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  @click="$emit('closePreview')"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </DialogPanel>
           </TransitionChild>
         </div>
       </div>

@@ -72,15 +72,14 @@ export default defineComponent({
       <input
         v-model="input"
         name="search"
-        :class="small ? 'h-7' : ''"
         class="
           pl-10
           pr-3
-          py-5
+          py-2
           rounded-lg
           leading-5
           w-full
-          dark:bg-gray-800
+          dark:bg-gray-700
           dark:text-white
           placeholder-gray-500
           dark:placeholder-gray-400
