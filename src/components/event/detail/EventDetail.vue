@@ -175,8 +175,6 @@ export default defineComponent({
 
     <div
       v-else-if="eventResult && eventResult.events && eventData"
-      :class="route.name === 'EventDetail' ? ' overflow-y-scroll' : ''"
-      class="  rounded shadow-md py-4 pr-8 lg:px-10"
     >
       <ErrorBanner
         class="mt-2 mb-2"
@@ -188,12 +186,6 @@ export default defineComponent({
         v-if="eventData.canceled"
         :text="'This event is canceled.'"
       />
-      <h2
-        v-if="route.name !== 'EventDetail'"
-        class="pl-4 text-gray-400 text-sm"
-      >
-        Preview
-      </h2>
       <EventHeader :event-data="eventData" />
       <div class="px-4 lg:px-10">
         <md-editor

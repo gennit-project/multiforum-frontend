@@ -232,10 +232,10 @@ export default defineComponent({
       There are no results.
     </p>
     <div v-else>
-      <p class="sm:px-4">
+      <!-- <p class="sm:px-4">
         Showing {{ discussionResult.discussions.length }} of
         {{ discussionResult.discussionsAggregate?.count }} results
-      </p>
+      </p> -->
       <div class="h-full  ">
         <ul role="list" class="relative my-2 rounded space-y-2">
           <ChannelDiscussionListItem

@@ -2,7 +2,7 @@
 import { computed, defineComponent, ref } from "vue";
 import ChannelDiscussionList from "./ChannelDiscussionList.vue";
 import SitewideDiscussionList from "./SitewideDiscussionList.vue";
-import DiscussionPreview from "./DiscussionPreview.vue";
+import PreviewFlyout from "../../generic/PreviewFlyout.vue";
 import { useRoute, useRouter } from "vue-router";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPanes.vue";
@@ -15,6 +15,7 @@ import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere"
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
 import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import DiscussionDetail from "../detail/DiscussionDetail.vue";
 
 interface Ref<T> {
   value: T;
@@ -24,8 +25,9 @@ export default defineComponent({
   components: {
     ChannelDiscussionList,
     CreateButton,
+    DiscussionDetail,
     DiscussionFilterBar,
-    DiscussionPreview,
+    PreviewFlyout,
     PrimaryButton,
     RequireAuth,
     SitewideDiscussionList,
@@ -49,7 +51,9 @@ export default defineComponent({
       return "";
     });
 
-    const filterValues: Ref<SearchDiscussionValues> = ref(getFilterValuesFromParams(route, channelId.value));
+    const filterValues: Ref<SearchDiscussionValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
 
     const selectedTags: Ref<Array<string>> = ref(
       route.params.tag && typeof route.params.tag === "string"
@@ -162,14 +166,13 @@ export default defineComponent({
         );
       }
     });
-    
   },
 });
 </script>
 
 <template>
   <div :class="[lgAndUp ? 'px-8' : 'px-4']">
-    <div class="flex justify-center ">
+    <div class="flex justify-center">
       <div>
         <div class="rounded pr-8">
           <div class="py-2">
@@ -217,11 +220,13 @@ export default defineComponent({
                 @filterByChannel="filterByChannel"
                 @openPreview="openPreview"
               />
-              <DiscussionPreview
+              <PreviewFlyout
                 v-if="mdAndDown"
                 :isOpen="previewIsOpen"
                 @closePreview="closePreview"
-              />
+              >
+                <DiscussionDetail />
+              </PreviewFlyout>
             </template>
             <template v-slot:rightpane>
               <router-view></router-view>

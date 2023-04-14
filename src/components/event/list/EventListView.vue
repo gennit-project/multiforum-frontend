@@ -11,7 +11,7 @@ import getEventWhere from "@/components/event/list/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import EventPreview from "./EventPreview.vue";
+import EventDetail from "../detail/EventDetail.vue";
 import { timeShortcutValues } from "./eventSearchOptions";
 import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import EventFilterBar from "./EventFilterBar.vue";
@@ -19,6 +19,7 @@ import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import EventResultCount from "./EventResultCount.vue";
+import PreviewFlyout from "@/components/generic/PreviewFlyout.vue";
 
 export default defineComponent({
   name: "EventListView",
@@ -30,8 +31,9 @@ export default defineComponent({
     ErrorBanner,
     EventFilterBar,
     EventList,
-    EventPreview,
+    EventDetail,
     EventResultCount,
+    PreviewFlyout,
     PrimaryButton,
     RequireAuth,
     TwoSeparatelyScrollingPanes,
@@ -229,7 +231,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mx-auto ">
+  <div class="mx-auto">
     <div class="flex justify-center">
       <div>
         <div class="rounded pr-8">
@@ -288,11 +290,13 @@ export default defineComponent({
               @openPreview="openPreview"
             />
             <div class="mx-auto" v-if="eventLoading">Loading...</div>
-            <EventPreview
+            <PreviewFlyout
               v-if="eventId"
               :isOpen="previewIsOpen"
               @closePreview="closePreview"
-            />
+            >
+              <EventDetail/>
+            </PreviewFlyout>
           </template>
           <template v-slot:rightpane>
             <router-view></router-view>

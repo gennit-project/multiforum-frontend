@@ -352,7 +352,7 @@ export default defineComponent({
       <sl-drawer
         label="Event Filters"
         placement="start"
-        class="drawer-placement-start"
+        class="drawer-placement-start dark:bg-gray-800"
         :style="{ '--size': '50vw' }"
         :open="drawerIsOpen"
         @sl-after-hide="handleCloseFilters"

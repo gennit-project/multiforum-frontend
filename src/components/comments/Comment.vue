@@ -358,21 +358,7 @@ export default defineComponent({
   padding: 0;
   margin: 0;
 }
-.bg-dark {
-  @apply bg-gray-900;
-}
 
-.text-dark {
-  @apply text-gray-200;
-}
-
-.bg-light {
-  @apply bg-white;
-}
-
-.text-light {
-  @apply text-gray-900;
-}
 
 /* Apply the user's preferred color scheme by default */
 @media (prefers-color-scheme: dark) {
@@ -389,14 +375,31 @@ export default defineComponent({
   }
 }
 
+
+.bg-dark {
+  @apply bg-gray-800;
+}
+
+.text-dark {
+  @apply text-gray-200;
+}
+
+.bg-light {
+  @apply bg-white;
+}
+
+.text-light {
+  @apply text-gray-800;
+}
+
 /* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
-body.dark > #md-editor-v3-preview,
-body.dark > #md-editor-v3-preview-wrapper {
+body.dark #md-editor-v3-preview,
+body.dark #md-editor-v3-preview-wrapper {
   @apply text-dark bg-dark;
 }
 
-body.light > #md-editor-v3-preview,
-body.light > #md-editor-v3-preview-wrapper {
+body.light #md-editor-v3-preview,
+body.light #md-editor-v3-preview-wrapper {
   @apply text-light bg-light;
 }
 #md-editor-v3-preview {

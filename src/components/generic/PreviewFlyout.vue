@@ -8,14 +8,12 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
-import DiscussionDetail from "../detail/DiscussionDetail.vue";
 
 export default defineComponent({
   components: {
     TailwindDialog: Dialog,
     DialogPanel,
     DialogOverlay,
-    DiscussionDetail,
     TransitionChild,
     TransitionRoot,
     XIcon,
@@ -30,7 +28,6 @@ export default defineComponent({
     const cancelButtonRef = ref();
     return {
       cancelButtonRef,
-      discussionBody: "",
     };
   },
 });
@@ -80,13 +77,13 @@ export default defineComponent({
                   </div>
                 </div>
                 <div class="relative flex-1 mx-8">
-                  <DiscussionDetail :compact-mode="true" />
+                  <slot></slot>
                 </div>
               </div>
               <div class="flex-shrink-0 px-4 py-4 flex justify-end">
                 <button
                   type="button"
-                  class="py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  class="py-2 px-4 border border-gray-300 dark:bg-gray-700 dark:border-gray-700 dark:text-gray-400 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                   @click="$emit('closePreview')"
                 >
                   Close

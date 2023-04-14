@@ -504,7 +504,7 @@ export default defineComponent({
       class="flex flex-row"
     >
       <div
-        class="overflow-y-auto flex-col flex-grow border border-2"
+        class="overflow-y-auto flex-col flex-grow"
         style="width: 34vw"
       >
         <!-- <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">

@@ -145,12 +145,6 @@ export default defineComponent({
 
 <template>
   <div>
-    <h2
-    v-if="route.name !== 'DiscussionDetail'"
-    class="text-sm"
-  >
-    Preview
-  </h2>
   <div
     class="flex justify-center rounded-lg my-10"
     :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"
@@ -219,7 +213,7 @@ export default defineComponent({
             :channelId="channelId"
           />
           <div
-            class="mb-2 my-4 py-6"
+            class="mb-2 my-4 px-4 py-6 dark:bg-gray-800 bg-gray-100 rounded-lg"
             v-if="route.name === 'DiscussionDetail'"
           >
             <CommentSection

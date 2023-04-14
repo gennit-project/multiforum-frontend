@@ -213,10 +213,10 @@ export default defineComponent({
     >
       There are no results.
     </p>
-    <p v-else class="sm:px-4">
+    <!-- <p v-else class="sm:px-4">
       Showing {{ discussionResult.discussions.length }} of
       {{ discussionResult.discussionsAggregate.count }} results
-    </p>
+    </p> -->
     <div
       v-if="discussionResult && discussionResult.discussions.length > 0"
       class="h-full"
