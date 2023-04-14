@@ -111,7 +111,7 @@ export default defineComponent({
 <template>
   <div class="mb-4">
     <div class="flex justify-between min-w-0">
-      <h2 class="text-xl font-bold leading-7 text-gray-900 sm:text-3xl sm:tracking-tight sm:truncate">
+      <h2 class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate">
         {{ discussion.title }}
       </h2>
       <div>
@@ -143,11 +143,11 @@ export default defineComponent({
         </RequireAuth>
       </div>
     </div>
-    <div class="text-xs text-gray-600 mt-4">
+    <div class="text-xs mt-4">
       <div class="mb-2 mt-4">
         <router-link
           v-if="discussion.Author"
-          class="text-blue-800 underline"
+          class="underline"
           :to="`/u/${discussion.Author.username}`"
         >
           {{ discussion.Author.username }}
@@ -166,7 +166,7 @@ export default defineComponent({
           <template v-slot:has-auth>
             <span> &#8226;</span>
             <span
-              class="ml-1 underline font-medium text-gray-900 cursor-pointer"
+              class="ml-1 underline font-medium cursor-pointer"
               @click="deleteModalIsOpen = true"
               >Delete</span
             >
@@ -180,7 +180,7 @@ export default defineComponent({
         >
         <router-link
           v-if="route.name !== 'DiscussionDetail' && channelId"
-          class="underline font-medium text-gray-900 cursor-pointer"
+          class="underline font-medium cursor-pointer"
           :to="`/channels/c/${channelId}/discussions/d/${discussion.id}`"
           >Permalink</router-link
         >

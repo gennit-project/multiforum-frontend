@@ -51,7 +51,7 @@ export default defineComponent({
   <md-editor
     v-model="text"
     ref="editor"
-    class="rounded-lg dark:bg-gray-950 dark:text-gray-200 dark:border-gray-800"
+    class="rounded-lg"
     :editor-id="editorId"
     :preview="false"
     language="en-US"

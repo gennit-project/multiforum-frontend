@@ -120,7 +120,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="text-xs text-gray-600 mt-4 px-4">
+  <div class="text-xs text-gray-700 dark:text-slate-200 mt-4 px-4">
     <p v-if="!eventData.virtualEventUrl && !eventData.address">
       This event won't show in site-wide search results because it doesn't have
       a location or a virtual event URL. It will only appear in channel specific
@@ -129,7 +129,7 @@ export default defineComponent({
     <div class="organizer">
       <router-link
         v-if="eventData.Poster"
-        class="text-gray-800 underline"
+        class="underline"
         :to="`/u/${eventData.Poster.username}`"
       >
         {{ eventData.Poster.username }}
@@ -157,7 +157,7 @@ export default defineComponent({
         <template v-slot:has-auth>
           <span>&#8226;</span>
           <span
-            class="ml-1 underline font-medium text-gray-900 cursor-pointer"
+            class="ml-1 underline font-medium cursor-pointer"
             @click="confirmDeleteIsOpen = true"
             >Delete</span
           >
@@ -166,7 +166,7 @@ export default defineComponent({
           >
           <span
             v-if="!eventData.canceled"
-            class="underline font-medium text-gray-900 cursor-pointer"
+            class="underline font-medium cursor-pointer"
             @click="confirmCancelIsOpen = true"
             >Cancel</span
           >
@@ -177,14 +177,14 @@ export default defineComponent({
 
       <router-link
         v-if="!channelId && channelsExceptCurrent.length > 0"
-        class="underline font-medium text-gray-900 cursor-pointer"
+        class="underline font-medium cursor-pointer"
         :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
         >Permalink</router-link
       >
 
       <router-link
         v-if="channelId && route.name !== 'EventDetail'"
-        class="underline font-medium text-gray-900 cursor-pointer"
+        class="underline font-medium cursor-pointer"
         :to="`/channels/c/${channelId}/events/e/${eventId}`"
       >
         Permalink

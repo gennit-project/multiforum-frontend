@@ -140,7 +140,7 @@ export default defineComponent({
           event.id === highlightedEventId ||
           (!highlightedEventId &&
             highlightedEventLocationId === getEventLocationId(event))
-            ? 'bg-gray-100'
+            ? 'bg-gray-200 dark:bg-slate-700'
             : '',
         ]"
         :show-map="showMap"

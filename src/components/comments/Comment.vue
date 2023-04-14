@@ -189,7 +189,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-4 bg-white dark:bg-black">
+  <div class="px-4  ">
     <div :class="['max-w-3xl my-1']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">
@@ -215,6 +215,7 @@ export default defineComponent({
                 class="max-w-2xl small-text"
                 v-model="textCopy"
                 previewTheme="vuepress"
+                theme="dark"
                 language="en-US"
                 :noMermaid="true"
                 preview-only

@@ -41,7 +41,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-black shadow-md">
+  <div class="  shadow-md">
     <div class="flex">
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
@@ -55,12 +55,12 @@ export default defineComponent({
           <div class="-mt-8 sm:flex sm:items-end sm:space-x-5">
             <div class="flex">
               <div
-                class="h-24 w-24 rounded-full ring-4 ring-white"
+                class="h-24 w-24 rounded-full ring-4 ring-white dark:ring-slate-900"
                 id="channelAvatar"
               ></div>
             </div>
             <div>
-              <h1 class="text-2xl text-black no-underline mt-12">
+              <h1 class="text-2xl no-underline mt-12">
                 {{ channelId }}
               </h1>
               <h2 class="text-gray-500">secondary name</h2></div>

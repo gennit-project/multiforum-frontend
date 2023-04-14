@@ -41,7 +41,7 @@ export default {
     <PopoverButton
       :class="[
         open ? 'text-gray-900' : 'text-gray-500',
-        'mb-1 inline-flex justify-center w-full rounded-full px-3 py-2 bg-white dark:bg-black text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
+        'mb-1 inline-flex justify-center w-full rounded-full px-3 py-2   text-xs font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500',
       ]"
     >
       <span>{{ name }}</span>
@@ -67,7 +67,7 @@ export default {
             overflow-hidden
           "
         >
-          <div class="relative grid gap-6 bg-white dark:bg-black px-5 py-6 sm:gap-8 sm:p-8">
+          <div class="relative grid gap-6   px-5 py-6 sm:gap-8 sm:p-8">
             <a
               v-for="item in solutions"
               :key="item.name"

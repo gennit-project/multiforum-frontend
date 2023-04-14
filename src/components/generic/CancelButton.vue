@@ -16,7 +16,7 @@ export default defineComponent({
     'dark:bg-opacity-60' // class for controlling the background opacity in dark mode
   ]"
     class="
-      bg-white dark:bg-black
+       
       py-2
       px-4
       border border-gray-300

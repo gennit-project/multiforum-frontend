@@ -59,7 +59,7 @@ export default defineComponent({
           >
             <DialogPanel class="pointer-events-auto w-screen max-w-xl">
               <div
-                class="h-full divide-y divide-gray-200 flex flex-col bg-white dark:bg-black shadow-xl"
+                class="h-full divide-y divide-gray-200 flex flex-col   shadow-xl"
               >
                 <div
                   class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
@@ -70,7 +70,7 @@ export default defineComponent({
                         <button
                           :ref="cancelButtonRef"
                           type="button"
-                          class="bg-white dark:bg-black ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          class="  ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           @click="$emit('closePreview')"
                         >
                           <span class="sr-only">Close panel</span>
@@ -86,7 +86,7 @@ export default defineComponent({
                 <div class="flex-shrink-0 px-4 py-4 flex justify-end">
                   <button
                     type="button"
-                    class="bg-white dark:bg-black py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    class="  py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                     @click="$emit('closePreview')"
                   >
                     Close

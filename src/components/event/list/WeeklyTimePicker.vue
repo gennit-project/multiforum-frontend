@@ -440,7 +440,7 @@ export default defineComponent({
           shadow-sm
           px-4
           py-2
-          bg-white dark:bg-black
+           
           text-base
           font-medium
           text-gray-700

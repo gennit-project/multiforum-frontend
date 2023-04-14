@@ -114,7 +114,7 @@ export default defineComponent({
         </div>
       </div>
 
-      <div class="mt-6 sm:mt-2 2xl:mt-5 bg-white dark:bg-black">
+      <div class="mt-6 sm:mt-2 2xl:mt-5  ">
         <div class="border-b border-gray-200 bg-gray-100">
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <nav class="-mb-px flex space-x-8" aria-label="Tabs">

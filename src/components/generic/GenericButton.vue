@@ -19,7 +19,7 @@ export default defineComponent({
     class="
       mt-2
       inline-flex
-      bg-white dark:bg-black
+       
       py-2
       px-4
       border border-gray-300
@@ -28,6 +28,8 @@ export default defineComponent({
       text-sm
       font-medium
       text-gray-700
+      dark:bg-slate-700 dark:text-gray-200
+      dark:border-gray-600
       hover:bg-gray-50
       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
     "

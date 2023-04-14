@@ -109,7 +109,7 @@ export default defineComponent({
           class="
           float-right
           inline-flex
-          bg-white dark:bg-black
+           
           py-2
           px-4
           border border-gray-300

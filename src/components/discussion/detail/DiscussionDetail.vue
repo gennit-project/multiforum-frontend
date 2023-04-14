@@ -158,7 +158,7 @@ export default defineComponent({
     >
       <h2
         v-if="route.name !== 'DiscussionDetail'"
-        class="pl-4 text-gray-400 text-sm"
+        class="pl-4 text-sm"
       >
         Preview
       </h2>
@@ -174,7 +174,7 @@ export default defineComponent({
           route.name !== 'SearchDiscussionPreview'
         "
         :to="`/channels/c/${channelId}/discussions`"
-        class="underline text-xs text-gray-500 mb-4"
+        class="underline text-xs  mb-4"
       >
       <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
         {{ `Discussion list in c/${channelId}` }}
@@ -191,7 +191,7 @@ export default defineComponent({
             :class="
               route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''
             "
-            class="bg-white dark:bg-black p-10 rounded shadow-md"
+            class="  p-10 rounded shadow-md"
           >
             <DiscussionHeader
               v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
@@ -217,7 +217,7 @@ export default defineComponent({
             :channelId="channelId"
           />
           <div
-            class="mb-2 my-4 bg-white px-10 py-6 rounded shadow-md"
+            class="mb-2 my-4  px-10 py-6 rounded shadow-md"
             v-if="route.name === 'DiscussionDetail'"
           >
             <CommentSection

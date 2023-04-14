@@ -51,7 +51,7 @@ export default defineComponent({
                 text-gray-300
                 placeholder-gray-400
                 focus:outline-none
-                focus:bg-white dark:bg-black
+                focus: 
                 focus:border-white
                 focus:ring-white
                 focus:text-gray-900

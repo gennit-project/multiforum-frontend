@@ -236,8 +236,8 @@ export default defineComponent({
         Showing {{ discussionResult.discussions.length }} of
         {{ discussionResult.discussionsAggregate?.count }} results
       </p>
-      <div class="h-full bg-white dark:bg-black">
-        <ul role="list" class="relative my-2 bg-white rounded border border-1">
+      <div class="h-full  ">
+        <ul role="list" class="relative my-2  rounded border border-1">
           <ChannelDiscussionListItem
             v-for="discussion in discussionResult.discussions"
             :key="discussion.id"

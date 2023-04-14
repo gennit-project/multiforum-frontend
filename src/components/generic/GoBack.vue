@@ -15,7 +15,7 @@
       font-medium
       rounded
       text-gray-500
-      bg-white dark:bg-black
+       
       p-4
       shadow
       hover:text-gray-800

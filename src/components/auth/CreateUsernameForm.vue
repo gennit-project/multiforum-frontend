@@ -169,7 +169,7 @@ export default defineComponent({
 </script>
   <template>
   <div>
-    <div class="bg-white dark:bg-black px-10 py-6 my-4 h-72">
+    <div class="  px-10 py-6 my-4 h-72">
       <h1 class="text-xl flex justify-center my-8">Create Username</h1>
       <label for="username" class="block text-sm font-medium text-gray-700"
         >Username</label

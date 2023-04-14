@@ -77,7 +77,7 @@ export default defineComponent({
         z-20
         rounded-full
         shadow-2xl
-        bg-white dark:bg-black
+         
         ring-1 ring-black ring-opacity-5
         focus:outline-none
       "

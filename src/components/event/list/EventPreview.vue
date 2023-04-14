@@ -58,7 +58,7 @@
                     h-full
                     divide-y divide-gray-200
                     flex flex-col
-                    bg-white dark:bg-black
+                     
                     shadow-xl
                   "
                 >
@@ -72,7 +72,7 @@
                           <button
                             type="button"
                             class="
-                              bg-white dark:bg-black
+                               
                               ml-8
                               rounded-full
                               text-gray-400
@@ -95,7 +95,7 @@
                     <button
                       type="button"
                       class="
-                        bg-white dark:bg-black
+                         
                         py-2
                         px-4
                         border

@@ -55,7 +55,7 @@ export default defineComponent({
           class="
             max-w-sm
             w-full
-            bg-white dark:bg-black
+             
             shadow-lg
             rounded-lg
             pointer-events-auto
@@ -84,7 +84,7 @@ export default defineComponent({
                   type="button"
                   @click="$emit('closeNotification')"
                   class="
-                    bg-white dark:bg-black
+                     
                     rounded-full
                     inline-flex
                     text-gray-400

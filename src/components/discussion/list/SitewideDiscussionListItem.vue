@@ -88,7 +88,7 @@ export default defineComponent({
         ? 'border-blue-500'
         : 'border-blue-200',
     ]"
-    class="hover:border-blue-500 border-l-4 relative bg-white dark:bg-black my-4 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex shadow-md rounded-md"
+    class="hover:border-blue-500 border-l-4 relative bg-gray-100 dark:bg-slate-800  my-4 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex shadow-md rounded-md"
   >
     <span class="mt-1 w-6"
       >{{

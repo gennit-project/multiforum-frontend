@@ -31,7 +31,7 @@ export default defineComponent({
       font-medium
       rounded-full
       text-gray-700
-      bg-white dark:bg-black
+       
       hover:bg-gray-50
       focus:ring-1 focus:ring-blue-500 focus:border-blue-500
     "

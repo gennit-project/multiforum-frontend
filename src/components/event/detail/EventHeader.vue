@@ -104,7 +104,7 @@ export default defineComponent({
   <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4">
     <div class="flex-1 min-w-0">
       <h2
-        class="text-xl font-bold leading-7 text-gray-900 sm:text-3xl sm:tracking-tight sm:truncate"
+        class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate"
       >
         {{ eventData.title }}
       </h2>
@@ -143,10 +143,10 @@ export default defineComponent({
     </div>
   </div>
 
-  <div class="px-4 text-sm text-gray-700 space-y-2">
+  <div class="px-4 text-sm text-gray-700 space-y-2 text-gray-700 dark:text-slate-200">
     <ul>
       <li class="hanging-indent">
-        <CalendarIcon class="inline h-5 w-5 mr-3 text-gray-700" />{{
+        <CalendarIcon class="inline h-5 w-5 mr-3" />{{
           `${getFormattedDateString(
             eventData.startTime
           )}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}`
@@ -157,13 +157,13 @@ export default defineComponent({
       </li>
 
       <li class="hanging-indent" v-if="eventData.virtualEventUrl">
-        <LinkIcon class="inline h-5 w-5 mr-2 text-gray-700" />
+        <LinkIcon class="inline h-5 w-5 mr-2 " />
         <span class="underline cursor-pointer" @click="openLink">
           {{ eventData.virtualEventUrl }}
         </span>
       </li>
       <li class="hanging-indent" v-if="eventData.address">
-        <LocationIcon class="inline h-5 w-5 mr-2 text-gray-700"></LocationIcon>
+        <LocationIcon class="inline h-5 w-5 mr-2 "></LocationIcon>
 
         {{ `${eventData.locationName}, ` }}
         <span

@@ -76,13 +76,15 @@ export default defineComponent({
         class="
           pl-10
           pr-3
-          py-2
-          rounded-md
+          py-5
+          rounded-lg
           leading-5
-          bg-white
-          dark:bg-black
+          w-full
+          dark:bg-gray-800
           dark:text-white
           placeholder-gray-500
+          dark:placeholder-gray-400
+          dark:border-gray-700
           focus:outline-none
           focus:ring-1
           focus:ring-blue-500

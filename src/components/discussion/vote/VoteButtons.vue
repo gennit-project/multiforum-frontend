@@ -70,7 +70,7 @@ export default defineComponent({
     <span class="inline-flex">
       <i
         class="fa-solid fa-sort-up w-4 hover:text-black cursor-pointer"
-        :class="[upvoteActive ? 'text-black' : 'text-gray-400']"
+        :class="[upvoteActive ? 'text-black dark:text-blue-500' : 'text-gray-400 dark:text-gray-500']"
         @click="clickUpvote"
       ></i>
       <v-tooltip activator="parent" location="top"
@@ -79,14 +79,14 @@ export default defineComponent({
     </span>
     <span
       class="justify-center"
-      :class="downvoteActive || upvoteActive ? 'text-black' : 'text-gray-400'"
+      :class="downvoteActive || upvoteActive ? 'text-black dark:text-blue-500' : 'text-gray-400 dark:text-gray-500'"
       >{{ upvoteCount - downvoteCount }}</span
     >
 
     <span class="inline-flex">
       <i
-        class="fa-solid fa-sort-down  w-4 hover:text-black cursor-pointer"
-        :class="[downvoteActive ? 'text-black' : 'text-gray-400']"
+        class="fa-solid fa-sort-down  w-4 hover:text-black dark:hover:text-slate-200 cursor-pointer"
+        :class="[downvoteActive ? 'text-black dark:text-blue-500' : 'text-gray-400 dark:text-gray-500']"
         @click="clickDownvote"
       ></i>
       <v-tooltip activator="parent" location="top"
