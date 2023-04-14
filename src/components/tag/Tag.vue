@@ -71,11 +71,11 @@ export default defineComponent({
       titleMode ? 'text-xl py-1.5' : '',
       !large && !titleMode ? 'text-xs py-1.5' : '',
       clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
-      this.active ? 'text-white' : '',
-      !this.active && channelMode ? 'text-blue-900 bg-blue-50 hover:bg-blue-100' : '',
-      !this.active && !channelMode ? 'text-slate-600 bg-white dark:bg-black border border-1 hover:bg-slate-200' : '',
-      this.active && channelMode ? 'bg-blue-900 hover:bg-blue-700' : '',
-      this.active && !channelMode ? 'bg-slate-700 hover:bg-slate-600' : '',
+      this.active ? 'text-white dark:text-gray-700' : '',
+      !this.active && channelMode ? 'text-blue-900 bg-blue-50 hover:bg-blue-100 dark:hover:bg-blue-900' : '',
+      !this.active && !channelMode ? 'text-slate-600 bg-white dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600' : '',
+      this.active && channelMode ? 'bg-blue-900 hover:bg-blue-700 dark:bg-blue-100 hover:bg-blue-300 dark:hover:bg-blue-400' : '',
+      this.active && !channelMode ? 'bg-slate-700 hover:bg-slate-600 dark:bg-slate-100 hover:bg-slate-200' : '',
       'pl-3 font-medium tag rounded-full shadow-sm',
     ]"
     >

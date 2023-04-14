@@ -131,7 +131,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex items-center inline-flex">
+  <div class="flex items-center inline-flex space-x-3 my-3">
     <SearchBar
       class="inline-flex align-middle"
       :initial-value="filterValues.searchInput"

@@ -88,6 +88,7 @@ export default defineComponent({
           focus:ring-blue-500
           focus:border-blue-500
           border border-gray-300
+          dark:border-gray-700
           text-sm
         "
         :placeholder="searchPlaceholder"

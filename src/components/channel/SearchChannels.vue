@@ -187,7 +187,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-100 dark:bg-black">
+  <div >
     <div class="px-4">
       <div class="pt-2 flex justify-between mx-auto max-w-5xl">
         <div class="flex inline-flex py-2">

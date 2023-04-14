@@ -67,7 +67,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen">
+  <div class="h-screen dark:text-slate-200">
     <nav class="shadow-sm">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
@@ -91,7 +91,7 @@ export default defineComponent({
 <style lang="scss">
 body {
   @media (prefers-color-scheme: dark) {
-    background-color: #333;
+    @apply bg-gray-900;
   }
 
   @media (prefers-color-scheme: light) {
@@ -99,7 +99,7 @@ body {
   }
 
   &.dark {
-    @apply bg-black;
+    @apply bg-gray-900;
   }
 
   &.light {
