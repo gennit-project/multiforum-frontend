@@ -201,6 +201,7 @@ export default defineComponent({
 </script>
 
 <template>
+  <div class="text-black">
     <p class="mx-3" v-if="events.length === 0">
       Could not find any events with a location.
     </p>
@@ -216,6 +217,7 @@ export default defineComponent({
       style="position: fixed; width: 66vw; height: 100vh;"
     >
     </div>
+  </div>
 </template>
 <style>
 .gm-style-iw>button {
