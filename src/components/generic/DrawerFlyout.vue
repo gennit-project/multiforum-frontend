@@ -23,6 +23,10 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    openFromLeft: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const cancelButtonRef = ref();
@@ -44,15 +48,16 @@ export default defineComponent({
       <div class="absolute inset-0 overflow-hidden">
         <DialogOverlay class="absolute inset-0" />
 
-        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+        <div class="fixed inset-y-0 max-w-full flex" :class="openFromLeft ? 'left-0 pr-10' : 'right-0 pl-10' ">
+          
           <TransitionChild
-            as="template"
-            enter="transform transition ease-in-out duration-100 sm:duration-100"
-            enter-from="translate-x-full"
-            enter-to="translate-x-0"
-            leave="transform transition ease-in-out duration-100 sm:duration-100"
-            leave-from="translate-x-0"
-            leave-to="translate-x-full"
+          as="template"
+          enter="transform transition ease-in-out duration-100 sm:duration-100"
+          :enter-from="openFromLeft ? '-translate-x-full' : 'translate-x-full'"
+          enter-to="translate-x-0"
+          leave="transform transition ease-in-out duration-100 sm:duration-100"
+          leave-from="translate-x-0"
+          :leave-to="openFromLeft ? '-translate-x-full' : 'translate-x-full'"
           >
           <DialogPanel class="pointer-events-auto w-screen max-w-xl">
             <div

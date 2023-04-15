@@ -2,7 +2,7 @@
 import { computed, defineComponent, ref } from "vue";
 import ChannelDiscussionList from "./ChannelDiscussionList.vue";
 import SitewideDiscussionList from "./SitewideDiscussionList.vue";
-import PreviewFlyout from "../../generic/PreviewFlyout.vue";
+import DrawerFlyout from "../../generic/DrawerFlyout.vue";
 import { useRoute, useRouter } from "vue-router";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPanes.vue";
@@ -27,7 +27,7 @@ export default defineComponent({
     CreateButton,
     DiscussionDetail,
     DiscussionFilterBar,
-    PreviewFlyout,
+    DrawerFlyout,
     PrimaryButton,
     RequireAuth,
     SitewideDiscussionList,
@@ -220,13 +220,13 @@ export default defineComponent({
                 @filterByChannel="filterByChannel"
                 @openPreview="openPreview"
               />
-              <PreviewFlyout
+              <DrawerFlyout
                 v-if="mdAndDown"
                 :isOpen="previewIsOpen"
                 @closePreview="closePreview"
               >
                 <DiscussionDetail />
-              </PreviewFlyout>
+              </DrawerFlyout>
             </template>
             <template v-slot:rightpane>
               <router-view></router-view>

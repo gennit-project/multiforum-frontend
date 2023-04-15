@@ -19,7 +19,7 @@ import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import EventResultCount from "./EventResultCount.vue";
-import PreviewFlyout from "@/components/generic/PreviewFlyout.vue";
+import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 
 export default defineComponent({
   name: "EventListView",
@@ -33,7 +33,7 @@ export default defineComponent({
     EventList,
     EventDetail,
     EventResultCount,
-    PreviewFlyout,
+    DrawerFlyout,
     PrimaryButton,
     RequireAuth,
     TwoSeparatelyScrollingPanes,
@@ -290,13 +290,13 @@ export default defineComponent({
               @openPreview="openPreview"
             />
             <div class="mx-auto" v-if="eventLoading">Loading...</div>
-            <PreviewFlyout
+            <DrawerFlyout
               v-if="eventId"
               :isOpen="previewIsOpen"
               @closePreview="closePreview"
             >
               <EventDetail/>
-            </PreviewFlyout>
+            </DrawerFlyout>
           </template>
           <template v-slot:rightpane>
             <router-view></router-view>

@@ -32,6 +32,7 @@ import {
   defaultSelectedWeeklyHourRanges,
 } from "../list/eventSearchOptions";
 import GenericButton from "@/components/generic/GenericButton.vue";
+import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -42,6 +43,7 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
+    DrawerFlyout,
     FilterChip,
     FilterIcon,
     GenericButton,
@@ -148,7 +150,6 @@ export default defineComponent({
       distanceOptionsForKilometers,
       distanceOptionsForMiles,
       distanceUnitOptions,
-      drawerIsOpen: ref(false),
       filterValues,
       hourRanges,
       LocationFilterTypes,
@@ -167,6 +168,11 @@ export default defineComponent({
       weekdays,
     };
   },
+  data() {
+    return {
+      drawerIsOpen: false,
+    };
+  },
   created() {
     this.$watch("$route.query", () => {
       if (this.route.query) {
@@ -179,9 +185,11 @@ export default defineComponent({
   },
   methods: {
     handleClickMoreFilters() {
+      console.log("handleClickMoreFilters")
       this.drawerIsOpen = true;
     },
     handleCloseFilters() {
+      console.log("handleCloseFilters")
       this.drawerIsOpen = false;
     },
     updateFilters(params: SearchEventValues) {
@@ -349,13 +357,13 @@ export default defineComponent({
       <div class="flex justify-center"></div>
     </div>
     <div class="flex justify-center">
-      <sl-drawer
+      <DrawerFlyout
         label="Event Filters"
         placement="start"
         class="drawer-placement-start dark:bg-gray-800"
-        :style="{ '--size': '50vw' }"
-        :open="drawerIsOpen"
-        @sl-after-hide="handleCloseFilters"
+        :isOpen="drawerIsOpen"
+        :open-from-left="true"
+        @closePreview="drawerIsOpen = false"
       >
         <SelectMenu
           v-if="distanceUnit === MilesOrKm.KM"
@@ -433,14 +441,7 @@ export default defineComponent({
           @resetTimeSlots="resetTimeSlots"
           @close="toggleTimeSlotPicker"
         />
-        <div slot="footer">
-          <GenericButton
-            class="align-middle ml-2"
-            :text="'Close'"
-            @click="handleCloseFilters"
-          />
-        </div>
-      </sl-drawer>
+      </DrawerFlyout>
     </div>
   </div>
 </template>
