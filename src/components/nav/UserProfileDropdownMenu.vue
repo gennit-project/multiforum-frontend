@@ -3,12 +3,13 @@ import { defineComponent } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import MenuButton from "../generic/MenuButton.vue";
 import ProfileAvatar from "../user/ProfileAvatar.vue";
+import IconButtonDropdown from "../generic/IconButtonDropdown.vue";
 
 export default defineComponent({
   components: {
-    MenuButton,
-    ProfileAvatar
-},
+    IconButtonDropdown,
+    ProfileAvatar,
+  },
   props: {
     modName: {
       type: String,
@@ -17,37 +18,37 @@ export default defineComponent({
     username: {
       type: String,
       required: true,
-    }
+    },
   },
   setup(props) {
     const { isAuthenticated, logout } = useAuth0();
 
     let menuItems = [
       {
-        label: 'My Profile',
+        label: "My Profile",
         value: `/u/${props.username}`,
       },
       {
-        label: 'Sign out',
-        value: '/logout',
+        label: "Sign out",
+        value: "/logout",
       },
-    ]
+    ];
 
     if (props.modName) {
       menuItems = [
         {
-          label: 'My Profile',
-          value: `/u/${props.username}`,
+          label: "My Profile",
+          event: "goToUserProfile",
         },
         {
-          label: 'My Mod Profile',
-          value: `/mod/${props.modName}`,
+          label: "My Mod Profile",
+          event: "goToModProfile",
         },
         {
-          label: 'Sign Out',
-          value: '/logout',
+          label: "Sign Out",
+          event: "logout",
         },
-      ]
+      ];
     }
 
     return {
@@ -55,15 +56,26 @@ export default defineComponent({
       logout: () => {
         logout({ returnTo: "http://localhost:5173/logout" });
       },
-      menuItems
+      menuItems,
     };
   },
+  methods: {
+    goToModProfile(){
+      this.$router.push(`/mod/${this.modName}`);
+    },
+    goToUserProfile(){
+      this.$router.push(`/u/${this.username}`);
+    }
+  }
 });
 </script>
 <template>
-  <MenuButton
+  <IconButtonDropdown
     :items="menuItems"
+    @logout="logout"
+    @goToUserProfile="goToUserProfile"
+    @goToModProfile="goToModProfile"
   >
-<ProfileAvatar />
-</MenuButton>
+    <ProfileAvatar />
+  </IconButtonDropdown>
 </template>
