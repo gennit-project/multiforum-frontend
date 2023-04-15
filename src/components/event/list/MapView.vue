@@ -501,31 +501,23 @@ export default defineComponent({
       id="mapViewFullScreen"
       class="flex flex-row"
     >
-      <div class="overflow-y-auto flex-col flex-grow" style="width: 34vw">
-        <!-- <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
-          <button
-            type="button"
-            class="my-2 py-2 pr-4 pl-2 cursor-pointer   rounded-full inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 align-middle"
-          >
-            <XmarkIcon class="h-5 w-5 mt-0.5" aria-hidden="true" />
-            Close Map
-          </button>
-        </div> -->
-        <EventFilterBar class="w-full m-6" />
-        <RequireAuth class="flex inline-flex float-right">
-          <template v-slot:has-auth>
-            <CreateButton
-              class="align-middle ml-2"
-              :to="createEventPath"
-              :label="'+ Create Event'"
-            />
-          </template>
-          <template v-slot:does-not-have-auth>
-            <PrimaryButton class="align-middle ml-2" :label="'+ Create Event'" />
-          </template>
-        </RequireAuth>
+      <div class="overflow-y-auto h-full" style="width: 34vw">
+        <EventFilterBar class="w-full mt-6" />
+        <div class="m-4 flex justify-end">
+          <RequireAuth class="flex inline-flex">
+            <template v-slot:has-auth>
+              <CreateButton
+                class="align-middle ml-2"
+                :to="createEventPath"
+                :label="'+ Create Event'"
+              />
+            </template>
+            <template v-slot:does-not-have-auth>
+              <PrimaryButton class="align-middle ml-2" :label="'+ Create Event'" />
+            </template>
+          </RequireAuth>
+        </div>
         <EventList
-          class="mt-8"
           key="highlightedEventId"
           :events="eventResult.events"
           :channel-id="channelId"
@@ -561,6 +553,7 @@ export default defineComponent({
         />
       </div>
     </div>
+
     <EventPreview
       :top-layer="true"
       :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
