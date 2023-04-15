@@ -11,6 +11,7 @@ export default defineComponent({
     return { input };
   },
   props: {
+
     initialValue: {
       type: String,
       default: ""
@@ -42,7 +43,7 @@ export default defineComponent({
 <template>
   <div>
     <label for="search" class="sr-only">Search</label>
-    <div class="relative items-center">
+    <div class="relative items-center w-full">
       <div
         class="
           absolute
@@ -75,7 +76,7 @@ export default defineComponent({
         class="
           pl-10
           pr-3
-          py-2
+          py-3
           rounded-lg
           leading-5
           w-full

@@ -517,11 +517,11 @@ export default defineComponent({
             <CreateButton
               class="align-middle ml-2"
               :to="createEventPath"
-              :label="'Create Event'"
+              :label="'+ Create Event'"
             />
           </template>
           <template v-slot:does-not-have-auth>
-            <PrimaryButton class="align-middle ml-2" :label="'Create Event'" />
+            <PrimaryButton class="align-middle ml-2" :label="'+ Create Event'" />
           </template>
         </RequireAuth>
         <EventList

@@ -380,11 +380,11 @@ export default defineComponent({
 }
 
 .text-dark {
-  @apply text-gray-200;
+  @apply text-gray-100;
 }
 
 .bg-light {
-  @apply bg-white;
+  @apply bg-gray-100;
 }
 
 .text-light {

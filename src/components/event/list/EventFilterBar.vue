@@ -327,32 +327,27 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex items-center inline-flex">
-    <div class="space-y-1">
-      <div
-        v-if="route.name !== 'EventDetail'"
-        class="items-center flex justify-center px-4"
-      >
-        <div class="flex justify-center">
-          <div class="flex flex-wrap space-x-1 items-center">
-            <SearchBar
-              class="inline-flex align-middle"
-              :initial-value="filterValues.searchInput"
-              :search-placeholder="'Search text'"
-              :small="true"
-              @updateSearchInput="updateSearchInput"
-            />
-            <button
-              class="relative inline-flex -ml-2 items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              @click="handleClickMoreFilters"
-            >
-              <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
-              Filters
-            </button>
-          </div>
-        </div>
+  <div class="flex items-center inline-flex w-full space-y-1">
+    <div
+      v-if="route.name !== 'EventDetail'"
+      class="items-center flex justify-center w-full"
+    >
+      <div class="flex justify-between items-center w-full px-2 mr-6">
+        <SearchBar
+          class="inline-flex align-middle w-full"
+          :initial-value="filterValues.searchInput"
+          :search-placeholder="'Search text'"
+          :small="true"
+          @updateSearchInput="updateSearchInput"
+        />
+        <button
+          class="relative inline-flex float-right border border-red-500 -ml-32 py-2.5 items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-r-md px-3 py-2 font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 -ml-px"
+          @click="handleClickMoreFilters"
+        >
+          <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+          Filters
+        </button>
       </div>
-      <div class="flex justify-center"></div>
     </div>
     <div class="flex justify-center">
       <DrawerFlyout
@@ -396,18 +391,22 @@ export default defineComponent({
         <h2
           v-if="!channelId"
           class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4"
-        >Filter by Channel</h2>
-        
-            <ChannelPicker
-              v-if="!channelId"
-              :selected-channels="filterValues.channels"
-              @setSelectedChannels="setSelectedChannels"
-            />
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4">Filter by Tag</h2>
-            <TagPicker
-              :selected-tags="filterValues.tags"
-              @setSelectedTags="setSelectedTags"
-            />
+        >
+          Filter by Channel
+        </h2>
+
+        <ChannelPicker
+          v-if="!channelId"
+          :selected-channels="filterValues.channels"
+          @setSelectedChannels="setSelectedChannels"
+        />
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4">
+          Filter by Tag
+        </h2>
+        <TagPicker
+          :selected-tags="filterValues.tags"
+          @setSelectedTags="setSelectedTags"
+        />
         <h2>Time Filters</h2>
 
         <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />

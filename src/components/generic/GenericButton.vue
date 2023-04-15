@@ -23,7 +23,7 @@ export default defineComponent({
       py-2
       px-4
       border border-gray-300
-      rounded-full
+      rounded-lg
       shadow-sm
       text-sm
       font-medium

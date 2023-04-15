@@ -237,7 +237,6 @@ export default defineComponent({
 
       <div
         v-if="discussionResult && discussionResult.discussions.length > 0"
-        class="px-4 lg:px-12"
       >
         <LoadMore
           class="justify-self-center"

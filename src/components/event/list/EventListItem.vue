@@ -145,6 +145,42 @@ export default defineComponent({
         this.updateFilters({ tags: [tagText] })
       }
     },
+    handleClickChannel(uniqueName: string){
+      const currentQuery = this.$route.query;
+
+      if (currentQuery.channels){
+        if (typeof currentQuery.channels === 'string' && uniqueName === currentQuery.channels) {
+          // If we're already filtering by the channel, clear it.
+          const newQuery = {...this.$route.query};
+          delete newQuery['channels']
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+        } else if (typeof currentQuery.channels === 'object' && currentQuery.channels.includes(uniqueName)){
+          // If we're already filtering by multiple channels including this channel,
+          // remove only this channel.
+          const newQuery = {...this.$route.query};
+          newQuery.channels = newQuery.channels.filter((channel: string) => {
+            return channel !== uniqueName
+          })
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+        } else {
+          // If we are not already filtering by the channel,
+          // overwrite existing channel filters with it.
+          this.updateFilters({ channels: [uniqueName] })
+        }
+      } else {
+        this.updateFilters({ channels: [uniqueName] })
+      }
+    },
     goToPreviewLink(){
       const existingQuery = this.$route.query;
       this.$router.push({
@@ -249,7 +285,7 @@ export default defineComponent({
               :channel-mode="true"
               v-for="channel in event.Channels"
               :tag="channel.uniqueName"
-              @click="$emit('filterByChannel', channel.uniqueName)"
+              @click="() => {handleClickChannel(channel.uniqueName)}"
             />
            
           </div>
@@ -260,7 +296,7 @@ export default defineComponent({
               :key="tag"
               v-for="tag in event.Tags"
               :tag="tag.text"
-              @click="$emit('filterByTag', tag)"
+              @click="() => {handleClickTag(tag.text)}"
             />
           </p>
           <!-- <div class="text-sm">

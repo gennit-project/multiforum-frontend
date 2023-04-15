@@ -123,29 +123,87 @@ export default defineComponent({
         },
       });
     },
-    filterByTag(tag: string) {
-      const alreadySelected = this.filterValues.tags.includes(tag);
+    handleClickTag(tagText: string){
+      const currentQuery = this.$route.query;
 
-      if (alreadySelected) {
-        this.filterValues.tags = this.filterValues.tags.filter(
-          (t: string) => t !== tag
+      if (currentQuery.tags){
+        if (typeof currentQuery.tags === 'string' && tagText === currentQuery.tags) {
+          // If we're already filtering by the tag, clear it.
+          const newQuery = {...this.$route.query};
+          delete newQuery['tags']
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+
+          this.filterValues.tags = this.filterValues.tags.filter(
+          (t: string) => t !== tagText
         );
+        } else if (typeof currentQuery.tags === 'object' && currentQuery.tags.includes(tagText)){
+          // If we're already filtering by multiple tags including this tag,
+          // remove only this tag.
+          const newQuery = {...this.$route.query};
+          newQuery.tags = newQuery.tags.filter((tag: string) => {
+            return tag !== tagText;
+          })
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+          this.filterValues.tags.push(tagText);
+        } else {
+          // If we are not already filtering by the tag,
+          // overwrite existing tag filters with it.
+          this.updateFilters({ tags: [tagText] })
+        }
       } else {
-        this.filterValues.tags.push(tag);
+        this.updateFilters({ tags: [tagText] })
       }
-      this.updateFilters({ tags: tag });
     },
-    filterByChannel(channel: string) {
-      const alreadySelected = this.filterValues.channels.includes(channel);
+    handleClickChannel(uniqueName: string ){
+      const currentQuery = this.$route.query;
 
-      if (alreadySelected) {
-        this.filterValues.channels = this.filterValues.channels.filter(
-          (c: string) => c !== channel
+      if (currentQuery.channels){
+        if (typeof currentQuery.channels === 'string' && uniqueName === currentQuery.channels) {
+          // If we're already filtering by the channel, clear it.
+          const newQuery = {...this.$route.query};
+          delete newQuery['channels']
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+
+          this.filterValues.channels = this.filterValues.channels.filter(
+          (c: string) => c !== uniqueName
         );
+        } else if (typeof currentQuery.channels === 'object' && currentQuery.channels.includes(uniqueName)){
+          // If we're already filtering by multiple channels including this channel,
+          // remove only this channel.
+          const newQuery = {...this.$route.query};
+          newQuery.channels = newQuery.channels.filter((channel: string) => {
+            return channel !== uniqueName;
+          })
+
+          this.$router.replace({
+            query: {
+              ...newQuery
+            }
+          })
+          this.filterValues.channels.push(uniqueName);
+        } else {
+          // If we are not already filtering by the channel,
+          // overwrite existing channel filters with it.
+          this.updateFilters({ channels: [uniqueName] })
+        }
       } else {
-        this.filterValues.channels.push(channel);
+        this.updateFilters({ channels: [uniqueName] })
       }
-      this.updateFilters({ channels: channel });
     },
     closePreview() {
       this.previewIsOpen = false;
@@ -171,8 +229,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="[lgAndUp ? 'px-8' : 'px-4']">
-    <div class="flex justify-center">
+  <div>
+    <div class="flex justify-center w-full">
       <div>
         <div class="rounded pr-8">
           <div class="py-2">
@@ -205,8 +263,8 @@ export default defineComponent({
                 :search-input="filterValues.searchInput"
                 :selected-tags="filterValues.tags"
                 :selected-channels="filterValues.channels"
-                @filterByTag="filterByTag"
-                @filterByChannel="filterByChannel"
+                @filterByTag="handleClickTag"
+                @filterByChannel="handleClickChannel"
                 @openPreview="openPreview"
               />
               <ChannelDiscussionList
@@ -216,8 +274,8 @@ export default defineComponent({
                 :search-input="filterValues.searchInput"
                 :selected-tags="filterValues.tags"
                 :selected-channels="filterValues.channels"
-                @filterByTag="filterByTag"
-                @filterByChannel="filterByChannel"
+                @filterByTag="handleClickTag"
+                @filterByChannel="handleClickChannel"
                 @openPreview="openPreview"
               />
               <DrawerFlyout

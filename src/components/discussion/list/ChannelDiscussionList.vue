@@ -232,10 +232,6 @@ export default defineComponent({
       There are no results.
     </p>
     <div v-else>
-      <!-- <p class="sm:px-4">
-        Showing {{ discussionResult.discussions.length }} of
-        {{ discussionResult.discussionsAggregate?.count }} results
-      </p> -->
       <div class="h-full  ">
         <ul role="list" class="relative my-2 rounded space-y-2">
           <ChannelDiscussionListItem
@@ -255,7 +251,6 @@ export default defineComponent({
         </ul>
         <div
           v-if="discussionResult.discussions.length > 0"
-          class="px-4 lg:px-12"
         >
           <LoadMore
             class="justify-self-center"

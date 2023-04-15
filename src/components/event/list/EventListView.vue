@@ -234,29 +234,8 @@ export default defineComponent({
   <div class="mx-auto">
     <div class="flex justify-center">
       <div>
-        <div class="rounded pr-8">
-          <div class="py-2">
-            <div class="items-center">
-              <EventFilterBar />
-              <RequireAuth class="flex inline-flex">
-                <template v-slot:has-auth>
-                  <CreateButton
-                    class="align-middle ml-2"
-                    :to="createEventPath"
-                    :label="'Create Event'"
-                  />
-                </template>
-                <template v-slot:does-not-have-auth>
-                  <PrimaryButton
-                    class="align-middle ml-2"
-                    :label="'Create Event'"
-                  />
-                </template>
-              </RequireAuth>
-            </div>
-          </div>
-        </div>
-
+              
+             
         <ErrorBanner
           class="mx-auto block"
           v-if="eventError"
@@ -265,12 +244,22 @@ export default defineComponent({
         <p v-else-if="eventLoading">Loading...</p>
         <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
           <template v-slot:leftpane>
-            <EventResultCount
-              :result-count="
-                eventResult ? eventResult.eventsAggregate?.count : 0
-              "
-              :filter-values="filterValues"
-            />
+            <EventFilterBar class="my-4"/>
+            <RequireAuth class="flex inline-flex">
+              <template v-slot:has-auth>
+                <CreateButton
+                  class="align-middle ml-2"
+                  :to="createEventPath"
+                  :label="'+ Create Event'"
+                />
+              </template>
+              <template v-slot:does-not-have-auth>
+                <PrimaryButton
+                  class="align-middle ml-2"
+                  :label="'+ Create Event'"
+                />
+              </template>
+            </RequireAuth>
             <EventList
               id="listView"
               :class="[!channelId ? '' : '']"

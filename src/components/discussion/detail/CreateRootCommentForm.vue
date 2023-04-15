@@ -317,7 +317,7 @@ export default defineComponent({
           name="addcomment"
           rows="1"
           placeholder="Write a reply"
-          class="block w-full h-10 rounded-full border-gray-300 dark:bg-slate-700 dark:border-gray-800 dark:text-slate-200 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
+          class="block w-full h-10 rounded-lg border-gray-300 dark:bg-slate-700 dark:border-gray-800 dark:text-slate-200 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
         />
       </template>
       <template v-slot:does-not-have-auth>
@@ -326,7 +326,7 @@ export default defineComponent({
           name="addcomment"
           rows="1"
           placeholder="Write a reply"
-          class="block w-full h-10 rounded-full border-gray-300 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
+          class="block w-full h-10 rounded-lg border-gray-300 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
         />
       </template>
     </RequireAuth>
