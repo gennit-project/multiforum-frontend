@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from "vue";
+import { defineComponent, PropType, computed, ref, Ref } from "vue";
 import ChannelDiscussionListItem from "./ChannelDiscussionListItem.vue";
 import LoadMore from "../../generic/LoadMore.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -12,6 +12,9 @@ import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
 import { modProfileNameVar } from "@/cache";
+import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import { SearchDiscussionValues } from "../../../types/discussionTypes";
+import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 
 const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -21,7 +24,7 @@ export default defineComponent({
   // list needs the query to get discussions to return more information,
   // specifically the comment section data, which is needed to display
   // the vote buttons.
-  setup(props) {
+  setup() {
     const router = useRouter();
     const route = useRoute();
 
@@ -32,13 +35,22 @@ export default defineComponent({
       return "";
     });
 
+    const filterValues: Ref<SearchDiscussionValues> = ref(
+      getFilterValuesFromParams(route, channelId.value)
+    );
+
+    const discussionWhere = computed(() => {
+      return getDiscussionWhere(filterValues.value, channelId.value);
+    });
+
+
     const discussionQueryFilters = computed(() => {
       // We pass the current filters as a prop
       // to the discussion list item so that the Apollo
       // cache be updated properly when the user
       // votes from the list view.
       return {
-        where: props.discussionWhere,
+        where: discussionWhere,
         limit: DISCUSSION_PAGE_LIMIT,
         offset: 0,
         resultsOrder: {
@@ -151,6 +163,7 @@ export default defineComponent({
       discussionLoading,
       discussionResult,
       discussionQueryFilters,
+      filterValues,
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
@@ -159,12 +172,6 @@ export default defineComponent({
     };
   },
   props: {
-    discussionWhere: {
-      type: Object as PropType<Object>,
-      default: () => {
-        return {};
-      },
-    },
     searchInput: {
       type: String,
       default: "",
@@ -200,11 +207,9 @@ export default defineComponent({
       this.$emit("openPreview");
     },
     filterByTag(tag: string) {
-      console.log("filter by tag in channel list" , tag)
       this.$emit("filterByTag", tag);
     },
     filterByChannel(channel: string) {
-      console.log("filter by channel in channel list" , channel)
       this.$emit("filterByChannel", channel);
     },
     async handleCreateModProfileClick() {
@@ -216,6 +221,16 @@ export default defineComponent({
     },
   },
   inheritAttrs: false,
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.$route.query) {
+        this.filterValues = getFilterValuesFromParams(
+          this.$route,
+          this.channelId
+        );
+      }
+    });
+  },
 });
 </script>
 <template>

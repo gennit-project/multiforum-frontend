@@ -259,7 +259,6 @@ export default defineComponent({
             <template v-slot:leftpane>
               <SitewideDiscussionList
                 v-if="!channelId"
-                :discussion-where="discussionWhere"
                 :search-input="filterValues.searchInput"
                 :selected-tags="filterValues.tags"
                 :selected-channels="filterValues.channels"
@@ -270,7 +269,6 @@ export default defineComponent({
               <ChannelDiscussionList
                 v-else
                 :channel-id="channelId"
-                :discussion-where="discussionWhere"
                 :search-input="filterValues.searchInput"
                 :selected-tags="filterValues.tags"
                 :selected-channels="filterValues.channels"

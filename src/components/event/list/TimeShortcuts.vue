@@ -164,8 +164,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex justify-center py-4">
-    <div v-if="!channelId" class="flex flex-wrap">
+  <div class="flex py-4">
+    <div v-if="!channelId">
       <Tag
         class="align-middle"
         v-for="shortcut in timeFilterShortcuts"

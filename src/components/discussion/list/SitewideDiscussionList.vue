@@ -120,12 +120,6 @@ export default defineComponent({
     };
   },
   props: {
-    discussionWhere: {
-      type: Object as PropType<Object>,
-      default: () => {
-        return {};
-      },
-    },
     searchInput: {
       type: String,
       default: "",
@@ -178,11 +172,9 @@ export default defineComponent({
       this.$emit("openPreview");
     },
     filterByTag(tag: string) {
-      console.log("filter by tag in sitewide list" , tag)
       this.$emit("filterByTag", tag);
     },
     filterByChannel(channel: string) {
-      console.log("filter by channel in sitewide list" , channel)
       this.$emit("filterByChannel", channel);
     },
     updateFilters(params: SearchDiscussionValues) {
