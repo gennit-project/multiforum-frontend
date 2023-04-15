@@ -53,7 +53,6 @@ export default defineComponent({
       if (themeLoading.value || themeError.value) {
         return "";
       }
-      console.log(themeResult.value.theme)
       return themeResult.value.theme;
     })
 

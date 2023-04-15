@@ -68,7 +68,6 @@ export default defineComponent({
     const { result } = useQuery(GET_THEME);
 
     const theme = computed(() => {
-      console.log('theme',result.value?.theme)
       return result.value?.theme;
     })
 

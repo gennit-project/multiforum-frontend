@@ -185,11 +185,9 @@ export default defineComponent({
   },
   methods: {
     handleClickMoreFilters() {
-      console.log("handleClickMoreFilters")
       this.drawerIsOpen = true;
     },
     handleCloseFilters() {
-      console.log("handleCloseFilters")
       this.drawerIsOpen = false;
     },
     updateFilters(params: SearchEventValues) {

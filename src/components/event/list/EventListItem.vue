@@ -92,7 +92,13 @@ export default defineComponent({
       if (!this.event) {
         return "";
       }
-      return `/map/events/list/search/${this.event.id}`;
+      if (this.$route.name === "MapView" || this.$route.name === "MapEventPreview") {
+        return `/map/search/${this.event.id}`;
+      }
+      if (this.$route.name === "SitewideSearchEventPreview") {
+        return `/events/list/search/${this.event.id}`;
+      }
+      return ``;
     },
   },
   methods: {

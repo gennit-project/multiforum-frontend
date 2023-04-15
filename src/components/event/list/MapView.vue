@@ -15,16 +15,14 @@ import getEventWhere from "./getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import {
-  chronologicalOrder,
-  reverseChronologicalOrder,
-} from "./filterStrings";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
 import { timeShortcutValues } from "./eventSearchOptions";
 import EventFilterBar from "./EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import EventResultCount from "@/components/event/list/EventResultCount.vue";
+import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 
 export default defineComponent({
   name: "MapView",
@@ -503,10 +501,7 @@ export default defineComponent({
       id="mapViewFullScreen"
       class="flex flex-row"
     >
-      <div
-        class="overflow-y-auto flex-col flex-grow"
-        style="width: 34vw"
-      >
+      <div class="overflow-y-auto flex-col flex-grow" style="width: 34vw">
         <!-- <div class="ml-4 flex-shrink-0 flex" @click="clickCloseMap">
           <button
             type="button"
@@ -517,7 +512,7 @@ export default defineComponent({
           </button>
         </div> -->
         <div class="flex justify-between mt-6 mr-4">
-          <EventFilterBar class="w-full m-6"/>
+          <EventFilterBar class="w-full m-6" />
           <RequireAuth class="flex inline-flex">
             <template v-slot:has-auth>
               <CreateButton
