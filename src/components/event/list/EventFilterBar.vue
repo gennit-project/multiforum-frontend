@@ -55,6 +55,10 @@ export default defineComponent({
     WeeklyTimePicker,
   },
   props: {
+    showDistanceFilters: {
+      type: Boolean,
+      default: true,
+    },
     showMap: {
       type: Boolean,
       default: false,
@@ -332,22 +336,39 @@ export default defineComponent({
       v-if="route.name !== 'EventDetail'"
       class="items-center flex justify-center w-full"
     >
-      <div class="flex justify-between items-center w-full px-2 mr-6">
-        <SearchBar
-          class="inline-flex align-middle w-full"
-          :initial-value="filterValues.searchInput"
-          :search-placeholder="'Search text'"
-          :small="true"
-          @updateSearchInput="updateSearchInput"
-        />
-        <button
-          class="relative inline-flex float-right border border-red-500 -ml-32 py-2.5 items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-r-md px-3 py-2 font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 -ml-px"
-          @click="handleClickMoreFilters"
-        >
-          <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
-          Filters
-        </button>
-      </div>
+    <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
+      <SearchBar
+        class="inline-flex align-middle w-full h-full"
+        :initial-value="filterValues.searchInput"
+        :search-placeholder="'Search text'"
+        :small="true"
+        @updateSearchInput="updateSearchInput"
+      />
+      <button
+        class="
+          inline-flex 
+          float-right 
+          text-sm 
+          items-center 
+          dark:bg-gray-700 
+          dark:text-gray-200 
+          dark:border-gray-700 
+          rounded-lg px-3 
+          text-gray-700 
+          bg-gray-100
+          hover:bg-gray-200
+          dark:ring-gray-700 
+          hover:text-gray-800 
+          py-2
+          dark:hover:bg-gray-600 
+          -ml-px 
+          "
+        @click="handleClickMoreFilters"
+      >
+        <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+        Filters
+      </button>
+    </div>
     </div>
     <div class="flex justify-center">
       <DrawerFlyout
@@ -358,40 +379,43 @@ export default defineComponent({
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
-        <SelectMenu
-          v-if="distanceUnit === MilesOrKm.KM"
-          class="ml-2 w-36 inline-block"
-          :options="distanceOptionsForKilometers"
-          :default-option="defaultKilometerSelection"
-          @selected="updateSelectedDistance"
-        />
-        <SelectMenu
-          v-if="distanceUnit === MilesOrKm.MI"
-          class="ml-2 w-36 inline-block"
-          :options="distanceOptionsForMiles"
-          :default-option="defaultMileSelection"
-          @selected="updateSelectedDistance"
-        />
-        <SelectMenu
-          class="mr-4 w-18"
-          :options="distanceUnitOptions"
-          :default-option="{
-            label: distanceUnit,
-            value: distanceUnit,
-          }"
-          @selected="updateSelectedDistanceUnit"
-        />
-        <div class="inline-block">of</div>
-        <LocationSearchBar
-          class="flex flex-wrap"
-          :search-placeholder="referencePointAddress"
-          :reference-point-address-name="referencePointName"
-          @updateLocationInput="updateLocationInput"
-        />
+        <div v-if="showDistanceFilters">
+          <SelectMenu
+            v-if="distanceUnit === MilesOrKm.KM"
+            class="ml-2 w-36 inline-block"
+            :options="distanceOptionsForKilometers"
+            :default-option="defaultKilometerSelection"
+            @selected="updateSelectedDistance"
+          />
+          <SelectMenu
+            v-if="distanceUnit === MilesOrKm.MI"
+            class="ml-2 w-36 inline-block"
+            :options="distanceOptionsForMiles"
+            :default-option="defaultMileSelection"
+            @selected="updateSelectedDistance"
+          />
+          <SelectMenu
+            class="mr-4 w-18"
+            :options="distanceUnitOptions"
+            :default-option="{
+              label: distanceUnit,
+              value: distanceUnit,
+            }"
+            @selected="updateSelectedDistanceUnit"
+          />
+          <div class="inline-block">of</div>
+          <LocationSearchBar
+            class="flex flex-wrap"
+            :search-placeholder="referencePointAddress"
+            :reference-point-address-name="referencePointName"
+            @updateLocationInput="updateLocationInput"
+          />
+        </div>
         <h2
           v-if="!channelId"
-          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4"
+          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
+          <ChannelIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Filter by Channel
         </h2>
 
@@ -400,16 +424,22 @@ export default defineComponent({
           :selected-channels="filterValues.channels"
           @setSelectedChannels="setSelectedChannels"
         />
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4">
+        <h2
+          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+        >
+          <TagIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Filter by Tag
         </h2>
         <TagPicker
           :selected-tags="filterValues.tags"
           @setSelectedTags="setSelectedTags"
         />
-        <h2>Time Filters</h2>
-
-        <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />
+        <h2
+          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+        >
+          <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+          Time Filters
+        </h2>
 
         <WeeklyTimePicker
           class="py-2 px-8"

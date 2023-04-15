@@ -244,7 +244,7 @@ export default defineComponent({
         <p v-else-if="eventLoading">Loading...</p>
         <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
           <template v-slot:leftpane>
-            <EventFilterBar class="my-4"/>
+            <EventFilterBar class="my-4" :show-distance-filters="false"/>
             <RequireAuth class="flex inline-flex">
               <template v-slot:has-auth>
                 <CreateButton

@@ -41,7 +41,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="h-12">
     <label for="search" class="sr-only">Search</label>
     <div class="relative items-center w-full">
       <div
