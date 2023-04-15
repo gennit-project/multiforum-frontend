@@ -97,62 +97,23 @@ export default defineComponent({
 </template>
 <style lang="scss">
 
-/* Apply the user's preferred color scheme by default */
-@media (prefers-color-scheme: dark) {
-  #texteditor-textarea {
-    @apply bg-dark text-dark;
+.bullet {
+  text-indent: -2.1em;
+  padding-left: 2.1em;
+}
+
+.text-tiny {
+  font-size: 0.9em;
+  margin-bottom: 0;
+}
+
+.small-text {
+  #md-editor-v3-preview > p,
+  li {
+    font-size: 0.9em;
   }
 }
 
-@media (prefers-color-scheme: light) {
-  #texteditor-textarea {
-    @apply bg-light text-light;
-  }
-}
-
-.bg-dark {
-  @apply bg-gray-700;
-}
-
-.text-dark {
-  @apply text-gray-200;
-}
-
-.bg-light {
-  @apply bg-white;
-}
-
-.text-light {
-  @apply text-gray-700;
-}
-
-/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
-body.dark #texteditor-textarea {
-  @apply text-dark bg-dark;
-
-  .md-editor-toolbar-item:hover {
-    background-color: #4a5568;
-  }
-}
-
-body.light #texteditor-textarea {
-  @apply text-light bg-light;
-}
-
-body.dark #texteditor {
-  @apply text-dark bg-dark border-gray-700;
-}
-
-body.light #texteditor {
-  @apply text-light bg-light border-gray-200;
-}
-
-.md-content .md-preview,
-.md-content .md-html {
-  word-break: break-word;
-  width: 100%;
-  font-size: 0.9rem;
-}
 .md-content .md-preview,
 .md-content .md-html {
   word-break: break-word;
@@ -160,22 +121,104 @@ body.light #texteditor {
   padding: 0;
   margin: 0;
 }
-#md-editor-v3-preview > p,
-ul,
-ol,
-blockquote {
-  font-size: 0.9rem;
-  line-height: 1.5em;
-  word-break: break-word;
+
+
+/* Apply the user's preferred color scheme by default */
+@media (prefers-color-scheme: dark) {
+  #md-editor-v3-preview,
+  #md-editor-v3-preview-wrapper {
+    @apply bg-dark text-dark;
+  }
 }
 
-#md-editor-v3-preview > p,
-ul,
-ol,
-li {
-  line-height: 1.5em;
+@media (prefers-color-scheme: light) {
+  #md-editor-v3-preview,
+  #md-editor-v3-preview-wrapper {
+    @apply bg-light text-light;
+  }
 }
-.md-editor-footer {
-  display: none;
+
+
+.bg-dark {
+  @apply bg-gray-800;
 }
+
+.text-dark {
+  @apply text-gray-100;
+}
+
+.bg-light {
+  @apply bg-gray-100;
+}
+
+.text-light {
+  @apply text-gray-800;
+}
+
+/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
+body.dark #md-editor-v3-preview,
+body.dark #md-editor-v3-preview-wrapper {
+  @apply text-dark bg-dark;
+}
+
+body.light #md-editor-v3-preview,
+body.light #md-editor-v3-preview-wrapper {
+  @apply text-light bg-light;
+}
+#md-editor-v3-preview {
+  p,
+  ul,
+  ol,
+  blockquote > li {
+    font-size: 0.8em;
+    word-break: break-word;
+  }
+  ul > li > p {
+    margin: 0.5em 0;
+    line-height: 1.5em;
+  }
+  h1,
+  h2,
+  h3 {
+    margin-bottom: 0.5em;
+  }
+  h3 {
+    margin-top: 1.5em;
+  }
+  p {
+    line-height: 1.5em;
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+  }
+  ul > li > p {
+    margin-bottom: 0.35em;
+    line-height: 1.5em;
+  }
+  li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5em;
+  }
+  ul {
+    margin: 0.1em;
+  }
+}
+.profile-picture {
+  position: relative;
+  left: -3em;
+  top: 0.7em;
+  z-index: 1;
+}
+.username-text {
+  position: relative;
+  left: -2.5em;
+}
+.comment-border {
+  border-left: 1px solid #aeacac;
+  position: relative;
+  left: -2em;
+  padding-left: 2em;
+}
+
+
 </style>

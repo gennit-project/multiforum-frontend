@@ -12,6 +12,7 @@ import WarningModal from "../../generic/WarningModal.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   components: {
@@ -88,6 +89,9 @@ export default defineComponent({
     });
 
     const deleteModalIsOpen = ref(false);
+
+    const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
+
     return {
       createdAt,
       deleteModalIsOpen,
@@ -96,6 +100,11 @@ export default defineComponent({
       editedAt,
       route,
       router,
+      lgAndDown,
+      lgAndUp,
+      mdAndDown,
+      mdAndUp,
+      xlAndUp,
     };
   },
   methods: {
@@ -110,14 +119,17 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div class="flex justify-between min-w-0">
+    <div 
+      :class="{'flex': lgAndUp, 'block': !lgAndUp}" 
+      class="justify-between min-w-0"
+    >
       <h2 class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate">
         {{ discussion.title }}
       </h2>
-      <div>
+      <div :class="{'mt-4': !lgAndUp}">
         <RequireAuth
-          class="flex inline-flex"
-          v-if="discussion.Author && route.name === 'DiscussionDetail'"
+          class="inline-flex"
+          :class="{'flex': lgAndUp, 'block': !lgAndUp}"
           :require-ownership="true"
           :owners="[discussion.Author.username]"
         >
@@ -129,7 +141,7 @@ export default defineComponent({
             </router-link>
           </template>
         </RequireAuth>
-        <RequireAuth class="flex inline-flex">
+        <RequireAuth class="inline-flex" :class="{'flex': lgAndUp, 'block': !lgAndUp}">
           <template v-slot:has-auth>
             <CreateButton
               class="ml-2"
@@ -143,6 +155,7 @@ export default defineComponent({
         </RequireAuth>
       </div>
     </div>
+    
     <div class="text-xs mt-4">
       <div class="mb-2 mt-4">
         <router-link

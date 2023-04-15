@@ -86,7 +86,7 @@ export default defineComponent({
         v-if="discussion.body"
         v-model="discussion.body"
         previewTheme="vuepress"
-        codeTheme="vuepress"
+        codeTheme="github"
         language="en-US"
         :noMermaid="true"
         preview-only
@@ -109,3 +109,89 @@ export default defineComponent({
     </div>
   </div>
 </template>
+
+<style lang="scss">
+
+/* Apply the user's preferred color scheme by default */
+@media (prefers-color-scheme: dark) {
+  #texteditor-textarea {
+    @apply bg-dark text-dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #texteditor-textarea {
+    @apply bg-light text-light;
+  }
+}
+
+.bg-dark {
+  @apply bg-gray-700;
+
+}
+
+.text-dark {
+  @apply text-gray-200;
+}
+
+.bg-light {
+  @apply bg-white;
+}
+
+.text-light {
+  @apply text-gray-700;
+}
+
+/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
+body.dark #texteditor-textarea {
+  @apply text-dark bg-dark;
+
+  .md-editor-toolbar-item:hover {
+    background-color: #4a5568;
+  }
+}
+
+body.light #texteditor-textarea {
+  @apply text-light bg-light;
+}
+
+body.dark #texteditor {
+  @apply text-dark bg-dark border-gray-700;
+}
+
+body.light #texteditor {
+  @apply text-light bg-light border-gray-200;
+}
+
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+  font-size: 0.9rem;
+}
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+#md-editor-v3-preview > p,
+ul,
+ol,
+blockquote {
+  font-size: 0.8rem;
+  line-height: 1.5em;
+  word-break: break-word;
+}
+
+#md-editor-v3-preview > p,
+ul,
+ol,
+li {
+  line-height: 1em;
+}
+.md-editor-footer {
+  display: none;
+}
+</style>

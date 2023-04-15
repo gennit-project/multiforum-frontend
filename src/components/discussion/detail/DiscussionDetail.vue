@@ -144,12 +144,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="bg-gray-800 rounded-lg mx-6 px-6 w-full">
   <div
-    class="flex justify-center rounded-lg my-10"
+    class="flex justify-center rounded-lg mb-10 py-10"
     :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"
   >
-
     <div
       :class="
         route.name === 'DiscussionDetail' && mdAndUp
@@ -158,7 +157,6 @@ export default defineComponent({
       "
       class="pb-36 space-y-2"
     >
-      
       <p v-if="getDiscussionLoading">Loading...</p>
       <ErrorBanner
         class="mt-2"
