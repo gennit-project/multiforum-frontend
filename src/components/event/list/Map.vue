@@ -221,4 +221,7 @@ export default defineComponent({
 .gm-style-iw>button {
   display: none !important;
 }
+.gmnoprint {
+  display: none !important;
+}
 </style>

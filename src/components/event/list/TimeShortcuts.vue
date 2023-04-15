@@ -1,14 +1,12 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 import { useRoute } from "vue-router";
-import { reverseChronologicalOrder, chronologicalOrder } from "@/components/event/list/filterStrings";
-import { timeFilterShortcuts } from "@/components/event/list/eventSearchOptions";
-import { eventFilterTypeShortcuts } from "../list/eventSearchOptions";
-import LocationFilterTypes from "../list/locationFilterTypes";
+import { reverseChronologicalOrder, chronologicalOrder } from "./filterStrings";
+import { timeFilterShortcuts } from "./eventSearchOptions";
+import LocationFilterTypes from "./locationFilterTypes";
 import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
 import { SearchEventValues } from "@/types/eventTypes";
-import Tag from "../../tag/Tag.vue";
-
+import Tag from "@/components/tag/Tag.vue";
 export default defineComponent({
   name: "SearchEvents",
   components: {
@@ -25,12 +23,10 @@ export default defineComponent({
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
     );
-
     return {
       activeDateShortcut: ref(route.query.timeShortcut),
       activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
       channelId,
-      eventFilterTypeShortcuts,
       filterValues,
       LocationFilterTypes: LocationFilterTypes,
       route,
@@ -84,7 +80,6 @@ export default defineComponent({
           timeShortcut: shortcut,
         });
       }
-
       if (shortcut === this.timeFilterShortcuts.PAST_EVENTS) {
         this.updateLocalState({
           resultsOrder: reverseChronologicalOrder,
@@ -102,7 +97,6 @@ export default defineComponent({
           LocationFilterTypes.ONLY_VIRTUAL
         ) {
           // If the online-only filter was already selected, clear it.
-
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
           this.updateLocalState({
             locationFilter: LocationFilterTypes.NONE,
@@ -128,7 +122,6 @@ export default defineComponent({
             LocationFilterTypes.WITHIN_RADIUS
         ) {
           // If an in-person filter is already selected, clear it.
-
           this.activeEventFilterTypeShortcut = LocationFilterTypes.NONE;
           this.updateLocalState({
             locationFilter: LocationFilterTypes.NONE,
@@ -141,12 +134,10 @@ export default defineComponent({
           // which filters for events that have a physical address, and WITHIN_RADIUS,
           // which filters for events whose physical address is within a certain
           // radius of a reference point address.
-
           // Affects the values in the query sent to the back end
           if (this.filterValues.radius !== 0) {
             // If a radius is set, assume WITHIN_RADIUS should be used. Otherwise,
             // assume ONLY_WITH_ADDRESS should be used.
-
             this.activeEventFilterTypeShortcut =
               LocationFilterTypes.WITHIN_RADIUS;
             this.updateLocalState({
@@ -183,20 +174,6 @@ export default defineComponent({
         :active="shortcut.value === filterValues.timeShortcut"
         :hide-icon="true"
         @click="handleTimeFilterShortcutClick(shortcut.value)"
-      />
-      <Tag
-        class="align-middle"
-        v-for="shortcut in eventFilterTypeShortcuts"
-        :key="shortcut.label"
-        :tag="shortcut.label"
-        :hide-icon="true"
-        :active="
-          shortcut.locationFilterType === activeEventFilterTypeShortcut ||
-          (shortcut.locationFilterType ===
-            LocationFilterTypes.ONLY_WITH_ADDRESS &&
-            filterValues.locationFilter === LocationFilterTypes.WITHIN_RADIUS)
-        "
-        @click="updateEventTypeFilter(shortcut)"
       />
     </div>
   </div>

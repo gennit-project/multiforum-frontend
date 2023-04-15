@@ -21,8 +21,7 @@ import EventFilterBar from "./EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
-import EventResultCount from "@/components/event/list/EventResultCount.vue";
-import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
+import TimeShortcuts from "./TimeShortcuts.vue";
 
 export default defineComponent({
   name: "MapView",
@@ -59,10 +58,10 @@ export default defineComponent({
     EventList,
     EventMap,
     EventPreview,
-    EventResultCount,
     PreviewContainer,
     PrimaryButton,
     RequireAuth,
+    TimeShortcuts,
   },
   setup() {
     const { smAndDown } = useDisplay();
@@ -484,6 +483,7 @@ export default defineComponent({
       id="mapViewMobileWidth"
       v-else-if="smAndDown && eventResult && eventResult.events"
     >
+      <TimeShortcuts />
       <EventMap
         v-if="eventResult.events.length > 0"
         :events="eventResult.events"
@@ -511,28 +511,19 @@ export default defineComponent({
             Close Map
           </button>
         </div> -->
-        <div class="flex justify-between mt-6 mr-4">
-          <EventFilterBar class="w-full m-6" />
-          <RequireAuth class="flex inline-flex">
-            <template v-slot:has-auth>
-              <CreateButton
-                class="align-middle ml-2"
-                :to="createEventPath"
-                :label="'Create Event'"
-              />
-            </template>
-            <template v-slot:does-not-have-auth>
-              <PrimaryButton
-                class="align-middle ml-2"
-                :label="'Create Event'"
-              />
-            </template>
-          </RequireAuth>
-        </div>
-        <EventResultCount
-          :result-count="resultCount"
-          :filter-values="filterValues"
-        />
+        <EventFilterBar class="w-full m-6" />
+        <RequireAuth class="flex inline-flex float-right">
+          <template v-slot:has-auth>
+            <CreateButton
+              class="align-middle ml-2"
+              :to="createEventPath"
+              :label="'Create Event'"
+            />
+          </template>
+          <template v-slot:does-not-have-auth>
+            <PrimaryButton class="align-middle ml-2" :label="'Create Event'" />
+          </template>
+        </RequireAuth>
         <EventList
           class="mt-8"
           key="highlightedEventId"
@@ -553,7 +544,9 @@ export default defineComponent({
         />
       </div>
       <div style="right: 0; width: 66vw">
-        <slot name="map-buttons"></slot>
+        <div class="shortcut-buttons">
+          <TimeShortcuts />
+        </div>
         <EventMap
           class="fixed"
           v-if="eventResult.events.length > 0"
@@ -602,3 +595,11 @@ export default defineComponent({
     </PreviewContainer>
   </div>
 </template>
+<style>
+.shortcut-buttons {
+  position: absolute;
+  top: 30px; /* Adjust the value as needed for desired placement */
+  right: 60px; /* Adjust the value as needed for desired placement */
+  z-index: 1; /* A high value to ensure buttons are above the map */
+}
+</style>
