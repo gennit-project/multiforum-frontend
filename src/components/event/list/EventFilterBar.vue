@@ -333,7 +333,7 @@ export default defineComponent({
     <div class="space-y-1">
       <div
         v-if="route.name !== 'EventDetail'"
-        class="items-center flex justify-center space-x-2 px-4"
+        class="items-center flex justify-center px-4"
       >
         <div class="flex justify-center">
           <div class="flex flex-wrap space-x-1 items-center">
@@ -344,13 +344,13 @@ export default defineComponent({
               :small="true"
               @updateSearchInput="updateSearchInput"
             />
-            <GenericButton
-              class="align-middle ml-2"
-              :text="'Filters'"
+            <button
+              class="relative inline-flex -ml-2 items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-r-md px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 dark:ring-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
               @click="handleClickMoreFilters"
             >
               <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
-            </GenericButton>
+              Filters
+            </button>
           </div>
         </div>
       </div>
@@ -395,37 +395,21 @@ export default defineComponent({
           :reference-point-address-name="referencePointName"
           @updateLocationInput="updateLocationInput"
         />
-        <FilterChip
-          class="align-middle"
+        <h2
           v-if="!channelId"
-          :label="channelLabel"
-          :highlighted="channelLabel !== defaultFilterLabels.channels"
-        >
-          <template v-slot:icon>
-            <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-          </template>
-          <template v-slot:content>
+          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4"
+        >Filter by Channel</h2>
+        
             <ChannelPicker
+              v-if="!channelId"
               :selected-channels="filterValues.channels"
               @setSelectedChannels="setSelectedChannels"
             />
-          </template>
-        </FilterChip>
-        <FilterChip
-          class="align-middle"
-          :label="tagLabel"
-          :highlighted="tagLabel !== defaultFilterLabels.tags"
-        >
-          <template v-slot:icon>
-            <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-          </template>
-          <template v-slot:content>
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4">Filter by Tag</h2>
             <TagPicker
               :selected-tags="filterValues.tags"
               @setSelectedTags="setSelectedTags"
             />
-          </template>
-        </FilterChip>
         <h2>Time Filters</h2>
 
         <ClockIcon class="h-6 w-6 text-green-600" aria-hidden="true" />

@@ -46,7 +46,7 @@ export default defineComponent({
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
       >
-      <div class="border-b-2">
+      <div class="border-b-2 dark:border-gray-700">
         <div
           class="h-24 w-full object-cover lg:h-24 user-background"
           alt="background pattern"

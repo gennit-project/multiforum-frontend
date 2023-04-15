@@ -157,10 +157,10 @@ export default defineComponent({
     <router-link
       v-if="route.name === 'EventDetail'"
       :to="`/channels/c/${channelId}/events/search`"
-      class="underline text-xs text-gray-500 mb-4"
+      class="text-xs text-gray-500 mb-4"
     >
       <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-      {{ `Event list in c/${channelId}` }}
+      <span class="underline ">{{ `Event list in c/${channelId}` }}</span>
     </router-link>
     <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
     <ErrorBanner

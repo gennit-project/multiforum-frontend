@@ -92,10 +92,7 @@ export default defineComponent({
       if (!this.event) {
         return "";
       }
-      if (this.isWithinChannel) {
-        return `/channels/c/${this.defaultUniqueName}/events/search/${this.event.id}`;
-      }
-      return `/${this.showMap ? "map" : "events/list"}/search/${this.event.id}`;
+      return `/map/events/list/search/${this.event.id}`;
     },
   },
   methods: {
@@ -180,7 +177,7 @@ export default defineComponent({
   <li
     :ref="`#${event.id}`"
     :class="hover || event.id === route.params.eventId ? 'border-blue-500 shadow-lg' : 'border-blue-200 shadow-sm'"
-    class="relative bg-gray-100 dark:bg-slate-800 pl-6 pt-3 pb-2 cursor-pointer border-l-4 m-3 rounded-lg  \"
+    class="relative bg-gray-100 dark:bg-slate-800 pl-6 pt-3 pb-2 border-l-4 m-3 rounded-lg"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
@@ -253,7 +250,7 @@ export default defineComponent({
           <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
             <Tag
               class="my-1"
-              :active="selectedTags.includes(tag)"
+              :active="selectedTags.includes(tag.text)"
               :key="tag"
               v-for="tag in event.Tags"
               :tag="tag.text"

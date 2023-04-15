@@ -103,7 +103,6 @@ export default defineComponent({
           class="
             float-right
             inline-flex
-             
             py-2
             px-4
             border border-gray-300
@@ -112,6 +111,10 @@ export default defineComponent({
             text-sm
             font-medium
             text-gray-700
+            dark:text-gray-300
+            dark:bg-gray-800
+            dark:border-gray-800
+            dark:hover:bg-gray-700
             hover:bg-gray-50
             focus:outline-none
             focus:ring-2

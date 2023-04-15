@@ -96,6 +96,57 @@ export default defineComponent({
   </md-editor>
 </template>
 <style lang="scss">
+
+/* Apply the user's preferred color scheme by default */
+@media (prefers-color-scheme: dark) {
+  #texteditor-textarea {
+    @apply bg-dark text-dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #texteditor-textarea {
+    @apply bg-light text-light;
+  }
+}
+
+.bg-dark {
+  @apply bg-gray-700;
+}
+
+.text-dark {
+  @apply text-gray-200;
+}
+
+.bg-light {
+  @apply bg-white;
+}
+
+.text-light {
+  @apply text-gray-700;
+}
+
+/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
+body.dark #texteditor-textarea {
+  @apply text-dark bg-dark;
+
+  .md-editor-toolbar-item:hover {
+    background-color: #4a5568;
+  }
+}
+
+body.light #texteditor-textarea {
+  @apply text-light bg-light;
+}
+
+body.dark #texteditor {
+  @apply text-dark bg-dark border-gray-700;
+}
+
+body.light #texteditor {
+  @apply text-light bg-light border-gray-200;
+}
+
 .md-content .md-preview,
 .md-content .md-html {
   word-break: break-word;

@@ -2,13 +2,11 @@
 import { defineComponent } from "vue";
 import XmarkIcon from "@/components/icons/XmarkIcon.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import TagIcon from "@/components/icons/TagIcon.vue";
 
 export default defineComponent({
   name: "TagComponent",
   components: {
     ChannelIcon,
-    TagIcon,
     XmarkIcon,
   },
   props: {
@@ -75,8 +73,8 @@ export default defineComponent({
       !this.active && channelMode ? 'text-blue-900  bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:bg-opacity-100 dark:hover:bg-blue-900 dark:hover:text-white' : '',
       !this.active && !channelMode ? 'text-slate-600 dark:bg-opacity-700 dark:bg-slate-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600' : '',
       this.active && channelMode ? 'bg-blue-900 hover:bg-blue-700 dark:bg-blue-500 dark:text-white hover:bg-blue-300 dark:hover:bg-blue-400' : '',
-      this.active && !channelMode ? 'bg-slate-700 dark:text-white dark:hover:text-white dark:bg-opacity-100 hover:bg-slate-600 dark:bg-slate-100 hover:bg-slate-200' : '',
-      'pl-3 font-medium tag rounded shadow-sm bg-gray-100',
+      this.active && !channelMode ? 'bg-slate-700 dark:text-black dark:bg-opacity-100 dark:hover:bg-slate-200 hover:bg-slate-600 dark:bg-slate-100 hover:bg-slate-200' : '',
+      'pl-3 font-medium tag rounded shadow-sm',
     ]"
     >
     <ChannelIcon

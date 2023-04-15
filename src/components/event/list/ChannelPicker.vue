@@ -67,7 +67,7 @@ export default defineComponent({
      }
   },
   methods: {
-    resetChannels() {
+    DrawerFlyoutChannels() {
       this.selected = [];
       this.$emit("setSelectedChannels", []);
     },
@@ -109,6 +109,7 @@ export default defineComponent({
           class="
           float-right
           inline-flex
+           
           py-2
           px-4
           border border-gray-300
@@ -118,18 +119,15 @@ export default defineComponent({
           font-medium
           text-gray-700
           dark:text-gray-300
-          dark:bg-gray-800
-          dark:border-gray-800
-          dark:hover:bg-gray-700
           hover:bg-gray-50
           focus:outline-none
           focus:ring-2
           focus:ring-offset-2
           focus:ring-blue-500
           "
-          @click.prevent="resetChannels"
+          @click.prevent="DrawerFlyoutChannels"
         >
-          <RefreshIcon class="h-5 mr-1" @click="resetChannels"/>Reset
+          <RefreshIcon class="h-5 mr-1" @click="DrawerFlyoutChannels"/>DrawerFlyout
         </button>
       </div>
     </div>

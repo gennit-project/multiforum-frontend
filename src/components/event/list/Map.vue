@@ -1,8 +1,11 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref, SetupContext } from "vue";
+import { defineComponent, onMounted, ref, SetupContext, computed } from "vue";
 import { Loader } from '@googlemaps/js-api-loader';
 import { useRouter } from 'vue-router'
 import config from "@/config";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
+import nightModeMapStyles from '@/components/event/list/nightModeMapStyles'
 
 interface Event {
   location: {
@@ -55,6 +58,20 @@ export default defineComponent({
       apiKey: config.googleMapsApiKey,
       version: "weekly",
     })
+
+    const GET_THEME = gql`
+      query GetTheme {
+        theme @client 
+      }
+    `;
+
+    const { result } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      console.log('theme',result.value?.theme)
+      return result.value?.theme;
+    })
+
     const mobileMapDiv = ref<HTMLElement | null>(null)
     const desktopMapDiv = ref<HTMLElement | null>(null)
     const map = ref<google.maps.Map | null>(null)
@@ -67,7 +84,8 @@ export default defineComponent({
       const mapConfig = {
         center: { lat: 33.4255, lng: -111.94 },
         zoom: 7,
-        mapTypeId: "terrain"
+        mapTypeId: "terrain",
+        styles: theme.value === 'dark' ? nightModeMapStyles : []
       }
       
       if (props.useMobileStyles) {
@@ -171,11 +189,12 @@ export default defineComponent({
       center,
       mobileMapDiv,
       desktopMapDiv,
-      router
+      router,
+      theme
     };
   },
   methods: {
-    openPreview(event) {
+    openPreview(event: any) {
       this.$emit("openPreview", event, true);
     },
   },
