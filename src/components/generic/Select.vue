@@ -43,7 +43,8 @@ export default defineComponent({
     <div class="mt-1 relative">
       <ListboxButton
         class="
-           
+          bg-white dark:bg-gray-800
+          dark:text-gray-200
           relative
           w-full
           border border-gray-300
@@ -73,14 +74,14 @@ export default defineComponent({
         >
         </span>
       </ListboxButton>
-
       <ListboxOptions
         class="
           absolute
           z-10
           mt-1
           w-full
-           
+          bg-white dark:bg-gray-800
+          dark:text-gray-200
           shadow-lg
           max-h-60
           rounded-md
@@ -101,7 +102,7 @@ export default defineComponent({
         >
           <li
             :class="[
-              active ? 'text-white bg-blue-600' : 'text-gray-900',
+              active ? 'text-white bg-blue-600' : 'text-gray-900 dark:text-gray-200',
               'cursor-default select-none relative py-1 pl-3 pr-9',
             ]"
           >

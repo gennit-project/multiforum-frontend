@@ -21,6 +21,7 @@ export default defineComponent({
   <ListboxButton
     class="
       bg-white dark:bg-black
+      dark:text-gray-200
       relative
       w-full
       border border-gray-300

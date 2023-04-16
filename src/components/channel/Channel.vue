@@ -76,12 +76,7 @@ export default defineComponent({
           <router-view></router-view>
         </div>
       </article>
-    
     </div>
-
-    
-
-   
   </div>
 </template>
 <style>

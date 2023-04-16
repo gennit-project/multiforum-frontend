@@ -218,7 +218,7 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    :class="hover || event.id === route.params.eventId ? 'border-blue-500 shadow-lg' : 'border-blue-200 shadow-sm'"
+    :class="hover || event.id === route.params.eventId ? 'border-blue-500 shadow-lg px-4' : 'border-blue-200 shadow-sm'"
     class="relative bg-gray-100 dark:bg-slate-800 pl-6 pt-3 pb-2 border-l-4 m-3 rounded-lg"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
@@ -229,7 +229,7 @@ export default defineComponent({
         <div class="py-1">
           <div class="flex items-center">
             <p class="space-x-2">
-              <span class="text-lg font-bold truncate cursor-pointer">
+              <span class="text-lg font-bold truncate cursor-pointer hover:underline">
                 <HighlightedSearchTerms
                   :text="event.title"
                   :search-input="searchInput"

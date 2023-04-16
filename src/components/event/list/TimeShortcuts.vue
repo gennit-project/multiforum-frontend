@@ -164,7 +164,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex py-4">
+  
+  <div class="time-shortcuts flex py-4">
     <div v-if="!channelId">
       <Tag
         class="align-middle"
@@ -173,8 +174,15 @@ export default defineComponent({
         :tag="shortcut.label"
         :active="shortcut.value === filterValues.timeShortcut"
         :hide-icon="true"
+        :large="true"
         @click="handleTimeFilterShortcutClick(shortcut.value)"
       />
     </div>
   </div>
 </template>
+<style>
+.time-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+}
+</style>

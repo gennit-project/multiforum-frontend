@@ -384,7 +384,7 @@ export default defineComponent({
 }
 
 .bg-light {
-  @apply bg-gray-100;
+  @apply bg-white;
 }
 
 .text-light {
@@ -406,7 +406,7 @@ body.light #md-editor-v3-preview-wrapper {
   ul,
   ol,
   blockquote > li {
-    font-size: 1em;
+    font-size: 0.9em;
     word-break: break-word;
   }
   ul > li > p {

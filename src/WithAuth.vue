@@ -132,8 +132,4 @@ export default defineComponent({
   </div>
 </template>
 
-<style lang="scss">
-body {
-  @apply bg-gray-100;
-}
-</style>
+

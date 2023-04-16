@@ -144,7 +144,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-800 rounded-lg mx-6 px-6 w-full">
+  <div class="dark:bg-gray-800 rounded-lg mx-6 px-6 w-full">
   <div
     class="flex justify-center rounded-lg mb-10 py-10"
     :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"
@@ -211,7 +211,7 @@ export default defineComponent({
             :channelId="channelId"
           />
           <div
-            class="mb-2 my-4 px-4 py-6 dark:bg-gray-800 bg-gray-100 rounded-lg"
+            class="mb-2 my-4 px-4 py-6 dark:bg-gray-800 rounded-lg"
             v-if="route.name === 'DiscussionDetail'"
           >
             <CommentSection

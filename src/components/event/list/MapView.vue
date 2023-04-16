@@ -536,8 +536,11 @@ export default defineComponent({
         />
       </div>
       <div style="right: 0; width: 66vw">
-        <div class="shortcut-buttons">
-          <TimeShortcuts />
+        <div class="event-map-container">
+          <div class="shortcut-buttons-wrapper">
+          <div class="shortcut-buttons">
+            <TimeShortcuts />
+          </div>
         </div>
         <EventMap
           class="fixed"
@@ -551,6 +554,7 @@ export default defineComponent({
           @lockColors="colorLocked = true"
           @setMarkerData="setMarkerData"
         />
+      </div>
       </div>
     </div>
 
@@ -589,10 +593,26 @@ export default defineComponent({
   </div>
 </template>
 <style>
-.shortcut-buttons {
-  position: absolute;
-  top: 30px; /* Adjust the value as needed for desired placement */
-  right: 60px; /* Adjust the value as needed for desired placement */
-  z-index: 1; /* A high value to ensure buttons are above the map */
+.event-map-container {
+  position: relative;
 }
+
+.shortcut-buttons-wrapper {
+  position: absolute;
+  top: 0;
+  right: 50px;
+  z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.shortcut-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  border-radius: 4px;
+}
+
+
 </style>

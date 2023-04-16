@@ -148,7 +148,7 @@ export default defineComponent({
 }
 
 .bg-light {
-  @apply bg-gray-100;
+  @apply bg-white;
 }
 
 .text-light {
