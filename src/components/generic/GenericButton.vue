@@ -19,7 +19,7 @@ export default defineComponent({
     class="
       mt-2
       inline-flex
-       
+      bg-white
       py-2
       px-4
       border border-gray-300

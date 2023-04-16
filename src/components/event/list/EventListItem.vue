@@ -219,7 +219,7 @@ export default defineComponent({
   <li
     :ref="`#${event.id}`"
     :class="hover || event.id === route.params.eventId ? 'border-blue-500 shadow-lg px-4' : 'border-blue-200 shadow-sm'"
-    class="relative bg-gray-100 dark:bg-slate-800 pl-6 pt-3 pb-2 border-l-4 m-3 rounded-lg"
+    class="relative bg-white dark:bg-slate-800 pl-6 pt-3 pb-2 border-l-4 m-3 rounded-lg"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
     @mouseleave="hover = false"

@@ -18,11 +18,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <div v-if="!channelId">
+  <div class="h-full">
       <router-view></router-view>
-    </div>
-    <router-view v-else></router-view>
   </div>
 </template>
 

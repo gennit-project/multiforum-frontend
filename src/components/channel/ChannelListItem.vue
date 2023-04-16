@@ -46,6 +46,7 @@ export default defineComponent({
         dark:bg-gray-800
         dark:text-gray-200
         py-6
+        bg-white
         shadow-md
         col-span-12
         px-8

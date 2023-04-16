@@ -241,7 +241,7 @@ export default defineComponent({
         ? 'border-blue-500'
         : 'border-blue-200',
     ]"
-    class="rounded relative bg-gray-100 dark:bg-gray-800 py-3 px-4 space-x-2 flex"
+    class="bg-white rounded relative bg-gray-100 dark:bg-gray-800 py-3 px-4 space-x-2 flex"
   >
     <DiscussionVotes
       :discussion="discussion"

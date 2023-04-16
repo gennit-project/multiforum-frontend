@@ -49,14 +49,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <div class="flex">
+  <div class="h-screen">
+    <div class="flex h-full">
       <article
-        class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
+        class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
       >
-        <div class="block p-2 mx-auto">
+        <div class="block p-2 mx-auto h-full">
           <div
-            class="grid grid-cols-1 items-start gap-4 lg:grid-cols-4 lg:gap-8"
+            class="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-8 h-full"
           >
             <div class="grid grid-cols-1 gap-4 h-full">
               <section aria-labelledby="section-2-title h-full">

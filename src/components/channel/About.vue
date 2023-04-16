@@ -84,7 +84,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full px-6 py-3">
+  <div class="w-full h-full px-6 py-3">
     <p v-if="getChannelLoading">Loading...</p>
     <div v-else-if="getChannelError">
       <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
@@ -101,7 +101,7 @@ export default defineComponent({
               preview-only
             />
           </div>
-          <p v-else class="mt-4 pt-4 pb-4 pr-8 pl-8   rounded">
+          <p v-else>
             {{ "This channel has no description." }}
           </p>
         </div>

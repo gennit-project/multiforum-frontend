@@ -101,6 +101,7 @@ export default defineComponent({
       <div class="h-14 p-2">
         <button
           class="
+            bg-white
             float-right
             inline-flex
             py-2

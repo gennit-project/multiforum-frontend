@@ -87,7 +87,7 @@ export default defineComponent({
   width: 1400px;
 }
 .channel-container-lg {
-  width: 1000px;
+  width: 900px;
 }
 
 .container-md {
