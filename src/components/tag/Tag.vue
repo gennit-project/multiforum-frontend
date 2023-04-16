@@ -65,7 +65,7 @@ export default defineComponent({
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
     :class="[
-      large ? 'text-sm py-1.5' : '',
+      large ? 'text-sm py-1.5 shadow border bg-white rounded-full' : '',
       titleMode ? 'text-xl py-1.5' : '',
       !large && !titleMode ? 'text-xs py-1.5' : '',
       clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
