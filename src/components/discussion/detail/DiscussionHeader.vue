@@ -120,16 +120,14 @@ export default defineComponent({
 <template>
   <div class="mb-4">
     <div 
-      :class="{'flex': lgAndUp, 'block': !lgAndUp}" 
-      class="justify-between min-w-0"
+      class="min-w-0"
     >
       <h2 class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate">
         {{ discussion.title }}
       </h2>
-      <div :class="{'mt-4': !lgAndUp}">
+      <div :class="'mt-4'">
         <RequireAuth
           class="inline-flex"
-          :class="{'flex': lgAndUp, 'block': !lgAndUp}"
           :require-ownership="true"
           :owners="[discussion.Author.username]"
         >
@@ -141,7 +139,7 @@ export default defineComponent({
             </router-link>
           </template>
         </RequireAuth>
-        <RequireAuth class="inline-flex" :class="{'flex': lgAndUp, 'block': !lgAndUp}">
+        <RequireAuth class="inline-flex" >
           <template v-slot:has-auth>
             <CreateButton
               class="ml-2"

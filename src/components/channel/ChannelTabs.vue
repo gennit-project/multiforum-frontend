@@ -43,7 +43,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="sm:hidden">
+    <!-- <div class="sm:hidden">
       <label for="tabs" class="sr-only">Select a tab</label>
       <select
         v-model="selectedTab"
@@ -54,17 +54,10 @@ export default defineComponent({
       >
         <option value="discussions">Discussions</option>
         <option value="events">Events</option>
-        <option value="about">About</option>
       </select>
-    </div>
-    <div class="hidden sm:block">
+    </div> -->
+    <div class=" sm:block">
       <nav class="-mb-px text-lg max-w-7xl space-x-8" aria-label="Tabs">
-        <TabButton
-          :to="tabRoutes.about"
-          :label="'About'"
-          :is-active="$route.path.includes('about')"
-          ><i class="fa-solid fa-house-chimney-window"></i
-        ></TabButton>
         <TabButton
           :to="tabRoutes.discussions"
           :label="'Discussions'"

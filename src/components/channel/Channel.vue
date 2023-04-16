@@ -3,6 +3,7 @@ import ChannelTabs from "./ChannelTabs.vue";
 // import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -24,12 +25,17 @@ export default defineComponent({
     const eventId = computed(() => {
       return route.value.params.eventId;
     });
+    const { lgAndDown, lgAndUp, mdAndUp } = useDisplay();
 
     return {
       channelId,
       discussionId,
       eventId,
       route,
+      lgAndDown,
+
+      lgAndUp,
+      mdAndUp,
     };
   },
   created() {
@@ -41,39 +47,58 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="  shadow-md">
+  <div class="shadow-md bg-gray-100">
     <div class="flex">
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
       >
-      <div class="border-b-2 dark:border-gray-700">
-        <div
-          class="h-24 w-full object-cover lg:h-24 user-background"
-          alt="background pattern"
-        ></div>
-        <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div class="-mt-8 sm:flex sm:items-end sm:space-x-5">
-            <div class="flex">
-              <div
-                class="h-24 w-24 rounded-full ring-4 ring-white dark:ring-slate-900"
-                id="channelAvatar"
-              ></div>
-            </div>
-            <div>
-              <h1 class="text-2xl no-underline mt-12">
-                {{ channelId }}
-              </h1>
-              <h2 class="text-gray-500">secondary name</h2></div>
+        <div class="block p-2 mx-auto">
+          <div
+            class="grid grid-cols-1 items-start gap-4 lg:grid-cols-4 lg:gap-8"
+          >
+            <div class="grid grid-cols-1 gap-4 h-full">
+              <section aria-labelledby="section-2-title h-full">
+                <div class="overflow-hidden rounded-lg bg-white shadow pb-4 h-full">
+                  <div
+                    v-if="mdAndUp"
+                    class="h-24 w-full object-cover user-background"
+                    alt="background pattern"
+                  ></div>
+                  <div class="lg:-mt-8">
+                    <div class="flex space-x-2">
+                      <div
+                        class="h-24 w-24 rounded-full ring-4 ring-white dark:ring-slate-900"
+                        id="channelAvatar"
+                      ></div>
+                      <div>
+                        <h1 class="text-2xl no-underline mt-12">
+                          {{ channelId }}
+                        </h1>
+                        <!-- <h2 class="text-gray-500">secondary name</h2> -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
             </div>
 
-            <div class="block mt-4">
-              <ChannelTabs class="block" :route="route" />
+            <div class="grid grid-cols-1 gap-4 lg:col-span-3 overflow-hidden rounded-lg bg-white shadow">
+              <div class="border-b-2 dark:border-gray-700">
+                <section aria-labelledby="section-1-title">
+                  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                    <div class="block mt-4">
+                      <ChannelTabs class="block" :route="route" />
+                    </div>
+                  </div>
+                </section>
+              </div>
+              <div class="overflow-hidden">
+                <div >
+                  <router-view></router-view>
+                </div>
+              </div>
             </div>
-           
-        </div>
-       </div>
-        <div class="block p-2 mx-auto max-w-5xl">
-          <router-view></router-view>
+          </div>
         </div>
       </article>
     </div>

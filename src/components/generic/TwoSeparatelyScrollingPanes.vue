@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useDisplay } from "vuetify";
+import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
     const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
+    const route = useRoute();
 
     return {
       lgAndDown,
@@ -12,6 +14,7 @@ export default defineComponent({
       mdAndDown,
       mdAndUp,
       xlAndUp,
+      route,
     };
   },
   components: {},
@@ -21,19 +24,26 @@ export default defineComponent({
 <template>
     <div
       class="flex flex-row"
-      :class="{ 'container-lg': lgAndUp, 'container-md': mdAndUp && !lgAndUp }"
+      :class="{ 
+        'container-lg': ( lgAndUp && (!route.fullPath.includes('channel'))), 
+        'channel-container-lg': ( lgAndUp && (route.fullPath.includes('channel'))),
+        'container-md': mdAndUp && !lgAndUp && (!route.fullPath.includes('channel')),
+        'channel-container-md': mdAndUp && !lgAndUp && (route.fullPath.includes('channel')),
+        'container-xl': xlAndUp && (!route.fullPath.includes('channel')),
+        'channel-container-xl': xlAndUp && (route.fullPath.includes('channel')),}
+        "
     >
       <div
         :class="[
           lgAndUp ? 'constrain-height' : '',
-          mdAndUp ? 'w-1/2' : 'w-full',
+          lgAndUp ? 'w-1/2' : 'w-full',
         ]"
         class="lg:overflow-y-auto"
       >
         <slot name="leftpane"></slot>
       </div>
       <div
-        v-if="mdAndUp"
+        v-if="lgAndUp"
         :class="[
           'lg:max-h-screen',
           'lg:overflow-y-auto',
@@ -69,11 +79,22 @@ export default defineComponent({
 .container-xl {
   width: 2000px;
 }
+.channel-container-xl {
+  width: 1500px;
+}
+
 .container-lg {
   width: 1400px;
 }
+.channel-container-lg {
+  width: 900px;
+}
+
 .container-md {
   width: 1100px;
+}
+.channel-container-md {
+  width: 700px;
 }
 
 
