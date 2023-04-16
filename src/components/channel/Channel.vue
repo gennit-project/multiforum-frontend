@@ -4,10 +4,12 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
+import About from "./About.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
+    About,
     // ChannelIcon,
     ChannelTabs,
   },
@@ -47,7 +49,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="shadow-md bg-gray-100">
+  <div>
     <div class="flex">
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
@@ -75,15 +77,19 @@ export default defineComponent({
                           {{ channelId }}
                         </h1>
                         <!-- <h2 class="text-gray-500">secondary name</h2> -->
+                        
                       </div>
                     </div>
                   </div>
+                  <About/>
                 </div>
+               
               </section>
+             
             </div>
 
-            <div class="grid grid-cols-1 gap-4 lg:col-span-3 overflow-hidden rounded-lg bg-white shadow">
-              <div class="border-b-2 dark:border-gray-700">
+            <div class="h-full grid grid-cols-1 gap-4 lg:col-span-3 overflow-hidden rounded-lg bg-white">
+              <div class="h-14 border-b-2 dark:border-gray-700 shadow" v-if="!route.fullPath.includes('edit')">
                 <section aria-labelledby="section-1-title">
                   <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                     <div class="block mt-4">

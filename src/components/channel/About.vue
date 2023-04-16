@@ -84,7 +84,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="container mx-auto flex justify-evenly">
+  <div class="w-full px-6 py-3">
     <p v-if="getChannelLoading">Loading...</p>
     <div v-else-if="getChannelError">
       <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
@@ -92,11 +92,9 @@ export default defineComponent({
       </div>
     </div>
     <div v-else-if="channel">
-      <div>
-        <div class="mr-6 shadow">
+        <div>
           <div v-if="channel.description" class="body min-height-min">
             <md-editor
-              class="mt-4 pt-4 pb-4 pr-8 pl-8 rounded"
               v-model="channel.description"
               language="en-US"
               previewTheme="vuepress"
@@ -107,7 +105,6 @@ export default defineComponent({
             {{ "This channel has no description." }}
           </p>
         </div>
-      </div>
 
       <div class="mt-6">
         <div v-if="channel.Tags.length > 0">

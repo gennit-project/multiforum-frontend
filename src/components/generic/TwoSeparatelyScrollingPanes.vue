@@ -25,10 +25,10 @@ export default defineComponent({
     <div
       class="flex flex-row"
       :class="{ 
-        'container-lg': ( lgAndUp && (!route.fullPath.includes('channel'))), 
-        'channel-container-lg': ( lgAndUp && (route.fullPath.includes('channel'))),
         'container-md': mdAndUp && !lgAndUp && (!route.fullPath.includes('channel')),
         'channel-container-md': mdAndUp && !lgAndUp && (route.fullPath.includes('channel')),
+        'container-lg': ( lgAndUp && (!route.fullPath.includes('channel'))), 
+        'channel-container-lg': ( lgAndUp && (route.fullPath.includes('channel'))),
         'container-xl': xlAndUp && (!route.fullPath.includes('channel')),
         'channel-container-xl': xlAndUp && (route.fullPath.includes('channel')),}
         "
@@ -87,7 +87,7 @@ export default defineComponent({
   width: 1400px;
 }
 .channel-container-lg {
-  width: 900px;
+  width: 1000px;
 }
 
 .container-md {

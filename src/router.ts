@@ -127,14 +127,9 @@ export const router = createRouter({
       name: "Channel",
       component: Channel,
       redirect: {
-        name: "About",
+        name: "Discussions",
       },
       children: [
-        {
-          name: "About",
-          path: "about",
-          component: About,
-        },
         {
           name: "EditChannel",
           path: "edit",
