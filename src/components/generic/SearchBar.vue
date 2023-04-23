@@ -37,6 +37,10 @@ export default defineComponent({
         this.$emit("updateSearchInput",this.removeQuotationMarks(e.target.value));
       }, 500)
     },
+    clear(){
+      this.$emit("updateSearchInput","");
+      this.input = "";
+    }
   },
 });
 </script>
@@ -97,6 +101,20 @@ export default defineComponent({
         @keyup="updateSearchInput"
         type="text"
       />
+      <div
+        class="
+          absolute
+          inset-y-0
+          right-0
+          pr-3
+          flex
+          items-center
+          cursor-pointer
+        "
+        @click="clear"
+      >
+        <i class="fa-solid fa-xmark h-5 w-5 text-gray-400"></i>
+      </div>
     </div>
   </div>
 </template>

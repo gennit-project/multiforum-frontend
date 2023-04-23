@@ -103,7 +103,6 @@ export default defineComponent({
         "
         @click="requestUserLocation"
       >
-        <!-- Crosshairs icon -->
         <i class="fa-solid fa-crosshairs h-5 w-5 text-gray-400"></i>
       </div>
     </div>

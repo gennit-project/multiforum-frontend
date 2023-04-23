@@ -6,7 +6,7 @@ import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
-import SelectMenu from "../../../generic/Select.vue";
+import LocationIcon from "@/components/icons/LocationIcon.vue";
 import SearchBar from "../../../generic/SearchBar.vue";
 import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
 import {
@@ -45,6 +45,7 @@ export default defineComponent({
     DrawerFlyout,
     FilterIcon,
     GenericButton,
+    LocationIcon,
     LocationSearchBar,
     SearchBar,
     TagIcon,
@@ -137,7 +138,19 @@ export default defineComponent({
 
     const showLocationSearchBar = computed(() => {
       const path = route.path;
-      return path.includes("map")
+      return path.includes("map");
+    });
+
+    const selectedDistanceUnit = ref(MilesOrKm.MI);
+
+    const displayDistance = computed(() => {
+      const distance = filterValues.value.radius;
+      const unit = selectedDistanceUnit.value;
+      if (unit === MilesOrKm.KM) {
+        return `${distance} km`;
+      }
+      // If miles are selected, convert to miles
+      return distance ? `${Math.round(distance / 1.609)} mi` : "";
     });
 
     return {
@@ -151,6 +164,7 @@ export default defineComponent({
       defaultSelectedWeekdays,
       defaultSelectedHourRanges,
       defaultSelectedWeeklyHourRanges,
+      displayDistance,
       distanceOptionsForKilometers,
       distanceOptionsForMiles,
       distanceUnitOptions,
@@ -165,7 +179,7 @@ export default defineComponent({
       referencePointAddress: ref(defaultPlace.address),
       referencePointPlaceId: ref(defaultPlace.referencePointId),
       route,
-      selectedDistanceUnit: ref(MilesOrKm.MI),
+      selectedDistanceUnit,
       showLocationSearchBar,
       showTimeSlotPicker: ref(false),
       tagLabel,
@@ -294,7 +308,7 @@ export default defineComponent({
     updateWeekdays(flattenedWeekdays: string) {
       this.updateFilters({ weekdays: flattenedWeekdays });
     },
-    resetWeekdays(){
+    resetWeekdays() {
       // Remove values from query params
       const existingQueryCopy = { ...this.$route.query };
       delete existingQueryCopy.weekdays;
@@ -307,7 +321,7 @@ export default defineComponent({
         weekdays: this.defaultSelectedWeekdays,
       });
     },
-    resetHourRanges(){
+    resetHourRanges() {
       // Remove values from query params
       const existingQueryCopy = { ...this.$route.query };
       delete existingQueryCopy.hourRanges;
@@ -359,13 +373,16 @@ export default defineComponent({
       class="items-center flex justify-center w-full"
     >
       <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
-        <SearchBar
-          class="inline-flex align-middle w-full h-full"
-          :initial-value="filterValues.searchInput"
-          :search-placeholder="'Search text'"
-          :small="true"
-          @updateSearchInput="updateSearchInput"
-        />
+        <button
+          class="flex items-center bg-white shadow p-3 border-radius rounded-lg"
+          aria-label="Open event filters"
+          @click="handleClickMoreFilters"
+        >
+          <LocationIcon class="h-6 w-6 text-blue-500" />
+          <h1 class="border border-none pb-0 text-blue-500 text-md ml-1">
+            Tempe: {{ displayDistance }}
+          </h1>
+        </button>
         <button
           class="inline-flex float-right text-sm items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-lg px-3 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:ring-gray-700 hover:text-gray-800 py-2 dark:hover:bg-gray-600 -ml-px"
           @click="handleClickMoreFilters"
@@ -455,19 +472,14 @@ export default defineComponent({
           <div class="-my-2 sm:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
               <div
-                class="
-                  shadow
-                  overflow-hidden
-                  border-b border-gray-400
-                  sm:rounded-lg
-                "
+                class="shadow overflow-hidden border-b border-gray-400 sm:rounded-lg"
               >
                 <div class="mb-4">
                   <h3 class="text-lg font-semibold">Select Weekdays</h3>
-                  <WeekdaySelector 
-                  :selected-weekdays="filterValues.weekdays"
-                  @updateWeekdays="updateWeekdays"
-                  @reset="resetWeekdays"
+                  <WeekdaySelector
+                    :selected-weekdays="filterValues.weekdays"
+                    @updateWeekdays="updateWeekdays"
+                    @reset="resetWeekdays"
                   />
                 </div>
                 <div>
