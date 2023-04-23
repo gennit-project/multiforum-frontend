@@ -322,7 +322,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex justify-center">
+  <v-container fluid>
+    <v-row class="justify-center">
+      <v-col cols="12" md="8">
     <div v-if="eventLoading">Loading...</div>
     <div v-else-if="getEventError">
       <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">
@@ -330,14 +332,14 @@ export default defineComponent({
       </div>
     </div>
     <TailwindForm
-      class="mt-4"
+    class="pt-8"
       v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"
       @input="touched = true"
       @submit="$emit('submit')"
     >
-      <div class="pr-8">
+    <div class="divide-y divide-gray-200">
         <FormRow>
           <template v-slot:icon>
             <PencilIcon class="inline-flex float-right h-6 w-6" /><span
@@ -380,21 +382,22 @@ export default defineComponent({
             <v-tooltip activator="parent" location="top">Time</v-tooltip>
           </template>
           <template v-slot:content>
-            <div class="sm:inline-block md:flex items-center my-2 space-x-2">
+            <div class="inline-block xl:flex items-center my-2 space-x-2">
               <sl-input
                 class="sl-input cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                 type="datetime-local"
                 placeholder="Date"
+                label="Start"
                 v-model="formattedStartTime"
                 :input-format="timeFormat"
                 @update:model-value="handleStartDateChange"
               >
               </sl-input>
-              <RightArrowIcon />
               <sl-input
                 class="sl-input cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                 type="datetime-local"
                 placeholder="Date"
+                label="End"
                 v-model="formattedEndTime"
                 :input-format="timeFormat"
                 :lower-limit="startTime"
@@ -527,7 +530,9 @@ export default defineComponent({
       <ErrorBanner v-if="createEventError" :text="createEventError.message" />
       <ErrorBanner v-if="updateEventError" :text="updateEventError.message" />
     </TailwindForm>
-  </div>
+  </v-col>
+</v-row>
+</v-container>
 </template>
 <style lang="scss">
 sl-input {

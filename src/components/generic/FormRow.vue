@@ -22,6 +22,7 @@ export default defineComponent({
       sm:items-start
       mt-1
       px-4
+      pt-1
     "
   >
     <label

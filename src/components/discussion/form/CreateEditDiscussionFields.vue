@@ -100,110 +100,112 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex justify-center">
-    <div v-if="discussionLoading">Loading...</div>
-    <div v-else-if="getDiscussionError">
-      <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">
-        {{ error.message }}
-      </div>
-    </div>
-    <TailwindForm
-      class="pt-8 max-w-4xl"
-      v-else-if="formValues"
-      :form-title="formTitle"
-      :needs-changes="needsChanges"
-      @input="touched = true"
-      @submit="$emit('submit')"
-    >
-      <div class="divide-y divide-gray-200">
-        <div class="mt-6">
-          <FormRow>
-            <template v-slot:icon>
-              <PencilIcon class="inline-flex float-right h-6 w-6" /><span
-                class="text-red-500"
-                >*</span
-              >
-              <v-tooltip activator="parent" location="top">Title</v-tooltip>
-            </template>
-            <template v-slot:content>
-              <TextInput
-                ref="titleInputRef"
-                :value="formValues.title"
-                :placeholder="'Add title'"
-                :full-width="true"
-                @update="$emit('updateFormValues', { title: $event })"
-              />
-            </template>
-          </FormRow>
-
-          <FormRow>
-            <template v-slot:icon>
-             
-                <ChannelIcon class="float-right h-6 w-6" /><span
-                  class="text-red-500"
-                  >*</span
-                >
-                <v-tooltip activator="parent" location="top">
-                  Channels
-                </v-tooltip>
-            </template>
-            <template v-slot:content>
-              <TagInput
-                :selected-channels="formValues.selectedChannels"
-                :channel-mode="true"
-                @setSelectedTags="
-                  $emit('updateFormValues', { selectedChannels: $event })
-                "
-              />
-            </template>
-          </FormRow>
-
-          <FormRow>
-            <template v-slot:icon>
-                <AnnotationIcon class="inline-flex h-6 w-6" />
-                <v-tooltip activator="parent" location="top">
-                  Details
-                </v-tooltip>
-            </template>
-            <template v-slot:content>
-              <TextEditor
-                class="mb-3 h-56"
-                :disable-auto-focus="true"
-                :initial-value="formValues.body || ''"
-                :placeholder="'Add details'"
-                @update="$emit('updateFormValues', { body: $event })"
-              />
-            </template>
-          </FormRow>
-
-          <FormRow>
-            <template v-slot:icon>
-              
-                <TagIcon class="inline-flex h-6 w-6" />
-                <v-tooltip activator="parent" location="top">
-                  Tags
-                </v-tooltip>
-            </template>
-            <template v-slot:content>
-              <TagInput
-                :selected-tags="formValues?.selectedTags"
-                @setSelectedTags="
-                  $emit('updateFormValues', { selectedTags: $event })
-                "
-              />
-            </template>
-          </FormRow>
+  <v-container fluid>
+    <v-row class="justify-center">
+      <v-col cols="12" md="8" >
+        <div v-if="discussionLoading">Loading...</div>
+        <div v-else-if="getDiscussionError">
+          <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">
+            {{ error.message }}
+          </div>
         </div>
-      </div>
-      <ErrorBanner v-if="needsChanges" :text="changesRequiredMessage" />
-      <ErrorBanner
-        v-if="createDiscussionError"
-        :text="createDiscussionError.message"
-      />
-      <ErrorBanner
-        v-if="updateDiscussionError"
-        :text="updateDiscussionError.message"
-      />
-    </TailwindForm>
-  </div>
+        <TailwindForm
+          class="pt-8"
+          v-else-if="formValues"
+          :form-title="formTitle"
+          :needs-changes="needsChanges"
+          @input="touched = true"
+          @submit="$emit('submit')"
+        >
+          <div class="divide-y divide-gray-200">
+            <div class="mt-6">
+              <FormRow>
+                <template v-slot:icon>
+                  <PencilIcon class="inline-flex float-right h-6 w-6" /><span
+                    class="text-red-500"
+                    >*</span
+                  >
+                  <v-tooltip activator="parent" location="top">Title</v-tooltip>
+                </template>
+                <template v-slot:content>
+                  <TextInput
+                    ref="titleInputRef"
+                    :value="formValues.title"
+                    :placeholder="'Add title'"
+                    :full-width="true"
+                    @update="$emit('updateFormValues', { title: $event })"
+                  />
+                </template>
+              </FormRow>
+
+              <FormRow>
+                <template v-slot:icon>
+                  <ChannelIcon class="float-right h-6 w-6" /><span
+                    class="text-red-500"
+                    >*</span
+                  >
+                  <v-tooltip activator="parent" location="top">
+                    Channels
+                  </v-tooltip>
+                </template>
+                <template v-slot:content>
+                  <TagInput
+                    :selected-channels="formValues.selectedChannels"
+                    :channel-mode="true"
+                    @setSelectedTags="
+                      $emit('updateFormValues', { selectedChannels: $event })
+                    "
+                  />
+                </template>
+              </FormRow>
+
+              <FormRow>
+                <template v-slot:icon>
+                  <AnnotationIcon class="inline-flex h-6 w-6" />
+                  <v-tooltip activator="parent" location="top">
+                    Details
+                  </v-tooltip>
+                </template>
+                <template v-slot:content>
+                  <TextEditor
+                    class="mb-3 h-56"
+                    :disable-auto-focus="true"
+                    :initial-value="formValues.body || ''"
+                    :placeholder="'Add details'"
+                    @update="$emit('updateFormValues', { body: $event })"
+                  />
+                </template>
+              </FormRow>
+
+              <FormRow>
+                <template v-slot:icon>
+                  <TagIcon class="inline-flex h-6 w-6" />
+                  <v-tooltip activator="parent" location="top">
+                    Tags
+                  </v-tooltip>
+                </template>
+                <template v-slot:content>
+                  <TagInput
+                    :selected-tags="formValues?.selectedTags"
+                    @setSelectedTags="
+                      $emit('updateFormValues', { selectedTags: $event })
+                    "
+                  />
+                </template>
+              </FormRow>
+            </div>
+          </div>
+          <ErrorBanner v-if="needsChanges" :text="changesRequiredMessage" />
+          <ErrorBanner
+            v-if="createDiscussionError"
+            :text="createDiscussionError.message"
+          />
+          <ErrorBanner
+            v-if="updateDiscussionError"
+            :text="updateDiscussionError.message"
+          />
+        </TailwindForm>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
