@@ -1,12 +1,52 @@
-import { gql } from '@apollo/client/core'
+import { gql } from '@apollo/client/core';
+
+const AUTHOR_FIELDS = gql`
+  fragment AuthorFields on User {
+    username
+  }
+`;
+
+const VOTE_FIELDS = gql`
+  fragment VoteFields on Comment {
+    UpvotedByUsers {
+      username
+    }
+    UpvotedByUsersAggregate {
+      count
+    }
+    DownvotedByModerators {
+      displayName
+    }
+    DownvotedByModeratorsAggregate {
+      count
+    }
+  }
+`;
+
+const COMMENT_FIELDS = gql`
+  fragment CommentFields on Comment {
+    id
+    text
+    CommentAuthor {
+      ...AuthorFields
+    }
+    createdAt
+    updatedAt
+    ChildCommentsAggregate {
+      count
+    }
+    ...VoteFields
+  }
+  ${AUTHOR_FIELDS}
+`;
 
 export const GET_COMMENT_SECTION = gql`
   query getCommentSection($id: ID!) {
-      commentSections (
-        where: { 
-          id: $id
-        }
-      ) {
+    commentSections(
+      where: {
+        id: $id
+      }
+    ) {
       id
       Channel {
         uniqueName
@@ -16,182 +56,66 @@ export const GET_COMMENT_SECTION = gql`
           id
           title
           Author {
-            username
+            ...AuthorFields
           }
         }
       }
       CommentsAggregate {
         count
       }
-      Comments (where: {
-        isRootComment: true
-      }){
-            id
-            text
-            Channel {
-              uniqueName
-            }
-            UpvotedByUsers {
-              username
-            }
-            UpvotedByUsersAggregate {
-              count
-            }
-            DownvotedByModerators {
-              displayName
-            }
-            DownvotedByModeratorsAggregate {
-              count
-            } 
-            CommentAuthor {
-              ... on User {
-                username
-              }
-            }
-            createdAt
-            updatedAt
-            ChildCommentsAggregate {
-              count
-            }
-            ChildComments {
-              id 
-              text
-              CommentAuthor {
-                ... on User {
-                  username
-                }
-              }
-              UpvotedByUsers {
-                  username
-              }
-              UpvotedByUsersAggregate {
-                count
-              } 
-              DownvotedByModerators {
-                displayName
-              }
-              DownvotedByModeratorsAggregate {
-                count
-              }
-              ChildCommentsAggregate {
-                count
-              }
-            }
-      }
-    }
-}
-`
-
-// Used for comment permalink page
-export const GET_COMMENT_AND_REPLIES = gql`
-query getCommentWithReplies($id: ID!){
-	comments(where: {
-		id: $id
-	}){
-    id
-    text
-    CommentAuthor {
-      ... on User {
-        username
-      }
-    }
-    createdAt
-    updatedAt
-    ChildCommentsAggregate {
-      count
-    }
-    UpvotedByUsers {
-      username
-    }
-    UpvotedByUsersAggregate {
-      count
-    } 
-    DownvotedByModerators {
-      displayName
-      createdAt
-    }
-    DownvotedByModeratorsAggregate {
-      count
-    }
-		ChildComments {
-			id
-      UpvotedByUsers {
-        username
-      }
-      UpvotedByUsersAggregate {
-        count
-      } 
-      DownvotedByModerators {
-        displayName
-      }
-      DownvotedByModeratorsAggregate {
-        count
-      }
-      CommentAuthor {
-        ... on User {
-          username
+      Comments(
+        where: {
+          isRootComment: true
+        }
+      ) {
+        ...CommentFields
+        ChildComments {
+          ...CommentFields
         }
       }
-			text
-      ParentComment {
-        id
+    }
+  }
+  ${AUTHOR_FIELDS}
+  ${COMMENT_FIELDS}
+  ${VOTE_FIELDS}
+`;
+
+export const GET_COMMENT_AND_REPLIES = gql`
+  query getCommentWithReplies($id: ID!) {
+    comments(
+      where: {
+        id: $id
       }
-      ChildCommentsAggregate {
-        count
+    ) {
+      ...CommentFields
+      ChildComments {
+        ...CommentFields
       }
-		}
-	}
-}
-`
+    }
+  }
+  ${AUTHOR_FIELDS}
+  ${COMMENT_FIELDS}
+  ${VOTE_FIELDS}
+`;
 
 export const GET_COMMENT_REPLIES = gql`
-query getCommentWithReplies($id: ID!){
-	comments(where: {
-		id: $id
-	}){
-    id
-    ChildCommentsAggregate {
-      count
-    }
-    UpvotedByUsers {
-      username
-    }
-    UpvotedByUsersAggregate {
-      count
-    } 
-    DownvotedByModerators {
-      displayName
-    }
-    DownvotedByModeratorsAggregate {
-      count
-    }
-		ChildComments {
-			id
-      UpvotedByUsers {
-        username
+  query getCommentWithReplies($id: ID!) {
+    comments(
+      where: {
+        id: $id
       }
-      UpvotedByUsersAggregate {
-        count
-      } 
-      DownvotedByModerators {
-        displayName
-      }
-      DownvotedByModeratorsAggregate {
-        count
-      }
-      CommentAuthor {
-        ... on User {
-          username
-        }
-      }
-			text
-      ParentComment {
-        id
-      }
+    ) {
+      id
       ChildCommentsAggregate {
         count
       }
-		}
-	}
-}
-`
+      ...VoteFields
+      ChildComments {
+        ...CommentFields
+      }
+    }
+  }
+  ${AUTHOR_FIELDS}
+  ${COMMENT_FIELDS}
+  ${VOTE_FIELDS}
+`;

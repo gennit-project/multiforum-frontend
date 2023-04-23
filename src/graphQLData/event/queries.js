@@ -1,48 +1,53 @@
 import { gql } from "@apollo/client/core";
 
+// Fragment for shared event fields
+const EVENT_FIELDS = gql`
+  fragment EventFields on Event {
+    id
+    title
+    description
+    startTime
+    endTime
+    locationName
+    address
+    virtualEventUrl
+    startTimeDayOfWeek
+    canceled
+    location {
+      latitude
+      longitude
+    }
+    cost
+    Poster {
+      username
+    }
+    Tags {
+      text
+    }
+    Channels {
+      uniqueName
+    }
+  }
+`;
+
 // get event by ID
 export const GET_EVENT = gql`
   query getEvent($id: ID!) {
     events(where: {id: $id}) {
-      id
-      title
+      ...EventFields
       createdAt
       updatedAt
-      description
-      startTime
       startTimeYear
       startTimeMonth
       startTimeDayOfMonth
-      startTimeDayOfWeek
-      endTime
-      locationName
-      address
       placeId
       isInPrivateResidence
-      Poster {
-        username
-      }
-      location {
-        longitude
-        latitude
-      }
-      cost
-      free
-      virtualEventUrl
-      canceled
-      Channels {
-        uniqueName
-      }
-      Tags {
-        text
-      }
     }
   }
+  ${EVENT_FIELDS}
 `;
+
 // Get all event IDs in channel
-// Gets IDs of events just so they can be
-// deleted when a channel is deleted. This query
-// is needed because you can't cascade delete channels.
 export const GET_EVENT_IDS_IN_CHANNEL = gql`
   query getEventIdsInChannel($url: String!) {
     getChannel(url: $url) {
@@ -55,63 +60,41 @@ export const GET_EVENT_IDS_IN_CHANNEL = gql`
 `;
 
 export const GET_EVENTS = gql`
-      query getEvents(
-        $where: EventWhere
-        $resultsOrder: [EventSort!]
-        $offset: Int
-        $limit: Int
-      ) {
-        eventsAggregate(where: $where) {
+  query getEvents(
+    $where: EventWhere
+    $resultsOrder: [EventSort!]
+    $offset: Int
+    $limit: Int
+  ) {
+    eventsAggregate(where: $where) {
+      count
+    }
+    events(
+      where: $where
+      options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+    ) {
+      ...EventFields
+      CommentSections {
+        id
+        CommentsAggregate {
           count
         }
-        events(
-          where: $where
-          options: { sort: $resultsOrder, offset: $offset, limit: $limit }
-        ) {
-          id
-          Channels {
-            uniqueName
-          }
-          title
-          description
-          startTime
-          endTime
-          locationName
-          address
-          virtualEventUrl
-          startTimeDayOfWeek
-          canceled
-          location {
-            latitude
-            longitude
-          }
-          cost
-          Poster {
-            username
-          }
-          Tags {
-            text
-          }
-          CommentSections {
+        OriginalPost {
+          __typename
+          ... on Discussion {
             id
-            CommentsAggregate {
-              count
-            }
-            OriginalPost {
-              __typename
-              ... on Discussion {
-                id
-                title
-              }
-              ... on Event {
-                id
-                title
-              }
-            }
-            Channel {
-              uniqueName
-            }
+            title
+          }
+          ... on Event {
+            id
+            title
           }
         }
+        Channel {
+          uniqueName
+        }
       }
-    `;
+    }
+  }
+  ${EVENT_FIELDS}
+`;

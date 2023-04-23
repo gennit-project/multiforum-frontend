@@ -32,6 +32,7 @@ import {
 import GenericButton from "@/components/generic/GenericButton.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import WeekdaySelector from "./WeekdaySelector.vue";
+import TimeSelector from "./TimeSelector.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -50,6 +51,7 @@ export default defineComponent({
     SearchBar,
     TagIcon,
     TagPicker,
+    TimeSelector,
     WeekdaySelector,
   },
   props: {
