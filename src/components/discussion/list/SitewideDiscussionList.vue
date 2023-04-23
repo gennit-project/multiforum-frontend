@@ -7,7 +7,7 @@ import { DiscussionData } from "../../../types/discussionTypes";
 import { SITEWIDE_GET_DISCUSSIONS } from "@/graphQLData/discussion/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useRouter, useRoute } from "vue-router";
-import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 

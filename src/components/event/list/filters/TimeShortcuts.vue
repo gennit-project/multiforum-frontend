@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import { reverseChronologicalOrder, chronologicalOrder } from "./filterStrings";
 import { timeFilterShortcuts } from "./eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
-import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchEventValues } from "@/types/eventTypes";
 import Tag from "@/components/tag/Tag.vue";
 export default defineComponent({

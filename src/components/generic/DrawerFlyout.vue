@@ -61,7 +61,7 @@ export default defineComponent({
             leave-from="translate-x-0"
             :leave-to="openFromLeft ? '-translate-x-full' : 'translate-x-full'"
           >
-          <DialogPanel class="pointer-events-auto w-screen max-w-xl">
+          <DialogPanel class="pointer-events-auto w-screen max-w-lg">
             <div
               class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-gray-900 dark:text-gray-200"
             >

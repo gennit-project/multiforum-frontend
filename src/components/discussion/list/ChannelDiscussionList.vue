@@ -12,7 +12,7 @@ import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
 import { modProfileNameVar } from "@/cache";
-import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "../../../types/discussionTypes";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 

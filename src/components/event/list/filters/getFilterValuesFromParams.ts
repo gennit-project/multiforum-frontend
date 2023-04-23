@@ -46,10 +46,7 @@ const getFilterValuesFromParams = function (
         }
         break;
       case "radius":
-        // May need to cast to string
-        if (typeof val === "number") {
-          cleanedValues.radius = val;
-        }
+        cleanedValues.radius = parseFloat(val)
         break;
       case "latitude":
         if (typeof val === "number") {
@@ -190,12 +187,12 @@ const getFilterValuesFromParams = function (
     weeklyHourRanges,
     resultsOrder,
     locationFilter,
-    hasVirtualEventUrl
+    hasVirtualEventUrl,
   } = cleanedValues;
 
   return {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
-    radius: radius || 500,
+    radius: radius || 160.934,
     latitude: latitude || defaultPlace.latitude,
     longitude: longitude || defaultPlace.longitude,
     tags: tags || [],
@@ -209,14 +206,14 @@ const getFilterValuesFromParams = function (
       weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
     resultsOrder: resultsOrder || chronologicalOrder,
     locationFilter:
-    // If there is a location filter in the query params,
-    // use it. Within a channel, don't filter by distance.
-    // If we are listing virtual events, don't filter by distance.
+      // If there is a location filter in the query params,
+      // use it. Within a channel, don't filter by distance.
+      // If we are listing virtual events, don't filter by distance.
       locationFilter ||
       (channelId || hasVirtualEventUrl
         ? LocationFilterTypes.NONE
         : LocationFilterTypes.WITHIN_RADIUS),
-    hasVirtualEventUrl: hasVirtualEventUrl || false
+    hasVirtualEventUrl: hasVirtualEventUrl || false,
   };
 };
 

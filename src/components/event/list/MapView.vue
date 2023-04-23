@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, ref, Ref, computed } from "vue";
+import { defineComponent, PropType, ref, Ref, computed, watch } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
 import EventPreview from "./EventPreview.vue";
@@ -11,17 +11,20 @@ import { useDisplay } from "vuetify";
 import CloseButton from "../../generic/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "./getEventWhere";
+import getEventWhere from "./filters/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "./filters/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
-import { timeShortcutValues } from "./eventSearchOptions";
-import EventFilterBar from "./EventFilterBar.vue";
+import {
+  chronologicalOrder,
+  reverseChronologicalOrder,
+} from "./filters/filterStrings";
+import { timeShortcutValues } from "./filters/eventSearchOptions";
+import EventFilterBar from "./filters/EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
-import TimeShortcuts from "./TimeShortcuts.vue";
+import TimeShortcuts from "./filters/TimeShortcuts.vue";
 
 export default defineComponent({
   name: "MapView",
@@ -473,15 +476,9 @@ export default defineComponent({
 </script>
 <template>
   <div class="mx-auto">
-    <div v-if="eventLoading">Loading...</div>
-    <ErrorBanner
-      class="block"
-      v-else-if="eventError"
-      :text="eventError.message"
-    />
     <div
       id="mapViewMobileWidth"
-      v-else-if="smAndDown && eventResult && eventResult.events"
+      v-if="smAndDown && eventResult && eventResult.events"
     >
       <TimeShortcuts />
       <EventMap
@@ -496,11 +493,7 @@ export default defineComponent({
         @setMarkerData="setMarkerData"
       />
     </div>
-    <div
-      v-else-if="!smAndDown && eventResult && eventResult.events"
-      id="mapViewFullScreen"
-      class="flex flex-row"
-    >
+    <div v-if="!smAndDown" id="mapViewFullScreen" class="flex flex-row">
       <div class="overflow-y-auto h-full" style="width: 34vw">
         <EventFilterBar class="w-full mt-6" />
         <div class="m-4 flex justify-end">
@@ -513,11 +506,21 @@ export default defineComponent({
               />
             </template>
             <template v-slot:does-not-have-auth>
-              <PrimaryButton class="align-middle ml-2" :label="'+ Create Event'" />
+              <PrimaryButton
+                class="align-middle ml-2"
+                :label="'+ Create Event'"
+              />
             </template>
           </RequireAuth>
         </div>
+        <div v-if="eventLoading">Loading...</div>
+        <ErrorBanner
+          class="block"
+          v-else-if="eventError"
+          :text="eventError.message"
+        />
         <EventList
+          v-else-if="eventResult && eventResult.events"
           key="highlightedEventId"
           :events="eventResult.events"
           :channel-id="channelId"
@@ -538,23 +541,29 @@ export default defineComponent({
       <div style="right: 0; width: 66vw">
         <div class="event-map-container">
           <div class="shortcut-buttons-wrapper">
-          <div class="shortcut-buttons">
-            <TimeShortcuts />
+            <div class="shortcut-buttons">
+              <TimeShortcuts />
+            </div>
           </div>
+          <EventMap
+            class="fixed"
+            v-if="
+              !eventLoading &&
+              !eventError &&
+              eventResult &&
+              eventResult.events &&
+              eventResult.events.length > 0
+            "
+            :events="eventResult.events"
+            :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+            :color-locked="colorLocked"
+            :use-mobile-styles="false"
+            @highlightEvent="highlightEvent"
+            @open-preview="openPreview"
+            @lockColors="colorLocked = true"
+            @setMarkerData="setMarkerData"
+          />
         </div>
-        <EventMap
-          class="fixed"
-          v-if="eventResult.events.length > 0"
-          :events="eventResult.events"
-          :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-          :color-locked="colorLocked"
-          :use-mobile-styles="false"
-          @highlightEvent="highlightEvent"
-          @open-preview="openPreview"
-          @lockColors="colorLocked = true"
-          @setMarkerData="setMarkerData"
-        />
-      </div>
       </div>
     </div>
 
@@ -613,6 +622,4 @@ export default defineComponent({
   justify-content: flex-end;
   border-radius: 4px;
 }
-
-
 </style>

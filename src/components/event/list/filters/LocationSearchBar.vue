@@ -1,8 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import LocationIcon from "@/components/icons/LocationIcon.vue";
 
 export default defineComponent({
   name: "LocationSearchBar",
+  components: {
+    LocationIcon,
+  },
   setup() {},
   props: {
     compact: {
@@ -26,16 +30,19 @@ export default defineComponent({
     updateLocationInput(placeData: any) {
       this.$emit("updateLocationInput", placeData);
     },
+    requestUserLocation(){
+      this.$emit("requestUserLocation");
+    }
   },
 });
 </script>
 <template>
   <div
     :class="[fullWidth ? 'w-full' : '', 'inline-block']"
-    class="inline-block mt-2 mb-1"
+    class="flex mt-2 mb-1 h-12"
   >
     <label for="search" class="sr-only">Search Location</label>
-    <div class="relative">
+    <div class="relative w-full">
       <div
         class="
           absolute
@@ -47,37 +54,33 @@ export default defineComponent({
           pointer-events-none
         "
       >
-        <!-- Heroicon name: solid/search -->
-        <svg
-          class="h-5 w-5 text-gray-400"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+        <!-- Location icon -->
+        <LocationIcon
+          class="h-5 w-5 text-gray-400 dark:text-gray-500"
           aria-hidden="true"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-            clip-rule="evenodd"
-          />
-        </svg>
+        />
       </div>
       <GMapAutocomplete
-        :class="[fullWidth ? 'w-full' : '', compact ? 'text-xs py-1' : 'text-sm py-2']"
         autocomplete="false"
         class="
-          pl-10
-          pr-3
-          border border-gray-300
-          rounded-md
-          leading-5
-           
-          placeholder-gray-500
-          focus:outline-none
-          focus:placeholder-gray-400
-          focus:ring-1
-          focus:ring-blue-500
-          focus:border-blue-500
+        pl-10
+        pr-3
+        py-3
+        rounded-lg
+        leading-5
+        dark:bg-gray-700
+        dark:text-white
+        placeholder-gray-500
+        dark:placeholder-gray-400
+        dark:border-gray-700
+        focus:outline-none
+        focus:ring-1
+        focus:ring-blue-500
+        focus:border-blue-500
+        border border-gray-300
+        dark:border-gray-700
+        text-sm
+        w-full
         "
         :placeholder="
           referencePointAddressName ||
@@ -88,6 +91,21 @@ export default defineComponent({
         @place_changed="updateLocationInput"
       >
       </GMapAutocomplete>
+      <div
+        class="
+          absolute
+          inset-y-0
+          right-0
+          pr-3
+          flex
+          items-center
+          cursor-pointer
+        "
+        @click="requestUserLocation"
+      >
+        <!-- Crosshairs icon -->
+        <i class="fa-solid fa-crosshairs h-5 w-5 text-gray-400"></i>
+      </div>
     </div>
   </div>
 </template>

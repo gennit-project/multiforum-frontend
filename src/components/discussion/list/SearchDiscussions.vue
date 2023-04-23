@@ -14,7 +14,7 @@ import { useDisplay } from "vuetify";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
-import { getFilterValuesFromParams } from "@/components/event/list/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import DiscussionDetail from "../detail/DiscussionDetail.vue";
 
 interface Ref<T> {

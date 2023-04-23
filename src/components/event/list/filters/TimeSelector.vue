@@ -9,7 +9,7 @@ import {
   createDefaultSelectedHourRanges,
   createDefaultSelectedWeekdays,
   createDefaultSelectedWeeklyHourRanges,
-} from "@/components/event/list/eventSearchOptions";
+} from "@/components/event/list/filters/eventSearchOptions";
 import {
   SelectedWeeklyHourRanges,
   SelectedWeekdays,
@@ -17,9 +17,9 @@ import {
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
-import Table from "../../generic/Table.vue";
-import TableHead from "../../generic/TableHead.vue";
-import RefreshIcon from "../../icons/RefreshIcon.vue";
+import Table from "../../../generic/Table.vue";
+import TableHead from "../../../generic/TableHead.vue";
+import RefreshIcon from "../../../icons/RefreshIcon.vue";
 
 export default defineComponent({
   props: {
@@ -274,188 +274,28 @@ export default defineComponent({
 });
 </script>
 <template>
-  <form>
-    <div class="flex flex-col">
-      <div class="-my-2 sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
-          <div
-            class="
-              shadow
-              overflow-hidden
-              border-b border-gray-400
-              sm:rounded-lg
-            "
-          >
-            <TableComponent>
-              <template v-slot:head>
-                <tr>
-                  <TableHead> Time Range </TableHead>
-                  <TableHead
-                    v-for="weekday in weekdayData"
-                    :key="weekday.shortName"
-                  >
-                    <input
-                      type="checkbox"
-                      :class="'text-blue-600'"
-                      class="
-                        focus:ring-blue-500
-                        h-4
-                        w-4
-                        mr-1
-                        border-gray-400
-                        rounded
-                      "
-                      :checked="
-                        workingCopyOfSelectedWeekdays[weekday.number] === true
-                      "
-                      @input="() => toggleSelectWeekday(weekday)"
-                    />
-                    <span>{{ weekday.shortName }}</span>
-                  </TableHead>
-                </tr>
-              </template>
-              <template v-slot:body>
-                <tr
-                  :class="i % 2 === 0 ? 'bg-gray-100' : ''"
-                  :key="range['12-hour-label']"
-                  v-for="(range, i) in hourRangesData"
-                >
-                  <td
-                    class="
-                      px-2
-                      py-2
-                      text-left
-                      whitespace-nowrap
-                      text-sm text-gray-500
-                    "
-                  >
-                    <div class="flex items-center h-5">
-                      <input
-                        type="checkbox"
-                        :class="'text-blue-600'"
-                        class="
-                          focus:ring-blue-500
-                          h-4
-                          w-4
-                          border-gray-400
-                          rounded
-                        "
-                        :checked="
-                          workingCopyOfSelectedHourRanges[
-                            range['12-hour-label']
-                          ]
-                        "
-                        @input="() => toggleSelectTimeRange(range)"
-                      />
-                      <span class="ml-1">{{ range["12-hour-label"] }}</span>
-                    </div>
-                  </td>
-                  <td
-                    class="
-                      px-2
-                      py-2
-                      text-left
-                      whitespace-nowrap
-                      text-sm text-gray-500
-                    "
-                    :key="weekday.number"
-                    v-for="weekday in weekdayData"
-                  >
-                    <div class="flex items-center h-5">
-                      <input
-                        type="checkbox"
-                        :class="[
-                          shouldBeDisabled(weekday, range)
-                            ? 'text-blue-200'
-                            : 'text-blue-600',
-                        ]"
-                        class="
-                          focus:ring-blue-500
-                          h-4
-                          w-4
-                          border-gray-400
-                          rounded
-                        "
-                        :checked="shouldBeChecked(weekday, range)"
-                        :disabled="shouldBeDisabled(weekday, range)"
-                        @input="
-                          () => {
-                            toggleWeeklyTimeRange(weekday.number, range);
-                          }
-                        "
-                      />
-                    </div>
-                  </td>
-                </tr>
-              </template>
-            </TableComponent>
-          </div>
-        </div>
+    <div class="flex flex-wrap">
+      <div
+        v-for="(range, i) in hourRangesData"
+        :key="range['12-hour-label']"
+        :class="i % 2 === 0 ? 'bg-gray-100' : ''"
+        class="mr-2 mb-2"
+      >
+        <input
+          type="checkbox"
+          :class="'text-blue-600'"
+          class="
+            focus:ring-blue-500
+            h-4
+            w-4
+            mr-1
+            border-gray-400
+            rounded
+          "
+          :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
+          @input="() => toggleSelectTimeRange(range)"
+        />
+        <span>{{ range["12-hour-label"] }}</span>
       </div>
     </div>
-    <div
-      class="
-        mt-5
-        sm:mt-6 sm:grid sm:grid-cols-2 sm:gap-3 sm:grid-flow-row-dense
-      "
-    >
-      <button
-        type="button"
-        class="
-          w-full
-          inline-flex
-          justify-center
-          rounded-full
-          border border-transparent
-          shadow-sm
-          px-4
-          py-2
-          bg-indigo-600
-          text-base
-          font-medium
-          text-white
-          hover:bg-indigo-700
-          focus:outline-none
-          focus:ring-2
-          focus:ring-offset-2
-          focus:ring-indigo-500
-          sm:col-start-2 sm:text-sm
-        "
-        @click="
-          () => {
-            $emit('close');
-          }
-        "
-      >
-        Close
-      </button>
-      <button
-        type="button"
-        class="
-          w-full
-          inline-flex
-          justify-center
-          rounded-full
-          border border-gray-300
-          shadow-sm
-          px-4
-          py-2
-           
-          text-base
-          font-medium
-          text-gray-700
-          hover:bg-gray-50
-          focus:outline-none
-          focus:ring-2
-          focus:ring-offset-2
-          focus:ring-indigo-500
-          sm:mt-0 sm:col-start-1 sm:text-sm
-        "
-        @click="resetTimeSlots"
-      >
-        <RefreshIcon class="h-5" />
-        Reset
-      </button>
-    </div>
-  </form>
-</template>
+  </template>

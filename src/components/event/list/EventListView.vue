@@ -7,14 +7,14 @@ import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPan
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "@/components/event/list/getEventWhere";
+import getEventWhere from "@/components/event/list/filters/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "./getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "./filters/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import EventDetail from "../detail/EventDetail.vue";
-import { timeShortcutValues } from "./eventSearchOptions";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filterStrings";
-import EventFilterBar from "./EventFilterBar.vue";
+import { timeShortcutValues } from "./filters/eventSearchOptions";
+import { chronologicalOrder, reverseChronologicalOrder } from "./filters/filterStrings";
+import EventFilterBar from "./filters/EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
@@ -242,7 +242,7 @@ export default defineComponent({
           :text="eventError.message"
         />
         <p v-else-if="eventLoading">Loading...</p>
-        <TwoSeparatelyScrollingPanes class="block" v-else-if="eventResult">
+        <TwoSeparatelyScrollingPanes class="block">
           <template v-slot:leftpane>
             <EventFilterBar class="my-4" :show-distance-filters="false"/>
             <RequireAuth class="flex inline-flex">
@@ -262,6 +262,7 @@ export default defineComponent({
             </RequireAuth>
             <EventList
               id="listView"
+              v-if="eventResult"
               :class="[!channelId ? '' : '']"
               class="relative"
               :result-count="

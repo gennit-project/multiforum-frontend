@@ -11,7 +11,7 @@ import { SearchDiscussionValues } from "@/types/discussionTypes";
 import { useRoute } from "vue-router";
 import {
   getFilterValuesFromParams,
-} from "@/components/event/list/getFilterValuesFromParams";
+} from "@/components/event/list/filters/getFilterValuesFromParams";
 
 export default defineComponent({
   name: "DiscussionFilterBar",

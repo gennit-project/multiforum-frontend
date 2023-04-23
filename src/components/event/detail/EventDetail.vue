@@ -11,14 +11,14 @@ import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
 import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
-import getEventWhere from "@/components/event/list/getEventWhere";
+import getEventWhere from "@/components/event/list/filters/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "../list/getFilterValuesFromParams";
-import { timeShortcutValues } from "../list/eventSearchOptions";
+import { getFilterValuesFromParams } from "../list/filters/getFilterValuesFromParams";
+import { timeShortcutValues } from "../list/filters/eventSearchOptions";
 import {
   chronologicalOrder,
   reverseChronologicalOrder,
-} from "../list/filterStrings";
+} from "../list/filters/filterStrings";
 import EventFooter from "./EventFooter.vue";
 import MdEditor from "md-editor-v3";
 import EventHeader from "./EventHeader.vue";

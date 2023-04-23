@@ -189,32 +189,6 @@ const getEventWhere = (
     }
   }
 
-  // Add weekly hour ranges to the list of filter objects,
-  // unless that day or hour range was already added.
-  for (const weekday in weeklyHourRanges) {
-    const rangeData = weeklyHourRanges[weekday];
-
-    for (const hourRange in rangeData) {
-      if (rangeData[hourRange] === true) {
-        const max = hourRangesObject[hourRange].max;
-        const min = hourRangesObject[hourRange].min;
-
-        for (let hour = min; hour < max; hour++) {
-          flattenedTimeFilters.push({
-            AND: [
-              {
-                startTimeHourOfDay: hour,
-              },
-              {
-                startTimeDayOfWeek: weekday,
-              },
-            ],
-          });
-        }
-      }
-    }
-  }
-
   if (flattenedTimeFilters.length > 0) {
     conditions.push({
       OR: flattenedTimeFilters,

@@ -12,7 +12,7 @@ import TagInput from "@/components/tag/TagInput.vue";
 import PencilIcon from "@/components/icons/PencilIcon.vue";
 import ErrorMessage from "@/components/generic/ErrorMessage.vue";
 import CheckBox from "@/components/generic/CheckBox.vue";
-import LocationSearchBar from "@/components/event/list/LocationSearchBar.vue";
+import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";

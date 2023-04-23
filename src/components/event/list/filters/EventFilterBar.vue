@@ -1,23 +1,21 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
-import LocationSearchBar from "@/components/event/list/LocationSearchBar.vue";
+import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
-import FilterChip from "@/components/generic/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
-import SelectMenu from "../../generic/Select.vue";
-import SearchBar from "../../generic/SearchBar.vue";
+import SelectMenu from "../../../generic/Select.vue";
+import SearchBar from "../../../generic/SearchBar.vue";
 import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
 import {
   distanceOptionsForKilometers,
   distanceOptionsForMiles,
   MilesOrKm,
   distanceUnitOptions,
-} from "@/components/event/list/eventSearchOptions";
-import LocationFilterTypes from "../list/locationFilterTypes";
-import WeeklyTimePicker from "@/components/event/list/WeeklyTimePicker.vue";
+} from "@/components/event/list/filters/eventSearchOptions";
+import LocationFilterTypes from "./locationFilterTypes";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
@@ -25,14 +23,15 @@ import { useRoute } from "vue-router";
 import {
   getFilterValuesFromParams,
   defaultPlace,
-} from "@/components/event/list/getFilterValuesFromParams";
+} from "@/components/event/list/filters/getFilterValuesFromParams";
 import {
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
-} from "../list/eventSearchOptions";
+} from "./eventSearchOptions";
 import GenericButton from "@/components/generic/GenericButton.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
+import WeekdaySelector from "./WeekdaySelector.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -44,15 +43,13 @@ export default defineComponent({
     ChannelPicker,
     ClockIcon,
     DrawerFlyout,
-    FilterChip,
     FilterIcon,
     GenericButton,
     LocationSearchBar,
     SearchBar,
-    SelectMenu,
     TagIcon,
     TagPicker,
-    WeeklyTimePicker,
+    WeekdaySelector,
   },
   props: {
     showDistanceFilters: {
@@ -123,8 +120,6 @@ export default defineComponent({
       return labels.join(", ");
     });
 
-    const distanceUnit = ref(MilesOrKm.MI);
-
     const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
       (val: DistanceUnit) => {
         return filterValues.value.radius === val.value;
@@ -140,6 +135,11 @@ export default defineComponent({
     const hourRanges: Ref<SelectedHourRanges> = ref({});
     const weekdays: Ref<SelectedWeekdays> = ref({});
 
+    const showLocationSearchBar = computed(() => {
+      const path = route.path;
+      return path.includes("map")
+    });
+
     return {
       activeDateShortcut,
       activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
@@ -154,6 +154,7 @@ export default defineComponent({
       distanceOptionsForKilometers,
       distanceOptionsForMiles,
       distanceUnitOptions,
+      drawerIsOpen: ref(false),
       filterValues,
       hourRanges,
       LocationFilterTypes,
@@ -164,17 +165,12 @@ export default defineComponent({
       referencePointAddress: ref(defaultPlace.address),
       referencePointPlaceId: ref(defaultPlace.referencePointId),
       route,
-      distanceUnit,
       selectedDistanceUnit: ref(MilesOrKm.MI),
+      showLocationSearchBar,
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeSlotFiltersActive: ref(false),
       weekdays,
-    };
-  },
-  data() {
-    return {
-      drawerIsOpen: false,
     };
   },
   created() {
@@ -298,6 +294,32 @@ export default defineComponent({
     updateWeekdays(flattenedWeekdays: string) {
       this.updateFilters({ weekdays: flattenedWeekdays });
     },
+    resetWeekdays(){
+      // Remove values from query params
+      const existingQueryCopy = { ...this.$route.query };
+      delete existingQueryCopy.weekdays;
+      this.$router.replace({
+        query: existingQueryCopy,
+      });
+
+      // Update local state
+      this.updateLocalState({
+        weekdays: this.defaultSelectedWeekdays,
+      });
+    },
+    resetHourRanges(){
+      // Remove values from query params
+      const existingQueryCopy = { ...this.$route.query };
+      delete existingQueryCopy.hourRanges;
+      this.$router.replace({
+        query: existingQueryCopy,
+      });
+
+      // Update local state
+      this.updateLocalState({
+        hourRanges: this.defaultSelectedHourRanges,
+      });
+    },
     updateTimeSlots(flattenedTimeFilters: string) {
       this.updateFilters({
         weeklyHourRanges: flattenedTimeFilters,
@@ -336,39 +358,22 @@ export default defineComponent({
       v-if="route.name !== 'EventDetail'"
       class="items-center flex justify-center w-full"
     >
-    <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
-      <SearchBar
-        class="inline-flex align-middle w-full h-full"
-        :initial-value="filterValues.searchInput"
-        :search-placeholder="'Search text'"
-        :small="true"
-        @updateSearchInput="updateSearchInput"
-      />
-      <button
-        class="
-          inline-flex 
-          float-right 
-          text-sm 
-          items-center 
-          dark:bg-gray-700 
-          dark:text-gray-200 
-          dark:border-gray-700 
-          rounded-lg px-3 
-          text-gray-700 
-          bg-gray-100
-          hover:bg-gray-200
-          dark:ring-gray-700 
-          hover:text-gray-800 
-          py-2
-          dark:hover:bg-gray-600 
-          -ml-px 
-          "
-        @click="handleClickMoreFilters"
-      >
-        <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
-        Filters
-      </button>
-    </div>
+      <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
+        <SearchBar
+          class="inline-flex align-middle w-full h-full"
+          :initial-value="filterValues.searchInput"
+          :search-placeholder="'Search text'"
+          :small="true"
+          @updateSearchInput="updateSearchInput"
+        />
+        <button
+          class="inline-flex float-right text-sm items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-lg px-3 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:ring-gray-700 hover:text-gray-800 py-2 dark:hover:bg-gray-600 -ml-px"
+          @click="handleClickMoreFilters"
+        >
+          <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+          Filters
+        </button>
+      </div>
     </div>
     <div class="flex justify-center">
       <DrawerFlyout
@@ -379,37 +384,42 @@ export default defineComponent({
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
+        <h1 class="mb-2">Search Events</h1>
+        <SearchBar
+          class="inline-flex align-middle w-full"
+          :initial-value="filterValues.searchInput"
+          :search-placeholder="'Search text'"
+          :full-width="true"
+          @updateSearchInput="updateSearchInput"
+        />
+        <LocationSearchBar
+          v-if="showLocationSearchBar"
+          class="flex flex-wrap w-full"
+          :search-placeholder="referencePointAddress"
+          :reference-point-address-name="referencePointName"
+          @updateLocationInput="updateLocationInput"
+        />
         <div v-if="showDistanceFilters">
-          <SelectMenu
-            v-if="distanceUnit === MilesOrKm.KM"
-            class="ml-2 w-36 inline-block"
-            :options="distanceOptionsForKilometers"
-            :default-option="defaultKilometerSelection"
-            @selected="updateSelectedDistance"
-          />
-          <SelectMenu
-            v-if="distanceUnit === MilesOrKm.MI"
-            class="ml-2 w-36 inline-block"
-            :options="distanceOptionsForMiles"
-            :default-option="defaultMileSelection"
-            @selected="updateSelectedDistance"
-          />
-          <SelectMenu
-            class="mr-4 w-18"
-            :options="distanceUnitOptions"
-            :default-option="{
-              label: distanceUnit,
-              value: distanceUnit,
-            }"
-            @selected="updateSelectedDistanceUnit"
-          />
-          <div class="inline-block">of</div>
-          <LocationSearchBar
-            class="flex flex-wrap"
-            :search-placeholder="referencePointAddress"
-            :reference-point-address-name="referencePointName"
-            @updateLocationInput="updateLocationInput"
-          />
+          <div v-if="selectedDistanceUnit === MilesOrKm.KM">
+            <GenericButton
+              v-for="distance in distanceOptionsForKilometers"
+              :key="distance.value"
+              :text="`${distance.label} ${distance.value !== 0 ? 'km' : ''}`"
+              :active="distance.value === filterValues.radius"
+              class="mr-2"
+              @click="updateSelectedDistance(distance)"
+            />
+          </div>
+          <div v-else>
+            <GenericButton
+              v-for="distance in distanceOptionsForMiles"
+              :key="distance.value"
+              :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
+              :active="distance.value === filterValues.radius"
+              class="mr-2"
+              @click="updateSelectedDistance(distance)"
+            />
+          </div>
         </div>
         <h2
           v-if="!channelId"
@@ -441,17 +451,37 @@ export default defineComponent({
           Time Filters
         </h2>
 
-        <WeeklyTimePicker
-          class="py-2 px-8"
-          :selected-weekdays="filterValues.weekdays"
-          :selected-hour-ranges="filterValues.hourRanges"
-          :selected-weekly-hour-ranges="filterValues.weeklyHourRanges"
-          @updateWeekdays="updateWeekdays"
-          @updateHourRanges="updateHourRanges"
-          @updateTimeSlots="updateTimeSlots"
-          @resetTimeSlots="resetTimeSlots"
-          @close="toggleTimeSlotPicker"
-        />
+        <div class="flex flex-col">
+          <div class="-my-2 sm:-mx-6 lg:-mx-8">
+            <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
+              <div
+                class="
+                  shadow
+                  overflow-hidden
+                  border-b border-gray-400
+                  sm:rounded-lg
+                "
+              >
+                <div class="mb-4">
+                  <h3 class="text-lg font-semibold">Select Weekdays</h3>
+                  <WeekdaySelector 
+                  :selected-weekdays="filterValues.weekdays"
+                  @updateWeekdays="updateWeekdays"
+                  @reset="resetWeekdays"
+                  />
+                </div>
+                <div>
+                  <h3 class="text-lg font-semibold">Select Time Ranges</h3>
+                  <!-- <TimeSelector
+                  :selected-hour-ranges="filterValues.hourRanges"
+                  @updateHourRanges="updateHourRanges"
+                  @reset="resetHourRanges"
+                  /> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </DrawerFlyout>
     </div>
   </div>
