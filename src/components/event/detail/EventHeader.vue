@@ -144,31 +144,35 @@ export default defineComponent({
     </div>
   </div>
 
-  <div class="px-4 text-sm text-gray-700 space-y-2 text-gray-700 dark:text-slate-200">
-    <ul>
-      <li class="hanging-indent">
-        <CalendarIcon class="inline h-5 w-5 mr-3" />{{
-          `${getFormattedDateString(
-            eventData.startTime
-          )}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}`
-        }}
+  <div class="px-4 text-sm text-gray-700 text-gray-700 dark:text-slate-200">
+    <ul class="space-y-2">
+      <li class="flex items-start hanging-indent">
+        <div class="h-5 w-5 mr-3">
+          <CalendarIcon />
+        </div>
+        <span>{{ `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}` }}</span>
       </li>
-      <li class="hanging-indent" v-if="eventData.isInPrivateResidence">
-        <HomeIcon class="inline" /> This event is in a private residence.
+      <li class="flex items-start hanging-indent" v-if="eventData.isInPrivateResidence">
+        <div class="h-5 w-5 mr-3">
+          <HomeIcon />
+        </div>
+        <span>This event is in a private residence.</span>
       </li>
-
-      <li class="hanging-indent" v-if="eventData.virtualEventUrl">
-        <LinkIcon class="inline h-5 w-5 mr-2 " />
+      <li class="flex items-start hanging-indent" v-if="eventData.virtualEventUrl">
+        <div class="h-5 w-5 mr-3">
+          <LinkIcon />
+        </div>
         <span class="underline cursor-pointer" @click="openLink">
           {{ eventData.virtualEventUrl }}
         </span>
       </li>
-      <li class="hanging-indent" v-if="eventData.address">
-        <LocationIcon class="inline h-5 w-5 mr-2 "></LocationIcon>
-
-        {{ `${eventData.locationName}, ` }}
-        <span
-          ><a
+      <li class="flex items-start hanging-indent" v-if="eventData.address">
+        <div class="h-5 w-5 mr-3">
+          <LocationIcon />
+        </div>
+        <span>
+          {{ `${eventData.locationName}, ` }}
+          <a
             class="underline"
             target="_blank"
             rel="noreferrer"
@@ -176,7 +180,6 @@ export default defineComponent({
           >
             {{ eventData.address }}
           </a>
-
           <VTooltip class="inline-flex">
             <ClipboardIcon
               class="ml-1 h-4 w-4 cursor-pointer"
@@ -187,11 +190,13 @@ export default defineComponent({
         </span>
       </li>
       <li
-        class="hanging-indent"
+        class="flex items-start hanging-indent"
         v-if="!eventData.free && eventData.cost && eventData.cost !== '0'"
       >
-        <TicketIcon class="inline h-5 w-5 mr-2 text-gray-700" />
-        {{ eventData.cost }}
+        <div class="h-5 w-5 mr-3">
+          <TicketIcon class="text-gray-700" />
+        </div>
+        <span>{{ eventData.cost }}</span>
       </li>
     </ul>
     <Notification
@@ -200,4 +205,6 @@ export default defineComponent({
       @closeNotification="showAddressCopiedNotification = false"
     />
   </div>
+  
+    
 </template>

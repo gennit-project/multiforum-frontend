@@ -471,25 +471,19 @@ export default defineComponent({
         <div class="flex flex-col">
           <div class="-my-2 sm:-mx-6 lg:-mx-8">
             <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
-              <div
-                class="shadow overflow-hidden border-b border-gray-400 sm:rounded-lg"
-              >
-                <div class="mb-4">
-                  <h3 class="text-lg font-semibold">Select Weekdays</h3>
-                  <WeekdaySelector
-                    :selected-weekdays="filterValues.weekdays"
-                    @updateWeekdays="updateWeekdays"
-                    @reset="resetWeekdays"
-                  />
-                </div>
-                <div>
-                  <h3 class="text-lg font-semibold">Select Time Ranges</h3>
-                  <!-- <TimeSelector
+              <div class="mb-4">
+                <WeekdaySelector
+                  :selected-weekdays="filterValues.weekdays"
+                  @updateWeekdays="updateWeekdays"
+                  @reset="resetWeekdays"
+                />
+              </div>
+              <div>
+                <TimeSelector
                   :selected-hour-ranges="filterValues.hourRanges"
                   @updateHourRanges="updateHourRanges"
                   @reset="resetHourRanges"
-                  /> -->
-                </div>
+                />
               </div>
             </div>
           </div>
