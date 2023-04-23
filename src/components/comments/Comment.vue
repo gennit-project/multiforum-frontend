@@ -376,7 +376,7 @@ export default defineComponent({
 
 
 .bg-dark {
-  @apply bg-gray-800;
+  @apply bg-gray-700;
 }
 
 .text-dark {

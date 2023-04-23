@@ -376,12 +376,12 @@ export default defineComponent({
     >
       <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
         <button
-          class="flex items-center bg-white shadow p-3 border-radius rounded-lg"
+          class="flex items-center bg-white dark:bg-gray-700 text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
           aria-label="Open event filters"
           @click="handleClickMoreFilters"
         >
           <LocationIcon class="h-6 w-6 text-blue-500" />
-          <h1 class="border border-none pb-0 text-blue-500 text-md ml-1">
+          <h1 class="border border-none pb-0  text-md ml-1">
             Tempe: {{ displayDistance }}
           </h1>
         </button>

@@ -56,7 +56,7 @@ export default defineComponent({
           <div class="flex flex-col lg:flex-row h-full">
             <div class="h-full">
               <section aria-labelledby="section-2-title h-full">
-                <div class="overflow-hidden rounded-lg bg-white shadow pb-4 h-full">
+                <div class="overflow-hidden rounded-lg bg-white shadow pb-4 h-full dark:bg-slate-700">
                   <div v-if="mdAndUp" class="h-24 w-full object-cover user-background" alt="background pattern"></div>
                   <div class="lg:-mt-8">
                     <div class="flex space-x-2">
@@ -74,14 +74,14 @@ export default defineComponent({
             </div>
 
             <div class="h-full flex-grow lg:ml-4">
-              <div class="bg-white shadow rounded-lg">
+              <div class="bg-white shadow rounded-lg dark:bg-slate-700">
                 <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                   <div class="block pt-4 border-b border-b-1">
                     <ChannelTabs class="block" :route="route" />
                   </div>
                 </div>
               </div>
-              <div class="bg-white rounded-b-lg">
+              <div class="bg-white rounded-b-lg dark:bg-gray-800">
                 <router-view></router-view>
               </div>
             </div>

@@ -140,7 +140,7 @@ export default defineComponent({
 
 
 .bg-dark {
-  @apply bg-gray-800;
+  background-color: inherit;
 }
 
 .text-dark {
