@@ -410,7 +410,7 @@ export default defineComponent({
         </FormRow>
         <FormRow>
           <template v-slot:icon>
-            <LinkIcon class="float-right" />
+            <LinkIcon class="float-right h-6 w-6" />
             <v-tooltip activator="parent" location="top">Link</v-tooltip>
           </template>
           <template v-slot:content>

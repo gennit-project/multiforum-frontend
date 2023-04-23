@@ -155,7 +155,7 @@ export default defineComponent({
           ? 'large-width'
           : 'w-full mx-4'
       "
-      class="pb-36 space-y-2"
+      class="space-y-2"
     >
       <p v-if="getDiscussionLoading">Loading...</p>
       <ErrorBanner

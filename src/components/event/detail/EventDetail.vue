@@ -1,8 +1,8 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import Tag from "@/components/tag/Tag.vue";
 import { useQuery } from "@vue/apollo-composable";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { ChannelData } from "@/types/channelTypes";
 import { GET_EVENT } from "@/graphQLData/event/queries";
 import { EventData } from "@/types/eventTypes";
@@ -33,6 +33,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const showFullDescription = ref(route.name === "EventDetail");
 
     const eventId = computed(() => {
       return route.params.eventId;
@@ -60,6 +61,21 @@ export default defineComponent({
       }
       return eventResult.value.events[0];
     });
+
+    const truncatedDescription = computed(() => {
+      if (!eventData.value || !eventData.value.description) {
+        return "";
+      }
+
+      const words = eventData.value.description.split(" ");
+      return words.length > 50
+        ? words.slice(0, 50).join(" ") + "..."
+        : eventData.value.description;
+    });
+
+    const toggleDescription = () => {
+      showFullDescription.value = !showFullDescription.value;
+    };
 
     const channelsExceptCurrent = computed(() => {
       if (!eventResult.value || !eventResult.value.events[0]) {
@@ -107,6 +123,13 @@ export default defineComponent({
     });
 
     const { mdAndUp } = useDisplay();
+
+    const visibleDescription = computed(() => {
+      if (showFullDescription.value) {
+        return eventData.value?.description;
+      }
+      return truncatedDescription.value;
+    });
     return {
       eventData,
       eventResult,
@@ -121,6 +144,10 @@ export default defineComponent({
       mdAndUp,
       relativeTime,
       route,
+      showFullDescription,
+      truncatedDescription,
+      toggleDescription,
+      visibleDescription
     };
   },
   methods: {
@@ -133,7 +160,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="height-constrained-more pb-36 px-4 lg:w-full space-y-2 flex justify-center"
+    class="height-constrained-more px-4 pb-36 lg:w-full space-y-2 flex justify-center"
   >
     <div
       :class="
@@ -141,7 +168,7 @@ export default defineComponent({
           ? 'large-width'
           : 'w-full mx-4'
       "
-      class="pb-36 space-y-2"
+      class="space-y-2"
     >
       <router-link
         v-if="route.name === 'EventDetail'"
@@ -178,12 +205,19 @@ export default defineComponent({
           <md-editor
             v-if="eventData.description"
             class="max-w-2xl small-text"
-            v-model="eventData.description"
+            v-model="visibleDescription"
             previewTheme="vuepress"
             language="en-US"
             :noMermaid="true"
             preview-only
           />
+          <button
+            v-if="eventData.description.split(' ').length > 50"
+            @click="toggleDescription"
+            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
+          >
+            {{ showFullDescription ? "Show less" : "Show more" }}
+          </button>
         </div>
         <div class="mx-4 my-2">
           <Tag
@@ -225,7 +259,6 @@ li {
   text-indent: -32px;
 }
 .height-constrained-more {
-  max-height: 50vh;
   height: 100% - 150px;
 }
 .large-width {
