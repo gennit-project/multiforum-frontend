@@ -125,7 +125,7 @@ export default defineComponent({
       <h2 class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate">
         {{ discussion.title }}
       </h2>
-      <div :class="'mt-4'">
+      <div :class="'mt-4'" v-if="route.name === 'DiscussionDetail'">
         <RequireAuth
           class="inline-flex"
           :require-ownership="true"

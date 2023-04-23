@@ -61,14 +61,10 @@ export default defineComponent({
 
 <template>
   <div
+    v-if="!channelId"
     class="my-4"
-    v-if="
-      (route.name === 'SitewideSearchDiscussionPreview' ||
-        route.name === 'SearchDiscussionPreview') &&
-      channelLinks.length > 0
-    "
   >
-    <h2 class="text-lg">Comments</h2>
+    <h2 class="text-lg">Comments in Channels</h2>
     <ul class="list-disc pl-3">
       <ChannelLink
         v-if="channelId"
@@ -84,5 +80,29 @@ export default defineComponent({
         :discussionId="discussion.id"
       />
     </ul>
+  </div>
+  <div v-else>
+     <h2 class="text-lg">Comments in this Channel</h2>
+      <ul class="list-disc pl-3">
+        <ChannelLink
+          :channelId="channelId"
+          :comment-count="getCommentCount(channelId)"
+          :discussionId="discussion.id"
+        />
+      </ul>
+
+     <h2 class="text-lg mt-4">Comments in Other Channels</h2>
+      <ul class="list-disc pl-3">
+        <ChannelLink
+          v-for="channel in channelLinks"
+          :key="channel.uniqueName"
+          :channelId="channel.uniqueName"
+          :comment-count="getCommentCount(channel.uniqueName)"
+          :discussionId="discussion.id"
+        />
+      </ul>
+      <p class="text-sm" v-if="channelLinks.length === 0">
+        The post was not submitted to any other channels.
+      </p>
   </div>
 </template>

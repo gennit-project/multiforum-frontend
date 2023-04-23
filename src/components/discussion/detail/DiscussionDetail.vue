@@ -206,7 +206,6 @@ export default defineComponent({
           </div>
           <ChannelLinks
             class="my-4"
-            v-if="route.name !== 'DiscussionDetail' && channelLinks.length > 0"
             :discussion="discussion"
             :channelId="channelId"
           />
