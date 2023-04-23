@@ -51,57 +51,38 @@ export default defineComponent({
 <template>
   <div class="h-screen">
     <div class="flex h-full">
-      <article
-        class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
-      >
-        <div class="block p-2 mx-auto h-full">
-          <div
-            class="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-8 h-full"
-          >
-            <div class="grid grid-cols-1 gap-4 h-full">
+      <article class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full">
+        <div class="block p-2 w-full h-full">
+          <div class="flex flex-col lg:flex-row h-full">
+            <div class="h-full">
               <section aria-labelledby="section-2-title h-full">
                 <div class="overflow-hidden rounded-lg bg-white shadow pb-4 h-full">
-                  <div
-                    v-if="mdAndUp"
-                    class="h-24 w-full object-cover user-background"
-                    alt="background pattern"
-                  ></div>
+                  <div v-if="mdAndUp" class="h-24 w-full object-cover user-background" alt="background pattern"></div>
                   <div class="lg:-mt-8">
                     <div class="flex space-x-2">
-                      <div
-                        class="h-24 w-24 rounded-full ring-4 ring-white dark:ring-slate-900"
-                        id="channelAvatar"
-                      ></div>
+                      <div class="h-24 w-24 rounded-full ring-4 ring-white dark:ring-slate-900" id="channelAvatar"></div>
                       <div>
                         <h1 class="text-2xl no-underline mt-12">
                           {{ channelId }}
                         </h1>
-                        <!-- <h2 class="text-gray-500">secondary name</h2> -->
-                        
                       </div>
                     </div>
                   </div>
-                  <About/>
+                  <About />
                 </div>
-               
               </section>
-             
             </div>
 
-            <div class="h-full grid grid-cols-1 gap-4 lg:col-span-3 overflow-hidden rounded-lg bg-white">
-              <div class="h-14 border-b-2 dark:border-gray-700 shadow" v-if="!route.fullPath.includes('edit')">
-                <section aria-labelledby="section-1-title">
-                  <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-                    <div class="block mt-4">
-                      <ChannelTabs class="block" :route="route" />
-                    </div>
+            <div class="h-full flex-grow lg:ml-4">
+              <div class="bg-white shadow rounded-lg">
+                <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                  <div class="block pt-4 border-b border-b-1">
+                    <ChannelTabs class="block" :route="route" />
                   </div>
-                </section>
-              </div>
-              <div class="overflow-hidden">
-                <div >
-                  <router-view></router-view>
                 </div>
+              </div>
+              <div class="bg-white rounded-b-lg">
+                <router-view></router-view>
               </div>
             </div>
           </div>
@@ -110,6 +91,8 @@ export default defineComponent({
     </div>
   </div>
 </template>
+
+
 <style>
 #channelAvatar {
   background-color: #4474c0;

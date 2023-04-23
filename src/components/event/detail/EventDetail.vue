@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref, Ref } from "vue";
+import { defineComponent, computed } from "vue";
 import Tag from "@/components/tag/Tag.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
@@ -11,16 +11,9 @@ import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
 import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
-import getEventWhere from "@/components/event/list/filters/getEventWhere";
-import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "../list/filters/getFilterValuesFromParams";
-import { timeShortcutValues } from "../list/filters/eventSearchOptions";
-import {
-  chronologicalOrder,
-  reverseChronologicalOrder,
-} from "../list/filters/filterStrings";
 import EventFooter from "./EventFooter.vue";
 import MdEditor from "md-editor-v3";
+import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
 
 export default defineComponent({
@@ -38,9 +31,8 @@ export default defineComponent({
     MdEditor,
     Tag,
   },
-  setup(props, { emit }) {
+  setup() {
     const route = useRoute();
-    const router = useRouter();
 
     const eventId = computed(() => {
       return route.params.eventId;
@@ -67,21 +59,6 @@ export default defineComponent({
         return null;
       }
       return eventResult.value.events[0];
-    });
-
-    const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
-    );
-
-    const resultsOrder = computed(() => {
-      if (filterValues.value.timeShortcut === timeShortcutValues.PAST_EVENTS) {
-        return reverseChronologicalOrder;
-      }
-      return chronologicalOrder;
-    });
-
-    const eventWhere = computed(() => {
-      return getEventWhere(filterValues.value, false, channelId.value);
     });
 
     const channelsExceptCurrent = computed(() => {
@@ -129,6 +106,7 @@ export default defineComponent({
       return eventData.value.address;
     });
 
+    const { mdAndUp } = useDisplay();
     return {
       eventData,
       eventResult,
@@ -140,6 +118,7 @@ export default defineComponent({
       channelsExceptCurrent,
       commentSectionId,
       locationText,
+      mdAndUp,
       relativeTime,
       route,
     };
@@ -153,75 +132,87 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="height-constrained-more pb-36 px-4 lg:w-full space-y-2">
-    <router-link
-      v-if="route.name === 'EventDetail'"
-      :to="`/channels/c/${channelId}/events/search`"
-      class="text-xs text-gray-500 mb-4"
-    >
-      <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-      <span class="underline ">{{ `Event list in c/${channelId}` }}</span>
-    </router-link>
-    <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
-    <ErrorBanner
-      class="px-4 lg:px-10"
-      v-else-if="eventError"
-      :text="eventError.message"
-    />
-
-    <div v-else-if="!eventData">
-      <p>Could not find the event.</p>
-    </div>
-
+  <div
+    class="height-constrained-more pb-36 px-4 lg:w-full space-y-2 flex justify-center"
+  >
     <div
-      v-else-if="eventResult && eventResult.events && eventData"
+      :class="
+        route.name === 'EventDetail' && mdAndUp
+          ? 'large-width'
+          : 'w-full mx-4'
+      "
+      class="pb-36 space-y-2"
     >
+      <router-link
+        v-if="route.name === 'EventDetail'"
+        :to="`/channels/c/${channelId}/events/search`"
+        class="text-xs text-gray-500 mb-4"
+      >
+        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        <span class="underline">{{ `Event list in c/${channelId}` }}</span>
+      </router-link>
+      <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
       <ErrorBanner
-        class="mt-2 mb-2"
-        v-if="eventIsInThePast"
-        :text="'This event is in the past.'"
+        class="px-4 lg:px-10"
+        v-else-if="eventError"
+        :text="eventError.message"
       />
-      <ErrorBanner
-        class="mt-2 mb-2"
-        v-if="eventData.canceled"
-        :text="'This event is canceled.'"
-      />
-      <EventHeader :event-data="eventData" />
-      <div class="px-4 lg:px-10">
-        <md-editor
-          v-if="eventData.description"
-          class="max-w-2xl small-text"
-          v-model="eventData.description"
-          previewTheme="vuepress"
-          language="en-US"
-          :noMermaid="true"
-          preview-only
-        />
-      </div>
-      <div class="mx-4 my-2">
-        <Tag
-          class="mt-2"
-          v-for="tag in eventData.Tags"
-          :tag="tag.text"
-          :key="tag.text"
-          :eventId="eventId"
-        />
-        <div v-if="channelId && channelsExceptCurrent.length > 0" class="mt-2">
-          Crossposted To Channels
-        </div>
 
-        <router-link
-          v-for="channel in channelsExceptCurrent"
-          :key="channel.uniqueName"
-          :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
-        >
-          <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
-        </router-link>
+      <div v-else-if="!eventData">
+        <p>Could not find the event.</p>
       </div>
-      <EventFooter
-        :event-data="eventData"
-        :channels-except-current="channelsExceptCurrent"
-      />
+
+      <div v-else-if="eventResult && eventResult.events && eventData">
+        <ErrorBanner
+          class="mt-2 mb-2"
+          v-if="eventIsInThePast"
+          :text="'This event is in the past.'"
+        />
+        <ErrorBanner
+          class="mt-2 mb-2"
+          v-if="eventData.canceled"
+          :text="'This event is canceled.'"
+        />
+        <EventHeader :event-data="eventData" />
+        <div class="px-4 lg:px-10">
+          <md-editor
+            v-if="eventData.description"
+            class="max-w-2xl small-text"
+            v-model="eventData.description"
+            previewTheme="vuepress"
+            language="en-US"
+            :noMermaid="true"
+            preview-only
+          />
+        </div>
+        <div class="mx-4 my-2">
+          <Tag
+            class="mt-2"
+            v-for="tag in eventData.Tags"
+            :tag="tag.text"
+            :key="tag.text"
+            :eventId="eventId"
+          />
+          <div
+            v-if="channelId && channelsExceptCurrent.length > 0"
+            class="mt-2"
+          >
+            Crossposted To Channels
+          </div>
+
+          <router-link
+            v-for="channel in channelsExceptCurrent"
+            :key="channel.uniqueName"
+            :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+          >
+            <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
+          </router-link>
+        </div>
+        <EventFooter
+          :event-data="eventData"
+          :channels-except-current="channelsExceptCurrent"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -236,5 +227,8 @@ li {
 .height-constrained-more {
   max-height: 50vh;
   height: 100% - 150px;
+}
+.large-width {
+  width: 900px;
 }
 </style>
