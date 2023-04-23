@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, PropType } from "vue";
+import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
 import LinkPreview from "../../generic/LinkPreview.vue";
@@ -31,6 +31,31 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const showFullText = ref(route.name === "DiscussionDetail");
+    const wordLimit = 50;
+
+    const truncateText = (text: string, limit: number) => {
+      const words = text.split(' ');
+      return words.slice(0, limit).join(' ') + (words.length > limit ? '...' : '');
+    };
+
+    const toggleShowFullText = () => {
+      showFullText.value = !showFullText.value;
+    };
+
+    const bodyText = computed(() => {
+      if (showFullText.value) {
+        return props.discussion.body;
+      } else {
+        const words = props.discussion.body.split(' ');
+        return words.length > wordLimit ? truncateText(props.discussion.body, wordLimit) : props.discussion.body;
+      }
+    });
+
+    const shouldShowMoreButton = computed(() => {
+      const words = props.discussion.body.split(' ');
+      return words.length > wordLimit;
+    });
 
     const linksInBody = computed(() => {
       const links = getLinksInText(props.discussion.body);
@@ -75,6 +100,10 @@ export default defineComponent({
       channelLinks,
       linksInBody,
       route,
+      bodyText,
+      showFullText,
+      toggleShowFullText,
+      shouldShowMoreButton
     };
   },
 });
@@ -83,14 +112,21 @@ export default defineComponent({
   <div>
     <div v-if="discussion.body" class="body max-w-xl">
       <md-editor
-        v-if="discussion.body"
-        v-model="discussion.body"
+        v-if="bodyText"
+        v-model="bodyText"
         previewTheme="vuepress"
         codeTheme="github"
         language="en-US"
         :noMermaid="true"
         preview-only
       />
+      <button
+        v-if="shouldShowMoreButton"
+        @click="toggleShowFullText"
+        class="text-blue-600"
+      >
+        {{ showFullText ? "Show Less" : "Show More" }}
+      </button>
     </div>
     <Tag
           class="mt-2"
