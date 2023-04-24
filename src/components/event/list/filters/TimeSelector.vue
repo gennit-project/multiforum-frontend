@@ -107,21 +107,26 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex flex-wrap">
+  <div >
     <div
       v-for="(range, i) in hourRangesData"
       :key="range['12-hour-label']"
       :class="i % 2 === 0 ? 'bg-gray-100' : ''"
-      class="mr-2 mb-2"
+      class="mr-2 mb-2 p-2 rounded"
     >
-      <input
-        type="checkbox"
+      <label :for="'timeRange-' + range['12-hour-label']" class="flex items-center cursor-pointer">
+        <span class="custom-checkbox">
+          <input
+            type="checkbox"
         :class="'text-blue-600'"
         class="focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
         :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
         @input="() => toggleSelectTimeRange(range)"
       />
-      <span>{{ range["12-hour-label"] }}</span>
+          <span class="checkmark"></span>
+        </span>
+        <span class="ml-2 text-sm font-medium">{{ range["12-hour-label"] }}</span>
+      </label>
     </div>
   </div>
 </template>
