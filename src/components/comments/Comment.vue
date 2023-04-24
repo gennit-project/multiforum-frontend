@@ -235,7 +235,7 @@ export default defineComponent({
             <div class="comment-border" v-if="!themeLoading">
               <md-editor
                 v-if="commentData.text && !showEditCommentField"
-                class="max-w-2xl small-text"
+                class="max-w-2xl small-text -ml-5"
                 v-model="textCopy"
                 previewTheme="vuepress"
                
