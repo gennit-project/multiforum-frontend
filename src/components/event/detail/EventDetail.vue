@@ -189,7 +189,7 @@ export default defineComponent({
         <p>Could not find the event.</p>
       </div>
 
-      <div v-else-if="eventResult && eventResult.events && eventData">
+      <div v-else-if="eventResult && eventResult.events && eventData" class="px-4 bg-white dark:bg-dark-700">
         <ErrorBanner
           class="mt-2 mb-2"
           v-if="eventIsInThePast"
@@ -201,7 +201,7 @@ export default defineComponent({
           :text="'This event is canceled.'"
         />
         <EventHeader :event-data="eventData" />
-        <div class="px-4 lg:px-10">
+        <div>
           <md-editor
             v-if="eventData.description"
             class="max-w-2xl small-text"

@@ -64,6 +64,7 @@ export default defineComponent({
       this.$router.push(`/mod/${this.modName}`);
     },
     goToUserProfile(){
+      console.log('i ran ', this.username)
       this.$router.push(`/u/${this.username}`);
     }
   }

@@ -583,7 +583,7 @@ export default defineComponent({
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
         ref="commentSectionHeader"
-        class="text-lg max-w-2xl"
+        class="text-lg"
       >
         {{
           `Comments (${commentResult.commentSections[0].CommentsAggregate.count})`

@@ -59,7 +59,7 @@ export default defineComponent({
             v-for="(item, i) in items"
             :key="i"
             v-slot="{ active }"
-            @click="$emit(item.event)"
+            @click="$emit(item.event || 'click', item)"
             class="cursor-pointer"
           >
             <span

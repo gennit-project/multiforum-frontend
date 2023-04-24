@@ -41,6 +41,30 @@ export const router = createRouter({
       component: HomePage,
     },
     {
+      path: "/u/:username", 
+      component: UserProfile,
+      name: "UserProfile",
+      children: [
+        {
+          name: "UserAuthoredDiscussions",
+          path: "discussions",
+          component: UserDiscussions
+        },
+        {
+          name: "UserPostedEvents",
+          path: "events",
+          component: UserEvents
+        },
+        {
+          name: "UserAuthoredComments",
+          path: "comments",
+          alias: "",
+          component: UserComments
+        },
+
+      ]
+    },
+    {
       path: "/logout",
       component: LogoutPage,
     },
@@ -219,30 +243,7 @@ export const router = createRouter({
     },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
-    {
-      path: "/u/:username(.+)", 
-      component: UserProfile,
-      name: "UserProfile",
-      children: [
-        {
-          name: "UserAuthoredDiscussions",
-          path: "discussions",
-          component: UserDiscussions
-        },
-        {
-          name: "UserPostedEvents",
-          path: "events",
-          component: UserEvents
-        },
-        {
-          name: "UserAuthoredComments",
-          path: "comments",
-          alias: "",
-          component: UserComments
-        },
-
-      ]
-    },
+    
     { 
       path: "/mod/:modId", 
       component: ModProfile,

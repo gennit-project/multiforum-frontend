@@ -81,7 +81,7 @@ export default defineComponent({
       />
     </ul>
   </div>
-  <div v-else>
+  <div v-else-if="route.name !== 'DiscussionDetail'">
      <h2 class="text-lg">Comments in this Channel</h2>
       <ul class="list-disc pl-3">
         <ChannelLink
