@@ -219,9 +219,8 @@ export const router = createRouter({
     },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
-    { path: "/u/:username", component: UserProfile },
     {
-      path: "/u/:username", 
+      path: "/u/:username(.+)", 
       component: UserProfile,
       name: "UserProfile",
       children: [

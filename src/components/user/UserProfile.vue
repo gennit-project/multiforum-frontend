@@ -85,8 +85,10 @@ export default defineComponent({
 
 <template>
   <div>
+    
     <div v-if="loading">Loading...</div>
     <ErrorBanner :text="error.message" v-else-if="error" :error="error" />
+    <div v-else-if="!user">User not found</div>
     <main v-else>
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"

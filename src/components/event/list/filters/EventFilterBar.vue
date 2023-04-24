@@ -55,10 +55,6 @@ export default defineComponent({
     WeekdaySelector,
   },
   props: {
-    showDistanceFilters: {
-      type: Boolean,
-      default: true,
-    },
     showMap: {
       type: Boolean,
       default: false,
@@ -138,9 +134,9 @@ export default defineComponent({
     const hourRanges: Ref<SelectedHourRanges> = ref({});
     const weekdays: Ref<SelectedWeekdays> = ref({});
 
-    const showLocationSearchBar = computed(() => {
+    const showLocationSearchBarAndDistanceButtons = computed(() => {
       const path = route.path;
-      return path.includes("map");
+      return path.includes("map") || channelId.value !== "";
     });
 
     const selectedDistanceUnit = ref(MilesOrKm.MI);
@@ -182,7 +178,7 @@ export default defineComponent({
       referencePointPlaceId: ref(defaultPlace.referencePointId),
       route,
       selectedDistanceUnit,
-      showLocationSearchBar,
+      showLocationSearchBarAndDistanceButtons,
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeSlotFiltersActive: ref(false),
@@ -376,6 +372,7 @@ export default defineComponent({
     >
       <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
         <button
+          v-if="!channelId"
           class="flex items-center bg-white dark:bg-gray-700 text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
           aria-label="Open event filters"
           @click="handleClickMoreFilters"
@@ -412,13 +409,13 @@ export default defineComponent({
           @updateSearchInput="updateSearchInput"
         />
         <LocationSearchBar
-          v-if="showLocationSearchBar"
+          v-if="showLocationSearchBarAndDistanceButtons"
           class="flex flex-wrap w-full"
           :search-placeholder="referencePointAddress"
           :reference-point-address-name="referencePointName"
           @updateLocationInput="updateLocationInput"
         />
-        <div v-if="showDistanceFilters">
+        <div v-if="showLocationSearchBarAndDistanceButtons">
           <div v-if="selectedDistanceUnit === MilesOrKm.KM">
             <GenericButton
               v-for="distance in distanceOptionsForKilometers"
