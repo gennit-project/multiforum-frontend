@@ -6,8 +6,8 @@ const AUTHOR_FIELDS = gql`
   }
 `;
 
-const VOTE_FIELDS = gql`
-  fragment VoteFields on Comment {
+const COMMENT_VOTE_FIELDS = gql`
+  fragment CommentVoteFields on Comment {
     UpvotedByUsers {
       username
     }
@@ -35,7 +35,7 @@ const COMMENT_FIELDS = gql`
     ChildCommentsAggregate {
       count
     }
-    ...VoteFields
+    ...CommentVoteFields
   }
   ${AUTHOR_FIELDS}
 `;
@@ -77,7 +77,7 @@ export const GET_COMMENT_SECTION = gql`
   }
   ${AUTHOR_FIELDS}
   ${COMMENT_FIELDS}
-  ${VOTE_FIELDS}
+  ${COMMENT_VOTE_FIELDS}
 `;
 
 export const GET_COMMENT_AND_REPLIES = gql`
@@ -95,7 +95,7 @@ export const GET_COMMENT_AND_REPLIES = gql`
   }
   ${AUTHOR_FIELDS}
   ${COMMENT_FIELDS}
-  ${VOTE_FIELDS}
+  ${COMMENT_VOTE_FIELDS}
 `;
 
 export const GET_COMMENT_REPLIES = gql`
@@ -109,7 +109,7 @@ export const GET_COMMENT_REPLIES = gql`
       ChildCommentsAggregate {
         count
       }
-      ...VoteFields
+      ...CommentVoteFields
       ChildComments {
         ...CommentFields
       }
@@ -117,5 +117,5 @@ export const GET_COMMENT_REPLIES = gql`
   }
   ${AUTHOR_FIELDS}
   ${COMMENT_FIELDS}
-  ${VOTE_FIELDS}
+  ${COMMENT_VOTE_FIELDS}
 `;

@@ -19,6 +19,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
+    exact
     class="
       group 
       inline-flex 

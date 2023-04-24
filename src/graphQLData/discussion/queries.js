@@ -6,8 +6,8 @@ const AUTHOR_FIELDS = gql`
   }
 `;
 
-const VOTE_FIELDS = gql`
-  fragment VoteFields on CommentSection {
+const COMMENT_SECTION_VOTE_FIELDS = gql`
+  fragment CommentSectionVoteFields on CommentSection {
     UpvotedByUsers {
       username
     }
@@ -105,7 +105,7 @@ export const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
       CommentSections(where: { Channel: { uniqueName: $channelId } }) {
         id
         __typename
-        ...VoteFields
+        ...CommentSectionVoteFields
         OriginalPost {
           ... on Discussion {
             id
@@ -117,7 +117,7 @@ export const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
   }
   ${AUTHOR_FIELDS}
   ${DISCUSSION_FIELDS}
-  ${VOTE_FIELDS}
+  ${COMMENT_SECTION_VOTE_FIELDS}
 `;
 
 // get discussion by ID
@@ -134,7 +134,7 @@ export const GET_DISCUSSION = gql`
         CommentsAggregate {
           count
         }
-        ...VoteFields
+        ...CommentSectionVoteFields
         OriginalPost {
           ... on Discussion {
             id
@@ -146,5 +146,5 @@ export const GET_DISCUSSION = gql`
   }
   ${AUTHOR_FIELDS}
   ${DISCUSSION_FIELDS}
-  ${VOTE_FIELDS}
+  ${COMMENT_SECTION_VOTE_FIELDS}
 `;
