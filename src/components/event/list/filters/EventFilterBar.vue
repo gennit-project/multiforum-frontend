@@ -202,15 +202,49 @@ export default defineComponent({
     handleCloseFilters() {
       this.drawerIsOpen = false;
     },
-    updateFilters(params: SearchEventValues) {
-      const existingQuery = this.$route.query;
+    updateFilters(params: any) {
+      const isEmpty = (val: any) => {
+        return val === "" || val === '[]'
+      };
+      const paramsWithEmptyValues = Object.keys(params).reduce(
+        (acc: any, key: string) => {
+          if (isEmpty(params[key])) {
+            acc[key] = "";
+          }
+          return acc;
+        },
+        {}
+      );
+      const paramsWithoutEmptyValues = Object.keys(params).reduce(
+        (acc: any, key: string) => {
+          if (!isEmpty(params[key])) {
+            acc[key] = params[key];
+          }
+          return acc;
+        },
+        {}
+      );
+      
+      const existingQueryCopy = {...this.$route.query}
+
+       Object.keys(existingQueryCopy).forEach((key: string) => {
+        if (!isEmpty(existingQueryCopy[key])) {
+            if (isEmpty(paramsWithEmptyValues[key])) {
+              // If the newest filter is empty, we want to remove it from
+              // the query params instead of adding a filter with an empty value.
+              delete existingQueryCopy[key];
+            }
+          }
+      })
+
       // Updating the URL params causes the events
       // to be refetched by the EventListView
       // and MapView components
       this.$router.replace({
+        ...this.$route,
         query: {
-          ...existingQuery,
-          ...params,
+          ...existingQueryCopy,
+          ...paramsWithoutEmptyValues,
         },
       });
     },
