@@ -25,6 +25,7 @@ import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "MapView",
@@ -170,6 +171,8 @@ export default defineComponent({
       ? `/channels/c/${channelId.value}/events/create`
       : "/events/create";
 
+    const { mdAndUp } = useDisplay();
+
     return {
       backToChannel,
       createEventPath,
@@ -182,6 +185,7 @@ export default defineComponent({
       filterValues,
       getFilterValuesFromParams,
       loadedEventCount: ref(0),
+      mdAndUp,
       resultsOrder,
       eventWhere,
       loadMore,
@@ -476,24 +480,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="mx-auto">
-    <div
-      id="mapViewMobileWidth"
-      v-if="smAndDown && eventResult && eventResult.events"
-    >
-      <TimeShortcuts />
-      <EventMap
-        v-if="eventResult.events.length > 0"
-        :events="eventResult.events"
-        :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-        :color-locked="colorLocked"
-        :use-mobile-styles="true"
-        @highlightEvent="highlightEvent"
-        @open-preview="openPreview"
-        @lockColors="colorLocked = true"
-        @setMarkerData="setMarkerData"
-      />
-    </div>
-    <div v-if="!smAndDown" id="mapViewFullScreen" class="flex flex-row">
+    <div v-if="mdAndUp" id="mapViewFullScreen" class="flex flex-row">
       <div class="overflow-y-auto h-full" style="width: 34vw">
         <EventFilterBar class="w-full mt-6" />
         <div class="m-4 flex justify-end">
@@ -566,6 +553,49 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <div
+      id="mapViewMobileWidth"
+      v-else-if="eventResult && eventResult.events"
+    >
+      <div class="event-map-container">
+        <div class="shortcut-buttons-wrapper">
+          <div class="shortcut-buttons">
+            <TimeShortcuts />
+          </div>
+        </div>
+        <EventMap
+          v-if="eventResult.events.length > 0"
+          :events="eventResult.events"
+          :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+          :color-locked="colorLocked"
+          :use-mobile-styles="true"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @lockColors="colorLocked = true"
+          @setMarkerData="setMarkerData"
+        />
+      </div>
+      <div class="md:hidden w-full h-1/3">
+        <EventList
+          key="highlightedEventId"
+          :events="eventResult.events"
+          :channel-id="channelId"
+          :highlighted-event-location-id="highlightedEventLocationId"
+          :highlighted-event-id="highlightedEventId"
+          :search-input="filterValues.searchInput"
+          :selected-tags="filterValues.tags"
+          :selected-channels="filterValues.channels"
+          :loaded-event-count="eventResult.events.length"
+          :result-count="eventResult.eventsAggregate?.count"
+          @filterByTag="filterByTag"
+          @filterByChannel="filterByChannel"
+          @highlightEvent="highlightEvent"
+          @open-preview="openPreview"
+          @unhighlight="unhighlight"
+        />
+      </div>
+    </div>
+    
 
     <EventPreview
       :top-layer="true"
@@ -609,9 +639,10 @@ export default defineComponent({
 .shortcut-buttons-wrapper {
   position: absolute;
   top: 0;
-  right: 50px;
   z-index: 1;
   width: 100%;
+  max-width: calc(100% - 1rem); /* Adjusts the width to fit within the viewport */
+  padding: 0 0.5rem; /* Adds padding on both sides */
   box-sizing: border-box;
 }
 
@@ -622,4 +653,5 @@ export default defineComponent({
   justify-content: flex-end;
   border-radius: 4px;
 }
+
 </style>

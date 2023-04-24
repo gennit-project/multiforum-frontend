@@ -212,7 +212,7 @@ export default defineComponent({
             preview-only
           />
           <button
-            v-if="eventData.description.split(' ').length > 50"
+            v-if="eventData?.description && eventData.description.split(' ').length > 50"
             @click="toggleDescription"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
           >
