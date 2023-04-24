@@ -92,7 +92,10 @@ export default defineComponent({
       if (!this.event) {
         return "";
       }
-      if (this.$route.name === "MapView" || this.$route.name === "MapEventPreview") {
+      if (
+        this.$route.name === "MapView" ||
+        this.$route.name === "MapEventPreview"
+      ) {
         return `/map/search/${this.event.id}`;
       }
       if (this.$route.name === "SitewideSearchEventPreview") {
@@ -109,84 +112,96 @@ export default defineComponent({
     getChannel(commentSection: CommentSectionData) {
       return commentSection.Channel.uniqueName;
     },
-    handleClickTag(tagText: string){
+    handleClickTag(tagText: string) {
       const currentQuery = this.$route.query;
 
-      if (currentQuery.tags){
-        if (typeof currentQuery.tags === 'string' && tagText === currentQuery.tags) {
+      if (currentQuery.tags) {
+        if (
+          typeof currentQuery.tags === "string" &&
+          tagText === currentQuery.tags
+        ) {
           // If we're already filtering by the tag, clear it.
-          const newQuery = {...this.$route.query};
-          delete newQuery['tags']
+          const newQuery = { ...this.$route.query };
+          delete newQuery["tags"];
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
-        } else if (typeof currentQuery.tags === 'object' && currentQuery.tags.includes(tagText)){
+              ...newQuery,
+            },
+          });
+        } else if (
+          typeof currentQuery.tags === "object" &&
+          currentQuery.tags.includes(tagText)
+        ) {
           // If we're already filtering by multiple tags including this tag,
           // remove only this tag.
-          const newQuery = {...this.$route.query};
+          const newQuery = { ...this.$route.query };
           newQuery.tags = newQuery.tags.filter((tag: string) => {
             return tag !== tagText;
-          })
+          });
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
+              ...newQuery,
+            },
+          });
         } else {
           // If we are not already filtering by the tag,
           // overwrite existing tag filters with it.
-          this.updateFilters({ tags: [tagText] })
+          this.updateFilters({ tags: [tagText] });
         }
       } else {
-        this.updateFilters({ tags: [tagText] })
+        this.updateFilters({ tags: [tagText] });
       }
     },
-    handleClickChannel(uniqueName: string){
+    handleClickChannel(uniqueName: string) {
       const currentQuery = this.$route.query;
 
-      if (currentQuery.channels){
-        if (typeof currentQuery.channels === 'string' && uniqueName === currentQuery.channels) {
+      if (currentQuery.channels) {
+        if (
+          typeof currentQuery.channels === "string" &&
+          uniqueName === currentQuery.channels
+        ) {
           // If we're already filtering by the channel, clear it.
-          const newQuery = {...this.$route.query};
-          delete newQuery['channels']
+          const newQuery = { ...this.$route.query };
+          delete newQuery["channels"];
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
-        } else if (typeof currentQuery.channels === 'object' && currentQuery.channels.includes(uniqueName)){
+              ...newQuery,
+            },
+          });
+        } else if (
+          typeof currentQuery.channels === "object" &&
+          currentQuery.channels.includes(uniqueName)
+        ) {
           // If we're already filtering by multiple channels including this channel,
           // remove only this channel.
-          const newQuery = {...this.$route.query};
+          const newQuery = { ...this.$route.query };
           newQuery.channels = newQuery.channels.filter((channel: string) => {
-            return channel !== uniqueName
-          })
+            return channel !== uniqueName;
+          });
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
+              ...newQuery,
+            },
+          });
         } else {
           // If we are not already filtering by the channel,
           // overwrite existing channel filters with it.
-          this.updateFilters({ channels: [uniqueName] })
+          this.updateFilters({ channels: [uniqueName] });
         }
       } else {
-        this.updateFilters({ channels: [uniqueName] })
+        this.updateFilters({ channels: [uniqueName] });
       }
     },
-    goToPreviewLink(){
+    goToPreviewLink() {
       const existingQuery = this.$route.query;
       this.$router.push({
         path: this.previewLink,
-        query: existingQuery
-      })
+        query: existingQuery,
+      });
     },
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
@@ -203,8 +218,8 @@ export default defineComponent({
   },
   data(props) {
     return {
-      hover:           false,
-      previewIsOpen:   false,
+      hover: false,
+      previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
     };
   },
@@ -218,7 +233,11 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    :class="hover || event.id === route.params.eventId ? 'border-blue-500 shadow-lg px-4' : 'border-blue-200 shadow-sm'"
+    :class="
+      hover || event.id === route.params.eventId
+        ? 'border-blue-500 shadow-lg px-4'
+        : 'border-blue-200 shadow-sm'
+    "
     class="relative bg-white dark:bg-slate-800 pl-6 pt-3 pb-2 border-l-4 m-3 rounded-lg"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
@@ -227,108 +246,95 @@ export default defineComponent({
     <div @click="goToPreviewLink">
       <div class="block">
         <div class="py-1">
-          <div class="flex items-center">
-            <p class="space-x-2">
-              <span class="text-lg font-bold truncate cursor-pointer hover:underline">
-                <HighlightedSearchTerms
-                  :text="event.title"
-                  :search-input="searchInput"
-                />
-              </span>
-
-              <span
-                class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3"
-                v-if="event.canceled"
-                >Canceled</span
-              >
-            </p>
-          </div>
-          <div v-if="event.description" class="items-center">
-            <p class="text-sm font-medium text-gray-600 truncate">
-              <HighlightedSearchTerms
-                :text="event.description"
-                :search-input="searchInput"
-              />
-            </p>
-            <p
-              v-if="event.free"
-              class="text-sm font-medium text-gray-600 truncate"
+          <div class="flex">
+            <!-- Date box -->
+            <div
+              class="w-16 h-16 pt-3 flex flex-col justify-center items-center rounded-lg mr-4"
             >
-              Free
-            </p>
+              <div class="text-xs uppercase text-gray-500 font-semibold">
+                {{
+                  new Date(event.startTime).toLocaleString("en-US", {
+                    weekday: "short",
+                  })
+                }}
+              </div>
+              <div class="text-2xl font-bold">
+                {{ new Date(event.startTime).getDate() }}
+              </div>
+              <div class="text-xs lowercase text-gray-500 font-semibold">
+                {{
+                  new Date(event.startTime).toLocaleString("en-US", {
+                    month: "short",
+                  })
+                }}
+              </div>
+            </div>
+            <div>
+              <p class="space-x-2">
+                <span
+                  class="text-lg font-bold truncate cursor-pointer hover:underline"
+                >
+                  <HighlightedSearchTerms
+                    :text="event.title"
+                    :search-input="searchInput"
+                  />
+                </span>
+
+                <span
+                  class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3"
+                  v-if="event.canceled"
+                  >Canceled</span
+                >
+              </p>
+              <p
+                class="mt-2 flex flex-wrap text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2"
+              >
+                {{ `${event.locationName || ""}` }}
+              </p>
+              <p v-if="event.virtualEventUrl">Online event</p>
+              <p
+                v-if="event.free"
+                class="text-sm font-medium text-gray-600"
+              >
+                Free
+              </p>
+              <div class="text-sm" v-if="!isWithinChannel">
+                <Tag
+                  class="my-1"
+                  :active="selectedChannels.includes(channel.uniqueName)"
+                  :key="channel.uniqueName"
+                  :channel-mode="true"
+                  v-for="channel in event.Channels"
+                  :tag="channel.uniqueName"
+                  @click="
+                    () => {
+                      handleClickChannel(channel.uniqueName);
+                    }
+                  "
+                />
+              </div>
+              <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+                <Tag
+                  class="my-1"
+                  :active="selectedTags.includes(tag.text)"
+                  :key="tag"
+                  v-for="tag in event.Tags"
+                  :tag="tag.text"
+                  @click="
+                    () => {
+                      handleClickTag(tag.text);
+                    }
+                  "
+                />
+              </p>
+            </div>
+            
           </div>
 
-          <p
-            class="
-              mt-2
-              flex flex-wrap
-              text-sm text-gray-500
-              sm:mt-1 sm:mr-6
-              space-x-2
-            "
-          >
-            {{
-              `${formattedDate} at ${timeOfDay}${
-                event.locationName ? "," : ""
-              } ${event.locationName || ""}`
-            }}
-          </p>
-          <p v-if="event.virtualEventUrl">
-           Online event
-          </p>
-
-          <div class="text-sm" v-if="!isWithinChannel">
-            <Tag
-              class="my-1"
-              :active="selectedChannels.includes(channel.uniqueName)"
-              :key="channel.uniqueName"
-              :channel-mode="true"
-              v-for="channel in event.Channels"
-              :tag="channel.uniqueName"
-              @click="() => {handleClickChannel(channel.uniqueName)}"
-            />
-           
-          </div>
-          <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
-            <Tag
-              class="my-1"
-              :active="selectedTags.includes(tag.text)"
-              :key="tag"
-              v-for="tag in event.Tags"
-              :tag="tag.text"
-              @click="() => {handleClickTag(tag.text)}"
-            />
-          </p>
-          <!-- <div class="text-sm">
-          <router-link
-            v-if="isWithinChannel && event.CommentSections[0]"
-            :to="`/channels/c/${defaultUniqueName}/events/e/${event.id}`"
-            class="font-medium text-gray-500"
-          >
-            {{ getCommentCount(event.CommentSections[0]) }}
-            <span aria-hidden="true">&rarr;</span>
-          </router-link>
-
-          <router-link
-            v-else
-            :key="getChannel(commentSection)"
-            v-for="(commentSection, i) in event.CommentSections"
-            :to="`/channels/c/${getChannel(commentSection)}/events/e/${event.id}`"
-            class="font-medium"
-          >
-            {{ getCommentCount(commentSection) }} in
-            <span class="text-gray-800"
-              >channels/<HighlightedSearchTerms
-                :text="getChannel(commentSection)"
-                :search-input="selectedChannels.join(' ')"
-            /></span>
-            {{ i === event.CommentSections.length - 1 ? "" : "•" }}
-          </router-link>
-        </div> -->
+         
         </div>
       </div>
     </div>
-   
   </li>
 </template>
 <style>

@@ -147,7 +147,7 @@ export default defineComponent({
       showFullDescription,
       truncatedDescription,
       toggleDescription,
-      visibleDescription
+      visibleDescription,
     };
   },
   methods: {
@@ -160,13 +160,11 @@ export default defineComponent({
 
 <template>
   <div
-    class="height-constrained-more px-4 pb-36 lg:w-full space-y-2 flex justify-center"
+    class="height-constrained-more px-4 pb-36 pt-4 lg:w-full space-y-2 flex justify-center"
   >
     <div
       :class="
-        route.name === 'EventDetail' && mdAndUp
-          ? 'large-width'
-          : 'w-full mx-4'
+        route.name === 'EventDetail' && mdAndUp ? 'large-width' : 'w-full mx-4'
       "
       class="space-y-2"
     >
@@ -189,7 +187,10 @@ export default defineComponent({
         <p>Could not find the event.</p>
       </div>
 
-      <div v-else-if="eventResult && eventResult.events && eventData" class="px-4 bg-white dark:bg-dark-700">
+      <div
+        v-else-if="eventResult && eventResult.events && eventData"
+        class="px-4 bg-white dark:bg-dark-700 pt-4"
+      >
         <ErrorBanner
           class="mt-2 mb-2"
           v-if="eventIsInThePast"
@@ -212,7 +213,10 @@ export default defineComponent({
             preview-only
           />
           <button
-            v-if="eventData?.description && eventData.description.split(' ').length > 50"
+            v-if="
+              eventData?.description &&
+              eventData.description.split(' ').length > 50
+            "
             @click="toggleDescription"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
           >
