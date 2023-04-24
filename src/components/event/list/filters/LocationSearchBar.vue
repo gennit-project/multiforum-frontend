@@ -1,13 +1,20 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "LocationSearchBar",
   components: {
     LocationIcon,
   },
-  setup() {},
+  setup() {
+    const route = useRoute()
+    console.log(route.name)
+    return {
+      route,
+    }
+  },
   props: {
     compact: {
       type: Boolean,
@@ -44,6 +51,7 @@ export default defineComponent({
     <label for="search" class="sr-only">Search Location</label>
     <div class="relative w-full">
       <div
+        v-if="route.name !== 'EditEvent' && route.name !== 'CreateEvent'"
         class="
           absolute
           inset-y-0
@@ -92,6 +100,7 @@ export default defineComponent({
       >
       </GMapAutocomplete>
       <div
+        v-if="route.name !== 'EditEvent' && route.name !== 'CreateEvent'"
         class="
           absolute
           inset-y-0

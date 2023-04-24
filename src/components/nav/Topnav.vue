@@ -66,8 +66,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800">
-    <div class="px-4 lg:px-12 relative flex items-center justify-between shadow-sm">
+  <div class="bg-white dark:bg-gray-800  shadow-sm">
+    <div class="px-4 lg:px-12 relative flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="text-gray-700 flex text-lg">
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="dark:text-white">topical</span>
