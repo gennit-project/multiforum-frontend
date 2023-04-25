@@ -101,6 +101,9 @@ export default defineComponent({
       if (this.$route.name === "SitewideSearchEventPreview") {
         return `/events/list/search/${this.event.id}`;
       }
+      if (this.$route.name === "SearchEventPreview") {
+        return `/channels/c/${this.currentChannelId}/events/search/${this.event.id}`;
+      }
       return ``;
     },
   },
@@ -247,7 +250,6 @@ export default defineComponent({
       <div class="block">
         <div class="py-1">
           <div class="flex">
-            <!-- Date box -->
             <div
               class="w-16 h-16 pt-3 flex flex-col justify-center items-center rounded-lg mr-4"
             >
@@ -292,10 +294,7 @@ export default defineComponent({
                 {{ `${event.locationName || ""}` }}
               </p>
               <p v-if="event.virtualEventUrl">Online event</p>
-              <p
-                v-if="event.free"
-                class="text-sm font-medium text-gray-600"
-              >
+              <p v-if="event.free" class="text-sm font-medium text-gray-600">
                 Free
               </p>
               <div class="text-sm" v-if="!isWithinChannel">
@@ -313,7 +312,9 @@ export default defineComponent({
                   "
                 />
               </div>
-              <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+              <p
+                class="text-sm text-slate-600 hover:no-underline font-medium mt-1"
+              >
                 <Tag
                   class="my-1"
                   :active="selectedTags.includes(tag.text)"
@@ -328,10 +329,7 @@ export default defineComponent({
                 />
               </p>
             </div>
-            
           </div>
-
-         
         </div>
       </div>
     </div>
