@@ -86,7 +86,7 @@ export default defineComponent({
             <DialogPanel
               class="
                 relative
-                 
+                bg-white dark:bg-gray-800
                 rounded-lg
                 px-4
                 pt-5
@@ -121,7 +121,7 @@ export default defineComponent({
                 <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
                   <DialogTitle
                     as="h3"
-                    class="text-lg leading-6 font-medium text-gray-900"
+                    class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100"
                   >
                     {{ title }}
                   </DialogTitle>
