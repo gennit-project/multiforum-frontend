@@ -27,7 +27,7 @@ export default defineComponent({
       <v-col
         :class="[
           lgAndUp ? 'constrain-height' : '',
-          xlAndUp ? 'w-1/2' : 'w-full',
+          mdAndUp ? 'w-1/2' : 'w-full',
         ]"
         class="lg:overflow-y-auto"
       >

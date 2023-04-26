@@ -238,7 +238,7 @@ export default defineComponent({
     <v-row>
       <v-col cols="12">
         <div class="mx-auto">
-          <div class="flex justify-center">
+          <div class="flex">
             <div>
               <ErrorBanner
                 class="mx-auto block"
@@ -246,7 +246,7 @@ export default defineComponent({
                 :text="eventError.message"
               />
               <p v-else-if="eventLoading">Loading...</p>
-              <TwoSeparatelyScrollingPanes class="block">
+              <TwoSeparatelyScrollingPanes class="block w-full">
                 <template v-slot:leftpane>
                   <EventFilterBar class="my-4" :show-distance-filters="false" />
                   <RequireAuth class="flex inline-flex">

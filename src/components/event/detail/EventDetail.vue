@@ -202,7 +202,7 @@ export default defineComponent({
           :text="'This event is canceled.'"
         />
         <EventHeader :event-data="eventData" />
-        <div>
+        <div class="mt-4">
           <md-editor
             v-if="eventData.description"
             class="max-w-2xl small-text"

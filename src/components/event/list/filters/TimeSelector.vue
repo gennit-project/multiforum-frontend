@@ -111,7 +111,7 @@ export default defineComponent({
     <div
       v-for="(range, i) in hourRangesData"
       :key="range['12-hour-label']"
-      :class="i % 2 === 0 ? 'bg-gray-100' : ''"
+      :class="i % 2 === 0 ? 'bg-gray-100 dark:bg-gray-800' : ''"
       class="mr-2 mb-2 p-2 rounded"
     >
       <label :for="'timeRange-' + range['12-hour-label']" class="flex items-center cursor-pointer">
