@@ -339,44 +339,7 @@ body.light #md-editor-v3-preview,
 body.light #md-editor-v3-preview-wrapper {
   @apply text-light bg-light;
 }
-#md-editor-v3-preview {
-  p,
-  ul,
-  ol,
-  blockquote > li {
-    font-size: 0.8em;
-    word-break: break-word;
-  }
-  ul > li > p {
-    margin: 0.5em 0;
-    line-height: 1.5em;
-  }
-  h1,
-  h2,
-  h3 {
-    margin-bottom: 0.5em;
-  }
-  h3 {
-    margin-top: 1.5em;
-  }
-  p {
-    line-height: 1.5em;
-    margin-top: 0.6em;
-    margin-bottom: 0.6em;
-  }
-  ul > li > p {
-    margin-bottom: 0.35em;
-    line-height: 1.5em;
-  }
-  li {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-    line-height: 1.5em;
-  }
-  ul {
-    margin: 0.1em;
-  }
-}
+
 .profile-picture {
   position: relative;
   left: -3em;

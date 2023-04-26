@@ -27,6 +27,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    title: {
+      type: String,
+      default: "",
+    },
   },
   setup() {
     const cancelButtonRef = ref();
@@ -80,6 +84,7 @@ export default defineComponent({
                         <span class="sr-only">Close panel</span>
                         <XIcon class="h-6 w-6" aria-hidden="true" />
                       </button>
+                      {{ title }}
                     </div>
                   </div>
                 </div>

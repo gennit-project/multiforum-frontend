@@ -238,7 +238,6 @@ export default defineComponent({
                 class="max-w-2xl small-text -ml-5"
                 v-model="textCopy"
                 previewTheme="vuepress"
-               
                 language="en-US"
                 :noMermaid="true"
                 preview-only
@@ -376,7 +375,7 @@ export default defineComponent({
 
 
 .bg-dark {
-  @apply bg-gray-700;
+  @apply bg-gray-800;
 }
 
 .text-dark {

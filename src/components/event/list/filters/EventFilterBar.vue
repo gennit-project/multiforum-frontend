@@ -428,13 +428,13 @@ export default defineComponent({
     <div class="flex justify-center">
       <DrawerFlyout
         label="Event Filters"
+        :title="'Search and Filter Events'"
         placement="start"
         class="drawer-placement-start dark:bg-gray-800"
         :isOpen="drawerIsOpen"
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
-        <h1 class="mb-2">Search Events</h1>
         <SearchBar
           class="inline-flex align-middle w-full"
           :initial-value="filterValues.searchInput"

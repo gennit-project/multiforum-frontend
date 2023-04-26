@@ -68,7 +68,7 @@ export default defineComponent({
         </p>
       </div>
       <div class="mt-1">
-        <p v-if="channel.description" class="text-sm truncate font-normal text-gray-600 my-1">
+        <p v-if="channel.description" class="text-sm truncate font-normal text-gray-600 dark:text-gray-200 my-1">
           <HighlightedSearchTerms
             :text="channel.description"
             :search-input="searchInput"

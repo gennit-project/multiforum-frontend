@@ -210,7 +210,7 @@ export default defineComponent({
             :channelId="channelId"
           />
           <div
-            class="mb-2 my-4 py-6 dark:bg-gray-700 rounded-lg"
+            class="mb-2 my-4 py-6 dark:bg-gray-800 rounded-lg"
             v-if="route.name === 'DiscussionDetail'"
           >
             <CommentSection

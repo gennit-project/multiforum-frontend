@@ -264,7 +264,7 @@ export default defineComponent({
           @click="$emit('filterByTag', tag)"
         />
       </p>
-      <p class="text-xs font-medium text-slate-600 no-underline">
+      <p class="text-xs font-medium text-slate-600 dark:text-gray-300 no-underline">
         {{ `Posted ${relativeTime} by ${authorUsername}` }}
       </p>
     </div>

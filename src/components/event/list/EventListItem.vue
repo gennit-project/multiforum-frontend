@@ -253,7 +253,7 @@ export default defineComponent({
             <div
               class="w-16 h-16 pt-3 flex flex-col justify-center items-center rounded-lg mr-4"
             >
-              <div class="text-xs uppercase text-gray-500 font-semibold">
+              <div class="text-xs uppercase text-gray-500 dark:text-gray-200 font-semibold">
                 {{
                   new Date(event.startTime).toLocaleString("en-US", {
                     weekday: "short",
@@ -263,7 +263,7 @@ export default defineComponent({
               <div class="text-2xl font-bold">
                 {{ new Date(event.startTime).getDate() }}
               </div>
-              <div class="text-xs lowercase text-gray-500 font-semibold">
+              <div class="text-xs lowercase text-gray-500 dark:text-gray-200 font-semibold">
                 {{
                   new Date(event.startTime).toLocaleString("en-US", {
                     month: "short",
