@@ -123,86 +123,98 @@ export default defineComponent({
         },
       });
     },
-    handleClickTag(tagText: string){
+    handleClickTag(tagText: string) {
       const currentQuery = this.$route.query;
 
-      if (currentQuery.tags){
-        if (typeof currentQuery.tags === 'string' && tagText === currentQuery.tags) {
+      if (currentQuery.tags) {
+        if (
+          typeof currentQuery.tags === "string" &&
+          tagText === currentQuery.tags
+        ) {
           // If we're already filtering by the tag, clear it.
-          const newQuery = {...this.$route.query};
-          delete newQuery['tags']
+          const newQuery = { ...this.$route.query };
+          delete newQuery["tags"];
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
+              ...newQuery,
+            },
+          });
 
           this.filterValues.tags = this.filterValues.tags.filter(
-          (t: string) => t !== tagText
-        );
-        } else if (typeof currentQuery.tags === 'object' && currentQuery.tags.includes(tagText)){
+            (t: string) => t !== tagText
+          );
+        } else if (
+          typeof currentQuery.tags === "object" &&
+          currentQuery.tags.includes(tagText)
+        ) {
           // If we're already filtering by multiple tags including this tag,
           // remove only this tag.
-          const newQuery = {...this.$route.query};
+          const newQuery = { ...this.$route.query };
           newQuery.tags = newQuery.tags.filter((tag: string) => {
             return tag !== tagText;
-          })
+          });
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
+              ...newQuery,
+            },
+          });
           this.filterValues.tags.push(tagText);
         } else {
           // If we are not already filtering by the tag,
           // overwrite existing tag filters with it.
-          this.updateFilters({ tags: [tagText] })
+          this.updateFilters({ tags: [tagText] });
         }
       } else {
-        this.updateFilters({ tags: [tagText] })
+        this.updateFilters({ tags: [tagText] });
       }
     },
-    handleClickChannel(uniqueName: string ){
+    handleClickChannel(uniqueName: string) {
       const currentQuery = this.$route.query;
 
-      if (currentQuery.channels){
-        if (typeof currentQuery.channels === 'string' && uniqueName === currentQuery.channels) {
+      if (currentQuery.channels) {
+        if (
+          typeof currentQuery.channels === "string" &&
+          uniqueName === currentQuery.channels
+        ) {
           // If we're already filtering by the channel, clear it.
-          const newQuery = {...this.$route.query};
-          delete newQuery['channels']
+          const newQuery = { ...this.$route.query };
+          delete newQuery["channels"];
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
+              ...newQuery,
+            },
+          });
 
           this.filterValues.channels = this.filterValues.channels.filter(
-          (c: string) => c !== uniqueName
-        );
-        } else if (typeof currentQuery.channels === 'object' && currentQuery.channels.includes(uniqueName)){
+            (c: string) => c !== uniqueName
+          );
+        } else if (
+          typeof currentQuery.channels === "object" &&
+          currentQuery.channels.includes(uniqueName)
+        ) {
           // If we're already filtering by multiple channels including this channel,
           // remove only this channel.
-          const newQuery = {...this.$route.query};
+          const newQuery = { ...this.$route.query };
           newQuery.channels = newQuery.channels.filter((channel: string) => {
             return channel !== uniqueName;
-          })
+          });
 
           this.$router.replace({
             query: {
-              ...newQuery
-            }
-          })
+              ...newQuery,
+            },
+          });
           this.filterValues.channels.push(uniqueName);
         } else {
           // If we are not already filtering by the channel,
           // overwrite existing channel filters with it.
-          this.updateFilters({ channels: [uniqueName] })
+          this.updateFilters({ channels: [uniqueName] });
         }
       } else {
-        this.updateFilters({ channels: [uniqueName] })
+        this.updateFilters({ channels: [uniqueName] });
       }
     },
     closePreview() {
@@ -229,69 +241,71 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <div class="flex justify-center w-full">
-      <div>
-        <div class="rounded pr-8">
-          <div class="py-2">
-            <div class="items-center">
-              <DiscussionFilterBar />
-              <RequireAuth class="flex inline-flex">
-                <template v-slot:has-auth>
-                  <CreateButton
-                    class="align-middle ml-2"
-                    :to="createDiscussionPath"
-                    :label="'Create Discussion'"
-                  />
-                </template>
-                <template v-slot:does-not-have-auth>
-                  <PrimaryButton
-                    class="align-middle ml-2"
-                    :label="'Create Discussion'"
-                  />
-                </template>
-              </RequireAuth>
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12">
+        <v-col>
+          <div class="rounded pr-8">
+            <div class="py-2">
+              <div class="items-center">
+                <DiscussionFilterBar />
+                <RequireAuth class="flex inline-flex">
+                  <template v-slot:has-auth>
+                    <CreateButton
+                      class="align-middle ml-2"
+                      :to="createDiscussionPath"
+                      :label="'Create Discussion'"
+                    />
+                  </template>
+                  <template v-slot:does-not-have-auth>
+                    <PrimaryButton
+                      class="align-middle ml-2"
+                      :label="'Create Discussion'"
+                    />
+                  </template>
+                </RequireAuth>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="w-full">
-          <TwoSeparatelyScrollingPanes>
-            <template v-slot:leftpane>
-              <SitewideDiscussionList
-                v-if="!channelId"
-                :search-input="filterValues.searchInput"
-                :selected-tags="filterValues.tags"
-                :selected-channels="filterValues.channels"
-                @filterByTag="handleClickTag"
-                @filterByChannel="handleClickChannel"
-                @openPreview="openPreview"
-              />
-              <ChannelDiscussionList
-                v-else
-                :channel-id="channelId"
-                :search-input="filterValues.searchInput"
-                :selected-tags="filterValues.tags"
-                :selected-channels="filterValues.channels"
-                @filterByTag="handleClickTag"
-                @filterByChannel="handleClickChannel"
-                @openPreview="openPreview"
-              />
-              <DrawerFlyout
-                v-if="mdAndDown"
-                :isOpen="previewIsOpen"
-                @closePreview="closePreview"
-              >
-                <DiscussionDetail />
-              </DrawerFlyout>
-            </template>
-            <template v-slot:rightpane>
-              <router-view></router-view>
-            </template>
-          </TwoSeparatelyScrollingPanes>
-        </div>
-      </div>
-    </div>
-  </div>
+          <div class="w-full">
+            <TwoSeparatelyScrollingPanes>
+              <template v-slot:leftpane>
+                <SitewideDiscussionList
+                  v-if="!channelId"
+                  :search-input="filterValues.searchInput"
+                  :selected-tags="filterValues.tags"
+                  :selected-channels="filterValues.channels"
+                  @filterByTag="handleClickTag"
+                  @filterByChannel="handleClickChannel"
+                  @openPreview="openPreview"
+                />
+                <ChannelDiscussionList
+                  v-else
+                  :channel-id="channelId"
+                  :search-input="filterValues.searchInput"
+                  :selected-tags="filterValues.tags"
+                  :selected-channels="filterValues.channels"
+                  @filterByTag="handleClickTag"
+                  @filterByChannel="handleClickChannel"
+                  @openPreview="openPreview"
+                />
+                <DrawerFlyout
+                  v-if="mdAndDown"
+                  :isOpen="previewIsOpen"
+                  @closePreview="closePreview"
+                >
+                  <DiscussionDetail />
+                </DrawerFlyout>
+              </template>
+              <template v-slot:rightpane>
+                <router-view></router-view>
+              </template>
+            </TwoSeparatelyScrollingPanes>
+          </div>
+        </v-col>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <style>
 .height-constrained {

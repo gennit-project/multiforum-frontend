@@ -22,27 +22,18 @@ export default defineComponent({
 </script>
 
 <template>
-    <div
-      class="flex flex-row"
-      :class="{ 
-        'container-md': mdAndUp && !lgAndUp && (!route.fullPath.includes('channel')),
-        'channel-container-md': mdAndUp && !lgAndUp && (route.fullPath.includes('channel')),
-        'container-lg': ( lgAndUp && (!route.fullPath.includes('channel'))), 
-        'channel-container-lg': ( lgAndUp && (route.fullPath.includes('channel'))),
-        'container-xl': xlAndUp && (!route.fullPath.includes('channel')),
-        'channel-container-xl': xlAndUp && (route.fullPath.includes('channel')),}
-        "
-    >
-      <div
+  <v-container fluid>
+    <v-row>
+      <v-col
         :class="[
           lgAndUp ? 'constrain-height' : '',
-          lgAndUp ? 'w-1/2' : 'w-full',
+          xlAndUp ? 'w-1/2' : 'w-full',
         ]"
         class="lg:overflow-y-auto"
       >
         <slot name="leftpane"></slot>
-      </div>
-      <div
+      </v-col>
+      <v-col
         v-if="lgAndUp"
         :class="[
           'lg:max-h-screen',
@@ -51,51 +42,14 @@ export default defineComponent({
         ]"
       >
         <slot name="rightpane"></slot>
-      </div>
-    </div>
-  </template>
+      </v-col>
+    </v-row>
+  </v-container>
+</template>
   
-  <style>
-  .constrain-height {
-    max-height: 86vh;
-    height: 100% - 200px;
-  }
-  .container-lg {
-    width: 100%;
-    max-width: 100%;
-  }
-  .container-md {
-    width: 100%;
-    max-width: 100%;
-  }
-  </style>
-  
-
 <style>
 .constrain-height {
   max-height: 86vh;
   height: 100% - 200px;
 }
-.container-xl {
-  width: 2000px;
-}
-.channel-container-xl {
-  width: 1500px;
-}
-
-.container-lg {
-  width: 1400px;
-}
-.channel-container-lg {
-  width: 900px;
-}
-
-.container-md {
-  width: 1100px;
-}
-.channel-container-md {
-  width: 700px;
-}
-
-
 </style>

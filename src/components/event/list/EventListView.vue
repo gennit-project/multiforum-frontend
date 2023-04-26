@@ -13,7 +13,10 @@ import { getFilterValuesFromParams } from "./filters/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import EventDetail from "../detail/EventDetail.vue";
 import { timeShortcutValues } from "./filters/eventSearchOptions";
-import { chronologicalOrder, reverseChronologicalOrder } from "./filters/filterStrings";
+import {
+  chronologicalOrder,
+  reverseChronologicalOrder,
+} from "./filters/filterStrings";
 import EventFilterBar from "./filters/EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
@@ -231,68 +234,72 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mx-auto">
-    <div class="flex justify-center">
-      <div>
-              
-             
-        <ErrorBanner
-          class="mx-auto block"
-          v-if="eventError"
-          :text="eventError.message"
-        />
-        <p v-else-if="eventLoading">Loading...</p>
-        <TwoSeparatelyScrollingPanes class="block">
-          <template v-slot:leftpane>
-            <EventFilterBar class="my-4" :show-distance-filters="false"/>
-            <RequireAuth class="flex inline-flex">
-              <template v-slot:has-auth>
-                <CreateButton
-                  class="align-middle ml-2"
-                  :to="createEventPath"
-                  :label="'+ Create Event'"
-                />
-              </template>
-              <template v-slot:does-not-have-auth>
-                <PrimaryButton
-                  class="align-middle ml-2"
-                  :label="'+ Create Event'"
-                />
-              </template>
-            </RequireAuth>
-            <EventList
-              id="listView"
-              v-if="eventResult"
-              :class="[!channelId ? '' : '']"
-              class="relative"
-              :result-count="
-                eventResult ? eventResult.eventsAggregate?.count : 0
-              "
-              :events="eventResult.events"
-              :channel-id="channelId"
-              :search-input="filterValues.searchInput"
-              :selected-tags="filterValues.tags"
-              :selected-channels="filterValues.channels"
-              :show-map="false"
-              @filterByTag="filterByTag"
-              @filterByChannel="filterByChannel"
-              @loadMore="loadMore"
-              @openPreview="openPreview"
-            />
-            <div class="mx-auto" v-if="eventLoading">Loading...</div>
-            <DrawerFlyout
-              v-if="eventId"
-              :isOpen="previewIsOpen"
-              @closePreview="closePreview"
-            >
-              <EventDetail/>
-            </DrawerFlyout>
-          </template>
-          <template v-slot:rightpane>
-            <router-view></router-view>
-          </template>
-        </TwoSeparatelyScrollingPanes>
-      </div>
-    </div>
-  </div>
+  <v-container fluid>
+    <v-row>
+      <v-col cols="12">
+        <div class="mx-auto">
+          <div class="flex justify-center">
+            <div>
+              <ErrorBanner
+                class="mx-auto block"
+                v-if="eventError"
+                :text="eventError.message"
+              />
+              <p v-else-if="eventLoading">Loading...</p>
+              <TwoSeparatelyScrollingPanes class="block">
+                <template v-slot:leftpane>
+                  <EventFilterBar class="my-4" :show-distance-filters="false" />
+                  <RequireAuth class="flex inline-flex">
+                    <template v-slot:has-auth>
+                      <CreateButton
+                        class="align-middle ml-2"
+                        :to="createEventPath"
+                        :label="'+ Create Event'"
+                      />
+                    </template>
+                    <template v-slot:does-not-have-auth>
+                      <PrimaryButton
+                        class="align-middle ml-2"
+                        :label="'+ Create Event'"
+                      />
+                    </template>
+                  </RequireAuth>
+                  <EventList
+                    id="listView"
+                    v-if="eventResult"
+                    :class="[!channelId ? '' : '']"
+                    class="relative"
+                    :result-count="
+                      eventResult ? eventResult.eventsAggregate?.count : 0
+                    "
+                    :events="eventResult.events"
+                    :channel-id="channelId"
+                    :search-input="filterValues.searchInput"
+                    :selected-tags="filterValues.tags"
+                    :selected-channels="filterValues.channels"
+                    :show-map="false"
+                    @filterByTag="filterByTag"
+                    @filterByChannel="filterByChannel"
+                    @loadMore="loadMore"
+                    @openPreview="openPreview"
+                  />
+                  <div class="mx-auto" v-if="eventLoading">Loading...</div>
+                  <DrawerFlyout
+                    v-if="eventId"
+                    :isOpen="previewIsOpen"
+                    @closePreview="closePreview"
+                  >
+                    <EventDetail />
+                  </DrawerFlyout>
+                </template>
+                <template v-slot:rightpane>
+                  <router-view></router-view>
+                </template>
+              </TwoSeparatelyScrollingPanes>
+            </div>
+          </div>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>

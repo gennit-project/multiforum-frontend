@@ -219,6 +219,14 @@ body.light #md-editor-v3-preview-wrapper {
   left: -2em;
   padding-left: 2em;
 }
+#md-editor-v3-preview {
+  ul ul,
+  ol ul,
+  ul ol,
+  ol ol {
+    font-size: inherit;
+  }
+}
 
 
 </style>

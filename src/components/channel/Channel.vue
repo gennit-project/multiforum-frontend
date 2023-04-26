@@ -56,7 +56,7 @@ export default defineComponent({
           <div class="flex flex-col lg:flex-row h-full">
             <div class="h-full">
               <section aria-labelledby="section-2-title h-full">
-                <div class="overflow-hidden rounded-lg bg-white shadow pb-4 h-full dark:bg-slate-700">
+                <div class="overflow-hidden rounded-lg shadow pb-4 h-full bg-white dark:bg-gray-800">
                   <div v-if="mdAndUp" class="h-24 w-full object-cover user-background" alt="background pattern"></div>
                   <div class="lg:-mt-8">
                     <div class="flex space-x-2">

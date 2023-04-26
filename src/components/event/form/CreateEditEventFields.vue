@@ -384,7 +384,7 @@ export default defineComponent({
           <template v-slot:content>
             <div class="inline-block xl:flex items-center my-2 space-x-2">
               <sl-input
-                class="sl-input cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                 type="datetime-local"
                 placeholder="Date"
                 label="Start"
@@ -394,7 +394,7 @@ export default defineComponent({
               >
               </sl-input>
               <sl-input
-                class="sl-input cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                 type="datetime-local"
                 placeholder="Date"
                 label="End"
@@ -547,6 +547,7 @@ sl-input {
 }
 .sl-input::part(base):focus-visible {
   box-shadow: 0 0 0 3px rgba(7, 3, 255, 0.33);
+  
 }
 .sl-input::part(input) {
   border: 0 !important;
@@ -555,6 +556,8 @@ sl-input {
   color: #000000;
   border-color: blue;
   font-size: 0.875rem;
+  @apply dark:bg-gray-700;
+  @apply dark:text-gray-300;
 }
 
 </style>

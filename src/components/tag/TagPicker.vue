@@ -87,7 +87,7 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <div v-else class="divide-y divide-solid">
+    <div v-else class="divide-y divide-solid dark:bg-gray-600">
       <div class="tagpicker">
         <Tag
           :key="tag"
@@ -102,6 +102,7 @@ export default defineComponent({
         <button
           class="
             bg-white
+            dark:bg-gray-800
             float-right
             inline-flex
             py-2

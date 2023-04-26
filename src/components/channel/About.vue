@@ -115,6 +115,7 @@ export default defineComponent({
               mb-2
               font-medium
               text-gray-700
+              dark:text-gray-300
               border-b border-gray-200
             "
           >
@@ -137,6 +138,7 @@ export default defineComponent({
             mb-2
             font-medium
             text-gray-700
+            dark:text-gray-300
             border-b border-gray-200
           "
         >

@@ -92,7 +92,7 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
-    <div v-else class="divide-y divide-solid">
+    <div v-else class="divide-y divide-solid dark:bg-gray-600">
       <div class="channelpicker">
         <Tag
           :key="channel"
