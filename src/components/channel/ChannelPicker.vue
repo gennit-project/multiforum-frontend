@@ -5,12 +5,12 @@ import { ChannelData } from "@/types/channelTypes";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import Tag from "@/components/tag/Tag.vue";
-import RefreshIcon from "@/components/icons/RefreshIcon.vue";
+import ResetButton from "../generic/ResetButton.vue";
 
 export default defineComponent({
   components: {
     Tag,
-    RefreshIcon,
+    ResetButton,
   },
   props: {
     hideSelected: {
@@ -93,7 +93,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-else class="divide-y divide-solid dark:bg-gray-600">
-      <div class="channelpicker">
+      <div class="channel-picker">
         <Tag
           :key="channel"
           v-for="channel in channelOptionLabels"
@@ -105,32 +105,7 @@ export default defineComponent({
         />
       </div>
       <div class="h-14 p-2">
-        <button
-          class="
-          float-right
-          inline-flex
-          py-2
-          px-4
-          border border-gray-300
-          rounded-full
-          shadow-sm
-          text-sm
-          font-medium
-          text-gray-700
-          dark:text-gray-300
-          dark:bg-gray-800
-          dark:border-gray-800
-          dark:hover:bg-gray-700
-          hover:bg-gray-50
-          focus:outline-none
-          focus:ring-2
-          focus:ring-offset-2
-          focus:ring-blue-500
-          "
-          @click.prevent="resetChannels"
-        >
-          <RefreshIcon class="h-5 mr-1" @click="resetChannels"/>Reset
-        </button>
+        <ResetButton @reset="resetChannels"/>
       </div>
     </div>
   </div>
@@ -140,7 +115,7 @@ export default defineComponent({
 </style>
 <style>
 
-.channelpicker {
+.channel-picker {
   display: flex;
   flex-wrap: wrap;
   padding: 10px;

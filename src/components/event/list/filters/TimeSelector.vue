@@ -7,15 +7,14 @@ import {
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
   createDefaultSelectedHourRanges,
-  createDefaultSelectedWeeklyHourRanges,
 } from "@/components/event/list/filters/eventSearchOptions";
 import {
-  SelectedWeeklyHourRanges,
-  SelectedWeekdays,
   SelectedHourRanges,
   WeekdayData,
   HourRangeData,
 } from "@/types/eventTypes";
+import ResetButton from "@/components/generic/ResetButton.vue";
+
 
 export default defineComponent({
   props: {
@@ -23,6 +22,9 @@ export default defineComponent({
       type: Object as PropType<SelectedHourRanges>,
       required: true,
     },
+  },
+  components: {
+    ResetButton
   },
   setup(props) {
     const workingCopyOfSelectedHourRanges: Ref<SelectedHourRanges> = ref(
@@ -103,6 +105,11 @@ export default defineComponent({
       // Don't need to emit an event to update params because it is
       // already emitted in toggleSelectTimeRange
     },
+    reset(){
+      this.$emit('reset')
+
+      this.workingCopyOfSelectedHourRanges = {}
+    }
   },
 });
 </script>
@@ -126,5 +133,6 @@ export default defineComponent({
         </label>
       </div>
     </div>
+    <ResetButton @reset="reset"/>
   </div>
 </template>

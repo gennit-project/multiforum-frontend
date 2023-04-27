@@ -34,6 +34,7 @@ import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import WeekdaySelector from "./WeekdaySelector.vue";
 import TimeSelector from "./TimeSelector.vue";
 import FilterChip from "@/components/generic/FilterChip.vue";
+import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -41,6 +42,7 @@ export default defineComponent({
   // params, while the MapView and EventListView
   // components consume the query params.
   components: {
+    CalendarIcon,
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
@@ -510,7 +512,7 @@ export default defineComponent({
           class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
           <ChannelIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Filter by Channel
+          Channels
         </h2>
 
         <ChannelPicker
@@ -522,7 +524,7 @@ export default defineComponent({
           class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
           <TagIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Filter by Tag
+          Tags
         </h2>
         <TagPicker
           :selected-tags="filterValues.tags"
@@ -531,8 +533,8 @@ export default defineComponent({
         <h2
           class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
-          <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Time Filters
+        <CalendarIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+          Weekdays
         </h2>
 
         <div class="flex flex-col">
@@ -545,16 +547,24 @@ export default defineComponent({
                   @reset="resetWeekdays"
                 />
               </div>
-              <div>
-                <TimeSelector
-                  :selected-hour-ranges="filterValues.hourRanges"
-                  @updateHourRanges="updateHourRanges"
-                  @reset="resetHourRanges"
-                />
-              </div>
             </div>
           </div>
         </div>
+
+        <h2
+        class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+      >
+        <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+        Times
+      </h2>
+
+      
+              <TimeSelector
+                :selected-hour-ranges="filterValues.hourRanges"
+                @updateHourRanges="updateHourRanges"
+                @reset="resetHourRanges"
+              />
+            
       </DrawerFlyout>
     </div>
   </div>
