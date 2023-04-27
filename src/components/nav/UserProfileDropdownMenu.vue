@@ -26,7 +26,7 @@ export default defineComponent({
     let menuItems = [
       {
         label: "My Profile",
-        value: `/u/${props.username}`,
+        value: `/u/${props.username}/comments`,
       },
       {
         label: "Sign out",
@@ -64,7 +64,7 @@ export default defineComponent({
       this.$router.push(`/mod/${this.modName}`);
     },
     goToUserProfile(){
-      this.$router.push(`/u/${this.username}`);
+      this.$router.push(`/u/${this.username}/comments`);
     }
   }
 });

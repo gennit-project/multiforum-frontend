@@ -1,21 +1,21 @@
-
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
 import { TagData } from "@/types/tagTypes";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { useQuery } from "@vue/apollo-composable";
 import Tag from "@/components/tag/Tag.vue";
-import RefreshIcon from "@/components/icons/RefreshIcon.vue";
+
+import ResetButton from "@/components/generic/ResetButton.vue";
 
 export default defineComponent({
   components: {
     Tag,
-    RefreshIcon,
+    ResetButton,
   },
   props: {
     hideSelected: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectedTags: {
       type: Array as PropType<string[]>,
@@ -51,15 +51,15 @@ export default defineComponent({
     };
   },
   computed: {
-     selectedTagsMap() {
-        let map: any = {}
-        for (let i = 0; i < this.selectedTags.length; i++) {
-            const tag = this.selectedTags[i]
+    selectedTagsMap() {
+      let map: any = {};
+      for (let i = 0; i < this.selectedTags.length; i++) {
+        const tag = this.selectedTags[i];
 
-            map[tag] = true
-        }
-        return map
-     }
+        map[tag] = true;
+      }
+      return map;
+    },
   },
   methods: {
     resetTags() {
@@ -98,44 +98,13 @@ export default defineComponent({
           @deselect="deselect"
         />
       </div>
-      <div class="h-14 p-2">
-        <button
-          class="
-            bg-white
-            dark:bg-gray-800
-            float-right
-            inline-flex
-            py-2
-            px-4
-            border border-gray-300
-            rounded-full
-            shadow-sm
-            text-sm
-            font-medium
-            text-gray-700
-            dark:text-gray-300
-            dark:bg-gray-800
-            dark:border-gray-800
-            dark:hover:bg-gray-700
-            hover:bg-gray-50
-            focus:outline-none
-            focus:ring-2
-            focus:ring-offset-2
-            focus:ring-blue-500
-          "
-          @click.prevent="resetTags"
-        >
-          <RefreshIcon class="h-5" @click="resetTags"/>Reset
-        </button>
-      </div>
+      <ResetButton @reset="resetTags" />
     </div>
   </div>
 </template>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
 <style>
-
 .tagpicker {
   display: flex;
   flex-wrap: wrap;

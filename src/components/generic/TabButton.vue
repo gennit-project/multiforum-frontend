@@ -23,7 +23,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="link hover:text-blue-600 hover:border-blue-500 group inline-flex items-center py-2 border-b-2 font-medium text-sm space-x-2"
+    class="link hover:text-blue-600 hover:border-blue-500 group inline-flex items-center py-2 border-b-2 font-medium text-sm space-x-2 dark:text-gray-200"
     :class="[
       isActive
         ? 'text-blue-600 border-blue-500'

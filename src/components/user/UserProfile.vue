@@ -116,7 +116,7 @@ export default defineComponent({
                 />
               </div>
               <div
-                class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
+                class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6"
               >
                 <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
                   <h1
@@ -130,7 +130,7 @@ export default defineComponent({
             </div>
             <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
               <h1
-                class="truncate text-2xl mb-2 sm:mt-10 font-bold text-gray-900"
+                class="truncate text-2xl mb-2 sm:mt-10 font-bold"
               >
                 {{ username }}
               </h1>
@@ -158,7 +158,7 @@ export default defineComponent({
 
         <!-- Tabs -->
         <div class="mt-6 sm:mt-2 2xl:mt-5  ">
-          <div class="border-b border-gray-200 bg-gray-100">
+          <div class="border-b border-gray-200 bg-gray-100 dark:bg-gray-700 dark:border-gray-800 dark:text-gray-200">
             <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
               <nav
                 class="-mb-px text-lg max-w-7xl space-x-8"
@@ -174,7 +174,7 @@ export default defineComponent({
               </nav>
             </div>
           </div>
-          <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
+          <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12 dark:bg-gray-800">
             <router-view></router-view>
           </div>
         </div>

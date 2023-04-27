@@ -8,8 +8,12 @@ import {
   SelectedWeekdays,
   WeekdayData,
 } from "@/types/eventTypes";
+import ResetButton from "@/components/generic/ResetButton.vue";
 
 export default defineComponent({
+  components: {
+    ResetButton
+  },
   props: {
     selectedWeekdays: {
       type: Object as PropType<SelectedWeekdays>,
@@ -71,6 +75,11 @@ export default defineComponent({
       }
       this.$emit("updateWeekdays", this.flattenWeekdays());
     },
+    reset(){
+      this.$emit('reset')
+
+      this.workingCopyOfSelectedWeekdays = []
+    }
   },
 });
 </script>
@@ -92,5 +101,6 @@ export default defineComponent({
         <span>{{ weekday.shortName }}</span>
       </label>
     </div>
+    <ResetButton @reset="reset"/>
   </div>
 </template>
