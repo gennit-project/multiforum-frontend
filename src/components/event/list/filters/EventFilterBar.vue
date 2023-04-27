@@ -33,6 +33,7 @@ import GenericButton from "@/components/generic/GenericButton.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import WeekdaySelector from "./WeekdaySelector.vue";
 import TimeSelector from "./TimeSelector.vue";
+import FilterChip from "@/components/generic/FilterChip.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -44,6 +45,7 @@ export default defineComponent({
     ChannelPicker,
     ClockIcon,
     DrawerFlyout,
+    FilterChip,
     FilterIcon,
     GenericButton,
     LocationIcon,
@@ -204,7 +206,7 @@ export default defineComponent({
     },
     updateFilters(params: any) {
       const isEmpty = (val: any) => {
-        return val === "" || val === '[]'
+        return val === "" || val === "[]";
       };
       const paramsWithEmptyValues = Object.keys(params).reduce(
         (acc: any, key: string) => {
@@ -224,18 +226,18 @@ export default defineComponent({
         },
         {}
       );
-      
-      const existingQueryCopy = {...this.$route.query}
 
-       Object.keys(existingQueryCopy).forEach((key: string) => {
+      const existingQueryCopy = { ...this.$route.query };
+
+      Object.keys(existingQueryCopy).forEach((key: string) => {
         if (!isEmpty(existingQueryCopy[key])) {
-            if (isEmpty(paramsWithEmptyValues[key])) {
-              // If the newest filter is empty, we want to remove it from
-              // the query params instead of adding a filter with an empty value.
-              delete existingQueryCopy[key];
-            }
+          if (isEmpty(paramsWithEmptyValues[key])) {
+            // If the newest filter is empty, we want to remove it from
+            // the query params instead of adding a filter with an empty value.
+            delete existingQueryCopy[key];
           }
-      })
+        }
+      });
 
       // Updating the URL params causes the events
       // to be refetched by the EventListView
@@ -404,7 +406,7 @@ export default defineComponent({
       v-if="route.name !== 'EventDetail'"
       class="items-center flex justify-center w-full"
     >
-      <div class="flex justify-between items-center space-x-4 w-full px-2 mr-6">
+      <div class="flex items-center space-x-4 w-full px-2 mr-6">
         <button
           v-if="!channelId"
           class="flex items-center bg-white dark:bg-gray-700 text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
@@ -412,7 +414,7 @@ export default defineComponent({
           @click="handleClickMoreFilters"
         >
           <LocationIcon class="h-6 w-6 text-blue-500" />
-          <h1 class="border border-none pb-0  text-md ml-1">
+          <h1 class="border border-none pb-0 text-md ml-1">
             Tempe: {{ displayDistance }}
           </h1>
         </button>
@@ -423,6 +425,38 @@ export default defineComponent({
           <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
           Filters
         </button>
+        <FilterChip
+          class="align-middle"
+          v-if="!channelId"
+          :label="channelLabel"
+          :highlighted="channelLabel !== defaultFilterLabels.channels"
+        >
+          <template v-slot:icon>
+            <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </template>
+          <template v-slot:content>
+            <ChannelPicker
+              :selected-channels="filterValues.channels"
+              @setSelectedChannels="setSelectedChannels"
+            />
+          </template>
+        </FilterChip>
+
+        <FilterChip
+          class="align-middle"
+          :label="tagLabel"
+          :highlighted="tagLabel !== defaultFilterLabels.tags"
+        >
+          <template v-slot:icon>
+            <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </template>
+          <template v-slot:content>
+            <TagPicker
+              :selected-tags="filterValues.tags"
+              @setSelectedTags="setSelectedTags"
+            />
+          </template>
+        </FilterChip>
       </div>
     </div>
     <div class="flex justify-center">
@@ -430,7 +464,7 @@ export default defineComponent({
         label="Event Filters"
         :title="'Search and Filter Events'"
         placement="start"
-        class="drawer-placement-start dark:bg-gray-800"
+        class="drawer-placement-start"
         :isOpen="drawerIsOpen"
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"

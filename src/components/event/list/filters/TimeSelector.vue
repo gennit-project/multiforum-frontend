@@ -107,26 +107,24 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div >
-    <div
-      v-for="(range, i) in hourRangesData"
-      :key="range['12-hour-label']"
-      :class="i % 2 === 0 ? 'bg-gray-100 dark:bg-gray-800' : ''"
-      class="mr-2 mb-2 p-2 rounded"
-    >
-      <label :for="'timeRange-' + range['12-hour-label']" class="flex items-center cursor-pointer">
-        <span class="custom-checkbox">
+  <div>
+    <div class="grid grid-cols-2 gap-2">
+      <div
+        v-for="(range, i) in hourRangesData"
+        :key="range['12-hour-label']"
+        class="p-2 rounded cursor-pointer"
+      >
+        <label :for="'timeRange-' + range['12-hour-label']" class="flex items-center">
           <input
             type="checkbox"
-        :class="'text-blue-600'"
-        class="focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
-        :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
-        @input="() => toggleSelectTimeRange(range)"
-      />
-          <span class="checkmark"></span>
-        </span>
-        <span class="ml-2 text-sm font-medium">{{ range["12-hour-label"] }}</span>
-      </label>
+            :id="'timeRange-' + range['12-hour-label']"
+            class="text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
+            :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
+            @input="() => toggleSelectTimeRange(range)"
+          />
+          <span class="ml-2 text-sm font-medium whitespace-nowrap">{{ range["12-hour-label"] }}</span>
+        </label>
+      </div>
     </div>
   </div>
 </template>

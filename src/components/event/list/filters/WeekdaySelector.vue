@@ -75,27 +75,22 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div class="flex flex-wrap">
-      <div
-        v-for="weekday in weekdayData"
-        :key="weekday.shortName"
-        class="mr-2 mb-2"
-      >
+  <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
+    <div
+      v-for="weekday in weekdayData"
+      :key="weekday.shortName"
+      class="p-2 rounded cursor-pointer"
+    >
+      <label :for="'weekday-' + weekday.number" class="flex items-center">
         <input
           type="checkbox"
-          :class="'text-blue-600'"
-          class="
-            focus:ring-blue-500
-            h-4
-            w-4
-            mr-1
-            border-gray-400
-            rounded
-          "
+          :id="'weekday-' + weekday.number"
+          class="text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
           :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
           @input="() => toggleSelectWeekday(weekday)"
         />
         <span>{{ weekday.shortName }}</span>
-      </div>
+      </label>
     </div>
-  </template>
+  </div>
+</template>
