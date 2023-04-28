@@ -23,7 +23,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="inline-flex items-center">
+  <div class="inline-flex">
     <v-menu
       v-model="showMenu"
       :close-on-content-click="false"

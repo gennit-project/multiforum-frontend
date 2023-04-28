@@ -248,7 +248,8 @@ export default defineComponent({
               <p v-else-if="eventLoading">Loading...</p>
               <TwoSeparatelyScrollingPanes class="block w-full">
                 <template v-slot:leftpane>
-                  <div class="flex justify-end w-full">
+                  <div class="flex justify-between w-full">
+                    <EventFilterBar class="my-4" :show-distance-filters="false" />
                     <RequireAuth class="inline-flex">
                       <template v-slot:has-auth>
                         <CreateButton
@@ -266,7 +267,7 @@ export default defineComponent({
                     </RequireAuth>
                   </div>
                   
-                  <EventFilterBar class="my-4" :show-distance-filters="false" />
+                  
                   
                   <TimeShortcuts />
                   <EventList

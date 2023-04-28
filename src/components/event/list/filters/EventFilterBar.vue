@@ -417,16 +417,13 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex items-center inline-flex w-full space-y-1">
-    <div
-      v-if="route.name !== 'EventDetail'"
-      class="items-center flex justify-center w-full"
-    >
+    <div v-if="route.name !== 'EventDetail'" class="flex align-middle w-full">
       <div
-        class="flex flex-wrap space-y-2 items-center space-x-4 w-full px-2 mr-6"
+        class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6"
       >
         <button
-          v-if="!channelId"
-          class="flex items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
+          v-if="!channelId && showLocationSearchBarAndDistanceButtons"
+          class="flex my-1 items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
           aria-label="Open event filters"
           @click="handleClickMoreFilters"
         >
@@ -437,7 +434,7 @@ export default defineComponent({
         </button>
 
         <FilterChip
-          class="align-middle"
+          class="align-middle items-center"
           v-if="!channelId"
           :label="channelLabel"
           :highlighted="channelLabel !== defaultFilterLabels.channels"
@@ -452,9 +449,8 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-
         <FilterChip
-          class="align-middle"
+          class="align-middle items-center"
           :label="tagLabel"
           :highlighted="tagLabel !== defaultFilterLabels.tags"
         >
@@ -469,7 +465,7 @@ export default defineComponent({
           </template>
         </FilterChip>
         <button
-        class="bg-white dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-600 dark:bg-slate-700 text-gray-700 dark:text-gray-200  dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          class="bg-white dark:bg-gray-700 inline-flex px-3.5 py-2.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-600 dark:bg-slate-700 text-gray-700 dark:text-gray-200 dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           @click="handleClickMoreFilters"
         >
           <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
