@@ -469,10 +469,10 @@ export default defineComponent({
           </template>
         </FilterChip>
         <button
-          class="inline-flex float-right text-sm items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-lg px-3 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:ring-gray-700 hover:text-gray-800 py-2 dark:hover:bg-gray-600 -ml-px"
+        class="bg-white dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-600 dark:bg-slate-700 text-gray-700 dark:text-gray-200  dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           @click="handleClickMoreFilters"
         >
-          <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+          <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
           More Filters
         </button>
       </div>
