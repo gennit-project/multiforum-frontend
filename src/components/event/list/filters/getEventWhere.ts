@@ -25,7 +25,6 @@ const getEventWhere = (
     channels,
     weekdays,
     hourRanges,
-    weeklyHourRanges,
     locationFilter,
     searchInput,
     showCanceledEvents,
@@ -42,6 +41,12 @@ const getEventWhere = (
   // Free event filter
   if (free) {
     conditions.push({ free: true });
+  }
+
+  if (!showCanceledEvents) {
+    conditions.push({ canceled: false })
+    // If showCanceledEvents is true, we want to 
+    // show all events, so we don't need to add a filter.
   }
 
   if (hasVirtualEventUrl) {
@@ -257,7 +262,6 @@ const getEventWhere = (
   return {
     AND: (conditions = [
       ...conditions,
-      { canceled: showCanceledEvents },
       {
         ChannelsAggregate: {
           count_GT: 0,

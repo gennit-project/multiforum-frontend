@@ -58,6 +58,9 @@ export default defineComponent({
           updateEventInput: {
             canceled: true,
           },
+          eventWhere: {
+            id: eventId.value,
+          },
         },
       }
     );

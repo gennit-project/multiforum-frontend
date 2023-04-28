@@ -35,6 +35,7 @@ import WeekdaySelector from "./WeekdaySelector.vue";
 import TimeSelector from "./TimeSelector.vue";
 import FilterChip from "@/components/generic/FilterChip.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
+import SelectCanceled from "./SelectCanceled.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -53,6 +54,7 @@ export default defineComponent({
     LocationIcon,
     LocationSearchBar,
     SearchBar,
+    SelectCanceled,
     TagIcon,
     TagPicker,
     TimeSelector,
@@ -240,7 +242,6 @@ export default defineComponent({
           }
         }
       });
-
       // Updating the URL params causes the events
       // to be refetched by the EventListView
       // and MapView components
@@ -375,6 +376,11 @@ export default defineComponent({
         weeklyHourRanges: flattenedTimeFilters,
       });
     },
+    updateShowCanceled(showCanceledEvents: boolean){
+      this.updateFilters({
+        showCanceledEvents: showCanceledEvents
+      })
+    },
     updateSelectedDistance(distance: DistanceUnit) {
       if (distance.value === 0) {
         // If the radius is 0 (Any distance), don't use a radius when
@@ -408,7 +414,9 @@ export default defineComponent({
       v-if="route.name !== 'EventDetail'"
       class="items-center flex justify-center w-full"
     >
-      <div class="flex flex-wrap space-y-2 items-center space-x-4 w-full px-2 mr-6">
+      <div
+        class="flex flex-wrap space-y-2 items-center space-x-4 w-full px-2 mr-6"
+      >
         <button
           v-if="!channelId"
           class="flex items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
@@ -533,7 +541,7 @@ export default defineComponent({
         <h2
           class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
-        <CalendarIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+          <CalendarIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Weekdays
         </h2>
 
@@ -552,19 +560,27 @@ export default defineComponent({
         </div>
 
         <h2
-        class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-      >
-        <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-        Times
-      </h2>
+          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+        >
+          <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+          Times
+        </h2>
 
-      
-              <TimeSelector
-                :selected-hour-ranges="filterValues.hourRanges"
-                @updateHourRanges="updateHourRanges"
-                @reset="resetHourRanges"
-              />
-            
+        <TimeSelector
+          :selected-hour-ranges="filterValues.hourRanges"
+          @updateHourRanges="updateHourRanges"
+          @reset="resetHourRanges"
+        />
+
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex">
+          <i class="fas fa-calendar-times h-6 w-6 mr-2 text-gray-500" aria-hidden="true"></i>
+          Canceled
+        </h2>
+
+        <SelectCanceled
+          :show-canceled="filterValues.showCanceledEvents || false"
+          @updateShowCanceled="updateShowCanceled"
+        />
       </DrawerFlyout>
     </div>
   </div>

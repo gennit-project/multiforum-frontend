@@ -283,7 +283,7 @@ export default defineComponent({
                 </span>
 
                 <span
-                  class="text-red-800 bg-red-100 py-1 text-sm rounded-lg px-3"
+                  class="text-red-800 bg-red-100 dark:text-white dark:bg-red-900 py-1 text-sm rounded-lg px-3"
                   v-if="event.canceled"
                   >Canceled</span
                 >

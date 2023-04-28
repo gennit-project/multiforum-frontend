@@ -85,13 +85,17 @@ const getFilterValuesFromParams = function (
         break;
       case "showCanceledEvents":
         // May need to cast to boolean
-        if (typeof val === "boolean") {
-          cleanedValues.showCanceledEvents = val;
+        if (val === "true") {
+          cleanedValues.showCanceledEvents = true;
+        } else if (val === "false") {
+          cleanedValues.showCanceledEvents = false;
         }
         break;
       case "free":
-        if (typeof val === "boolean") {
-          cleanedValues.free = val;
+        if (val === "true") {
+          cleanedValues.free = true;
+        } else if (val === "false") {
+          cleanedValues.free = false;
         }
         break;
       case "resultsOrder":
