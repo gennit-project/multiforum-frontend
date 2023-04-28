@@ -238,7 +238,7 @@ export default defineComponent({
     <v-row>
       <v-col cols="12">
         <div class="mx-auto">
-          <div class="flex">
+          <div class="w-full">
             <div>
               <ErrorBanner
                 class="mx-auto block"

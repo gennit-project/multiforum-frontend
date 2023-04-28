@@ -66,7 +66,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800  shadow-sm">
+  <div class="bg-white dark:bg-gray-900  shadow-sm">
     <div class="px-4 lg:px-12 relative flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="text-gray-700 flex text-lg">

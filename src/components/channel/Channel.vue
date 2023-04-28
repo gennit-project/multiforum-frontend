@@ -89,7 +89,7 @@ export default defineComponent({
 
             <div
               v-else
-              class="pt-8 items-center bg-white dark:bg-gray-800 py-2 rounded-lg"
+              class="pt-8 items-center bg-white dark:bg-gray-700 py-2 rounded-lg"
             >
               <div>
                 <div class="flex space-x-2">
@@ -115,7 +115,7 @@ export default defineComponent({
             </div>
 
             <div class="h-full flex-grow lg:ml-4">
-              <div class="bg-white shadow rounded-lg dark:bg-gray-900"
+              <div class="bg-white shadow rounded-lg dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">

@@ -22,8 +22,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row>
+  <v-container fluid class="w-full">
+    <v-row class="w-full">
       <v-col
         :class="[
           lgAndUp ? 'constrain-height' : '',

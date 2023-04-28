@@ -88,7 +88,7 @@ export default defineComponent({
         ? 'border-blue-500'
         : 'border-blue-200',
     ]"
-    class="bg-white hover:border-blue-500 border-l-4 relative dark:bg-slate-800  my-4 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex shadow-md rounded-md"
+    class="bg-white hover:border-blue-500 border-l-4 relative dark:bg-gray-700  my-4 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex shadow-md rounded-md"
   >
     <span class="mt-1 w-6"
       >{{
@@ -116,7 +116,7 @@ export default defineComponent({
           @click="$emit('filterByTag', tag)"
         />
       </p>
-      <p class="text-xs font-medium text-slate-600 no-underline">
+      <p class="text-xs font-medium text-slate-600 dark:text-slate-200 no-underline">
         {{ `Posted ${relativeTime} by ${authorUsername}` }}
       </p>
       <div class="text-sm">
