@@ -408,10 +408,10 @@ export default defineComponent({
       v-if="route.name !== 'EventDetail'"
       class="items-center flex justify-center w-full"
     >
-      <div class="flex items-center space-x-4 w-full px-2 mr-6">
+      <div class="flex flex-wrap space-y-2 items-center space-x-4 w-full px-2 mr-6">
         <button
           v-if="!channelId"
-          class="flex items-center bg-white dark:bg-gray-700 text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
+          class="flex items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
           aria-label="Open event filters"
           @click="handleClickMoreFilters"
         >

@@ -37,7 +37,7 @@ export default defineComponent({
     },
     loadedEventCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     resultCount: {
       type: Number,
@@ -113,20 +113,12 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="events.length === 0">
-      <p v-if="!showMap" class="mt-3" >
-        Could not find any events.
-      </p>
+      <p v-if="!showMap" class="mt-3">Could not find any events.</p>
       <p v-else class="t-3">
         Could not find any events that can be shown on a map.
       </p>
     </div>
-    
- 
-      <ul
-      v-if="events.length > 0"
-      role="list"
-      class="mb-4"
-    >
+    <ul v-if="events.length > 0" role="list" class="mb-4">
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"

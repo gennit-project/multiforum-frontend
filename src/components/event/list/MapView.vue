@@ -553,16 +553,12 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div
-      id="mapViewMobileWidth"
-      v-else-if="eventResult && eventResult.events"
-    >
-      <div class="event-map-container">
-        <div class="shortcut-buttons-wrapper">
-          <div class="shortcut-buttons">
-            <TimeShortcuts />
-          </div>
+    <div id="mapViewMobileWidth" v-else-if="eventResult && eventResult.events">
+      <div>
+        <div>
+          <TimeShortcuts />
         </div>
+        <div class="event-map-container"></div>
         <EventMap
           v-if="eventResult.events.length > 0"
           :events="eventResult.events"
@@ -575,7 +571,7 @@ export default defineComponent({
           @setMarkerData="setMarkerData"
         />
       </div>
-      <div class="md:hidden w-full h-1/3">
+      <div class="w-full h-1/3">
         <EventList
           key="highlightedEventId"
           :events="eventResult.events"
@@ -595,7 +591,6 @@ export default defineComponent({
         />
       </div>
     </div>
-    
 
     <EventPreview
       :top-layer="true"
@@ -641,7 +636,9 @@ export default defineComponent({
   top: 0;
   z-index: 1;
   width: 100%;
-  max-width: calc(100% - 1rem); /* Adjusts the width to fit within the viewport */
+  max-width: calc(
+    100% - 1rem
+  ); /* Adjusts the width to fit within the viewport */
   padding: 0 0.5rem; /* Adds padding on both sides */
   box-sizing: border-box;
 }
@@ -653,5 +650,4 @@ export default defineComponent({
   justify-content: flex-end;
   border-radius: 4px;
 }
-
 </style>
