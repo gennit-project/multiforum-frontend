@@ -21,8 +21,8 @@ import EventFilterBar from "./filters/EventFilterBar.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
-import EventResultCount from "./EventResultCount.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
+import TimeShortcuts from "./filters/TimeShortcuts.vue";
 
 export default defineComponent({
   name: "EventListView",
@@ -35,10 +35,10 @@ export default defineComponent({
     EventFilterBar,
     EventList,
     EventDetail,
-    EventResultCount,
     DrawerFlyout,
     PrimaryButton,
     RequireAuth,
+    TimeShortcuts,
     TwoSeparatelyScrollingPanes,
   },
   setup(props, { emit }) {
@@ -264,6 +264,7 @@ export default defineComponent({
                       />
                     </template>
                   </RequireAuth>
+                  <TimeShortcuts />
                   <EventList
                     id="listView"
                     v-if="eventResult"
