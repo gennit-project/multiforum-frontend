@@ -120,7 +120,7 @@ export default defineComponent({
               >
                 <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
                   <h1
-                    class="truncate text-2xl sm:mt-10 mb-2 font-bold text-gray-900"
+                    class="truncate text-2xl sm:mt-10 mb-2 font-bold text-gray-900 dark:text-gray-200"
                   >
                     {{ username }}
                   </h1>
@@ -130,7 +130,7 @@ export default defineComponent({
             </div>
             <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
               <h1
-                class="truncate text-2xl mb-2 sm:mt-10 font-bold"
+                class="truncate text-2xl mb-2 sm:mt-10 font-bold dark:text-gray-200"
               >
                 {{ username }}
               </h1>

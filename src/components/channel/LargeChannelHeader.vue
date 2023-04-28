@@ -15,7 +15,7 @@ export default defineComponent({
 <template>
   <section aria-labelledby="section-2-title h-full">
     <div
-      class="overflow-hidden rounded-lg shadow pb-4 h-full bg-white dark:bg-gray-800"
+      class="overflow-hidden rounded-lg shadow pb-4 h-full bg-white dark:bg-gray-700"
     >
       <div
         class="h-24 w-full object-cover user-background"

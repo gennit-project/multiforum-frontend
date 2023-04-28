@@ -194,9 +194,11 @@ const getFilterValuesFromParams = function (
     hasVirtualEventUrl,
   } = cleanedValues;
 
+  const defaultRadius = channelId ? 0 : 160.934; // 100 miles
+
   return {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
-    radius: radius || 160.934,
+    radius: radius || defaultRadius,
     latitude: latitude || defaultPlace.latitude,
     longitude: longitude || defaultPlace.longitude,
     tags: tags || [],
