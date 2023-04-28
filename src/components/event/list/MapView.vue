@@ -482,8 +482,7 @@ export default defineComponent({
   <div class="mx-auto">
     <div v-if="mdAndUp" id="mapViewFullScreen" class="flex flex-row">
       <div class="overflow-y-auto h-full" style="width: 34vw">
-        <EventFilterBar class="w-full mt-6" />
-        <div class="m-4 flex justify-end">
+        <div class="mt-4 mr-4 flex justify-end">
           <RequireAuth class="flex inline-flex">
             <template v-slot:has-auth>
               <CreateButton
@@ -500,6 +499,8 @@ export default defineComponent({
             </template>
           </RequireAuth>
         </div>
+        <EventFilterBar class="w-full mt-6" />
+        
         <div v-if="eventLoading">Loading...</div>
         <ErrorBanner
           class="block"

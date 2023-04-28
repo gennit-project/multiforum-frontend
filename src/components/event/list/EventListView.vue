@@ -248,22 +248,26 @@ export default defineComponent({
               <p v-else-if="eventLoading">Loading...</p>
               <TwoSeparatelyScrollingPanes class="block w-full">
                 <template v-slot:leftpane>
+                  <div class="flex justify-end w-full">
+                    <RequireAuth class="inline-flex">
+                      <template v-slot:has-auth>
+                        <CreateButton
+                          class="align-middle ml-2"
+                          :to="createEventPath"
+                          :label="'+ Create Event'"
+                        />
+                      </template>
+                      <template v-slot:does-not-have-auth>
+                        <PrimaryButton
+                          class="align-middle ml-2"
+                          :label="'+ Create Event'"
+                        />
+                      </template>
+                    </RequireAuth>
+                  </div>
+                  
                   <EventFilterBar class="my-4" :show-distance-filters="false" />
-                  <RequireAuth class="flex inline-flex">
-                    <template v-slot:has-auth>
-                      <CreateButton
-                        class="align-middle ml-2"
-                        :to="createEventPath"
-                        :label="'+ Create Event'"
-                      />
-                    </template>
-                    <template v-slot:does-not-have-auth>
-                      <PrimaryButton
-                        class="align-middle ml-2"
-                        :label="'+ Create Event'"
-                      />
-                    </template>
-                  </RequireAuth>
+                  
                   <TimeShortcuts />
                   <EventList
                     id="listView"
