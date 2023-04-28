@@ -164,7 +164,7 @@ export default defineComponent({
   >
     <div
       :class="
-        route.name === 'EventDetail' && mdAndUp ? 'large-width' : 'w-full mx-4'
+        route.name === 'EventDetail' && mdAndUp ? 'large-width' : 'w-full'
       "
       class="space-y-2"
     >
@@ -254,71 +254,28 @@ export default defineComponent({
     </div>
   </div>
 </template>
-<style scoped>
-li {
-  margin-top: 0.5em;
-}
-.hanging-indent {
-  padding-left: 32px;
-  text-indent: -32px;
-}
-.height-constrained-more {
-  height: 100% - 150px;
-}
-.large-width {
-  width: 900px;
-}
-</style>
 <style lang="scss">
-
-.bullet {
-  text-indent: -2.1em;
-  padding-left: 2.1em;
-}
-
-.text-tiny {
-  font-size: 0.9em;
-  margin-bottom: 0;
-}
-
-.small-text {
-  #md-editor-v3-preview > p,
-  li {
-    font-size: 0.9em;
-  }
-}
-
-.md-content .md-preview,
-.md-content .md-html {
-  word-break: break-word;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
 
 /* Apply the user's preferred color scheme by default */
 @media (prefers-color-scheme: dark) {
-  #md-editor-v3-preview,
-  #md-editor-v3-preview-wrapper {
+  #texteditor-textarea {
     @apply bg-dark text-dark;
   }
 }
 
 @media (prefers-color-scheme: light) {
-  #md-editor-v3-preview,
-  #md-editor-v3-preview-wrapper {
+  #texteditor-textarea {
     @apply bg-light text-light;
   }
 }
 
-
 .bg-dark {
-  background-color: inherit;
+  @apply bg-gray-700;
+
 }
 
 .text-dark {
-  @apply text-gray-100;
+  @apply text-gray-200;
 }
 
 .bg-light {
@@ -326,44 +283,54 @@ li {
 }
 
 .text-light {
-  @apply text-gray-800;
+  @apply text-gray-700;
 }
 
 /* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
-body.dark #md-editor-v3-preview,
-body.dark #md-editor-v3-preview-wrapper {
+body.dark #texteditor-textarea {
   @apply text-dark bg-dark;
-}
 
-body.light #md-editor-v3-preview,
-body.light #md-editor-v3-preview-wrapper {
-  @apply text-light bg-light;
-}
-
-.profile-picture {
-  position: relative;
-  left: -3em;
-  top: 0.7em;
-  z-index: 1;
-}
-.username-text {
-  position: relative;
-  left: -2.5em;
-}
-.comment-border {
-  border-left: 1px solid #aeacac;
-  position: relative;
-  left: -2em;
-  padding-left: 2em;
-}
-#md-editor-v3-preview {
-  ul ul,
-  ol ul,
-  ul ol,
-  ol ol {
-    font-size: inherit;
+  .md-editor-toolbar-item:hover {
+    background-color: #4a5568;
   }
 }
 
+body.light #texteditor-textarea {
+  @apply text-light bg-light;
+}
 
+body.dark #texteditor {
+  @apply text-dark bg-dark border-gray-700;
+}
+
+body.light #texteditor {
+  @apply text-light bg-light border-gray-200;
+}
+
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+  font-size: 1rem;
+}
+.md-content .md-preview,
+.md-content .md-html {
+  word-break: break-word;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+#md-editor-v3-preview {
+  p,
+  ul,
+  ol,
+  blockquote > li {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+  
+}
+.md-editor-footer {
+  display: none;
+}
 </style>

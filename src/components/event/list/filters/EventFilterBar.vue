@@ -378,15 +378,15 @@ export default defineComponent({
         weeklyHourRanges: flattenedTimeFilters,
       });
     },
-    updateShowCanceled(showCanceledEvents: boolean){
+    updateShowCanceled(showCanceledEvents: boolean) {
       this.updateFilters({
-        showCanceledEvents: showCanceledEvents
-      })
+        showCanceledEvents: showCanceledEvents,
+      });
     },
-    updateShowOnlyFree(showOnlyFreeEvents: boolean){
+    updateShowOnlyFree(showOnlyFreeEvents: boolean) {
       this.updateFilters({
-        free: showOnlyFreeEvents
-      })
+        free: showOnlyFreeEvents,
+      });
     },
     updateSelectedDistance(distance: DistanceUnit) {
       if (distance.value === 0) {
@@ -435,13 +435,7 @@ export default defineComponent({
             Tempe: {{ displayDistance }}
           </h1>
         </button>
-        <button
-          class="inline-flex float-right text-sm items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-lg px-3 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:ring-gray-700 hover:text-gray-800 py-2 dark:hover:bg-gray-600 -ml-px"
-          @click="handleClickMoreFilters"
-        >
-          <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
-          Filters
-        </button>
+
         <FilterChip
           class="align-middle"
           v-if="!channelId"
@@ -474,6 +468,13 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
+        <button
+          class="inline-flex float-right text-sm items-center dark:bg-gray-700 dark:text-gray-200 dark:border-gray-700 rounded-lg px-3 text-gray-700 bg-gray-100 hover:bg-gray-200 dark:ring-gray-700 hover:text-gray-800 py-2 dark:hover:bg-gray-600 -ml-px"
+          @click="handleClickMoreFilters"
+        >
+          <FilterIcon class="-ml-0.5 w-6 h-6 mr-2" />
+          More Filters
+        </button>
       </div>
     </div>
     <div class="flex justify-center">
@@ -524,7 +525,7 @@ export default defineComponent({
         </div>
         <h2
           v-if="!channelId"
-          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
           <ChannelIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Channels
@@ -536,7 +537,7 @@ export default defineComponent({
           @setSelectedChannels="setSelectedChannels"
         />
         <h2
-          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
           <TagIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Tags
@@ -546,7 +547,7 @@ export default defineComponent({
           @setSelectedTags="setSelectedTags"
         />
         <h2
-          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
           <CalendarIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Weekdays
@@ -567,7 +568,7 @@ export default defineComponent({
         </div>
 
         <h2
-          class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
           <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
           Times
@@ -579,8 +580,13 @@ export default defineComponent({
           @reset="resetHourRanges"
         />
 
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex">
-          <i class="fas fa-calendar-times h-6 w-6 mr-2 text-gray-500" aria-hidden="true"></i>
+        <h2
+          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+        >
+          <i
+            class="fas fa-calendar-times h-6 w-6 mr-2 text-gray-500"
+            aria-hidden="true"
+          ></i>
           Canceled
         </h2>
 
@@ -589,8 +595,13 @@ export default defineComponent({
           @updateShowCanceled="updateShowCanceled"
         />
 
-        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex">
-          <i class="fas fa-dollar-sign h-6 w-6 mr-2 text-gray-500" aria-hidden="true"></i>
+        <h2
+          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+        >
+          <i
+            class="fas fa-dollar-sign h-6 w-6 mr-2 text-gray-500"
+            aria-hidden="true"
+          ></i>
           Free
         </h2>
 

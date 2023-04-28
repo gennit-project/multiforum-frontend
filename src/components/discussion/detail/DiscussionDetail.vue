@@ -144,7 +144,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="dark:bg-gray-800 rounded-lg mx-6 px-6 w-full">
+  <div class="dark:bg-gray-800 rounded-lg mx-2 px-2 w-full">
   <div
     class="flex justify-center rounded-lg mb-10 py-10"
     :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"

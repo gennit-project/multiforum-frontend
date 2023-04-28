@@ -84,11 +84,11 @@ export default defineComponent({
                         <span class="sr-only">Close panel</span>
                         <XIcon class="h-6 w-6" aria-hidden="true" />
                       </button>
-                      {{ title }}
+                      <h1 class="text-lg mt-2 mx-2" >{{ title }}</h1>
                     </div>
                   </div>
                 </div>
-                <div class="relative flex-1 mx-8">
+                <div class="relative flex-1 m-8">
                   <slot></slot>
                 </div>
               </div>
