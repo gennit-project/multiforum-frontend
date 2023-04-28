@@ -5,6 +5,10 @@ import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 import About from "./About.vue";
+import LargeChannelHeader from "./LargeChannelHeader.vue";
+import { GET_CHANNEL } from "@/graphQLData/channel/queries";
+import { useQuery } from "@vue/apollo-composable";
+import MdEditor from "md-editor-v3";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -12,12 +16,32 @@ export default defineComponent({
     About,
     // ChannelIcon,
     ChannelTabs,
+    LargeChannelHeader,
+    MdEditor,
   },
   setup() {
     const route = ref(useRoute());
 
     const channelId = computed(() => {
+      if (typeof route.value.params.channelId !== "string") {
+        return "";
+      }
       return route.value.params.channelId;
+    });
+
+    const {
+      error: getChannelError,
+      result: getChannelResult,
+      loading: getChannelLoading,
+    } = useQuery(GET_CHANNEL, {
+      uniqueName: channelId,
+    });
+
+    const channel = computed(() => {
+      if (getChannelLoading.value || getChannelError.value) {
+        return null;
+      }
+      return getChannelResult.value.channels[0];
     });
 
     const discussionId = computed(() => {
@@ -27,15 +51,16 @@ export default defineComponent({
     const eventId = computed(() => {
       return route.value.params.eventId;
     });
-    const { lgAndDown, lgAndUp, mdAndUp } = useDisplay();
+    const { lgAndDown, lgAndUp, mdAndUp, mdAndDown } = useDisplay();
 
     return {
+      channel,
       channelId,
       discussionId,
       eventId,
       route,
       lgAndDown,
-
+      mdAndDown,
       lgAndUp,
       mdAndUp,
     };
@@ -51,26 +76,42 @@ export default defineComponent({
 <template>
   <div class="h-screen">
     <div class="flex h-full">
-      <article class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full">
+      <article
+        class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
+      >
         <div class="block p-2 w-full h-full">
           <div class="flex flex-col lg:flex-row h-full">
-            <div class="h-full">
-              <section aria-labelledby="section-2-title h-full">
-                <div class="overflow-hidden rounded-lg shadow pb-4 h-full bg-white dark:bg-gray-800">
-                  <div v-if="mdAndUp" class="h-24 w-full object-cover user-background" alt="background pattern"></div>
-                  <div class="lg:-mt-8">
-                    <div class="flex space-x-2">
-                      <div class="h-24 w-24 rounded-full ring-4 ring-white dark:ring-slate-900" id="channelAvatar"></div>
-                      <div>
-                        <h1 class="text-2xl no-underline mt-12">
-                          {{ channelId }}
-                        </h1>
-                      </div>
-                    </div>
+            <div v-if="!mdAndDown" class="h-full">
+              <LargeChannelHeader :channel-id="channelId">
+                <About />
+              </LargeChannelHeader>
+            </div>
+
+            <div
+              v-else
+              class="pt-8 items-center bg-white dark:bg-gray-800 py-2 rounded-lg"
+            >
+              <div>
+                <div class="flex space-x-2">
+                  <div
+                    class="h-12 w-12 rounded-full ring-4 ring-white dark:ring-slate-900"
+                    id="channelAvatar"
+                  ></div>
+                  <div>
+                    <h1 class="text-xl no-underline">
+                      {{ channelId }}
+                    </h1>
                   </div>
-                  <About />
                 </div>
-              </section>
+                <md-editor
+                  v-if="channel && channel.description"
+                  v-model="channel.description"
+                  language="en-US"
+                  previewTheme="vuepress"
+                  preview-only
+                />
+                <About v-if="mdAndUp"/>
+              </div>
             </div>
 
             <div class="h-full flex-grow lg:ml-4">
@@ -91,7 +132,6 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
 
 <style>
 #channelAvatar {

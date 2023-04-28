@@ -7,6 +7,7 @@ import Tag from "@/components/tag/Tag.vue";
 import MdEditor from "md-editor-v3";
 import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "OverviewPage",
@@ -57,6 +58,8 @@ export default defineComponent({
       return admins.value.map((adminData: any) => adminData.username);
     });
 
+    const {  mdAndDown } = useDisplay();
+
     return {
       admins,
       channel,
@@ -64,6 +67,7 @@ export default defineComponent({
       confirmDeleteIsOpen: ref(false),
       getChannelLoading,
       getChannelError,
+      mdAndDown,
       ownerList,
       router,
       tags,
@@ -92,8 +96,8 @@ export default defineComponent({
       </div>
     </div>
     <div v-else-if="channel">
-        <div>
-          <div v-if="channel.description" class="body min-height-min">
+        <div v-if="!mdAndDown">
+          <div v-if="channel.description" >
             <md-editor
               v-model="channel.description"
               language="en-US"

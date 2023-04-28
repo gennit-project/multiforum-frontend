@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import TabButton from "@/components/generic/TabButton.vue";
+import { useDisplay } from "vuetify/lib/framework.mjs";
 
 export default defineComponent({
   name: "channelTabs",
@@ -17,6 +18,8 @@ export default defineComponent({
     const channelId = computed(() => {
       return props.route.params.channelId;
     });
+
+    const { mdAndDown } = useDisplay();
 
     return {
       channelId,
@@ -71,6 +74,13 @@ export default defineComponent({
         >
           <i class="fa-solid fa-calendar"></i>
         </TabButton>
+        <TabButton
+          :to="tabRoutes.about"
+          :label="'About'"
+          :is-active="route.name.includes('About')"
+        >
+          <i class="fa-solid fa-info"></i>
+      </TabButton>
       </nav>
     </div>
     <div class="width-full"></div>

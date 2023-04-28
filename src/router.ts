@@ -160,6 +160,11 @@ export const router = createRouter({
           component: EditChannel,
         },
         {
+          name: "About",
+          path: "about",
+          component: About,
+        },
+        {
           name: "Discussions",
           path: "discussions",
           component: DiscussionTab,
