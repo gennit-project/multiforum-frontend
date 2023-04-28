@@ -104,7 +104,7 @@ export default defineComponent({
           @deselect="deselect"
         />
       </div>
-      <div class="h-14 p-2">
+      <div class="h-14">
         <ResetButton @reset="resetChannels"/>
       </div>
     </div>
