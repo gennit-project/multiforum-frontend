@@ -2,8 +2,9 @@
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
+  name: "SelectFree",
   props: {
-    showCanceled: {
+    showOnlyFree: {
       type: Boolean,
       required: true,
     },
@@ -11,13 +12,13 @@ export default defineComponent({
   setup(props) {
     // take default from params
     return {
-      copyOfShowCanceled: ref(props.showCanceled),
+      copyOfShowOnlyFree: ref(props.showOnlyFree),
     };
   },
   methods: {
-    toggleCanceled() {
-      this.copyOfShowCanceled = !this.copyOfShowCanceled;
-      this.$emit("updateShowCanceled", this.copyOfShowCanceled);
+    toggleShowOnlyFree() {
+      this.copyOfShowOnlyFree = !this.copyOfShowOnlyFree;
+      this.$emit("updateShowOnlyFree", this.copyOfShowOnlyFree);
     },
   },
 });
@@ -30,11 +31,11 @@ export default defineComponent({
           <input
             type="checkbox"
             class="text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
-            :checked="copyOfShowCanceled"
-            @input="() => toggleCanceled()"
+            :checked="copyOfShowOnlyFree"
+            @input="() => toggleShowOnlyFree()"
           />
           <span class="ml-2 text-sm font-medium whitespace-nowrap"
-            >Show canceled events</span
+            >Show only free events</span
           >
         </label>
       </div>

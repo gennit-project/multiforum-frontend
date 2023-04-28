@@ -23,6 +23,7 @@ export default defineComponent({
 
     return {
       channelId,
+      mdAndDown,
       tabRoutes: {
         discussions: `/channels/c/${channelId.value}/discussions`,
         events: `/channels/c/${channelId.value}/events/search`,
@@ -75,6 +76,7 @@ export default defineComponent({
           <i class="fa-solid fa-calendar"></i>
         </TabButton>
         <TabButton
+          v-if="mdAndDown"
           :to="tabRoutes.about"
           :label="'About'"
           :is-active="route.name.includes('About')"

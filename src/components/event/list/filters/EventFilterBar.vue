@@ -36,6 +36,7 @@ import TimeSelector from "./TimeSelector.vue";
 import FilterChip from "@/components/generic/FilterChip.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import SelectCanceled from "./SelectCanceled.vue";
+import SelectFree from "./SelectFree.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -55,6 +56,7 @@ export default defineComponent({
     LocationSearchBar,
     SearchBar,
     SelectCanceled,
+    SelectFree,
     TagIcon,
     TagPicker,
     TimeSelector,
@@ -381,6 +383,11 @@ export default defineComponent({
         showCanceledEvents: showCanceledEvents
       })
     },
+    updateShowOnlyFree(showOnlyFreeEvents: boolean){
+      this.updateFilters({
+        free: showOnlyFreeEvents
+      })
+    },
     updateSelectedDistance(distance: DistanceUnit) {
       if (distance.value === 0) {
         // If the radius is 0 (Any distance), don't use a radius when
@@ -580,6 +587,16 @@ export default defineComponent({
         <SelectCanceled
           :show-canceled="filterValues.showCanceledEvents || false"
           @updateShowCanceled="updateShowCanceled"
+        />
+
+        <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100 mt-4 flex">
+          <i class="fas fa-dollar-sign h-6 w-6 mr-2 text-gray-500" aria-hidden="true"></i>
+          Free
+        </h2>
+
+        <SelectFree
+          :show-only-free="filterValues.free || false"
+          @updateShowOnlyFree="updateShowOnlyFree"
         />
       </DrawerFlyout>
     </div>
