@@ -2,13 +2,13 @@
 import { defineComponent, PropType } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
-import Form from "../generic/Form.vue";
+import Form from "@/components/generic/Form.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import TagInput from "@/components/tag/TagInput.vue";
-import TextInput from "../generic/TextInput.vue";
+import TextInput from "@/components/generic/TextInput.vue";
 import PencilIcon from "@/components/icons/PencilIcon.vue";
-import FormRow from "../generic/FormRow.vue";
-import TextEditor from "../generic/TextEditor.vue";
+import FormRow from "@/components/generic/FormRow.vue";
+import TextEditor from "@/components/generic/TextEditor.vue";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
 
 export default defineComponent({
@@ -90,12 +90,11 @@ export default defineComponent({
         <div class="sm:mt-5 space-y-4 sm:space-y-5">
           <FormRow>
             <template v-slot:icon>
-              <span
-                v-if="!editMode"
-                class="text-red-500"
-                >*</span
-              ><PencilIcon class="float-right h-6 w-6" />
-              <v-tooltip activator="parent" location="top"> Title </v-tooltip>
+              <div class="flex justify-end">
+                <span v-if="!editMode" class="text-red-500">*</span
+                ><PencilIcon class="h-6 w-6" />
+                <v-tooltip activator="parent" location="top"> Title </v-tooltip>
+              </div>
             </template>
             <template v-slot:content>
               <TextInput

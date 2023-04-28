@@ -9,7 +9,7 @@ import { apolloClient } from "@/main";
 import { useQuery } from "@vue/apollo-composable";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import RequireAuth from "../auth/RequireAuth.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "CreateChannel",

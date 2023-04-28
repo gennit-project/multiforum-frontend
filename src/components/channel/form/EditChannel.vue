@@ -13,8 +13,8 @@ import { UPDATE_CHANNEL } from "@/graphQLData/channel/mutations";
 import { apolloClient } from "@/main";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
-import RequireAuth from "../auth/RequireAuth.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "EditChannel",
