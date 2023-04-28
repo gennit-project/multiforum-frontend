@@ -106,6 +106,19 @@ export default defineComponent({
       shouldShowMoreButton
     };
   },
+  methods: {
+    filterByTag(tag: string) {
+      this.$router.push({
+        name: "SitewideSearchDiscussionPreview",
+        params: {
+          channelId: this.channelId,
+        },
+        query: {
+          tags: tag,
+        },
+      });
+    },
+  }
 });
 </script>
 <template>
@@ -133,6 +146,7 @@ export default defineComponent({
           v-for="tag in discussion.Tags"
           :tag="tag.text"
           :key="tag.text"
+          @click="() => {filterByTag(tag.text)}"
         />
     <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">Link Previews</h2>
     <div v-if="linksInBody.length > 0">
