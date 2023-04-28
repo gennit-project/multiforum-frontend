@@ -55,7 +55,7 @@ export default defineComponent({
       <div >
         <p class="mt-12 mb-6">
           <router-link
-            :to="`/channels/c/${channel.uniqueName}`"
+            :to="`/channels/c/${channel.uniqueName}/discussions`"
             class="cursor-pointer huge"
           >
           <h3 class="mb-2">

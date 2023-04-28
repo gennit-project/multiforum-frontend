@@ -115,7 +115,9 @@ export default defineComponent({
             </div>
 
             <div class="h-full flex-grow lg:ml-4">
-              <div class="bg-white shadow rounded-lg dark:bg-gray-900">
+              <div class="bg-white shadow rounded-lg dark:bg-gray-900"
+                v-if="route.name !== 'EditChannel'"
+              >
                 <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
                   <div class="block pt-4 border-b border-b-1">
                     <ChannelTabs class="block" :route="route" />
