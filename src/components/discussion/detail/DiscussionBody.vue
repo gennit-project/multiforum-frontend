@@ -203,7 +203,7 @@ body.light #texteditor {
 .md-content .md-html {
   word-break: break-word;
   width: 100%;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 .md-content .md-preview,
 .md-content .md-html {
@@ -212,20 +212,15 @@ body.light #texteditor {
   padding: 0;
   margin: 0;
 }
-#md-editor-v3-preview > p,
-ul,
-ol,
-blockquote {
-  font-size: 0.8rem;
-  line-height: 1.5em;
-  word-break: break-word;
-}
-
-#md-editor-v3-preview > p,
-ul,
-ol,
-li {
-  line-height: 1em;
+#md-editor-v3-preview {
+  p,
+  ul,
+  ol,
+  blockquote > li {
+    font-size: 1rem;
+    word-break: break-word;
+  }
+  
 }
 .md-editor-footer {
   display: none;
