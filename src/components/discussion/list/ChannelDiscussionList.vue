@@ -50,7 +50,7 @@ export default defineComponent({
       // cache be updated properly when the user
       // votes from the list view.
       return {
-        where: discussionWhere,
+        where: discussionWhere.value,
         limit: DISCUSSION_PAGE_LIMIT,
         offset: 0,
         resultsOrder: {

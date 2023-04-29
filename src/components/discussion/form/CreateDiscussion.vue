@@ -100,7 +100,42 @@ export default defineComponent({
             },
           },
         },
+        UpvotedByUsers: {
+              connect: {
+                where: {
+                  node: {
+                    username: username.value,
+                  },
+                },
+              },
+        },
+        CommentSections: {
+          create: {
+            node: {
+              UpvotedByUsers: {
+                connect: {
+                  where: {
+                    node: {
+                      username: username.value,
+                    },
+                  },
+                },
+              },
+              Channel: {
+                connect: {
+                  where: {
+                    node: {
+                      uniqueName: "test"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
       };
+
+
       return [input];
     });
 
