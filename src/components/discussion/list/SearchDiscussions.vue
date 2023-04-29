@@ -246,7 +246,7 @@ export default defineComponent({
       <v-col cols="12">
         <v-col>
           <div class="rounded pr-8">
-            <div class="py-2">
+            <div>
               <div class="items-center">
                 <DiscussionFilterBar />
                 <RequireAuth class="flex inline-flex">

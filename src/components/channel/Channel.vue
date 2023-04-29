@@ -89,7 +89,7 @@ export default defineComponent({
 
             <div
               v-else
-              class="pt-8 items-center bg-white dark:bg-gray-700 py-2 rounded-lg"
+              class="pt-8 items-center bg-white dark:bg-gray-700 rounded-lg"
             >
               <div>
                 <div class="flex space-x-2">
