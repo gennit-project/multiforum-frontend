@@ -127,7 +127,7 @@ export default defineComponent({
       const newChannelId = response.data.createChannels.channels[0].uniqueName;
 
       router.push({
-        name: "Channel",
+        name: "SearchDiscussionsInChannel",
         params: {
           channelId: newChannelId,
         },

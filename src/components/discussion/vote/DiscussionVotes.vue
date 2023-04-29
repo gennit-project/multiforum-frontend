@@ -4,6 +4,7 @@ import { DiscussionData } from "../../../types/discussionTypes";
 import { CommentSectionData } from "../../../types/commentTypes";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
+import { gql } from "@apollo/client/core";
 import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
@@ -122,67 +123,55 @@ export default defineComponent({
       return props.commentSection?.id || "";
     });
 
-    const updateQueryResult = (cache: any, result: any) => {
-      // when comment section is upvoted, update discussion in cache to add it there.
-      // The query result has to be updated so that when the user clicks
-      // upvote or downvote, the arrow will appear black, indicating that
-      // the logged in user has clicked it. The score will also be updated
-      // and highlighted.
+    const updateQueryResult = (cache, result) => {
+  if (!props.discussionQueryFilters) {
+    // If we are not on the discussion list view, we don't need to update the query result
+    return;
+  }
 
-      if (!props.discussionQueryFilters) {
-        // If we are not on the discussion list view, we don't need to update the query result
-        return;
+  const newCommentSection = result.data.updateCommentSections.commentSections[0];
+  const discussionId = newCommentSection.OriginalPost.id;
+
+  // Read the discussion data from the cache
+  const discussion = cache.readFragment({
+    id: `Discussion:${discussionId}`,
+    fragment: gql`
+      fragment Discussion on Discussion {
+        id
+        CommentSections {
+          id
+        }
       }
+    `,
+  });
 
-      cache.modify({
-        fields: {
-          discussions() {
-            const newCommentSection =
-              result.data.updateCommentSections.commentSections[0];
+  // If the discussion object is null, return without updating the cache
+  if (!discussion) {
+    return;
+  }
 
-            // when comment section is created, update discussion in cache to add it there
-            const readQueryResult = cache.readQuery({
-              query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
-              variables: {
-                ...props.discussionQueryFilters,
-              },
-            });
+  // Update the discussion data with the new comment section
+  const updatedDiscussion = {
+    ...discussion,
+    CommentSections: [...discussion.CommentSections, newCommentSection],
+  };
 
-            const existingDiscussions = readQueryResult?.discussions || [];
+  // Write the updated discussion data back to the cache
+  cache.writeFragment({
+    id: `Discussion:${discussionId}`,
+    fragment: gql`
+      fragment UpdatedDiscussion on Discussion {
+        id
+        CommentSections {
+          id
+        }
+      }
+    `,
+    data: updatedDiscussion,
+  });
+};
 
-            const discussionToUpdate = existingDiscussions.find(
-              (discussion: any) => discussion.id === discussionIdInParams.value
-            );
 
-            const existingCommentSections = discussionToUpdate.CommentSections;
-
-            const newDiscussion = {
-              ...discussionToUpdate,
-              CommentSections: [...existingCommentSections, newCommentSection],
-            };
-
-            if (readQueryResult) {
-              cache.writeQuery({
-                query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
-                data: {
-                  ...readQueryResult,
-                  discussions: [
-                    ...existingDiscussions.filter(
-                      (discussion: any) =>
-                        discussion.id !== discussionIdInParams.value
-                    ),
-                    newDiscussion,
-                  ],
-                },
-                variables: {
-                  ...props.discussionQueryFilters,
-                },
-              });
-            }
-          },
-        },
-      });
-    };
 
     const {
       mutate: downvoteCommentSection,
@@ -364,7 +353,7 @@ export default defineComponent({
         throw new Error("Username is required to downvote");
       }
 
-      if (this.commentSection.id) {
+      if (this.commentSection && this.commentSection.id) {
         this.commentSectionMutations.downvote({
           id: this.commentSection.id,
           displayName: this.loggedInUserModName || "",
@@ -390,7 +379,7 @@ export default defineComponent({
         throw new Error("Username is required to upvote");
       }
 
-      if (this.commentSection.id) {
+      if (this.commentSection && this.commentSection.id) {
         this.commentSectionMutations.upvote({
           id: this.commentSectionId,
           username: this.username || "",
