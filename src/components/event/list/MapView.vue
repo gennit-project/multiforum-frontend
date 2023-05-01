@@ -519,6 +519,7 @@ export default defineComponent({
           :selected-channels="filterValues.channels"
           :loaded-event-count="eventResult.events.length"
           :result-count="eventResult.eventsAggregate?.count"
+          :show-map="true"
           @filterByTag="filterByTag"
           @filterByChannel="filterByChannel"
           @highlightEvent="highlightEvent"

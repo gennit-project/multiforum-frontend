@@ -106,6 +106,17 @@ export default defineComponent({
         });
       }
     },
+    onMouseOvenEventListItem(event: EventData) {
+        if (this.showMap) {
+          this.$emit(
+            'highlightEvent',
+            this.getEventLocationId(event),
+            event.id,
+            event
+          );
+        }
+          
+    },
   },
 });
 </script>
@@ -136,18 +147,7 @@ export default defineComponent({
             : '',
         ]"
         :show-map="showMap"
-        @mouseover="
-          () => {
-            if (showMap) {
-              $emit(
-                'highlightEvent',
-                getEventLocationId(event),
-                event.id,
-                event
-              );
-            }
-          }
-        "
+        @mouseover="() => onMouseOvenEventListItem(event)"
         @mouseleave="
           () => {
             if (showMap) {
