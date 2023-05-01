@@ -25,7 +25,7 @@ import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
-import { useDisplay } from "vuetify";
+import gql from "graphql-tag";
 
 export default defineComponent({
   name: "MapView",
@@ -173,6 +173,20 @@ export default defineComponent({
 
     const { mdAndUp } = useDisplay();
 
+    const GET_THEME = gql`
+      query GetTheme {
+        theme @client 
+      }
+    `;
+
+    const { result } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      
+      const theme = result.value?.theme || 'light';
+      return theme
+    });
+
     return {
       backToChannel,
       createEventPath,
@@ -193,7 +207,9 @@ export default defineComponent({
       reachedEndOfResults,
       refetchEvents,
       resultCount: ref(0),
+      showMap: ref(false),
       sendToPreview,
+      theme,
     };
   },
   data() {
@@ -500,7 +516,6 @@ export default defineComponent({
           </RequireAuth>
         </div>
         <EventFilterBar class="w-full mt-6" />
-        
         <div v-if="eventLoading">Loading...</div>
         <ErrorBanner
           class="block"
@@ -547,6 +562,7 @@ export default defineComponent({
             :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
             :color-locked="colorLocked"
             :use-mobile-styles="false"
+            :theme="theme"
             @highlightEvent="highlightEvent"
             @open-preview="openPreview"
             @lockColors="colorLocked = true"
@@ -567,6 +583,7 @@ export default defineComponent({
           :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
           :color-locked="colorLocked"
           :use-mobile-styles="true"
+          :theme="theme"
           @highlightEvent="highlightEvent"
           @open-preview="openPreview"
           @lockColors="colorLocked = true"

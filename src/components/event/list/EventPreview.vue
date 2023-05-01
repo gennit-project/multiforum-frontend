@@ -64,7 +64,7 @@
                   "
                 >
                   <div
-                    class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
+                    class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll bg-white dark:bg-gray-800 dark:text-gray-200"
                   >
                     <div>
                       <div class="flex items-start justify-between">

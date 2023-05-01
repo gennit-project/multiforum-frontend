@@ -69,11 +69,11 @@ export default defineComponent({
                 "
               >
                 <div
-                  class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
+                  class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll bg-white dark:bg-gray-800 dark:text-gray-200"
                 >
                   <div class="px-4 sm:px-6">
                     <div class="flex items-start justify-between">
-                      <DialogTitle class="text-lg font-medium text-gray-900">
+                      <DialogTitle class="text-lg font-medium text-gray-900 dark:text-gray-200">
                         {{ header }}
                       </DialogTitle>
                       <div class="ml-3 h-7 flex items-center">

@@ -1,11 +1,9 @@
 <script lang="ts">
-import { defineComponent, onMounted, ref, SetupContext, computed } from "vue";
-import { Loader } from '@googlemaps/js-api-loader';
-import { useRouter } from 'vue-router'
+import { defineComponent, onMounted, ref, SetupContext, watch, computed } from "vue";
+import { Loader } from "@googlemaps/js-api-loader";
+import { useRouter } from "vue-router";
 import config from "@/config";
-import gql from "graphql-tag";
-import { useQuery } from "@vue/apollo-composable";
-import nightModeMapStyles from '@/components/event/list/nightModeMapStyles'
+import nightModeMapStyles from "@/components/event/list/nightModeMapStyles";
 
 interface Event {
   location: {
@@ -28,74 +26,83 @@ export default defineComponent({
   props: {
     colorLocked: {
       type: Boolean,
-      required: true
+      required: true,
     },
     events: {
       type: Array as () => Event[],
-      default: () => { return [] },
+      default: () => {
+        return [];
+      },
     },
     previewIsOpen: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    theme: {
+      type: String,
+      required: true,
     },
     useMobileStyles: {
       type: Boolean,
-      required: true
-    }
+      required: true,
+    },
   },
-    // The Google map requires that the styles have to be set
-    // when the map is rendered and they can't change based on props.
-    // And if we render both mobile and desktop maps with the same map div,
-    // with the same ref, and just hide one with CSS, that doesn't work because
-    // all markers get painted on both maps twice. That's bad because if a
-    // map marker is highlighted, it calls the maps API excessively, and the markers
-    // appear to be un-highlighted due the duplicated and overlapping map
-    // markers. So the workaround is to create two different maps
-    // for desktop and mobile, which reference two different map divs.
-    setup(props, { emit }: SetupContext) {
-    const router = useRouter()
-    const loader = new Loader({ 
+  // The Google map requires that the styles have to be set
+  // when the map is rendered and they can't change based on props.
+  // And if we render both mobile and desktop maps with the same map div,
+  // with the same ref, and just hide one with CSS, that doesn't work because
+  // all markers get painted on both maps twice. That's bad because if a
+  // map marker is highlighted, it calls the maps API excessively, and the markers
+  // appear to be un-highlighted due the duplicated and overlapping map
+  // markers. So the workaround is to create two different maps
+  // for desktop and mobile, which reference two different map divs.
+  setup(props, { emit }: SetupContext) {
+    const router = useRouter();
+    const loader = new Loader({
       apiKey: config.googleMapsApiKey,
       version: "weekly",
-    })
+    });
 
-    const GET_THEME = gql`
-      query GetTheme {
-        theme @client 
-      }
-    `;
-
-    const { result } = useQuery(GET_THEME);
-
-    const theme = computed(() => {
-      return result.value?.theme;
-    })
-
-    const mobileMapDiv = ref<HTMLElement | null>(null)
-    const desktopMapDiv = ref<HTMLElement | null>(null)
-    const map = ref<google.maps.Map | null>(null)
+    const mobileMapDiv = ref<HTMLElement | null>(null);
+    const desktopMapDiv = ref<HTMLElement | null>(null);
+    const map = ref<google.maps.Map | null>(null);
 
     let markerMap: MarkerMap = {};
 
-    onMounted(async () => {
-      await loader.load()
+    const clearMarkers = () => {
+      for (const key in markerMap) {
+        const markerData = markerMap[key];
+        const marker = markerData.marker;
 
+        if (marker && marker.getMap() !== null){
+          marker.setMap(null);
+          google.maps.event.clearInstanceListeners(marker);
+        }
+        
+      }
+      markerMap = {};
+    };
+
+
+    const renderMap = async () => {
+      await loader.load();
+      clearMarkers() // prevent duplicate markers when changing themes
       const mapConfig = {
         center: { lat: 33.4255, lng: -111.94 },
         zoom: 7,
         mapTypeId: "terrain",
-        styles: theme.value === 'dark' ? nightModeMapStyles : []
-      }
-      
+        styles: props.theme === "dark" ? nightModeMapStyles : [],
+      };
+
       if (props.useMobileStyles) {
-        map.value = new google.maps.Map(mobileMapDiv.value!, mapConfig)
+        map.value = new google.maps.Map(mobileMapDiv.value!, mapConfig);
       } else {
-        map.value = new google.maps.Map(desktopMapDiv.value!, mapConfig)
+        map.value = new google.maps.Map(desktopMapDiv.value!, mapConfig);
       }
 
       let bounds = new google.maps.LatLngBounds();
 
-      const infowindow = new google.maps.InfoWindow()
+      const infowindow = new google.maps.InfoWindow();
 
       for (let i = 0; i < props.events.length; i++) {
         const event = props.events[i];
@@ -104,53 +111,54 @@ export default defineComponent({
           const marker = new google.maps.Marker({
             position: {
               lat: event.location.latitude,
-              lng: event.location.longitude
+              lng: event.location.longitude,
             },
             map: map.value,
             clickable: true,
             draggable: true,
             icon: {
-              url: require('@/assets/images/place-icon.svg').default,
+              url: require("@/assets/images/place-icon.svg").default,
               scaledSize: { width: 20, height: 20 },
-            }
+            },
           });
 
           bounds.extend(marker.getPosition()!);
 
-          const eventLocationId = event.location.latitude.toString() + event.location.longitude.toString();
+          const eventLocationId =
+            event.location.latitude.toString() +
+            event.location.longitude.toString();
 
           marker.addListener("click", () => {
-            emit("openPreview", event, true)
-            emit("lockColors")
-          })
+            emit("openPreview", event, true);
+            emit("lockColors");
+          });
 
           marker.addListener("mouseover", () => {
             if (!props.colorLocked) {
-              emit('highlightEvent', eventLocationId, event.id, event, true);
+              emit("highlightEvent", eventLocationId, event.id, event, true);
             }
-          })
+          });
 
           marker.addListener("mouseout", () => {
-
             const unhighlight = (marker) => {
               if (!props.colorLocked) {
-                if (router.currentRoute.value.fullPath.includes(eventLocationId)) {
-                  emit('unHighlight');
+                if (
+                  router.currentRoute.value.fullPath.includes(eventLocationId)
+                ) {
+                  emit("unHighlight");
                 }
 
                 marker.setIcon({
-                  url: require('@/assets/images/place-icon.svg').default,
+                  url: require("@/assets/images/place-icon.svg").default,
                   scaledSize: { width: 20, height: 20 },
-                })
+                });
                 infowindow.close();
               }
-            }
-            unhighlight(marker)
-          })
-
+            };
+            unhighlight(marker);
+          });
 
           const updateMarkerMap = () => {
-
             if (markerMap[eventLocationId]) {
               const numberOfEvents = markerMap[eventLocationId].numberOfEvents;
 
@@ -161,12 +169,12 @@ export default defineComponent({
               markerMap[eventLocationId] = {
                 marker,
                 events: {
-                  [event.id]: event
+                  [event.id]: event,
                 },
-                numberOfEvents: 1
-              }
+                numberOfEvents: 1,
+              };
             }
-          }
+          };
 
           updateMarkerMap();
         }
@@ -176,11 +184,24 @@ export default defineComponent({
 
       map.value.fitBounds(bounds);
 
-      emit('setMarkerData', {
+      emit("setMarkerData", {
         markerMap,
-        map: map.value
+        map: map.value,
       });
+    }
+
+    onMounted(async () => {
+      renderMap()
+    });
+
+    const theme = computed(() => {
+      return props.theme
     })
+
+    watch(theme, () => {
+      // This allows the map to be re-rendered when the theme changes.
+      renderMap();
+    }, { immediate: true });
 
     const center = ref(props.referencePoint);
 
@@ -189,7 +210,6 @@ export default defineComponent({
       mobileMapDiv,
       desktopMapDiv,
       router,
-      theme
     };
   },
   methods: {
@@ -206,21 +226,19 @@ export default defineComponent({
       Could not find any events with a location.
     </p>
     <div
-      v-else-if="useMobileStyles" 
-      ref="mobileMapDiv" 
-      style="width: 100vw; height: 50vw;"
-    >
-    </div>
+      v-else-if="useMobileStyles"
+      ref="mobileMapDiv"
+      style="width: 100vw; height: 50vw"
+    ></div>
     <div
       v-else-if="!useMobileStyles"
       ref="desktopMapDiv"
-      style="position: fixed; width: 66vw; height: 100vh;"
-    >
-    </div>
+      style="position: fixed; width: 66vw; height: 100vh"
+    ></div>
   </div>
 </template>
 <style>
-.gm-style-iw>button {
+.gm-style-iw > button {
   display: none !important;
 }
 .gmnoprint {

@@ -165,7 +165,7 @@ export default defineComponent({
 
 <template>
   
-  <div class="time-shortcuts flex py-4">
+  <div class="time-shortcuts flex pt-4">
     <div v-if="!channelId">
       <Tag
         class="align-middle"

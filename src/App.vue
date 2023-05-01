@@ -5,7 +5,6 @@ import WithAuth from "./WithAuth.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import TopNav from "@/components/nav/Topnav.vue";
 import SiteSidenav from "@/components/nav/SiteSidenav.vue";
-import { themeVar } from "@/cache";
 
 export default defineComponent({
   components: {
@@ -16,18 +15,6 @@ export default defineComponent({
   },
   setup() {
     const { isAuthenticated, user, isLoading } = useAuth0();
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const storedTheme = localStorage.getItem('theme');
-
-      if (storedTheme === 'light') {
-        document.body.classList.add('light');
-        themeVar('light')
-      } else if (storedTheme === 'dark') {
-        document.body.classList.add('dark');
-        themeVar('dark')
-      }
-    });
 
     const emailFromAuth0 = computed(() => {
       // The reason why we get the email in this parent

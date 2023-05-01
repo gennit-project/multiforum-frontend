@@ -1,6 +1,9 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import IconButtonDropdown from "../generic/IconButtonDropdown.vue";
+import { themeVar } from "@/cache";
+import { useQuery } from "@vue/apollo-composable";
+import { gql } from "@apollo/client/core";
 
 export default defineComponent({
   components: {
@@ -10,6 +13,21 @@ export default defineComponent({
   setup() {
     // On page load or when changing themes, best to add inline in `head` to avoid FOUC
     // Taken from https://tailwindcss.com/docs/dark-mode
+
+
+    const GET_THEME = gql`
+      query GetTheme {
+        theme @client 
+      }
+    `;
+
+    const { result } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      return result.value?.theme || 'light';
+    });
+
+
     const updateTheme = () => {
       if (
         localStorage.theme === "dark" ||
@@ -18,9 +36,11 @@ export default defineComponent({
       ) {
         document.body.classList.add("dark");
         document.body.classList.remove("light");
+        themeVar('dark')
       } else {
         document.body.classList.add("light");
         document.body.classList.remove("dark");
+        themeVar('light')
       }
     };
     updateTheme();
