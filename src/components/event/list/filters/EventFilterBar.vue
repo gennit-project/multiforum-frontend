@@ -418,9 +418,7 @@ export default defineComponent({
 <template>
   <div class="flex items-center inline-flex w-full space-y-1">
     <div v-if="route.name !== 'EventDetail'" class="flex align-middle w-full">
-      <div
-        class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6"
-      >
+      <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
           class="flex my-1 items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
@@ -464,13 +462,16 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-        <button
-          class="bg-white dark:bg-gray-700 inline-flex px-3.5 py-2.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-600 dark:bg-slate-700 text-gray-700 dark:text-gray-200 dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+        <div class="inline-flex align-middle items-center">
+          <button
+          class="flex inline-flex bg-white dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-600 dark:bg-slate-700 text-gray-700 dark:text-gray-200  dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           @click="handleClickMoreFilters"
         >
           <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
           More Filters
         </button>
+        </div>
+       
       </div>
     </div>
     <div class="flex justify-center">
