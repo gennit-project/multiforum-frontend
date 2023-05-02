@@ -1,9 +1,15 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { useDisplay } from "vuetify";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
+  props: {
+    showRightPaneAtMediumScreenWidth: {
+      type: Boolean,
+      default: false,
+    }
+  },
   setup() {
     const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
     const route = useRoute();
@@ -35,7 +41,7 @@ export default defineComponent({
         <slot name="leftpane"></slot>
       </v-col>
       <v-col
-        v-if="lgAndUp"
+        v-if="lgAndUp || (mdAndUp && showRightPaneAtMediumScreenWidth)"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
