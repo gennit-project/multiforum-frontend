@@ -71,9 +71,9 @@ export default defineComponent({
       {
         ...discussionQueryFilters.value,
       },
-      {
-        fetchPolicy: "network-only",
-      }
+      // {
+      //   fetchPolicy: "network-only",
+      // }
     );
 
     const reachedEndOfResults = ref(false);

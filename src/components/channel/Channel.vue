@@ -75,16 +75,17 @@ export default defineComponent({
 
 <template>
   <div class="h-screen">
-    <div class="flex h-full">
+    <div class="h-full">
+      <header class="mx-4 items-center rounded-lg">
+        <LargeChannelHeader :channel-id="channelId"> </LargeChannelHeader>
+      </header>
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
       >
         <div class="block p-2 w-full h-full">
           <div class="flex flex-col lg:flex-row h-full">
-            <div v-if="!mdAndDown" class="h-full">
-              <LargeChannelHeader :channel-id="channelId">
-                <About />
-              </LargeChannelHeader>
+            <div v-if="!mdAndDown" class="h-full bg-white rounded-lg shadow ml-2 dark:bg-gray-700">
+              <About />
             </div>
 
             <div
@@ -110,12 +111,13 @@ export default defineComponent({
                   previewTheme="vuepress"
                   preview-only
                 />
-                <About v-if="mdAndUp"/>
+                <About v-if="mdAndUp" />
               </div>
             </div>
 
             <div class="h-full flex-grow lg:ml-4">
-              <div class="bg-white shadow rounded-lg dark:bg-gray-800"
+              <div
+                class="bg-white shadow rounded-lg dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
