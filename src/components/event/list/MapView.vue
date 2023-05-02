@@ -175,16 +175,15 @@ export default defineComponent({
 
     const GET_THEME = gql`
       query GetTheme {
-        theme @client 
+        theme @client
       }
     `;
 
     const { result } = useQuery(GET_THEME);
 
     const theme = computed(() => {
-      
-      const theme = result.value?.theme || 'light';
-      return theme
+      const theme = result.value?.theme || "light";
+      return theme;
     });
 
     return {
@@ -484,12 +483,7 @@ export default defineComponent({
   },
   created() {
     this.$watch("$route.query", () => {
-      if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.route,
-          this.channelId
-        );
-      }
+      this.filterValues = getFilterValuesFromParams(this.route, this.channelId);
     });
   },
 });
@@ -551,6 +545,7 @@ export default defineComponent({
           </div>
           <EventMap
             class="fixed"
+            :key="eventResult.events.length"
             v-if="
               !eventLoading &&
               !eventError &&

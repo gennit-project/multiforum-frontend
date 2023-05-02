@@ -48,12 +48,44 @@ export default defineComponent({
       highlightedByMouse: false,
     };
   },
+  computed: {
+    tagClasses() {
+      return [
+        // large is for time shortcut buttons
+        this.large
+          ? 'text-sm py-1.5 shadow border dark:border-gray-700  rounded-full'
+          : '',
+        this.titleMode ? 'text-xl py-1.5' : '',
+        !this.large && !this.titleMode ? 'text-xs py-1.5' : '',
+        this.clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
+        this.getButtonStyles(),
+        'pl-3 font-medium tag rounded shadow-sm',
+      ];
+    },
+  },
   methods: {
     handleTagClick(tag: string, active: boolean) {
       if (active) {
         this.$emit("deselect", tag);
       } else {
         this.$emit("select", tag);
+      }
+    },
+    getButtonStyles() {
+      if (this.active) {
+        // for the channel buttons
+        if (this.channelMode){
+          return 'bg-blue-100 hover:bg-blue-700 dark:bg-blue-500 dark:text-white hover:bg-blue-300 dark:hover:bg-blue-400';
+        }
+        // for the tag buttons in the filter components
+        return 'bg-blue-100 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-slate-200 hover:bg-slate-200 dark:bg-slate-100 hover:bg-slate-200';
+      } else {
+        // for the channel buttons
+        if (this.channelMode) {
+          'bg-blue-50 text-blue-900 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:bg-opacity-100 dark:hover:bg-blue-900 dark:hover:text-white'
+        }
+        // for the tag buttons in the filter components
+        return `${this.large ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-700 bg-gray-100 dark:bg-opacity-700 dark:bg-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600'`;
       }
     },
   },
@@ -64,19 +96,8 @@ export default defineComponent({
     @mouseenter="highlightedByMouse = true"
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
-    :class="[
-      large ? 'text-sm py-1.5 shadow border dark:border-gray-700 bg-white rounded-full' : '',
-      titleMode ? 'text-xl py-1.5' : '',
-      !large && !titleMode ? 'text-xs py-1.5' : '',
-      clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
-      this.active ? 'text-white dark:white' : '',
-      !this.active && channelMode ? 'text-blue-900  bg-blue-50 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:bg-opacity-100 dark:hover:bg-blue-900 dark:hover:text-white' : '',
-      !this.active && !channelMode ? 'text-slate-600 bg-gray-100 dark:bg-opacity-700 dark:bg-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600' : '',
-      this.active && channelMode ? 'bg-blue-900 hover:bg-blue-700 dark:bg-blue-500 dark:text-white hover:bg-blue-300 dark:hover:bg-blue-400' : '',
-      this.active && !channelMode ? 'bg-slate-300 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-slate-200 hover:bg-slate-600 dark:bg-slate-100 hover:bg-slate-200' : '',
-      'pl-3 font-medium tag rounded shadow-sm',
-    ]"
-    >
+    :class="tagClasses"
+  >
     <ChannelIcon
       :class="[clearable ? 'mr-1' : '', titleMode ? 'h-6 w-6' : 'h-4 w-4']"
       class="inline-flex"

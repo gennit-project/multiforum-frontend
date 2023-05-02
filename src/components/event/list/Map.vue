@@ -70,6 +70,8 @@ export default defineComponent({
     let markerMap: MarkerMap = {};
 
     const clearMarkers = () => {
+      // prevent duplicated markers when rerendering map,
+      // which happens when theme is changed
       for (const key in markerMap) {
         const markerData = markerMap[key];
         const marker = markerData.marker;
