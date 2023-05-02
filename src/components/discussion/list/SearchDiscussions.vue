@@ -244,32 +244,32 @@ export default defineComponent({
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <v-col>
-          <div class="rounded pr-8">
-            <div>
-              <div class="items-center">
-                <DiscussionFilterBar />
-                <RequireAuth class="flex inline-flex">
-                  <template v-slot:has-auth>
-                    <CreateButton
-                      class="align-middle ml-2"
-                      :to="createDiscussionPath"
-                      :label="'Create Discussion'"
-                    />
-                  </template>
-                  <template v-slot:does-not-have-auth>
-                    <PrimaryButton
-                      class="align-middle ml-2"
-                      :label="'Create Discussion'"
-                    />
-                  </template>
-                </RequireAuth>
-              </div>
-            </div>
-          </div>
-          <div class="w-full">
+          
+          <div class="w-full mt-3">
             <TwoSeparatelyScrollingPanes>
               <template v-slot:leftpane>
+                <div class="rounded pr-8">
+                  <div>
+                    <div class="items-center">
+                      <DiscussionFilterBar />
+                      <RequireAuth class="flex inline-flex">
+                        <template v-slot:has-auth>
+                          <CreateButton
+                            class="align-middle ml-2"
+                            :to="createDiscussionPath"
+                            :label="'Create Discussion'"
+                          />
+                        </template>
+                        <template v-slot:does-not-have-auth>
+                          <PrimaryButton
+                            class="align-middle ml-2"
+                            :label="'Create Discussion'"
+                          />
+                        </template>
+                      </RequireAuth>
+                    </div>
+                  </div>
+                </div>
                 <SitewideDiscussionList
                   v-if="!channelId"
                   :search-input="filterValues.searchInput"
@@ -302,7 +302,6 @@ export default defineComponent({
               </template>
             </TwoSeparatelyScrollingPanes>
           </div>
-        </v-col>
       </v-col>
     </v-row>
   </v-container>

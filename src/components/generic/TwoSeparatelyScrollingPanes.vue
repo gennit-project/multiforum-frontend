@@ -22,10 +22,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid class="w-full">
-    <v-row class="w-full">
+  <v-container fluid class="w-full p-0">
+    <v-row class="w-full p-0">
       <v-col
         :class="[
+          'p-0',
           lgAndUp ? 'constrain-height' : '',
           mdAndUp ? 'w-1/2' : 'w-full',
         ]"
@@ -36,6 +37,8 @@ export default defineComponent({
       <v-col
         v-if="lgAndUp"
         :class="[
+          'p-0',
+          lgAndUp ? 'constrain-height' : '',
           'lg:max-h-screen',
           'lg:overflow-y-auto',
           'w-1/2',
@@ -49,7 +52,7 @@ export default defineComponent({
   
 <style>
 .constrain-height {
-  max-height: 86vh;
+  max-height: 90vh;
   height: 100% - 200px;
 }
 </style>

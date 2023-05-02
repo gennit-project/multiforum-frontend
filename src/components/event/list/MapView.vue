@@ -25,6 +25,7 @@ import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
+import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrollingPanes.vue";
 import gql from "graphql-tag";
 
 export default defineComponent({
@@ -66,6 +67,7 @@ export default defineComponent({
     PrimaryButton,
     RequireAuth,
     TimeShortcuts,
+    TwoSeparatelyScrollingPanes,
   },
   setup() {
     const { smAndDown } = useDisplay();
@@ -489,83 +491,91 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mx-auto">
-    <div v-if="mdAndUp" id="mapViewFullScreen" class="flex flex-row">
-      <div class="overflow-y-auto h-full" style="width: 34vw">
-        <div class="mt-4 mr-4 flex justify-end">
-          <RequireAuth class="flex inline-flex">
-            <template v-slot:has-auth>
-              <CreateButton
-                class="align-middle ml-2"
-                :to="createEventPath"
-                :label="'+ Create Event'"
+  <div class="h-full">
+    <div v-if="mdAndUp" id="mapViewFullScreen"  class="w-full">
+      <TwoSeparatelyScrollingPanes class="mt-3">
+        <template v-slot:leftpane>
+          <div class="overflow-y-auto h-full px-4" style="width: 50vw">
+            <div class="mt-4 mr-4 flex justify-end">
+              <RequireAuth class="flex inline-flex">
+                <template v-slot:has-auth>
+                  <CreateButton
+                    class="align-middle ml-2"
+                    :to="createEventPath"
+                    :label="'+ Create Event'"
+                  />
+                </template>
+                <template v-slot:does-not-have-auth>
+                  <PrimaryButton
+                    class="align-middle ml-2"
+                    :label="'+ Create Event'"
+                  />
+                </template>
+              </RequireAuth>
+            </div>
+            <EventFilterBar class="w-full mt-6" />
+            <div v-if="eventLoading">Loading...</div>
+            <ErrorBanner
+              class="block"
+              v-else-if="eventError"
+              :text="eventError.message"
+            />
+            <EventList
+              v-else-if="eventResult && eventResult.events"
+              key="highlightedEventId"
+              :events="eventResult.events"
+              :channel-id="channelId"
+              :highlighted-event-location-id="highlightedEventLocationId"
+              :highlighted-event-id="highlightedEventId"
+              :search-input="filterValues.searchInput"
+              :selected-tags="filterValues.tags"
+              :selected-channels="filterValues.channels"
+              :loaded-event-count="eventResult.events.length"
+              :result-count="eventResult.eventsAggregate?.count"
+              :show-map="true"
+              @filterByTag="filterByTag"
+              @filterByChannel="filterByChannel"
+              @highlightEvent="highlightEvent"
+              @open-preview="openPreview"
+              @unhighlight="unhighlight"
+            />
+          </div>
+        </template>
+        <template v-slot:rightpane>
+          <div style="right: 0; width: 50vw;">
+            <div class="event-map-container">
+              <div class="shortcut-buttons-wrapper">
+                <div class="shortcut-buttons">
+                  <TimeShortcuts />
+                </div>
+              </div>
+              <EventMap
+                class="fixed"
+                :key="eventResult.events.length"
+                v-if="
+                  !eventLoading &&
+                  !eventError &&
+                  eventResult &&
+                  eventResult.events &&
+                  eventResult.events.length > 0
+                "
+                :events="eventResult.events"
+                :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+                :color-locked="colorLocked"
+                :use-mobile-styles="false"
+                :theme="theme"
+                @highlightEvent="highlightEvent"
+                @open-preview="openPreview"
+                @lockColors="colorLocked = true"
+                @setMarkerData="setMarkerData"
               />
-            </template>
-            <template v-slot:does-not-have-auth>
-              <PrimaryButton
-                class="align-middle ml-2"
-                :label="'+ Create Event'"
-              />
-            </template>
-          </RequireAuth>
-        </div>
-        <EventFilterBar class="w-full mt-6" />
-        <div v-if="eventLoading">Loading...</div>
-        <ErrorBanner
-          class="block"
-          v-else-if="eventError"
-          :text="eventError.message"
-        />
-        <EventList
-          v-else-if="eventResult && eventResult.events"
-          key="highlightedEventId"
-          :events="eventResult.events"
-          :channel-id="channelId"
-          :highlighted-event-location-id="highlightedEventLocationId"
-          :highlighted-event-id="highlightedEventId"
-          :search-input="filterValues.searchInput"
-          :selected-tags="filterValues.tags"
-          :selected-channels="filterValues.channels"
-          :loaded-event-count="eventResult.events.length"
-          :result-count="eventResult.eventsAggregate?.count"
-          :show-map="true"
-          @filterByTag="filterByTag"
-          @filterByChannel="filterByChannel"
-          @highlightEvent="highlightEvent"
-          @open-preview="openPreview"
-          @unhighlight="unhighlight"
-        />
-      </div>
-      <div style="right: 0; width: 66vw">
-        <div class="event-map-container">
-          <div class="shortcut-buttons-wrapper">
-            <div class="shortcut-buttons">
-              <TimeShortcuts />
             </div>
           </div>
-          <EventMap
-            class="fixed"
-            :key="eventResult.events.length"
-            v-if="
-              !eventLoading &&
-              !eventError &&
-              eventResult &&
-              eventResult.events &&
-              eventResult.events.length > 0
-            "
-            :events="eventResult.events"
-            :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
-            :color-locked="colorLocked"
-            :use-mobile-styles="false"
-            :theme="theme"
-            @highlightEvent="highlightEvent"
-            @open-preview="openPreview"
-            @lockColors="colorLocked = true"
-            @setMarkerData="setMarkerData"
-          />
-        </div>
-      </div>
+        </template>
+      </TwoSeparatelyScrollingPanes>
     </div>
+
+
     <div id="mapViewMobileWidth" v-else-if="eventResult && eventResult.events">
       <div>
         <div>

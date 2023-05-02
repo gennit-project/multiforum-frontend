@@ -71,10 +71,10 @@ export default defineComponent({
       />
     </nav>
     <div v-if="isLoading" class="flex justify-center mt-8">Loading...</div>
-    <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0" class="h-full">
-      <MainLayout class="h-full"/>
+    <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
+      <MainLayout />
     </WithAuth>
-    <MainLayout v-else class="h-full"/>
+    <MainLayout v-else />
   </div>
 </template>
 

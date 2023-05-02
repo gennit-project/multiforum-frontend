@@ -260,7 +260,7 @@ export default defineComponent({
                       </template>
                       <template v-slot:does-not-have-auth>
                         <PrimaryButton
-                          class="align-middle ml-2"
+                          class="align-middle mx-2"
                           :label="'+ Create Event'"
                         />
                       </template>

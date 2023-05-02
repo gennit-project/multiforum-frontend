@@ -18,7 +18,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-full">
+  <div>
       <router-view></router-view>
   </div>
 </template>

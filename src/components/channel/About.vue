@@ -88,7 +88,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full h-full px-6 py-3 rounded-lg">
+  <div class="w-full h-full px-6 py-3">
     <p v-if="getChannelLoading">Loading...</p>
     <div v-else-if="getChannelError">
       <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
