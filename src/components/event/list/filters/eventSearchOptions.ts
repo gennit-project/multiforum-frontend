@@ -194,23 +194,23 @@ export const weekdayObject = createWeekdayObject();
 export const distanceOptionsForMiles: Array<DistanceUnit> = [
   {
     label: "5",
-    value: 8.04672 // Miles converted to kilometers for querying the database
+    value: 8046.72 // Miles converted to kilometers for querying the database
   },
   {
     label: "10",
-    value: 16.0934,
+    value: 16093.4,
   },
   {
     label: "20",
-    value: 32.1869,
+    value: 32186.9,
   },
   {
     label: "50",
-    value: 80.4672,
+    value: 80467.2,
   },
   {
     label: "100",
-    value: 160.934,
+    value: 160934
   },
   {
     label: "Any distance",

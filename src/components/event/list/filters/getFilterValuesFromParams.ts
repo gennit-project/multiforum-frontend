@@ -48,6 +48,21 @@ const getFilterValuesFromParams = function (
       case "radius":
         cleanedValues.radius = parseFloat(val)
         break;
+      case "placeName":
+        if (typeof val === "string") {
+          cleanedValues.placeName = val;
+        }
+        break;
+      case "placeAddress":
+        if (typeof val === "string") {
+          cleanedValues.placeAddress = val;
+        }
+        break;
+      case "placeId":
+        if (typeof val === "string") {
+          cleanedValues.placeId = val;
+        }
+        break;
       case "latitude":
         if (typeof val === "number") {
           cleanedValues.latitude = val;
@@ -179,6 +194,9 @@ const getFilterValuesFromParams = function (
   const {
     timeShortcut,
     radius,
+    placeName,
+    placeAddress,
+    placeId,
     latitude,
     longitude,
     tags,
@@ -199,6 +217,7 @@ const getFilterValuesFromParams = function (
   return {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
     radius: radius || defaultRadius,
+    placeName: placeName || defaultPlace.name,
     latitude: latitude || defaultPlace.latitude,
     longitude: longitude || defaultPlace.longitude,
     tags: tags || [],

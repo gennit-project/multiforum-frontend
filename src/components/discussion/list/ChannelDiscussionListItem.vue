@@ -248,8 +248,8 @@ export default defineComponent({
       :discussion-query-filters="discussionQueryFilters"
       :comment-section="commentSection"
     />
-    <div>
-      <router-link :to="previewLink" @click="$emit('openPreview')">
+    <div class="w-full">
+      <router-link :to="previewLink" @click="$emit('openPreview')" class="hover:text-gray-500">
         <p class="text-lg font-bold cursor-pointer">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>

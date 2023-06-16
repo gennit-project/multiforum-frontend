@@ -215,7 +215,7 @@ export default defineComponent({
       v-if="discussionResult && discussionResult.discussions.length > 0"
       class="h-full"
     >
-      <ul role="list" class="relative my-2 mr-2">
+      <ul role="list" class="relative my-2 mr-2 divide-y">
         <SitewideDiscussionListItem
           v-for="discussion in discussionResult.discussions"
           :key="discussion.id"

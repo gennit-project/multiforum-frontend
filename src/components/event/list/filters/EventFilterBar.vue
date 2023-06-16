@@ -22,7 +22,6 @@ import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute } from "vue-router";
 import {
   getFilterValuesFromParams,
-  defaultPlace,
 } from "@/components/event/list/filters/getFilterValuesFromParams";
 import {
   defaultSelectedWeekdays,
@@ -181,9 +180,9 @@ export default defineComponent({
       MI_KM_RATIO: 1.609,
       MilesOrKm,
       moreFiltersLabel,
-      referencePointName: ref(defaultPlace.name),
-      referencePointAddress: ref(defaultPlace.address),
-      referencePointPlaceId: ref(defaultPlace.referencePointId),
+      referencePointName: ref(filterValues.value.placeName),
+      referencePointAddress: ref(filterValues.value.placeAddress),
+      referencePointPlaceId: ref(filterValues.value.placeId),
       route,
       selectedDistanceUnit,
       showLocationSearchBarAndDistanceButtons,
@@ -278,14 +277,23 @@ export default defineComponent({
       this.updateFilters({ searchInput });
     },
     updateLocationInput(placeData: any) {
+      console.log({
+        placeData,
+      })
       try {
         this.updateFilters({
           latitude: placeData.geometry.location.lat(),
           longitude: placeData.geometry.location.lng(),
+          placeId: placeData.place_id,
+          placeName: placeData.name,
+          placeAddress: placeData.formatted_address,
         });
         this.updateLocalState({
           latitude: placeData.geometry.location.lat(),
           longitude: placeData.geometry.location.lng(),
+          placeId: placeData.place_id,
+          placeName: placeData.name,
+          placeAddress: placeData.formatted_address,  
         });
         this.referencePointAddress = placeData.formatted_address;
       } catch (e: any) {
@@ -427,7 +435,7 @@ export default defineComponent({
         >
           <LocationIcon class="h-6 w-6 text-blue-500" />
           <h1 class="border border-none pb-0 text-md ml-1">
-            Tempe: {{ displayDistance }}
+            {{ referencePointName }}: {{ displayDistance }}
           </h1>
         </button>
 

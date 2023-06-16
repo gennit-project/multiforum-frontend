@@ -117,7 +117,7 @@ export default defineComponent({
 
             <div class="h-full flex-grow lg:ml-4">
               <div
-                class="bg-white shadow rounded-lg dark:bg-gray-800"
+                class="bg-white shadow rounded-t-lg dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
@@ -126,7 +126,7 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-              <div class="bg-white rounded-lg dark:bg-gray-800">
+              <div class="bg-white rounded-b-lg dark:bg-gray-800">
                 <router-view></router-view>
               </div>
             </div>

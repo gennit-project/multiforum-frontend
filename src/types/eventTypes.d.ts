@@ -112,6 +112,9 @@ export type SearchEventValues = {
   // parameters are used to build the EventWhere.
   timeShortcut?: string;
   radius?: number;
+  placeName?: string;
+  placeAddress?: string;
+  placeId?: string;
   latitude?: number;
   longitude?: number;
   tags?: Array[string];

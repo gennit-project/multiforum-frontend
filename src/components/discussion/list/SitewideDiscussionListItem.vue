@@ -83,12 +83,7 @@ export default defineComponent({
 
 <template>
   <li
-    :class="[
-      discussion.id === discussionIdInParams
-        ? 'border-blue-500'
-        : 'border-blue-200',
-    ]"
-    class="bg-white hover:border-blue-500 border-l-4 relative dark:bg-gray-700  my-4 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex shadow-md rounded-md"
+    class="bg-white border-l-4 relative dark:bg-gray-700 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex"
   >
     <span class="mt-1 w-6"
       >{{
@@ -100,9 +95,9 @@ export default defineComponent({
       </v-tooltip>
     </span>
 
-    <div>
+    <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')">
-        <p class="text-lg font-bold cursor-pointer">
+        <p class="text-lg font-bold cursor-pointer hover:text-gray-500">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>
       </router-link>

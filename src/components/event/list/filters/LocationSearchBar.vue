@@ -98,7 +98,7 @@ export default defineComponent({
         @place_changed="updateLocationInput"
       >
       </GMapAutocomplete>
-      <div
+      <!-- <div
         v-if="route.name !== 'EditEvent' && route.name !== 'CreateEvent'"
         class="
           absolute
@@ -112,7 +112,7 @@ export default defineComponent({
         @click="requestUserLocation"
       >
         <i class="fa-solid fa-crosshairs h-5 w-5 text-gray-400"></i>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
