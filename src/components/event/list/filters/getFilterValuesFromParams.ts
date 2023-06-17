@@ -10,6 +10,8 @@ import {
 import { timeShortcutValues } from "./eventSearchOptions";
 
 import { resultOrderTypes } from "./eventSearchOptions";
+import { parse } from "path";
+import { parseValue } from "graphql";
 
 const defaultPlace = {
   // Default map center is Tempe Public Library
@@ -27,7 +29,6 @@ const getFilterValuesFromParams = function (
   // Need to re-clean data when route values change
   // Take the default filter values from the query
   // in the URL if the values exist.
-
   const cleanedValues: SearchEventValues = {};
 
   // For the online events list, only include
@@ -64,13 +65,21 @@ const getFilterValuesFromParams = function (
         }
         break;
       case "latitude":
-        if (typeof val === "number") {
-          cleanedValues.latitude = val;
+        if (typeof val === "string") {
+          // Cast string to number for filtering by distance
+          const parsedVal = parseFloat(val);
+          if (!isNaN(parsedVal)) {
+            cleanedValues.latitude = parsedVal;
+          }
         }
         break;
       case "longitude":
-        if (typeof val === "number") {
-          cleanedValues.longitude = val;
+        if (typeof val === "string") {
+          // Cast string to number for filtering by distance
+          const parsedVal = parseFloat(val);
+          if (!isNaN(parsedVal)) {
+            cleanedValues.longitude = parsedVal;
+          }
         }
         break;
       case "tags":
@@ -214,10 +223,12 @@ const getFilterValuesFromParams = function (
 
   const defaultRadius = channelId ? 0 : 160.934; // 100 miles
 
-  return {
+  const filterValues = {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
     radius: radius || defaultRadius,
     placeName: placeName || defaultPlace.name,
+    placeAddress: placeAddress || defaultPlace.address,
+    placeId: placeId || '',
     latitude: latitude || defaultPlace.latitude,
     longitude: longitude || defaultPlace.longitude,
     tags: tags || [],
@@ -240,6 +251,7 @@ const getFilterValuesFromParams = function (
         : LocationFilterTypes.WITHIN_RADIUS),
     hasVirtualEventUrl: hasVirtualEventUrl || false,
   };
+  return filterValues;
 };
 
 export { getFilterValuesFromParams, defaultPlace };

@@ -155,8 +155,7 @@ export default defineComponent({
         return `${distance} km`;
       }
       // If miles are selected, convert to miles.
-      // We are dividing by 1000 to convert km to m before converting to mi.
-      return distance ? `${Math.round(distance / 1000 / 1.609)} mi` : "";
+      return distance ? `${Math.round(distance / 1.609)} mi` : "";
     });
 
     const referencePointName = computed(() => {
@@ -290,9 +289,6 @@ export default defineComponent({
       this.updateFilters({ searchInput });
     },
     updateLocationInput(placeData: any) {
-      console.log({
-        placeData,
-      })
       try {
         this.updateFilters({
           latitude: placeData.geometry.location.lat(),

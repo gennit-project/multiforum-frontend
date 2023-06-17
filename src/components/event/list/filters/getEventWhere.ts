@@ -101,7 +101,8 @@ const getEventWhere = (
               latitude,
               longitude,
             },
-            distance: radius * 1000,
+            // Radius is in km
+            distance: radius
           },
         });
       }
