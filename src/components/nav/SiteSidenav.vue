@@ -7,6 +7,8 @@ import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import UserCircle from "@/components/icons/UserCircle.vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
+import { useQuery } from "@vue/apollo-composable";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
 type NavigationItem = {
   name: string;
@@ -43,14 +45,18 @@ export default defineComponent({
     UserCircle
   },
   setup() {
-    const { isAuthenticated, logout, loginWithRedirect, user } = useAuth0();
+    const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
+
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
-      if (user) {
-        return user.value.username;
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
       }
       return "";
     });
+
 
     return {
       isAuthenticated,
