@@ -231,7 +231,7 @@ export default defineComponent({
   <v-container fluid>
     <v-row>
       <v-col cols="12">
-        <div class="mx-auto">
+        <div class="mx-auto px-6">
           <div class="w-full">
             <div>
               <ErrorBanner

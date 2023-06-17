@@ -444,7 +444,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex items-center inline-flex w-full space-y-1 px-6">
+  <div class="flex items-center inline-flex w-full space-y-1">
     <div v-if="route.name !== 'EventDetail'" class="w-full">
       <div class="flex flex-wrap align-middle justify-between space-x-4 px-2 mr-6">
         <button
