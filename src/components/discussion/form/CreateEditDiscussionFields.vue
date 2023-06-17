@@ -102,7 +102,7 @@ export default defineComponent({
 <template>
   <v-container fluid>
     <v-row class="justify-center">
-      <v-col cols="12" md="8" >
+      <v-col cols="12" md="10" >
         <div v-if="discussionLoading">Loading...</div>
         <div v-else-if="getDiscussionError">
           <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">
