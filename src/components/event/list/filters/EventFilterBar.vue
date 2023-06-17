@@ -158,6 +158,18 @@ export default defineComponent({
       return distance ? `${Math.round(distance / 1.609)} mi` : "";
     });
 
+    const referencePointName = computed(() => {
+      return filterValues.value.placeName;
+    })
+
+    const referencePointAddress = computed(() => {
+      return filterValues.value.placeAddress;
+    })
+
+    const referencePointPlaceId = computed(() => {
+      return filterValues.value.placeId;
+    })
+
     return {
       activeDateShortcut,
       activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
@@ -180,9 +192,9 @@ export default defineComponent({
       MI_KM_RATIO: 1.609,
       MilesOrKm,
       moreFiltersLabel,
-      referencePointName: ref(filterValues.value.placeName),
-      referencePointAddress: ref(filterValues.value.placeAddress),
-      referencePointPlaceId: ref(filterValues.value.placeId),
+      referencePointName,
+      referencePointAddress,
+      referencePointPlaceId,
       route,
       selectedDistanceUnit,
       showLocationSearchBarAndDistanceButtons,
