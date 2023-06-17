@@ -1,14 +1,8 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
-import TopNavLink from "@/components/nav/TopNavLink.vue";
 import MenuButton from "@/components/nav/MenuButton.vue";
-// import NotificationButton from '@/components/nav/NotificationButton.vue'
 import UserProfileDropdownMenu from "@/components/nav/UserProfileDropdownMenu.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
-import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-// import FeedIcon from "@/components/icons/FeedIcon.vue";
-import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
-import LocationIcon from "@/components/icons/LocationIcon.vue";
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
@@ -21,15 +15,10 @@ export default defineComponent({
   name: "TopNav",
   components: {
     ThemeSwitcher,
-    TopNavLink,
-    LocationIcon,
     MenuButton,
     // NotificationButton,
     UserProfileDropdownMenu,
     ChannelIcon,
-    CalendarIcon,
-    // FeedIcon,
-    DiscussionIcon,
   },
   setup() {
     const { isAuthenticated, loginWithPopup } = useAuth0();
@@ -76,22 +65,6 @@ export default defineComponent({
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="dark:text-white">topical</span>
         </div>
 
-        <div class="hidden lg:block lg:ml-12">
-          <div class="flex space-x-4">
-            <TopNavLink :to="'/events/list/search'" :label="'Online Events'">
-              <CalendarIcon class="-ml-0.5 h-4 w-4 mr-1" />
-            </TopNavLink>
-            <TopNavLink :to="'/map'" :label="'In-person Events'">
-              <LocationIcon class="-ml-0.5 h-4 w-4 mr-1" />
-            </TopNavLink>
-            <TopNavLink :to="'/discussions'" :label="'Discussions'">
-              <DiscussionIcon class="-ml-0.5 h-4 w-4 mr-1" />
-            </TopNavLink>
-            <TopNavLink :to="'/channels'" :label="'Channels'">
-              <ChannelIcon class="-ml-0.5 h-4 w-4 mr-1" />
-            </TopNavLink>
-          </div>
-        </div>
       </div>
       <div
         class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
