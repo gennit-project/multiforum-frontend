@@ -1,25 +1,24 @@
 <script>
 import { defineComponent } from "vue";
+import TopNavDropdown from "@/components/nav/TopNavDropdown.vue";
 
 export default defineComponent({
+  components: {
+    TopNavDropdown,
+  },
   setup() {},
 });
 </script>
 <template>
-  <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end">
+  <div class="flex-1 flex justify-center px-2 lg:ml-6 lg:justify-end max-w-xl">
+    <div class="flex flex-none">
+      <TopNavDropdown/>
+    </div>
     <div class="w-full">
       <label for="search" class="sr-only">Search</label>
       <div class="relative">
         <div
-          class="
-                absolute
-                inset-y-0
-                left-0
-                pl-3
-                flex
-                items-center
-                pointer-events-none
-              "
+          class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none flex-shrink-0"
         >
           <svg
             class="h-5 w-5 text-gray-400"
@@ -38,29 +37,14 @@ export default defineComponent({
         <input
           id="search"
           name="search"
-          class="
-                block
-                w-full
-                pl-10
-                pr-3
-                py-2
-                border border-transparent
-                rounded-full
-                leading-5
-                bg-gray-700
-                text-gray-300
-                placeholder-gray-400
-                focus:outline-none
-                focus: 
-                focus:border-white
-                focus:ring-white
-                focus:text-gray-900
-                sm:text-sm
-              "
-          placeholder="Search"
+          class="block w-full flex flex-grow pl-10 pr-3 py-2 rounded-r-md leading-5 bg-white border-l-transparent border-t-gray-300 border-r-gray-300 border-b-gray-300 text-gray-300 placeholder-gray-400 focus:outline-none focus: focus:border-white focus:ring-white focus:text-gray-900 sm:text-sm"
+          placeholder="Search Gennit"
           type="search"
         />
+        
       </div>
+      
     </div>
+    
   </div>
 </template>

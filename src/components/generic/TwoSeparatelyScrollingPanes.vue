@@ -31,23 +31,23 @@ export default defineComponent({
   <v-container fluid class="w-full p-0">
     <v-row class="w-full p-0">
       <v-col
+        cols="5"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
-          mdAndUp ? 'w-1/2' : 'w-full',
         ]"
         class="lg:overflow-y-auto"
       >
         <slot name="leftpane"></slot>
       </v-col>
       <v-col
+        cols="7"
         v-if="lgAndUp || (mdAndUp && showRightPaneAtMediumScreenWidth)"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
           'lg:max-h-screen',
           'lg:overflow-y-auto',
-          'w-1/2',
         ]"
       >
         <slot name="rightpane"></slot>

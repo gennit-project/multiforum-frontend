@@ -119,10 +119,10 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div 
-      class="min-w-0"
-    >
-      <h2 class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate">
+    <div class="min-w-0">
+      <h2
+        class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate"
+      >
         {{ discussion.title }}
       </h2>
       <div :class="'mt-4'" v-if="route.name === 'DiscussionDetail'">
@@ -139,7 +139,7 @@ export default defineComponent({
             </router-link>
           </template>
         </RequireAuth>
-        <RequireAuth class="inline-flex" >
+        <RequireAuth class="inline-flex">
           <template v-slot:has-auth>
             <CreateButton
               class="ml-2"
@@ -153,7 +153,7 @@ export default defineComponent({
         </RequireAuth>
       </div>
     </div>
-    
+
     <div class="text-xs mt-4">
       <div class="mb-2 mt-4">
         <router-link
@@ -183,19 +183,17 @@ export default defineComponent({
             >
           </template>
         </RequireAuth>
-
-        <span
+      </div>
+      <span
+        v-if="route.name !== 'DiscussionDetail' && channelId"
+        class="ml-1 mr-1"
+        ><router-link
           v-if="route.name !== 'DiscussionDetail' && channelId"
-          class="ml-1 mr-1"
-          >&#8226;</span
-        >
-        <router-link
-          v-if="route.name !== 'DiscussionDetail' && channelId"
-          class="underline font-medium cursor-pointer"
+          class="border bg-blue-100 border-blue-200 px-3 py-1 mt-1 rounded-sm hover:bg-blue-200 font-medium cursor-pointer"
           :to="`/channels/c/${channelId}/discussions/d/${discussion.id}`"
           >Permalink</router-link
-        >
-      </div>
+        ></span
+      >
     </div>
     <WarningModal
       :title="'Delete Discussion'"

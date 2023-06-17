@@ -241,7 +241,7 @@ export default defineComponent({
         ? 'border-blue-500'
         : 'border-blue-200',
     ]"
-    class="bg-white rounded relative bg-gray-100 dark:bg-gray-700 py-3 px-4 space-x-2 flex"
+    class="bg-white rounded relative bg-gray-100 dark:bg-gray-700 py-1 px-4 space-x-2 flex"
   >
     <DiscussionVotes
       :discussion="discussion"
@@ -250,11 +250,11 @@ export default defineComponent({
     />
     <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')" class="hover:text-gray-500">
-        <p class="text-lg font-bold cursor-pointer">
+        <p class="text-sm font-bold cursor-pointer">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>
       </router-link>
-      <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+      <p class="text-xs text-slate-600 hover:no-underline font-medium mt-1">
         <Tag
           class="my-1"
           :active="selectedTags.includes(tag)"

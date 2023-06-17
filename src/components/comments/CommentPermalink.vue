@@ -54,7 +54,7 @@ export default defineComponent({
         :depth="1"
       />
       <div v-if="route.name === 'DiscussionCommentModHistory'">
-        <h2 class="text-lg text-gray-500 mt-6">Mod History</h2>
+        <h2 class="text-lg text-gray-500 mt-6 bg-white dark:bg-gray-600">Mod History</h2>
         <hr />
         <CommentModHistory :comment-data="commentResult.comments[0]" />
       </div>

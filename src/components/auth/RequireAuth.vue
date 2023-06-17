@@ -14,6 +14,10 @@ export default defineComponent({
       type: Array as PropType<Array<string>>,
       default: () => [],
     },
+    justifyLeft: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const { isAuthenticated, loginWithPopup } = useAuth0();
@@ -51,7 +55,7 @@ export default defineComponent({
 });
 </script>
   <template>
-  <div class="flex align-middle">
+  <div class="flex align-middle w-full" :class="[!justifyLeft ? 'justify-center' : '']">
     <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
     </div>

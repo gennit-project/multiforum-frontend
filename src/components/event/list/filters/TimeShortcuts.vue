@@ -165,7 +165,7 @@ export default defineComponent({
 
 <template>
   
-  <div class="time-shortcuts flex pt-4">
+  <div class="time-shortcuts flex">
     <div v-if="!channelId">
       <Tag
         class="align-middle"
@@ -174,7 +174,7 @@ export default defineComponent({
         :tag="shortcut.label"
         :active="shortcut.value === filterValues.timeShortcut"
         :hide-icon="true"
-        :large="true"
+        :large="false"
         @click="handleTimeFilterShortcutClick(shortcut.value)"
       />
     </div>

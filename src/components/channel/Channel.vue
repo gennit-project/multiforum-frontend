@@ -4,7 +4,7 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-import About from "./About.vue";
+import AboutColumn from "./AboutColumn.vue";
 import LargeChannelHeader from "./LargeChannelHeader.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
@@ -13,7 +13,7 @@ import MdEditor from "md-editor-v3";
 export default defineComponent({
   name: "ChannelComponent",
   components: {
-    About,
+    AboutColumn,
     // ChannelIcon,
     ChannelTabs,
     LargeChannelHeader,
@@ -75,7 +75,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen bg-gray-100 dark:bg-gray-800">
+  <div class="h-screen dark:bg-gray-800">
     <div class="h-full">
       <header class="mx-4 items-center">
         <LargeChannelHeader :channel-id="channelId"> </LargeChannelHeader>
@@ -86,41 +86,11 @@ export default defineComponent({
         <div class="block p-2 h-full">
           <div class="flex flex-col lg:flex-row h-full">
             <div v-if="!mdAndDown" class="h-full dark:bg-gray-700">
-              <div
+              <AboutColumn
                 v-if="leftColumnIsExpanded"
-                class="w-[300px] flex-shrink-0 bg-white rounded-lg border ml-2"
-              >
-                <div class="flex p-6 justify-between">
-                  <h2
-                    class="text-md leading-6 mb-2 font-medium text-gray-700 dark:text-gray-300 border-b border-gray-200"
-                  >
-                    About
-                  </h2>
-                  <button
-                    @click="leftColumnIsExpanded = false"
-                    class="p-2"
-                  >
-                    <!-- This is a simple right arrow SVG icon, indicating the collapse action. -->
-
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      class="w-6 h-6 text-gray-500"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                      ></path>
-                    </svg>
-                  </button>
-                </div>
-
-                <About />
-              </div>
+                @closeLeftColumn="leftColumnIsExpanded = false"
+              />
+                
               <div v-else>
                 <button @click="leftColumnIsExpanded = true" class="p-2">
                   <!-- This is a simple left arrow SVG icon, indicating the expand action. -->
@@ -145,7 +115,7 @@ export default defineComponent({
             <div
               v-else
               :class="mdAndDown ? '' : 'giveSpaceForLeftSideBar'"
-              class="flex-grow pt-8 items-center bg-white dark:bg-gray-700 rounded-lg"
+              class="flex-grow pt-8 items-center bg-white dark:bg-gray-700 rounded-sm"
             >
               <md-editor
                 v-if="channel && channel.description"
@@ -154,16 +124,16 @@ export default defineComponent({
                 previewTheme="vuepress"
                 preview-only
               />
-              <About v-if="mdAndUp" />
+              <AboutColumn v-if="mdAndUp" />
             </div>
 
-            <div class="h-full bg-white border rounded-t-lg flex-grow lg:ml-4">
+            <div class="h-full bg-gray-50 border rounded-t-sm flex-grow lg:ml-4">
               <div
                 class="border-b dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="px-4 sm:px-6 lg:px-8">
-                  <div class="block pt-4 border-b border-b-1">
+                  <div class="block pt-1 border-b border-b-1">
                     <ChannelTabs class="block" :route="route" />
                   </div>
                 </div>

@@ -10,6 +10,7 @@ import {
   GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
+import TopNavSearchBar from "./TopNavSearchBar.vue";
 
 export default defineComponent({
   name: "TopNav",
@@ -19,6 +20,7 @@ export default defineComponent({
     // NotificationButton,
     UserProfileDropdownMenu,
     ChannelIcon,
+    TopNavSearchBar
   },
   setup() {
     const { isAuthenticated, loginWithPopup } = useAuth0();
@@ -55,16 +57,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-900 w-full h-10 shadow-sm">
-    <div class="px-4 relative flex items-center justify-between">
+  <div class="bg-white dark:bg-gray-900 w-full shadow-sm">
+    <div class="px-4 py-1 relative flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="flex cursor-pointer">
           <MenuButton @click="$emit('toggleDropdown')" />
         </div>
         <div class="text-gray-700 flex text-lg">
-          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="dark:text-white">topical</span>
+          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="text-gray-500">gennit</span><span class="dark:text-white ml-1 text-blue-500">topical</span>
         </div>
-
+      </div>
+      <div class="flex justify-center w-full">
+        <TopNavSearchBar/>
       </div>
       <div
         class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
@@ -77,10 +81,9 @@ export default defineComponent({
           Log In
         </button>
       </div>
-      <!-- <TopNavSearchBar/> -->
+    
       <div class="flex items-center">
         <ThemeSwitcher />
-        
         <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">
           <div class="flex items-center">
             <!-- <NotificationButton/> -->

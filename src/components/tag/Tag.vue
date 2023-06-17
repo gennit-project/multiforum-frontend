@@ -59,7 +59,7 @@ export default defineComponent({
         !this.large && !this.titleMode ? 'text-xs py-1.5' : '',
         this.clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
         this.getButtonStyles(),
-        'pl-3 font-medium tag rounded shadow-sm',
+        'pl-3 font-medium tag rounded border border-gray-400',
       ];
     },
   },
