@@ -103,7 +103,6 @@ export default defineComponent({
     LocationIcon,
     LocationSearchBar,
     PencilIcon,
-    RightArrowIcon,
     TagIcon,
     TagInput,
     TextEditor,
@@ -324,7 +323,7 @@ export default defineComponent({
 <template>
   <v-container fluid>
     <v-row class="justify-center">
-      <v-col cols="12" md="8">
+      <v-col cols="12" md="10" lg="8">
     <div v-if="eventLoading">Loading...</div>
     <div v-else-if="getEventError">
       <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">
@@ -332,14 +331,14 @@ export default defineComponent({
       </div>
     </div>
     <TailwindForm
-    class="pt-8"
+    class="pt-8 w-full"
       v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"
       @input="touched = true"
       @submit="$emit('submit')"
     >
-    <div class="divide-y divide-gray-200">
+    <div class="divide-y divide-gray-200 w-full">
         <FormRow>
           <template v-slot:icon>
             <PencilIcon class="inline-flex float-right h-6 w-6" /><span

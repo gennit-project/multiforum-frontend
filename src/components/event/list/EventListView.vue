@@ -18,9 +18,6 @@ import {
   reverseChronologicalOrder,
 } from "./filters/filterStrings";
 import EventFilterBar from "./filters/EventFilterBar.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
 
@@ -30,14 +27,11 @@ export default defineComponent({
   // params, while the MapView and EventListView
   // components consume the query params.
   components: {
-    CreateButton,
     ErrorBanner,
     EventFilterBar,
     EventList,
     EventDetail,
     DrawerFlyout,
-    PrimaryButton,
-    RequireAuth,
     TimeShortcuts,
     TwoSeparatelyScrollingPanes,
   },
@@ -249,26 +243,11 @@ export default defineComponent({
               <TwoSeparatelyScrollingPanes class="block w-full">
                 <template v-slot:leftpane>
                   <div class="flex justify-between w-full">
-                    <EventFilterBar class="my-4" :show-distance-filters="false" />
-                    <RequireAuth class="inline-flex">
-                      <template v-slot:has-auth>
-                        <CreateButton
-                          class="align-middle ml-2"
-                          :to="createEventPath"
-                          :label="'+ Create Event'"
-                        />
-                      </template>
-                      <template v-slot:does-not-have-auth>
-                        <PrimaryButton
-                          class="align-middle mx-2"
-                          :label="'+ Create Event'"
-                        />
-                      </template>
-                    </RequireAuth>
+                    <EventFilterBar
+                      class="my-4"
+                      :show-distance-filters="false"
+                    />
                   </div>
-                  
-                  
-                  
                   <TimeShortcuts />
                   <EventList
                     id="listView"

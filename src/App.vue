@@ -73,7 +73,7 @@ export default defineComponent({
         :show-dropdown="showDropdown"
         @close="showDropdown = false"
       />
-      <div class="w-full">
+      <div class="w-full flex justify-center">
         <div v-if="isLoading" class="flex justify-center mt-8">Loading...</div>
         <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
           <MainLayout />
