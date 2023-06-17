@@ -44,11 +44,11 @@ export default {
 </script>
 
 <template>
-  <div class="max-w-md rounded overflow-hidden shadow-lg my-1">
+  <div class="rounded overflow-hidden shadow-lg my-1 border">
     <a :href="url" target="_blank" rel="noopener">
       <img
         v-if="imageUrl && showImage"
-        class="h-30"
+        class="w-20 m-4 object-cover"
         :src="imageUrl"
         :alt="title"
         @error="showImage = false"
@@ -56,7 +56,7 @@ export default {
     </a>
     <div class="px-6 py-4">
       <a :href="url" target="_blank" rel="noopener"
-        ><div class="font-bold text-xl mb-2">{{ title }}</div></a
+        ><div class="font-bold text-xl mb-2 hover:text-gray-400">{{ title }}</div></a
       >
       <p class="text-gray-700 text-base" :class="!showImage ? 'mt-4' : ''">
         {{ description }}

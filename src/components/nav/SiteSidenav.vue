@@ -12,7 +12,6 @@ type NavigationItem = {
   name: string;
   href: string;
   icon: any;
-  current: boolean;
 };
 
 const navigation: NavigationItem[] = [
@@ -20,21 +19,18 @@ const navigation: NavigationItem[] = [
     name: "Online Events",
     href: "/events/list/search",
     icon: CalendarIcon,
-    current: false,
   },
   {
     name: "In-person Events",
     href: "/map",
     icon: LocationIcon,
-    current: false,
   },
   {
     name: "Discussions",
     href: "/discussions",
     icon: DiscussionIcon,
-    current: false,
   },
-  { name: "Channels", href: "/channels", icon: ChannelIcon, current: false },
+  { name: "Channels", href: "/channels", icon: ChannelIcon,  },
 ];
 
 export default defineComponent({
@@ -79,7 +75,7 @@ export default defineComponent({
 <template>
   <div
     v-if="showDropdown"
-    class="relative flex w-[250px] flex-shrink-0 h-full max-w-xs grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2 border"
+    class="relative flex w-[250px] flex-shrink-0 flex-grow max-w-xs grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 px-6 pb-2 border"
   >
     <div class="flex items-end justify-end mt-2">
       <div class="h-7 flex items-center">
@@ -98,21 +94,14 @@ export default defineComponent({
         <li v-for="item in navigation" :key="item.name">
           <router-link
             :to="item.href"
-            :class="[
-              item.current
-                ? 'bg-gray-50 text-blue-600'
-                : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50',
-              'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold',
-            ]"
+            :active="$route.path.includes(item.href)"
+            active-class="text-blue-600"
+            
+            class="text-gray-700 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
           >
             <component
               :is="item.icon"
-              :class="[
-                item.current
-                  ? 'text-blue-600'
-                  : 'text-gray-400 group-hover:text-blue-600',
-                'h-6 w-6 shrink-0',
-              ]"
+              class="h-6 w-6 shrink-0 list-item-icon group-hover:text-blue-600"
               aria-hidden="true"
             />
             {{ item.name }}
@@ -124,16 +113,15 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}`"
-          class="hover:bg-gray-50 hover:text-blue-600 text-gray-700 hover:text-blue-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']"
-          active-class="bg-gray-900 text-white"
+          active-class="text-blue-600"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
         >
           My Profile
         </router-link>
         <button
           v-if="!isAuthenticated"
           @click="login"
-          class="hover:bg-gray-50 hover:text-blue-600 text-gray-700 hover:text-blue-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']"
-          active-class="bg-gray-900 text-white"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
         >
           Log In
         </button>
@@ -141,8 +129,8 @@ export default defineComponent({
           v-if="isAuthenticated"
           to="/logout"
           @click="logout"
-          class="hover:bg-gray-50 hover:text-blue-600 text-gray-700 hover:text-blue-600 hover:bg-gray-50', 'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold']"
-          active-class="bg-gray-900 text-white"
+          active-class="text-blue-600"
+          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
         >
           Sign Out
         </router-link>
@@ -150,3 +138,23 @@ export default defineComponent({
     </nav>
   </div>
 </template>
+
+<style lang="scss" scoped>
+nav li:hover,
+nav li:active {
+  background-color: #f0f4f8;
+  color: #2563eb;
+}
+
+.list-item-icon {
+  color: #9ca3af;
+}
+.router-link-exact-active > .list-item-icon {
+  color: #2563eb;
+}
+
+nav li > .router-link-exact-active {
+  background-color: #f0f4f8;
+  color: #2563eb 
+}
+</style>

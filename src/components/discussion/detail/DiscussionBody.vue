@@ -132,6 +132,7 @@ export default defineComponent({
         language="en-US"
         :noMermaid="true"
         preview-only
+        class="-ml-6"
       />
       <button
         v-if="shouldShowMoreButton"

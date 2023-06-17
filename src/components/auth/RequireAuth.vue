@@ -51,7 +51,7 @@ export default defineComponent({
 });
 </script>
   <template>
-  <div>
+  <div class="flex align-middle">
     <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
     </div>

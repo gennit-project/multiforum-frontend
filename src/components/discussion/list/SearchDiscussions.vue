@@ -82,9 +82,7 @@ export default defineComponent({
       return getTagLabel(selectedTags.value);
     });
 
-    const createDiscussionPath = channelId.value
-      ? `/channels/c/${channelId.value}/discussions/create`
-      : "/discussions/create";
+    
 
     const previewIsOpen = ref(false);
 
@@ -94,7 +92,6 @@ export default defineComponent({
       channelId,
       channelLabel,
       compareDate,
-      createDiscussionPath,
       defaultLabels,
       discussionId,
       discussionWhere,
@@ -252,21 +249,7 @@ export default defineComponent({
                   <div>
                     <div class="items-center">
                       <DiscussionFilterBar />
-                      <RequireAuth class="flex inline-flex">
-                        <template v-slot:has-auth>
-                          <CreateButton
-                            class="align-middle ml-2"
-                            :to="createDiscussionPath"
-                            :label="'Create Discussion'"
-                          />
-                        </template>
-                        <template v-slot:does-not-have-auth>
-                          <PrimaryButton
-                            class="align-middle ml-2"
-                            :label="'Create Discussion'"
-                          />
-                        </template>
-                      </RequireAuth>
+                      
                     </div>
                   </div>
                 </div>

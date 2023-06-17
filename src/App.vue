@@ -95,7 +95,7 @@ body {
   }
 
   @media (prefers-color-scheme: light) {
-    @apply bg-gray-100;
+    @apply bg-white;
     color-scheme: light;
   }
 
@@ -105,7 +105,7 @@ body {
   }
 
   &.light {
-    @apply bg-gray-100;
+    @apply bg-white;
     color-scheme: light;
   }
 }

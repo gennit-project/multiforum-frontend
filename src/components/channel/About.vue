@@ -97,7 +97,7 @@ export default defineComponent({
     </div>
     <div v-else-if="channel">
         <div v-if="!mdAndDown">
-          <div v-if="channel.description" >
+          <div v-if="channel.description" class="-ml-4">
             <md-editor
               v-model="channel.description"
               language="en-US"

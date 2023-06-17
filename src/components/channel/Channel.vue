@@ -60,6 +60,7 @@ export default defineComponent({
       eventId,
       route,
       lgAndDown,
+      leftColumnIsExpanded: ref(true),
       mdAndDown,
       lgAndUp,
       mdAndUp,
@@ -74,18 +75,71 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen">
+  <div class="h-screen bg-gray-100 dark:bg-gray-800">
     <div class="h-full">
-      <header class="mx-4 items-center rounded-lg">
+      <header class="mx-4 items-center">
         <LargeChannelHeader :channel-id="channelId"> </LargeChannelHeader>
       </header>
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
       >
-        <div class="block p-2  h-full">
+        <div class="block p-2 h-full">
           <div class="flex flex-col lg:flex-row h-full">
-            <div v-if="!mdAndDown" class=" h-full bg-white rounded-lg shadow ml-2 dark:bg-gray-700 w-[300px] flex-shrink-0">
-              <About />
+            <div v-if="!mdAndDown" class="h-full dark:bg-gray-700">
+              <div
+                v-if="leftColumnIsExpanded"
+                class="w-[300px] flex-shrink-0 bg-white rounded-lg border ml-2"
+              >
+                <div class="flex p-6 justify-between">
+                  <h2
+                    class="text-md leading-6 mb-2 font-medium text-gray-700 dark:text-gray-300 border-b border-gray-200"
+                  >
+                    About
+                  </h2>
+                  <button
+                    @click="leftColumnIsExpanded = false"
+                    class="p-2"
+                  >
+                    <!-- This is a simple right arrow SVG icon, indicating the collapse action. -->
+
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      class="w-6 h-6 text-gray-500"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <About />
+              </div>
+              <div v-else>
+                <button @click="leftColumnIsExpanded = true" class="p-2">
+                  <!-- This is a simple left arrow SVG icon, indicating the expand action. -->
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    class="ml-4 w-6 h-6 text-gray-500"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M14 5l7 7m0 0l-7 7m7-7H3"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
             </div>
 
             <div
@@ -93,30 +147,19 @@ export default defineComponent({
               :class="mdAndDown ? '' : 'giveSpaceForLeftSideBar'"
               class="flex-grow pt-8 items-center bg-white dark:bg-gray-700 rounded-lg"
             >
-                <div class="flex space-x-2">
-                  <div
-                    class="h-12 w-12 rounded-full ring-4 ring-white dark:ring-slate-900"
-                    id="channelAvatar"
-                  ></div>
-                  <div>
-                    <h1 class="text-xl no-underline">
-                      {{ channelId }}
-                    </h1>
-                  </div>
-                </div>
-                <md-editor
-                  v-if="channel && channel.description"
-                  v-model="channel.description"
-                  language="en-US"
-                  previewTheme="vuepress"
-                  preview-only
-                />
-                <About v-if="mdAndUp" />
+              <md-editor
+                v-if="channel && channel.description"
+                v-model="channel.description"
+                language="en-US"
+                previewTheme="vuepress"
+                preview-only
+              />
+              <About v-if="mdAndUp" />
             </div>
 
-            <div class="h-full flex-grow lg:ml-4">
+            <div class="h-full bg-white border rounded-t-lg flex-grow lg:ml-4">
               <div
-                class="bg-white shadow rounded-t-lg dark:bg-gray-800"
+                class="border-b dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="px-4 sm:px-6 lg:px-8">

@@ -45,15 +45,14 @@ export default defineComponent({
         rounded-lg
         dark:bg-gray-700
         dark:text-gray-200
-        py-6
-        bg-white
-        shadow-md
+        py-3
+        border
         col-span-12
         px-8
       "
     >
       <div >
-        <p class="mt-12 mb-6">
+        <p class="mt-6 mb-6">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
             class="cursor-pointer huge"

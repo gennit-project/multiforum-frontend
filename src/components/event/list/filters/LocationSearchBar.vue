@@ -89,10 +89,7 @@ export default defineComponent({
         text-sm
         w-full
         "
-        :placeholder="
-          referencePointAddressName ||
-          searchPlaceholder ||
-          'Search events near an address'
+        :placeholder="'Search events near an address'
         "
         disablePortal
         @place_changed="updateLocationInput"

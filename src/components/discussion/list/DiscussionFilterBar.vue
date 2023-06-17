@@ -9,9 +9,10 @@ import { getTagLabel, getChannelLabel } from "@/components/utils";
 import SearchBar from "../../generic/SearchBar.vue";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import { useRoute } from "vue-router";
-import {
-  getFilterValuesFromParams,
-} from "@/components/event/list/filters/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 
 export default defineComponent({
   name: "DiscussionFilterBar",
@@ -21,8 +22,11 @@ export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
+    CreateButton,
     FilterChip,
+    RequireAuth,
     SearchBar,
+    PrimaryButton,
     TagIcon,
     TagPicker,
   },
@@ -66,9 +70,14 @@ export default defineComponent({
       return getTagLabel(filterValues.value.tags);
     });
 
+    const createDiscussionPath = channelId.value
+      ? `/channels/c/${channelId.value}/discussions/create`
+      : "/discussions/create";
+
     return {
       channelId,
       channelLabel,
+      createDiscussionPath,
       defaultFilterLabels,
       drawerIsOpen: ref(false),
       filterValues,
@@ -131,45 +140,64 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex items-center inline-flex space-x-3">
-    <SearchBar
-      class="inline-flex align-middle"
-      :initial-value="filterValues.searchInput"
-      :search-placeholder="'Search text'"
-      :small="true"
-      @updateSearchInput="updateSearchInput"
-    />
-    <FilterChip
-      class="align-middle"
-      v-if="!channelId"
-      :label="channelLabel"
-      :highlighted="channelLabel !== defaultFilterLabels.channels"
-    >
-      <template v-slot:icon>
-        <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-      </template>
-      <template v-slot:content>
-        <ChannelPicker
-          :selected-channels="filterValues.channels"
-          @setSelectedChannels="setSelectedChannels"
-        />
-      </template>
-    </FilterChip>
+  <div class=" w-full mx-6 space-y-2">
+    <div class="w-full flex align-middle ">
+      <SearchBar
+        class="flex flex-grow inline-flex align-middle"
+        :initial-value="filterValues.searchInput"
+        :search-placeholder="'Search text'"
+        :small="true"
+        @updateSearchInput="updateSearchInput"
+      />
+      <RequireAuth class="flex inline-flex align-middle">
+        <template v-slot:has-auth>
+          <CreateButton
+            class="align-middle ml-2"
+            :to="createDiscussionPath"
+            :label="'Create Discussion'"
+          />
+        </template>
+        <template v-slot:does-not-have-auth>
+          <PrimaryButton
+            class="align-middle ml-2"
+            :label="'Create Discussion'"
+          />
+        </template>
+      </RequireAuth>
+    </div>
 
-    <FilterChip
-      class="align-middle"
-      :label="tagLabel"
-      :highlighted="tagLabel !== defaultFilterLabels.tags"
-    >
-      <template v-slot:icon>
-        <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-      </template>
-      <template v-slot:content>
-        <TagPicker
-          :selected-tags="filterValues.tags"
-          @setSelectedTags="setSelectedTags"
-        />
-      </template>
-    </FilterChip>
+    <div>
+      <FilterChip
+        class="align-middle"
+        v-if="!channelId"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels"
+      >
+        <template v-slot:icon>
+          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+        </template>
+        <template v-slot:content>
+          <ChannelPicker
+            :selected-channels="filterValues.channels"
+            @setSelectedChannels="setSelectedChannels"
+          />
+        </template>
+      </FilterChip>
+      <FilterChip
+        class="align-middle"
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultFilterLabels.tags"
+      >
+        <template v-slot:icon>
+          <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+        </template>
+        <template v-slot:content>
+          <TagPicker
+            :selected-tags="filterValues.tags"
+            @setSelectedTags="setSelectedTags"
+          />
+        </template>
+      </FilterChip>
+    </div>
   </div>
 </template>
