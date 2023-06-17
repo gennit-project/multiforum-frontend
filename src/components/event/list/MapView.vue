@@ -492,27 +492,11 @@ export default defineComponent({
 </script>
 <template>
   <div class="h-full">
-    <div v-if="mdAndUp" id="mapViewFullScreen"  class="w-full">
+    <div v-if="mdAndUp" id="mapViewFullScreen">
       <TwoSeparatelyScrollingPanes class="mt-3" :show-right-pane-at-medium-screen-width="true">
         <template v-slot:leftpane>
-          <div class="overflow-y-auto h-full px-4" style="width: 50vw">
-            <div class="mt-4 mr-4 flex justify-end">
-              <RequireAuth class="flex inline-flex">
-                <template v-slot:has-auth>
-                  <CreateButton
-                    class="align-middle ml-2"
-                    :to="createEventPath"
-                    :label="'+ Create Event'"
-                  />
-                </template>
-                <template v-slot:does-not-have-auth>
-                  <PrimaryButton
-                    class="align-middle ml-2"
-                    :label="'+ Create Event'"
-                  />
-                </template>
-              </RequireAuth>
-            </div>
+          <div class="overflow-y-auto h-full px-4" style="width: 40vw">
+           
             <EventFilterBar class="w-full mt-6" />
             <div v-if="eventLoading">Loading...</div>
             <ErrorBanner

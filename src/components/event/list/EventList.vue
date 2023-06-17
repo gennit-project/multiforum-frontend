@@ -125,7 +125,7 @@ export default defineComponent({
   <div>
     <div v-if="events.length === 0">
       <p v-if="!showMap" class="mt-3">Could not find any events.</p>
-      <p v-else class="t-3">
+      <p v-else class="p-8">
         Could not find any events that can be shown on a map.
       </p>
     </div>

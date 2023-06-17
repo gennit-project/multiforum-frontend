@@ -36,6 +36,9 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
+import RequireAuth from '@/components/auth/RequireAuth.vue'
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -47,12 +50,15 @@ export default defineComponent({
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
+    CreateButton,
     DrawerFlyout,
     FilterChip,
     FilterIcon,
     GenericButton,
     LocationIcon,
     LocationSearchBar,
+    PrimaryButton,
+    RequireAuth,
     SearchBar,
     SelectCanceled,
     SelectFree,
@@ -170,11 +176,16 @@ export default defineComponent({
       return filterValues.value.placeId;
     })
 
+    const createEventPath = channelId.value
+      ? `/channels/c/${channelId.value}/events/create`
+      : "/events/create";
+
     return {
       activeDateShortcut,
       activeEventFilterTypeShortcut: ref(filterValues.value.locationFilter),
       channelId,
       channelLabel,
+      createEventPath,
       defaultFilterLabels,
       defaultKilometerSelection,
       defaultMileSelection,
@@ -433,9 +444,9 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex items-center inline-flex w-full space-y-1">
-    <div v-if="route.name !== 'EventDetail'" class="flex align-middle w-full">
-      <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
+  <div class="flex items-center inline-flex w-full space-y-1 px-6">
+    <div v-if="route.name !== 'EventDetail'" class="w-full">
+      <div class="flex flex-wrap align-middle justify-between space-x-4 px-2 mr-6">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
           class="flex my-1 items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
@@ -447,7 +458,25 @@ export default defineComponent({
             {{ referencePointName }}: {{ displayDistance }}
           </h1>
         </button>
-
+        <div class="mt-4 mr-4 flex justify-end">
+          <RequireAuth class="flex inline-flex">
+            <template v-slot:has-auth>
+              <CreateButton
+                class="align-middle ml-2"
+                :to="createEventPath"
+                :label="'+ Create Event'"
+              />
+            </template>
+            <template v-slot:does-not-have-auth>
+              <PrimaryButton
+                class="align-middle ml-2"
+                :label="'+ Create Event'"
+              />
+            </template>
+          </RequireAuth>
+        </div>
+      </div>
+      <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
         <FilterChip
           class="align-middle items-center"
           v-if="!channelId"
@@ -481,7 +510,7 @@ export default defineComponent({
         </FilterChip>
         <div class="inline-flex align-middle items-center">
           <button
-          class="flex inline-flex bg-white dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md border border-gray-300 dark:border-gray-600 dark:bg-slate-700 text-gray-700 dark:text-gray-200  dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+          class="flex inline-flex dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200  dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           @click="handleClickMoreFilters"
         >
           <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
