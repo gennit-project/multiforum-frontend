@@ -104,7 +104,7 @@ export default defineComponent({
       this.showUserProfileDropdown = false;
     },
     toggleMobileDropdown() {
-      this.showMobileDropdown = !this.showMobileDropdown;
+      this.showDropdown = !this.showDropdown;
     },
     toggleUserProfileDropdown() {
       this.showUserProfileDropdown = !this.showUserProfileDropdown;
@@ -112,7 +112,7 @@ export default defineComponent({
   },
   data() {
     return {
-      showMobileDropdown: false,
+      showDropdown: false,
       showUserProfileDropdown: false,
     };
   },

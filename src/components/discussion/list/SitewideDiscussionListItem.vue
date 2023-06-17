@@ -91,7 +91,7 @@ export default defineComponent({
         (discussion.DownvotedByModeratorsAggregate?.count || 0)
       }}
       <v-tooltip activator="parent" location="top">
-        <span>{{ "Sum of votes in all channels, deduped by user" }}</span>
+        <span>{{ "Sum of votes in all channels, deduped by user. To vote, go to a channel and vote within it." }}</span>
       </v-tooltip>
     </span>
 

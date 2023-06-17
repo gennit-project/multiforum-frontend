@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed } from "vue";
 import TopNavLink from "@/components/nav/TopNavLink.vue";
-import MobileMenuButton from "@/components/nav/MobileMenuButton.vue";
+import MenuButton from "@/components/nav/MenuButton.vue";
 // import NotificationButton from '@/components/nav/NotificationButton.vue'
 import UserProfileDropdownMenu from "@/components/nav/UserProfileDropdownMenu.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
@@ -23,7 +23,7 @@ export default defineComponent({
     ThemeSwitcher,
     TopNavLink,
     LocationIcon,
-    MobileMenuButton,
+    MenuButton,
     // NotificationButton,
     UserProfileDropdownMenu,
     ChannelIcon,
@@ -66,9 +66,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-900  shadow-sm">
+  <div class="bg-white dark:bg-gray-900 w-full h-10 shadow-sm">
     <div class="px-4 lg:px-12 relative flex items-center justify-between">
       <div class="flex items-center lg:px-0">
+        <div class="flex cursor-pointer">
+          <MenuButton @click="$emit('toggleDropdown')" />
+        </div>
         <div class="text-gray-700 flex text-lg">
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="dark:text-white">topical</span>
         </div>
@@ -104,9 +107,7 @@ export default defineComponent({
       <!-- <TopNavSearchBar/> -->
       <div class="flex items-center">
         <ThemeSwitcher />
-        <div class="flex lg:hidden">
-          <MobileMenuButton @click="$emit('toggleMobileDropdown')" />
-        </div>
+        
         <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">
           <div class="flex items-center">
             <!-- <NotificationButton/> -->

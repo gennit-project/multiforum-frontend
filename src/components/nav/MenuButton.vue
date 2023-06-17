@@ -15,7 +15,7 @@ export default defineComponent({
             p-2
             rounded-full
             text-gray-400
-            hover:text-white hover:bg-gray-700
+            hover:dark:text-white hover:bg-gray-100 hover:dark:bg-gray-600
             focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white
           "
     aria-controls="mobile-menu"

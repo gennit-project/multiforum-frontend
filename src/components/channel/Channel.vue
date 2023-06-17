@@ -82,17 +82,17 @@ export default defineComponent({
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
       >
-        <div class="block p-2 w-full h-full">
+        <div class="block p-2  h-full">
           <div class="flex flex-col lg:flex-row h-full">
-            <div v-if="!mdAndDown" class="h-full bg-white rounded-lg shadow ml-2 dark:bg-gray-700">
+            <div v-if="!mdAndDown" class=" h-full bg-white rounded-lg shadow ml-2 dark:bg-gray-700 w-[300px] flex-shrink-0">
               <About />
             </div>
 
             <div
               v-else
-              class="pt-8 items-center bg-white dark:bg-gray-700 rounded-lg"
+              :class="mdAndDown ? '' : 'giveSpaceForLeftSideBar'"
+              class="flex-grow pt-8 items-center bg-white dark:bg-gray-700 rounded-lg"
             >
-              <div>
                 <div class="flex space-x-2">
                   <div
                     class="h-12 w-12 rounded-full ring-4 ring-white dark:ring-slate-900"
@@ -112,7 +112,6 @@ export default defineComponent({
                   preview-only
                 />
                 <About v-if="mdAndUp" />
-              </div>
             </div>
 
             <div class="h-full flex-grow lg:ml-4">
@@ -120,7 +119,7 @@ export default defineComponent({
                 class="bg-white shadow rounded-t-lg dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"
               >
-                <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div class="px-4 sm:px-6 lg:px-8">
                   <div class="block pt-4 border-b border-b-1">
                     <ChannelTabs class="block" :route="route" />
                   </div>

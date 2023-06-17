@@ -1,10 +1,11 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import MainLayout from "./components/layout/MainLayout.vue";
 import WithAuth from "./WithAuth.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import TopNav from "@/components/nav/Topnav.vue";
 import SiteSidenav from "@/components/nav/SiteSidenav.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   components: {
@@ -15,6 +16,7 @@ export default defineComponent({
   },
   setup() {
     const { isAuthenticated, user, isLoading } = useAuth0();
+    const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
 
     const emailFromAuth0 = computed(() => {
       // The reason why we get the email in this parent
@@ -33,25 +35,25 @@ export default defineComponent({
       return "";
     });
 
-    return { emailFromAuth0, isLoading };
+    return { 
+      emailFromAuth0, 
+      isLoading, 
+      lgAndUp,
+      showUserProfileDropdown: ref(false),
+      showDropdown: ref(lgAndUp.value ? true : false)
+    };
   },
   name: "App",
   methods: {
     closeUserProfileDropdown() {
-      this.showUserProfileDropdown = false;
+      this.showUserProfileDropdown = false
     },
-    toggleMobileDropdown() {
-      this.showMobileDropdown = !this.showMobileDropdown;
+    toggleDropdown() {
+      this.showDropdown = !this.showDropdown;
     },
     toggleUserProfileDropdown() {
       this.showUserProfileDropdown = !this.showUserProfileDropdown;
     },
-  },
-  data() {
-    return {
-      showMobileDropdown: false,
-      showUserProfileDropdown: false,
-    };
   },
 });
 </script>
@@ -61,24 +63,31 @@ export default defineComponent({
     <nav class="shadow-sm">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
-        @toggleMobileDropdown="toggleMobileDropdown"
+        @toggleDropdown="toggleDropdown"
         @closeUserProfileDropdown="closeUserProfileDropdown"
         @toggleUserProfileDropdown="toggleUserProfileDropdown"
       />
-      <SiteSidenav
-        :show-mobile-dropdown="showMobileDropdown"
-        @click="showMobileDropdown = false"
-      />
     </nav>
-    <div v-if="isLoading" class="flex justify-center mt-8">Loading...</div>
-    <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
-      <MainLayout />
-    </WithAuth>
-    <MainLayout v-else />
+    <div class="flex constrain-height">
+      <SiteSidenav
+        :show-dropdown="showDropdown"
+        @close="showDropdown = false"
+      />
+      <div class="w-full">
+        <div v-if="isLoading" class="flex justify-center mt-8">Loading...</div>
+        <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
+          <MainLayout />
+        </WithAuth>
+        <MainLayout v-else />
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss">
+.constrain-height {
+  height: calc(100vh);
+}
 body {
   @media (prefers-color-scheme: dark) {
     @apply bg-gray-800;
