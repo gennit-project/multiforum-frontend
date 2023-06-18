@@ -40,7 +40,7 @@ export default defineComponent({
       isLoading, 
       lgAndUp,
       showUserProfileDropdown: ref(false),
-      showDropdown: ref(lgAndUp.value ? true : false)
+      showDropdown: ref(false)
     };
   },
   name: "App",

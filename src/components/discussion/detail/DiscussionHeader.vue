@@ -121,7 +121,7 @@ export default defineComponent({
   <div class="mb-4">
     <div class="min-w-0">
       <h2
-        class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate"
+        class="text-2xl font-bold leading-7 sm:tracking-tight sm:truncate"
       >
         {{ discussion.title }}
       </h2>

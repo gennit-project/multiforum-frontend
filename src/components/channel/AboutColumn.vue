@@ -88,8 +88,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-blue-50 w-[300px] flex-shrink-0 rounded-sm border border-blue-200 ml-2">
-    <div class="flex justify-between border-b border-blue-200 bg-blue-100">
+  <div class="bg-white w-[300px] flex-shrink-0 rounded-sm border border-blue-200 ml-2">
+    <div class="flex justify-between border-b border-blue-200 bg-blue-50">
       <span
         class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
       >
@@ -132,14 +132,14 @@ export default defineComponent({
               preview-only
             />
           </div>
-          <p v-else>
+          <p v-else class="mx-6">
             {{ "This channel has no description." }}
           </p>
         </div>
 
         <div class="mt-6">
           <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b border-blue-200 bg-blue-100">
+            <div class="flex justify-between border-b border-t border-blue-200 bg-blue-50">
               <span
                 class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
               >
@@ -157,7 +157,7 @@ export default defineComponent({
               />
             </div>
           </div>
-          <div class="flex justify-between border-b border-blue-200 bg-blue-100">
+          <div class="flex justify-between border-b border-t border-blue-200 bg-blue-50">
             <span
               class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
             >
@@ -174,23 +174,23 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
-          <p class="text-sm mb-6" v-else>
+          <p class="text-sm mb-6 mx-6 my-3" v-else>
             This channel does not have any admins.
           </p>
           
         </div>
         
       </div>
-      <div class="flex justify-between border-b border-blue-200 bg-blue-100">
-        <span
-          class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
-        >
-          Admin Actions
-        </span>
-      </div>
-      <RequireAuth :require-ownership="true" :owners="ownerList" :justify-left="true">
+     
+      <RequireAuth :require-ownership="true" :owners="ownerList" :justify-left="true" class="w-full">
         <template v-slot:has-auth>
-         
+          <div class="flex justify-between border-b border-t border-blue-200 bg-blue-50 w-full">
+            <span
+              class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300 w-full"
+            >
+              Admin Actions
+            </span>
+          </div>
           <router-link
             class="underline text-sm mx-6 my-3"
             :to="`/channels/c/${channelId}/edit`"

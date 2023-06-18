@@ -55,7 +55,7 @@ export default defineComponent({
 });
 </script>
   <template>
-  <div class="flex align-middle w-full" :class="[!justifyLeft ? 'justify-center' : '']">
+  <div class="flex align-middle" :class="[!justifyLeft ? 'justify-center' : '']">
     <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
     </div>

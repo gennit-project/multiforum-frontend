@@ -190,7 +190,7 @@ export default defineComponent({
   <div >
     <div class="px-4">
       <div class="pt-2 flex justify-between mx-auto max-w-5xl">
-        <div class="flex inline-flex py-2">
+        <div class="flex inline-flex py-2 w-full">
           <SearchBar
             class="align-middle mr-2"
             :search-placeholder="'Search channels'"

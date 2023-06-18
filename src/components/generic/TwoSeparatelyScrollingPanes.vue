@@ -31,7 +31,7 @@ export default defineComponent({
   <v-container fluid class="w-full p-0">
     <v-row class="w-full p-0">
       <v-col
-        cols="5"
+        cols="lg:5"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
@@ -41,7 +41,7 @@ export default defineComponent({
         <slot name="leftpane"></slot>
       </v-col>
       <v-col
-        cols="7"
+        cols="lg:7"
         v-if="lgAndUp || (mdAndUp && showRightPaneAtMediumScreenWidth)"
         :class="[
           'p-0',

@@ -405,7 +405,7 @@ body.light #md-editor-v3-preview-wrapper {
   ul,
   ol,
   blockquote > li {
-    font-size: 1rem;
+    font-size: 0.9rem;
     word-break: break-word;
   }
 }

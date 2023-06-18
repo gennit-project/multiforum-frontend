@@ -141,30 +141,31 @@ export default defineComponent({
 
 <template>
   <div class=" w-full mx-6 space-y-2">
-    <div class="w-full flex align-middle ">
+    <div class="flex justify-between items-center">  <!-- Flex container -->
       <SearchBar
-        class="flex flex-grow inline-flex align-middle"
+        class="mr-2 flex flex-grow"
         :initial-value="filterValues.searchInput"
         :search-placeholder="'Search text'"
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
-      <RequireAuth class="flex inline-flex align-middle">
+      <RequireAuth class="align-middle">
         <template v-slot:has-auth>
           <CreateButton
-            class="align-middle ml-2"
+            class="ml-2"
             :to="createDiscussionPath"
             :label="'Create Discussion'"
           />
         </template>
         <template v-slot:does-not-have-auth>
           <PrimaryButton
-            class="align-middle ml-2"
+            class="ml-2"
             :label="'Create Discussion'"
           />
         </template>
       </RequireAuth>
     </div>
+    
 
     <div>
       <FilterChip

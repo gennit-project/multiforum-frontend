@@ -81,7 +81,7 @@ export default defineComponent({
         <LargeChannelHeader :channel-id="channelId"> </LargeChannelHeader>
       </header>
       <article
-        class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last h-full"
+        class="relative z-0 flex-1  focus:outline-none xl:order-last h-full"
       >
         <div class="block p-2 h-full">
           <div class="flex flex-col lg:flex-row h-full">

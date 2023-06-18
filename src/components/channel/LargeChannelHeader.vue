@@ -19,7 +19,7 @@ export default defineComponent({
 <template>
   <section aria-labelledby="section-2-title" class="border-b">
     <div class="overflow-hidden">
-      <div class="space-y-2 px-4 mt-4 flex items-center font-bold">
+      <div class="space-y-2 px-4 mt-2 flex items-center font-bold">
         <ChannelIcon class="h-6 w-6" />
         <h1 class="text-xl mt-8 ml-4">
           {{ channelId }}
