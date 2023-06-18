@@ -22,14 +22,15 @@ const DropdownButton = defineComponent({
     const route = useRoute();
 
     let defaultSelectedRoute = "Discussions";
+    let selectedSearchType = ref(defaultSelectedRoute)
 
     const updateRoute = (path) => {
       if (path.includes("events")) {
-        defaultSelectedRoute = "Events";
+        selectedSearchType.value = "Events";
       } else if (path.includes("discussions")) {
-        defaultSelectedRoute = "Discussions";
+        selectedSearchType.value = "Discussions";
       } else if (path.includes("channels")) {
-        defaultSelectedRoute = "Channels";
+        selectedSearchType.value = "Channels";
       }
     }
 
@@ -37,7 +38,7 @@ const DropdownButton = defineComponent({
 
     return {
       items,
-      selectedSearchType: ref(defaultSelectedRoute),
+      selectedSearchType,
       route,
       updateRoute
     };
@@ -50,7 +51,6 @@ const DropdownButton = defineComponent({
   created() {
     this.$watch("$route.path", () => {
       if (this.$route.path) {
-        console.log(this.$route.path)
         this.updateRoute(this.$route.path)
       }
     });
