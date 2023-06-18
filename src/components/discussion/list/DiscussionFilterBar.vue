@@ -141,7 +141,7 @@ export default defineComponent({
 
 <template>
   <div class=" w-full mx-6 space-y-2">
-    <div class="flex justify-between items-center">  <!-- Flex container -->
+    <div class="flex justify-between items-center">
       <SearchBar
         class="mr-2 flex flex-grow"
         :initial-value="filterValues.searchInput"
@@ -154,13 +154,13 @@ export default defineComponent({
           <CreateButton
             class="ml-2"
             :to="createDiscussionPath"
-            :label="'Create Discussion'"
+            :label="'+ Create Discussion'"
           />
         </template>
         <template v-slot:does-not-have-auth>
           <PrimaryButton
             class="ml-2"
-            :label="'Create Discussion'"
+            :label="'+ Create Discussion'"
           />
         </template>
       </RequireAuth>

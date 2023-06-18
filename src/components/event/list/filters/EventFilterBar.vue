@@ -445,8 +445,8 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex items-center inline-flex w-full space-y-1">
-    <div v-if="route.name !== 'EventDetail'" class="w-full">
-      <div class="flex flex-wrap align-middle justify-between space-x-4 px-2 mr-6">
+    <div v-if="route.name !== 'EventDetail'" class="w-full px-4">
+      <div class="flex flex-wrap align-middle justify-between space-x-4 mr-6">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
           class="flex my-1 items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
@@ -458,24 +458,33 @@ export default defineComponent({
             {{ referencePointName }}: {{ displayDistance }}
           </h1>
         </button>
-        <div class="mt-4 mr-4 flex justify-end">
-          <RequireAuth class="flex inline-flex">
-            <template v-slot:has-auth>
-              <CreateButton
-                class="align-middle ml-2"
-                :to="createEventPath"
-                :label="'+ Create Event'"
-              />
-            </template>
-            <template v-slot:does-not-have-auth>
-              <PrimaryButton
-                class="align-middle ml-2"
-                :label="'+ Create Event'"
-              />
-            </template>
-          </RequireAuth>
-        </div>
+        
       </div>
+      <div class="mt-4 mr-4 flex justify-between items-center">
+        <SearchBar
+        class="mr-2 flex flex-grow"
+        :initial-value="filterValues.searchInput"
+        :search-placeholder="'Search text'"
+        :small="true"
+        @updateSearchInput="updateSearchInput"
+      />
+        <RequireAuth class="align-middle">
+          <template v-slot:has-auth>
+            <CreateButton
+              class="align-middle ml-2"
+              :to="createEventPath"
+              :label="'+ Create Event'"
+            />
+          </template>
+          <template v-slot:does-not-have-auth>
+            <PrimaryButton
+              class="align-middle ml-2"
+              :label="'+ Create Event'"
+            />
+          </template>
+        </RequireAuth>
+      </div>
+     
       <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
         <FilterChip
           class="align-middle items-center"

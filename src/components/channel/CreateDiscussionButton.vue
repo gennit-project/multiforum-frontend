@@ -38,11 +38,11 @@ export default defineComponent({
       <CreateButton
         class="ml-2"
         :to="`/channels/c/${channelId}/discussions/create`"
-        :label="'Create Discussion'"
+        :label="'+ Create Discussion'"
       />
     </template>
     <template v-slot:does-not-have-auth>
-      <PrimaryButton class="ml-2" :label="'Create Discussion'" />
+      <PrimaryButton class="ml-2" :label="'+ Create Discussion'" />
     </template>
   </RequireAuth>
 </template>
