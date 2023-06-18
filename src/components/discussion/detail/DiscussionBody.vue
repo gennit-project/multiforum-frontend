@@ -32,7 +32,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const showFullText = ref(route.name === "DiscussionDetail");
-    const wordLimit = 50;
+    const wordLimit = 150;
 
     const truncateText = (text: string, limit: number) => {
       const words = text.split(' ');

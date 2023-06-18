@@ -11,7 +11,7 @@ export default defineComponent({
     }
   },
   setup() {
-    const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
+    const { lgAndDown, lgAndUp, smAndDown, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
     const route = useRoute();
 
     return {
@@ -19,6 +19,7 @@ export default defineComponent({
       lgAndUp,
       mdAndDown,
       mdAndUp,
+      smAndDown,
       xlAndUp,
       route,
     };
@@ -31,7 +32,7 @@ export default defineComponent({
   <v-container fluid class="w-full p-0">
     <v-row class="w-full p-0">
       <v-col
-        :cols="lgAndUp ? 5 : 6"
+        :cols="mdAndDown ? 12 : 5"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
@@ -41,7 +42,7 @@ export default defineComponent({
         <slot name="leftpane"></slot>
       </v-col>
       <v-col
-        :cols="lgAndUp ? 7 : 6"
+        :cols="mdAndDown ? 12 : 7"
         v-if="lgAndUp || (mdAndUp && showRightPaneAtMediumScreenWidth)"
         :class="[
           'p-0',

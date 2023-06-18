@@ -52,12 +52,12 @@ export default defineComponent({
       "
     >
       <div >
-        <p class="mt-6 mb-6">
+        <p class="mt-4 mb-6">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
-            class="cursor-pointer huge"
+            class="cursor-pointer"
           >
-          <h3 class="mb-2">
+          <h3 class="mb-2 text-2xl">
             <HighlightedSearchTerms
               :text="channel.uniqueName"
               :search-input="searchInput"
@@ -103,9 +103,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
-<style>
-.huge {
-  font-size: 2rem;
-}
-</style>

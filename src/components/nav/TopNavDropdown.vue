@@ -2,6 +2,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 import { defineComponent, ref } from "vue";
+import { useRoute } from "vue-router";
 
 const DropdownButton = defineComponent({
   components: {
@@ -17,15 +18,42 @@ const DropdownButton = defineComponent({
       { name: "Events", href: "#" },
       { name: "Channels", href: "#" },
     ];
+
+    const route = useRoute();
+
+    let defaultSelectedRoute = "Discussions";
+
+    const updateRoute = (path) => {
+      if (path.includes("events")) {
+        defaultSelectedRoute = "Events";
+      } else if (path.includes("discussions")) {
+        defaultSelectedRoute = "Discussions";
+      } else if (path.includes("channels")) {
+        defaultSelectedRoute = "Channels";
+      }
+    }
+
+    updateRoute(route.path)
+
     return {
       items,
-      selectedSearchType: ref("Discussions"),
+      selectedSearchType: ref(defaultSelectedRoute),
+      route,
+      updateRoute
     };
   },
   methods: {
     setSelectedSearchType(type) {
       this.selectedSearchType = type;
     },
+  },
+  created() {
+    this.$watch("$route.path", () => {
+      if (this.$route.path) {
+        console.log(this.$route.path)
+        this.updateRoute(this.$route.path)
+      }
+    });
   },
 });
 export default DropdownButton;

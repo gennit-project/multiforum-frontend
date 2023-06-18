@@ -20,9 +20,7 @@ import ClockIcon from "@/components/icons/ClockIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute } from "vue-router";
-import {
-  getFilterValuesFromParams,
-} from "@/components/event/list/filters/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import {
   defaultSelectedWeekdays,
   defaultSelectedHourRanges,
@@ -36,7 +34,7 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
-import RequireAuth from '@/components/auth/RequireAuth.vue'
+import RequireAuth from "@/components/auth/RequireAuth.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 
@@ -166,15 +164,15 @@ export default defineComponent({
 
     const referencePointName = computed(() => {
       return filterValues.value.placeName;
-    })
+    });
 
     const referencePointAddress = computed(() => {
       return filterValues.value.placeAddress;
-    })
+    });
 
     const referencePointPlaceId = computed(() => {
       return filterValues.value.placeId;
-    })
+    });
 
     const createEventPath = channelId.value
       ? `/channels/c/${channelId.value}/events/create`
@@ -313,7 +311,7 @@ export default defineComponent({
           longitude: placeData.geometry.location.lng(),
           placeId: placeData.place_id,
           placeName: placeData.name,
-          placeAddress: placeData.formatted_address,  
+          placeAddress: placeData.formatted_address,
         });
         this.referencePointAddress = placeData.formatted_address;
       } catch (e: any) {
@@ -458,16 +456,15 @@ export default defineComponent({
             {{ referencePointName }}: {{ displayDistance }}
           </h1>
         </button>
-        
       </div>
       <div class="mt-4 mr-4 flex justify-between items-center">
         <SearchBar
-        class="mr-2 flex flex-grow"
-        :initial-value="filterValues.searchInput"
-        :search-placeholder="'Search text'"
-        :small="true"
-        @updateSearchInput="updateSearchInput"
-      />
+          class="mr-2 flex flex-grow"
+          :initial-value="filterValues.searchInput"
+          :search-placeholder="'Search events'"
+          :small="true"
+          @updateSearchInput="updateSearchInput"
+        />
         <RequireAuth class="align-middle">
           <template v-slot:has-auth>
             <CreateButton
@@ -484,7 +481,7 @@ export default defineComponent({
           </template>
         </RequireAuth>
       </div>
-     
+
       <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
         <FilterChip
           class="align-middle items-center"
@@ -519,14 +516,13 @@ export default defineComponent({
         </FilterChip>
         <div class="inline-flex align-middle items-center">
           <button
-          class="flex inline-flex dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200  dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-          @click="handleClickMoreFilters"
-        >
-          <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
-          More Filters
-        </button>
+            class="flex inline-flex dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            @click="handleClickMoreFilters"
+          >
+            <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            More Filters
+          </button>
         </div>
-       
       </div>
     </div>
     <div class="flex justify-center">
