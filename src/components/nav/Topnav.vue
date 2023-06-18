@@ -58,7 +58,7 @@ export default defineComponent({
 
 <template>
   <div class="bg-white dark:bg-gray-900 w-full shadow-sm">
-    <div class="px-4 py-1 relative flex items-center justify-between">
+    <div class="px-4 py-1 flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="flex cursor-pointer">
           <MenuButton @click="$emit('toggleDropdown')" />

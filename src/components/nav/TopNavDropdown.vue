@@ -15,7 +15,8 @@ const DropdownButton = defineComponent({
   setup() {
     const items = [
       { name: "Discussions", href: "#" },
-      { name: "Events", href: "#" },
+      { name: "Online Events", href: "#" },
+      { name: "In-person Events", href: "#"},
       { name: "Channels", href: "#" },
     ];
 
@@ -59,7 +60,7 @@ const DropdownButton = defineComponent({
 export default DropdownButton;
 </script>
 <template>
-  <div class="inline-flex rounded-md shadow-sm">
+  <div class="flex inline-flex h-10 w-fit-content">
     <MenuElement as="div" class="relative -ml-px block">
       <MenuButton
         class="relative inline-flex items-center rounded-l-md pr-2 pl-3 h-full text-gray-700 dark:text-gray-300 bg-gray-50 dark:bg-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-10"
