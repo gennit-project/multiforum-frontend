@@ -1,21 +1,53 @@
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import TopNavDropdown from "@/components/nav/TopNavDropdown.vue";
 import LocationSearchBar from "../event/list/filters/LocationSearchBar.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   components: {
     LocationSearchBar,
     TopNavDropdown,
   },
-  setup() {},
+  setup() {
+    const route = useRoute();
+
+    let defaultSelectedRoute = "Discussions";
+    let selectedSearchType = ref(defaultSelectedRoute);
+
+    const updateRoute = (path) => {
+      if (path.includes("map")) {
+        selectedSearchType.value = "In-person Events";
+      } else if (path.includes("events")) {
+        selectedSearchType.value = "Online Events";
+      } else if (path.includes("discussions")) {
+        selectedSearchType.value = "Discussions";
+      } else if (path.includes("channels")) {
+        selectedSearchType.value = "Channels";
+      }
+    };
+    return {
+      route,
+      selectedSearchType,
+      updateRoute,
+    };
+  },
+  methods: {
+    setSelectedSearchType(type) {
+      this.selectedSearchType = type;
+    },
+  },
 });
 </script>
 <template>
   <div class="px-2 lg:ml-6">
-    <div class="flex items-center max-w-md">
-      <TopNavDropdown  />
-      <div>
+    <div class="flex items-center">
+      <TopNavDropdown 
+        @updateRoute="updateRoute" 
+        @updateSelectedSearchType="setSelectedSearchType"
+        :selected-search-type="selectedSearchType" 
+      />
+      <div class="flex flex-grow">
         <label for="search" class="sr-only">Search</label>
         <input
           id="search"
@@ -25,12 +57,19 @@ export default defineComponent({
           type="search"
         />
       </div>
-      <LocationSearchBar :search-placeholder="'Location'" :in-top-nav="true" class="h-10" />
+      <LocationSearchBar
+        v-if="
+          selectedSearchType === 'In-person Events'
+        "
+        :search-placeholder="'Location'"
+        :in-top-nav="true"
+        class="h-10"
+      />
       <div
-        class="border h-10 w-10 rounded-r-lg bg-blue-500 pl-2 flex items-center pointer-events-none flex-shrink-0"
+        class="border h-10 w-10 rounded-r-lg bg-gray-100 hover:cursor-pointer hover:bg-gray-200 pl-2 flex items-center flex-shrink-0"
       >
         <svg
-          class="h-5 w-5 text-white"
+          class="h-5 w-5 text-gray-500"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -46,4 +85,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-

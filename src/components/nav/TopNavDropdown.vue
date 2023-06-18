@@ -12,6 +12,12 @@ const DropdownButton = defineComponent({
     MenuItems,
     ChevronDownIcon,
   },
+  props: {
+    selectedSearchType: {
+      type: String,
+      default: "Discussions",
+    },
+  },
   setup() {
     const items = [
       { name: "Discussions", href: "#" },
@@ -19,40 +25,21 @@ const DropdownButton = defineComponent({
       { name: "In-person Events", href: "#"},
       { name: "Channels", href: "#" },
     ];
-
     const route = useRoute();
-
-    let defaultSelectedRoute = "Discussions";
-    let selectedSearchType = ref(defaultSelectedRoute)
-
-    const updateRoute = (path) => {
-      if (path.includes("events")) {
-        selectedSearchType.value = "Events";
-      } else if (path.includes("discussions")) {
-        selectedSearchType.value = "Discussions";
-      } else if (path.includes("channels")) {
-        selectedSearchType.value = "Channels";
-      }
-    }
-
-    updateRoute(route.path)
-
     return {
       items,
-      selectedSearchType,
-      route,
-      updateRoute
+      route
     };
   },
   methods: {
     setSelectedSearchType(type) {
-      this.selectedSearchType = type;
+      this.$emit("updateSelectedSearchType", type);
     },
   },
   created() {
     this.$watch("$route.path", () => {
       if (this.$route.path) {
-        this.updateRoute(this.$route.path)
+        this.$emit('updateRoute',this.$route.path)
       }
     });
   },
