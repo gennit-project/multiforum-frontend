@@ -320,7 +320,7 @@ export default defineComponent({
           let infowindowContent = `<b>${eventTitle}</b>`;
 
           if (eventLocation) {
-            infowindowContent = `<div style="text-align:center"><b>${eventTitle}</b></div></div><div style="text-align:center">at ${eventLocation}</div>`;
+            infowindowContent = `<div data-testid="infowindow" style="text-align:center"><b>${eventTitle}</b></div></div><div style="text-align:center">at ${eventLocation}</div>`;
           }
           markerMap.infowindow.setContent(infowindowContent);
           markerMap.infowindow.open({

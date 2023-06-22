@@ -61,7 +61,7 @@ export default defineComponent({
       return false;
     });
 
-    onEmailResult((data) => {
+    onEmailResult(() => {
       let user = null;
       let modProfile = null;
       let username = '';

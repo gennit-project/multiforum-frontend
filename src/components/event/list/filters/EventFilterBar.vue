@@ -2,7 +2,6 @@
 import { defineComponent, computed, ref, Ref } from "vue";
 import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
-import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
@@ -19,7 +18,7 @@ import LocationFilterTypes from "./locationFilterTypes";
 import ClockIcon from "@/components/icons/ClockIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import {
   defaultSelectedWeekdays,
@@ -37,6 +36,7 @@ import SelectFree from "./SelectFree.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
+import ChannelPicker from '@/components/channel/ChannelPicker.vue'
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -88,6 +88,7 @@ export default defineComponent({
       return "";
     });
     const route = useRoute();
+    const router = useRouter();
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams(route, channelId.value)
@@ -205,6 +206,7 @@ export default defineComponent({
       referencePointAddress,
       referencePointPlaceId,
       route,
+      router,
       selectedDistanceUnit,
       showLocationSearchBarAndDistanceButtons,
       showTimeSlotPicker: ref(false),
@@ -449,6 +451,7 @@ export default defineComponent({
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
           class="flex my-1 items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
           aria-label="Open event filters"
+          data-testid="open-event-filters"
           @click="handleClickMoreFilters"
         >
           <LocationIcon class="h-6 w-6 text-blue-500" />
@@ -460,6 +463,7 @@ export default defineComponent({
       <div class="mt-4 mr-4 flex justify-between items-center">
         <SearchBar
           class="mr-2 flex flex-grow"
+          data-testid="event-filter-search-bar"
           :initial-value="filterValues.searchInput"
           :search-placeholder="'Search events'"
           :small="true"
@@ -467,14 +471,16 @@ export default defineComponent({
         />
         <RequireAuth class="align-middle">
           <template v-slot:has-auth>
-            <CreateButton
+            <PrimaryButton
+              data-testid="real-create-event-button"
               class="align-middle ml-2"
-              :to="createEventPath"
+              @click="router.push({path: createEventPath})"
               :label="'+ Create Event'"
             />
           </template>
           <template v-slot:does-not-have-auth>
             <PrimaryButton
+              data-testid="fake-create-event-button"
               class="align-middle ml-2"
               :label="'+ Create Event'"
             />
@@ -485,6 +491,7 @@ export default defineComponent({
       <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
         <FilterChip
           class="align-middle items-center"
+          data-testid="channel-filter-button"
           v-if="!channelId"
           :label="channelLabel"
           :highlighted="channelLabel !== defaultFilterLabels.channels"
@@ -501,6 +508,7 @@ export default defineComponent({
         </FilterChip>
         <FilterChip
           class="align-middle items-center"
+          data-testid="tag-filter-button"
           :label="tagLabel"
           :highlighted="tagLabel !== defaultFilterLabels.tags"
         >
@@ -537,6 +545,7 @@ export default defineComponent({
       >
         <SearchBar
           class="inline-flex align-middle w-full"
+          data-testid="event-drawer-search-bar"
           :initial-value="filterValues.searchInput"
           :search-placeholder="'Search text'"
           :full-width="true"
@@ -545,6 +554,7 @@ export default defineComponent({
         <LocationSearchBar
           v-if="showLocationSearchBarAndDistanceButtons"
           class="flex flex-wrap w-full"
+          data-testid="event-drawer-location-search-bar"
           :search-placeholder="referencePointAddress"
           :reference-point-address-name="referencePointName"
           @updateLocationInput="updateLocationInput"
@@ -553,6 +563,7 @@ export default defineComponent({
           <div v-if="selectedDistanceUnit === MilesOrKm.KM">
             <GenericButton
               v-for="distance in distanceOptionsForKilometers"
+              :data-testid="`distance-${distance.value}`"
               :key="distance.value"
               :text="`${distance.label} ${distance.value !== 0 ? 'km' : ''}`"
               :active="distance.value === filterValues.radius"
@@ -563,6 +574,7 @@ export default defineComponent({
           <div v-else>
             <GenericButton
               v-for="distance in distanceOptionsForMiles"
+              :data-testid="`distance-${distance.value}`"
               :key="distance.value"
               :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
               :active="distance.value === filterValues.radius"

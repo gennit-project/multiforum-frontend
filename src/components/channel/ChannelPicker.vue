@@ -97,6 +97,7 @@ export default defineComponent({
         <Tag
           :key="channel"
           v-for="channel in channelOptionLabels"
+          :data-testid="`channel-picker-${tag}`"
           :active="!!selectedChannelsMap[channel]"
           :tag="channel"
           :channel-mode="true"

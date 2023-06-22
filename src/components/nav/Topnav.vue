@@ -20,10 +20,10 @@ export default defineComponent({
     // NotificationButton,
     UserProfileDropdownMenu,
     ChannelIcon,
-    TopNavSearchBar
+    TopNavSearchBar,
   },
   setup() {
-    const { isAuthenticated, loginWithPopup } = useAuth0();
+    const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
 
     const { result } = useQuery(GET_LOCAL_USERNAME);
     const username = computed(() => {
@@ -47,7 +47,11 @@ export default defineComponent({
     return {
       isAuthenticated,
       login: () => {
-        loginWithPopup();
+        if (window.parent.Cypress) {
+          loginWithRedirect();
+        } else {
+          loginWithPopup();
+        }
       },
       modName,
       username,
@@ -61,19 +65,26 @@ export default defineComponent({
     <div class="px-4 py-1 flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="flex cursor-pointer">
-          <MenuButton @click="$emit('toggleDropdown')" />
+          <MenuButton
+            @click="$emit('toggleDropdown')"
+            data-testid="menu-button"
+          />
         </div>
         <div class="text-gray-700 flex text-lg">
-          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span class="text-gray-500">gennit</span><span class="dark:text-white ml-1 text-blue-500">topical</span>
+          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span
+            class="text-gray-500"
+            >gennit</span
+          ><span class="dark:text-white ml-1 text-blue-500">topical</span>
         </div>
       </div>
       <div class="flex justify-center w-full">
-        <TopNavSearchBar/>
+        <TopNavSearchBar />
       </div>
       <div
         class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
       >
         <button
+          data-testid="login-button"
           class="text-gray-300 inline-flex items-center hover:bg-gray-700 hover:text-white px-3 py-1 rounded-full text-xs font-medium"
           v-if="!isAuthenticated"
           @click="login"
@@ -81,7 +92,7 @@ export default defineComponent({
           Log In
         </button>
       </div>
-    
+
       <div class="flex items-center">
         <ThemeSwitcher />
         <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">

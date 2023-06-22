@@ -241,7 +241,8 @@ export default defineComponent({
         ? 'border-blue-500 px-4'
         : 'border-blue-200 '
     "
-    class="relative bg-white dark:bg-gray-700 pl-6 pt-3 pb-2 border-l-4 m-3"
+    class="relative bg-white dark:bg-gray-700 pl-6 pt-3 pb-2 border-l-4"
+    :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
     @mouseleave="hover = false"
@@ -274,7 +275,7 @@ export default defineComponent({
             <div>
               <p class="space-x-2">
                 <span
-                  class="text-lg font-bold truncate cursor-pointer hover:underline"
+                  class="text-md font-bold truncate cursor-pointer hover:underline"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"

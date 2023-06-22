@@ -42,7 +42,9 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/main.ts"
+    "src/main.ts",
+    "cypress/**/*.ts",
+    "cypress/support/e2e.ts" // or wherever your file is
   ],
   "exclude": [
     "node_modules"

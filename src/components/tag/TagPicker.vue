@@ -91,6 +91,7 @@ export default defineComponent({
       <div class="tagpicker">
         <Tag
           :key="tag"
+          :data-testid="`tag-picker-${tag}`"
           v-for="tag in tagOptionLabels"
           :active="!!selectedTagsMap[tag]"
           :tag="tag"

@@ -164,6 +164,7 @@ export default defineComponent({
 
     <LoadMore
       v-if="events.length > 0"
+      data-testid="load-more-events"
       class="px-8"
       :reached-end-of-results="resultCount === events.length"
       @loadMore="$emit('loadMore')"

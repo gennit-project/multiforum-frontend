@@ -19,7 +19,6 @@ import * as directives from 'vuetify/directives'
 import { createAuth0 } from "@auth0/auth0-vue";
 import '@fortawesome/fontawesome-free/css/all.css';
 
-
 import { 
   faFaceSmile,
   faSun,

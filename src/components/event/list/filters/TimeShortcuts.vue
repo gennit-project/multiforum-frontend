@@ -169,6 +169,7 @@ export default defineComponent({
     <div v-if="!channelId">
       <Tag
         class="align-middle"
+        :data-testid="`time-shortcut-${shortcut.label}`"
         v-for="shortcut in timeFilterShortcuts"
         :key="shortcut.label"
         :tag="shortcut.label"

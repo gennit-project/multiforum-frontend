@@ -161,6 +161,7 @@ export default defineComponent({
           <span>&#8226;</span>
           <span
             class="ml-1 underline font-medium cursor-pointer"
+            data-testid="delete-event-button"
             @click="confirmDeleteIsOpen = true"
             >Delete</span
           >
@@ -170,6 +171,7 @@ export default defineComponent({
           <span
             v-if="!eventData.canceled"
             class="underline font-medium cursor-pointer"
+            data-testid="cancel-event-button"
             @click="confirmCancelIsOpen = true"
             >Cancel</span
           >

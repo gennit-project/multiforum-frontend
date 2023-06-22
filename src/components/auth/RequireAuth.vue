@@ -20,13 +20,19 @@ export default defineComponent({
     },
   },
   setup() {
-    const { isAuthenticated, loginWithPopup } = useAuth0();
+    const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     return {
       isAuthenticated,
       localUsernameResult,
-      loginWithPopup,
+      login: () => {
+        if (window.parent.Cypress) {
+          loginWithRedirect();
+        } else {
+          loginWithPopup();
+        }
+      },
     };
   },
   computed: {
@@ -59,7 +65,7 @@ export default defineComponent({
     <div v-if="isAuthenticated && (!requireOwnership || isOwner)">
       <slot name="has-auth"></slot>
     </div>
-    <div v-else @click="loginWithPopup">
+    <div v-else @click="login">
       <slot name="does-not-have-auth"></slot>
     </div>
   </div>

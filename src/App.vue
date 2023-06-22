@@ -16,7 +16,7 @@ export default defineComponent({
   },
   setup() {
     const { isAuthenticated, user, isLoading } = useAuth0();
-    const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
+    const { lgAndUp } = useDisplay();
 
     const emailFromAuth0 = computed(() => {
       // The reason why we get the email in this parent

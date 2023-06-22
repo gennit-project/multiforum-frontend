@@ -117,7 +117,7 @@ export default defineComponent({
   <div>
     <div class="grid grid-cols-2 gap-2">
       <div
-        v-for="(range, i) in hourRangesData"
+        v-for="range in hourRangesData"
         :key="range['12-hour-label']"
         class="p-2 rounded cursor-pointer"
       >
@@ -125,6 +125,7 @@ export default defineComponent({
           <input
             type="checkbox"
             :id="'timeRange-' + range['12-hour-label']"
+            :data-testid="`timeRange-${range['12-hour-label']}`"
             class="text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
             :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
             @input="() => toggleSelectTimeRange(range)"

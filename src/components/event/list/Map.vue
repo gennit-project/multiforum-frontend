@@ -10,6 +10,7 @@ interface Event {
     latitude: number;
     longitude: number;
   };
+  title: string;
   id: string;
 }
 
@@ -111,6 +112,7 @@ export default defineComponent({
 
         if (event.location) {
           const marker = new google.maps.Marker({
+            title: `Click to view event: ${event.title}`,
             position: {
               lat: event.location.latitude,
               lng: event.location.longitude,

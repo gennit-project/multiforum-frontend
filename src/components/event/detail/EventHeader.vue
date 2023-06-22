@@ -123,7 +123,7 @@ export default defineComponent({
               <router-link
                 :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
               >
-                <GenericButton :text="'Edit'" />
+                <GenericButton :text="'Edit'" data-testid="edit-event-button"/>
               </router-link>
             </template>
           </RequireAuth>
@@ -131,12 +131,13 @@ export default defineComponent({
             <template v-slot:has-auth>
               <CreateButton
                 class="ml-2"
+                data-testid="real-create-event-button"
                 :to="`/channels/c/${channelId}/events/create`"
                 :label="'Create Event'"
               />
             </template>
             <template v-slot:does-not-have-auth>
-              <PrimaryButton class="ml-2" :label="'Create Event'" />
+              <PrimaryButton data-testid="fake-create-event-button" class="ml-2" :label="'Create Event'" />
             </template>
           </RequireAuth>
         </span>

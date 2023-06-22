@@ -332,6 +332,7 @@ export default defineComponent({
     </div>
     <TailwindForm
     class="pt-8 w-full"
+      data-testid="event-form"
       v-else-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"
