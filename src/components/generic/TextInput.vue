@@ -28,6 +28,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    testId: {
+      type: String,
+      default: "",
+    },
   },
   data(props) {
     return {
@@ -42,6 +46,7 @@ export default defineComponent({
       <input
         v-model="text"
         @update:model-value="$emit('update', text)"
+        :data-testid="testId"
         :placeholder="placeholder"
         :disabled="disabled"
         type="text"

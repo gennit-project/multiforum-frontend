@@ -2,19 +2,21 @@
 import { defineComponent, ref } from "vue";
 
 export default defineComponent({
-
+   props: {
+    modelValue: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
-    const showMenu = ref(false);
-
-    const handleClick = (event: MouseEvent) => {
-      event.preventDefault();
-      showMenu.value = true;
-    };
-
     return {
-      showMenu,
-      handleClick,
     };
+  },
+  methods: {
+    close() {
+      console.log('close,')
+      this.$emit('update:modelValue', false);
+    },
   },
 });
 </script>
@@ -22,19 +24,18 @@ export default defineComponent({
 <template>
 <div>
   <v-menu 
-    v-model="showMenu"  
+    :model-value="modelValue"  
     :close-on-content-click="false"
     location="bottom"
+    @update:modelValue="$emit('update:modelValue', $event)"
   >
-    <template v-slot:activator="{ props }">
-      <div v-bind="props">
-        <slot name="button" v-bind="props" />
-      </div>
-      
-    </template>
-    <v-card> <slot name="content"></slot></v-card>
-   
-  </v-menu>
+  <template v-slot:activator="{ props }">
+    <div v-bind="props">
+      <slot name="button" v-bind="props" @close="close"/>
+    </div>
+  </template>
+  <v-card> <slot name="content" ></slot></v-card>
+</v-menu>
 </div>
 </template>
 

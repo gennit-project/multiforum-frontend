@@ -31,16 +31,21 @@ export default defineComponent({
         return [];
       },
     },
+    testId: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
       tags: this.channelMode ? this.selectedChannels : this.selectedTags,
       currentInput: "",
       set: true,
+      showMenu: false,
     };
   },
   methods: {
-    saveTag(e: any) {
+    saveTagAndClose(e: any) {
       e.preventDefault()
       const { tags, currentInput, set } = this;
       if ((set && tags.indexOf(currentInput) === -1) || !set) {
@@ -48,6 +53,8 @@ export default defineComponent({
       }
       this.currentInput = "";
       this.$emit("setSelectedTags", [...this.tags]);
+      this.showMenu = false;
+      console.log('saveTagAndClose', this.showMenu)
     },
     setSelectedTags(tags: Array<string>) {
       this.tags = tags;
@@ -68,7 +75,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <FloatingDropdown>
+  <FloatingDropdown  v-model="showMenu">
     <template v-slot:button>
       <div
         class="
@@ -94,10 +101,14 @@ export default defineComponent({
           @delete="deleteTag($event)"
         />
         <input
+          :data-testid="testId"
           class="flex-1 block min-w-0 pl-3 pt-2 pb-2 dark:bg-gray-700 rounded sm:text-sm  dark:text-gray-100 border-gray-300 dark:border-gray-800"
           v-model="currentInput"
           :placeholder="channelMode ? 'Add channels' : 'Add tags'"
-          @keypress.enter="saveTag"
+          @keydown.enter="(event) => {
+            this.saveTagAndClose(event)
+            this.$emit('close')
+          }"
           @keydown.delete="backspaceDelete"
         />
       </div>

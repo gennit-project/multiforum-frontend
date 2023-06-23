@@ -21,29 +21,32 @@ import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import HomeIcon from "@/components/icons/HomeIcon.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
-import RightArrowIcon from "@/components/icons/RightArrowIcon.vue";
 import { DateTime, Interval } from "luxon";
 
 export default defineComponent({
   setup(props) {
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
     // TIME_SIMPLE yields the time in this format: 1:30 PM
-    
+
     // But this format is required by the date
     // picker component.
     const timeFormat = "yyyy-MM-dd'T'HH:mm";
 
     const startTime = computed(() => {
-        return new Date(props.formValues.startTime);
-    })
+      return new Date(props.formValues.startTime);
+    });
 
-    const formattedStartTime = ref(DateTime.fromISO(props.formValues.startTime).toFormat(timeFormat))
-        
-    const endTime =  computed(() => {
-        return new Date(props.formValues.endTime);
-      })
+    const formattedStartTime = ref(
+      DateTime.fromISO(props.formValues.startTime).toFormat(timeFormat)
+    );
 
-    const formattedEndTime = ref(DateTime.fromISO(props.formValues.endTime).toFormat(timeFormat))
+    const endTime = computed(() => {
+      return new Date(props.formValues.endTime);
+    });
+
+    const formattedEndTime = ref(
+      DateTime.fromISO(props.formValues.endTime).toFormat(timeFormat)
+    );
 
     return {
       // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
@@ -270,7 +273,10 @@ export default defineComponent({
     handleStartDateChange(event: any) {
       const startTimeISO = this.startTime.toISOString();
       const existingStartTimeObject = DateTime.fromISO(startTimeISO);
-      const newStartTimeObject = DateTime.fromFormat(event, this.timeFormat).toObject();
+      const newStartTimeObject = DateTime.fromFormat(
+        event,
+        this.timeFormat
+      ).toObject();
 
       const { day, month, year } = newStartTimeObject;
       // Only change the day/month/year so that we still keep the hours and minutes set by the time picker.
@@ -284,8 +290,11 @@ export default defineComponent({
     handleEndDateChange(event: any) {
       const endTimeISO = this.endTime.toISOString();
       const existingEndTimeObject = DateTime.fromISO(endTimeISO);
-      const newEndTimeObject = DateTime.fromFormat(event, this.timeFormat).toObject();
-     
+      const newEndTimeObject = DateTime.fromFormat(
+        event,
+        this.timeFormat
+      ).toObject();
+
       const { day, month, year } = newEndTimeObject;
       const newEndTime = existingEndTimeObject
         .set({ day, month, year })
@@ -324,215 +333,240 @@ export default defineComponent({
   <v-container fluid>
     <v-row class="justify-center">
       <v-col cols="12" md="10" lg="10">
-    <div v-if="eventLoading">Loading...</div>
-    <div v-else-if="getEventError">
-      <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">
-        {{ error.message }}
-      </div>
-    </div>
-    <TailwindForm
-    class="pt-8 w-full"
-      data-testid="event-form"
-      v-else-if="formValues"
-      :form-title="formTitle"
-      :needs-changes="needsChanges"
-      @input="touched = true"
-      @submit="$emit('submit')"
-    >
-    <div class="divide-y divide-gray-200 w-full">
-        <FormRow>
-          <template v-slot:icon>
-            <PencilIcon class="inline-flex float-right h-6 w-6" /><span
-              class="text-red-500"
-              >*</span
-            >
-            <v-tooltip activator="parent" location="top">Title</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <TextInput
-              ref="titleInputRef"
-              :value="formValues.title"
-              :full-width="true"
-              :placeholder="'Add title'"
-              @update="$emit('updateFormValues', { title: $event })"
-            />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <ChannelIcon class="float-right h-6 w-6" /><span
-              class="text-red-500"
-              >*</span
-            >
-            <v-tooltip activator="parent" location="top">Channels</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <TagInput
-              :selected-channels="formValues.selectedChannels"
-              :channel-mode="true"
-              @setSelectedTags="
-                $emit('updateFormValues', { selectedChannels: $event })
-              "
-            />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <ClockIcon class="float-right h-6" />
-            <v-tooltip activator="parent" location="top">Time</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <div class="inline-block xl:flex items-center my-2 space-x-2">
-              <sl-input
-                class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
-                type="datetime-local"
-                placeholder="Date"
-                label="Start"
-                v-model="formattedStartTime"
-                :input-format="timeFormat"
-                @update:model-value="handleStartDateChange"
-              >
-              </sl-input>
-              <sl-input
-                class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
-                type="datetime-local"
-                placeholder="Date"
-                label="End"
-                v-model="formattedEndTime"
-                :input-format="timeFormat"
-                :lower-limit="startTime"
-                @update:model-value="handleEndDateChange"
-              >
-              </sl-input>
-              <div>
-                {{ duration }}
-              </div>
-            </div>
-            <ErrorMessage :text="datePickerErrorMessage" />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <LinkIcon class="float-right h-6 w-6" />
-            <v-tooltip activator="parent" location="top">Link</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <TextInput
-              :value="formValues.virtualEventUrl"
-              :use-v-model="true"
-              :full-width="true"
-              :placeholder="'Add a virtual event URL'"
-              @update="$emit('updateFormValues', { virtualEventUrl: $event })"
-            />
-            <ErrorMessage
-              :text="
-                touched &&
-                formValues.virtualEventUrl &&
-                formValues.virtualEventUrl.length > 0 &&
-                !urlIsValid
-                  ? 'Must be a valid URL starting with https://'
-                  : ''
-              "
-            />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <LocationIcon :wide="true" class="float-right h-6 w-6" />
-            <v-tooltip activator="parent" location="top">Location</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <LocationSearchBar
-              :search-placeholder="'Add an address'"
-              :full-width="true"
-              :reference-point-address-name="`${
-                formValues.locationName ? `${formValues.locationName}, ` : ''
-              }${formValues.address ? formValues.address : ''}`"
-              @updateLocationInput="handleUpdateLocation"
-            />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <AnnotationIcon class="float-right" />
-            <v-tooltip activator="parent" location="top">Details</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <TextEditor
-              class="mb-3 h-56"
-              :disable-auto-focus="true"
-              :initial-value="formValues.description"
-              :placeholder="'Add details'"
-              @update="$emit('updateFormValues', { description: $event })"
-            />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <TagIcon class="float-right h-6" />
-            <v-tooltip activator="parent" location="top">Tags</v-tooltip>
-          </template>
-          <template v-slot:content>
-            <TagInput
-              :selected-tags="formValues.selectedTags"
-              @setSelectedTags="
-                $emit('updateFormValues', { selectedTags: $event })
-              "
-            />
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <HomeIcon class="float-right" />
-            <v-tooltip activator="parent" location="top"
-              >Private Residence</v-tooltip
-            >
-          </template>
-          <template v-slot:content>
-            <CheckBox
-              class="align-middle"
-              :checked="formValues.isInPrivateResidence"
-              @input="togglePrivateResidenceField"
-            />
-            <span class="ml-2 align-middle"
-              >This event is in a private residence</span
-            >
-          </template>
-        </FormRow>
-        <FormRow>
-          <template v-slot:icon>
-            <VTooltip class="inline-flex">
-              <TicketIcon class="float-right" />
-              <template #popper> Cost to Attend </template>
-            </VTooltip>
-          </template>
-          <template v-slot:content>
-            <CheckBox
-              class="align-middle"
-              :checked="formValues.free"
-              @input="toggleCostField"
-            />
-            <span class="ml-2 align-middle">This event is free</span>
-            <TextInput
-              v-show="!formValues.free"
-              :value="formValues.cost"
-              :full-width="true"
-              :placeholder="'Add cost details'"
-              @update="$emit('updateFormValues', { cost: $event })"
-            />
-          </template>
-        </FormRow>
-      </div>
-      <ErrorBanner
-        v-if="needsChanges && touched"
-        :text="changesRequiredMessage"
-      />
-      <ErrorBanner v-if="createEventError" :text="createEventError.message" />
-      <ErrorBanner v-if="updateEventError" :text="updateEventError.message" />
-    </TailwindForm>
-  </v-col>
-</v-row>
-</v-container>
+        <div v-if="eventLoading">Loading...</div>
+        <div v-else-if="getEventError">
+          <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">
+            {{ error.message }}
+          </div>
+        </div>
+        <TailwindForm
+          class="pt-8 w-full"
+          data-testid="event-form"
+          v-else-if="formValues"
+          :form-title="formTitle"
+          :needs-changes="needsChanges"
+          @input="touched = true"
+          @submit="$emit('submit')"
+        >
+          <div class="divide-y divide-gray-200 w-full">
+            <FormRow>
+              <template v-slot:icon>
+                <PencilIcon class="inline-flex float-right h-6 w-6" /><span
+                  class="text-red-500"
+                  >*</span
+                >
+                <v-tooltip activator="parent" location="top">Title</v-tooltip>
+              </template>
+              <template v-slot:content>
+                <TextInput
+                  :test-id="'title-input'"
+                  ref="titleInputRef"
+                  :value="formValues.title"
+                  :full-width="true"
+                  :placeholder="'Add title'"
+                  @update="$emit('updateFormValues', { title: $event })"
+                />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <ChannelIcon class="float-right h-6 w-6" /><span
+                  class="text-red-500"
+                  >*</span
+                >
+                <v-tooltip activator="parent" location="top"
+                  >Channels</v-tooltip
+                >
+              </template>
+              <template v-slot:content>
+                <TagInput
+                  :test-id="'channel-input'"
+                  :selected-channels="formValues.selectedChannels"
+                  :channel-mode="true"
+                  @setSelectedTags="
+                    $emit('updateFormValues', { selectedChannels: $event })
+                  "
+                />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <ClockIcon class="float-right h-6" />
+                <v-tooltip activator="parent" location="top">Time</v-tooltip>
+              </template>
+              <template v-slot:content>
+                <div class="inline-block xl:flex items-center my-2 space-x-2">
+                  <sl-input
+                    data-testid="start-time-input"
+                    class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                    type="datetime-local"
+                    placeholder="Date"
+                    label="Start"
+                    v-model="formattedStartTime"
+                    :input-format="timeFormat"
+                    @update:model-value="handleStartDateChange"
+                  >
+                  </sl-input>
+                  <sl-input
+                    data-testid="end-time-input"
+                    class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                    type="datetime-local"
+                    placeholder="Date"
+                    label="End"
+                    v-model="formattedEndTime"
+                    :input-format="timeFormat"
+                    :lower-limit="startTime"
+                    @update:model-value="handleEndDateChange"
+                  >
+                  </sl-input>
+                  <div>
+                    {{ duration }}
+                  </div>
+                </div>
+                <ErrorMessage :text="datePickerErrorMessage" />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <LinkIcon class="float-right h-6 w-6" />
+                <v-tooltip activator="parent" location="top">Link</v-tooltip>
+              </template>
+              <template v-slot:content>
+                <TextInput
+                  data-testid="link-input"
+                  :value="formValues.virtualEventUrl"
+                  :use-v-model="true"
+                  :full-width="true"
+                  :placeholder="'Add a virtual event URL'"
+                  @update="
+                    $emit('updateFormValues', { virtualEventUrl: $event })
+                  "
+                />
+                <ErrorMessage
+                  :text="
+                    touched &&
+                    formValues.virtualEventUrl &&
+                    formValues.virtualEventUrl.length > 0 &&
+                    !urlIsValid
+                      ? 'Must be a valid URL starting with https://'
+                      : ''
+                  "
+                />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <LocationIcon :wide="true" class="float-right h-6 w-6" />
+                <v-tooltip activator="parent" location="top"
+                  >Location</v-tooltip
+                >
+              </template>
+              <template v-slot:content>
+                <LocationSearchBar
+                  data-testid="location-input"
+                  :search-placeholder="'Add an address'"
+                  :full-width="true"
+                  :reference-point-address-name="`${
+                    formValues.locationName
+                      ? `${formValues.locationName}, `
+                      : ''
+                  }${formValues.address ? formValues.address : ''}`"
+                  @updateLocationInput="handleUpdateLocation"
+                />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <AnnotationIcon class="float-right" />
+                <v-tooltip activator="parent" location="top">Details</v-tooltip>
+              </template>
+              <template v-slot:content>
+                <TextEditor
+                  data-testid="description-input"
+                  class="mb-3 h-56"
+                  :disable-auto-focus="true"
+                  :initial-value="formValues.description"
+                  :placeholder="'Add details'"
+                  @update="$emit('updateFormValues', { description: $event })"
+                />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <TagIcon class="float-right h-6" />
+                <v-tooltip activator="parent" location="top">Tags</v-tooltip>
+              </template>
+              <template v-slot:content>
+                <TagInput
+                  data-testid="tag-input"
+                  :selected-tags="formValues.selectedTags"
+                  @setSelectedTags="
+                    $emit('updateFormValues', { selectedTags: $event })
+                  "
+                />
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <HomeIcon class="float-right" />
+                <v-tooltip activator="parent" location="top"
+                  >Private Residence</v-tooltip
+                >
+              </template>
+              <template v-slot:content>
+                <CheckBox
+                  data-testid="private-residence-input"
+                  class="align-middle"
+                  :checked="formValues.isInPrivateResidence"
+                  @input="togglePrivateResidenceField"
+                />
+                <span class="ml-2 align-middle"
+                  >This event is in a private residence</span
+                >
+              </template>
+            </FormRow>
+            <FormRow>
+              <template v-slot:icon>
+                <VTooltip class="inline-flex">
+                  <TicketIcon class="float-right" />
+                  <template #popper> Cost to Attend </template>
+                </VTooltip>
+              </template>
+              <template v-slot:content>
+                <CheckBox
+                  data-testid="free-input"
+                  class="align-middle"
+                  :checked="formValues.free"
+                  @input="toggleCostField"
+                />
+                <span class="ml-2 align-middle">This event is free</span>
+                <TextInput
+                  data-testid="cost-input"
+                  v-show="!formValues.free"
+                  :value="formValues.cost"
+                  :full-width="true"
+                  :placeholder="'Add cost details'"
+                  @update="$emit('updateFormValues', { cost: $event })"
+                />
+              </template>
+            </FormRow>
+          </div>
+          <ErrorBanner
+            v-if="needsChanges && touched"
+            :text="changesRequiredMessage"
+          />
+          <ErrorBanner
+            v-if="createEventError"
+            :text="createEventError.message"
+          />
+          <ErrorBanner
+            v-if="updateEventError"
+            :text="updateEventError.message"
+          />
+        </TailwindForm>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <style lang="scss">
 sl-input {
@@ -547,17 +581,15 @@ sl-input {
 }
 .sl-input::part(base):focus-visible {
   box-shadow: 0 0 0 3px rgba(7, 3, 255, 0.33);
-  
 }
 .sl-input::part(input) {
   border: 0 !important;
   margin: 0, 0, 0, 0;
-  font-family: 'Inter', sans-serif;
+  font-family: "Inter", sans-serif;
   color: #000000;
   border-color: blue;
   font-size: 0.875rem;
   @apply dark:bg-gray-700;
   @apply dark:text-gray-300;
 }
-
 </style>

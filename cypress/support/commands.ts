@@ -5,23 +5,42 @@
 // auth0_scope: process.env.VITE_AUTH0_SCOPE,
 // auth0_client_id: process.env.VITE_AUTH0_CLIENT_ID,
 // auth0_client_secret: process.env.VITE_AUTH0_CLIENT_SECRET,
+const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search"
 
 import jwtDecode from "jwt-decode";
 
-Cypress.Commands.add("login", ()  => {
-   // App landing page redirects to Auth0.
-   const client_id = Cypress.env("auth0_client_id");
-   const client_secret = Cypress.env("auth0_client_secret");
-   const audience = Cypress.env("auth0_audience");
-   const scope = Cypress.env("auth0_scope");
-    const username = Cypress.env("auth0_username");
-    const password = Cypress.env("auth0_password");
- 
-   cy.request({
-    method: 'POST',
-    url: `https://${Cypress.env('auth0_domain')}/oauth/token`,
+Cypress.Commands.add("loginWithCreateEventButton", () => {
+  cy.visit(ONLINE_EVENT_LIST)
+    .get('[data-testid="fake-create-event-button"]')
+    .click();
+
+  cy.origin("https://gennit.us.auth0.com", () => {
+    cy.get("#username").type(Cypress.env("auth0_username"));
+    cy.get("#password").type(Cypress.env("auth0_password"));
+
+    // Click the button that says continue
+    cy.get(
+      'button[name="action"][value="default"][type="submit"][data-action-button-primary="true"]'
+    )
+      .click()
+      .wait(1000);
+  });
+});
+
+Cypress.Commands.add("loginProgrammatically", () => {
+  // App landing page redirects to Auth0.
+  const client_id = Cypress.env("auth0_client_id");
+  const client_secret = Cypress.env("auth0_client_secret");
+  const audience = Cypress.env("auth0_audience");
+  const scope = Cypress.env("auth0_scope");
+  const username = Cypress.env("auth0_username");
+  const password = Cypress.env("auth0_password");
+
+  cy.request({
+    method: "POST",
+    url: `https://${Cypress.env("auth0_domain")}/oauth/token`,
     body: {
-      grant_type: 'password',
+      grant_type: "password",
       username,
       password,
       audience,
@@ -30,7 +49,7 @@ Cypress.Commands.add("login", ()  => {
       client_secret,
     },
   }).then(({ body }) => {
-    const claims: any = jwtDecode(body.id_token); 
+    const claims: any = jwtDecode(body.id_token);
     const {
       nickname,
       name,
@@ -40,8 +59,7 @@ Cypress.Commands.add("login", ()  => {
       email_verified,
       sub,
       exp,
-    } = claims
-    console.log('claims',{claims})
+    } = claims;
 
     const item = {
       body: {
@@ -62,10 +80,10 @@ Cypress.Commands.add("login", ()  => {
         },
       },
       expiresAt: exp,
-    }
+    };
 
-    window.localStorage.setItem('auth0Cypress', JSON.stringify(item))
+    window.localStorage.setItem("auth0Cypress", JSON.stringify(item));
 
-    cy.visit('/')
-  })
+    cy.visit("/");
+  });
 });
