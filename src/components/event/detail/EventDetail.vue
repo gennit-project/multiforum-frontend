@@ -197,6 +197,7 @@ export default defineComponent({
           :text="'This event is in the past.'"
         />
         <ErrorBanner
+          data-testid="canceled-event-banner"
           class="mt-2 mb-2"
           v-if="eventData.canceled"
           :text="'This event is canceled.'"

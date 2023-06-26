@@ -1,54 +1,22 @@
-const HOME = "http://localhost:5173/";
-const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search"
 const EVENT_CREATION_FORM = "http://localhost:5173/events/create"
 
-// describe('Event creation works', () => {
-//     it('Creates an event', () => {
-//         cy.visit('/events')
-
-//         examples
-//         cy.get('.class').contains('text').click()
-//         cy.url().should('include', '/events')
-
-//         cy.get('button').contains('Create Event').click()
-//         cy.get('input[name="name"]').type('My event')
-//         cy.get('input[name="date"]').type('2020-12-31')
-//         cy.get('input[name="time"]').type('12:00')
-//         cy.get('input[name="location"]').type('My house')
-//         cy.get('input[name="description"]').type('My description')
-//         cy.get('button').contains('Create').click()
-//         cy.get('h2').contains('My event')
-//     })
-// })
-
-describe("first test ", () => {
+describe("Basic event operations", () => {
   beforeEach(function () {
     cy.loginWithCreateEventButton();
   });
 
-  it("navigates to the online event list", () => {
-    cy.visit(HOME);
-    cy.get('[data-testid="menu-button"]').click();
-    cy.get('[data-testid="nav-link-Online Events"]').click();
-    cy.url().should("include", ONLINE_EVENT_LIST);
-    cy.get('[data-testid="real-create-event-button"]').should("exist");
-  })
-
-  it("logs in and navigates to the event creation form", () => {
-    cy.visit(ONLINE_EVENT_LIST).get('[data-testid="real-create-event-button"]').click().wait(1000);
-    cy.get('[data-testid="event-form"]').should("exist");
-  })
-
-  it("creates an online event", () => {
+  it("creates, edits and deletes an online event", () => {
     const TEST_TITLE = "Tempe Event Title";
     const TEST_LINK = "https://www.test.com";
+    const TEST_LINK_2 = "https://www.test2.com";
 
+    // Test creating an event
     cy.visit(EVENT_CREATION_FORM);
     cy.get('input[data-testid="title-input"]')
       .type(TEST_TITLE);
 
     cy.get('input[data-testid="channel-input"]')
-      .type("Tempe{enter}");
+      .type("phx_music{enter}");
 
     cy.get('sl-input[data-testid="start-time-input"]')
       .shadow()
@@ -71,6 +39,35 @@ describe("first test ", () => {
     cy.get("button").contains("Save").click();
     cy.get("h2").contains(TEST_TITLE);
     cy.get("span").contains(TEST_LINK);
+
+    // Test editing an event
+    cy.get("button").contains("Edit").click();
+    cy.get('div[data-testid="link-input"]')
+      .find('input')
+      .focus()
+      .clear()
+
+    cy.get('div[data-testid="link-input"]')
+      .find('input')
+      .type(TEST_LINK_2);
+
+    cy.get("button").contains("Save").click();
+
+    cy.get("span").contains(TEST_LINK_2);
+
+    // Test canceling an event
+    cy.get("span").contains("Cancel").click();
+    cy.get("button").contains("Yes").click();
+    cy.get("p[data-testid='canceled-event-banner']").should("exist");
+
+
+    // Test deleting an event
+    cy.get("span").contains("Delete").click();
+    cy.get("button").contains("Delete").click();
+    // After deletion, the user should be redirected to the online event list
+    // for the channel view
+    cy.url().should("include", "events/search");
+
   });
 
     // need to mock this.

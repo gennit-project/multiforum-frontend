@@ -6,7 +6,7 @@
 // auth0_client_id: process.env.VITE_AUTH0_CLIENT_ID,
 // auth0_client_secret: process.env.VITE_AUTH0_CLIENT_SECRET,
 const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search"
-
+import  events from "./seedData/events"
 import jwtDecode from "jwt-decode";
 
 Cypress.Commands.add("loginWithCreateEventButton", () => {
@@ -87,3 +87,62 @@ Cypress.Commands.add("loginProgrammatically", () => {
     cy.visit("/");
   });
 });
+
+
+// cypress/support/commands.js
+
+Cypress.Commands.add('seedEvent', () => {
+  const operation = {
+    query: `
+      mutation CreateEvents($input: [EventCreateInput!]!) {
+        createEvents(input: $input) {
+          events {
+            id
+            title
+            description
+            Channels {
+              uniqueName
+            }
+            Poster {
+              username
+            }
+            isInPrivateResidence
+            cost
+          }
+        }
+      }
+    `,
+    variables: {
+      input: events
+    }
+  };
+
+  cy.request({
+    url: 'http://localhost:4000/graphql',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: operation
+  });
+});
+
+
+Cypress.Commands.add('deleteEvents', () => {
+  cy.request({
+    url: 'http://localhost:4000/graphql',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: {
+      query: `
+        mutation deleteEvent {
+          deleteEvents {
+            nodesDeleted
+          }
+        }
+        `,
+    },
+  });
+})
