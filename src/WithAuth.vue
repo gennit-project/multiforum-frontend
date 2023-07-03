@@ -36,7 +36,6 @@ export default defineComponent({
       return route.name !== "MapView" && route.name !== "MapEventPreview";
     });
 
-   
     const {
       result: emailResult,
       error: emailError,

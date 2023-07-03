@@ -59,7 +59,10 @@ export default defineComponent({
     const route = useRoute();
 
     const filterValues: Ref<SearchDiscussionValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({
+        route,
+        channelId: channelId.value,
+      })
     );
 
     const channelLabel = computed(() => {
@@ -88,10 +91,10 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.route,
-          this.channelId
-        );
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+        });
       }
     });
   },
@@ -140,7 +143,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class=" w-full mx-6 space-y-2">
+  <div class="w-full mx-6 space-y-2">
     <div class="flex justify-between items-center">
       <SearchBar
         class="mr-2 flex flex-grow"
@@ -158,14 +161,10 @@ export default defineComponent({
           />
         </template>
         <template v-slot:does-not-have-auth>
-          <PrimaryButton
-            class="ml-2"
-            :label="'+ Create Discussion'"
-          />
+          <PrimaryButton class="ml-2" :label="'+ Create Discussion'" />
         </template>
       </RequireAuth>
     </div>
-    
 
     <div>
       <FilterChip

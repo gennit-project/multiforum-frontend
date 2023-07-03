@@ -54,7 +54,6 @@ export default defineComponent({
       this.currentInput = "";
       this.$emit("setSelectedTags", [...this.tags]);
       this.showMenu = false;
-      console.log('saveTagAndClose', this.showMenu)
     },
     setSelectedTags(tags: Array<string>) {
       this.tags = tags;

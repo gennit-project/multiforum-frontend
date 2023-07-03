@@ -46,7 +46,11 @@ export default defineComponent({
       return "";
     });
     const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({
+        route,
+        channelId: channelId.value,
+        isEventListView: true,
+      })
     );
 
     const resultsOrder = computed(() => {
@@ -57,7 +61,11 @@ export default defineComponent({
     });
 
     const eventWhere = computed(() => {
-      return getEventWhere(filterValues.value, false, channelId.value);
+      return getEventWhere({
+        filterValues: filterValues.value, 
+        showMap: false, 
+        channelId: channelId.value
+      });
     });
 
     const {
@@ -218,10 +226,11 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.route,
-          this.channelId
-        );
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+          isEventListView: true,
+        });
       }
     });
   },
@@ -248,7 +257,7 @@ export default defineComponent({
                       :show-distance-filters="false"
                     />
                   </div>
-                  <TimeShortcuts />
+                  <TimeShortcuts :is-list-view="true"/>
                   <EventList
                     id="listView"
                     v-if="eventResult"

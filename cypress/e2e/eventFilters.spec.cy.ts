@@ -4,11 +4,19 @@ const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search";
 describe("Event filters", () => {
   beforeEach(function () {
     cy.loginWithCreateEventButton();
-    cy.seedEvent();
+    cy.seedEmails();
+    cy.seedUsers();
+    cy.seedChannels();
+    cy.seedTags();
+    cy.seedEvents();
   });
 
 //   afterEach(function () {
 //     cy.deleteEvents();
+//     cy.deleteEmails();
+//     cy.deleteUsers();
+//     cy.deleteChannels();
+//     cy.deleteTags();
 //   })
 
   it("filters events", () => {

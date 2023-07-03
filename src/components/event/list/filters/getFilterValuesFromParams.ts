@@ -8,10 +8,7 @@ import {
   hourRangesObject,
 } from "./eventSearchOptions";
 import { timeShortcutValues } from "./eventSearchOptions";
-
 import { resultOrderTypes } from "./eventSearchOptions";
-import { parse } from "path";
-import { parseValue } from "graphql";
 
 const defaultPlace = {
   // Default map center is Tempe Public Library
@@ -22,13 +19,19 @@ const defaultPlace = {
   address: "3500 S Rural Rd, Tempe, AZ 85282, USA",
 };
 
+type GetFilterValuesInput = {
+  route: any;
+  channelId: string;
+  isEventListView?: boolean;
+};
+
 const getFilterValuesFromParams = function (
-  route: any,
-  channelId: string
+  input: GetFilterValuesInput
 ): SearchEventValues {
   // Need to re-clean data when route values change
   // Take the default filter values from the query
   // in the URL if the values exist.
+  const { route, channelId, isEventListView } = input;
   const cleanedValues: SearchEventValues = {};
 
   // For the online events list, only include
@@ -47,7 +50,7 @@ const getFilterValuesFromParams = function (
         }
         break;
       case "radius":
-        cleanedValues.radius = parseFloat(val)
+        cleanedValues.radius = parseFloat(val);
         break;
       case "placeName":
         if (typeof val === "string") {
@@ -223,14 +226,8 @@ const getFilterValuesFromParams = function (
 
   const defaultRadius = channelId ? 0 : 160.934; // 100 miles
 
-  const filterValues = {
+  let filterValues: SearchEventValues = {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
-    radius: radius || defaultRadius,
-    placeName: placeName || defaultPlace.name,
-    placeAddress: placeAddress || defaultPlace.address,
-    placeId: placeId || '',
-    latitude: latitude || defaultPlace.latitude,
-    longitude: longitude || defaultPlace.longitude,
     tags: tags || [],
     channels: channels || [],
     searchInput: searchInput || "",
@@ -241,16 +238,45 @@ const getFilterValuesFromParams = function (
     weeklyHourRanges:
       weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
     resultsOrder: resultsOrder || chronologicalOrder,
-    locationFilter:
-      // If there is a location filter in the query params,
-      // use it. Within a channel, don't filter by distance.
-      // If we are listing virtual events, don't filter by distance.
-      locationFilter ||
-      (channelId || hasVirtualEventUrl
-        ? LocationFilterTypes.NONE
-        : LocationFilterTypes.WITHIN_RADIUS),
     hasVirtualEventUrl: hasVirtualEventUrl || false,
   };
+
+  if (isEventListView) {
+    // In the list view, the map is not displayed and we are searching
+    // for virtual events. ONLY_VIRTUAL will filter out events that 
+    // do not have a virtual event URL.
+    filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
+  }
+
+  if (!isEventListView) {
+    // In the list view, the map is not displayed and we are searching
+    // for online events. In that case we want to require a virtual
+    // event URL and ignore the location filter.
+    // This logic below only applies to the map view.
+
+    // For map view, if there is a location filter in the query params,
+    // use it. Within a channel, don't filter by distance.
+    filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS; // Default for map view
+
+    if (locationFilter) {
+      filterValues.locationFilter = locationFilter;
+    } else if (channelId) {
+      filterValues.locationFilter = LocationFilterTypes.NONE;
+    } 
+    const locationParams = {
+      locationFilter: LocationFilterTypes.WITHIN_RADIUS,
+      radius: radius || defaultRadius,
+      placeName: placeName || defaultPlace.name,
+      placeAddress: placeAddress || defaultPlace.address,
+      placeId: placeId || "",
+      latitude: latitude || defaultPlace.latitude,
+      longitude: longitude || defaultPlace.longitude,
+    }
+    filterValues = {
+      ...locationParams,
+      ...filterValues,
+    }
+  }
   return filterValues;
 };
 

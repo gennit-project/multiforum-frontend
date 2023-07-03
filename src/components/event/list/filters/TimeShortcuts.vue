@@ -9,10 +9,16 @@ import { SearchEventValues } from "@/types/eventTypes";
 import Tag from "@/components/tag/Tag.vue";
 export default defineComponent({
   name: "SearchEvents",
+  props: {
+    isListView: {
+      type: Boolean,
+      default: false,
+    },
+  },
   components: {
     Tag,
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -21,7 +27,7 @@ export default defineComponent({
       return "";
     });
     const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({ route, channelId: channelId.value, isEventListView: props.isListView})
     );
     return {
       activeDateShortcut: ref(route.query.timeShortcut),
@@ -36,10 +42,11 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.route,
-          this.channelId
-        );
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+          isEventListView: this.isListView,
+        });
       }
     });
   },
@@ -164,7 +171,6 @@ export default defineComponent({
 </script>
 
 <template>
-  
   <div class="time-shortcuts flex">
     <div v-if="!channelId">
       <Tag

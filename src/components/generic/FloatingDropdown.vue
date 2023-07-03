@@ -14,7 +14,6 @@ export default defineComponent({
   },
   methods: {
     close() {
-      console.log('close,')
       this.$emit('update:modelValue', false);
     },
   },

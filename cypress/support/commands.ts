@@ -1,148 +1,30 @@
-// auth0_username: process.env.VITE_AUTH0_USERNAME,
-// auth0_password: process.env.VITE_AUTH0_PASSWORD,
-// auth0_domain: process.env.VITE_AUTH0_DOMAIN,
-// auth0_audience: process.env.VITE_AUTH0_AUDIENCE,
-// auth0_scope: process.env.VITE_AUTH0_SCOPE,
-// auth0_client_id: process.env.VITE_AUTH0_CLIENT_ID,
-// auth0_client_secret: process.env.VITE_AUTH0_CLIENT_SECRET,
-const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search"
-import  events from "./seedData/events"
-import jwtDecode from "jwt-decode";
+import loginProgrammatically from "./commandFunctions/loginProgrammatically";
+import loginWithButtonClick from "./commandFunctions/loginWithButtonClick";
+import seedEvents from "./commandFunctions/seed/seedEvents";
+import seedEmails from "./commandFunctions/seed/seedEmails";
+import seedUsers from "./commandFunctions/seed/seedUsers";
+import seedChannels from "./commandFunctions/seed/seedChannels";
+import seedTags from "./commandFunctions/seed/seedTags";
+import deleteEvents from "./commandFunctions/delete/deleteEvents";
+import deleteEmails from "./commandFunctions/delete/deleteEmails";
+import deleteUsers from "./commandFunctions/delete/deleteUsers";
+import deleteChannels from "./commandFunctions/delete/deleteChannels";
+import deleteTags from "./commandFunctions/delete/deleteTags";
 
-Cypress.Commands.add("loginWithCreateEventButton", () => {
-  cy.visit(ONLINE_EVENT_LIST)
-    .get('[data-testid="fake-create-event-button"]')
-    .click();
+// LOGIN AND AUTH
+Cypress.Commands.add("loginWithCreateEventButton", loginWithButtonClick);
+Cypress.Commands.add("loginProgrammatically", loginProgrammatically);
 
-  cy.origin("https://gennit.us.auth0.com", () => {
-    cy.get("#username").type(Cypress.env("auth0_username"));
-    cy.get("#password").type(Cypress.env("auth0_password"));
+// ADDING SEED DATA
+Cypress.Commands.add("seedEvents", seedEvents);
+Cypress.Commands.add("seedEmails", seedEmails);
+Cypress.Commands.add("seedUsers", seedUsers);
+Cypress.Commands.add("seedChannels", seedChannels);
+Cypress.Commands.add("seedTags", seedTags);
 
-    // Click the button that says continue
-    cy.get(
-      'button[name="action"][value="default"][type="submit"][data-action-button-primary="true"]'
-    )
-      .click()
-      .wait(1000);
-  });
-});
-
-Cypress.Commands.add("loginProgrammatically", () => {
-  // App landing page redirects to Auth0.
-  const client_id = Cypress.env("auth0_client_id");
-  const client_secret = Cypress.env("auth0_client_secret");
-  const audience = Cypress.env("auth0_audience");
-  const scope = Cypress.env("auth0_scope");
-  const username = Cypress.env("auth0_username");
-  const password = Cypress.env("auth0_password");
-
-  cy.request({
-    method: "POST",
-    url: `https://${Cypress.env("auth0_domain")}/oauth/token`,
-    body: {
-      grant_type: "password",
-      username,
-      password,
-      audience,
-      scope,
-      client_id,
-      client_secret,
-    },
-  }).then(({ body }) => {
-    const claims: any = jwtDecode(body.id_token);
-    const {
-      nickname,
-      name,
-      picture,
-      updated_at,
-      email,
-      email_verified,
-      sub,
-      exp,
-    } = claims;
-
-    const item = {
-      body: {
-        ...body,
-        decodedToken: {
-          claims,
-          user: {
-            nickname,
-            name,
-            picture,
-            updated_at,
-            email,
-            email_verified,
-            sub,
-          },
-          audience,
-          client_id,
-        },
-      },
-      expiresAt: exp,
-    };
-
-    window.localStorage.setItem("auth0Cypress", JSON.stringify(item));
-
-    cy.visit("/");
-  });
-});
-
-
-// cypress/support/commands.js
-
-Cypress.Commands.add('seedEvent', () => {
-  const operation = {
-    query: `
-      mutation CreateEvents($input: [EventCreateInput!]!) {
-        createEvents(input: $input) {
-          events {
-            id
-            title
-            description
-            Channels {
-              uniqueName
-            }
-            Poster {
-              username
-            }
-            isInPrivateResidence
-            cost
-          }
-        }
-      }
-    `,
-    variables: {
-      input: events
-    }
-  };
-
-  cy.request({
-    url: 'http://localhost:4000/graphql',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: operation
-  });
-});
-
-
-Cypress.Commands.add('deleteEvents', () => {
-  cy.request({
-    url: 'http://localhost:4000/graphql',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: {
-      query: `
-        mutation deleteEvent {
-          deleteEvents {
-            nodesDeleted
-          }
-        }
-        `,
-    },
-  });
-})
+// DELETING SEED DATA
+Cypress.Commands.add("deleteEvents", deleteEvents);
+Cypress.Commands.add("deleteEmails", deleteEmails);
+Cypress.Commands.add("deleteUsers", deleteUsers);
+Cypress.Commands.add("deleteChannels", deleteChannels);
+Cypress.Commands.add("deleteTags", deleteTags);

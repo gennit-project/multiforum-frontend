@@ -29,7 +29,7 @@ export default defineComponent({
     });
 
     const filterValues: Ref<SearchDiscussionValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({ route, channelId: channelId.value })
     );
 
     const discussionWhere = computed(() => {
@@ -145,10 +145,10 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.$route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.$route,
-          this.channelId
-        );
+        this.filterValues = getFilterValuesFromParams({
+          route: this.$route,
+          channelId: this.channelId,
+        });
       }
     });
     if (
@@ -229,9 +229,7 @@ export default defineComponent({
         />
       </ul>
 
-      <div
-        v-if="discussionResult && discussionResult.discussions.length > 0"
-      >
+      <div v-if="discussionResult && discussionResult.discussions.length > 0">
         <LoadMore
           class="justify-self-center"
           :reached-end-of-results="

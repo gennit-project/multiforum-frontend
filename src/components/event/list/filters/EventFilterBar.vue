@@ -35,20 +35,19 @@ import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import ChannelPicker from '@/components/channel/ChannelPicker.vue'
+import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
   // The EventFilterBar component writes to the query
   // params, while the MapView and EventListView
-  // components consume the query params.
+  // components consume the query params, using those
+  // for filtering.
   components: {
     CalendarIcon,
     ChannelIcon,
     ChannelPicker,
     ClockIcon,
-    CreateButton,
     DrawerFlyout,
     FilterChip,
     FilterIcon,
@@ -76,7 +75,7 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const defaultFilterLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -91,7 +90,11 @@ export default defineComponent({
     const router = useRouter();
 
     const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({
+        route,
+        channelId: channelId.value,
+        isEventListView: !props.showMap,
+      })
     );
 
     const channelLabel = computed(() => {
@@ -218,10 +221,11 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.route,
-          this.channelId
-        );
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+          isEventListView: !this.showMap
+        });
       }
     });
   },
@@ -268,7 +272,10 @@ export default defineComponent({
       });
       // Updating the URL params causes the events
       // to be refetched by the EventListView
-      // and MapView components
+      // and MapView components. Events are refetched
+      // if the filter is changed, while a cached
+      // result is used if the filter has been
+      // used before in the same session.
       this.$router.replace({
         ...this.$route,
         query: {
@@ -474,7 +481,7 @@ export default defineComponent({
             <PrimaryButton
               data-testid="real-create-event-button"
               class="align-middle ml-2"
-              @click="router.push({path: createEventPath})"
+              @click="router.push({ path: createEventPath })"
               :label="'+ Create Event'"
             />
           </template>

@@ -88,7 +88,11 @@ export default defineComponent({
     });
 
     const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({ 
+        route: route, 
+        channelId: channelId.value, 
+        isEventListView: false 
+      })
     );
 
     const resultsOrder = computed(() => {
@@ -99,7 +103,11 @@ export default defineComponent({
     });
 
     const eventWhere = computed(() => {
-      return getEventWhere(filterValues.value, false, channelId.value);
+      return getEventWhere({
+        filterValues: filterValues.value, 
+        showMap: false, 
+        channelId: channelId.value
+      });
     });
 
     const {
@@ -485,7 +493,10 @@ export default defineComponent({
   },
   created() {
     this.$watch("$route.query", () => {
-      this.filterValues = getFilterValuesFromParams(this.route, this.channelId);
+      this.filterValues = getFilterValuesFromParams({
+        route: this.route,
+        channelId: this.channelId,
+      });
     });
   },
 });
@@ -493,10 +504,12 @@ export default defineComponent({
 <template>
   <div class="h-full">
     <div v-if="mdAndUp" id="mapViewFullScreen">
-      <TwoSeparatelyScrollingPanes class="mt-3" :show-right-pane-at-medium-screen-width="true">
+      <TwoSeparatelyScrollingPanes
+        class="mt-3"
+        :show-right-pane-at-medium-screen-width="true"
+      >
         <template v-slot:leftpane>
           <div class="overflow-y-auto h-full px-4" style="width: 40vw">
-           
             <EventFilterBar class="w-full mt-6" />
             <div v-if="eventLoading">Loading...</div>
             <ErrorBanner
@@ -526,7 +539,7 @@ export default defineComponent({
           </div>
         </template>
         <template v-slot:rightpane>
-          <div style="right: 0; width: 50vw;">
+          <div style="right: 0; width: 50vw">
             <div class="event-map-container">
               <div class="shortcut-buttons-wrapper">
                 <div class="shortcut-buttons">
@@ -544,7 +557,9 @@ export default defineComponent({
                   eventResult.events.length > 0
                 "
                 :events="eventResult.events"
-                :preview-is-open="eventPreviewIsOpen || multipleEventPreviewIsOpen"
+                :preview-is-open="
+                  eventPreviewIsOpen || multipleEventPreviewIsOpen
+                "
                 :color-locked="colorLocked"
                 :use-mobile-styles="false"
                 :theme="theme"
@@ -558,7 +573,6 @@ export default defineComponent({
         </template>
       </TwoSeparatelyScrollingPanes>
     </div>
-
 
     <div id="mapViewMobileWidth" v-else-if="eventResult && eventResult.events">
       <div>
@@ -595,7 +609,7 @@ export default defineComponent({
             />
           </template>
         </RequireAuth>
-      <EventFilterBar class="w-full mt-6" />
+        <EventFilterBar class="w-full mt-6" />
         <EventList
           key="highlightedEventId"
           :events="eventResult.events"

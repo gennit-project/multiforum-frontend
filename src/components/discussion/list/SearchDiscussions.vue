@@ -52,7 +52,10 @@ export default defineComponent({
     });
 
     const filterValues: Ref<SearchDiscussionValues> = ref(
-      getFilterValuesFromParams(route, channelId.value)
+      getFilterValuesFromParams({
+        route, 
+        channelId: channelId.value
+      })
     );
 
     const selectedTags: Ref<Array<string>> = ref(
@@ -227,10 +230,10 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.$route.query) {
-        this.filterValues = getFilterValuesFromParams(
-          this.route,
-          this.channelId
-        );
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+        });
       }
     });
   },

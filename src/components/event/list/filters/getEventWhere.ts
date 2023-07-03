@@ -10,14 +10,17 @@ const getStartOfThisWeekend = () => {
   return startOfWeek.plus({ days: 5 });
 };
 
+type GetEventWhereInput = {
+  filterValues: SearchEventValues;
+  showMap: boolean;
+  channelId: string;
+};
+
 // The purpose of this function is to convert event filter variables
 // into the EventWhere input object as it is defined in the auto-generated GraphQL
 // documentation for querying events.
-const getEventWhere = (
-  filterValues: SearchEventValues,
-  showMap: boolean,
-  channelId: string
-) => {
+const getEventWhere = (input: GetEventWhereInput) => {
+  const { filterValues, showMap, channelId } = input;
   const {
     timeShortcut,
     radius,
@@ -44,8 +47,8 @@ const getEventWhere = (
   }
 
   if (!showCanceledEvents) {
-    conditions.push({ canceled: false })
-    // If showCanceledEvents is true, we want to 
+    conditions.push({ canceled: false });
+    // If showCanceledEvents is true, we want to
     // show all events, so we don't need to add a filter.
   }
 
@@ -102,7 +105,7 @@ const getEventWhere = (
               longitude,
             },
             // Radius is in km
-            distance: radius
+            distance: radius,
           },
         });
       }

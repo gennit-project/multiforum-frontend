@@ -5,8 +5,16 @@ declare global {
       interface Chainable {
         loginProgrammatically(): Chainable<Element>;
         loginWithCreateEventButton(): Chainable<Element>;
-        seedEvent(): Chainable<Element>;
+        seedEvents(): Chainable<Element>;
+        seedEmails(): Chainable<Element>;
+        seedUsers(): Chainable<Element>;
+        seedChannels(): Chainable<Element>;
+        seedTags(): Chainable<Element>;
         deleteEvents(): Chainable<Element>;
+        deleteEmails(): Chainable<Element>;
+        deleteUsers(): Chainable<Element>;
+        deleteChannels(): Chainable<Element>;
+        deleteTags(): Chainable<Element>;
       }
     }
   }
