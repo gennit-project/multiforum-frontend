@@ -249,11 +249,6 @@ const getFilterValuesFromParams = function (
   }
 
   if (!isEventListView) {
-    // In the list view, the map is not displayed and we are searching
-    // for online events. In that case we want to require a virtual
-    // event URL and ignore the location filter.
-    // This logic below only applies to the map view.
-
     // For map view, if there is a location filter in the query params,
     // use it. Within a channel, don't filter by distance.
     filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS; // Default for map view

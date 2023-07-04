@@ -17,6 +17,9 @@ const seedEvents = () => {
               }
               isInPrivateResidence
               cost
+              Tags {
+                text
+              }
             }
           }
         }

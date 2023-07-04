@@ -129,7 +129,11 @@ export default defineComponent({
         Could not find any events that can be shown on a map.
       </p>
     </div>
-    <ul v-if="events.length > 0" role="list" class="mb-4">
+    <ul v-if="events.length > 0" 
+      role="list" 
+      class="mb-4"
+      data-testid="event-list"
+    >
       <EventListItem
         :ref="`#${event.id}`"
         v-for="event in events"

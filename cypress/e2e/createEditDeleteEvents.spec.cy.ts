@@ -1,4 +1,4 @@
-const EVENT_CREATION_FORM = "http://localhost:5173/events/create"
+import { EVENT_CREATION_FORM} from './constants'
 
 describe("Basic event operations", () => {
   beforeEach(function () {

@@ -93,7 +93,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-else class="divide-y divide-solid dark:bg-gray-600">
-      <div class="channel-picker">
+      <div data-testid="channel-picker" class="channel-picker">
         <Tag
           :key="channel"
           v-for="channel in channelOptionLabels"

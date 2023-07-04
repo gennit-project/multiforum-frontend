@@ -35,29 +35,54 @@ export default defineComponent({
     const startTime = computed(() => {
       return new Date(props.formValues.startTime);
     });
-
-    const formattedStartTime = ref(
-      DateTime.fromISO(props.formValues.startTime).toFormat(timeFormat)
-    );
-
     const endTime = computed(() => {
       return new Date(props.formValues.endTime);
     });
 
-    const formattedEndTime = ref(
-      DateTime.fromISO(props.formValues.endTime).toFormat(timeFormat)
-    );
+    const formattedStartTimeDate = computed(() => {
+      const dateTime = DateTime.fromJSDate(startTime.value);
+      return dateTime.toFormat("yyyy-MM-dd");
+    });
+
+    const formattedStartTimeTime = computed(() => {
+      const dateTime = DateTime.fromJSDate(startTime.value);
+      return dateTime.toFormat("HH:mm");
+    });
+
+    const formattedEndTimeDate = computed(() => {
+      const dateTime = DateTime.fromJSDate(endTime.value);
+      return dateTime.toFormat("yyyy-MM-dd");
+    });
+
+    const formattedEndTimeTime = computed(() => {
+      const dateTime = DateTime.fromJSDate(endTime.value);
+      return dateTime.toFormat("HH:mm");
+    });
+
+    function formatDateTime(dateTime: Date) {
+      const date = new Date(dateTime);
+      const year = date.getFullYear();
+      const month = (date.getMonth() + 1).toString().padStart(2, "0");
+      const day = date.getDate().toString().padStart(2, "0");
+      const hours = date.getHours().toString().padStart(2, "0");
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
 
     return {
       // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
       formTitle: props.editMode ? "Edit Event" : "Create Event",
       startTime,
-      formattedStartTime,
       endTime,
-      formattedEndTime,
       touched: false,
       timeFormat,
       titleInputRef: ref(null),
+      formatDateTime,
+      formattedStartTimeDate,
+      formattedStartTimeTime,
+      formattedEndTimeDate,
+      formattedEndTimeTime,
     };
   },
   props: {
@@ -213,6 +238,72 @@ export default defineComponent({
     },
   },
   methods: {
+    handleStartTimeDateChange(dateTimeValue: string) {
+      const inputDateTime = DateTime.fromISO(dateTimeValue);
+
+      // Create a Luxon DateTime object from this.startTime
+      let startTime = DateTime.fromJSDate(this.startTime);
+
+      // Set the date portion of startTime to match that of timeValue
+      startTime = startTime.set({
+        year: inputDateTime.year,
+        month: inputDateTime.month,
+        day: inputDateTime.day,
+      });
+
+      // Convert the DateTime back to an ISO string
+      const mergedValue = startTime.toISO();
+
+      this.$emit("updateFormValues", { startTime: mergedValue });
+    },
+    handleStartTimeTimeChange(dateTimeValue: string) {
+      // Parse the input date/time using Luxon
+      const inputDateTime = DateTime.fromISO(dateTimeValue);
+
+      // Create a Luxon DateTime object from this.startTime
+      let startTime = DateTime.fromJSDate(this.startTime);
+
+      // Set the time portion of startTime to match that of inputDateTime
+      startTime = startTime.set({
+        hour: inputDateTime.hour,
+        minute: inputDateTime.minute,
+        second: inputDateTime.second,
+        millisecond: inputDateTime.millisecond,
+      });
+
+      // Convert the DateTime back to an ISO string
+      const mergedValue = startTime.toISO();
+
+      this.$emit("updateFormValues", { startTime: mergedValue });
+    },
+    handleEndTimeDateChange(dateTimeValue: string) {
+      const inputDateTime = DateTime.fromISO(dateTimeValue);
+
+      // Create a Luxon DateTime object from this.endTime
+      let endTime = DateTime.fromJSDate(this.endTime);
+
+      // Set the date portion of endTime to match that of timeValue
+      endTime = endTime.set({
+        year: inputDateTime.year,
+        month: inputDateTime.month,
+        day: inputDateTime.day,
+      });
+
+      // Convert the DateTime back to an ISO string
+      const mergedValue = endTime.toISO();
+
+      this.$emit("updateFormValues", { endTime: mergedValue });
+    },
+    handleEndTimeTimeChange(timeValue: string) {
+      // Merge the date portion with the updated time portion
+      const dateValue = this.endTime.toISOString().split("T")[0];
+      const mergedValue = `${dateValue}T${timeValue}`;
+
+      // Update the end time value
+      this.endTime = mergedValue;
+
+      this.$emit("updateFormValues", { endTime: mergedValue });
+    },
     getDuration(startTime: string, endTime: string) {
       if (DateTime.fromISO(startTime) >= DateTime.fromISO(endTime)) {
         return "";
@@ -254,10 +345,6 @@ export default defineComponent({
     },
     setSelectedChannels(event: any) {
       this.$emit("setSelectedChannels", event);
-    },
-    updateStartTime(time: Date) {
-      // Sat Jan 01 2022 18:30:00 GMT-0700 (Mountain Standard Time)
-      this.startTime = time.toISOString();
     },
     updateLocationInput(placeData: any) {
       try {
@@ -396,29 +483,48 @@ export default defineComponent({
               </template>
               <template v-slot:content>
                 <div class="inline-block xl:flex items-center my-2 space-x-2">
-                  <sl-input
-                    data-testid="start-time-input"
-                    class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
-                    type="datetime-local"
-                    placeholder="Date"
-                    label="Start"
-                    v-model="formattedStartTime"
-                    :input-format="timeFormat"
-                    @update:model-value="handleStartDateChange"
-                  >
-                  </sl-input>
-                  <sl-input
-                    data-testid="end-time-input"
-                    class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
-                    type="datetime-local"
-                    placeholder="Date"
-                    label="End"
-                    v-model="formattedEndTime"
-                    :input-format="timeFormat"
-                    :lower-limit="startTime"
-                    @update:model-value="handleEndDateChange"
-                  >
-                  </sl-input>
+                  <div class="inline-block xl:flex items-center my-2 space-x-2">
+                    <input
+                      data-testid="start-time-input"
+                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      type="date"
+                      placeholder="Date"
+                      label="Start"
+                      :value="formattedStartTimeDate"
+                      @input="handleStartTimeDateChange($event?.target?.value)"
+                    />
+                    <input
+                      data-testid="start-time-time-input"
+                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      type="time"
+                      placeholder="Time"
+                      label="Start Time"
+                      :value="formattedStartTimeTime"
+                      @input="handleStartTimeTimeChange($event?.target?.value)"
+                    />
+                  </div>
+
+                  <div class="inline-block xl:flex items-center my-2 space-x-2">
+                    <input
+                      data-testid="start-time-input"
+                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      type="date"
+                      placeholder="Date and Time"
+                      label="Start"
+                      :value="formattedEndTimeDate"
+                      @input="handleEndTimeDateChange($event?.target?.value)"
+                    />
+                    <input
+                      data-testid="start-time-time-input"
+                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      type="time"
+                      placeholder="Time"
+                      label="Start Time"
+                      :value="formattedEndTimeTime"
+                      @input="handleEndTimeTimeChange($event?.target?.value)"
+                    />
+                  </div>
+
                   <div>
                     {{ duration }}
                   </div>

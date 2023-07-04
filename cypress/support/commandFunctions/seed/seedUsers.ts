@@ -7,6 +7,9 @@ const seedUsers = () => {
           createUsers(input: $input) {
             users {
               username
+              Email {
+                address
+              }
             }
           }
         }

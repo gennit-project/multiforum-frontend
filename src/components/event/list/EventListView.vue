@@ -260,7 +260,7 @@ export default defineComponent({
                   <TimeShortcuts :is-list-view="true"/>
                   <EventList
                     id="listView"
-                    v-if="eventResult"
+                    v-if="!eventLoading && eventResult"
                     :class="[!channelId ? '' : '']"
                     class="relative"
                     :result-count="
