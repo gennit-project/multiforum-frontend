@@ -9,6 +9,8 @@ const seedEvents = (events: EventCreateInput[]) => {
               id
               title
               description
+              startTime
+              endTime
               Channels {
                 uniqueName
               }

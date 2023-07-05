@@ -1,7 +1,10 @@
 import { EVENT_CREATION_FORM } from "./constants";
+import { deleteAll, seedAll } from "./utils";
 
 describe("Basic event operations", () => {
   beforeEach(function () {
+    deleteAll();
+    seedAll();
     cy.loginWithCreateEventButton();
   });
 

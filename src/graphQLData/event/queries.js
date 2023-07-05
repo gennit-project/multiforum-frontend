@@ -37,9 +37,6 @@ export const GET_EVENT = gql`
       ...EventFields
       createdAt
       updatedAt
-      startTimeYear
-      startTimeMonth
-      startTimeDayOfMonth
       placeId
       isInPrivateResidence
     }

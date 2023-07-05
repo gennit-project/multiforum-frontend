@@ -3,6 +3,7 @@ import { SearchEventValues } from "@/types/eventTypes";
 import { hourRangesObject } from "./eventSearchOptions";
 import { timeShortcutValues } from "./eventSearchOptions";
 import { DateTime } from "luxon";
+import { EventWhere } from "@/__generated__/graphql";
 const now = DateTime.now();
 
 const getStartOfThisWeekend = () => {
@@ -19,7 +20,7 @@ type GetEventWhereInput = {
 // The purpose of this function is to convert event filter variables
 // into the EventWhere input object as it is defined in the auto-generated GraphQL
 // documentation for querying events.
-const getEventWhere = (input: GetEventWhereInput) => {
+const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   const { filterValues, showMap, channelId } = input;
   const {
     timeShortcut,

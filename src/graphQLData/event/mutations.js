@@ -16,9 +16,6 @@ mutation ($createEventInput: [EventCreateInput!]!) {
       locationName
       address
       startTime
-      startTimeYear
-      startTimeMonth
-      startTimeDayOfMonth
       startTimeDayOfWeek
       startTimeHourOfDay
       endTime
@@ -59,9 +56,6 @@ export const UPDATE_EVENT = gql`
         locationName
         address
         startTime
-        startTimeYear
-        startTimeMonth
-        startTimeDayOfMonth
         startTimeDayOfWeek
         startTimeHourOfDay
         endTime

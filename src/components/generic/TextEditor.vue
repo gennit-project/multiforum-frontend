@@ -25,6 +25,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    testId: {
+      type: String,
+      default: "",
+    },
   },
   methods: {
     setTab(selected: string) {
@@ -55,6 +59,7 @@ export default defineComponent({
     :editor-id="editorId"
     :preview="false"
     language="en-US"
+    :data-testid="testId"
     previewTheme="vuepress"
     :toolbars="[
       'bold',

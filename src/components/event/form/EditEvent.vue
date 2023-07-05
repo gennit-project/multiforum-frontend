@@ -101,9 +101,6 @@ export default defineComponent({
         isInPrivateResidence: event.isInPrivateResidence,
         virtualEventUrl: event.virtualEventUrl || "",
         startTime: event.startTime,
-        startTimeYear: event.startTimeYear,
-        startTimeMonth: event.startTimeMonth,
-        startTimeDayOfMonth: event.startTimeDayOfMonth,
         startTimeDayOfWeek: event.startTimeDayOfWeek,
         startTimeHourOfDay: event.startTimeHourOfDay,
         endTime: event.endTime,
@@ -200,12 +197,9 @@ export default defineComponent({
 
       const getStartTimePieces = () => {
         const startTimeObj = DateTime.fromISO(formValues.value.startTime);
-        const { year, month, day, weekday, hour } = startTimeObj;
+        const { weekday, hour } = startTimeObj;
 
         return {
-          startTimeYear: year.toString(),
-          startTimeMonth: month.toString(),
-          startTimeDayOfMonth: day.toString(),
           startTimeDayOfWeek: weekday.toString(),
           startTimeHourOfDay: hour,
         };
@@ -222,9 +216,6 @@ export default defineComponent({
         title: formValues.value.title || null,
         description: formValues.value.description || null,
         startTime: formValues.value.startTime || null,
-        startTimeYear: startTimePieces.startTimeYear || null,
-        startTimeMonth: startTimePieces.startTimeMonth || null,
-        startTimeDayOfMonth: startTimePieces.startTimeDayOfMonth || null,
         startTimeDayOfWeek: startTimePieces.startTimeDayOfWeek || null,
         startTimeHourOfDay: startTimePieces.startTimeHourOfDay,
         endTime: formValues.value.endTime || null,

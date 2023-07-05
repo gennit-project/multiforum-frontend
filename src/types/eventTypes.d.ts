@@ -20,9 +20,6 @@ export interface CreateEditEventFormValues {
   isInPrivateResidence: boolean;
   virtualEventUrl?: string;
   startTime: string;
-  startTimeYear: string;
-  startTimeMonth: string;
-  startTimeDayOfMonth: string;
   startTimeDayOfWeek: string;
   startTimeHourOfDay: number;
   endTime: string;
@@ -42,9 +39,6 @@ export interface EventData {
   isInPrivateResidence: boolean;
   virtualEventUrl?: string;
   startTime: string;
-  startTimeYear: string;
-  startTimeMonth: string;
-  startTimeDayOfMonth: string;
   startTimeDayOfWeek: string;
   startTimeHourOfDay: number;
   endTime: string;

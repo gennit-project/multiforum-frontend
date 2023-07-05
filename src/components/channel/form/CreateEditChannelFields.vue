@@ -98,6 +98,7 @@ export default defineComponent({
             </template>
             <template v-slot:content>
               <TextInput
+                :test-id="'title-input'"
                 :disabled="editMode"
                 :value="formValues.uniqueName"
                 :placeholder="'Add unique name'"
@@ -113,6 +114,7 @@ export default defineComponent({
             </template>
             <template v-slot:content>
               <TagInput
+                :test-id="'tags-input'"
                 :selected-tags="formValues?.selectedTags"
                 @setSelectedTags="
                   $emit('updateFormValues', { selectedTags: $event })
@@ -130,6 +132,7 @@ export default defineComponent({
             <template v-slot:content>
               <TextEditor
                 class="mb-3"
+                :test-id="'description-input'"
                 :initial-value="formValues.description || ''"
                 :placeholder="'Add description'"
                 @update="$emit('updateFormValues', { description: $event })"

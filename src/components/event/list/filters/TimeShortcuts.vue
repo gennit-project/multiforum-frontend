@@ -27,7 +27,11 @@ export default defineComponent({
       return "";
     });
     const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams({ route, channelId: channelId.value, isEventListView: props.isListView})
+      getFilterValuesFromParams({
+        route,
+        channelId: channelId.value,
+        isEventListView: props.isListView,
+      })
     );
     return {
       activeDateShortcut: ref(route.query.timeShortcut),
@@ -79,21 +83,17 @@ export default defineComponent({
         this.activeDateShortcut = this.timeFilterShortcuts.NONE;
         this.updateFilters({
           timeShortcut: this.timeFilterShortcuts.NONE,
+          resultsOrder: chronologicalOrder,
         });
       } else {
         // If the filter is not already selected, select it.
         this.activeDateShortcut = shortcut;
         this.updateFilters({
           timeShortcut: shortcut,
-        });
-      }
-      if (shortcut === this.timeFilterShortcuts.PAST_EVENTS) {
-        this.updateLocalState({
-          resultsOrder: reverseChronologicalOrder,
-        });
-      } else {
-        this.updateLocalState({
-          resultsOrder: chronologicalOrder,
+          resultsOrder:
+            shortcut === this.timeFilterShortcuts.PAST_EVENTS
+              ? reverseChronologicalOrder
+              : chronologicalOrder,
         });
       }
     },
