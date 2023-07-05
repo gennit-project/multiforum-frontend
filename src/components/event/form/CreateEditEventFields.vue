@@ -27,9 +27,6 @@ export default defineComponent({
   setup(props) {
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
     // TIME_SIMPLE yields the time in this format: 1:30 PM
-
-    // But this format is required by the date
-    // picker component.
     const timeFormat = "yyyy-MM-dd'T'HH:mm";
 
     const startTime = computed(() => {
@@ -159,47 +156,6 @@ export default defineComponent({
         this.startTime.toISOString(),
         this.endTime.toISOString()
       );
-    },
-    startTimeOptions() {
-      const options = [];
-      const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
-      const beginningOfDay = startTimeObj.startOf("day");
-      let currentOption = beginningOfDay;
-      const MINUTES_IN_A_DAY = 1440;
-      let i = 0;
-
-      while (i < MINUTES_IN_A_DAY) {
-        const optionAsISO = currentOption.toISO();
-        options.push({
-          label: currentOption.toLocaleString(this.timeFormat),
-          value: optionAsISO,
-        });
-        currentOption = currentOption.plus({ minutes: 30 });
-        i += 30;
-      }
-      return options;
-    },
-    endTimeOptions() {
-      const options = [];
-      const startTimeObj = DateTime.fromISO(this.startTime.toISOString());
-      let currentOption = startTimeObj;
-      const end = startTimeObj.plus({ days: 1 });
-
-      while (currentOption < end) {
-        const optionAsISO = currentOption.toISO();
-        const duration = this.getDuration(
-          this.startTime.toISOString(),
-          optionAsISO
-        );
-        options.push({
-          label: `${currentOption.toLocaleString(this.timeFormat)} ${
-            duration ? `(${duration})` : ""
-          }`,
-          value: optionAsISO,
-        });
-        currentOption = currentOption.plus({ minutes: 30 });
-      }
-      return options;
     },
     needsChanges() {
       // We do these checks:
@@ -485,7 +441,7 @@ export default defineComponent({
                 <div class="inline-block xl:flex items-center my-2 space-x-2">
                   <div class="inline-block xl:flex items-center my-2 space-x-2">
                     <input
-                      data-testid="start-time-input"
+                      data-testid="start-time-date-input"
                       class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                       type="date"
                       placeholder="Date"
@@ -506,7 +462,7 @@ export default defineComponent({
 
                   <div class="inline-block xl:flex items-center my-2 space-x-2">
                     <input
-                      data-testid="start-time-input"
+                      data-testid="end-time-date-input"
                       class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                       type="date"
                       placeholder="Date and Time"
@@ -515,7 +471,7 @@ export default defineComponent({
                       @input="handleEndTimeDateChange($event?.target?.value)"
                     />
                     <input
-                      data-testid="start-time-time-input"
+                      data-testid="end-time-time-input"
                       class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
                       type="time"
                       placeholder="Time"

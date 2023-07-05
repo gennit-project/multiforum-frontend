@@ -1,4 +1,4 @@
-import { EVENT_CREATION_FORM} from './constants'
+import { EVENT_CREATION_FORM } from "./constants";
 
 describe("Basic event operations", () => {
   beforeEach(function () {
@@ -12,28 +12,22 @@ describe("Basic event operations", () => {
 
     // Test creating an event
     cy.visit(EVENT_CREATION_FORM);
-    cy.get('input[data-testid="title-input"]')
-      .type(TEST_TITLE);
+    cy.get('input[data-testid="title-input"]').type(TEST_TITLE);
 
-    cy.get('input[data-testid="channel-input"]')
-      .type("phx_music{enter}");
+    cy.get('input[data-testid="channel-input"]').type("phx_music{enter}");
 
-    cy.get('sl-input[data-testid="start-time-input"]')
-      .shadow()
-      .find('input')
-      .type("2023-12-01T08:30");
+    cy.get('input[data-testid="start-time-date-input"]').type("2023-12-01");
 
-    cy.get('sl-input[data-testid="end-time-input"]')
-      .shadow()
-      .find('input')
-      .type("2023-12-01T08:30");
+    cy.get('input[data-testid="start-time-time-input"]').type("08:30");
 
-    cy.get('div[data-testid="link-input"]')
-      .find('input')
-      .type(TEST_LINK);
+    cy.get('input[data-testid="end-time-date-input"]').type("2023-12-01");
+
+    cy.get('input[data-testid="end-time-time-input"]').type("09:30");
+
+    cy.get('div[data-testid="link-input"]').find("input").type(TEST_LINK);
 
     cy.get('div[data-testid="description-input"]')
-      .find('textarea')
+      .find("textarea")
       .type("Test description");
 
     cy.get("button").contains("Save").click();
@@ -42,14 +36,9 @@ describe("Basic event operations", () => {
 
     // Test editing an event
     cy.get("button").contains("Edit").click();
-    cy.get('div[data-testid="link-input"]')
-      .find('input')
-      .focus()
-      .clear()
+    cy.get('div[data-testid="link-input"]').find("input").focus().clear();
 
-    cy.get('div[data-testid="link-input"]')
-      .find('input')
-      .type(TEST_LINK_2);
+    cy.get('div[data-testid="link-input"]').find("input").type(TEST_LINK_2);
 
     cy.get("button").contains("Save").click();
 
@@ -60,19 +49,17 @@ describe("Basic event operations", () => {
     cy.get("button").contains("Yes").click();
     cy.get("p[data-testid='canceled-event-banner']").should("exist");
 
-
     // Test deleting an event
     cy.get("span").contains("Delete").click();
     cy.get("button").contains("Delete").click();
     // After deletion, the user should be redirected to the online event list
     // for the channel view
     cy.url().should("include", "events/search");
-
   });
 
-    // need to mock this.
-    // cy.get('div[data-testid="location-input"]')
-    //   .find('input')
-    //   .type("Tempe Public Library{downArrow}")
-    //   .type("{enter}");
+  // need to mock this.
+  // cy.get('div[data-testid="location-input"]')
+  //   .find('input')
+  //   .type("Tempe Public Library{downArrow}")
+  //   .type("{enter}");
 });
