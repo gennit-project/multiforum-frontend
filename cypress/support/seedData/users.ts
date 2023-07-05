@@ -1,4 +1,6 @@
-const users = [
+import { UserCreateInput } from "../../../src/__generated__/graphql";
+
+const users: UserCreateInput[] = [
   {
     username: "cluse",
     Email: {

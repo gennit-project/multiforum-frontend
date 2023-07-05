@@ -1,26 +1,32 @@
-const channels = [
+import { ChannelCreateInput } from "../../../src/__generated__/graphql";
+
+const channels: ChannelCreateInput[] = [
   {
     uniqueName: "cats",
     Admins: {
-      connect: {
-        where: {
-          node: {
-            username: "cluse",
+      connect: [
+        {
+          where: {
+            node: {
+              username: "cluse",
+            },
           },
         },
-      },
+      ],
     },
   },
   {
     uniqueName: "phx_music",
     Admins: {
-      connect: {
-        where: {
-          node: {
-            username: "alice",
+      connect: [
+        {
+          where: {
+            node: {
+              username: "alice",
+            },
           },
         },
-      },
+      ],
     },
   },
 ];

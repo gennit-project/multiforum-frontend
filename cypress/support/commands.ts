@@ -10,6 +10,7 @@ import deleteEmails from "./commandFunctions/delete/deleteEmails";
 import deleteUsers from "./commandFunctions/delete/deleteUsers";
 import deleteChannels from "./commandFunctions/delete/deleteChannels";
 import deleteTags from "./commandFunctions/delete/deleteTags";
+import createEvents from "./commandFunctions/createEvents";
 
 // LOGIN AND AUTH
 Cypress.Commands.add("loginWithCreateEventButton", loginWithButtonClick);
@@ -21,6 +22,9 @@ Cypress.Commands.add("seedEmails", seedEmails);
 Cypress.Commands.add("seedUsers", seedUsers);
 Cypress.Commands.add("seedChannels", seedChannels);
 Cypress.Commands.add("seedTags", seedTags);
+
+// createEvents takes an array of events and creates them
+Cypress.Commands.add("createEvents", createEvents);
 
 // DELETING SEED DATA
 Cypress.Commands.add("deleteEvents", deleteEvents);

@@ -1,4 +1,6 @@
-const tags = [
+import { TagCreateInput } from "../../../src/__generated__/graphql";
+
+const tags: TagCreateInput[] = [
     {
         text: 'trivia',
     },

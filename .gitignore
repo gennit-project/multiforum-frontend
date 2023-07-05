@@ -27,3 +27,6 @@ pnpm-debug.log*
 *.sw?
 data
 plugins
+
+# Generated files
+/src/__generated__

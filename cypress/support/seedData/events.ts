@@ -1,17 +1,21 @@
-const events = [
+import { EventCreateInput } from "../../../src/__generated__/graphql";
+
+const events: EventCreateInput[] = [
   {
     title: "GATHERING OF BONES",
     description: "with Arsenic Kitchen, Commiserate, Killing Sunday",
     startTime: "2024-01-20T05:21:37.146Z",
     endTime: "2024-01-20T05:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_music",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_music",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.39262,
@@ -42,13 +46,15 @@ const events = [
     startTime: "2024-12-31T05:21:37.146Z",
     endTime: "2024-12-31T05:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.44999,
@@ -79,13 +85,15 @@ const events = [
     startTime: "2024-12-25T05:21:37.146Z",
     endTime: "2024-12-25T05:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.44999,
@@ -116,13 +124,15 @@ const events = [
     startTime: "2024-12-23T05:21:37.146Z",
     endTime: "2024-12-23T05:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.44999,
@@ -147,11 +157,13 @@ const events = [
     startTimeHourOfDay: 19,
     canceled: false,
     Tags: {
-      connect: {
-        where: {
-          node: { text: "trivia " },
+      connect: [
+        {
+          where: {
+            node: { text: "trivia " },
+          },
         },
-      },
+      ],
     },
   },
   {
@@ -159,13 +171,15 @@ const events = [
     startTime: "2024-01-08T05:21:37.146Z",
     endTime: "2024-01-08T05:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.448711,
@@ -211,13 +225,15 @@ const events = [
     startTime: "2024-12-31T02:21:37.146Z",
     endTime: "2024-12-31T02:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.46226,
@@ -242,11 +258,13 @@ const events = [
     startTimeHourOfDay: 20,
     canceled: false,
     Tags: {
-      connect: {
-        where: {
-          node: { text: "newYears " },
+      connect: [
+        {
+          where: {
+            node: { text: "newYears " },
+          },
         },
-      },
+      ],
     },
   },
   {
@@ -254,13 +272,15 @@ const events = [
     startTime: "2024-01-01T02:21:37.146Z",
     endTime: "2024-01-01T02:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.448711,
@@ -285,11 +305,13 @@ const events = [
     startTimeHourOfDay: 20,
     canceled: false,
     Tags: {
-      connect: {
-        where: {
-          node: { text: "Selena " },
+      connect: [
+        {
+          where: {
+            node: { text: "Selena " },
+          },
         },
-      },
+      ],
     },
   },
   {
@@ -298,13 +320,15 @@ const events = [
     startTime: "2024-01-04T05:21:37.146Z",
     endTime: "2024-01-04T05:21:37.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_concerts",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_concerts",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.448711,
@@ -419,13 +443,15 @@ const events = [
     startTime: "2024-02-25T02:20:00.146Z",
     endTime: "2024-02-25T02:20:00.146Z",
     Channels: {
-      connect: {
-        where: {
-          node: {
-            uniqueName: "phx_music",
+      connect: [
+        {
+          where: {
+            node: {
+              uniqueName: "phx_music",
+            },
           },
         },
-      },
+      ],
     },
     location: {
       latitude: 33.45113,
@@ -487,88 +513,6 @@ const events = [
     startTimeDayOfWeek: "Monday",
     startTimeHourOfDay: 20,
     canceled: false,
-  },
-  {
-    title: "Test free/virtual event",
-    startTime: "2024-04-21T02:21:37.146Z",
-    endTime: "2024-04-21T02:21:37.146Z",
-    Channels: {
-      connect: [
-        {
-          where: {
-            node: {
-              uniqueName: "cats",
-            },
-          },
-        },
-      ],
-    },
-    virtualEventUrl: "example.com",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "cluse",
-          },
-        },
-      },
-    },
-    cost: "0",
-    canceled: false,
-    startTimeYear: "2024",
-    startTimeMonth: "April",
-    startTimeDayOfMonth: "21",
-    startTimeDayOfWeek: "Wednesday",
-    startTimeHourOfDay: 20,
-  },
-  {
-    title: "Test online event in phx_music",
-    startTime: "2024-04-21T02:21:37.146Z",
-    endTime: "2024-04-21T02:21:37.146Z",
-    Channels: {
-      connect: [
-        {
-          where: {
-            node: {
-              uniqueName: "phx_music",
-            },
-          },
-        },
-      ],
-    },
-    Tags: {
-      "connectOrCreate": [
-        {
-          "onCreate": {
-            "node": {
-              "text": "newYears"
-            }
-          },
-          "where": {
-            "node": {
-              "text": "newYears"
-            }
-          }
-        }
-      ]
-    },
-    virtualEventUrl: "example.com",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "cluse",
-          },
-        },
-      },
-    },
-    cost: "0",
-    canceled: false,
-    startTimeYear: "2024",
-    startTimeMonth: "April",
-    startTimeDayOfMonth: "21",
-    startTimeDayOfWeek: "Wednesday",
-    startTimeHourOfDay: 20,
   },
 ];
 

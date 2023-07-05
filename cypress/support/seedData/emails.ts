@@ -1,4 +1,6 @@
-const emails = [
+import { EmailCreateInput } from "../../../src/__generated__/graphql";
+
+const emails: EmailCreateInput[] = [
   {
     address: "catherine.luse@gmail.com",
   },
