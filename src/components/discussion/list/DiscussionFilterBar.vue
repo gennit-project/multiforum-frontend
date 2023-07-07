@@ -170,6 +170,7 @@ export default defineComponent({
     <div>
       <FilterChip
         class="align-middle"
+        data-testid="channel-filter-button"
         v-if="!channelId"
         :label="channelLabel"
         :highlighted="channelLabel !== defaultFilterLabels.channels"
@@ -186,6 +187,7 @@ export default defineComponent({
       </FilterChip>
       <FilterChip
         class="align-middle"
+        data-testid="tag-filter-button"
         :label="tagLabel"
         :highlighted="tagLabel !== defaultFilterLabels.tags"
       >
