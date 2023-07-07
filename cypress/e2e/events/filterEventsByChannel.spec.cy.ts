@@ -1,6 +1,6 @@
-import { ONLINE_EVENT_LIST } from "./constants";
-import { deleteAll, seedAll } from "./utils";
-import { eventsForFilteringTests } from "./testData/eventsForFilteringTests";
+import { ONLINE_EVENT_LIST } from "../constants";
+import { deleteAll, seedAll } from "../utils";
+import { eventsForFilteringTests } from "./eventsForFilteringTests";
 
 describe("Filter events by channel", () => {
   beforeEach(function () {

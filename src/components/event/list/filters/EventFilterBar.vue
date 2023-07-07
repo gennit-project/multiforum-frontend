@@ -36,6 +36,8 @@ import SelectFree from "./SelectFree.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
+import SecondaryButton from "@/components/generic/SecondaryButton.vue";
+import TimeShortcuts from "./TimeShortcuts.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -56,12 +58,14 @@ export default defineComponent({
     LocationSearchBar,
     PrimaryButton,
     RequireAuth,
+    SecondaryButton,
     SearchBar,
     SelectCanceled,
     SelectFree,
     TagIcon,
     TagPicker,
     TimeSelector,
+    TimeShortcuts,
     WeekdaySelector,
   },
   props: {
@@ -211,6 +215,7 @@ export default defineComponent({
       route,
       router,
       selectedDistanceUnit,
+      showAdvanced: ref(false),
       showLocationSearchBarAndDistanceButtons,
       showTimeSlotPicker: ref(false),
       tagLabel,
@@ -224,7 +229,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          isEventListView: !this.showMap
+          isEventListView: !this.showMap,
         });
       }
     });
@@ -590,6 +595,7 @@ export default defineComponent({
             />
           </div>
         </div>
+
         <h2
           v-if="!channelId"
           class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
@@ -603,6 +609,10 @@ export default defineComponent({
           :selected-channels="filterValues.channels"
           @setSelectedChannels="setSelectedChannels"
         />
+
+       
+        <TimeShortcuts :is-list-view="!showMap" class="mt-6"/>
+
         <h2
           class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
         >
@@ -612,39 +622,6 @@ export default defineComponent({
         <TagPicker
           :selected-tags="filterValues.tags"
           @setSelectedTags="setSelectedTags"
-        />
-        <h2
-          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-        >
-          <CalendarIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Weekdays
-        </h2>
-
-        <div class="flex flex-col">
-          <div class="-my-2 sm:-mx-6 lg:-mx-8">
-            <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
-              <div class="mb-4">
-                <WeekdaySelector
-                  :selected-weekdays="filterValues.weekdays"
-                  @updateWeekdays="updateWeekdays"
-                  @reset="resetWeekdays"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <h2
-          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-        >
-          <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Times
-        </h2>
-
-        <TimeSelector
-          :selected-hour-ranges="filterValues.hourRanges"
-          @updateHourRanges="updateHourRanges"
-          @reset="resetHourRanges"
         />
 
         <h2
@@ -676,6 +653,50 @@ export default defineComponent({
           :show-only-free="filterValues.free || false"
           @updateShowOnlyFree="updateShowOnlyFree"
         />
+
+        <hr class="mt-6 mb-4" />
+        <SecondaryButton
+          :label="showAdvanced ? 'Hide Advanced' : 'Show Advanced'"
+          @click="showAdvanced = !showAdvanced"
+        />
+        <div id="advancedFilters" v-if="showAdvanced">
+          <h2
+            class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+          >
+            <CalendarIcon
+              class="h-6 w-6 mr-2 text-gray-500"
+              aria-hidden="true"
+            />
+            Weekdays
+          </h2>
+
+          <div class="flex flex-col">
+            <div class="-my-2 sm:-mx-6 lg:-mx-8">
+              <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
+                <div class="mb-4">
+                  <WeekdaySelector
+                    :selected-weekdays="filterValues.weekdays"
+                    @updateWeekdays="updateWeekdays"
+                    @reset="resetWeekdays"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h2
+            class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+          >
+            <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+            Times
+          </h2>
+
+          <TimeSelector
+            :selected-hour-ranges="filterValues.hourRanges"
+            @updateHourRanges="updateHourRanges"
+            @reset="resetHourRanges"
+          />
+        </div>
       </DrawerFlyout>
     </div>
   </div>

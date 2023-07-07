@@ -252,7 +252,7 @@ export default defineComponent({
     </p>
     <div v-else>
       <div class="h-full  ">
-        <ul role="list" class="relative my-2 rounded space-y-2">
+        <ul role="list" class="relative my-2 rounded space-y-2" data-testid="channel-discussion-list">
           <ChannelDiscussionListItem
             v-for="discussion in discussionResult.discussions"
             :key="discussion.id"

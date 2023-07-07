@@ -172,19 +172,17 @@ export default defineComponent({
 
 <template>
   <div class="time-shortcuts flex">
-    <div v-if="!channelId">
-      <Tag
-        class="align-middle"
-        :data-testid="`time-shortcut-${shortcut.label}`"
-        v-for="shortcut in timeFilterShortcuts"
-        :key="shortcut.label"
-        :tag="shortcut.label"
-        :active="shortcut.value === filterValues.timeShortcut"
-        :hide-icon="true"
-        :large="false"
-        @click="handleTimeFilterShortcutClick(shortcut.value)"
-      />
-    </div>
+    <Tag
+      class="align-middle"
+      :data-testid="`time-shortcut-${shortcut.label}`"
+      v-for="shortcut in timeFilterShortcuts"
+      :key="shortcut.label"
+      :tag="shortcut.label"
+      :active="shortcut.value === filterValues.timeShortcut"
+      :hide-icon="true"
+      :large="false"
+      @click="handleTimeFilterShortcutClick(shortcut.value)"
+    />
   </div>
 </template>
 <style>

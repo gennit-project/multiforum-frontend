@@ -147,6 +147,7 @@ export default defineComponent({
     <div class="flex justify-between items-center">
       <SearchBar
         class="mr-2 flex flex-grow"
+        data-testid="discussion-filter-search-bar"
         :initial-value="filterValues.searchInput"
         :search-placeholder="'Search text'"
         :small="true"

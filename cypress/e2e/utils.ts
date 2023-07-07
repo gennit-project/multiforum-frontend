@@ -4,6 +4,7 @@ export const deleteAll = () => {
   cy.deleteUsers();
   cy.deleteChannels();
   cy.deleteTags();
+  cy.deleteDiscussions();
 };
 
 export const seedAll = () => {

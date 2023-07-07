@@ -10,7 +10,7 @@ import {
   GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
-import TopNavSearchBar from "./TopNavSearchBar.vue";
+// import TopNavSearchBar from "./TopNavSearchBar.vue";
 
 export default defineComponent({
   name: "TopNav",
@@ -20,7 +20,7 @@ export default defineComponent({
     // NotificationButton,
     UserProfileDropdownMenu,
     ChannelIcon,
-    TopNavSearchBar,
+    // TopNavSearchBar,
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
@@ -48,6 +48,8 @@ export default defineComponent({
       isAuthenticated,
       login: () => {
         if (window.parent.Cypress) {
+          // Cypress cannot test popups. It has to stay
+          // in the same window.
           loginWithRedirect();
         } else {
           loginWithPopup();
@@ -77,9 +79,9 @@ export default defineComponent({
           ><span class="dark:text-white ml-1 text-blue-500">topical</span>
         </div>
       </div>
-      <div class="flex justify-center w-full">
+      <!-- <div class="flex justify-center w-full">
         <TopNavSearchBar />
-      </div>
+      </div> -->
       <div
         class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
       >

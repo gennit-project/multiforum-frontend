@@ -1,5 +1,5 @@
 import './commands';
-import { EventCreateInput } from '../../src/__generated__/graphql';
+import { EventCreateInput, DiscussionCreateInput } from '../../src/__generated__/graphql';
 
 declare global {
     namespace Cypress {
@@ -12,11 +12,13 @@ declare global {
         seedChannels(): Chainable<Element>;
         seedTags(): Chainable<Element>;
         createEvents(events: EventCreateInput[]): Chainable<Element>;
+        createDiscussions(discussions: DiscussionCreateInput[]): Chainable<Element>;
         deleteEvents(): Chainable<Element>;
         deleteEmails(): Chainable<Element>;
         deleteUsers(): Chainable<Element>;
         deleteChannels(): Chainable<Element>;
         deleteTags(): Chainable<Element>;
+        deleteDiscussions(): Chainable<Element>;
       }
     }
   }

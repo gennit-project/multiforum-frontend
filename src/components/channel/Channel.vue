@@ -85,6 +85,25 @@ export default defineComponent({
       >
         <div class="block p-2 h-full">
           <div class="flex flex-col lg:flex-row h-full">
+            
+
+            
+            <div class="h-full bg-gray-50 border rounded-t-sm flex-grow lg:ml-4">
+              <div
+                class="border-b dark:bg-gray-800"
+                v-if="route.name !== 'EditChannel'"
+              >
+                <div class="px-4 sm:px-6 lg:px-8">
+                  <div class="block pt-1 border-b border-b-1">
+                    <ChannelTabs class="block" :route="route" />
+                  </div>
+                </div>
+              </div>
+              <div class="bg-white rounded-b-lg dark:bg-gray-800">
+                <router-view></router-view>
+              </div>
+            </div>
+
             <div v-if="!mdAndDown" class="h-full dark:bg-gray-700">
               <AboutColumn
                 v-if="leftColumnIsExpanded"
@@ -111,7 +130,6 @@ export default defineComponent({
                 </button>
               </div>
             </div>
-
             <div
               v-else
               :class="mdAndDown ? '' : 'giveSpaceForLeftSideBar'"
@@ -127,21 +145,6 @@ export default defineComponent({
               <AboutColumn v-if="mdAndUp" />
             </div>
 
-            <div class="h-full bg-gray-50 border rounded-t-sm flex-grow lg:ml-4">
-              <div
-                class="border-b dark:bg-gray-800"
-                v-if="route.name !== 'EditChannel'"
-              >
-                <div class="px-4 sm:px-6 lg:px-8">
-                  <div class="block pt-1 border-b border-b-1">
-                    <ChannelTabs class="block" :route="route" />
-                  </div>
-                </div>
-              </div>
-              <div class="bg-white rounded-b-lg dark:bg-gray-800">
-                <router-view></router-view>
-              </div>
-            </div>
           </div>
         </div>
       </article>
