@@ -46,14 +46,13 @@ export default defineComponent({
       return getDiscussionWhere(filterValues.value, channelId.value);
     });
 
-
     const discussionQueryFilters = computed(() => {
       // We pass the current filters as a prop
       // to the discussion list item so that the Apollo
       // cache be updated properly when the user
       // votes from the list view.
       return {
-        where: discussionWhere.value,
+        where: discussionWhere,
         limit: DISCUSSION_PAGE_LIMIT,
         offset: 0,
         resultsOrder: {
