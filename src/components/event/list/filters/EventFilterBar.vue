@@ -596,58 +596,53 @@ export default defineComponent({
           </div>
         </div>
 
-        <h2
-          v-if="!channelId"
-          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-        >
-          <ChannelIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Channels
-        </h2>
+        <div class="p-2 border rounded-md my-2">
 
-        <ChannelPicker
-          v-if="!channelId"
-          :selected-channels="filterValues.channels"
-          @setSelectedChannels="setSelectedChannels"
-        />
+            <h2
+              v-if="!channelId"
+              class="text-md font-small text-gray-700 dark:text-gray-100 flex  items-center"
+            >
+              <ChannelIcon
+                class="h-4 w-4 mr-2 text-gray-500"
+                aria-hidden="true"
+              />
+              Channels
+            </h2>
 
-       
-        <TimeShortcuts :is-list-view="!showMap" class="mt-6"/>
+          <ChannelPicker
+            v-if="!channelId"
+            :selected-channels="filterValues.channels"
+            @setSelectedChannels="setSelectedChannels"
+          />
+        </div>
 
-        <h2
-          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-        >
-          <TagIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-          Tags
-        </h2>
-        <TagPicker
-          :selected-tags="filterValues.tags"
-          @setSelectedTags="setSelectedTags"
-        />
+        <div class="p-2 border rounded-md my-2">
+          <h2
+            v-if="!channelId"
+            class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
+          >
+            <ClockIcon class="h-4 w-4 mr-2 text-gray-500" aria-hidden="true" />
+            Times
+          </h2>
 
-        <h2
-          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-        >
-          <i
-            class="fas fa-calendar-times h-6 w-6 mr-2 text-gray-500"
-            aria-hidden="true"
-          ></i>
-          Canceled
-        </h2>
+          <TimeShortcuts :is-list-view="!showMap" class="mt-6" />
+        </div>
+
+        <div class="p-2 border rounded-md my-2">
+          <h2 class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center">
+            <TagIcon class="h-4 w-4 mr-2 text-gray-500" aria-hidden="true" />
+            Tags
+          </h2>
+          <TagPicker
+            :selected-tags="filterValues.tags"
+            @setSelectedTags="setSelectedTags"
+          />
+        </div>
 
         <SelectCanceled
           :show-canceled="filterValues.showCanceledEvents || false"
           @updateShowCanceled="updateShowCanceled"
         />
-
-        <h2
-          class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
-        >
-          <i
-            class="fas fa-dollar-sign h-6 w-6 mr-2 text-gray-500"
-            aria-hidden="true"
-          ></i>
-          Free
-        </h2>
 
         <SelectFree
           :show-only-free="filterValues.free || false"
