@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen dark:text-slate-200">
+  <div class="h-screen dark:text-slate-200 relative">
     <nav class="shadow-sm">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
@@ -68,7 +68,7 @@ export default defineComponent({
         @toggleUserProfileDropdown="toggleUserProfileDropdown"
       />
     </nav>
-    <div class="flex constrain-height">
+    <div class="flex constrain-height relative">
       <SiteSidenav
         :show-dropdown="showDropdown"
         @close="showDropdown = false"

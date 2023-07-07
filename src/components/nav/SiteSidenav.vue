@@ -32,7 +32,7 @@ const navigation: NavigationItem[] = [
     href: "/discussions",
     icon: DiscussionIcon,
   },
-  { name: "Channels", href: "/channels", icon: ChannelIcon,  },
+  { name: "Channels", href: "/channels", icon: ChannelIcon },
 ];
 
 export default defineComponent({
@@ -42,7 +42,7 @@ export default defineComponent({
     DiscussionIcon,
     ChannelIcon,
     XIcon,
-    UserCircle
+    UserCircle,
   },
   setup() {
     const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
@@ -56,7 +56,6 @@ export default defineComponent({
       }
       return "";
     });
-
 
     return {
       isAuthenticated,
@@ -81,68 +80,70 @@ export default defineComponent({
 <template>
   <div
     v-if="showDropdown"
-    class="relative flex w-[250px] flex-shrink-0 flex-grow max-w-xs grow flex-col gap-y-5 overflow-y-auto bg-white dark:bg-gray-800 px-6 pb-2 border"
+    class="fixed top-0 left-0 z-50 w-[250px] h-screen overflow-y-auto bg-white dark:bg-gray-800 py-2 border flex flex-col justify-between"
   >
-    <div class="flex items-end justify-end mt-2">
-      <div class="h-7 flex items-center">
-        <button
-          type="button"
-          class="ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          @click="$emit('close')"
-        >
-          <span class="sr-only">Close panel</span>
-          <XIcon class="h-6 w-6" aria-hidden="true" />
-        </button>
-      </div>
-    </div>
-    <nav class="flex flex-1 flex-col">
-      <ul role="list" class="flex flex-1 flex-col">
-        <li v-for="item in navigation" :key="item.name">
-          <router-link
-            :to="item.href"
-            :active="$route.path.includes(item.href)"
-            :data-testid="`nav-link-${item.name}`"
-            active-class="text-blue-600"
-            
-            class="text-gray-700 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 font-semibold"
+    <div>
+      <div class="block mt-2 px-6">
+        <div class="h-7 flex">
+          <button
+            type="button"
+            class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            @click="$emit('close')"
           >
-            <component
-              :is="item.icon"
-              class="h-6 w-6 shrink-0 list-item-icon group-hover:text-blue-600"
-              aria-hidden="true"
-            />
-            {{ item.name }}
-          </router-link>
-        </li>
-      </ul>
+            <span class="sr-only">Close panel</span>
+            <XIcon class="h-6 w-6" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
 
-      <ul>
-        <router-link
-          v-if="isAuthenticated"
-          :to="`/u/${username}`"
-          active-class="text-blue-600"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-        >
-          My Profile
-        </router-link>
-        <button
-          v-if="!isAuthenticated"
-          @click="login"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-        >
-          Log In
-        </button>
-        <router-link
-          v-if="isAuthenticated"
-          to="/logout"
-          @click="logout"
-          active-class="text-blue-600"
-          class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
-        >
-          Sign Out
-        </router-link>
-      </ul>
-    </nav>
+      <nav class="mt-16">
+        <ul role="list">
+          <li v-for="item in navigation" :key="item.name" class="px-6">
+            <router-link
+              :to="item.href"
+              :active="$route.path.includes(item.href)"
+              :data-testid="`nav-link-${item.name}`"
+              active-class="text-blue-600"
+              class="text-gray-700 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
+              @click="$emit('close')"
+            >
+              <component
+                :is="item.icon"
+                class="h-6 w-6 shrink-0 list-item-icon group-hover:text-blue-600"
+                aria-hidden="true"
+              />
+              {{ item.name }}
+            </router-link>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <ul class="mb-6 px-6">
+      <router-link
+        v-if="isAuthenticated"
+        :to="`/u/${username}`"
+        active-class="text-blue-600"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+      >
+        My Profile
+      </router-link>
+      <button
+        v-if="!isAuthenticated"
+        @click="login"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold ml-4"
+      >
+        Log In
+      </button>
+      <router-link
+        v-if="isAuthenticated"
+        to="/logout"
+        @click="logout"
+        active-class="text-blue-600"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+      >
+        Sign Out
+      </router-link>
+    </ul>
   </div>
 </template>
 
@@ -162,6 +163,6 @@ nav li:active {
 
 nav li > .router-link-exact-active {
   background-color: #f0f4f8;
-  color: #2563eb 
+  color: #2563eb;
 }
 </style>

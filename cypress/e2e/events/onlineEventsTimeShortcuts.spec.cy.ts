@@ -1,8 +1,8 @@
-import { timeShortcutValues } from "../../src/components/event/list/filters/eventSearchOptions";
+import { timeShortcutValues } from "../../../src/components/event/list/filters/eventSearchOptions";
 import { DateTime } from "luxon";
-import { EventCreateInput } from "../../src/__generated__/graphql";
-import { deleteAll } from "./utils";
-import { ONLINE_EVENT_LIST } from "./constants";
+import { EventCreateInput } from "../../../src/__generated__/graphql";
+import { deleteAll } from "../utils";
+import { ONLINE_EVENT_LIST } from "../constants";
 
 // For each time shortcut, we want to test that the correct events are shown.
 // First generate test events for each time shortcut.

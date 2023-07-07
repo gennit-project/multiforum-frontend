@@ -1,5 +1,5 @@
-import { DISCUSSION_CREATION_FORM } from "./constants";
-import { deleteAll, seedAll } from "./utils";
+import { DISCUSSION_CREATION_FORM } from "../constants";
+import { deleteAll, seedAll } from "../utils";
 
 describe("Basic discussion operations", () => {
   beforeEach(function () {

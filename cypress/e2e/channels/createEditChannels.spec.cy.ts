@@ -1,5 +1,5 @@
-import { CHANNEL_CREATION_FORM } from "./constants";
-import { deleteAll, seedAll } from "./utils";
+import { CHANNEL_CREATION_FORM } from "../constants";
+import { deleteAll, seedAll } from "../utils";
 
 describe("Basic channel operations", () => {
   beforeEach(function () {
