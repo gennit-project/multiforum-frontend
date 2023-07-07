@@ -83,7 +83,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="bg-white border-l-4 relative dark:bg-gray-700 pb-2 pt-4 px-4 space-x-2 cursor-pointer flex"
+    class="bg-white border-l-4 relative dark:bg-gray-700 pb-2 pt-3 px-4 space-x-2 cursor-pointer flex"
   >
     <span class="mt-1 w-6"
       >{{
@@ -97,7 +97,7 @@ export default defineComponent({
 
     <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')">
-        <p class="text-lg font-bold cursor-pointer hover:text-gray-500">
+        <p class="text-md font-bold cursor-pointer hover:text-gray-500">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>
       </router-link>
