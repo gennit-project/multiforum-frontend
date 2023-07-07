@@ -57,10 +57,10 @@ export default defineComponent({
       return [
         // large is for time shortcut buttons
         this.large
-          ? 'text-sm py-1.5 shadow border dark:border-gray-700  rounded-full'
+          ? 'text-sm py-1 shadow border dark:border-gray-700  rounded-full'
           : '',
         this.titleMode ? 'text-xl py-1.5' : '',
-        !this.large && !this.titleMode ? 'text-xs py-1.5' : '',
+        !this.large && !this.titleMode ? 'text-xs py-1' : '',
         this.clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
         this.getButtonStyles(),
         'pl-3 font-medium tag rounded border border-gray-400',
@@ -111,7 +111,7 @@ export default defineComponent({
     {{ tag }}
     <XmarkIcon
       data-testid="tag-delete"
-      class="h-4 w-4 mr-1 cursor-pointer"
+      class="h-3 w-3 mr-1 cursor-pointer"
       v-if="clearable"
       @click="$emit('delete', index)"
     />

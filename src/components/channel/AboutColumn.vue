@@ -88,7 +88,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white w-[300px] flex-shrink-0 ml-2 border">
+  <div class="bg-white dark:bg-gray-700 w-[300px] flex-shrink-0 ml-2 border">
     <div class="flex justify-between border-b">
       <span
         class="mx-6 my-2 font-bold text-blue-500 text-sm leading-6 mb-2 dark:text-gray-300"
