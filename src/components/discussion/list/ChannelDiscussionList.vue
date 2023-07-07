@@ -169,6 +169,7 @@ export default defineComponent({
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
+      sendToPreview,
       selectedDiscussion: {} as DiscussionData,
       showModProfileModal: ref(false),
     };
@@ -232,6 +233,14 @@ export default defineComponent({
         });
       }
     });
+    if (
+      !this.discussionId &&
+      this.discussionResult &&
+      this.discussionResult.discussions &&
+      this.discussionResult.discussions.length > 0
+    ) {
+      this.sendToPreview(this.discussionResult.discussions[0].id);
+    }
   },
 });
 </script>

@@ -86,9 +86,7 @@ export default defineComponent({
         <div class="block p-2 h-full">
           <div class="flex flex-col lg:flex-row h-full">
             
-
-            
-            <div class="h-full bg-gray-50 border rounded-t-sm flex-grow lg:ml-4">
+            <div class="h-full flex-grow lg:ml-4">
               <div
                 class="border-b dark:bg-gray-800"
                 v-if="route.name !== 'EditChannel'"

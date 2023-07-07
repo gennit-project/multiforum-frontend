@@ -88,10 +88,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white w-[300px] flex-shrink-0 rounded-sm border border-blue-200 ml-2">
-    <div class="flex justify-between border-b border-blue-200 bg-blue-50">
+  <div class="bg-white w-[300px] flex-shrink-0 ml-2 border">
+    <div class="flex justify-between border-b">
       <span
-        class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
+        class="mx-6 my-2 font-bold text-blue-500 text-sm leading-6 mb-2 dark:text-gray-300"
       >
         About
       </span>
@@ -139,9 +139,9 @@ export default defineComponent({
 
         <div class="mt-6">
           <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b border-t border-blue-200 bg-blue-50">
+            <div class="flex justify-between border-b">
               <span
-                class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
+                class="text-blue-500 mx-6 my-2 font-bold text-sm leading-6 mb-2 dark:text-gray-300"
               >
                 Tags
               </span>
@@ -157,9 +157,9 @@ export default defineComponent({
               />
             </div>
           </div>
-          <div class="flex justify-between border-b border-t border-blue-200 bg-blue-50">
+          <div class="flex justify-between border-b">
             <span
-              class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300"
+              class="text-blue-500 mx-6 my-2 font-bold text-sm leading-6 mb-2 dark:text-gray-300"
             >
               Admins
             </span>
@@ -184,7 +184,7 @@ export default defineComponent({
      
       <RequireAuth :require-ownership="true" :owners="ownerList" :justify-left="true" class="w-full">
         <template v-slot:has-auth>
-          <div class="flex justify-between border-b border-t border-blue-200 bg-blue-50 w-full">
+          <div class="flex justify-between border-b w-full">
             <span
               class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300 w-full"
             >

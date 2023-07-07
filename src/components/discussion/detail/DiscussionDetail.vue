@@ -94,6 +94,7 @@ export default defineComponent({
 
       // On the discussion detail page, hide the current channel because
       // that would link to the current page.
+      console.log(discussion.value);
 
       return discussion.value.Channels.filter((channel: ChannelData) => {
         return channel.uniqueName !== channelId.value;
