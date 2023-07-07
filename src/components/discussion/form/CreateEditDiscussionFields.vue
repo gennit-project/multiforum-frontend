@@ -130,6 +130,7 @@ export default defineComponent({
                 <template v-slot:content>
                   <TextInput
                     ref="titleInputRef"
+                    :test-id="'title-input'"
                     :value="formValues.title"
                     :placeholder="'Add title'"
                     :full-width="true"
@@ -150,6 +151,7 @@ export default defineComponent({
                 </template>
                 <template v-slot:content>
                   <TagInput
+                    :test-id="'channel-input'"
                     :selected-channels="formValues.selectedChannels"
                     :channel-mode="true"
                     @setSelectedTags="
@@ -169,6 +171,7 @@ export default defineComponent({
                 <template v-slot:content>
                   <TextEditor
                     class="mb-3 h-56"
+                    :test-id="'body-input'"
                     :disable-auto-focus="true"
                     :initial-value="formValues.body || ''"
                     :placeholder="'Add details'"
@@ -186,6 +189,7 @@ export default defineComponent({
                 </template>
                 <template v-slot:content>
                   <TagInput
+                    :test-id="'tags-input'"
                     :selected-tags="formValues?.selectedTags"
                     @setSelectedTags="
                       $emit('updateFormValues', { selectedTags: $event })

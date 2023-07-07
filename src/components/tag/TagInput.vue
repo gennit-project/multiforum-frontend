@@ -4,7 +4,7 @@ import { defineComponent, PropType } from "vue";
 import ChannelPicker from "../channel/ChannelPicker.vue";
 import Tag from "@/components/tag/Tag.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
-import FloatingDropdown from "../generic/floatingDropdown.vue";
+import FloatingDropdown from "../generic/FloatingDropdown.vue";
 
 export default defineComponent({
   components: {
@@ -91,6 +91,7 @@ export default defineComponent({
       >
         <Tag
           v-for="(tag, i) of tags"
+          :data-testid="`${testId}-tag-${tag}`"
           :key="tag"
           :active="true"
           :channel-mode="channelMode"

@@ -1,7 +1,7 @@
 import { CHANNEL_CREATION_FORM } from "./constants";
 import { deleteAll, seedAll } from "./utils";
 
-describe("Basic event operations", () => {
+describe("Basic channel operations", () => {
   beforeEach(function () {
     deleteAll();
     seedAll();
@@ -23,11 +23,10 @@ describe("Basic event operations", () => {
       .type("Test description");
 
     cy.get("button").contains("Save").click();
-
-    // Test editing a channel
     cy.get("h1").contains(TEST_CHANNEL);
     cy.get("p").contains(TEST_DESCRIPTION);
 
+    // Test editing a channel
     cy.get("a").contains("Edit").click();
     cy.get('div[data-testid="description-input"]')
       .find("textarea")

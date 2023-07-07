@@ -41,7 +41,11 @@ export default defineComponent({
     titleMode: {
       type: Boolean,
       default: false
-    }
+    },
+    dataTestId: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -93,6 +97,7 @@ export default defineComponent({
 </script>
 <template>
   <span
+    :data-testid="dataTestId"
     @mouseenter="highlightedByMouse = true"
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
@@ -105,6 +110,7 @@ export default defineComponent({
     />
     {{ tag }}
     <XmarkIcon
+      data-testid="tag-delete"
       class="h-4 w-4 mr-1 cursor-pointer"
       v-if="clearable"
       @click="$emit('delete', index)"
