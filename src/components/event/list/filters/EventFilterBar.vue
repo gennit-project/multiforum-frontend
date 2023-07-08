@@ -536,6 +536,7 @@ export default defineComponent({
         </FilterChip>
         <div class="inline-flex align-middle items-center">
           <button
+            data-testid="more-filters-button"
             class="flex inline-flex dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             @click="handleClickMoreFilters"
           >
@@ -597,17 +598,16 @@ export default defineComponent({
         </div>
 
         <div class="p-2 border rounded-md my-2">
-
-            <h2
-              v-if="!channelId"
-              class="text-md font-small text-gray-700 dark:text-gray-100 flex  items-center"
-            >
-              <ChannelIcon
-                class="h-4 w-4 mr-2 text-gray-500"
-                aria-hidden="true"
-              />
-              Channels
-            </h2>
+          <h2
+            v-if="!channelId"
+            class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
+          >
+            <ChannelIcon
+              class="h-4 w-4 mr-2 text-gray-500"
+              aria-hidden="true"
+            />
+            Channels
+          </h2>
 
           <ChannelPicker
             v-if="!channelId"
@@ -629,7 +629,9 @@ export default defineComponent({
         </div>
 
         <div class="p-2 border rounded-md my-2">
-          <h2 class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center">
+          <h2
+            class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
+          >
             <TagIcon class="h-4 w-4 mr-2 text-gray-500" aria-hidden="true" />
             Tags
           </h2>
@@ -651,6 +653,7 @@ export default defineComponent({
 
         <hr class="mt-6 mb-4" />
         <SecondaryButton
+          data-testid="show-advanced-button"
           :label="showAdvanced ? 'Hide Advanced' : 'Show Advanced'"
           @click="showAdvanced = !showAdvanced"
         />
@@ -683,7 +686,7 @@ export default defineComponent({
             class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
           >
             <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
-            Times
+            Time Slots
           </h2>
 
           <TimeSelector

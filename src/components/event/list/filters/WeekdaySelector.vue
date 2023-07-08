@@ -83,14 +83,14 @@ export default defineComponent({
       <div
         v-for="weekday in weekdayData"
         :key="weekday.shortName"
-        class="p-2 rounded cursor-pointer"
+        class="p-2 rounded"
       >
         <label :for="'weekday-' + weekday.number" class="flex items-center">
           <input
             type="checkbox"
             :data-testid="`weekday-${weekday.number}-checkbox`"
             :id="'weekday-' + weekday.number"
-            class="text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
+            class="cursor-pointer text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
             :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
             @input="() => toggleSelectWeekday(weekday)"
           />
