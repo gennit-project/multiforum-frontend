@@ -5,7 +5,6 @@ import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 import AboutColumn from "./AboutColumn.vue";
-import LargeChannelHeader from "./LargeChannelHeader.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import MdEditor from "md-editor-v3";
@@ -16,7 +15,6 @@ export default defineComponent({
     AboutColumn,
     // ChannelIcon,
     ChannelTabs,
-    LargeChannelHeader,
     MdEditor,
   },
   setup() {
@@ -77,9 +75,6 @@ export default defineComponent({
 <template>
   <div class="h-screen dark:bg-black">
     <div class="h-full">
-      <header class="mx-4 items-center">
-        <LargeChannelHeader :channel-id="channelId"> </LargeChannelHeader>
-      </header>
       <article
         class="relative z-0 flex-1  focus:outline-none xl:order-last h-full"
       >

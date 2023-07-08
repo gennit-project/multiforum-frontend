@@ -38,7 +38,7 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      component: HomePage,
+      component: SearchDiscussions,
     },
     {
       path: "/u/:username", 

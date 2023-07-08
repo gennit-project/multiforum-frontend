@@ -10,6 +10,7 @@ import {
   GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
+import { useRoute } from "vue-router";
 // import TopNavSearchBar from "./TopNavSearchBar.vue";
 
 export default defineComponent({
@@ -24,6 +25,7 @@ export default defineComponent({
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
+    const route = useRoute();
 
     const { result } = useQuery(GET_LOCAL_USERNAME);
     const username = computed(() => {
@@ -32,6 +34,13 @@ export default defineComponent({
         return username;
       }
       return "";
+    });
+
+    const channelId = computed(() => {
+      if (typeof route.params.channelId !== "string") {
+        return "";
+      }
+      return route.params.channelId;
     });
 
     const { result: modNameResult } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
@@ -45,6 +54,7 @@ export default defineComponent({
     });
 
     return {
+      channelId,
       isAuthenticated,
       login: () => {
         if (window.parent.Cypress) {
@@ -63,7 +73,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-900 w-full shadow-sm">
+  <div class="bg-white dark:bg-black w-full shadow-sm">
     <div class="px-4 py-1 flex items-center justify-between">
       <div class="flex items-center lg:px-0">
         <div class="flex cursor-pointer">
@@ -72,11 +82,15 @@ export default defineComponent({
             data-testid="menu-button"
           />
         </div>
-        <div class="text-gray-700 flex text-lg">
+        <div class="flex text-sm gap-1 text-gray-500 dark:text-white">
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span
-            class="text-gray-500"
+          
             >gennit</span
-          ><span class="dark:text-white ml-1 text-blue-500">topical</span>
+          >
+          <span>/</span>
+          <span class="dark:text-white font-bold text-blue-500">{{
+            channelId
+          }}</span>
         </div>
       </div>
       <!-- <div class="flex justify-center w-full">

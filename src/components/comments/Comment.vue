@@ -212,7 +212,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-4  ">
+  <div class="px-4" data-testid="comment">
     <div :class="['max-w-3xl my-1']">
       <div class="flex text-gray-500">
         <div :class="'text-sm'" class="w-full">

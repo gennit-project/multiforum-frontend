@@ -256,6 +256,7 @@ export default defineComponent({
           >
           <span
             v-if="!showEditCommentField"
+            data-testid="edit-comment-button"
             class="ml-2 underline cursor-pointer hover:text-black dark:text-gray-400 dark:hover:text-white"
             @click="
               () => {

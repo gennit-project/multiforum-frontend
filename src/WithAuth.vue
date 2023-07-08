@@ -66,7 +66,7 @@ export default defineComponent({
       let username = '';
       let modProfileName = '';
 
-      user = emailResult.value.emails[0]?.User;
+      user = emailResult.value?.emails[0]?.User;
 
       if (user) {
         username = user.username;
