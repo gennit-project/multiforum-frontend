@@ -254,13 +254,13 @@ export default defineComponent({
     />
     <p
       v-else-if="discussionResult && discussionResult.discussions.length === 0"
-      class="px-4"
+      class="px-4 my-6"
     >
       There are no results.
     </p>
     <div v-else>
       <div class="h-full  ">
-        <ul role="list" class="relative my-2 rounded space-y-2" data-testid="channel-discussion-list">
+        <ul role="list" class="relative my-2 rounded my-2" data-testid="channel-discussion-list">
           <ChannelDiscussionListItem
             v-for="discussion in discussionResult.discussions"
             :key="discussion.id"

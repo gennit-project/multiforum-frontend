@@ -50,5 +50,22 @@ describe("Basic root comment operations", () => {
 
    
 
+
+
+
+    // Now edit the comment
+    cy.contains('[data-testid="comment"]', TEST_DESCRIPTION_2)
+      .siblings('[data-testid="edit-comment-button"]') // Assuming that the edit button is a sibling element of the comment text.
+      .click();
+    
+    const updatedCommentText = 'This is my updated comment';
+    cy.get('[data-testid="edit-comment-input"]').type(updatedCommentText);
+    cy.get('[data-testid="submit-edited-comment-button"]').click();
+
+    // Now delete the comment
+    cy.contains('[data-testid="comment"]', updatedCommentText)
+      .siblings('[data-testid="delete-comment-button"]') // Assuming that the delete button is a sibling element of the comment text.
+      .click();
+
   });
 });

@@ -203,7 +203,7 @@ export default defineComponent({
     />
     <p
       v-else-if="discussionResult && discussionResult.discussions.length === 0"
-      class="px-4"
+      class="px-4 my-6"
     >
       There are no results.
     </p>
@@ -215,7 +215,7 @@ export default defineComponent({
       v-if="discussionResult && discussionResult.discussions.length > 0"
       class="h-full"
     >
-      <ul role="list" class="relative my-2 mr-2 divide-y" data-testid="sitewide-discussion-list">
+      <ul role="list" class=" my-6 mr-2 divide-y" data-testid="sitewide-discussion-list">
         <SitewideDiscussionListItem
           v-for="discussion in discussionResult.discussions"
           :key="discussion.id"

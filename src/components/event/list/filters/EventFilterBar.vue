@@ -481,7 +481,7 @@ export default defineComponent({
           :small="true"
           @updateSearchInput="updateSearchInput"
         />
-        <RequireAuth class="align-middle">
+        <RequireAuth class="align-middle" :full-width="false">
           <template v-slot:has-auth>
             <PrimaryButton
               data-testid="real-create-event-button"

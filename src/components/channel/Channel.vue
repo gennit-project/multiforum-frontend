@@ -78,12 +78,12 @@ export default defineComponent({
       <article
         class="relative z-0 flex-1  focus:outline-none xl:order-last h-full"
       >
-        <div class="block p-2 h-full">
+        <div class="block h-full">
           <div class="flex flex-col lg:flex-row h-full">
             
             <div class="h-full flex-grow lg:ml-4">
               <div
-                class="border rounded-t-md dark:border-gray-800 dark:bg-gray-950"
+                class="border dark:border-gray-800 dark:bg-gray-950"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="px-4 sm:px-6 lg:px-8">
@@ -93,11 +93,13 @@ export default defineComponent({
                 </div>
               </div>
               <div class="bg-white border dark:border-gray-800 rounded-b-lg dark:bg-gray-950">
-                <router-view></router-view>
+                <div class="border-none p-2">
+                  <router-view></router-view>
+                </div>
               </div>
             </div>
 
-            <div v-if="!mdAndDown" class="h-full dark:bg-gray-900">
+            <div v-if="!mdAndDown" class="h-full space-x-2">
               <AboutColumn
                 v-if="leftColumnIsExpanded"
                 @closeLeftColumn="leftColumnIsExpanded = false"
@@ -126,7 +128,7 @@ export default defineComponent({
             <div
               v-else
               :class="mdAndDown ? '' : 'giveSpaceForLeftSideBar'"
-              class="flex-grow pt-8 items-center bg-white dark:bg-gray-700 rounded-sm"
+              class="flex-grow pt-8 items-center rounded-sm"
             >
               <md-editor
                 v-if="channel && channel.description"

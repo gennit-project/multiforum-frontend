@@ -83,7 +83,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="bg-white border-l-4 dark:border-gray-700 relative dark:bg-gray-900 pb-2 pt-3 px-4 space-x-2 cursor-pointer flex"
+    class="border-l-4 dark:border-gray-700 relative pb-2 pt-3 mx-4 px-4 space-x-2 flex"
   >
     <span class="mt-1 w-6"
       >{{
@@ -91,7 +91,9 @@ export default defineComponent({
         (discussion.DownvotedByModeratorsAggregate?.count || 0)
       }}
       <v-tooltip activator="parent" location="top">
-        <span>{{ "Sum of votes in all channels, deduped by user. To vote, go to a channel and vote within it." }}</span>
+        <span>{{
+          "Sum of votes in all channels, deduped by user. To vote, go to a channel and vote within it."
+        }}</span>
       </v-tooltip>
     </span>
 
@@ -112,19 +114,23 @@ export default defineComponent({
         />
       </p>
       <p class="text-xs font-medium text-slate-600 dark:text-slate-200 no-underline">
-        {{ `Posted ${relativeTime} by ${authorUsername}` }}
-      </p>
-      <div class="text-sm">
-        <Tag
-          class="my-1"
-          :active="selectedChannels.includes(channel.uniqueName)"
-          :key="i"
-          :channel-mode="true"
+        {{ `Posted ${relativeTime} by ${authorUsername} in ` }}
+        <span
           v-for="(channel, i) in discussion.Channels"
-          :tag="channel.uniqueName"
+          class="cursor-pointer hover:text-blue-400"
+          :key="i"
+          :class="[
+            selectedChannels.includes(channel.uniqueName)
+              ? 'text-blue-500'
+              : 'text-slate-500 hover:text-slate-400 dark:text-slate-400 dark:hover:text-slate-300',
+          ]"
+          :channel-mode="true"
           @click="$emit('filterByChannel', channel.uniqueName)"
-        />
-      </div>
+        >
+          {{ channel.uniqueName }}<span v-if="i < discussion.Channels.length - 1">, </span>
+        </span>
+      </p>
+      
     </div>
   </li>
 </template>

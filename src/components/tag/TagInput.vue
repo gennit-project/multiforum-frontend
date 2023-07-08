@@ -86,7 +86,6 @@ export default defineComponent({
           relative
           rounded-md
           shadow-sm
-           
         "
       >
         <Tag
@@ -102,7 +101,7 @@ export default defineComponent({
         />
         <input
           :data-testid="testId"
-          class="flex-1 block min-w-0 pl-3 pt-2 pb-2 dark:bg-gray-700 rounded sm:text-sm  dark:text-gray-100 border-gray-300 dark:border-gray-800"
+          class="flex-1 block min-w-0 pl-3 pt-2 pb-2 dark:bg-black rounded-lg sm:text-sm  dark:text-gray-100 border-gray-300 dark:border-gray-800"
           v-model="currentInput"
           :placeholder="channelMode ? 'Add channels' : 'Add tags'"
           @keydown.enter="(event) => {

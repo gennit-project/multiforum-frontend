@@ -45,13 +45,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="h-12">
+  <div class="h-10">
     <label for="search" class="sr-only">Search</label>
     <div class="relative items-center w-full">
       <div
         class="
           absolute
-          inset-y-1
+          inset-y-0
           left-0
           pl-3
           flex
@@ -61,7 +61,7 @@ export default defineComponent({
       >
         <!-- Heroicon name: solid/search -->
         <svg
-          class="h-5 w-5 text-gray-400"
+          class="h-4 w-4 text-gray-400"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -80,11 +80,11 @@ export default defineComponent({
         class="
           pl-10
           pr-3
-          py-3
+          py-2
           rounded-lg
           leading-5
           w-full
-          dark:bg-gray-700
+          dark:bg-black
           dark:text-white
           placeholder-gray-500
           dark:placeholder-gray-400
@@ -113,7 +113,7 @@ export default defineComponent({
         "
         @click="clear"
       >
-        <i class="fa-solid fa-xmark h-5 w-5 text-gray-400"></i>
+        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400"></i>
       </div>
     </div>
   </div>

@@ -82,15 +82,15 @@ export default defineComponent({
             data-testid="menu-button"
           />
         </div>
-        <div class="flex text-sm gap-1 text-gray-500 dark:text-white">
+        <div class="flex text-sm space-x-1 text-gray-500 dark:text-white">
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span
           
             >gennit</span
           >
-          <span>/</span>
+         <div v-if="channelId" class="space-x-1"> <span>/</span>
           <span class="dark:text-white font-bold text-blue-500">{{
             channelId
-          }}</span>
+          }}</span></div>
         </div>
       </div>
       <!-- <div class="flex justify-center w-full">

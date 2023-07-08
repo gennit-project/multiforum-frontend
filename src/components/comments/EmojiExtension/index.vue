@@ -75,7 +75,6 @@
 
   .emoji-container {
     border-radius: 3px;
-    border: 1px solid #e6e6e6;
     z-index: 1000;
   }
 
@@ -89,7 +88,6 @@
     li {
       cursor: pointer;
       float: left;
-      border: 1px solid #e8e8e8;
       height: 29px;
       width: 28px;
       overflow: hidden;

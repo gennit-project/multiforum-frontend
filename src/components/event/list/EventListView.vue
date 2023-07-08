@@ -241,8 +241,13 @@ export default defineComponent({
     <v-row>
       <v-col cols="12">
         <div class="mx-auto px-6">
+          <div class="flex justify-between w-full">
+            <EventFilterBar
+              class="my-4"
+              :show-distance-filters="false"
+            />
+          </div>
           <div class="w-full">
-            <div>
               <ErrorBanner
                 class="mx-auto block"
                 v-if="eventError"
@@ -251,12 +256,6 @@ export default defineComponent({
               <p v-else-if="eventLoading">Loading...</p>
               <TwoSeparatelyScrollingPanes class="block w-full">
                 <template v-slot:leftpane>
-                  <div class="flex justify-between w-full">
-                    <EventFilterBar
-                      class="my-4"
-                      :show-distance-filters="false"
-                    />
-                  </div>
                   <TimeShortcuts :is-list-view="true"/>
                   <EventList
                     id="listView"
@@ -290,7 +289,6 @@ export default defineComponent({
                   <router-view></router-view>
                 </template>
               </TwoSeparatelyScrollingPanes>
-            </div>
           </div>
         </div>
       </v-col>

@@ -23,7 +23,6 @@ import { getLinksInText } from "../utils";
 import LinkPreview from "../generic/LinkPreview.vue";
 import { gql } from "@apollo/client/core";
 
-
 export default defineComponent({
   name: "CommentComponent",
   components: {
@@ -54,7 +53,7 @@ export default defineComponent({
         return "";
       }
       return themeResult.value.theme;
-    })
+    });
 
     let replyCount = computed(() => {
       if (props.commentData.ChildCommentsAggregate) {
@@ -212,109 +211,109 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-4" data-testid="comment">
-    <div :class="['max-w-3xl my-1']">
-      <div class="flex text-gray-500">
-        <div :class="'text-sm'" class="w-full">
-          <div>
-            <UserCircle class="h-8 w-8 profile-picture" />
-            <span class="text-tiny username-text">
-              <router-link
-                v-if="commentData.CommentAuthor"
-                class="font-bold  dark:text-gray-200"
-                :to="`/u/${commentData.CommentAuthor.username}`"
+  <div
+    class="border-l border-t pt-1 border-gray-300 dark:border-gray-700 pl-4 mt-2 w-full"
+    data-testid="comment"
+  >
+    <div class="flex text-gray-500 w-full">
+      <div :class="'text-sm'" class="w-full">
+        <div class="w-full">
+          <p class="text-tiny ml-7 username-text">
+            <router-link
+              v-if="commentData.CommentAuthor"
+              class="font-bold dark:text-gray-200 underline"
+              :to="`/u/${commentData.CommentAuthor.username}`"
+            >
+              {{ commentData.CommentAuthor.username }}
+            </router-link>
+            <span v-else class="font-bold">[Deleted]</span>
+            <span class="ml-1">&middot;</span>
+            {{ createdAtFormatted }}
+            <span v-if="commentData.updatedAt"> &middot; </span>
+            {{ editedAtFormatted }}
+          </p>
+          <div class="w-full" v-if="!themeLoading">
+            <md-editor
+              v-if="commentData.text && !showEditCommentField"
+              class="small-text -ml-4 -mt-1"
+              v-model="textCopy"
+              previewTheme="vuepress"
+              language="en-US"
+              :noMermaid="true"
+              preview-only
+            />
+            <TextEditor
+              id="editExistingComment"
+              class="h-48 inline-flex"
+              v-if="!readonly && showEditCommentField"
+              :initial-value="commentData.text"
+              :editor-id="editorId"
+              @update="updateExistingComment($event, depth)"
+            >
+              <template #defToolbars>
+                <emoji-extension
+                  :editor-id="editorId"
+                  @on-change="updateText"
+                />
+              </template>
+            </TextEditor>
+            <CommentButtons
+              :comment-data="commentData"
+              :depth="depth"
+              :locked="locked"
+              :parent-comment-id="parentCommentId"
+              :reply-count="replyCount"
+              :show-edit-comment-field="showEditCommentField"
+              :show-replies="showReplies"
+              :show-reply-editor="showReplyEditor"
+              @clickEditComment="handleClickEdit"
+              @createComment="createComment"
+              @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
+              @hideReplyEditor="showReplyEditor = false"
+              @deleteComment="handleClickDelete"
+              @hideReplies="showReplies = false"
+              @openModProfile="this.showModProfileModal = true"
+              @saveEdit="$emit('saveEdit')"
+              @showEditCommentField="showEditCommentField = true"
+              @hideEditCommentField="showEditCommentField = false"
+              @showReplies="showReplies = true"
+              @updateNewComment="updateNewComment"
+            />
+            <h2
+              v-if="linksInText && linksInText.length > 0"
+              class="text-lg mb-2"
+            >
+              Link Previews
+            </h2>
+            <LinkPreview
+              v-for="(link, i) in linksInText"
+              :key="i"
+              class="mb-2"
+              :url="link"
+            />
+            <div id="childComments" v-if="replyCount > 0 && showReplies">
+              <ChildComments
+                v-slot="slotProps"
+                :parent-comment-id="commentData.id"
+                @mouseenter="highlight = true"
+                @mouseleave="highlight = false"
               >
-                {{ commentData.CommentAuthor.username }}
-              </router-link>
-              <span v-else class="font-bold">[Deleted]</span>
-              <span class="ml-1">&middot;</span>
-              {{ createdAtFormatted }}
-              <span v-if="commentData.updatedAt"> &middot; </span>
-              {{ editedAtFormatted }}
-            </span>
-            <div class="comment-border" v-if="!themeLoading">
-              <md-editor
-                v-if="commentData.text && !showEditCommentField"
-                class="max-w-2xl small-text -ml-5"
-                v-model="textCopy"
-                previewTheme="vuepress"
-                language="en-US"
-                :noMermaid="true"
-                preview-only
-              />
-              <TextEditor
-                id="editExistingComment"
-                class="h-48 inline-flex"
-                v-if="!readonly && showEditCommentField"
-                :initial-value="commentData.text"
-                :editor-id="editorId"
-                @update="updateExistingComment($event, depth)"
-              >
-                <template #defToolbars>
-                  <emoji-extension
-                    :editor-id="editorId"
-                    @on-change="updateText"
-                  />
-                </template>
-              </TextEditor>
-              <CommentButtons
-                :comment-data="commentData"
-                :depth="depth"
-                :locked="locked"
-                :parent-comment-id="parentCommentId"
-                :reply-count="replyCount"
-                :show-edit-comment-field="showEditCommentField"
-                :show-replies="showReplies"
-                :show-reply-editor="showReplyEditor"
-                @clickEditComment="handleClickEdit"
-                @createComment="createComment"
-                @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
-                @hideReplyEditor="showReplyEditor = false"
-                @deleteComment="handleClickDelete"
-                @hideReplies="showReplies = false"
-                @openModProfile="this.showModProfileModal = true"
-                @saveEdit="$emit('saveEdit')"
-                @showEditCommentField="showEditCommentField = true"
-                @hideEditCommentField="showEditCommentField = false"
-                @showReplies="showReplies = true"
-                @updateNewComment="updateNewComment"
-              />
-              <h2
-                v-if="linksInText && linksInText.length > 0"
-                class="text-lg mb-2"
-              >
-                Link Previews
-              </h2>
-              <LinkPreview
-                v-for="(link, i) in linksInText"
-                :key="i"
-                class="mb-2"
-                :url="link"
-              />
-              <div id="childComments" v-if="replyCount > 0 && showReplies">
-                <ChildComments
-                  v-slot="slotProps"
-                  :parent-comment-id="commentData.id"
-                  @mouseenter="highlight = true"
-                  @mouseleave="highlight = false"
-                >
-                  <Comment
-                    v-for="(childComment, i) in slotProps.comments"
-                    :key="i"
-                    :compact="true"
-                    :commentData="childComment"
-                    :depth="depth + 1"
-                    :locked="locked"
-                    :parentCommentId="commentData.id"
-                    @clickEditComment="$emit('clickEditComment', $event)"
-                    @deleteComment="handleClickDelete"
-                    @createComment="$emit('createComment')"
-                    @saveEdit="$emit('saveEdit')"
-                    @updateCreateReplyCommentInput="updateNewComment"
-                    @updateEditCommentInput="updateExistingComment"
-                  />
-                </ChildComments>
-              </div>
+                <Comment
+                  v-for="(childComment, i) in slotProps.comments"
+                  :key="i"
+                  :compact="true"
+                  :commentData="childComment"
+                  :depth="depth + 1"
+                  :locked="locked"
+                  :parentCommentId="commentData.id"
+                  @clickEditComment="$emit('clickEditComment', $event)"
+                  @deleteComment="handleClickDelete"
+                  @createComment="$emit('createComment')"
+                  @saveEdit="$emit('saveEdit')"
+                  @updateCreateReplyCommentInput="updateNewComment"
+                  @updateEditCommentInput="updateExistingComment"
+                />
+              </ChildComments>
             </div>
           </div>
         </div>
@@ -331,7 +330,6 @@ export default defineComponent({
   </div>
 </template>
 <style lang="scss">
-
 .bullet {
   text-indent: -2.1em;
   padding-left: 2.1em;
@@ -355,14 +353,15 @@ export default defineComponent({
   width: 100%;
   padding: 0;
   margin: 0;
+  border: none;
 }
-
 
 /* Apply the user's preferred color scheme by default */
 @media (prefers-color-scheme: dark) {
   #md-editor-v3-preview,
   #md-editor-v3-preview-wrapper {
     @apply bg-dark text-dark;
+    border: none;
   }
 }
 
@@ -370,12 +369,12 @@ export default defineComponent({
   #md-editor-v3-preview,
   #md-editor-v3-preview-wrapper {
     @apply bg-light text-light;
+    border: none;
   }
 }
 
-
 .bg-dark {
-  @apply bg-gray-900;
+  @apply bg-gray-950;
 }
 
 .text-dark {
@@ -392,13 +391,15 @@ export default defineComponent({
 
 /* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
 body.dark #md-editor-v3-preview,
-body.dark #md-editor-v3-preview-wrapper {
+body.dark #md-editor-v3-preview-wrapper, .md-editor-content {
   @apply text-dark bg-dark;
+  border: none;
 }
 
 body.light #md-editor-v3-preview,
 body.light #md-editor-v3-preview-wrapper {
   @apply text-light bg-light;
+  border: none;
 }
 #md-editor-v3-preview {
   p,
@@ -419,12 +420,4 @@ body.light #md-editor-v3-preview-wrapper {
   position: relative;
   left: -2.5em;
 }
-.comment-border {
-  border-left: 1px solid #aeacac;
-  position: relative;
-  left: -2em;
-  padding-left: 2em;
-}
-
-
 </style>

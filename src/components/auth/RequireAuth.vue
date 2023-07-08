@@ -18,6 +18,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    fullWidth: {
+      type: Boolean,
+      default: true
+    }
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
@@ -61,11 +65,11 @@ export default defineComponent({
 });
 </script>
   <template>
-  <div class="flex align-middle w-full" :class="[!justifyLeft ? 'justify-center' : '']">
+  <div class="flex align-middle" :class="[!justifyLeft ? 'justify-center' : '', fullWidth ? 'w-full' : '']">
     <div v-if="isAuthenticated && (!requireOwnership || isOwner)" class="w-full">
       <slot name="has-auth"></slot>
     </div>
-    <div v-else @click="login" class="w-full">
+    <div v-else @click="login" :class="[fullWidth ? 'w-full' : '']">
       <slot name="does-not-have-auth"></slot>
     </div>
   </div>

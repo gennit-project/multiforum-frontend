@@ -47,10 +47,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="dark:bg-gray-900 rounded-lg mx-2 px-2 w-full">
+  <div class="rounded-lg md:mx-2 md:px-4 py-1 w-full">
+    <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center"><span class="text-sm rounded text-gray-500 bg-gray-100 dark:bg-gray-700 px-3 py-1">PREVIEW</span></div>
     <div
-      class="flex justify-center rounded-lg mb-10 py-10"
-      :class="route.name == 'DiscussionDetail' ? 'px-4' : ''"
+      class="flex justify-center rounded-lg mb-10 "
+      :class="route.name == 'DiscussionDetail' ? 'md:px-4' : ''"
     >
       <DiscussionDetailContent
         v-if="discussionId !== ''"
@@ -68,6 +69,5 @@ export default defineComponent({
 h1 {
   font-size: 2.65em;
   padding-bottom: 0.3em;
-  border-bottom: 1px solid #eaecef;
 }
 </style>

@@ -88,10 +88,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-700 w-[300px] flex-shrink-0 ml-2 border">
-    <div class="flex justify-between border-b">
+  <div class="w-[300px] flex-shrink-0 ml-2 border-gray-600">
+    <div class="flex justify-between border-b border-gray-700">
       <span
-        class="mx-6 my-2 font-bold text-blue-500 text-sm leading-6 mb-2 dark:text-gray-300"
+        class="dark:bg-gray-950 mx-6 my-2 font-bold text-blue-500 text-sm leading-6 mb-2 dark:text-gray-300"
       >
         About
       </span>
@@ -139,7 +139,7 @@ export default defineComponent({
 
         <div class="mt-6">
           <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b">
+            <div class="flex justify-between border-b border-gray-800">
               <span
                 class="text-blue-500 mx-6 my-2 font-bold text-sm leading-6 mb-2 dark:text-gray-300"
               >
@@ -157,7 +157,7 @@ export default defineComponent({
               />
             </div>
           </div>
-          <div class="flex justify-between border-b">
+          <div class="flex justify-between border-b border-gray-800">
             <span
               class="text-blue-500 mx-6 my-2 font-bold text-sm leading-6 mb-2 dark:text-gray-300"
             >
@@ -184,7 +184,7 @@ export default defineComponent({
      
       <RequireAuth :require-ownership="true" :owners="ownerList" :justify-left="true" class="w-full">
         <template v-slot:has-auth>
-          <div class="flex justify-between border-b w-full">
+          <div class="flex justify-between border-b border-gray-800 w-full">
             <span
               class="mx-6 my-2 font-bold text-sm leading-6 mb-2 text-gray-600 dark:text-gray-300 w-full"
             >

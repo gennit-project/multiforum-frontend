@@ -2,7 +2,6 @@
 import { defineComponent, computed, PropType, ref } from "vue";
 import { DiscussionData } from "@/types/discussionTypes";
 import { useMutation } from "@vue/apollo-composable";
-import GenericButton from "../../generic/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { useRoute, useRouter } from "vue-router";
 import { relativeTime } from "@/dateTimeUtils";
@@ -10,16 +9,12 @@ import { DateTime } from "luxon";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import WarningModal from "../../generic/WarningModal.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+
 import { useDisplay } from "vuetify";
 
 export default defineComponent({
   components: {
-    CreateButton,
     ErrorBanner,
-    GenericButton,
-    PrimaryButton,
     RequireAuth,
     WarningModal,
   },
@@ -120,38 +115,9 @@ export default defineComponent({
 <template>
   <div class="mb-4">
     <div class="min-w-0">
-      <h2
-        class="text-2xl font-bold leading-7 sm:tracking-tight sm:truncate"
-      >
+      <h2 class="text-2xl font-bold leading-7 sm:tracking-tight sm:truncate">
         {{ discussion.title }}
       </h2>
-      <div :class="'mt-4 flex justify-between align-center'" v-if="route.name === 'DiscussionDetail'">
-        <RequireAuth
-          class="inline-flex max-w-sm"
-          :require-ownership="true"
-          :owners="[discussion.Author.username]"
-        >
-          <template v-slot:has-auth>
-            <router-link
-              :to="`/channels/c/${channelId}/discussions/d/${discussion.id}/edit`"
-            >
-              <GenericButton :text="'Edit'" />
-            </router-link>
-          </template>
-        </RequireAuth>
-        <RequireAuth class="inline-flex max-w-sm">
-          <template v-slot:has-auth>
-            <CreateButton
-              class="ml-2"
-              :to="`/channels/c/${channelId}/discussions/create`"
-              :label="'+ Create Discussion'"
-            />
-          </template>
-          <template v-slot:does-not-have-auth>
-            <PrimaryButton class="ml-2" :label="'+ Create Discussion'" />
-          </template>
-        </RequireAuth>
-      </div>
     </div>
 
     <div class="text-xs mt-4">
@@ -167,7 +133,22 @@ export default defineComponent({
         {{ createdAt }}
         <span v-if="discussion.updatedAt"> &#8226; </span>
         {{ editedAt }}
-
+        <RequireAuth
+          :full-width="false"
+          class="inline-flex max-w-sm"
+          :require-ownership="true"
+          :owners="[discussion?.Author.username]"
+        >
+          <template v-slot:has-auth>
+            <span> &#8226;</span>
+            <router-link
+              class="ml-1 underline font-medium cursor-pointer"
+              :to="`/channels/c/${channelId}/discussions/d/${discussion.id}/edit`"
+            >
+              <span>Edit</span>
+            </router-link>
+          </template>
+        </RequireAuth>
         <RequireAuth
           class="flex inline-flex max-w-sm"
           v-if="discussion.Author && route.name === 'DiscussionDetail'"

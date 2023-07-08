@@ -241,21 +241,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid>
+  <v-container fluid class="dark:bg-gray-900 mx-auto max-w-7xl">
     <v-row>
       <v-col cols="12">
-          
-          <div class="w-full mt-3">
+          <div class=" mt-3">
+            <div class="rounded pr-8">
+              <div>
+                <div class="items-center">
+                  <DiscussionFilterBar />
+                </div>
+              </div>
+            </div>
             <TwoSeparatelyScrollingPanes>
               <template v-slot:leftpane>
-                <div class="rounded pr-8">
-                  <div>
-                    <div class="items-center">
-                      <DiscussionFilterBar />
-                      
-                    </div>
-                  </div>
-                </div>
                 <SitewideDiscussionList
                   v-if="!channelId"
                   :search-input="filterValues.searchInput"

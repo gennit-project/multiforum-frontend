@@ -57,13 +57,13 @@ export default defineComponent({
       return [
         // large is for time shortcut buttons
         this.large
-          ? 'text-sm py-1 shadow border dark:border-gray-700  rounded-full'
+          ? 'text-sm py-1 shadow rounded-full'
           : '',
         this.titleMode ? 'text-xl py-1.5' : '',
         !this.large && !this.titleMode ? 'text-xs py-1' : '',
         this.clearable ? 'pr-1' : 'cursor-pointer mr-1 pr-3',
         this.getButtonStyles(),
-        'pl-3 font-medium tag rounded border border-gray-400',
+        'pl-3 font-medium tag rounded',
       ];
     },
   },
@@ -89,7 +89,7 @@ export default defineComponent({
           'bg-blue-50 text-blue-900 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:bg-opacity-100 dark:hover:bg-blue-900 dark:hover:text-white'
         }
         // for the tag buttons in the filter components
-        return `${this.large ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-700 bg-gray-100 dark:bg-opacity-700 dark:bg-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600'`;
+        return `${this.large ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-800 bg-gray-100 dark:bg-opacity-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600'`;
       }
     },
   },

@@ -1,4 +1,3 @@
-
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
@@ -15,7 +14,10 @@ import CommentSection from "../../comments/CommentSection.vue";
 import ChannelLinks from "./ChannelLinks.vue";
 import CreateRootCommentForm from "@/components/discussion/detail/CreateRootCommentForm.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
-
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import GenericButton from "../../generic/GenericButton.vue";
 import { ChannelData } from "@/types/channelTypes";
 import "md-editor-v3/lib/style.css";
 
@@ -29,11 +31,15 @@ export default defineComponent({
     DiscussionVotes,
     ErrorBanner,
     LeftArrowIcon,
+    CreateButton,
+    GenericButton,
+    PrimaryButton,
+    RequireAuth,
   },
   props: {
     discussionId: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     compactMode: {
       type: Boolean,
@@ -61,10 +67,7 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const discussion = computed<DiscussionData>(() => {
-      if (
-        getDiscussionLoading.value ||
-        getDiscussionError.value
-      ) {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
         return null;
       }
       return getDiscussionResult.value.discussions[0];
@@ -143,33 +146,44 @@ export default defineComponent({
 </script>
 
 <template>
+  <div class="space-y-2 w-full">
+    <p v-if="getDiscussionLoading">Loading...</p>
+    <ErrorBanner
+      class="mt-2"
+      v-else-if="getDiscussionError"
+      :text="getDiscussionError.message"
+    />
 
     <div
-      :class="
-        route.name === 'DiscussionDetail' && mdAndUp
-          ? 'large-width'
-          : 'w-full mx-4'
-      "
-      class="space-y-2"
+      :class="'mt-4 flex justify-between align-center'"
+      v-if="route.name === 'DiscussionDetail'"
     >
-      <p v-if="getDiscussionLoading">Loading...</p>
-      <ErrorBanner
-        class="mt-2"
-        v-else-if="getDiscussionError"
-        :text="getDiscussionError.message"
-      />
       <router-link
         v-if="
           route.name !== 'SitewideSearchDiscussionPreview' &&
           route.name !== 'SearchDiscussionPreview'
         "
         :to="`/channels/c/${channelId}/discussions`"
-        class="underline text-xs  mb-4"
+        class="underline text-xs mb-4"
       >
-      <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
         {{ `Discussion list in c/${channelId}` }}
       </router-link>
-      <div v-if="discussion" class="flex">
+      <RequireAuth :full-width="false" class="inline-flex max-w-sm">
+        <template v-slot:has-auth>
+          <CreateButton
+            class="ml-2"
+            :to="`/channels/c/${channelId}/discussions/create`"
+            :label="'New Discussion'"
+          />
+        </template>
+        <template v-slot:does-not-have-auth>
+          <PrimaryButton class="ml-2" :label="'New Discussion'" />
+        </template>
+      </RequireAuth>
+    </div>
+    <div v-if="discussion" class="min-w-md max-w-2xl mx-auto">
+      <div class="flex">
         <DiscussionVotes
           v-if="route.name === 'DiscussionDetail'"
           :discussion="discussion"
@@ -188,32 +202,33 @@ export default defineComponent({
               :channel-id="channelId || channelLinks[0]?.uniqueName"
               :compact-mode="compactMode"
             />
-            <DiscussionBody
-              :discussion="discussion"
-              :channel-id="channelId"
-              :comment-section-id="commentSectionId"
-            />
-            <CreateRootCommentForm
-              v-if="route.name === 'DiscussionDetail'"
-              :discussion="discussion"
-              :channel-id="channelId"
-            />
-          </div>
-          <ChannelLinks
-            class="my-4"
-            :discussion="discussion"
-            :channelId="channelId"
-          />
-          <div
-            class="mb-2 my-4 py-6 dark:bg-gray-900 rounded-lg"
-            v-if="route.name === 'DiscussionDetail'"
-          >
-            <CommentSection
-              ref="commentSectionRef"
-              :commentSectionId="commentSectionId"
-            />
           </div>
         </div>
       </div>
+      <DiscussionBody
+        :discussion="discussion"
+        :channel-id="channelId"
+        :comment-section-id="commentSectionId"
+      />
+      <CreateRootCommentForm
+        v-if="route.name === 'DiscussionDetail'"
+        :discussion="discussion"
+        :channel-id="channelId"
+      />
+      <ChannelLinks
+        class="my-4"
+        :discussion="discussion"
+        :channelId="channelId"
+      />
+      <div
+        class="mb-2 my-4 py-6 rounded-lg"
+        v-if="route.name === 'DiscussionDetail'"
+      >
+        <CommentSection
+          ref="commentSectionRef"
+          :commentSectionId="commentSectionId"
+        />
+      </div>
     </div>
+  </div>
 </template>

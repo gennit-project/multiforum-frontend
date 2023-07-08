@@ -143,8 +143,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full mx-6 space-y-2">
-    <div class="flex justify-between items-center">
+  <div class="w-full space-y-2">
+    <div class="flex justify-between items-center w-full">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
@@ -153,18 +153,20 @@ export default defineComponent({
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
-      <RequireAuth class="align-middle">
+      <div>
+      <RequireAuth class="align-middle" :full-width="false">
         <template v-slot:has-auth>
           <CreateButton
             class="ml-2"
             :to="createDiscussionPath"
-            :label="'+ Create Discussion'"
+            :label="'New Discussion'"
           />
         </template>
         <template v-slot:does-not-have-auth>
-          <PrimaryButton class="ml-2" :label="'+ Create Discussion'" />
+          <PrimaryButton class="ml-2" :label="'New Discussion'" />
         </template>
       </RequireAuth>
+    </div>
     </div>
 
     <div>

@@ -554,7 +554,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="pt-2">
+  <div >
     <p v-if="commentLoading">Loading comments...</p>
     <ErrorBanner
       class="mt-2"
@@ -594,7 +594,7 @@ export default defineComponent({
         v-if="locked"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      <div class="md:ml-6 mb-6">
+      <div class="mb-6">
         <Comment
           v-for="comment in commentResult.commentSections[0].Comments"
           :key="comment.id"
@@ -631,6 +631,5 @@ export default defineComponent({
 <style scoped>
 h2 {
   padding-bottom: 0.3em;
-  border-bottom: 1px solid #eaecef;
 }
 </style>

@@ -177,7 +177,9 @@ export default defineComponent({
 }
 
 .bg-dark {
-  @apply bg-gray-800;
+  @apply bg-black;
+  @apply border;
+  @apply border-blue-500;
 
 }
 
@@ -198,7 +200,7 @@ body.dark #texteditor-textarea {
   @apply text-dark bg-dark;
 
   .md-editor-toolbar-item:hover {
-    background-color: #4a5568;
+    background-color: 'black'
   }
 }
 

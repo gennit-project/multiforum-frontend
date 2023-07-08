@@ -236,12 +236,7 @@ export default defineComponent({
 
 <template>
   <li
-    :class="[
-      discussion.id === discussionIdInParams
-        ? 'border-blue-500'
-        : 'border-blue-200',
-    ]"
-    class="bg-white rounded relative bg-gray-100 dark:bg-gray-700 py-1 px-4 space-x-2 flex"
+    class=" relative border-y py-3 border-gray-700 px-4 space-x-2 flex"
   >
     <DiscussionVotes
       :discussion="discussion"

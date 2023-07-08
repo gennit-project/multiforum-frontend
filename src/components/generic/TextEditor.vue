@@ -218,12 +218,6 @@ body.light #md-editor-v3-preview-wrapper {
   position: relative;
   left: -2.5em;
 }
-.comment-border {
-  border-left: 1px solid #aeacac;
-  position: relative;
-  left: -2em;
-  padding-left: 2em;
-}
 #md-editor-v3-preview {
   ul ul,
   ol ul,

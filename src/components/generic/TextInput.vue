@@ -56,7 +56,7 @@ export default defineComponent({
             ? 'border-red-300 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500'
             : 'focus:ring-blue-500 focus:border-blue-500',
         ]"
-        class="dark:text-gray-300 dark:bg-gray-700 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300  dark:text-gray-100 dark:border-gray-700"
+        class="dark:text-gray-300 dark:bg-black pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300  dark:text-gray-100 dark:border-gray-700"
       />
       <div
         v-if="invalid"
