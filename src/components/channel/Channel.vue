@@ -75,7 +75,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen dark:bg-gray-800">
+  <div class="h-screen dark:bg-black">
     <div class="h-full">
       <header class="mx-4 items-center">
         <LargeChannelHeader :channel-id="channelId"> </LargeChannelHeader>
@@ -88,21 +88,21 @@ export default defineComponent({
             
             <div class="h-full flex-grow lg:ml-4">
               <div
-                class="border-b dark:bg-gray-800"
+                class="border rounded-t-md dark:border-gray-800 dark:bg-gray-950"
                 v-if="route.name !== 'EditChannel'"
               >
                 <div class="px-4 sm:px-6 lg:px-8">
-                  <div class="block pt-1 border-b border-b-1">
+                  <div class="block pt-1 ">
                     <ChannelTabs class="block" :route="route" />
                   </div>
                 </div>
               </div>
-              <div class="bg-white rounded-b-lg dark:bg-gray-800">
+              <div class="bg-white border dark:border-gray-800 rounded-b-lg dark:bg-gray-950">
                 <router-view></router-view>
               </div>
             </div>
 
-            <div v-if="!mdAndDown" class="h-full dark:bg-gray-700">
+            <div v-if="!mdAndDown" class="h-full dark:bg-gray-900">
               <AboutColumn
                 v-if="leftColumnIsExpanded"
                 @closeLeftColumn="leftColumnIsExpanded = false"

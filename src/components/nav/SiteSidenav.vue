@@ -104,12 +104,12 @@ export default defineComponent({
               :active="$route.path.includes(item.href)"
               :data-testid="`nav-link-${item.name}`"
               active-class="text-blue-600"
-              class="text-gray-700 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
+              class="text-gray-700 dark:text-gray-300 pl-2 hover:text-blue-600 dark:hover:text-gray-300 dark:hover:bg-gray-600 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
               @click="$emit('close')"
             >
               <component
                 :is="item.icon"
-                class="h-6 w-6 shrink-0 list-item-icon group-hover:text-blue-600"
+                class="h-6 w-6 shrink-0 list-item-icon"
                 aria-hidden="true"
               />
               {{ item.name }}
@@ -123,14 +123,14 @@ export default defineComponent({
         v-if="isAuthenticated"
         :to="`/u/${username}`"
         active-class="text-blue-600"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
       >
         My Profile
       </router-link>
       <button
         v-if="!isAuthenticated"
         @click="login"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold ml-4"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold ml-4"
       >
         Log In
       </button>
@@ -139,7 +139,7 @@ export default defineComponent({
         to="/logout"
         @click="logout"
         active-class="text-blue-600"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 hover:bg-gray-50 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
       >
         Sign Out
       </router-link>
@@ -150,7 +150,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 nav li:hover,
 nav li:active {
-  background-color: #f0f4f8;
   color: #2563eb;
 }
 
@@ -162,7 +161,6 @@ nav li:active {
 }
 
 nav li > .router-link-exact-active {
-  background-color: #f0f4f8;
   color: #2563eb;
 }
 </style>

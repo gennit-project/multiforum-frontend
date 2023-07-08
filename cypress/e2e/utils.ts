@@ -15,4 +15,5 @@ export const seedAll = () => {
   cy.seedChannels();
   cy.seedTags();
   cy.seedEvents();
+  cy.seedDiscussions();
 };

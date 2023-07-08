@@ -83,7 +83,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="bg-white border-l-4 relative dark:bg-gray-700 pb-2 pt-3 px-4 space-x-2 cursor-pointer flex"
+    class="bg-white border-l-4 dark:border-gray-700 relative dark:bg-gray-900 pb-2 pt-3 px-4 space-x-2 cursor-pointer flex"
   >
     <span class="mt-1 w-6"
       >{{

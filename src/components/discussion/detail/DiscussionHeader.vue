@@ -125,9 +125,9 @@ export default defineComponent({
       >
         {{ discussion.title }}
       </h2>
-      <div :class="'mt-4'" v-if="route.name === 'DiscussionDetail'">
+      <div :class="'mt-4 flex justify-between align-center'" v-if="route.name === 'DiscussionDetail'">
         <RequireAuth
-          class="inline-flex"
+          class="inline-flex max-w-sm"
           :require-ownership="true"
           :owners="[discussion.Author.username]"
         >
@@ -139,7 +139,7 @@ export default defineComponent({
             </router-link>
           </template>
         </RequireAuth>
-        <RequireAuth class="inline-flex">
+        <RequireAuth class="inline-flex max-w-sm">
           <template v-slot:has-auth>
             <CreateButton
               class="ml-2"
@@ -169,7 +169,7 @@ export default defineComponent({
         {{ editedAt }}
 
         <RequireAuth
-          class="flex inline-flex"
+          class="flex inline-flex max-w-sm"
           v-if="discussion.Author && route.name === 'DiscussionDetail'"
           :require-ownership="true"
           :owners="[discussion.Author.username]"
@@ -188,10 +188,11 @@ export default defineComponent({
         v-if="route.name !== 'DiscussionDetail' && channelId"
         class="ml-1 mr-1"
         ><router-link
+          data-testid="discussion-permalink"
           v-if="route.name !== 'DiscussionDetail' && channelId"
-          class="border bg-blue-100 border-blue-200 px-3 py-1 mt-1 rounded-sm hover:bg-blue-200 font-medium cursor-pointer"
+          class="border bg-blue-100 dark:bg-blue-700 border-blue-200 px-3 py-1 mt-1 rounded-sm hover:bg-blue-200 font-medium cursor-pointer"
           :to="`/channels/c/${channelId}/discussions/d/${discussion.id}`"
-          >Topic Page Link</router-link
+          >Permalink</router-link
         ></span
       >
     </div>

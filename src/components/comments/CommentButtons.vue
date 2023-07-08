@@ -192,7 +192,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex align-center text-xs text-gray-400 space-x-2">
+    <div class="flex align-center text-xs text-gray-400 space-x-2 max-w-xs">
       <RequireAuth v-if="!locked">
         <template v-slot:has-auth>
           <div class="flex inline-flex">

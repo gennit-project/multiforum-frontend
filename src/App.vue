@@ -90,7 +90,7 @@ export default defineComponent({
 }
 body {
   @media (prefers-color-scheme: dark) {
-    @apply bg-gray-800;
+    @apply bg-black;
     color-scheme: dark;
   }
 
@@ -100,7 +100,7 @@ body {
   }
 
   &.dark {
-    @apply bg-gray-800;
+    @apply bg-black;
     color-scheme: dark;
   }
 

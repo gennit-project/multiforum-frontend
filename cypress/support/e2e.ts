@@ -6,6 +6,7 @@ declare global {
       interface Chainable {
         loginProgrammatically(): Chainable<Element>;
         loginWithCreateEventButton(): Chainable<Element>;
+        seedDiscussions(): Chainable<Element>;
         seedEvents(): Chainable<Element>;
         seedEmails(): Chainable<Element>;
         seedUsers(): Chainable<Element>;
