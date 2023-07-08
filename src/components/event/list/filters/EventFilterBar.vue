@@ -455,9 +455,10 @@ export default defineComponent({
   },
 });
 </script>
+
 <template>
-  <div class="flex items-center inline-flex w-full space-y-1">
-    <div v-if="route.name !== 'EventDetail'" class="w-full px-4">
+  <div class="w-full space-y-2">
+    <div v-if="route.name !== 'EventDetail'" class="w-full">
       <div class="flex flex-wrap align-middle justify-between space-x-4 mr-6">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
@@ -472,7 +473,9 @@ export default defineComponent({
           </h1>
         </button>
       </div>
-      <div class="mt-4 mr-4 flex justify-between items-center">
+
+
+      <div class="flex justify-between items-center w-full">
         <SearchBar
           class="mr-2 flex flex-grow"
           data-testid="event-filter-search-bar"
@@ -500,7 +503,7 @@ export default defineComponent({
         </RequireAuth>
       </div>
 
-      <div class="flex flex-wrap align-middle space-x-4 w-full px-2 mr-6">
+      <div class="flex flex-wrap align-middle space-x-2">
         <FilterChip
           class="align-middle items-center"
           data-testid="channel-filter-button"
@@ -537,7 +540,7 @@ export default defineComponent({
         <div class="inline-flex align-middle items-center">
           <button
             data-testid="more-filters-button"
-            class="flex inline-flex dark:bg-gray-700 inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 dark:bg-gray-700 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            class="flex inline-flex inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             @click="handleClickMoreFilters"
           >
             <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
@@ -616,7 +619,7 @@ export default defineComponent({
           />
         </div>
 
-        <div class="p-2 border rounded-md my-2">
+        <div class="border rounded-md my-2">
           <h2
             v-if="!channelId"
             class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"

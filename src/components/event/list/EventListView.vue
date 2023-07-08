@@ -237,11 +237,11 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid>
+  <v-container fluid class="dark:bg-gray-900 mx-auto max-w-7xl">
     <v-row>
       <v-col cols="12">
-        <div class="mx-auto px-6">
-          <div class="flex justify-between w-full">
+        <div class="mt-3">
+          <div class="rounded">
             <EventFilterBar
               class="my-4"
               :show-distance-filters="false"
@@ -256,7 +256,7 @@ export default defineComponent({
               <p v-else-if="eventLoading">Loading...</p>
               <TwoSeparatelyScrollingPanes class="block w-full">
                 <template v-slot:leftpane>
-                  <TimeShortcuts :is-list-view="true"/>
+                  <TimeShortcuts :is-list-view="true" class="px-4"/>
                   <EventList
                     id="listView"
                     v-if="!eventLoading && eventResult"

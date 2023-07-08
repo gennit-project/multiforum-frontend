@@ -123,6 +123,7 @@ export default defineComponent({
         v-if="isAuthenticated"
         :to="`/u/${username}`"
         active-class="text-blue-600"
+        @click="$emit('close')"
         class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
       >
         My Profile
