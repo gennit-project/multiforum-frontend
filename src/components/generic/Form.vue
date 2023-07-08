@@ -31,7 +31,7 @@ export default defineComponent({
     <v-row class="justify-center">
       <v-col cols="12">
         <form
-          class="mx-auto max-w-4xl space-y-2 divide-y bg-white dark:bg-gray-900 xs:px-2 sm:px-4 md:px-8 py-4 rounded shadow"
+          class="mx-auto max-w-4xl border border-gray-200 dark:border-gray-700 space-y-2 divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900 xs:px-2 sm:px-4 md:px-8 py-4 rounded shadow"
           autocomplete="off"
         >
           <FormRow class="xs:mx-2 sm:mx-4 md:mx-">

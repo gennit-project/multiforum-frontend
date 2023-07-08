@@ -243,6 +243,7 @@ export default defineComponent({
       >
         <template v-slot:has-auth>
           <span
+            data-testid="delete-comment-button"
             class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
             @click="
               $emit('deleteComment', {

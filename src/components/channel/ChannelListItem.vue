@@ -43,21 +43,23 @@ export default defineComponent({
       class="
         relative
         rounded-lg
-        dark:bg-gray-700
+        dark:bg-gray-900
         dark:text-gray-200
         py-3
         border
+        border-gray-200
+        dark:border-gray-700
         col-span-12
         px-8
       "
     >
       <div >
-        <p class="mt-4 mb-6">
+        <p class="mb-6">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
             class="cursor-pointer"
           >
-          <h3 class="mb-2 text-2xl">
+          <h3 class="mb-2 text-xl">
             <HighlightedSearchTerms
               :text="channel.uniqueName"
               :search-input="searchInput"
