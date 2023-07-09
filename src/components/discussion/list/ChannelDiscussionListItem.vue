@@ -4,7 +4,6 @@ import { DiscussionData } from "../../../types/discussionTypes";
 import { CommentSectionData } from "../../../types/commentTypes";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
-import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import {
@@ -59,7 +58,6 @@ export default defineComponent({
     },
   },
   components: {
-    DiscussionVotes,
     ErrorBanner,
     HighlightedSearchTerms,
     Tag,
@@ -198,6 +196,7 @@ export default defineComponent({
       discussionIdInParams,
       downvoteCount,
       errorMessage: ref(""),
+      isActive : computed(() => discussionIdInParams.value === props.discussion.id),
       loggedInUserUpvoted,
       loggedInUserDownvoted,
       loggedInUserModName,
@@ -237,6 +236,7 @@ export default defineComponent({
 <template>
   <li
     class=" relative my-2 py-2 border-b space-x-1 space-y-2 flex"
+    :class="[ isActive ? 'text-blue-500' : '']"
   >
     <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')" class="hover:text-gray-500">

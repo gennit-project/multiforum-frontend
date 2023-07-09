@@ -211,24 +211,25 @@ export default defineComponent({
         :comment-section-id="commentSectionId"
       />
       <CreateRootCommentForm
-        v-if="route.name === 'DiscussionDetail'"
+        v-if="route.name === 'DiscussionDetail' || channelId"
         :discussion="discussion"
         :channel-id="channelId"
       />
-      <ChannelLinks
-        class="my-4"
-        :discussion="discussion"
-        :channelId="channelId"
-      />
+      
       <div
         class="mb-2 my-4 py-6 rounded-lg"
-        v-if="route.name === 'DiscussionDetail'"
+        v-if="route.name === 'DiscussionDetail' || channelId"
       >
         <CommentSection
           ref="commentSectionRef"
           :commentSectionId="commentSectionId"
         />
       </div>
+      <ChannelLinks
+        class="my-4"
+        :discussion="discussion"
+        :channelId="channelId"
+      />
     </div>
   </div>
 </template>
