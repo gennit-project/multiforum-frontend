@@ -16,22 +16,19 @@ import { SearchDiscussionValues } from "@/types/discussionTypes";
 import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import DiscussionDetail from "../detail/DiscussionDetail.vue";
-
+import AboutColumn from "@/components/channel/AboutColumn.vue";
 interface Ref<T> {
   value: T;
 }
 
 export default defineComponent({
   components: {
+    AboutColumn,
     ChannelDiscussionList,
-    CreateButton,
     DiscussionDetail,
     DiscussionFilterBar,
     DrawerFlyout,
-    PrimaryButton,
-    RequireAuth,
     SitewideDiscussionList,
-    TwoSeparatelyScrollingPanes,
   },
   setup() {
     const route = useRoute();
@@ -53,8 +50,8 @@ export default defineComponent({
 
     const filterValues: Ref<SearchDiscussionValues> = ref(
       getFilterValuesFromParams({
-        route, 
-        channelId: channelId.value
+        route,
+        channelId: channelId.value,
       })
     );
 
@@ -84,8 +81,6 @@ export default defineComponent({
     const tagLabel = computed(() => {
       return getTagLabel(selectedTags.value);
     });
-
-    
 
     const previewIsOpen = ref(false);
 
@@ -244,52 +239,53 @@ export default defineComponent({
   <v-container fluid class="dark:bg-gray-900 mx-auto max-w-7xl">
     <v-row>
       <v-col cols="12">
-          <div class=" mt-3">
-            <div class="rounded pr-8">
-              <div>
-                <div class="items-center">
-                  <DiscussionFilterBar />
-                </div>
-              </div>
-            </div>
-            <TwoSeparatelyScrollingPanes>
-              <template v-slot:leftpane>
-                <SitewideDiscussionList
-                  v-if="!channelId"
-                  :search-input="filterValues.searchInput"
-                  :selected-tags="filterValues.tags"
-                  :selected-channels="filterValues.channels"
-                  @filterByTag="handleClickTag"
-                  @filterByChannel="handleClickChannel"
-                  @openPreview="openPreview"
-                />
-                <ChannelDiscussionList
-                  v-else
-                  :channel-id="channelId"
-                  :search-input="filterValues.searchInput"
-                  :selected-tags="filterValues.tags"
-                  :selected-channels="filterValues.channels"
-                  @filterByTag="handleClickTag"
-                  @filterByChannel="handleClickChannel"
-                  @openPreview="openPreview"
-                />
-                <DrawerFlyout
-                  v-if="mdAndDown"
-                  :isOpen="previewIsOpen"
-                  @closePreview="closePreview"
-                >
-                  <DiscussionDetail />
-                </DrawerFlyout>
-              </template>
-              <template v-slot:rightpane>
-                <router-view></router-view>
-              </template>
-            </TwoSeparatelyScrollingPanes>
-          </div>
+        <DiscussionFilterBar />
+
+        <v-row>
+          <!-- Left column -->
+          <v-col cols="12" :lg="channelId ? 4 : 6">
+            <SitewideDiscussionList
+              v-if="!channelId"
+              :search-input="filterValues.searchInput"
+              :selected-tags="filterValues.tags"
+              :selected-channels="filterValues.channels"
+              @filterByTag="handleClickTag"
+              @filterByChannel="handleClickChannel"
+              @openPreview="openPreview"
+            />
+            <ChannelDiscussionList
+              v-else
+              :channel-id="channelId"
+              :search-input="filterValues.searchInput"
+              :selected-tags="filterValues.tags"
+              :selected-channels="filterValues.channels"
+              @filterByTag="handleClickTag"
+              @filterByChannel="handleClickChannel"
+              @openPreview="openPreview"
+            />
+          </v-col>
+
+          <v-col cols="12" :lg="channelId ? 5 : 6">
+            <router-view></router-view>
+          </v-col>
+
+          <!-- Right column -->
+          <v-col cols="12" lg="3" v-if="channelId">
+            <AboutColumn />
+          </v-col>
+        </v-row>
       </v-col>
     </v-row>
-  </v-container>
+    <DrawerFlyout
+      v-if="mdAndDown"
+      :isOpen="previewIsOpen"
+      @closePreview="closePreview"
+    >
+      <DiscussionDetail />
+    </DrawerFlyout>
+          </v-container>
 </template>
+
 <style>
 .height-constrained {
   max-height: 50px;

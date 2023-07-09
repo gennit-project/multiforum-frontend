@@ -165,17 +165,7 @@ export default defineComponent({
           </template>
         </RequireAuth>
       </div>
-      <span
-        v-if="route.name !== 'DiscussionDetail' && channelId"
-        class="ml-1 mr-1"
-        ><router-link
-          data-testid="discussion-permalink"
-          v-if="route.name !== 'DiscussionDetail' && channelId"
-          class="border bg-blue-100 dark:bg-blue-700 border-blue-200 px-3 py-1 mt-1 rounded-sm hover:bg-blue-200 font-medium cursor-pointer"
-          :to="`/channels/c/${channelId}/discussions/d/${discussion.id}`"
-          >Permalink</router-link
-        ></span
-      >
+     
     </div>
     <WarningModal
       :title="'Delete Discussion'"

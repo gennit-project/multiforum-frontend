@@ -15,6 +15,7 @@ import { modProfileNameVar } from "@/cache";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "../../../types/discussionTypes";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
+import { useDisplay } from "vuetify";
 
 const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -37,8 +38,8 @@ export default defineComponent({
 
     const filterValues: Ref<SearchDiscussionValues> = ref(
       getFilterValuesFromParams({
-        route, 
-        channelId: channelId.value
+        route,
+        channelId: channelId.value,
       })
     );
 
@@ -72,7 +73,7 @@ export default defineComponent({
       GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
       {
         ...discussionQueryFilters.value,
-      },
+      }
       // {
       //   fetchPolicy: "network-only",
       // }
@@ -158,7 +159,8 @@ export default defineComponent({
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
     });
-    
+    const { mdAndDown } = useDisplay();
+
     return {
       createModProfile,
       discussionError,
@@ -167,6 +169,7 @@ export default defineComponent({
       discussionQueryFilters,
       filterValues,
       loadMore,
+      mdAndDown,
       reachedEndOfResults,
       refetchDiscussions,
       sendToPreview,
@@ -229,7 +232,7 @@ export default defineComponent({
       if (this.$route.query) {
         this.filterValues = getFilterValuesFromParams({
           route: this.$route,
-          channelId: this.channelId
+          channelId: this.channelId,
         });
       }
     });
@@ -245,57 +248,63 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full h-full shadow-md ">
-    <p v-if="discussionLoading">Loading...</p>
-    <ErrorBanner
-      class="max-w-5xl"
-      v-else-if="discussionError"
-      :text="discussionError.message"
-    />
-    <p
-      v-else-if="discussionResult && discussionResult.discussions.length === 0"
-      class="px-4 my-6"
-    >
-      There are no results.
-    </p>
-    <div v-else>
-      <div class="h-full  ">
-        <ul role="list" class="relative my-2 rounded my-2" data-testid="channel-discussion-list">
-          <ChannelDiscussionListItem
-            v-for="discussion in discussionResult.discussions"
-            :key="discussion.id"
-            :discussion="discussion"
-            :discussion-query-filters="discussionQueryFilters"
-            :comment-section="discussion.CommentSections[0]"
-            :search-input="searchInput"
-            :selected-tags="selectedTags"
-            :selected-channels="selectedChannels"
-            @openModProfile="this.showModProfileModal = true"
-            @filterByTag="filterByTag"
-            @filterByChannel="filterByChannel"
-            @openPreview="openPreview"
-          />
-        </ul>
-        <div
-          v-if="discussionResult.discussions.length > 0"
+
+      <div class="w-full h-full shadow-md">
+        <p v-if="discussionLoading">Loading...</p>
+        <ErrorBanner
+          class="max-w-5xl"
+          v-else-if="discussionError"
+          :text="discussionError.message"
+        />
+        <p
+          v-else-if="
+            discussionResult && discussionResult.discussions.length === 0
+          "
+          class="px-4 my-6"
         >
-          <LoadMore
-            class="justify-self-center"
-            :reached-end-of-results="
-              discussionResult.discussionsAggregate?.count === discussionResult.discussions.length
-            "
-            @loadMore="$emit('loadMore')"
-          />
+          There are no results.
+        </p>
+        <div v-else>
+          <div class="h-full">
+            <ul
+              role="list"
+              class="relative my-2 rounded my-2"
+              data-testid="channel-discussion-list"
+            >
+              <ChannelDiscussionListItem
+                v-for="discussion in discussionResult.discussions"
+                :key="discussion.id"
+                :discussion="discussion"
+                :discussion-query-filters="discussionQueryFilters"
+                :comment-section="discussion.CommentSections[0]"
+                :search-input="searchInput"
+                :selected-tags="selectedTags"
+                :selected-channels="selectedChannels"
+                @openModProfile="this.showModProfileModal = true"
+                @filterByTag="filterByTag"
+                @filterByChannel="filterByChannel"
+                @openPreview="openPreview"
+              />
+            </ul>
+            <div v-if="discussionResult.discussions.length > 0">
+              <LoadMore
+                class="justify-self-center"
+                :reached-end-of-results="
+                  discussionResult.discussionsAggregate?.count ===
+                  discussionResult.discussions.length
+                "
+                @loadMore="$emit('loadMore')"
+              />
+            </div>
+          </div>
         </div>
+        <WarningModal
+          :title="'Create Mod Profile'"
+          :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
+          :open="showModProfileModal"
+          :primaryButtonText="'Yes, create a mod profile'"
+          @close="showModProfileModal = false"
+          @primaryButtonClick="handleCreateModProfileClick"
+        />
       </div>
-    </div>
-    <WarningModal
-      :title="'Create Mod Profile'"
-      :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
-      :open="showModProfileModal"
-      :primaryButtonText="'Yes, create a mod profile'"
-      @close="showModProfileModal = false"
-      @primaryButtonClick="handleCreateModProfileClick"
-    />
-  </div>
 </template>

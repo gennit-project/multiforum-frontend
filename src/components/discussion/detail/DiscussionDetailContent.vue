@@ -183,7 +183,7 @@ export default defineComponent({
       </RequireAuth>
     </div>
     <div v-if="discussion" class="min-w-md max-w-2xl mx-auto">
-      <div class="flex">
+      <div class="flex border-b">
         <DiscussionVotes
           v-if="route.name === 'DiscussionDetail'"
           :discussion="discussion"

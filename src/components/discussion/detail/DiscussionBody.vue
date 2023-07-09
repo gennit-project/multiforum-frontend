@@ -123,7 +123,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion.body" class="body max-w-xl">
+    <div v-if="discussion.body" class="body">
       <md-editor
         v-if="bodyText"
         v-model="bodyText"

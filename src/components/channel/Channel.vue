@@ -4,18 +4,18 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-import AboutColumn from "./AboutColumn.vue";
+
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
-import MdEditor from "md-editor-v3";
+
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
-    AboutColumn,
+   
     // ChannelIcon,
     ChannelTabs,
-    MdEditor,
+   
   },
   setup() {
     const route = ref(useRoute());
@@ -72,80 +72,32 @@ export default defineComponent({
 });
 </script>
 
+
 <template>
   <div class="h-screen dark:bg-black">
-    <div class="h-full">
-      <article
-        class="relative z-0 flex-1  focus:outline-none xl:order-last h-full"
-      >
+    <div class="h-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+      <article class="relative z-0 flex-1  focus:outline-none xl:order-last h-full">
         <div class="block h-full">
-          <div class="flex flex-col lg:flex-row h-full">
-            
-            <div class="h-full flex-grow lg:ml-4">
-              <div
-                class="border dark:border-gray-800 dark:bg-gray-950"
-                v-if="route.name !== 'EditChannel'"
-              >
-                <div class="px-4 sm:px-6 lg:px-8">
-                  <div class="block pt-1 ">
-                    <ChannelTabs class="block" :route="route" />
-                  </div>
-                </div>
-              </div>
-              <div class="bg-white border dark:border-gray-800 rounded-b-lg dark:bg-gray-950">
-                <div class="border-none p-2">
-                  <router-view></router-view>
-                </div>
-              </div>
-            </div>
 
-            <div v-if="!mdAndDown" class="h-full space-x-2">
-              <AboutColumn
-                v-if="leftColumnIsExpanded"
-                @closeLeftColumn="leftColumnIsExpanded = false"
-              />
-                
-              <div v-else>
-                <button @click="leftColumnIsExpanded = true" class="p-2">
-                  <!-- This is a simple left arrow SVG icon, indicating the expand action. -->
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    class="ml-4 w-6 h-6 text-gray-500"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M14 5l7 7m0 0l-7 7m7-7H3"
-                    ></path>
-                  </svg>
-                </button>
+          <!-- Tabs -->
+          <div class="border dark:border-gray-800 dark:bg-gray-950" v-if="route.name !== 'EditChannel'">
+            <div class="px-4 sm:px-6 lg:px-8">
+              <div class="flex justify-start pt-1 text-center">
+                <ChannelTabs class="block" :route="route" />
               </div>
             </div>
-            <div
-              v-else
-              :class="mdAndDown ? '' : 'giveSpaceForLeftSideBar'"
-              class="flex-grow pt-8 items-center rounded-sm"
-            >
-              <md-editor
-                v-if="channel && channel.description"
-                v-model="channel.description"
-                language="en-US"
-                previewTheme="vuepress"
-                preview-only
-              />
-              <AboutColumn v-if="mdAndUp" />
-            </div>
-
           </div>
+
+       <router-view></router-view>
+
         </div>
       </article>
     </div>
   </div>
 </template>
+
+
+
 
 <style>
 #channelAvatar {

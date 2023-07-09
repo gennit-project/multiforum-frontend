@@ -47,8 +47,30 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="rounded-lg md:mx-2 md:px-4 py-1 w-full">
-    <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center"><span class="text-sm rounded text-gray-500 bg-gray-100 dark:bg-gray-700 px-3 py-1">PREVIEW</span></div>
+  <div class="rounded-lg py-1 space-y-4 w-full">
+    <div 
+      v-if="route.name !== 'DiscussionDetail'" 
+      class="flex justify-center"
+    >
+      <div 
+        class="flex justify-between text-sm w-full rounded text-gray-500 bg-gray-100 dark:bg-gray-700 px-3 py-1"
+      >
+      <span>
+      PREVIEW
+    </span>
+      <span
+      v-if="route.name !== 'DiscussionDetail' && channelId"
+      class="ml-1 mr-1"
+      ><router-link
+        data-testid="discussion-permalink"
+        v-if="route.name !== 'DiscussionDetail' && channelId"
+        class="underline px-3 py-1 mt-1 rounded-sm font-medium cursor-pointer"
+        :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
+        >Enter Comments</router-link
+      ></span
+    >
+     </div>
+    </div>
     <div
       class="flex justify-center rounded-lg mb-10 "
       :class="route.name == 'DiscussionDetail' ? 'md:px-4' : ''"
