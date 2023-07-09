@@ -243,7 +243,7 @@ export default defineComponent({
 
         <v-row>
           <!-- Left column -->
-          <v-col cols="12" :lg="channelId ? 4 : 6">
+          <v-col cols="12" :lg="channelId ? 3 : 6">
             <SitewideDiscussionList
               v-if="!channelId"
               :search-input="filterValues.searchInput"
@@ -265,7 +265,7 @@ export default defineComponent({
             />
           </v-col>
 
-          <v-col cols="12" :lg="channelId ? 5 : 6">
+          <v-col cols="12" :lg="channelId ? 6 : 6">
             <router-view></router-view>
           </v-col>
 
@@ -283,7 +283,7 @@ export default defineComponent({
     >
       <DiscussionDetail />
     </DrawerFlyout>
-          </v-container>
+  </v-container>
 </template>
 
 <style>

@@ -183,9 +183,9 @@ export default defineComponent({
       </RequireAuth>
     </div>
     <div v-if="discussion" class="min-w-md max-w-2xl mx-auto">
-      <div class="flex border-b">
+      <div class="flex border-b space-x-3">
         <DiscussionVotes
-          v-if="route.name === 'DiscussionDetail'"
+          v-if="channelId"
           :discussion="discussion"
           :comment-section="discussion.CommentSections[0]"
         />

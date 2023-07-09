@@ -67,7 +67,7 @@ export default defineComponent({
           >
           <DialogPanel class="pointer-events-auto w-screen max-w-lg">
             <div
-              class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-gray-800 dark:text-gray-200"
+              class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-gray-900 dark:text-gray-200"
             >
               <div
                 class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"

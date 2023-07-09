@@ -249,7 +249,7 @@ export default defineComponent({
 </script>
 <template>
 
-      <div class="w-full h-full shadow-md">
+      <div class="w-full h-full">
         <p v-if="discussionLoading">Loading...</p>
         <ErrorBanner
           class="max-w-5xl"

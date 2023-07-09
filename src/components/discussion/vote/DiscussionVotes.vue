@@ -438,7 +438,7 @@ export default defineComponent({
 
 <template>
   <VoteButtons
-    class="mx-2 my-1"
+    class="my-1"
     :downvote-count="downvoteCount"
     :upvote-count="upvoteCount"
     :upvote-active="loggedInUserUpvoted"

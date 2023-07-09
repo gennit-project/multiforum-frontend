@@ -236,13 +236,8 @@ export default defineComponent({
 
 <template>
   <li
-    class=" relative border-y py-3 border-gray-700 px-4 space-x-2 flex"
+    class=" relative my-2 py-2 border-b space-x-1 space-y-2 flex"
   >
-    <DiscussionVotes
-      :discussion="discussion"
-      :discussion-query-filters="discussionQueryFilters"
-      :comment-section="commentSection"
-    />
     <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')" class="hover:text-gray-500">
         <p class="text-sm font-bold cursor-pointer">
