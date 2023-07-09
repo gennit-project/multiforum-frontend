@@ -108,14 +108,14 @@ export default defineComponent({
 }
 
 .text-tiny {
-  font-size: 0.9em;
+  font-size: 0.8em;
   margin-bottom: 0;
 }
 
 .small-text {
   #md-editor-v3-preview > p,
   li {
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
 }
 

@@ -66,7 +66,7 @@ export default defineComponent({
         v-if="route.name !== 'DiscussionDetail' && channelId"
         class="underline px-3 py-1 mt-1 rounded-sm font-medium cursor-pointer"
         :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
-        >Enter Comments</router-link
+        >Comment Page</router-link
       ></span
     >
      </div>

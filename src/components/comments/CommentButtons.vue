@@ -211,6 +211,7 @@ export default defineComponent({
               @undoDownvote="undoDownvoteComment"
             />
             <span
+              data-testid="reply-comment-button"
               class="ml-2 underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"

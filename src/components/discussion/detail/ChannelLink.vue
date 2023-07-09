@@ -29,6 +29,7 @@ export default defineComponent({
 <template>
   <li>
     <router-link
+    :data-testid="`comments-in-${channelId}`"
       class="mr-1 underline"
       :to="{
         name: 'DiscussionDetail',

@@ -67,6 +67,7 @@ export default defineComponent({
     <h2 class="text-lg">Comments in Channels</h2>
     <ul class="list-disc pl-3">
       <ChannelLink
+        data-testid="comment-page-link"
         v-if="channelId"
         :channelId="channelId"
         :comment-count="getCommentCount(channelId)"
