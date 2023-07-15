@@ -1,31 +1,41 @@
 <script lang="ts">
-import { defineComponent } from "vue";
-import { useAuth0 } from "@auth0/auth0-vue";
-import UserCircle from "@/components/icons/UserCircle.vue";
+import { defineComponent, computed } from "vue";
+import Identicon from 'identicon.js';
+import sha256 from 'crypto-js/sha256';
 
 export default defineComponent({
-  components: {
-    UserCircle,
+
+  props: {
+    username: {
+      type: String,
+      required: true
+    }
   },
   setup() {
-    const { isAuthenticated, user, isLoading, error } = useAuth0();
 
-    return {
-      error,
-      isAuthenticated,
-      user,
-      isLoading,
-      imgUrl: user?.value?.picture || "",
-    };
+  },
+  computed: {
+    identiconData() {
+      // Hash the username
+      const hash = sha256(this.username).toString();
+
+      // Generate the identicon and get the data for the img src
+      const data = new Identicon(hash, {
+        background: [240, 240, 240, 255],
+        margin: 0.2,
+        size: 420,
+        format: 'svg'
+      }).toString();
+
+      // Return the data as a base64 SVG for the src of the img
+      return 'data:image/svg+xml;base64,' + data;
+    },
   },
 });
 </script>
 <template>
-  <UserCircle class="h-8 w-8" v-if="isLoading || !isAuthenticated" />
-  <img
-    v-else
-    class="h-8 w-8 rounded-full"
-    :src="`${imgUrl}`"
-    alt="User profile picture"
-  />
+
+  <img class="h-8 w-8 rounded-full" :src="identiconData" :alt="username">
 </template>
+
+

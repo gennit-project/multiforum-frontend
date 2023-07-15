@@ -8,6 +8,7 @@ import { MdEditor }from "md-editor-v3";
 import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
+import ProfileAvatar from "../user/ProfileAvatar.vue";
 
 export default defineComponent({
   name: "OverviewPage",
@@ -15,6 +16,7 @@ export default defineComponent({
     MdEditor,
     RequireAuth,
     Tag,
+    ProfileAvatar,
   },
   setup() {
     const route = useRoute();
@@ -169,7 +171,8 @@ export default defineComponent({
             v-if="channel.Admins.length > 0"
           >
             <li v-for="admin in channel.Admins" :key="admin.username">
-              <router-link :key="admin.username" :to="`/u/${admin.username}`">
+              <router-link :key="admin.username" :to="`/u/${admin.username}`" class="flex items-center">
+                <ProfileAvatar :username="admin.username" class="mr-2" />
                 {{ admin.username }}
               </router-link>
             </li>

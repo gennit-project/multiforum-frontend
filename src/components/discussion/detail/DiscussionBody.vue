@@ -36,7 +36,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const showFullText = ref(route.name === "DiscussionDetail");
-    const wordLimit = 150;
+    const wordLimit = 100;
 
     const truncateText = (text: string, limit: number) => {
       const words = text.split(" ");
@@ -153,7 +153,7 @@ export default defineComponent({
         previewTheme="github"
         :theme="theme"
       />
-      <MdCatalog :editorId="id" :scrollElement="scrollElement" />
+    
       <button
         v-if="shouldShowMoreButton"
         @click="toggleShowFullText"

@@ -19,6 +19,9 @@ module.exports = {
     extend: {
       colors: {
         'red-transparent': 'rgba(255, 0, 0, 0.1)',
+        'green-transparent': 'rgba(0, 255, 0, 0.1)',
+        'blue-transparent': 'rgba(0, 0, 255, 0.1)',
+        'yellow-transparent': 'rgba(255, 255, 0, 0.1)',
       },
       backgroundImage: (theme) => ({
         'multiselect-caret': `url("${svgToDataUri(

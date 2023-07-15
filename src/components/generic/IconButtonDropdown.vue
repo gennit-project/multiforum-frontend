@@ -35,7 +35,7 @@ export default defineComponent({
   <DropdownMenu as="div" class="relative inline-block text-left">
     <div>
       <MenuButton
-        class="h-10 w-10  inline-flex w-full justify-center items-center gap-x-1.5 rounded-full px-3 text-sm font-semibold shadow-sm text-black dark:text-white hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-900"
+        class="h-10 inline-flex w-full justify-center items-center gap-x-1.5 rounded-full px-2 text-sm font-semibold text-black dark:text-white hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-900"
       >
         <i v-if="menuButtonIcon" :class="` ${menuButtonIcon} `"></i>
         <div v-else>

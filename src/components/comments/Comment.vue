@@ -12,7 +12,7 @@ import { relativeTime } from "../../dateTimeUtils";
 import EmojiExtension from "./EmojiExtension/index.vue";
 import TextEditor from "../generic/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
-import UserCircle from "@/components/icons/UserCircle.vue";
+import ProfileAvatar from "../user/ProfileAvatar.vue";
 import CommentButtons from "./CommentButtons.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { generateSlug } from "random-word-slugs";
@@ -30,12 +30,11 @@ export default defineComponent({
     ChildComments,
     EmojiExtension,
     LinkPreview,
-    MdEditor,
     TextEditor,
-    UserCircle,
     WarningModal,
     MdPreview,
     MdCatalog,
+    ProfileAvatar,
   },
   setup(props) {
     const GET_THEME = gql`
@@ -223,7 +222,11 @@ export default defineComponent({
           class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           data-testid="comment"
         >
-          <p class="text-tiny username-text">
+          <p class="text-tiny username-text flex items-center space-x-2">
+            <ProfileAvatar
+              v-if="commentData.CommentAuthor"
+              :username="commentData.CommentAuthor.username"
+            />
             <router-link
               v-if="commentData.CommentAuthor"
               class="font-bold underline dark:text-gray-200"
@@ -234,21 +237,22 @@ export default defineComponent({
             <span v-else class="font-bold">[Deleted]</span>
             <span class="ml-1">&middot;</span>
             {{ createdAtFormatted }}
-            <span v-if="commentData.updatedAt"> &middot; </span>
+            <span class="ml-1" v-if="commentData.updatedAt"> &middot; </span>
             {{ editedAtFormatted }}
           </p>
-          <div class="w-full prose " v-if="!themeLoading">
+          <div class="prose w-full" v-if="!themeLoading">
             <div v-if="commentData.text && !showEditCommentField">
               <MdPreview
                 :editorId="id"
                 :modelValue="textCopy"
                 previewTheme="github"
                 :theme="theme"
+                class="-ml-4 mt-1"
               />
               <MdCatalog :editorId="id" :scrollElement="scrollElement" />
             </div>
             <TextEditor
-            class="overflow-y-scroll mt-3"
+              class="mt-3 overflow-y-scroll"
               id="editExistingComment"
               v-if="!readonly && showEditCommentField"
               :initial-value="commentData.text"

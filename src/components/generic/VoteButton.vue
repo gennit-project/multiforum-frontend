@@ -20,14 +20,14 @@ export default defineComponent({
 </script>
 <template>
   <div
-    class="max-h-8 inline-flex cursor-pointer items-center rounded-full border py-1 px-3"
-    :class="[active ? 'border-blue-500' : 'border-gray-200 dark:border-gray-800']"
+    class="max-h-7 inline-flex cursor-pointer items-center rounded-full border py-1 px-3"
+    :class="[active ? 'border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-transparent' : 'border-gray-200 dark:border-gray-800']"
     @click="$emit('click')"
   >
     <span
       :class="[
         active
-          ? 'text-black dark:text-blue-500'
+          ? 'text-blue-400 dark:text-blue-500'
           : 'text-gray-400 dark:text-gray-500',
       ]"
     >
@@ -37,7 +37,7 @@ export default defineComponent({
       class="justify-center"
       :class="
         active
-          ? 'text-black dark:text-blue-500'
+          ? 'text-blue-400 dark:text-blue-500'
           : 'text-gray-400 dark:text-gray-500'
       "
       >{{ count }}</span

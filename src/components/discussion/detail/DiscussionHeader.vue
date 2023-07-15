@@ -9,7 +9,7 @@ import { DateTime } from "luxon";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import WarningModal from "../../generic/WarningModal.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-
+import ProfileAvatar from "@/components/user/ProfileAvatar.vue";
 import { useDisplay } from "vuetify";
 
 export default defineComponent({
@@ -17,6 +17,7 @@ export default defineComponent({
     ErrorBanner,
     RequireAuth,
     WarningModal,
+    ProfileAvatar,
   },
   props: {
     discussion: {
@@ -115,7 +116,8 @@ export default defineComponent({
 <template>
   <div class="mb-4">
     <div class="text-xs mt-4">
-      <div class="mb-2 mt-4 w-full">
+      <div class="flex items-center space-x-2 mb-2 mt-4 w-full">
+        <ProfileAvatar v-if="discussion.Author?.username" :username="discussion.Author.username" />
         <router-link
           v-if="discussion.Author"
           class="underline"
@@ -124,17 +126,21 @@ export default defineComponent({
           {{ discussion.Author.username }}
         </router-link>
         <span v-else>[Deleted]</span>
-        {{ createdAt }}
-        <span v-if="discussion.updatedAt"> &#8226; </span>
-        {{ editedAt }}
+
+        <div class="flex items-center">
+          <div>{{ createdAt }}</div>
+          <span v-if="discussion.updatedAt" class="mx-2"> &#8226; </span>
+          <div>{{ editedAt }}</div>
+        </div>
+       
         <RequireAuth
           :full-width="false"
-          class="inline-flex max-w-sm"
+          class=" space-x-2 "
           :require-ownership="true"
           :owners="[discussion?.Author.username]"
         >
           <template v-slot:has-auth>
-            <span> &#8226;</span>
+            <span class="mx-2"> &#8226;</span>
             <router-link
               class="ml-1 underline font-medium cursor-pointer"
               :to="`/channels/c/${channelId}/discussions/d/${discussion.id}/edit`"
@@ -144,10 +150,11 @@ export default defineComponent({
           </template>
         </RequireAuth>
         <RequireAuth
-          class="inline-flex max-w-sm"
+          class=" space-x-2"
           v-if="discussion.Author && route.name === 'DiscussionDetail'"
           :require-ownership="true"
           :owners="[discussion.Author.username]"
+          :full-width="false"
         >
           <template v-slot:has-auth>
             <span> &#8226;</span>

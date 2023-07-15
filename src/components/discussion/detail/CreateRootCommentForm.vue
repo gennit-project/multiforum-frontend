@@ -277,6 +277,7 @@ export default defineComponent({
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
       showRootCommentEditor: ref(false),
+      username
     };
   },
   methods: {
@@ -307,7 +308,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="mt-1 px-1 flex space-x-2 py-4 w-full">
-    <ProfileAvatar class="h-5 w-5" />
+    <ProfileAvatar v-if="username" class="h-5 w-5" :username="username"/>
 
     <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
       <template v-slot:has-auth>

@@ -1,7 +1,6 @@
 <script>
 import { defineComponent } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
-import MenuButton from "../generic/MenuButton.vue";
 import ProfileAvatar from "../user/ProfileAvatar.vue";
 import IconButtonDropdown from "../generic/IconButtonDropdown.vue";
 
@@ -76,6 +75,6 @@ export default defineComponent({
     @goToUserProfile="goToUserProfile"
     @goToModProfile="goToModProfile"
   >
-    <ProfileAvatar />
+    <ProfileAvatar :username="username"/>
   </IconButtonDropdown>
 </template>
