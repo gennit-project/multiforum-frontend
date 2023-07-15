@@ -238,7 +238,12 @@ export default defineComponent({
     class=" relative my-2 py-2 border-b space-x-1 space-y-2 flex"
     :class="[ isActive ? 'text-blue-500' : '']"
   >
-    <div class="w-full">
+    <div class="w-full flex gap-3">
+      <div class="h-10 w-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded">
+        <div>💬</div>
+      </div>
+      
+      <div>
       <router-link :to="previewLink" @click="$emit('openPreview')" class="hover:text-gray-500">
         <p class="text-sm font-bold cursor-pointer">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
@@ -257,6 +262,7 @@ export default defineComponent({
       <p class="text-xs font-medium text-slate-600 dark:text-gray-300 no-underline">
         {{ `Posted ${relativeTime} by ${authorUsername}` }}
       </p>
+    </div>
     </div>
     <ErrorBanner v-if="errorMessage" :text="errorMessage" />
   </li>

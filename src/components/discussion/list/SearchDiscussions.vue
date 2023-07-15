@@ -236,14 +236,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container  class="dark:bg-gray-900 mx-auto max-w-7xl">
+  <v-container fluid class="dark:bg-gray-900">
     <v-row>
       <v-col cols="12">
         <DiscussionFilterBar />
 
         <v-row>
           <!-- Left column -->
-          <v-col cols="12" :lg="channelId ? 3 : 6" class="scrollable-column">
+          <v-col cols="12" :lg="channelId ? 3 : 6" xl="4" class="scrollable-column">
             <SitewideDiscussionList
               v-if="!channelId"
               :search-input="filterValues.searchInput"
@@ -270,7 +270,7 @@ export default defineComponent({
           </v-col>
 
           <!-- Right column -->
-          <v-col cols="12" lg="3" v-if="channelId" class="scrollable-column">
+          <v-col cols="12" lg="3" xl="2" v-if="channelId" class="scrollable-column">
             <AboutColumn />
           </v-col>
         </v-row>

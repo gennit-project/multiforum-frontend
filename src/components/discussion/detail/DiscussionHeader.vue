@@ -114,11 +114,7 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div class="min-w-0">
-      <h2 class="text-2xl font-bold leading-7 sm:tracking-tight text-wrap">
-        {{ discussion.title }}
-      </h2>
-    </div>
+  
 
     <div class="text-xs mt-4">
       <div class="mb-2 mt-4">

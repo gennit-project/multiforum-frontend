@@ -75,7 +75,7 @@ export default defineComponent({
 
 <template>
   <div class="h-screen dark:bg-black">
-    <div class="h-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="h-full px-4 sm:px-6 lg:px-8">
       <article class="relative z-0 flex-1  focus:outline-none xl:order-last h-full">
         <div class="block h-full">
 

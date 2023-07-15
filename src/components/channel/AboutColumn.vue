@@ -4,7 +4,7 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
-import MdEditor from "md-editor-v3";
+import { MdEditor }from "md-editor-v3";
 import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";

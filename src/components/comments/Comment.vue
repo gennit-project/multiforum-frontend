@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
-import MdEditor from "md-editor-v3";
+import { MdEditor, MdPreview, MdCatalog } from "md-editor-v3";
 import {
   CommentData,
   CreateReplyInputData,
@@ -34,6 +34,8 @@ export default defineComponent({
     TextEditor,
     UserCircle,
     WarningModal,
+    MdPreview,
+    MdCatalog,
   },
   setup(props) {
     const GET_THEME = gql`
@@ -116,6 +118,9 @@ export default defineComponent({
       textCopy,
       themeLoading,
       theme,
+
+      scrollElement: document.documentElement,
+      id: `comment-preview-${props.commentData.id}`,
     };
   },
   props: {
@@ -217,7 +222,7 @@ export default defineComponent({
     <div class="flex text-gray-500 w-full">
       <div :class="'text-sm'" class="w-full">
         <div class="w-full" data-testid="comment">
-          <p class="text-tiny ml-7 username-text">
+          <p class="text-tiny username-text">
             <router-link
               v-if="commentData.CommentAuthor"
               class="font-bold dark:text-gray-200 underline"
@@ -232,15 +237,18 @@ export default defineComponent({
             {{ editedAtFormatted }}
           </p>
           <div class="w-full" v-if="!themeLoading">
-            <md-editor
+            <div
               v-if="commentData.text && !showEditCommentField"
-              class="small-text -ml-4 -mt-1"
-              v-model="textCopy"
-              previewTheme="vuepress"
-              language="en-US"
-              :noMermaid="true"
-              preview-only
-            />
+              class="border my-1 p-1 rounded rounded-lg shadow shadow-sm border-gray-200 dark:border-gray-700"
+            >
+              <MdPreview
+                :editorId="id"
+                :modelValue="textCopy"
+                previewTheme="github"
+                :theme="theme"
+              />
+              <MdCatalog :editorId="id" :scrollElement="scrollElement" />
+            </div>
             <TextEditor
               id="editExistingComment"
               class="h-48 inline-flex"
@@ -290,7 +298,6 @@ export default defineComponent({
               class="mb-2"
               :url="link"
             />
-            
           </div>
         </div>
         <div id="childComments" v-if="replyCount > 0 && showReplies">
@@ -329,95 +336,3 @@ export default defineComponent({
     />
   </div>
 </template>
-<style lang="scss">
-.bullet {
-  text-indent: -2.1em;
-  padding-left: 2.1em;
-}
-
-.text-tiny {
-  font-size: 0.8rem;
-  margin-bottom: 0;
-}
-
-.small-text {
-  #md-editor-v3-preview > p,
-  li {
-    font-size: 0.8rem;
-  }
-}
-
-.md-content .md-preview,
-.md-content .md-html {
-  word-break: break-word;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-  border: none;
-}
-
-/* Apply the user's preferred color scheme by default */
-@media (prefers-color-scheme: dark) {
-  #md-editor-v3-preview,
-  #md-editor-v3-preview-wrapper {
-    @apply bg-dark text-dark;
-    border: none;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  #md-editor-v3-preview,
-  #md-editor-v3-preview-wrapper {
-    @apply bg-light text-light;
-    border: none;
-  }
-}
-
-.bg-dark {
-  @apply bg-gray-900;
-}
-
-.text-dark {
-  @apply text-gray-100;
-}
-
-.bg-light {
-  @apply bg-white;
-}
-
-.text-light {
-  @apply text-gray-800;
-}
-
-/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
-body.dark #md-editor-v3-preview,
-body.dark #md-editor-v3-preview-wrapper, .md-editor-content {
-  @apply text-dark bg-dark;
-  border: none;
-}
-
-body.light #md-editor-v3-preview,
-body.light #md-editor-v3-preview-wrapper {
-  @apply text-light bg-light;
-  border: none;
-}
-#md-editor-v3-preview {
-  p,
-  ul,
-  ol,
-  blockquote > li {
-    font-size: 0.8rem;
-    word-break: break-word;
-  }
-}
-.profile-picture {
-  position: relative;
-  left: -3em;
-  top: 0.7em;
-  z-index: 1;
-}
-.username-text {
-  position: relative;
-  left: -2.5em;
-}
-</style>

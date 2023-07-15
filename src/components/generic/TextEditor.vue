@@ -1,19 +1,41 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-import MdEditor from "md-editor-v3";
+import { computed, defineComponent, ref } from "vue";
+import { MdEditor } from "md-editor-v3";
 import EmojiExtension from "../comments/EmojiExtension/index.vue";
 import "md-editor-v3/lib/style.css";
+import { useQuery } from "@vue/apollo-composable";
+import gql from "graphql-tag";
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 
 export default defineComponent({
   components: {
     EmojiExtension,
     MdEditor,
+    Tab,
+    TabGroup,
+    TabList,
+    TabPanel,
+    TabPanels,
   },
   setup(props) {
+    const GET_THEME = gql`
+      query GetTheme {
+        theme @client
+      }
+    `;
+
+    const { result } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      return result.value?.theme || "light";
+    });
     return {
       editorId: "texteditor",
       showFormatted: ref(false),
       text: ref(props.initialValue),
+      theme,
+      scrollElement: document.documentElement,
+      id: "text-editor",
     };
   },
   props: {
@@ -45,187 +67,90 @@ export default defineComponent({
   created() {
     if (!this.disableAutoFocus) {
       this.$nextTick(() => {
-        this.$refs.editor.$el.children[4].children[0].children[0].focus()
+        this.$refs.editor.$el.children[4].children[0].children[0].focus();
       });
     }
   },
 });
 </script>
 <template>
-  <md-editor
-    v-model="text"
-    ref="editor"
-    class="rounded-lg"
-    :editor-id="editorId"
-    :preview="false"
-    language="en-US"
-    :data-testid="testId"
-    previewTheme="vuepress"
-    :toolbars="[
-      'bold',
-      'underline',
-      'italic',
-      'strikeThrough',
-      '-',
-      'title',
-      // 'sub',
-      // 'sup',
-      'quote',
-      'unorderedList',
-      'orderedList',
-      'codeRow',
-      'code',
-      'link',
-      // 'image',
-      'table',
-      // 'mermaid',
-      // 'katex',
-      // 0,
-      // 1,
-      // 2,
-      '-',
-      '=',
-      'prettier',
-      'pageFullscreen',
-      'fullscreen',
-      'preview',
-      'htmlPreview',
-      'catalog',
-      'github',
-    ]"
-    @update:model-value="$emit('update', text)"
-  >
-    <template #defToolbars>
-      <emoji-extension :editor-id="editorId" @on-change="updateText" />
-    </template>
-  </md-editor>
+  <form class="h-full">
+    <TabGroup >
+      <TabList class="flex items-center ">
+        <Tab as="template" v-slot="{ selected }">
+          <button
+            :class="[
+              selected
+              ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-400 hover:bg-gray-200 hover:dark:bg-gray-700'
+              : 'bg-white dark:bg-black text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:text-gray-400',
+              'rounded-md border border-transparent px-3 py-1.5 text-sm font-medium',
+            ]"
+          >
+            Write
+          </button>
+        </Tab>
+        <Tab as="template" v-slot="{ selected }">
+          <button
+            :class="[
+              selected
+                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-400 hover:bg-gray-200'
+                : 'bg-white dark:bg-black text-gray-500 hover:bg-gray-100 hover:text-gray-900',
+              'ml-2 rounded-md border border-transparent px-3 py-1.5 text-sm font-medium',
+            ]"
+          >
+            Preview
+          </button>
+        </Tab>
+      </TabList>
+      <TabPanels class="mt-2 ">
+        <TabPanel class="-m-0.5 rounded-lg p-0.5">
+          <label for="comment" class="sr-only">Comment</label>
+          <md-editor
+            v-model="text"
+            ref="editor"
+            class="rounded-lg"
+            :editor-id="editorId"
+            :preview="false"
+            language="en-US"
+            :data-testid="testId"
+            :theme="theme"
+            previewTheme="github"
+            @update:model-value="$emit('update', text)"
+            :style="{ 
+              wordBreak: 'break-word',
+              listStyleType: 'disc',
+            }"
+            :toolbars="[
+              'bold', 
+              'italic',  
+              'quote', 
+              'code',
+              'orderedList',
+              'unorderedList',
+              'table',
+              ]"
+          >
+            <template #defToolbars>
+              <emoji-extension :editor-id="editorId" @on-change="updateText" />
+            </template>
+          </md-editor>
+        </TabPanel>
+        <TabPanel class="-m-0.5 rounded-lg p-0.5">
+          <MdPreview
+            :style="{ margin: 0, padding: 0 }"
+            :editorId="id"
+            :modelValue="text"
+            previewTheme="github"
+            :theme="theme"
+          />
+          <MdCatalog :editorId="id" :scrollElement="scrollElement" />
+        </TabPanel>
+      </TabPanels>
+    </TabGroup>
+  </form>
 </template>
-<style lang="scss">
-
-.bullet {
-  text-indent: -2.1em;
-  padding-left: 2.1em;
+<style>
+#preview-only-preview > li {
+  list-style-type: disc;
 }
-
-.text-tiny {
-  font-size: 0.8em;
-  margin-bottom: 0;
-}
-
-.small-text {
-  #md-editor-v3-preview > p,
-  li {
-    font-size: 0.8em;
-  }
-}
-
-.md-content .md-preview,
-.md-content .md-html {
-  word-break: break-word;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-
-
-/* Apply the user's preferred color scheme by default */
-@media (prefers-color-scheme: dark) {
-  #md-editor-v3-preview,
-  #md-editor-v3-preview-wrapper {
-    @apply bg-dark text-dark;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  #md-editor-v3-preview,
-  #md-editor-v3-preview-wrapper {
-    @apply bg-light text-light;
-  }
-}
-
-
-.bg-dark {
-  background-color: inherit;
-}
-
-.text-dark {
-  @apply text-gray-100;
-}
-
-.bg-light {
-  @apply bg-white;
-}
-
-.text-light {
-  @apply text-gray-800;
-}
-
-/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
-body.dark #md-editor-v3-preview,
-body.dark #md-editor-v3-preview-wrapper {
-  @apply text-dark bg-dark;
-}
-
-body.light #md-editor-v3-preview,
-body.light #md-editor-v3-preview-wrapper {
-  @apply text-light bg-light;
-}
-#md-editor-v3-preview {
-  p,
-  ul,
-  ol,
-  blockquote > li {
-    font-size: 0.8em;
-    word-break: break-word;
-  }
-  ul > li > p {
-    margin: 0.5em 0;
-    line-height: 1.5em;
-  }
-  h1,
-  h2,
-  h3 {
-    margin-bottom: 0.5em;
-  }
-  h3 {
-    margin-top: 1.5em;
-  }
-  p {
-    line-height: 1.5em;
-    margin-top: 0.6em;
-    margin-bottom: 0.6em;
-  }
-  ul > li > p {
-    margin-bottom: 0.35em;
-    line-height: 1.5em;
-  }
-  li {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-    line-height: 1.5em;
-  }
-  ul {
-    margin: 0.1em;
-  }
-}
-.profile-picture {
-  position: relative;
-  left: -3em;
-  top: 0.7em;
-  z-index: 1;
-}
-.username-text {
-  position: relative;
-  left: -2.5em;
-}
-#md-editor-v3-preview {
-  ul ul,
-  ol ul,
-  ul ol,
-  ol ol {
-    font-size: inherit;
-  }
-}
-
-
 </style>

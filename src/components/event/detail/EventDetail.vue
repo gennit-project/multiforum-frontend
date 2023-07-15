@@ -12,7 +12,7 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
 import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
 import EventFooter from "./EventFooter.vue";
-import MdEditor from "md-editor-v3";
+import { MdEditor } from "md-editor-v3";
 import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
 
@@ -256,7 +256,6 @@ export default defineComponent({
   </div>
 </template>
 <style lang="scss">
-
 /* Apply the user's preferred color scheme by default */
 @media (prefers-color-scheme: dark) {
   #texteditor-textarea {
@@ -272,7 +271,6 @@ export default defineComponent({
 
 .bg-dark {
   @apply bg-gray-700;
-
 }
 
 .text-dark {
@@ -329,7 +327,6 @@ body.light #texteditor {
     font-size: 1rem;
     word-break: break-word;
   }
-  
 }
 .md-editor-footer {
   display: none;

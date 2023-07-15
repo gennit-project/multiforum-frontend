@@ -47,7 +47,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="rounded-lg py-1 space-y-4 w-full dark:bg-gray-900">
+  <div class=" py-1 space-y-4 w-full border">
     <div 
       v-if="route.name !== 'DiscussionDetail'" 
       class="flex justify-center"

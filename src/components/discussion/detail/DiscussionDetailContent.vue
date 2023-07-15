@@ -182,34 +182,38 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <div v-if="discussion" class="min-w-md max-w-2xl mx-auto">
-      <div class="flex border-b space-x-3">
-        <DiscussionVotes
-          v-if="channelId"
-          :discussion="discussion"
-          :comment-section="discussion.CommentSections[0]"
-        />
-        <div class="w-full">
-          <div
-            ref="discussionDetail"
-            :class="
-              route.name === 'DiscussionDetail' ? ' overflow-y-scroll' : ''
-            "
-          >
-            <DiscussionHeader
-              v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
-              :discussion="discussion"
-              :channel-id="channelId || channelLinks[0]?.uniqueName"
-              :compact-mode="compactMode"
-            />
-          </div>
+    <div v-if="discussion" class="min-w-md max-w-2xl mx-auto space-y-3">
+      <div class="w-full">
+        <div
+          ref="discussionDetail"
+        >
+        <div class="min-w-0">
+          <h2 class="text-2xl font-bold leading-7 sm:tracking-tight text-wrap">
+            {{ discussion.title }}
+          </h2>
+        </div>
+         
         </div>
       </div>
+      <div class="border border-blue-500 px-4 pb-2 rounded rounded-lg">
+
+        <DiscussionHeader
+        v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
+        :discussion="discussion"
+        :channel-id="channelId || channelLinks[0]?.uniqueName"
+        :compact-mode="compactMode"
+      />
       <DiscussionBody
         :discussion="discussion"
         :channel-id="channelId"
         :comment-section-id="commentSectionId"
       />
+      <DiscussionVotes
+      v-if="channelId"
+      :discussion="discussion"
+      :comment-section="discussion.CommentSections[0]"
+    />
+  </div>
       <CreateRootCommentForm
         v-if="route.name === 'DiscussionDetail' || channelId"
         :discussion="discussion"

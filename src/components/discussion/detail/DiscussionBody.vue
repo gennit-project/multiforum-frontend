@@ -3,16 +3,22 @@ import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
 import LinkPreview from "../../generic/LinkPreview.vue";
-import MdEditor from "md-editor-v3";
+import { MdPreview, MdCatalog } from "md-editor-v3";
 import { ChannelData } from "@/types/channelTypes";
 import { useRoute } from "vue-router";
 import Tag from "../../tag/Tag.vue";
+import "md-editor-v3/lib/preview.css";
+import { useQuery } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 export default defineComponent({
   components: {
     LinkPreview,
-    MdEditor,
-    Tag
+    MdPreview,
+    MdCatalog,
+    Tag,
+    MdPreview,
+    MdCatalog,
   },
   props: {
     channelId: {
@@ -35,8 +41,10 @@ export default defineComponent({
     const wordLimit = 150;
 
     const truncateText = (text: string, limit: number) => {
-      const words = text.split(' ');
-      return words.slice(0, limit).join(' ') + (words.length > limit ? '...' : '');
+      const words = text.split(" ");
+      return (
+        words.slice(0, limit).join(" ") + (words.length > limit ? "..." : "")
+      );
     };
 
     const toggleShowFullText = () => {
@@ -47,13 +55,15 @@ export default defineComponent({
       if (showFullText.value) {
         return props.discussion.body;
       } else {
-        const words = props.discussion.body.split(' ');
-        return words.length > wordLimit ? truncateText(props.discussion.body, wordLimit) : props.discussion.body;
+        const words = props.discussion.body.split(" ");
+        return words.length > wordLimit
+          ? truncateText(props.discussion.body, wordLimit)
+          : props.discussion.body;
       }
     });
 
     const shouldShowMoreButton = computed(() => {
-      const words = props.discussion.body.split(' ');
+      const words = props.discussion.body.split(" ");
       return words.length > wordLimit;
     });
 
@@ -96,6 +106,18 @@ export default defineComponent({
         return countB - countA;
       });
     });
+
+    const GET_THEME = gql`
+      query GetTheme {
+        theme @client
+      }
+    `;
+
+    const { result } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      return result.value?.theme || "light";
+    });
     return {
       channelLinks,
       linksInBody,
@@ -103,7 +125,10 @@ export default defineComponent({
       bodyText,
       showFullText,
       toggleShowFullText,
-      shouldShowMoreButton
+      shouldShowMoreButton,
+      scrollElement: document.documentElement,
+      id: "preview-only",
+      theme,
     };
   },
   methods: {
@@ -118,22 +143,20 @@ export default defineComponent({
         },
       });
     },
-  }
+  },
 });
 </script>
 <template>
   <div>
     <div v-if="discussion.body" class="body">
-      <md-editor
-        v-if="bodyText"
-        v-model="bodyText"
-        previewTheme="vuepress"
-        codeTheme="github"
-        language="en-US"
-        :noMermaid="true"
-        preview-only
-        class="-ml-4"
+      <MdPreview
+        :style="{ margin: 0, padding: 0 }"
+        :editorId="id"
+        :modelValue="bodyText"
+        previewTheme="github"
+        :theme="theme"
       />
+      <MdCatalog :editorId="id" :scrollElement="scrollElement" />
       <button
         v-if="shouldShowMoreButton"
         @click="toggleShowFullText"
@@ -143,12 +166,16 @@ export default defineComponent({
       </button>
     </div>
     <Tag
-          class="mt-2"
-          v-for="tag in discussion.Tags"
-          :tag="tag.text"
-          :key="tag.text"
-          @click="() => {filterByTag(tag.text)}"
-        />
+      class="mt-2"
+      v-for="tag in discussion.Tags"
+      :tag="tag.text"
+      :key="tag.text"
+      @click="
+        () => {
+          filterByTag(tag.text);
+        }
+      "
+    />
     <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">Link Previews</h2>
     <div v-if="linksInBody.length > 0">
       <LinkPreview
@@ -160,86 +187,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
-<style lang="scss">
-
-/* Apply the user's preferred color scheme by default */
-@media (prefers-color-scheme: dark) {
-  #texteditor-textarea {
-    @apply bg-dark text-dark;
-  }
-}
-
-@media (prefers-color-scheme: light) {
-  #texteditor-textarea {
-    @apply bg-light text-light;
-  }
-}
-
-.bg-dark {
-  @apply bg-black;
-  @apply border;
-  @apply border-blue-500;
-
-}
-
-.text-dark {
-  @apply text-gray-200;
-}
-
-.bg-light {
-  @apply bg-white;
-}
-
-.text-light {
-  @apply text-gray-700;
-}
-
-/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
-body.dark #texteditor-textarea {
-  @apply text-dark bg-dark;
-
-  .md-editor-toolbar-item:hover {
-    background-color: 'black'
-  }
-}
-
-body.light #texteditor-textarea {
-  @apply text-light bg-light;
-}
-
-body.dark #texteditor {
-  @apply text-dark bg-dark border-gray-700;
-}
-
-body.light #texteditor {
-  @apply text-light bg-light border-gray-200;
-}
-
-.md-content .md-preview,
-.md-content .md-html {
-  word-break: break-word;
-  width: 100%;
-  font-size: 1rem;
-}
-.md-content .md-preview,
-.md-content .md-html {
-  word-break: break-word;
-  width: 100%;
-  padding: 0;
-  margin: 0;
-}
-#md-editor-v3-preview {
-  p,
-  ul,
-  ol,
-  blockquote > li {
-    font-size: 1rem;
-    word-break: break-word;
-  }
-  
-}
-.md-editor-footer {
-  display: none;
-}
-</style>

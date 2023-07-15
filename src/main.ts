@@ -10,7 +10,7 @@ import { logErrorMessages } from "@vue/apollo-util";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
 import "@github/markdown-toolbar-element";
-import MdEditor from "md-editor-v3";
+import { MdEditor } from "md-editor-v3";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import cache from "./cache";
 import { createVuetify } from "vuetify";
