@@ -2,6 +2,8 @@
 import { defineComponent, computed } from "vue";
 import Identicon from 'identicon.js';
 import sha256 from 'crypto-js/sha256';
+import { useQuery } from "@vue/apollo-composable";
+import gql from "graphql-tag";
 
 export default defineComponent({
 
@@ -12,7 +14,28 @@ export default defineComponent({
     }
   },
   setup() {
+    const GET_THEME = gql`
+      query getTheme {
+        theme @client
+      }
+    `;
 
+    const {
+      result: themeResult,
+      loading: themeLoading,
+      error: themeError,
+    } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      if (themeLoading.value || themeError.value) {
+        return "";
+      }
+      return themeResult.value.theme;
+    });
+
+    return {
+      theme,
+    };
   },
   computed: {
     identiconData() {
@@ -21,7 +44,8 @@ export default defineComponent({
 
       // Generate the identicon and get the data for the img src
       const data = new Identicon(hash, {
-        background: [240, 240, 240, 255],
+        // If theme is dark, use a dark background
+        background: this.theme === 'dark' ? [0, 0, 0, 255] : [255, 255, 255, 255],
         margin: 0.2,
         size: 420,
         format: 'svg'
