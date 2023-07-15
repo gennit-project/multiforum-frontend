@@ -243,7 +243,7 @@ export default defineComponent({
 
         <v-row>
           <!-- Left column -->
-          <v-col cols="12" :lg="channelId ? 4 : 6" xl="4" class="scrollable-column">
+          <v-col cols="12" md=8 lg="4" xl="3" class="scrollable-column">
             <SitewideDiscussionList
               v-if="!channelId"
               :search-input="filterValues.searchInput"
@@ -265,12 +265,12 @@ export default defineComponent({
             />
           </v-col>
 
-          <v-col  v-if="!mdAndDown" cols="12" :lg="channelId ? 6 : 6" xl="6" class="scrollable-column">
+          <v-col  v-if="!mdAndDown" cols="12" :lg="6" xl="6" class="scrollable-column">
             <router-view></router-view>
           </v-col>
 
           <!-- Right column -->
-          <v-col cols="12" lg="2"  v-if="channelId" class="scrollable-column">
+          <v-col cols="12" md=4 lg="2" xl="3" v-if="channelId" class="scrollable-column">
             <AboutColumn />
           </v-col>
         </v-row>

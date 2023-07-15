@@ -229,25 +229,25 @@ export default defineComponent({
             />
             <router-link
               v-if="commentData.CommentAuthor"
-              class="font-bold underline dark:text-gray-200"
+              class="font-bold underline dark:text-gray-200 mx-1"
               :to="`/u/${commentData.CommentAuthor.username}`"
             >
               {{ commentData.CommentAuthor.username }}
             </router-link>
             <span v-else class="font-bold">[Deleted]</span>
-            <span class="mx-1">&middot;</span>
-            {{ createdAtFormatted }}
-            <span class="ml-1" v-if="commentData.updatedAt"> &middot; </span>
-            {{ editedAtFormatted }}
+            <span class="mx-2">&middot;</span>
+            <span>{{ createdAtFormatted }}</span>
+            <span class="mx-2" v-if="commentData.updatedAt"> &middot; </span>
+            <span>{{ editedAtFormatted }}</span>
           </p>
-          <div class="prose w-full" v-if="!themeLoading">
-            <div v-if="commentData.text && !showEditCommentField">
+          <div class="prose max-w-none w-full" v-if="!themeLoading">
+            <div v-if="commentData.text && !showEditCommentField" class="w-full">
               <MdPreview
                 :editorId="id"
                 :modelValue="textCopy"
                 previewTheme="github"
                 :theme="theme"
-                class="-ml-4 mt-1"
+                class="-ml-4 mt-1 w-full"
               />
               <MdCatalog :editorId="id" :scrollElement="scrollElement" />
             </div>

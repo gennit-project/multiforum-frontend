@@ -146,7 +146,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion.body" class="body prose">
+    <div v-if="discussion.body" class="body prose max-w-none">
       <MdPreview
         :editorId="id"
         :modelValue="bodyText"

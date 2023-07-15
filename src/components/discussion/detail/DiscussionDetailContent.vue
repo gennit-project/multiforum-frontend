@@ -176,7 +176,7 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <div v-if="discussion" class="min-w-md mx-auto max-w-3xl space-y-3">
+    <div v-if="discussion" class="min-w-md mx-auto max-w-4xl space-y-3">
       <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center">
         <div
           class="flex w-full justify-between rounded-lg border bg-gray-100 px-3 py-2 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900"

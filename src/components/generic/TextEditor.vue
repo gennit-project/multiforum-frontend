@@ -197,4 +197,11 @@ body.light #md-editor-previewOnly,
 body.light .md-editor-preview-wrapper {
   @apply text-light bg-light;
 }
+
+ #preview-only-preview,
+#preview-only-preview-wrapper,
+#md-editor-previewOnly,
+.md-editor-preview-wrapper {
+ width: 100%;
+}
 </style>

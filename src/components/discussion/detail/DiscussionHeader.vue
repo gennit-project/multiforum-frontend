@@ -120,7 +120,7 @@ export default defineComponent({
         <ProfileAvatar v-if="discussion.Author?.username" :username="discussion.Author.username" />
         <router-link
           v-if="discussion.Author"
-          class="underline"
+          class="font-bold cursor-pointer"
           :to="`/u/${discussion.Author.username}`"
         >
           {{ discussion.Author.username }}

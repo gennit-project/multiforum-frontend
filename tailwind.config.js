@@ -7,6 +7,9 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    fontWeight: {
+      bold: '700',
+    },
     container: {
       padding: {
         DEFAULT: '1rem',
