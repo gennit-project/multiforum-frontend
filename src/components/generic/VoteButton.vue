@@ -21,7 +21,7 @@ export default defineComponent({
 <template>
   <div
     class="max-h-7 inline-flex cursor-pointer items-center rounded-full border py-1 px-3"
-    :class="[active ? 'border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-transparent' : 'border-gray-200 dark:border-gray-800']"
+    :class="[active ? 'border-blue-400 dark:border-blue-500 hover:bg-blue-100 dark:hover:bg-blue-950' : 'border-gray-200 hover:bg-gray-100 dark:hover:bg-gray-900 dark:border-gray-800']"
     @click="$emit('click')"
   >
     <span

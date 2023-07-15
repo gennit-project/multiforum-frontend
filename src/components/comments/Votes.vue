@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import VoteButton from "../discussion/vote/VoteButton.vue";
+import VoteButton from "@/components/generic/VoteButton.vue";
 
 export default defineComponent({
   name: "VoteComponent",
