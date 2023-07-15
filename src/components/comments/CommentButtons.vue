@@ -80,7 +80,6 @@ export default defineComponent({
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
-
     const username = computed(() => {
       if (localUsernameLoading.value) {
         return "";
@@ -98,7 +97,7 @@ export default defineComponent({
     const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT, () => ({
       variables: {
         id: props.commentData.id,
-        displayName: loggedInUserModName.value
+        displayName: loggedInUserModName.value,
       },
     }));
 
@@ -107,9 +106,9 @@ export default defineComponent({
       () => ({
         variables: {
           id: props.commentData.id,
-          username: username.value
+          username: username.value,
         },
-      })
+      }),
     );
 
     const { mutate: undoUpvoteComment, error: undoUpvoteCommentError } =
@@ -192,10 +191,10 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex flex-wrap align-center text-xs text-gray-400 space-x-2">
+    <div class="flex flex-wrap items-center space-x-2 text-xs text-gray-400">
       <RequireAuth v-if="!locked" :full-width="false">
         <template v-slot:has-auth>
-          <div class="flex inline-flex">
+          <div class="flex items-center">
             <VotesComponent
               :downvote-count="
                 commentData.DownvotedByModeratorsAggregate?.count || 0
@@ -212,7 +211,7 @@ export default defineComponent({
             />
             <span
               data-testid="reply-comment-button"
-              class="ml-2 underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+              class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
             >
@@ -221,14 +220,15 @@ export default defineComponent({
           </div>
         </template>
         <template v-slot:does-not-have-auth>
-          <div class="flex inline-flex">
+          <div class="flex">
             <VotesComponent
               :downvote-count="
                 commentData.DownvotedByModeratorsAggregate?.count || 0
               "
               :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
             />
-            <span class="ml-2 underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+            <span
+              class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
               >Reply</span
             >
           </div>
@@ -236,7 +236,7 @@ export default defineComponent({
       </RequireAuth>
 
       <RequireAuth
-        class="flex inline-flex"
+        class="flex"
         :full-width="false"
         v-if="commentData.CommentAuthor"
         :require-ownership="true"
@@ -245,7 +245,7 @@ export default defineComponent({
         <template v-slot:has-auth>
           <span
             data-testid="delete-comment-button"
-            class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+            class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
             @click="
               $emit('deleteComment', {
                 commentId: commentData.id,
@@ -260,7 +260,7 @@ export default defineComponent({
           <span
             v-if="!showEditCommentField"
             data-testid="edit-comment-button"
-            class="ml-2 underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+            class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
             @click="
               () => {
                 $emit('clickEditComment', commentData);
@@ -285,32 +285,32 @@ export default defineComponent({
             },
           })
         "
-        class="ml-2 underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
       >
         Permalink
       </span>
 
       <span
-        class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         v-if="loggedInUserUpvoted"
         @click="() => undoUpvoteComment()"
         >Unvote</span
       >
       <span
-        class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         v-if="loggedInUserDownvoted"
         @click="() => undoDownvoteComment()"
         >Unvote</span
       >
       <span
         v-if="showEditCommentField"
-        class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="$emit('hideEditCommentField')"
         >Cancel</span
       >
       <span
         v-if="showEditCommentField"
-        class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="
           () => {
             $emit('saveEdit');
@@ -321,7 +321,7 @@ export default defineComponent({
       >
       <span
         v-if="showReplies && replyCount > 0"
-        class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="$emit('hideReplies')"
         >{{
           `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
@@ -329,14 +329,16 @@ export default defineComponent({
       >
       <span
         v-if="!showReplies"
-        class="underline cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="$emit('showReplies')"
         >{{
           `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
         }}</span
       >
       <MenuButton v-if="commentMenuItems.length > 0" :items="commentMenuItems">
-        <EllipsisVertical class="h-4 w-4 cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white" />
+        <EllipsisVertical
+          class="h-4 w-4 cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+        />
       </MenuButton>
     </div>
     <div v-if="showReplyEditor" class="mt-1 flex space-x-2 px-3">

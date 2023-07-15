@@ -17,8 +17,6 @@ export default defineComponent({
     MdPreview,
     MdCatalog,
     Tag,
-    MdPreview,
-    MdCatalog,
   },
   props: {
     channelId: {

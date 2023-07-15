@@ -37,6 +37,10 @@ export default defineComponent({
       type: Object as PropType<DiscussionData>,
       required: true,
     },
+    showDownvote: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     VoteButtons,
@@ -444,6 +448,7 @@ export default defineComponent({
     :upvote-active="loggedInUserUpvoted"
     :downvote-active="loggedInUserDownvoted"
     :has-mod-profile="!!loggedInUserModName"
+    :show-downvote="showDownvote"
     @downvote="downvote"
     @upvote="upvote"
     @openModProfile="$emit('openModProfile')"

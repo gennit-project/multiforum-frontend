@@ -161,7 +161,7 @@ export default defineComponent({
                 </template>
               </FormRow>
 
-              <FormRow>
+              <FormRow class="h-72 overflow-auto">
                 <template v-slot:icon>
                   <AnnotationIcon class="inline-flex h-6 w-6" />
                   <v-tooltip activator="parent" location="top">

@@ -83,10 +83,8 @@ export default defineComponent({
 
 <template>
   <li
-    class="border-l-4 dark:border-gray-700 relative pb-2 pt-3 mx-4 px-4 space-x-2 flex gap-3"
+    class="border-l-4 dark:border-gray-700 relative pb-2 pt-3 px-4 space-x-2 flex gap-3"
   >
- 
-   
     <span class="mt-1 w-6"
       >{{
         (discussion.UpvotedByUsersAggregate?.count || 0) -

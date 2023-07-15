@@ -14,6 +14,7 @@ import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
+import DiscussionVotes from "../vote/DiscussionVotes.vue";
 
 export default defineComponent({
   props: {
@@ -62,6 +63,7 @@ export default defineComponent({
     ErrorBanner,
     HighlightedSearchTerms,
     Tag,
+    DiscussionVotes,
   },
   setup(props) {
     const route = useRoute();
@@ -247,6 +249,11 @@ export default defineComponent({
     :class="[ isActive ? 'text-blue-500' : '']"
   >
     <div class="w-full flex gap-3">
+      <DiscussionVotes
+        :discussion="discussion"
+        :comment-section="discussion.CommentSections[0]"
+        :show-downvote="false"
+      />
       <div class="h-10 w-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded">
         <div>💬</div>
       </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import VoteButton from "../discussion/vote/VoteButton.vue";
 
 export default defineComponent({
   name: "VoteComponent",
@@ -24,6 +25,9 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+  },
+  components: {
+    VoteButton,
   },
   setup() {
     return {};
@@ -59,33 +63,29 @@ export default defineComponent({
   },
 });
 </script>
+
+
 <template>
-  <div class="flex align-center space-x-2">
-    <span>
-      <i
-        class="fa-solid fa-arrow-up w-4 hover:text-blue-500 cursor-pointer"
-        :class="[upvoteActive ? 'text-blue-500' : 'text-gray-400']"
-        @click="clickUpvote"
-      ></i>
-      <v-tooltip activator="parent" location="top"
-        >This comment should be more visible to others</v-tooltip
-      >
-    </span>
-    <span
-      :class="upvoteActive || downvoteActive ? 'text-blue-500' : 'text-gray-200'"
-      class="inline-flex pt-0.5"
-      >{{ upvoteCount - downvoteCount }}</span
+  <div class="flex flex-row space-x-3">
+    <VoteButton
+      :count="upvoteCount"
+      :active="upvoteActive"
+      @click="clickUpvote"
     >
-    <span>
-      <i
-        class="fa-solid fa-arrow-down w-4 hover:text-blue-500 cursor-pointer"
-        :class="[downvoteActive ? 'text-blue-500' : 'text-gray-400']"
-        @click="clickDownvote"
-      ></i>
+      <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
       <v-tooltip activator="parent" location="top"
-        >This comment should be less visible to others</v-tooltip
-      >
-    </span>
+      >This comment should be more visible to others</v-tooltip
+    >
+    </VoteButton>
+    <VoteButton
+      :count="downvoteCount"
+      :active="downvoteActive"
+      @click="clickDownvote"
+    >
+      <i class="fa-solid fa-arrow-down mr-2 w-3"></i>
+      <v-tooltip activator="parent" location="top"
+      >This comment should be less visible to others</v-tooltip
+    >
+    </VoteButton>
   </div>
 </template>
-<style scoped></style>
