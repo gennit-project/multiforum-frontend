@@ -207,7 +207,7 @@ export default defineComponent({
         </div>
       </div>
 
-      <div class="rounded-lg border border-blue-400 dark:border-blue-800 px-4 pb-2 dark:bg-black">
+      <div class="rounded-lg border border-blue-400 dark:border-blue-800 px-4 pb-2 dark:bg-gray-950">
         <DiscussionHeader
           v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
           :discussion="discussion"

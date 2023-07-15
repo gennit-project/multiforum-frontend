@@ -79,7 +79,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="dark:bg-gray-950 h-full">
+    <div class="dark:bg-gray-950 h-fit">
       <div class="h-full px-4 sm:px-6 lg:px-8">
         <article
           class="relative z-0 h-full flex-1 focus:outline-none xl:order-last"

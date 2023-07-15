@@ -220,7 +220,7 @@ export default defineComponent({
     <div class="flex w-full text-gray-500">
       <div :class="'text-sm'" class="w-full">
         <div
-          class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-black"
+          class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           data-testid="comment"
         >
           <p class="text-tiny username-text">

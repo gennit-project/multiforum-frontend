@@ -75,14 +75,14 @@ export default defineComponent({
 </script>
 <template>
   <form class="h-full">
-    <TabGroup >
-      <TabList class="flex items-center ">
+    <TabGroup>
+      <TabList class="flex items-center">
         <Tab as="template" v-slot="{ selected }">
           <button
             :class="[
               selected
-              ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-400 hover:bg-gray-200 hover:dark:bg-gray-700'
-              : 'bg-white dark:bg-black text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:hover:text-gray-400',
+                ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 hover:dark:bg-gray-700'
+                : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:bg-black dark:hover:text-gray-400',
               'rounded-md border border-transparent px-3 py-1.5 text-sm font-medium',
             ]"
           >
@@ -93,8 +93,8 @@ export default defineComponent({
           <button
             :class="[
               selected
-                ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-400 hover:bg-gray-200'
-                : 'bg-white dark:bg-black text-gray-500 hover:bg-gray-100 hover:text-gray-900',
+                ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400'
+                : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:bg-black',
               'ml-2 rounded-md border border-transparent px-3 py-1.5 text-sm font-medium',
             ]"
           >
@@ -116,19 +116,19 @@ export default defineComponent({
             :theme="theme"
             previewTheme="github"
             @update:model-value="$emit('update', text)"
-            :style="{ 
+            :style="{
               wordBreak: 'break-word',
               listStyleType: 'disc',
             }"
             :toolbars="[
-              'bold', 
-              'italic',  
-              'quote', 
+              'bold',
+              'italic',
+              'quote',
               'code',
               'orderedList',
               'unorderedList',
               'table',
-              ]"
+            ]"
           >
             <template #defToolbars>
               <emoji-extension :editor-id="editorId" @on-change="updateText" />
@@ -149,8 +149,52 @@ export default defineComponent({
     </TabGroup>
   </form>
 </template>
-<style>
-#preview-only-preview > li {
-  list-style-type: disc;
+
+<style lang="scss">
+/* Apply the user's preferred color scheme by default */
+@media (prefers-color-scheme: dark) {
+  #md-editor-previewOnly,
+  #preview-only-preview,
+  #preview-only-preview-wrapper {
+    @apply bg-dark text-dark;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  #preview-only-preview,
+  #preview-only-preview-wrapper {
+    @apply bg-light text-light;
+  }
+}
+
+.bg-dark {
+  @apply bg-gray-950;
+}
+
+.text-dark {
+  @apply text-gray-100;
+}
+
+.bg-light {
+  @apply bg-white;
+}
+
+.text-light {
+  @apply text-gray-800;
+}
+
+/* Override the default styles when the 'dark' or 'light' class is added to the 'body' element */
+body.dark #preview-only-preview,
+body.dark #preview-only-preview-wrapper,
+body.dark #md-editor-previewOnly,
+body.dark .md-editor-preview-wrapper {
+  @apply text-dark bg-dark;
+}
+
+body.light #preview-only-preview,
+body.light #preview-only-preview-wrapper,
+body.light #md-editor-previewOnly,
+body.light .md-editor-preview-wrapper {
+  @apply text-light bg-light;
 }
 </style>
