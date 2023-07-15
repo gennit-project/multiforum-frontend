@@ -23,14 +23,19 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="link hover:text-gray-600 hover:border-blue-500 group inline-flex items-center py-2 border-b-2 font-medium text-xs space-x-2 dark:text-gray-200"
+    class="link group inline-flex items-center border-b-2 font-medium hover:border-blue-500 hover:text-gray-600 dark:text-gray-200"
     :class="[
       isActive
-        ? 'text-gray-700 border-gray-900 dark:text-gray-200 dark:border-blue-600'
-        : 'text-gray-500 border-transparent',
+        ? 'border-blue-500 text-gray-700 dark:border-blue-600 dark:text-gray-200'
+        : 'border-transparent text-gray-500',
     ]"
   >
-    <div class="text-gray-500"><slot></slot></div><span>{{ label }}</span>
+  <div class=" h-8 flex items-center space-x-2  hover:bg-gray-100 dark:hover:bg-gray-900 py-2 px-3 my-2 rounded-lg">
+
+    <div class="text-gray-400 dark:text-gray-500"><slot></slot></div>
+    <span class="text-gray-800 dark:text-white font-bold text-sm">{{ label }}</span>
+  </div>
+  
   </router-link>
 </template>
 <style>

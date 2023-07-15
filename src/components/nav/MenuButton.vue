@@ -8,16 +8,7 @@ export default defineComponent({
 <template>
   <button
     type="button"
-    class="
-            inline-flex
-            items-center
-            justify-center
-            p-2
-            rounded-full
-            text-gray-400
-            hover:dark:text-white hover:bg-gray-100 hover:dark:bg-gray-600
-            focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white
-          "
+    class="inline-flex items-center justify-center rounded-full p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:focus:ring-gray-700  hover:dark:text-white"
     aria-controls="mobile-menu"
     aria-expanded="false"
   >

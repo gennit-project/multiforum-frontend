@@ -40,39 +40,17 @@ export default defineComponent({
       lgAndUp,
       mdAndUp,
       relativeTime,
-      route
+      route,
     };
   },
 });
 </script>
 
 <template>
-  <div class=" py-1 space-y-4 w-full border">
-    <div 
-      v-if="route.name !== 'DiscussionDetail'" 
-      class="flex justify-center"
-    >
-      <div 
-        class="flex justify-between text-sm w-full rounded text-gray-500 bg-gray-100 dark:bg-gray-700 px-3 py-1"
-      >
-      <span>
-      PREVIEW
-    </span>
-      <span
-      v-if="route.name !== 'DiscussionDetail' && channelId"
-      class="ml-1 mr-1"
-      ><router-link
-        data-testid="discussion-permalink"
-        v-if="route.name !== 'DiscussionDetail' && channelId"
-        class="underline px-3 py-1 mt-1 rounded-sm font-medium cursor-pointer"
-        :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
-        >Comment Page</router-link
-      ></span
-    >
-     </div>
-    </div>
+  <div class="w-full space-y-4 py-1">
+  
     <div
-      class="flex justify-center rounded-lg mb-10 "
+      class="mb-10 flex justify-center rounded-lg"
       :class="route.name == 'DiscussionDetail' ? 'md:px-4' : ''"
     >
       <DiscussionDetailContent

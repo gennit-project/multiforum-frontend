@@ -13,6 +13,7 @@ import {
 import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   props: {
@@ -188,6 +189,8 @@ export default defineComponent({
       return 0;
     });
 
+    const { lgAndUp } = useDisplay();
+
     return {
       commentSectionId,
       createCommentSection,
@@ -195,6 +198,7 @@ export default defineComponent({
       defaultUniqueName,
       discussionIdInParams,
       downvoteCount,
+      lgAndUp,
       errorMessage: ref(""),
       isActive : computed(() => discussionIdInParams.value === props.discussion.id),
       loggedInUserUpvoted,
@@ -221,12 +225,16 @@ export default defineComponent({
     };
   },
   computed: {
-    previewLink() {
+    detailLink() {
       if (!this.discussion) {
         return "";
       }
 
-      return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
+      if (this.lgAndUp) {
+        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
+      }
+
+      return `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussion.id}`;
     },
   },
   inheritAttrs: false,
@@ -235,7 +243,7 @@ export default defineComponent({
 
 <template>
   <li
-    class=" relative my-2 py-2 border-b space-x-1 space-y-2 flex"
+    class=" relative my-2 py-2 border-b dark:border-gray-800 space-x-1 space-y-3 flex"
     :class="[ isActive ? 'text-blue-500' : '']"
   >
     <div class="w-full flex gap-3">
@@ -244,12 +252,12 @@ export default defineComponent({
       </div>
       
       <div>
-      <router-link :to="previewLink" @click="$emit('openPreview')" class="hover:text-gray-500">
+      <router-link :to="detailLink" class="hover:text-gray-500">
         <p class="text-sm font-bold cursor-pointer">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>
       </router-link>
-      <p class="text-xs text-slate-600 hover:no-underline font-medium mt-1">
+      <p class="text-xs text-slate-600 hover:no-underline font-medium my-1">
         <Tag
           class="my-1"
           :active="selectedTags.includes(tag)"

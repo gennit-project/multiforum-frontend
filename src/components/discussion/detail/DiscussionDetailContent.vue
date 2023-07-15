@@ -17,7 +17,6 @@ import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
-import GenericButton from "../../generic/GenericButton.vue";
 import { ChannelData } from "@/types/channelTypes";
 import "md-editor-v3/lib/style.css";
 
@@ -32,7 +31,6 @@ export default defineComponent({
     ErrorBanner,
     LeftArrowIcon,
     CreateButton,
-    GenericButton,
     PrimaryButton,
     RequireAuth,
   },
@@ -117,7 +115,7 @@ export default defineComponent({
               return commentSection.Channel.uniqueName === channelId.value;
             }
             return false;
-          }
+          },
         );
         if (commentSection) {
           return commentSection.id;
@@ -146,7 +144,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="space-y-2 w-full">
+  <div class="w-full space-y-2">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -155,18 +153,14 @@ export default defineComponent({
     />
 
     <div
-      :class="'mt-4 flex justify-between align-center'"
+      :class="'align-center mt-4 flex justify-between'"
       v-if="route.name === 'DiscussionDetail'"
     >
       <router-link
-        v-if="
-          route.name !== 'SitewideSearchDiscussionPreview' &&
-          route.name !== 'SearchDiscussionPreview'
-        "
         :to="`/channels/c/${channelId}/discussions`"
-        class="underline text-xs mb-4"
+        class="mb-4 text-xs underline"
       >
-        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
+        <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
         {{ `Discussion list in c/${channelId}` }}
       </router-link>
       <RequireAuth :full-width="false" class="inline-flex max-w-sm">
@@ -182,46 +176,62 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <div v-if="discussion" class="min-w-md max-w-2xl mx-auto space-y-3">
-      <div class="w-full">
+    <div v-if="discussion" class="min-w-md mx-auto max-w-3xl space-y-3">
+      <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center">
         <div
-          ref="discussionDetail"
+          class="flex w-full justify-between rounded-lg border bg-gray-100 px-3 py-2 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900"
         >
-        <div class="min-w-0">
-          <h2 class="text-2xl font-bold leading-7 sm:tracking-tight text-wrap">
-            {{ discussion.title }}
-          </h2>
-        </div>
-         
+          <span> PREVIEW </span>
+          <span
+            v-if="route.name !== 'DiscussionDetail' && channelId"
+            class="ml-1 mr-1"
+            ><router-link
+              data-testid="discussion-permalink"
+              v-if="route.name !== 'DiscussionDetail' && channelId"
+              class="mt-1 cursor-pointer rounded-sm px-3 py-1 font-medium underline"
+              :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
+              >Comment Page</router-link
+            ></span
+          >
         </div>
       </div>
-      <div class="border border-blue-500 px-4 pb-2 rounded rounded-lg">
+      <div class="w-full">
+        <div ref="discussionDetail">
+          <div class="min-w-0">
+            <h2
+              class="text-wrap text-2xl font-bold leading-7 sm:tracking-tight"
+            >
+              {{ discussion.title }}
+            </h2>
+          </div>
+        </div>
+      </div>
 
+      <div class="rounded-lg border border-blue-400 dark:border-blue-800 px-4 pb-2 dark:bg-black">
         <DiscussionHeader
-        v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
-        :discussion="discussion"
-        :channel-id="channelId || channelLinks[0]?.uniqueName"
-        :compact-mode="compactMode"
-      />
-      <DiscussionBody
-        :discussion="discussion"
-        :channel-id="channelId"
-        :comment-section-id="commentSectionId"
-      />
-      <DiscussionVotes
-      v-if="channelId"
-      :discussion="discussion"
-      :comment-section="discussion.CommentSections[0]"
-    />
-  </div>
+          v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
+          :discussion="discussion"
+          :channel-id="channelId || channelLinks[0]?.uniqueName"
+          :compact-mode="compactMode"
+        />
+        <DiscussionBody
+          :discussion="discussion"
+          :channel-id="channelId"
+          :comment-section-id="commentSectionId"
+        />
+        <DiscussionVotes
+          v-if="channelId"
+          :discussion="discussion"
+          :comment-section="discussion.CommentSections[0]"
+        />
+      </div>
       <CreateRootCommentForm
         v-if="route.name === 'DiscussionDetail' || channelId"
         :discussion="discussion"
         :channel-id="channelId"
       />
-      
       <div
-        class="mb-2 my-4 py-6 rounded-lg"
+        class="my-4 mb-2 rounded-lg py-6"
         v-if="route.name === 'DiscussionDetail' || channelId"
       >
         <CommentSection

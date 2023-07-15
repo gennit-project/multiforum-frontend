@@ -80,7 +80,7 @@ export default defineComponent({
 <template>
   <div
     v-if="showDropdown"
-    class="fixed top-0 left-0 z-50 w-[250px] h-screen overflow-y-auto bg-white dark:bg-gray-800 py-2 border flex flex-col justify-between"
+    class="fixed top-0 left-0 z-50 w-[250px] h-screen overflow-y-auto bg-white dark:bg-slate-900 py-2 border flex flex-col justify-between"
   >
     <div>
       <div class="block mt-2 px-6">
@@ -104,7 +104,7 @@ export default defineComponent({
               :active="$route.path.includes(item.href)"
               :data-testid="`nav-link-${item.name}`"
               active-class="text-blue-600"
-              class="text-gray-700 dark:text-gray-300 pl-2 hover:text-blue-600 dark:hover:text-gray-300 dark:hover:bg-gray-600 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
+              class="text-gray-700 dark:text-gray-300 pl-2 hover:text-blue-600 dark:hover:text-gray-300 dark:hover:bg-slate-800 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
               @click="$emit('close')"
             >
               <component
@@ -124,14 +124,14 @@ export default defineComponent({
         :to="`/u/${username}`"
         active-class="text-blue-600"
         @click="$emit('close')"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+        class="text-gray-700 dark:text-gray-300 pl-2 hover:text-blue-600 dark:hover:text-gray-300 dark:hover:bg-slate-800 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
       >
         My Profile
       </router-link>
       <button
         v-if="!isAuthenticated"
         @click="login"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold ml-4"
+        class="text-gray-700 dark:text-gray-300 pl-2 hover:text-blue-600 dark:hover:text-gray-300 dark:hover:bg-slate-800 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
       >
         Log In
       </button>
@@ -140,7 +140,7 @@ export default defineComponent({
         to="/logout"
         @click="logout"
         active-class="text-blue-600"
-        class="text-gray-700 dark:text-gray-300 hover:text-blue-600 group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold"
+        class="text-gray-700 dark:text-gray-300 pl-2 hover:text-blue-600 dark:hover:text-gray-300 dark:hover:bg-slate-800 group flex gap-x-3 rounded-md py-2 text-sm leading-6 font-semibold"
       >
         Sign Out
       </router-link>

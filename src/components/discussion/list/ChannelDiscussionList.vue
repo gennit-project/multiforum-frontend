@@ -195,11 +195,6 @@ export default defineComponent({
       },
     },
   },
-  data() {
-    return {
-      previewIsOpen: false,
-    };
-  },
   components: {
     ChannelDiscussionListItem,
     ErrorBanner,
@@ -207,11 +202,6 @@ export default defineComponent({
     WarningModal,
   },
   methods: {
-    openPreview(data: DiscussionData) {
-      this.previewIsOpen = true;
-      this.selectedDiscussion = data;
-      this.$emit("openPreview");
-    },
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
@@ -283,7 +273,6 @@ export default defineComponent({
                 @openModProfile="this.showModProfileModal = true"
                 @filterByTag="filterByTag"
                 @filterByChannel="filterByChannel"
-                @openPreview="openPreview"
               />
             </ul>
             <div v-if="discussionResult.discussions.length > 0">

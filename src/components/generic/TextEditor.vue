@@ -102,7 +102,7 @@ export default defineComponent({
           </button>
         </Tab>
       </TabList>
-      <TabPanels class="mt-2 ">
+      <TabPanels class="mt-2 h-3">
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
           <label for="comment" class="sr-only">Comment</label>
           <md-editor

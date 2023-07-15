@@ -114,10 +114,8 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-  
-
     <div class="text-xs mt-4">
-      <div class="mb-2 mt-4">
+      <div class="mb-2 mt-4 w-full">
         <router-link
           v-if="discussion.Author"
           class="underline"
@@ -146,7 +144,7 @@ export default defineComponent({
           </template>
         </RequireAuth>
         <RequireAuth
-          class="flex inline-flex max-w-sm"
+          class="inline-flex max-w-sm"
           v-if="discussion.Author && route.name === 'DiscussionDetail'"
           :require-ownership="true"
           :owners="[discussion.Author.username]"

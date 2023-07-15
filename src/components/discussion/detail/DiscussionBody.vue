@@ -148,9 +148,8 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion.body" class="body">
+    <div v-if="discussion.body" class="body prose">
       <MdPreview
-        :style="{ margin: 0, padding: 0 }"
         :editorId="id"
         :modelValue="bodyText"
         previewTheme="github"
@@ -187,3 +186,8 @@ export default defineComponent({
     </div>
   </div>
 </template>
+<style scoped>
+li {
+  list-style-type: disc;
+}
+</style>

@@ -31,23 +31,40 @@ module.exports = {
       typography: () => ({
         DEFAULT: {
           css: {
+            'ul': {
+              listStyleType: 'disc',
+              wordWrap: 'break-word',
+            },
+            'ol': {
+              listStyleType: 'decimal',
+              wordWrap: 'break-word',
+            },
+            p: {
+              wordWrap: 'break-word',
+            },
             h1: {
               textDecoration: 'none',
+              wordWrap: 'break-word',
             },
             h2: {
               textDecoration: 'none',
+              wordWrap: 'break-word',
             },
             h3: {
               textDecoration: 'none',
+              wordWrap: 'break-word',
             },
             h4: {
               textDecoration: 'none',
+              wordWrap: 'break-word',
             },
             h5: {
               textDecoration: 'none',
+              wordWrap: 'break-word',
             },
             h6: {
               textDecoration: 'none',
+              wordWrap: 'break-word',
             },
           },
         },

@@ -2,11 +2,15 @@
 import { defineComponent, computed } from "vue";
 import TabButton from "@/components/generic/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
+import CalendarIcon from '@/components/icons/CalendarIcon.vue'
+import DiscussionIcon from '@/components/icons/DiscussionIcon.vue'
 
 export default defineComponent({
   name: "channelTabs",
   components: {
     TabButton,
+    CalendarIcon,
+    DiscussionIcon,
   },
   props: {
     route: {
@@ -47,33 +51,21 @@ export default defineComponent({
 
 <template>
   <div>
-    <!-- <div class="sm:hidden">
-      <label for="tabs" class="sr-only">Select a tab</label>
-      <select
-        v-model="selectedTab"
-        @change="redirect($event)"
-        id="tabs"
-        name="tabs"
-        class="block w-full focus:ring-blue-500 focus:border-blue-500 border-gray-300 rounded-full mt-2 mb-2"
-      >
-        <option value="discussions">Discussions</option>
-        <option value="events">Events</option>
-      </select>
-    </div> -->
     <div class=" sm:block">
-      <nav class="-mb-px text-lg max-w-7xl space-x-8" aria-label="Tabs">
+      <nav class="text-lg max-w-7xl space-x-2" aria-label="Tabs">
         <TabButton
           :to="tabRoutes.discussions"
           :label="'Discussions'"
           :is-active="$route.path.includes('discussions')"
-          ><i class="fa-solid fa-comments"></i
-        ></TabButton>
+          >
+          <DiscussionIcon class="h-6 w-6"/>
+        </TabButton>
         <TabButton
           :to="tabRoutes.events"
           :label="'Events'"
           :is-active="route.name.includes('Event')"
         >
-          <i class="fa-solid fa-calendar"></i>
+          <CalendarIcon class="h-6 w-6"/>
         </TabButton>
         <TabButton
           v-if="mdAndDown"
@@ -81,7 +73,7 @@ export default defineComponent({
           :label="'About'"
           :is-active="route.name.includes('About')"
         >
-          <i class="fa-solid fa-info"></i>
+          <i class="fa-solid fa-info-circle h-6 w-6"></i>
       </TabButton>
       </nav>
     </div>

@@ -199,7 +199,7 @@ export default defineComponent({
         return "";
       }
       return `${this.compact ? "" : "posted "}${this.relativeTime(
-        this.commentData.createdAt
+        this.commentData.createdAt,
       )}${
         this.showChannel
           ? " in c/" + this.commentData.CommentSection.Channel.uniqueName
@@ -216,16 +216,17 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div
-    class="border-l pt-1 border-gray-300 dark:border-gray-700 pl-4 mt-2 w-full"
-  >
-    <div class="flex text-gray-500 w-full">
+  <div>
+    <div class="flex w-full text-gray-500">
       <div :class="'text-sm'" class="w-full">
-        <div class="w-full" data-testid="comment">
+        <div
+          class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-black"
+          data-testid="comment"
+        >
           <p class="text-tiny username-text">
             <router-link
               v-if="commentData.CommentAuthor"
-              class="font-bold dark:text-gray-200 underline"
+              class="font-bold underline dark:text-gray-200"
               :to="`/u/${commentData.CommentAuthor.username}`"
             >
               {{ commentData.CommentAuthor.username }}
@@ -236,11 +237,8 @@ export default defineComponent({
             <span v-if="commentData.updatedAt"> &middot; </span>
             {{ editedAtFormatted }}
           </p>
-          <div class="w-full" v-if="!themeLoading">
-            <div
-              v-if="commentData.text && !showEditCommentField"
-              class="border my-1 p-1 rounded rounded-lg shadow shadow-sm border-gray-200 dark:border-gray-700"
-            >
+          <div class="w-full prose " v-if="!themeLoading">
+            <div v-if="commentData.text && !showEditCommentField">
               <MdPreview
                 :editorId="id"
                 :modelValue="textCopy"
@@ -250,8 +248,8 @@ export default defineComponent({
               <MdCatalog :editorId="id" :scrollElement="scrollElement" />
             </div>
             <TextEditor
+            class="overflow-y-scroll mt-3"
               id="editExistingComment"
-              class="h-48 inline-flex"
               v-if="!readonly && showEditCommentField"
               :initial-value="commentData.text"
               :editor-id="editorId"
@@ -288,7 +286,7 @@ export default defineComponent({
             />
             <h2
               v-if="linksInText && linksInText.length > 0"
-              class="text-lg mb-2"
+              class="mb-2 text-lg"
             >
               Link Previews
             </h2>
@@ -300,7 +298,11 @@ export default defineComponent({
             />
           </div>
         </div>
-        <div id="childComments" v-if="replyCount > 0 && showReplies">
+        <div
+          id="childComments"
+          v-if="replyCount > 0 && showReplies"
+          class="mt-2 w-full border-l border-gray-300 pl-4 pt-1 dark:border-gray-700"
+        >
           <ChildComments
             v-slot="slotProps"
             :parent-comment-id="commentData.id"

@@ -331,9 +331,9 @@ export default defineComponent({
         />
       </template>
     </RequireAuth>
-    <div v-else class="overflow-x-scroll max-w-2xl">
+    <div v-else class="w-full">
       <TextEditor
-        class="mb-3 h-48"
+        class="overflow-y-auto"
         :placeholder="'Please be kind'"
         @update="handleUpdateComment"
       />

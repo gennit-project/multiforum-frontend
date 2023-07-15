@@ -8,14 +8,11 @@ import { useDisplay } from "vuetify";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 
-
 export default defineComponent({
   name: "ChannelComponent",
   components: {
-   
     // ChannelIcon,
     ChannelTabs,
-   
   },
   setup() {
     const route = ref(useRoute());
@@ -72,32 +69,29 @@ export default defineComponent({
 });
 </script>
 
-
 <template>
   <div class="h-screen dark:bg-black">
-    <div class="h-full px-4 sm:px-6 lg:px-8">
-      <article class="relative z-0 flex-1  focus:outline-none xl:order-last h-full">
-        <div class="block h-full">
-
-          <!-- Tabs -->
-          <div class="border dark:border-gray-800 dark:bg-gray-950" v-if="route.name !== 'EditChannel'">
-            <div class="px-4 sm:px-6 lg:px-8">
-              <div class="flex justify-start pt-1 text-center">
-                <ChannelTabs class="block" :route="route" />
-              </div>
-            </div>
-          </div>
-
-       <router-view></router-view>
-
+    <!-- Tabs -->
+    <div v-if="route.name !== 'EditChannel'" class="border-b border-gray-300 dark:border-gray-800">
+      <div class="px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-start pt-1 text-center">
+          <ChannelTabs class="block" :route="route" />
         </div>
-      </article>
+      </div>
+    </div>
+    <div class="dark:bg-gray-950 h-full">
+      <div class="h-full px-4 sm:px-6 lg:px-8">
+        <article
+          class="relative z-0 h-full flex-1 focus:outline-none xl:order-last"
+        >
+          <div class="block h-full">
+            <router-view></router-view>
+          </div>
+        </article>
+      </div>
     </div>
   </div>
 </template>
-
-
-
 
 <style>
 #channelAvatar {

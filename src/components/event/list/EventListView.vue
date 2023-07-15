@@ -237,7 +237,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid class="dark:bg-gray-900 mx-auto max-w-7xl">
+  <v-container fluid class="mx-auto max-w-7xl">
     <v-row>
       <v-col cols="12">
         <div class="mt-3">
