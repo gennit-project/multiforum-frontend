@@ -235,7 +235,7 @@ export default defineComponent({
               {{ commentData.CommentAuthor.username }}
             </router-link>
             <span v-else class="font-bold">[Deleted]</span>
-            <span class="ml-1">&middot;</span>
+            <span class="mx-1">&middot;</span>
             {{ createdAtFormatted }}
             <span class="ml-1" v-if="commentData.updatedAt"> &middot; </span>
             {{ editedAtFormatted }}
