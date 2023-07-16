@@ -19,10 +19,17 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
-    const discussionId = ref(route.params.discussionId);
+    const updateDiscussionId= () => {
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
+    }
+
+    const discussionId = ref(updateDiscussionId());
 
     watchEffect(() => {
-      discussionId.value = route.params.discussionId;
+      discussionId.value = updateDiscussionId();
     });
 
     const channelId = computed(() => {
@@ -54,7 +61,7 @@ export default defineComponent({
       :class="route.name == 'DiscussionDetail' ? 'md:px-4' : ''"
     >
       <DiscussionDetailContent
-        v-if="discussionId !== ''"
+        v-if="discussionId"
         :discussion-id="discussionId"
         :compact-mode="compactMode"
       />

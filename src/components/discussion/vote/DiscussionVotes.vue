@@ -8,7 +8,6 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
-import { CREATE_DISCUSSION_CHANNEL } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import {
   DOWNVOTE_DISCUSSION_CHANNEL,
@@ -118,8 +117,7 @@ export default defineComponent({
       },
     }));
 
-    const activeDiscussionChannel = ref(props.discussion.DiscussionChannels[0])
-
+    const activeDiscussionChannel = ref(props.discussion.DiscussionChannels[0]);
 
     const discussionChannelId = computed(() => {
       return activeDiscussionChannel.value.id || "";
@@ -149,14 +147,18 @@ export default defineComponent({
 
       const existingDiscussions = readQueryResult?.discussions || [];
       const discussionToUpdate = existingDiscussions.find(
-        (discussion: any) => discussion.id === newDiscussionChannel.OriginalPost.id
+        (discussion: any) =>
+          discussion.id === newDiscussionChannel.Discussion.id,
       );
 
       const existingDiscussionChannels = discussionToUpdate.DiscussionChannels;
 
       const newDiscussion = {
         ...discussionToUpdate,
-        DiscussionChannels: [...existingDiscussionChannels, newDiscussionChannel],
+        DiscussionChannels: [
+          ...existingDiscussionChannels,
+          newDiscussionChannel,
+        ],
       };
 
       cache.modify({
@@ -170,7 +172,7 @@ export default defineComponent({
                   discussions: [
                     ...existingDiscussions.filter(
                       (discussion: any) =>
-                        discussion.id !== discussionIdInParams.value
+                        discussion.id !== discussionIdInParams.value,
                     ),
                     newDiscussion,
                   ],
@@ -192,10 +194,12 @@ export default defineComponent({
       update: updateQueryResult,
     }));
 
-    const { mutate: upvoteDiscussionChannel, error: upvoteDiscussionChannelError } =
-      useMutation(UPVOTE_DISCUSSION_CHANNEL, () => ({
-        update: updateQueryResult,
-      }));
+    const {
+      mutate: upvoteDiscussionChannel,
+      error: upvoteDiscussionChannelError,
+    } = useMutation(UPVOTE_DISCUSSION_CHANNEL, () => ({
+      update: updateQueryResult,
+    }));
 
     const {
       mutate: undoUpvoteDiscussionChannel,
@@ -217,43 +221,6 @@ export default defineComponent({
       },
     }));
 
-    const { mutate: createDiscussionChannel } =
-      useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
-        errorPolicy: "all",
-        variables: {
-          createDiscussionChannelInput: [
-            {
-              OriginalPost: {
-                Discussion: {
-                  connect: {
-                    where: {
-                      node: {
-                        id: discussionIdInParams.value,
-                      },
-                    },
-                  },
-                },
-              },
-              Channel: {
-                connect: {
-                  where: { node: { uniqueName: channelIdInParams.value } },
-                },
-              },
-              UpvotedByUsers: {
-                connect: {
-                  where: {
-                    node: {
-                      username: localUsernameResult.value?.username || "",
-                    },
-                  },
-                },
-              },
-            },
-          ],
-        },
-      }));
-
-    
     const loggedInUserUpvoted = computed(() => {
       if (
         localUsernameLoading.value ||
@@ -291,16 +258,15 @@ export default defineComponent({
 
     const downvoteCount = computed(() => {
       if (activeDiscussionChannel.value) {
-        return activeDiscussionChannel.value
-          .DownvotedByModeratorsAggregate?.count;
+        return activeDiscussionChannel.value.DownvotedByModeratorsAggregate
+          ?.count;
       }
       return 0;
     });
 
     const upvoteCount = computed(() => {
       if (activeDiscussionChannel.value) {
-        return activeDiscussionChannel.value.UpvotedByUsersAggregate
-          ?.count;
+        return activeDiscussionChannel.value.UpvotedByUsersAggregate?.count;
       }
       return 0;
     });
@@ -308,7 +274,6 @@ export default defineComponent({
     return {
       activeDiscussionChannel,
       discussionChannelId,
-      createDiscussionChannel,
       defaultUniqueName,
       discussionIdInParams,
       downvoteCount,
@@ -316,7 +281,6 @@ export default defineComponent({
       loggedInUserDownvoted,
       loggedInUserModName,
       discussionChannelMutations: {
-        create: createDiscussionChannel,
         upvote: upvoteDiscussionChannel,
         downvote: downvoteDiscussionChannel,
         undoUpvote: undoUpvoteDiscussionChannel,
@@ -382,18 +346,7 @@ export default defineComponent({
           displayName: this.loggedInUserModName || "",
         }); // counts toward ranking within channel
       } else {
-        const newDiscussionChannel = await this.discussionChannelMutations.create();
-        this.activeDiscussionChannel = newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0]
-        const newDiscussionChannelId =
-          newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0].id;
-
-        // We pass the variables in at the last minute
-        // so that we can use the new comment section id
-        // that was just created.
-        this.discussionChannelMutations.downvote({
-          id: newDiscussionChannelId,
-          displayName: this.loggedInUserModName || "",
-        }); // counts toward ranking within channel
+        throw new Error("Discussion channel id is required to downvote");
       }
     },
     async upvote() {
@@ -409,18 +362,7 @@ export default defineComponent({
           username: this.username || "",
         }); // counts toward ranking within channel
       } else {
-        const newDiscussionChannel = await this.createDiscussionChannel();
-        this.activeDiscussionChannel = newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0]
-        const newDiscussionChannelId =
-          newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0].id;
-
-        this.discussionChannelMutations.upvote({
-          // We pass the variables in at the last minute
-          // so that we can use the new comment section id
-          // that was just created.
-          id: newDiscussionChannelId,
-          username: this.username || "",
-        }); // counts toward ranking within channel
+        throw new Error("Discussion channel id is required to upvote");
       }
     },
     undoUpvote() {

@@ -41,6 +41,9 @@ const DISCUSSION_FIELDS = gql`
       Discussion {
         id
       }
+      CommentsAggregate {
+        count
+      }
       ...DiscussionChannelVoteFields
     }
     Tags {

@@ -76,15 +76,15 @@ export default defineComponent({
     const getCommentCount = (channelId: string) => {
       const discussionChannels = discussion.value?.DiscussionChannels;
 
-      const discussionChannelForChannel = discussionChannels.find((cs: any) => {
-        return cs.Channel?.uniqueName === channelId;
+      const activeDiscussionChannel = discussionChannels.find((ds: any) => {
+        return ds.Channel?.uniqueName === channelId;
       });
 
-      if (!discussionChannelForChannel) {
+      if (!activeDiscussionChannel) {
         return 0;
       }
-      return discussionChannelForChannel.CommentsAggregate?.count
-        ? discussionChannelForChannel.CommentsAggregate.count
+      return activeDiscussionChannel.CommentsAggregate?.count
+        ? activeDiscussionChannel.CommentsAggregate.count
         : 0;
     };
 
@@ -104,8 +104,6 @@ export default defineComponent({
         return countB - countA;
       });
     });
-
-    const discussionChannelRef = ref<InstanceType<typeof DiscussionChannel>>();
 
     const discussionChannelId = computed(() => {
       if (discussion.value?.DiscussionChannels) {
@@ -128,7 +126,6 @@ export default defineComponent({
       channelId,
       channelLinks,
       discussionChannelId,
-      discussionChannelRef,
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
@@ -177,24 +174,6 @@ export default defineComponent({
       </RequireAuth>
     </div>
     <div v-if="discussion" class="min-w-md mx-auto max-w-4xl space-y-3">
-      <!-- <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center">
-        <div
-          class="flex w-full justify-between rounded-lg border bg-gray-100 px-3 py-2 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900"
-        >
-          <span> PREVIEW </span>
-          <span
-            v-if="route.name !== 'DiscussionDetail' && channelId"
-            class="ml-1 mr-1"
-            ><router-link
-              data-testid="discussion-permalink"
-              v-if="route.name !== 'DiscussionDetail' && channelId"
-              class="mt-1 cursor-pointer rounded-sm px-3 py-1 font-medium underline"
-              :to="`/channels/c/${channelId}/discussions/d/${discussionId}`"
-              >Comment Page</router-link
-            ></span
-          >
-        </div>
-      </div> -->
       <div class="w-full mt-4 mb-2">
         <div ref="discussionDetail">
           <div class="min-w-0">
@@ -217,7 +196,6 @@ export default defineComponent({
         <DiscussionBody
           :discussion="discussion"
           :channel-id="channelId"
-          :discussion-channel-id="discussionChannelId"
         />
         <DiscussionVotes
           v-if="channelId"
@@ -235,7 +213,6 @@ export default defineComponent({
         v-if="route.name === 'DiscussionDetail' || channelId"
       >
         <CommentSection
-          ref="discussionChannelRef"
           :discussion-channel-id="discussionChannelId"
         />
       </div>

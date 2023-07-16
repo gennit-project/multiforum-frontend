@@ -193,6 +193,7 @@ export default defineComponent({
             w-full
             rounded
             sm:text-sm
+            dark:bg-gray-800
             border-gray-300
           "
         />

@@ -53,7 +53,7 @@ export default defineComponent({
     };
 
     const createFormValues = ref<CreateEditCommentFormValues>(
-      createCommentDefaultValues
+      createCommentDefaultValues,
     );
 
     const createCommentInput = computed(() => {
@@ -102,17 +102,16 @@ export default defineComponent({
       variables: {
         createDiscussionChannelInput: [
           {
-            OriginalPost: {
-              Discussion: {
-                connect: {
-                  where: {
-                    node: {
-                      id: props.discussion.id,
-                    },
+            Discussion: {
+              connect: {
+                where: {
+                  node: {
+                    id: props.discussion.id,
                   },
                 },
               },
             },
+
             Channel: {
               connect: { where: { node: { uniqueName: props.channelId } } },
             },
@@ -184,7 +183,7 @@ export default defineComponent({
               return discussionChannel.Channel.uniqueName === props.channelId;
             }
             return false;
-          }
+          },
         );
         if (discussionChannel) {
           return discussionChannel.id;
@@ -255,7 +254,7 @@ export default defineComponent({
             },
           });
         },
-      })
+      }),
     );
 
     const discussionChannelIsLocked = computed(() => {
@@ -277,7 +276,7 @@ export default defineComponent({
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
       showRootCommentEditor: ref(false),
-      username
+      username,
     };
   },
   methods: {
@@ -291,12 +290,12 @@ export default defineComponent({
       if (!this.discussionChannelId) {
         if (!this.channelId) {
           throw new Error(
-            "Cannot create comment section because there is no channel ID."
+            "Cannot create comment section because there is no channel ID.",
           );
         }
         if (!this.discussion.id) {
           throw new Error(
-            "Cannot create comment section because there is no discussion ID."
+            "Cannot create comment section because there is no discussion ID.",
           );
         }
         await this.createDiscussionChannel();
@@ -307,8 +306,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-1 px-1 flex space-x-2 py-4 w-full">
-    <ProfileAvatar v-if="username" class="h-5 w-5" :username="username"/>
+  <div class="mt-1 flex w-full space-x-2 px-1 py-4">
+    <ProfileAvatar v-if="username" class="h-5 w-5" :username="username" />
 
     <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
       <template v-slot:has-auth>
@@ -319,7 +318,7 @@ export default defineComponent({
           name="addcomment"
           rows="1"
           placeholder="Write a reply"
-          class="block w-full h-10 rounded-lg border-gray-300 dark:bg-black dark:border-gray-800 dark:text-slate-200 shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
+          class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
         />
       </template>
       <template v-slot:does-not-have-auth>
@@ -328,7 +327,7 @@ export default defineComponent({
           name="addcomment"
           rows="1"
           placeholder="Write a reply"
-          class="block w-full h-10 rounded-lg border-gray-300 dark:bg-black shadow-sm text-sm max-w-2xl focus:border-indigo-500 focus:ring-indigo-500"
+          class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-black"
         />
       </template>
     </RequireAuth>

@@ -26,15 +26,15 @@ export default defineComponent({
     const getCommentCount = (channelId: string) => {
       const discussionChannels = props.discussion.DiscussionChannel;
 
-      const discussionChannelForChannel = discussionChannels.find((cs: any) => {
+      const activeDiscussionChannel = discussionChannels.find((cs: any) => {
         return cs.Channel?.uniqueName === channelId;
       });
 
-      if (!discussionChannelForChannel) {
+      if (!activeDiscussionChannel) {
         return 0;
       }
-      return discussionChannelForChannel.CommentsAggregate?.count
-        ? discussionChannelForChannel.CommentsAggregate.count
+      return activeDiscussionChannel.CommentsAggregate?.count
+        ? activeDiscussionChannel.CommentsAggregate.count
         : 0;
     };
 

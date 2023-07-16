@@ -46,7 +46,7 @@ export default defineComponent({
     const route = useRoute();
 
     const discussionChannelId = computed(() => {
-      // Makes component rerender when comment section ID changes
+      // Makes component rerender when DiscussionChannel ID changes
       return props.discussionChannelId;
     });
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);

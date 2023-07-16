@@ -113,32 +113,32 @@ export default defineComponent({
       return props.discussionChannel?.id || "";
     });
 
-    const { mutate: createDiscussionChannel, error: createDiscussionChannelError } =
-      useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
-        errorPolicy: "all",
-        variables: {
-          createDiscussionChannelInput: [
-            {
-              OriginalPost: {
-                Discussion: {
-                  connect: {
-                    where: {
-                      node: {
-                        id: discussionIdInParams.value,
-                      },
-                    },
+    const {
+      mutate: createDiscussionChannel,
+      error: createDiscussionChannelError,
+    } = useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
+      errorPolicy: "all",
+      variables: {
+        createDiscussionChannelInput: [
+          {
+            Discussion: {
+              connect: {
+                where: {
+                  node: {
+                    id: discussionIdInParams.value,
                   },
                 },
               },
-              Channel: {
-                connect: {
-                  where: { node: { uniqueName: channelIdInParams.value } },
-                },
+            },
+            Channel: {
+              connect: {
+                where: { node: { uniqueName: channelIdInParams.value } },
               },
             },
-          ],
-        },
-      }));
+          },
+        ],
+      },
+    }));
 
     const loggedInUserUpvoted = computed(() => {
       if (
@@ -202,7 +202,9 @@ export default defineComponent({
       downvoteCount,
       lgAndUp,
       errorMessage: ref(""),
-      isActive : computed(() => discussionIdInParams.value === props.discussion.id),
+      isActive: computed(
+        () => discussionIdInParams.value === props.discussion.id,
+      ),
       loggedInUserUpvoted,
       loggedInUserDownvoted,
       loggedInUserModName,
@@ -245,39 +247,43 @@ export default defineComponent({
 
 <template>
   <li
-    class=" relative my-2 py-2 border-b dark:border-gray-800 space-x-1 space-y-3 flex"
-    :class="[ isActive ? 'text-blue-500' : '']"
+    class="relative my-2 flex space-x-1 space-y-3 border-b py-2 dark:border-gray-800"
+    :class="[isActive ? 'text-blue-500' : '']"
   >
-    <div class="w-full flex gap-3">
+    <div class="flex w-full gap-3">
       <DiscussionVotes
         :discussion="discussion"
         :comment-section="discussion.DiscussionChannels[0]"
         :show-downvote="false"
       />
-      <div class="h-10 w-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded">
+      <div
+        class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
+      >
         <div>💬</div>
       </div>
-      
+
       <div>
-      <router-link :to="detailLink" class="hover:text-gray-500">
-        <p class="text-sm font-bold cursor-pointer">
-          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+        <router-link :to="detailLink" class="hover:text-gray-500">
+          <p class="cursor-pointer text-sm font-bold">
+            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+          </p>
+        </router-link>
+        <p class="font-medium my-1 text-xs text-slate-600 hover:no-underline">
+          <Tag
+            class="my-1"
+            :active="selectedTags.includes(tag)"
+            :key="tag"
+            v-for="tag in tags"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
         </p>
-      </router-link>
-      <p class="text-xs text-slate-600 hover:no-underline font-medium my-1">
-        <Tag
-          class="my-1"
-          :active="selectedTags.includes(tag)"
-          :key="tag"
-          v-for="tag in tags"
-          :tag="tag"
-          @click="$emit('filterByTag', tag)"
-        />
-      </p>
-      <p class="text-xs font-medium text-slate-600 dark:text-gray-300 no-underline">
-        {{ `Posted ${relativeTime} by ${authorUsername}` }}
-      </p>
-    </div>
+        <p
+          class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
+        >
+          {{ `Posted ${relativeTime} by ${authorUsername}` }}
+        </p>
+      </div>
     </div>
     <ErrorBanner v-if="errorMessage" :text="errorMessage" />
   </li>
