@@ -24,17 +24,17 @@ export default defineComponent({
     const route = useRoute();
 
     const getCommentCount = (channelId: string) => {
-      const commentSections = props.discussion.CommentSections;
+      const discussionChannels = props.discussion.DiscussionChannel;
 
-      const commentSectionForChannel = commentSections.find((cs: any) => {
+      const discussionChannelForChannel = discussionChannels.find((cs: any) => {
         return cs.Channel?.uniqueName === channelId;
       });
 
-      if (!commentSectionForChannel) {
+      if (!discussionChannelForChannel) {
         return 0;
       }
-      return commentSectionForChannel.CommentsAggregate?.count
-        ? commentSectionForChannel.CommentsAggregate.count
+      return discussionChannelForChannel.CommentsAggregate?.count
+        ? discussionChannelForChannel.CommentsAggregate.count
         : 0;
     };
 

@@ -236,23 +236,6 @@ export default defineComponent({
       });
     });
 
-    // const getCommentSectionObjects = (newDiscussionId: string) => {
-    //   return selectedChannels.value.map((c) => {
-    //     return {
-    //       id: newDiscussionId + c,
-    //       Discussion: {
-    //         id: newDiscussionId,
-    //       },
-    //       Channel: {
-    //         uniqueName: c,
-    //       },
-    //     };
-    //   });
-    // };
-
-    // let touched = ref({
-    //   title: false,
-    // });
 
     return {
       channelId,

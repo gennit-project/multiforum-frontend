@@ -74,17 +74,17 @@ export default defineComponent({
     const { lgAndUp, mdAndUp } = useDisplay();
 
     const getCommentCount = (channelId: string) => {
-      const commentSections = discussion.value?.CommentSections;
+      const discussionChannels = discussion.value?.DiscussionChannels;
 
-      const commentSectionForChannel = commentSections.find((cs: any) => {
+      const discussionChannelForChannel = discussionChannels.find((cs: any) => {
         return cs.Channel?.uniqueName === channelId;
       });
 
-      if (!commentSectionForChannel) {
+      if (!discussionChannelForChannel) {
         return 0;
       }
-      return commentSectionForChannel.CommentsAggregate?.count
-        ? commentSectionForChannel.CommentsAggregate.count
+      return discussionChannelForChannel.CommentsAggregate?.count
+        ? discussionChannelForChannel.CommentsAggregate.count
         : 0;
     };
 
@@ -105,20 +105,20 @@ export default defineComponent({
       });
     });
 
-    const commentSectionRef = ref<InstanceType<typeof CommentSection>>();
+    const discussionChannelRef = ref<InstanceType<typeof DiscussionChannel>>();
 
-    const commentSectionId = computed(() => {
-      if (discussion.value?.CommentSections) {
-        const commentSection = discussion.value.CommentSections.find(
-          (commentSection) => {
-            if (commentSection && commentSection.Channel) {
-              return commentSection.Channel.uniqueName === channelId.value;
+    const discussionChannelId = computed(() => {
+      if (discussion.value?.DiscussionChannels) {
+        const discussionChannel = discussion.value.DiscussionChannels.find(
+          (discussionChannel) => {
+            if (discussionChannel && discussionChannel.Channel) {
+              return discussionChannel.Channel.uniqueName === channelId.value;
             }
             return false;
           },
         );
-        if (commentSection) {
-          return commentSection.id;
+        if (discussionChannel) {
+          return discussionChannel.id;
         }
       }
       return "";
@@ -127,8 +127,8 @@ export default defineComponent({
     return {
       channelId,
       channelLinks,
-      commentSectionId,
-      commentSectionRef,
+      discussionChannelId,
+      discussionChannelRef,
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
@@ -217,12 +217,12 @@ export default defineComponent({
         <DiscussionBody
           :discussion="discussion"
           :channel-id="channelId"
-          :comment-section-id="commentSectionId"
+          :discussion-channel-id="discussionChannelId"
         />
         <DiscussionVotes
           v-if="channelId"
           :discussion="discussion"
-          :comment-section="discussion.CommentSections[0]"
+          :discussion-channel="discussion.DiscussionChannels[0]"
         />
       </div>
       <CreateRootCommentForm
@@ -235,8 +235,8 @@ export default defineComponent({
         v-if="route.name === 'DiscussionDetail' || channelId"
       >
         <CommentSection
-          ref="commentSectionRef"
-          :commentSectionId="commentSectionId"
+          ref="discussionChannelRef"
+          :discussion-channel-id="discussionChannelId"
         />
       </div>
       <ChannelLinks

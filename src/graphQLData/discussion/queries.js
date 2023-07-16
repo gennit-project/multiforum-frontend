@@ -6,8 +6,8 @@ const AUTHOR_FIELDS = gql`
   }
 `;
 
-const COMMENT_SECTION_VOTE_FIELDS = gql`
-  fragment CommentSectionVoteFields on CommentSection {
+const DISCUSSION_CHANNEL_VOTE_FIELDS = gql`
+  fragment DiscussionChannelVoteFields on DiscussionChannel {
     UpvotedByUsers {
       username
     }
@@ -33,23 +33,18 @@ const DISCUSSION_FIELDS = gql`
     Author {
       ...AuthorFields
     }
-    Channels {
-      uniqueName
+    DiscussionChannels {
+      id
+      Channel {
+        uniqueName
+      }
+      Discussion {
+        id
+      }
+      ...DiscussionChannelVoteFields
     }
     Tags {
       text
-    }
-    UpvotedByUsers {
-      username
-    }
-    UpvotedByUsersAggregate {
-      count
-    }
-    DownvotedByModerators {
-      displayName
-    }
-    DownvotedByModeratorsAggregate {
-      count
     }
   }
   ${AUTHOR_FIELDS}
@@ -70,14 +65,11 @@ export const SITEWIDE_GET_DISCUSSIONS = gql`
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
       ...DiscussionFields
-      CommentSections {
+      DiscussionChannels {
         id
-        __typename
-        OriginalPost {
-          ... on Discussion {
+        __typenameDiscussion {
             id
             title
-          }
         }
       }
     }
@@ -86,7 +78,7 @@ export const SITEWIDE_GET_DISCUSSIONS = gql`
   ${DISCUSSION_FIELDS}
 `;
 
-export const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
+export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
   query getDiscussions(
     $channelId: String
     $where: DiscussionWhere
@@ -102,22 +94,11 @@ export const GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA = gql`
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
       ...DiscussionFields
-      CommentSections(where: { Channel: { uniqueName: $channelId } }) {
-        id
-        __typename
-        ...CommentSectionVoteFields
-        OriginalPost {
-          ... on Discussion {
-            id
-            title
-          }
-        }
-      }
     }
   }
   ${AUTHOR_FIELDS}
   ${DISCUSSION_FIELDS}
-  ${COMMENT_SECTION_VOTE_FIELDS}
+  ${DISCUSSION_CHANNEL_VOTE_FIELDS}
 `;
 
 // get discussion by ID
@@ -125,26 +106,9 @@ export const GET_DISCUSSION = gql`
   query getDiscussion($id: ID!) {
     discussions(where: { id: $id }) {
       ...DiscussionFields
-      CommentSections {
-        id
-        __typename
-        Channel {
-          uniqueName
-        }
-        CommentsAggregate {
-          count
-        }
-        ...CommentSectionVoteFields
-        OriginalPost {
-          ... on Discussion {
-            id
-            title
-          }
-        }
-      }
     }
   }
   ${AUTHOR_FIELDS}
   ${DISCUSSION_FIELDS}
-  ${COMMENT_SECTION_VOTE_FIELDS}
+  ${DISCUSSION_CHANNEL_VOTE_FIELDS}
 `;

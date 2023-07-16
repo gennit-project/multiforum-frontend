@@ -94,10 +94,10 @@ export default defineComponent({
     // channel that the event is in.
     // The idea is to show the comments that correspond
     // to the channel in the current URL.
-    let commentSectionId: string = "";
+    let discussionChannelId: string = "";
 
     if (typeof eventId.value === "string") {
-      commentSectionId = eventId.value + channelId.value;
+      discussionChannelId = eventId.value + channelId.value;
     } else {
       throw new Error("Event ID is not a string.");
     }
@@ -139,7 +139,7 @@ export default defineComponent({
       eventId,
       channelId,
       channelsExceptCurrent,
-      commentSectionId,
+      discussionChannelId,
       locationText,
       mdAndUp,
       relativeTime,

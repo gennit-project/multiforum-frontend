@@ -2,9 +2,9 @@
 import { defineComponent, ref, PropType, computed } from "vue";
 import {
   CREATE_COMMENT,
-  CREATE_COMMENT_SECTION,
+  CREATE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/comment/mutations";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import { GET_DISCUSSION_CHANNEL } from "@/graphQLData/comment/queries";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
@@ -71,11 +71,11 @@ export default defineComponent({
             },
           },
         },
-        CommentSection: {
+        DiscussionChannel: {
           connect: {
             where: {
               node: {
-                id: commentSectionId.value,
+                id: discussionChannelId.value,
               },
             },
           },
@@ -95,12 +95,12 @@ export default defineComponent({
     });
 
     const {
-      mutate: createCommentSection,
-      onDone: onDoneCreatingCommentSection,
-    } = useMutation(CREATE_COMMENT_SECTION, () => ({
+      mutate: createDiscussionChannel,
+      onDone: onDoneCreatingDiscussionChannel,
+    } = useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
       errorPolicy: "all",
       variables: {
-        createCommentSectionInput: [
+        createDiscussionChannelInput: [
           {
             OriginalPost: {
               Discussion: {
@@ -133,21 +133,21 @@ export default defineComponent({
               });
               if (readQueryResult) {
                 const existingDiscussion = readQueryResult.discussions[0];
-                const newCommentSection =
-                  result.data?.createCommentSections?.commentSections[0];
+                const newDiscussionChannel =
+                  result.data?.createDiscussionChannels?.discussionChannels[0];
                 cache.writeQuery({
                   query: GET_DISCUSSION,
                   data: {
                     discussions: [
                       {
                         ...existingDiscussion,
-                        CommentSections: [
-                          ...existingDiscussion.CommentSections,
+                        DiscussionChannels: [
+                          ...existingDiscussion.DiscussionChannels,
                           {
-                            ...newCommentSection,
-                            id: newCommentSection.id,
-                            Channel: newCommentSection.Channel,
-                            OriginalPost: newCommentSection.OriginalPost,
+                            ...newDiscussionChannel,
+                            id: newDiscussionChannel.id,
+                            Channel: newDiscussionChannel.Channel,
+                            Discussion: newDiscussionChannel.Discussion,
                           },
                         ],
                       },
@@ -166,31 +166,31 @@ export default defineComponent({
 
     // Update this ID when creating the first comment and comment
     // section to go with it
-    const newCommentSectionId = ref("");
+    const newDiscussionChannelId = ref("");
 
-    onDoneCreatingCommentSection((cs: any) => {
-      const data = cs.data.createCommentSections?.commentSections[0];
-      newCommentSectionId.value = data.id;
+    onDoneCreatingDiscussionChannel((cs: any) => {
+      const data = cs.data.createDiscussionChannels?.discussionChannels[0];
+      newDiscussionChannelId.value = data.id;
     });
 
-    const commentSectionId = computed(() => {
+    const discussionChannelId = computed(() => {
       if (!props.discussion) {
         return "";
       }
-      if (props.discussion.CommentSections) {
-        const commentSection = props.discussion.CommentSections.find(
-          (commentSection) => {
-            if (commentSection && commentSection.Channel) {
-              return commentSection.Channel.uniqueName === props.channelId;
+      if (props.discussion.discussionChannels) {
+        const discussionChannel = props.discussion.DiscussionChannels.find(
+          (discussionChannel) => {
+            if (discussionChannel && discussionChannel.Channel) {
+              return discussionChannel.Channel.uniqueName === props.channelId;
             }
             return false;
           }
         );
-        if (commentSection) {
-          return commentSection.id;
+        if (discussionChannel) {
+          return discussionChannel.id;
         }
       }
-      return newCommentSectionId.value;
+      return newDiscussionChannelId.value;
     });
 
     const { mutate: createComment, error: createCommentError } = useMutation(
@@ -211,23 +211,23 @@ export default defineComponent({
           // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
           const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
+            query: GET_DISCUSSION_CHANNEL,
             variables: {
-              id: commentSectionId.value,
+              id: discussionChannelId.value,
             },
           });
 
-          const existingCommentSectionData =
-            readQueryResult?.commentSections[0];
-          //commentResult.commentSections[0].CommentsConnection.edges"
+          const existingDiscussionChannelData =
+            readQueryResult?.discussionChannels[0];
+          //commentResult.discussionChannels[0].CommentsConnection.edges"
           //   :key="comment.node.id"
           let rootCommentsCopy = [
             newComment,
-            ...(existingCommentSectionData?.Comments || []),
+            ...(existingDiscussionChannelData?.Comments || []),
           ];
           let existingCommentAggregate =
-            existingCommentSectionData?.CommentsAggregate
-              ? existingCommentSectionData.CommentsAggregate
+            existingDiscussionChannelData?.CommentsAggregate
+              ? existingDiscussionChannelData.CommentsAggregate
               : null;
           let newCommentAggregate = null;
           if (existingCommentAggregate) {
@@ -237,12 +237,12 @@ export default defineComponent({
             };
           }
           cache.writeQuery({
-            query: GET_COMMENT_SECTION,
+            query: GET_DISCUSSION_CHANNEL,
             data: {
               ...readQueryResult,
-              commentSections: [
+              discussionChannels: [
                 {
-                  ...existingCommentSectionData,
+                  ...existingDiscussionChannelData,
                   Comments: rootCommentsCopy,
                   CommentsAggregate: newCommentAggregate
                     ? newCommentAggregate
@@ -251,14 +251,14 @@ export default defineComponent({
               ],
             },
             variables: {
-              id: commentSectionId.value,
+              id: discussionChannelId.value,
             },
           });
         },
       })
     );
 
-    const commentSectionIsLocked = computed(() => {
+    const discussionChannelIsLocked = computed(() => {
       if (!props.discussion) {
         return false;
       }
@@ -268,11 +268,11 @@ export default defineComponent({
     });
 
     return {
-      commentSectionId,
-      commentSectionIsLocked,
+      discussionChannelId,
+      discussionChannelIsLocked,
       createComment,
       createCommentError,
-      createCommentSection,
+      createDiscussionChannel,
       createFormValues,
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
@@ -288,7 +288,7 @@ export default defineComponent({
       this.createFormValues.text = text;
     },
     async handleCreateComment() {
-      if (!this.commentSectionId) {
+      if (!this.discussionChannelId) {
         if (!this.channelId) {
           throw new Error(
             "Cannot create comment section because there is no channel ID."
@@ -299,7 +299,7 @@ export default defineComponent({
             "Cannot create comment section because there is no discussion ID."
           );
         }
-        await this.createCommentSection();
+        await this.createDiscussionChannel();
       }
       this.createComment();
     },

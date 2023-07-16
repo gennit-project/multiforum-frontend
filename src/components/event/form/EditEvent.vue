@@ -267,13 +267,7 @@ export default defineComponent({
     });
 
     onDone(() => {
-      // Add a new comment section for each selected channel.
-      // createCommentSections({
-      //   variables: {
-      //     commentSectionObjects: getCommentSectionObjects(newEventId),
-      //   },
-      // });
-
+  
       /*
         Redirect to the event detail page in the first
         channel that the event was submitted to.
@@ -287,19 +281,7 @@ export default defineComponent({
       });
     });
 
-    // const getCommentSectionObjects = (newEventId: string) => {
-    //   return selectedChannels.value.map((c) => {
-    //     return {
-    //       id: newEventId + c,
-    //       Event: {
-    //         id: newEventId,
-    //       },
-    //       Channel: {
-    //         uniqueName: c,
-    //       },
-    //     };
-    //   });
-    // };
+
 
     return {
       getEventError,

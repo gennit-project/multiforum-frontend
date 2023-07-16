@@ -40,10 +40,10 @@ export const GET_CHANNELS = gql`
       Tags {
         text
       }
-      EventsAggregate(where: $eventWhere) {
+      EventChannelsAggregate(where: $eventWhere) {
         count
       }
-      DiscussionsAggregate {
+      DiscussionChannelsAggregate {
         count
       }
     }

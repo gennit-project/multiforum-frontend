@@ -68,7 +68,7 @@ export const GET_USER_COMMENTS = gql`
             username
           }
         }
-        CommentSection {
+        DiscussionChannel {
           id
           Channel {
             uniqueName
@@ -109,8 +109,10 @@ export const GET_USER_DISCUSSIONS = gql`
         createdAt
         updatedAt
         deleted
-        Channels {
-          uniqueName
+        DiscussionChannels {
+          Channel {
+            uniqueName
+          }
         }
         Tags {
           text
@@ -146,8 +148,10 @@ export const GET_USER_EVENTS = gql`
         createdAt
         updatedAt
         deleted
-        Channels {
-          uniqueName
+        EventChannels {
+          Channel {
+            uniqueName
+          }
         }
       }
     }
@@ -189,12 +193,8 @@ export const USER_LOOKUP = gql`
       }
       Comments {
         id
-        CommentSection {
+        DiscussionChannels {
           id
-          Event {
-            id
-            title
-          }
           Discussion {
             id
             title
@@ -208,9 +208,6 @@ export const USER_LOOKUP = gql`
           username
         }
         text
-        Channel {
-          url
-        }
         authorIsAdmin
         authorIsModerator
         authorIsPoster
@@ -224,8 +221,10 @@ export const USER_LOOKUP = gql`
       }
       Events {
         id
-        Channels {
-          url
+        EventChannels {
+          Channel {
+            uniqueName
+          }
         }
         title
         startTime
@@ -261,15 +260,12 @@ export const USER_LOOKUP = gql`
         ChannelsAggregate {
           count
         }
-        CommentSections {
+        DiscussionChannels {
           id
           CommentsAggregate {
             count
           }
           Discussion {
-            id
-          }
-          Event {
             id
           }
           Channel {

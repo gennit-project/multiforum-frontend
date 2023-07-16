@@ -1,8 +1,9 @@
 import UserData from './userTypes';
 import TagData from './tagTypes';
-import CommentSectionData from './commentTypes';
+import DiscussionChannelData from './commentTypes';
 import { ChannelData } from './channelTypes';
 import { ModProfile } from '@/components/mod/ModProfile.vue';
+import { Discussion } from '@/__generated__/graphql';
 
 export interface DiscussionData {
     id: string;
@@ -11,7 +12,7 @@ export interface DiscussionData {
     Channels: [ChannelData];
     Author: UserData;
     Tags: [TagData];
-    CommentSections: [CommentSectionData];
+    DiscussionChannels: [DiscussionChannelData];
     createdAt: string;
     updatedAt?: string;
     UpvotedByUsers: [UserData];

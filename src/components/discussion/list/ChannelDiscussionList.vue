@@ -10,7 +10,7 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
+import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/discussion/queries";
 import { modProfileNameVar } from "@/cache";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "../../../types/discussionTypes";
@@ -70,7 +70,7 @@ export default defineComponent({
       onResult: onGetDiscussionResult,
       fetchMore,
     } = useQuery(
-      GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+      GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA,
       {
         ...discussionQueryFilters.value,
       }
@@ -266,7 +266,7 @@ export default defineComponent({
                 :key="discussion.id"
                 :discussion="discussion"
                 :discussion-query-filters="discussionQueryFilters"
-                :comment-section="discussion.CommentSections[0]"
+                :discussion-channel="discussion.DiscussionChannels[0]"
                 :search-input="searchInput"
                 :selected-tags="selectedTags"
                 :selected-channels="selectedChannels"

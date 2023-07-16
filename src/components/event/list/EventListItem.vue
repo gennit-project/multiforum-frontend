@@ -3,7 +3,6 @@ import { defineComponent, PropType, computed } from "vue";
 import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
 import { getDatePieces } from "@/utils/dateTimeUtils";
-import { CommentSectionData } from "../../../types/commentTypes";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "../../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
@@ -108,13 +107,13 @@ export default defineComponent({
     },
   },
   methods: {
-    getCommentCount(commentSection: CommentSectionData) {
-      const count = commentSection.CommentsAggregate.count;
-      return ` ${count} comment${count === 1 ? "" : "s"}`;
-    },
-    getChannel(commentSection: CommentSectionData) {
-      return commentSection.Channel.uniqueName;
-    },
+    // getCommentCount(commentSection: CommentSectionData) {
+    //   const count = commentSection.CommentsAggregate.count;
+    //   return ` ${count} comment${count === 1 ? "" : "s"}`;
+    // },
+    // getChannel(commentSection: CommentSectionData) {
+    //   return commentSection.Channel.uniqueName;
+    // },
     handleClickTag(tagText: string) {
       const currentQuery = this.$route.query;
 

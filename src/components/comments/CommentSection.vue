@@ -10,7 +10,7 @@ import {
   DeleteCommentInputData,
 } from "@/types/commentTypes";
 import {
-  GET_COMMENT_SECTION,
+  GET_DISCUSSION_CHANNEL,
   GET_COMMENT_REPLIES,
 } from "@/graphQLData/comment/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
@@ -31,7 +31,7 @@ import type { Ref } from "vue";
 
 export default defineComponent({
   props: {
-    commentSectionId: {
+    discussionChannelId: {
       type: String,
       required: true,
     },
@@ -45,9 +45,9 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
 
-    const commentSectionId = computed(() => {
+    const discussionChannelId = computed(() => {
       // Makes component rerender when comment section ID changes
-      return props.commentSectionId;
+      return props.discussionChannelId;
     });
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -64,8 +64,8 @@ export default defineComponent({
       error: commentError,
       loading: commentLoading,
       //   fetchMore,
-    } = useQuery(GET_COMMENT_SECTION, {
-      id: commentSectionId,
+    } = useQuery(GET_DISCUSSION_CHANNEL, {
+      id: discussionChannelId,
       // limit: 25,
       // offset: 0,
     });
@@ -129,8 +129,8 @@ export default defineComponent({
           // For root comments, update the comment section query result
           cache.modify({
             id: cache.identify({
-              __typename: "CommentSection",
-              id: props.commentSectionId,
+              __typename: "DiscussionChannel",
+              id: props.discussionChannelId,
             }),
             fields: {
               Comments(existingComments: any, { readField }: any) {
@@ -145,8 +145,8 @@ export default defineComponent({
         // count of the comment section
         cache.modify({
           id: cache.identify({
-            __typename: "CommentSection",
-            id: props.commentSectionId,
+            __typename: "DiscussionChannel",
+            id: props.discussionChannelId,
           }),
           fields: {
             CommentsAggregate(existingValue: any) {
@@ -189,11 +189,11 @@ export default defineComponent({
 
       const input = {
         isRootComment: false,
-        CommentSection: {
+        DiscussionChannel: {
           connect: {
             where: {
               node: {
-                id: props.commentSectionId,
+                id: props.discussionChannelId,
               },
             },
           },
@@ -248,7 +248,7 @@ export default defineComponent({
 
           if (createFormValues.value.depth === 2) {
             // For second level comments, the cache update logic
-            // is to update the GET_COMMENT_SECTION query because
+            // is to update the GET_DISCUSSION_CHANNEL query because
             // the first two levels of comments are loaded when
             // the comment section is first loaded.
 
@@ -256,18 +256,18 @@ export default defineComponent({
             // in the discussion component.)
 
             const readQueryResult = cache.readQuery({
-              query: GET_COMMENT_SECTION,
+              query: GET_DISCUSSION_CHANNEL,
               variables: {
-                id: props.commentSectionId,
+                id: props.discussionChannelId,
               },
             });
 
-            const existingCommentSectionData =
-              readQueryResult?.commentSections[0];
+            const existingDiscussionChannelData =
+              readQueryResult?.discussionChannel[0];
 
             let existingCommentAggregate =
-              existingCommentSectionData?.CommentsAggregate
-                ? existingCommentSectionData.CommentsAggregate
+              existingDiscussionChannelData?.CommentsAggregate
+                ? existingDiscussionChannelData.CommentsAggregate
                 : null;
             let newCommentAggregate = null;
             if (existingCommentAggregate) {
@@ -278,7 +278,7 @@ export default defineComponent({
             }
 
             let rootCommentsCopy = [
-              ...(existingCommentSectionData.Comments || []),
+              ...(existingDiscussionChannelData.Comments || []),
             ];
             rootCommentsCopy = rootCommentsCopy.map((comment: any) => {
               if (comment.id === createFormValues.value.parentCommentId) {
@@ -305,12 +305,12 @@ export default defineComponent({
             });
 
             cache.writeQuery({
-              query: GET_COMMENT_SECTION,
+              query: GET_DISCUSSION_CHANNEL,
               data: {
                 ...readQueryResult,
-                commentSections: [
+                discussionChannels: [
                   {
-                    ...existingCommentSectionData,
+                    ...existingDiscussionChannelData,
                     Comments: rootCommentsCopy,
                     CommentsAggregate: newCommentAggregate
                       ? newCommentAggregate
@@ -319,7 +319,7 @@ export default defineComponent({
                 ],
               },
               variables: {
-                id: props.commentSectionId,
+                id: props.discussionChannelId,
               },
             });
           }
@@ -398,19 +398,19 @@ export default defineComponent({
             }
 
             // Update the total count of comments
-            const readCommentSectionQueryResult = cache.readQuery({
-              query: GET_COMMENT_SECTION,
+            const readDiscussionChannelQueryResult = cache.readQuery({
+              query: GET_DISCUSSION_CHANNEL,
               variables: {
-                id: props.commentSectionId,
+                id: props.discussionChannelId,
               },
             });
 
-            const existingCommentSectionData =
-              readCommentSectionQueryResult?.commentSections[0];
+            const existingDiscussionChannelData =
+              readDiscussionChannelQueryResult?.discussionChannels[0];
 
             let existingCommentAggregate =
-              existingCommentSectionData?.CommentsAggregate
-                ? existingCommentSectionData.CommentsAggregate
+              existingDiscussionChannelData?.CommentsAggregate
+                ? existingDiscussionChannelData.CommentsAggregate
                 : null;
 
             let newCommentAggregate = null;
@@ -423,19 +423,19 @@ export default defineComponent({
             }
 
             cache.writeQuery({
-              query: GET_COMMENT_SECTION,
+              query: GET_DISCUSSION_CHANNEL,
               data: {
                 ...readQueryResult,
-                commentSections: [
+                discussionChannels: [
                   {
-                    ...existingCommentSectionData,
+                    ...existingDiscussionChannelData,
                     CommentsAggregate: newCommentAggregate
                       ? newCommentAggregate
                       : existingCommentAggregate,
                   },
                 ],
                 variables: {
-                  id: props.commentSectionId,
+                  id: props.discussionChannelId,
                 },
               },
             });
@@ -563,7 +563,7 @@ export default defineComponent({
     />
     <div
       v-else-if="
-        commentResult.commentSections.length === 0 &&
+        commentResult.discussionChannels.length === 0 &&
         route.name === 'DiscussionDetail'
       "
     >
@@ -578,7 +578,7 @@ export default defineComponent({
       <p v-else>There are no comments yet.</p>
     </div>
 
-    <div v-else-if="commentResult.commentSections.length > 0">
+    <div v-else-if="commentResult.discussionChannels.length > 0">
       <h2
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
@@ -586,7 +586,7 @@ export default defineComponent({
         class="text-lg"
       >
         {{
-          `Comments (${commentResult.commentSections[0].CommentsAggregate.count})`
+          `Comments (${commentResult.discussionChannels[0].CommentsAggregate.count})`
         }}
       </h2>
       <ErrorBanner
@@ -596,7 +596,7 @@ export default defineComponent({
       />
       <div class="mb-6">
         <Comment
-          v-for="comment in commentResult.commentSections[0].Comments"
+          v-for="comment in commentResult.discussionChannels[0].Comments"
           :key="comment.id"
           :compact="true"
           :commentData="comment"

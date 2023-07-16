@@ -201,7 +201,7 @@ export default defineComponent({
         this.commentData.createdAt,
       )}${
         this.showChannel
-          ? " in c/" + this.commentData.CommentSection.Channel.uniqueName
+          ? " in c/" + this.commentData.DiscussionChannel.Channel.uniqueName
           : ""
       }`;
     },

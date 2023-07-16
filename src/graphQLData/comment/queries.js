@@ -40,9 +40,9 @@ const COMMENT_FIELDS = gql`
   ${AUTHOR_FIELDS}
 `;
 
-export const GET_COMMENT_SECTION = gql`
-  query getCommentSection($id: ID!) {
-    commentSections(
+export const GET_DISCUSSION_CHANNEL = gql`
+  query getDiscussionChannel($id: ID!) {
+    discussionChannels(
       where: {
         id: $id
       }
@@ -51,13 +51,11 @@ export const GET_COMMENT_SECTION = gql`
       Channel {
         uniqueName
       }
-      OriginalPost {
-        ... on Discussion {
-          id
-          title
-          Author {
-            ...AuthorFields
-          }
+      Discussion {
+        id
+        title
+        Author {
+          ...AuthorFields
         }
       }
       CommentsAggregate {

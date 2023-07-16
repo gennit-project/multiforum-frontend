@@ -109,7 +109,7 @@ export default defineComponent({
                 },
               },
         },
-        CommentSections: {
+        DiscussionChannels: {
           create: {
             node: {
               UpvotedByUsers: {

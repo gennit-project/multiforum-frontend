@@ -1,7 +1,6 @@
 import ChannelData from "./channelTypes";
 import UserData from "./userTypes";
 import TagData from "./tagTypes";
-import CommentSectionData from "./commentTypes";
 
 export type Point = {
   latitude: number;
@@ -49,7 +48,6 @@ export interface EventData {
   Channels: Array[ChannelData];
   Poster?: UserData;
   Tags: Array[TagData];
-  CommentSections: [CommentSectionData];
   updatedAt: string;
   createdAt: string;
 }

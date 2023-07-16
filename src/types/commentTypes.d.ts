@@ -2,16 +2,15 @@ import ChannelData from '../channel/channelTypes'
 import { TagData } from './tagTypes'
 import UserData from './userTypes'
 import ModeratorData from './userTypes';
-import { EventData } from './eventTypes'
 import { DiscussionData } from './discussionTypes'
 
-export type CommentSectionData = {
+export type DiscussionChannelData = {
   id: string
   CommentsAggregate: {
     count: number
   }
-  OriginalPost: EventData | DiscussionData
-  Channel: ChannelData
+  Discussion: DiscussionData;
+  Channel: ChannelData;
   UpvotedByUsers: [UserData];
   UpvotedByUsersAggregate: {count};
   DownvotedByModerators: [ModProfile];
@@ -43,7 +42,7 @@ export type CommentData = {
   CommentAuthor: UserData
   text: string
   isRootComment: Boolean
-  CommentSection?: CommentSectionData
+  DiscussionChannel?: DiscussionChannelData
   ParentComment?: CommentData
   ChildCommentsAggregate?: { 
     count: number

@@ -7,8 +7,10 @@ mutation ($createEventInput: [EventCreateInput!]!) {
       id
       title
       description
-      Channels {
-        uniqueName
+      EventChannels {
+        Channel {
+          uniqueName
+        }
       }
       Poster {
         username
@@ -47,8 +49,10 @@ export const UPDATE_EVENT = gql`
         id
         title
         description
-        Channels {
-          uniqueName
+        EventChannels {
+          Channel {
+            uniqueName
+          }
         }
         Poster {
           username

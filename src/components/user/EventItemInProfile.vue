@@ -4,7 +4,6 @@ import { EventData } from "../../types/eventTypes";
 import { TagData } from "../../types/tagTypes"
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
-// import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
@@ -47,7 +46,7 @@ export default defineComponent({
     });
     return {
       previewIsOpen: false,
-      defaultUniqueName, //props.event.CommentSections[0].Channel.uniqueName,
+      defaultUniqueName, //props.event.DiscussionChannels[0].Channel.uniqueName,
       title: props.event.title,
       createdAt: props.event.createdAt,
       relativeTime: relativeTime(props.event.createdAt),
@@ -74,13 +73,6 @@ export default defineComponent({
       return `/events/search/${this.event.id}`;
     },
   },
-  // methods: {
-  // getCommentCount(commentSection: CommentSectionData) {
-  //   const count = commentSection.CommentsAggregate.count;
-  //   return ` ${count} comment${count === 1 ? "" : "s"}`;
-  // },
-
-  // },
   inheritAttrs: false,
 });
 </script>

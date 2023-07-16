@@ -17,7 +17,7 @@ import { EventData } from "@/types/eventTypes";
 import { gql } from "@apollo/client/core";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import RequireAuth from "../../auth/RequireAuth.vue";
-// import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+// import { CREATE_DISCUSSION_CHANNEL } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
   name: "CreateEvent",
@@ -180,12 +180,7 @@ export default defineComponent({
     });
 
     onDone((response: any) => {
-      // Add a new comment section for each selected channel.
-      // createCommentSections({
-      //   variables: {
-      //     commentSectionObjects: getCommentSectionObjects(newEventId),
-      //   },
-      // });
+
       const newEventId = response.data.createEvents.events[0].id;
 
       /*
@@ -219,19 +214,6 @@ export default defineComponent({
       }
     });
 
-    // const getCommentSectionObjects = (newEventId: string) => {
-    //   return selectedChannels.value.map((c) => {
-    //     return {
-    //       id: newEventId + c,
-    //       Event: {
-    //         id: newEventId,
-    //       },
-    //       Channel: {
-    //         uniqueName: c,
-    //       },
-    //     };
-    //   });
-    // };
 
     return {
       channelId,

@@ -3,7 +3,7 @@ import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
 import LinkPreview from "../../generic/LinkPreview.vue";
-import { MdPreview, MdCatalog } from "md-editor-v3";
+import { MdPreview } from "md-editor-v3";
 import { ChannelData } from "@/types/channelTypes";
 import { useRoute } from "vue-router";
 import Tag from "../../tag/Tag.vue";
@@ -15,7 +15,6 @@ export default defineComponent({
   components: {
     LinkPreview,
     MdPreview,
-    MdCatalog,
     Tag,
   },
   props: {
@@ -23,7 +22,7 @@ export default defineComponent({
       type: String,
       required: true,
     },
-    commentSectionId: {
+    discussionChannelId: {
       type: String,
       required: false,
       default: null,
@@ -78,17 +77,17 @@ export default defineComponent({
     });
 
     const getCommentCount = (channelId: string) => {
-      const commentSections = props.discussion?.CommentSections;
+      const discussionChannels = props.discussion?.DiscussionChannels;
 
-      const commentSectionForChannel = commentSections.find((cs: any) => {
+      const discussionChannelForChannel = discussionChannels.find((cs: any) => {
         return cs.Channel?.uniqueName === channelId;
       });
 
-      if (!commentSectionForChannel) {
+      if (!discussionChannelForChannel) {
         return 0;
       }
-      return commentSectionForChannel.CommentsAggregate?.count
-        ? commentSectionForChannel.CommentsAggregate.count
+      return discussionChannelForChannel.CommentsAggregate?.count
+        ? discussionChannelForChannel.CommentsAggregate.count
         : 0;
     };
 

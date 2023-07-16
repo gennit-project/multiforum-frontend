@@ -7,8 +7,10 @@ export const CREATE_DISCUSSION = gql`
         id
         title
         body
-        Channels {
-          uniqueName
+        DiscussionChannels {
+          Channel {
+            uniqueName
+          }
         }
         Author {
           username
@@ -33,8 +35,16 @@ export const UPDATE_DISCUSSION = gql`
         id
         title
         body
-        Channels {
-          uniqueName
+        DiscussionChannels {
+          Channel {
+            uniqueName
+          }
+          UpvotedByUsersAggregate {
+            count
+          }
+          DownvotedByModeratorsAggregate {
+            count
+          }
         }
         Author {
           username
@@ -43,12 +53,6 @@ export const UPDATE_DISCUSSION = gql`
         updatedAt
         Tags {
           text
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModeratorsAggregate {
-          count
         }
       }
     }
@@ -64,17 +68,13 @@ export const DELETE_DISCUSSION = gql`
   }
 `;
 
-export const UPVOTE_DISCUSSION = gql`
-  mutation upvoteDiscussion($id: ID!, $username: String!) {
-    updateDiscussions(
-      where: { id: $id },
-      connect: {
-        UpvotedByUsers: {
-          where: { node: { username: $username } }
-        }
-      }
+export const UPVOTE_DISCUSSION_CHANNEL = gql`
+  mutation upvoteDiscussionChannel($id: ID!, $username: String!) {
+    updateDiscussionChannels(
+      where: { id: $id }
+      connect: { UpvotedByUsers: { where: { node: { username: $username } } } }
     ) {
-      discussions {
+      discussionChannels {
         id
         UpvotedByUsers {
           username
@@ -85,97 +85,32 @@ export const UPVOTE_DISCUSSION = gql`
       }
     }
   }
-`
+`;
 
-export const UPVOTE_COMMENT_SECTION = gql`
-  mutation upvoteCommentSection($id: ID!, $username: String!) {
-    updateCommentSections(
-      where: { id: $id },
-      connect: {
-        UpvotedByUsers: {
-          where: { node: { username: $username } }
-        }
+export const UNDO_UPVOTE_DISCUSSION_CHANNEL = gql`
+  mutation undoUpvoteDiscussionChannel($id: ID!, $username: String!) {
+    updateDiscussionChannels(
+      where: { id: $id }
+      disconnect: {
+        UpvotedByUsers: { where: { node: { username: $username } } }
       }
     ) {
-      commentSections {
+      discussionChannels {
         id
         UpvotedByUsers {
           username
         }
         UpvotedByUsersAggregate {
           count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-        OriginalPost {
-          ... on Discussion {
-            id
-            title
-            Author {
-              username
-            }
-          }
         }
       }
     }
   }
-`
+`;
 
-
-export const UNDO_UPVOTE_DISCUSSION = gql`
-  mutation undoUpvoteDiscussion($id: ID!, $username: String!) {
-    updateDiscussions(
-      where: { id: $id },
-      disconnect: {
-        UpvotedByUsers: {
-          where: { node: { username: $username } }
-        }
-      }
-    ) {
-      discussions {
-        id
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-      }
-      
-    }
-  }`
-
-
-export const UNDO_UPVOTE_COMMENT_SECTION = gql`
-  mutation undoUpvoteCommentSection($id: ID!, $username: String!) {
-    updateCommentSections(
-      where: { id: $id },
-      disconnect: {
-        UpvotedByUsers: {
-          where: { node: { username: $username } }
-        }
-      }
-    ) {
-      commentSections {
-        id
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-      }
-    }
-  }`
-
-
-export const DOWNVOTE_DISCUSSION = gql`
-  mutation downvoteDiscussion($id: ID!, $displayName: String!) {
-    updateDiscussions(
+export const DOWNVOTE_DISCUSSION_CHANNEL = gql`
+  mutation downvoteDiscussionChannel($id: ID!, $displayName: String!) {
+    updateDiscussionChannels(
       where: { id: $id }
       connect: {
         DownvotedByModerators: {
@@ -183,7 +118,7 @@ export const DOWNVOTE_DISCUSSION = gql`
         }
       }
     ) {
-      discussions {
+      discussionChannels {
         id
         DownvotedByModerators {
           displayName
@@ -196,48 +131,9 @@ export const DOWNVOTE_DISCUSSION = gql`
   }
 `;
 
-export const DOWNVOTE_COMMENT_SECTION = gql`
-  mutation downvoteCommentSections($id: ID!, $displayName: String!) {
-    updateCommentSections(
-      where: { id: $id }
-      connect: {
-        DownvotedByModerators: {
-          where: { node: { displayName: $displayName } }
-        }
-      }
-    ) {
-      commentSections {
-        id
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-        OriginalPost {
-          ... on Discussion {
-            id
-            title
-            Author {
-              username
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-
-export const UNDO_DOWNVOTE_DISCUSSION = gql`
-  mutation undoDownvoteDiscussion($id: ID!, $displayName: String!) {
-    updateCommentSections(
+export const UNDO_DOWNVOTE_DISCUSSION_CHANNEL = gql`
+  mutation undoDownvoteDiscussionChannel($id: ID!, $displayName: String!) {
+    updateDiscussionChannels(
       where: { id: $id }
       disconnect: {
         DownvotedByModerators: {
@@ -245,7 +141,7 @@ export const UNDO_DOWNVOTE_DISCUSSION = gql`
         }
       }
     ) {
-      commentSections {
+      discussionChannels {
         id
         DownvotedByModerators {
           displayName
@@ -257,27 +153,3 @@ export const UNDO_DOWNVOTE_DISCUSSION = gql`
     }
   }
 `;
-
-export const UNDO_DOWNVOTE_COMMENT_SECTION = gql`
-  mutation undoDownvoteCommentSection($id: ID!, $displayName: String!) {
-    updateCommentSections(
-      where: { id: $id }
-      disconnect: {
-        DownvotedByModerators: {
-          where: { node: { displayName: $displayName } }
-        }
-      }
-    ) {
-      commentSections {
-        id
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-      }
-    }
-  }
-`;
-

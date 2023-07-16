@@ -41,7 +41,7 @@ const cache = new InMemoryCache({
         Channels: {
           merge: false,
         },
-        CommentSections: {
+        DiscussionChannel: {
           merge: false,
         },
         DownvotedByModerators: {
@@ -82,7 +82,7 @@ const cache = new InMemoryCache({
         },
       },
     },
-    CommentSection: {
+    DiscussionChannel: {
       fields: {
         DownvotedByModerators: {
           merge(existing, incoming) {

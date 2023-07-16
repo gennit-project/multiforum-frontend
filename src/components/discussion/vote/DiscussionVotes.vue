@@ -1,27 +1,22 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { CommentSectionData } from "../../../types/commentTypes";
+import { DiscussionChannelData } from "../../../types/commentTypes";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
-import { gql } from "@apollo/client/core";
 import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
-import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
+import { CREATE_DISCUSSION_CHANNEL } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import {
-  DOWNVOTE_DISCUSSION,
-  UPVOTE_DISCUSSION,
-  UNDO_UPVOTE_DISCUSSION,
-  UNDO_DOWNVOTE_DISCUSSION,
-  DOWNVOTE_COMMENT_SECTION,
-  UPVOTE_COMMENT_SECTION,
-  UNDO_UPVOTE_COMMENT_SECTION,
-  UNDO_DOWNVOTE_COMMENT_SECTION,
+  DOWNVOTE_DISCUSSION_CHANNEL,
+  UPVOTE_DISCUSSION_CHANNEL,
+  UNDO_UPVOTE_DISCUSSION_CHANNEL,
+  UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/discussion/mutations";
-import { GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA } from "@/graphQLData/discussion/queries";
+import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/discussion/queries";
 
 export default defineComponent({
   props: {
@@ -29,8 +24,8 @@ export default defineComponent({
       type: Object as PropType<Object>,
       required: false,
     },
-    commentSection: {
-      type: Object as PropType<CommentSectionData>,
+    discussionChannel: {
+      type: Object as PropType<DiscussionChannelData>,
       required: false,
     },
     discussion: {
@@ -123,11 +118,11 @@ export default defineComponent({
       },
     }));
 
-    const activeCommentSection = ref(props.discussion.CommentSections[0])
+    const activeDiscussionChannel = ref(props.discussion.DiscussionChannels[0])
 
 
-    const commentSectionId = computed(() => {
-      return activeCommentSection.value.id || "";
+    const discussionChannelId = computed(() => {
+      return activeDiscussionChannel.value.id || "";
     });
 
     const updateQueryResult = (cache: any, result: any) => {
@@ -141,12 +136,12 @@ export default defineComponent({
         // If we are not on the discussion list view, we don't need to update the query result
         return;
       }
-      const newCommentSection =
-        result.data.updateCommentSections.commentSections[0];
+      const newDiscussionChannel =
+        result.data.updateDiscussionChannels.discussionChannels[0];
 
       // when comment section is created, update discussion in cache to add it there
       const readQueryResult = cache.readQuery({
-        query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+        query: GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA,
         variables: {
           ...props.discussionQueryFilters,
         },
@@ -154,14 +149,14 @@ export default defineComponent({
 
       const existingDiscussions = readQueryResult?.discussions || [];
       const discussionToUpdate = existingDiscussions.find(
-        (discussion: any) => discussion.id === newCommentSection.OriginalPost.id
+        (discussion: any) => discussion.id === newDiscussionChannel.OriginalPost.id
       );
 
-      const existingCommentSections = discussionToUpdate.CommentSections;
+      const existingDiscussionChannels = discussionToUpdate.DiscussionChannels;
 
       const newDiscussion = {
         ...discussionToUpdate,
-        CommentSections: [...existingCommentSections, newCommentSection],
+        DiscussionChannels: [...existingDiscussionChannels, newDiscussionChannel],
       };
 
       cache.modify({
@@ -169,7 +164,7 @@ export default defineComponent({
           discussions() {
             if (readQueryResult) {
               cache.writeQuery({
-                query: GET_DISCUSSIONS_WITH_COMMENT_SECTION_DATA,
+                query: GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA,
                 data: {
                   ...readQueryResult,
                   discussions: [
@@ -191,42 +186,42 @@ export default defineComponent({
     };
 
     const {
-      mutate: downvoteCommentSection,
-      error: downvoteCommentSectionError,
-    } = useMutation(DOWNVOTE_COMMENT_SECTION, () => ({
+      mutate: downvoteDiscussionChannel,
+      error: downvoteDiscussionChannelError,
+    } = useMutation(DOWNVOTE_DISCUSSION_CHANNEL, () => ({
       update: updateQueryResult,
     }));
 
-    const { mutate: upvoteCommentSection, error: upvoteCommentSectionError } =
-      useMutation(UPVOTE_COMMENT_SECTION, () => ({
+    const { mutate: upvoteDiscussionChannel, error: upvoteDiscussionChannelError } =
+      useMutation(UPVOTE_DISCUSSION_CHANNEL, () => ({
         update: updateQueryResult,
       }));
 
     const {
-      mutate: undoUpvoteCommentSection,
-      error: undoUpvoteCommentSectionError,
-    } = useMutation(UNDO_UPVOTE_COMMENT_SECTION, () => ({
+      mutate: undoUpvoteDiscussionChannel,
+      error: undoUpvoteDiscussionChannelError,
+    } = useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
       variables: {
-        id: props.commentSection?.id || "",
+        id: props.discussionChannel?.id || "",
         username: localUsernameResult.value?.username || "",
       },
     }));
 
     const {
-      mutate: undoDownvoteCommentSection,
-      error: undoDownvoteCommentSectionError,
-    } = useMutation(UNDO_DOWNVOTE_COMMENT_SECTION, () => ({
+      mutate: undoDownvoteDiscussionChannel,
+      error: undoDownvoteDiscussionChannelError,
+    } = useMutation(UNDO_DOWNVOTE_DISCUSSION_CHANNEL, () => ({
       variables: {
-        id: props.commentSection?.id || "",
+        id: props.discussionChannel?.id || "",
         displayName: localModProfileNameResult.value?.modProfileName || "",
       },
     }));
 
-    const { mutate: createCommentSection } =
-      useMutation(CREATE_COMMENT_SECTION, () => ({
+    const { mutate: createDiscussionChannel } =
+      useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
         errorPolicy: "all",
         variables: {
-          createCommentSectionInput: [
+          createDiscussionChannelInput: [
             {
               OriginalPost: {
                 Discussion: {
@@ -263,11 +258,11 @@ export default defineComponent({
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !activeCommentSection.value
+        !activeDiscussionChannel.value
       ) {
         return false;
       }
-      const users = activeCommentSection.value?.UpvotedByUsers || [];
+      const users = activeDiscussionChannel.value?.UpvotedByUsers || [];
 
       const loggedInUser = localUsernameResult.value.username;
       const match =
@@ -281,11 +276,11 @@ export default defineComponent({
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !activeCommentSection.value
+        !activeDiscussionChannel.value
       ) {
         return false;
       }
-      const mods = activeCommentSection.value?.DownvotedByModerators || [];
+      const mods = activeDiscussionChannel.value?.DownvotedByModerators || [];
       const loggedInMod = localModProfileNameResult.value.modProfileName;
       const match =
         mods.filter((mod: any) => {
@@ -295,42 +290,42 @@ export default defineComponent({
     });
 
     const downvoteCount = computed(() => {
-      if (activeCommentSection.value) {
-        return activeCommentSection.value
+      if (activeDiscussionChannel.value) {
+        return activeDiscussionChannel.value
           .DownvotedByModeratorsAggregate?.count;
       }
       return 0;
     });
 
     const upvoteCount = computed(() => {
-      if (activeCommentSection.value) {
-        return activeCommentSection.value.UpvotedByUsersAggregate
+      if (activeDiscussionChannel.value) {
+        return activeDiscussionChannel.value.UpvotedByUsersAggregate
           ?.count;
       }
       return 0;
     });
 
     return {
-      activeCommentSection,
-      commentSectionId,
-      createCommentSection,
+      activeDiscussionChannel,
+      discussionChannelId,
+      createDiscussionChannel,
       defaultUniqueName,
       discussionIdInParams,
       downvoteCount,
       loggedInUserUpvoted,
       loggedInUserDownvoted,
       loggedInUserModName,
-      commentSectionMutations: {
-        create: createCommentSection,
-        upvote: upvoteCommentSection,
-        downvote: downvoteCommentSection,
-        undoUpvote: undoUpvoteCommentSection,
-        undoDownvote: undoDownvoteCommentSection,
+      discussionChannelMutations: {
+        create: createDiscussionChannel,
+        upvote: upvoteDiscussionChannel,
+        downvote: downvoteDiscussionChannel,
+        undoUpvote: undoUpvoteDiscussionChannel,
+        undoDownvote: undoDownvoteDiscussionChannel,
         errors: {
-          upvote: upvoteCommentSectionError,
-          downvote: downvoteCommentSectionError,
-          undoUpvote: undoUpvoteCommentSectionError,
-          undoDownvote: undoDownvoteCommentSectionError,
+          upvote: upvoteDiscussionChannelError,
+          downvote: downvoteDiscussionChannelError,
+          undoUpvote: undoUpvoteDiscussionChannelError,
+          undoDownvote: undoDownvoteDiscussionChannelError,
         },
       },
       discussionMutations: {
@@ -381,22 +376,22 @@ export default defineComponent({
         throw new Error("Username is required to downvote");
       }
 
-      if (this.commentSection && this.commentSection.id) {
-        this.commentSectionMutations.downvote({
-          id: this.commentSection.id,
+      if (this.discussionChannel && this.discussionChannel.id) {
+        this.discussionChannelMutations.downvote({
+          id: this.discussionChannel.id,
           displayName: this.loggedInUserModName || "",
         }); // counts toward ranking within channel
       } else {
-        const newCommentSection = await this.commentSectionMutations.create();
-        this.activeCommentSection = newCommentSection.data.createCommentSections.commentSections[0]
-        const newCommentSectionId =
-          newCommentSection.data.createCommentSections.commentSections[0].id;
+        const newDiscussionChannel = await this.discussionChannelMutations.create();
+        this.activeDiscussionChannel = newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0]
+        const newDiscussionChannelId =
+          newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0].id;
 
         // We pass the variables in at the last minute
         // so that we can use the new comment section id
         // that was just created.
-        this.commentSectionMutations.downvote({
-          id: newCommentSectionId,
+        this.discussionChannelMutations.downvote({
+          id: newDiscussionChannelId,
           displayName: this.loggedInUserModName || "",
         }); // counts toward ranking within channel
       }
@@ -408,33 +403,33 @@ export default defineComponent({
         throw new Error("Username is required to upvote");
       }
 
-      if (this.commentSection && this.commentSection.id) {
-        this.commentSectionMutations.upvote({
-          id: this.commentSectionId,
+      if (this.discussionChannel && this.discussionChannel.id) {
+        this.discussionChannelMutations.upvote({
+          id: this.discussionChannelId,
           username: this.username || "",
         }); // counts toward ranking within channel
       } else {
-        const newCommentSection = await this.createCommentSection();
-        this.activeCommentSection = newCommentSection.data.createCommentSections.commentSections[0]
-        const newCommentSectionId =
-          newCommentSection.data.createCommentSections.commentSections[0].id;
+        const newDiscussionChannel = await this.createDiscussionChannel();
+        this.activeDiscussionChannel = newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0]
+        const newDiscussionChannelId =
+          newDiscussionChannel.data.createDiscussionChannels.discussionChannels[0].id;
 
-        this.commentSectionMutations.upvote({
+        this.discussionChannelMutations.upvote({
           // We pass the variables in at the last minute
           // so that we can use the new comment section id
           // that was just created.
-          id: newCommentSectionId,
+          id: newDiscussionChannelId,
           username: this.username || "",
         }); // counts toward ranking within channel
       }
     },
     undoUpvote() {
       this.discussionMutations.undoUpvote(); // counts toward sitewide ranking
-      this.commentSectionMutations.undoUpvote(); // counts toward ranking within channel
+      this.discussionChannelMutations.undoUpvote(); // counts toward ranking within channel
     },
     undoDownvote() {
       this.discussionMutations.undoDownvote(); // counts toward sitewide ranking
-      this.commentSectionMutations.undoDownvote(); // counts toward ranking within channel
+      this.discussionChannelMutations.undoDownvote(); // counts toward ranking within channel
     },
   },
 });

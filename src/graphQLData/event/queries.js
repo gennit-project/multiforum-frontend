@@ -24,8 +24,10 @@ const EVENT_FIELDS = gql`
     Tags {
       text
     }
-    Channels {
-      uniqueName
+    EventChannels {
+      Channel {
+        uniqueName
+      }
     }
   }
 `;
@@ -71,26 +73,6 @@ export const GET_EVENTS = gql`
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
       ...EventFields
-      CommentSections {
-        id
-        CommentsAggregate {
-          count
-        }
-        OriginalPost {
-          __typename
-          ... on Discussion {
-            id
-            title
-          }
-          ... on Event {
-            id
-            title
-          }
-        }
-        Channel {
-          uniqueName
-        }
-      }
     }
   }
   ${EVENT_FIELDS}

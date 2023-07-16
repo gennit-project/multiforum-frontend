@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { CommentSectionData } from "../../../types/commentTypes";
+import { DiscussionChannelData } from "../../../types/commentTypes";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
@@ -10,7 +10,7 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
-import { CREATE_COMMENT_SECTION } from "@/graphQLData/comment/mutations";
+import { CREATE_DISCUSSION_CHANNEL } from "@/graphQLData/comment/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
@@ -24,8 +24,8 @@ export default defineComponent({
         return {};
       },
     },
-    commentSection: {
-      type: Object as PropType<CommentSectionData>,
+    discussionChannel: {
+      type: Object as PropType<DiscussionChannelData>,
       required: false,
       default: () => {
         return {
@@ -109,15 +109,15 @@ export default defineComponent({
       return localModProfileNameResult.value.modProfileName;
     });
 
-    const commentSectionId = computed(() => {
-      return props.commentSection?.id || "";
+    const discussionChannelId = computed(() => {
+      return props.discussionChannel?.id || "";
     });
 
-    const { mutate: createCommentSection, error: createCommentSectionError } =
-      useMutation(CREATE_COMMENT_SECTION, () => ({
+    const { mutate: createDiscussionChannel, error: createDiscussionChannelError } =
+      useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
         errorPolicy: "all",
         variables: {
-          createCommentSectionInput: [
+          createDiscussionChannelInput: [
             {
               OriginalPost: {
                 Discussion: {
@@ -144,11 +144,11 @@ export default defineComponent({
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !commentSectionId.value
+        !discussionChannelId.value
       ) {
         return false;
       }
-      const users = props.commentSection.UpvotedByUsers || [];
+      const users = props.discussionChannel.UpvotedByUsers || [];
 
       const loggedInUser = localUsernameResult.value.username;
       const match =
@@ -162,11 +162,11 @@ export default defineComponent({
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !commentSectionId.value
+        !discussionChannelId.value
       ) {
         return false;
       }
-      const mods = props.commentSection.DownvotedByModerators || [];
+      const mods = props.discussionChannel.DownvotedByModerators || [];
       const loggedInMod = localModProfileNameResult.value.modProfileName;
       const match =
         mods.filter((mod: any) => {
@@ -176,16 +176,16 @@ export default defineComponent({
     });
 
     const downvoteCount = computed(() => {
-      if (props.discussion.CommentSections[0]) {
-        return props.discussion.CommentSections[0]
+      if (props.discussion.DiscussionChannels[0]) {
+        return props.discussion.DiscussionChannels[0]
           .DownvotedByModeratorsAggregate?.count;
       }
       return 0;
     });
 
     const upvoteCount = computed(() => {
-      if (props.discussion.CommentSections[0]) {
-        return props.discussion.CommentSections[0].UpvotedByUsersAggregate
+      if (props.discussion.DiscussionChannels[0]) {
+        return props.discussion.DiscussionChannels[0].UpvotedByUsersAggregate
           ?.count;
       }
       return 0;
@@ -194,9 +194,9 @@ export default defineComponent({
     const { lgAndUp } = useDisplay();
 
     return {
-      commentSectionId,
-      createCommentSection,
-      createCommentSectionError,
+      discussionChannelId,
+      createDiscussionChannel,
+      createDiscussionChannelError,
       defaultUniqueName,
       discussionIdInParams,
       downvoteCount,
@@ -251,7 +251,7 @@ export default defineComponent({
     <div class="w-full flex gap-3">
       <DiscussionVotes
         :discussion="discussion"
-        :comment-section="discussion.CommentSections[0]"
+        :comment-section="discussion.DiscussionChannels[0]"
         :show-downvote="false"
       />
       <div class="h-10 w-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded">

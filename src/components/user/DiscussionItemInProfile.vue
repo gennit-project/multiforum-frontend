@@ -3,7 +3,6 @@ import { defineComponent, PropType, computed } from "vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
-// import { CommentSectionData } from "../../types/commentTypes";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
@@ -46,7 +45,7 @@ export default defineComponent({
     });
     return {
       previewIsOpen: false,
-      defaultUniqueName, //props.discussion.CommentSections[0].Channel.uniqueName,
+      defaultUniqueName, //props.discussion.DiscussionChannels[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body || "",
       createdAt: props.discussion.createdAt,
@@ -74,13 +73,6 @@ export default defineComponent({
       return `/discussions/search/${this.discussion.id}`;
     },
   },
-  // methods: {
-  // getCommentCount(commentSection: CommentSectionData) {
-  //   const count = commentSection.CommentsAggregate.count;
-  //   return ` ${count} comment${count === 1 ? "" : "s"}`;
-  // },
-
-  // },
   inheritAttrs: false,
 });
 </script>
