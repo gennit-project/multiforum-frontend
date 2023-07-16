@@ -82,14 +82,14 @@ export default defineComponent({
           return 'bg-blue-100 hover:bg-blue-700 dark:bg-blue-500 dark:text-white hover:bg-blue-300 dark:hover:bg-blue-400';
         }
         // for the tag buttons in the filter components
-        return 'bg-blue-100 dark:bg-blue-950 dark:text-blue-500 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-slate-200 hover:bg-slate-200 dark:bg-slate-100 hover:bg-slate-200';
+        return 'bg-blue-100 dark:bg-blue-950 dark:text-blue-500 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-blue-900 hover:bg-slate-200  hover:bg-slate-200';
       } else {
         // for the channel buttons
         if (this.channelMode) {
           'bg-blue-50 text-blue-900 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:bg-opacity-100 dark:hover:bg-blue-900 dark:hover:text-white'
         }
         // for the tag buttons in the filter components
-        return `${this.large ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-800 bg-gray-100 dark:bg-opacity-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600'`;
+        return `${this.large ? 'bg-white' : 'bg-gray-100'} dark:bg-gray-800 dark:hover:bg-gray-700 bg-gray-100 dark:bg-opacity-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600'`;
       }
     },
   },
