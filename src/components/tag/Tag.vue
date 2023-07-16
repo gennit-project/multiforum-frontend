@@ -82,7 +82,7 @@ export default defineComponent({
           return 'bg-blue-100 hover:bg-blue-700 dark:bg-blue-500 dark:text-white hover:bg-blue-300 dark:hover:bg-blue-400';
         }
         // for the tag buttons in the filter components
-        return 'bg-blue-100 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-slate-200 hover:bg-slate-200 dark:bg-slate-100 hover:bg-slate-200';
+        return 'bg-blue-100 dark:bg-blue-950 dark:text-blue-500 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-slate-200 hover:bg-slate-200 dark:bg-slate-100 hover:bg-slate-200';
       } else {
         // for the channel buttons
         if (this.channelMode) {
