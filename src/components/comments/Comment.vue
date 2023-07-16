@@ -222,14 +222,14 @@ export default defineComponent({
           class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           data-testid="comment"
         >
-          <p class="text-tiny username-text flex items-center space-x-2">
+          <p class="flex items-center space-x-2">
             <ProfileAvatar
               v-if="commentData.CommentAuthor"
               :username="commentData.CommentAuthor.username"
             />
             <router-link
               v-if="commentData.CommentAuthor"
-              class="font-bold underline dark:text-gray-200 mx-1"
+              class="font-bold hover:underline dark:text-gray-200 mx-1"
               :to="`/u/${commentData.CommentAuthor.username}`"
             >
               {{ commentData.CommentAuthor.username }}
@@ -249,7 +249,6 @@ export default defineComponent({
                 :theme="theme"
                 class="-ml-4 mt-1 w-full"
               />
-              <MdCatalog :editorId="id" :scrollElement="scrollElement" />
             </div>
             <TextEditor
               class="mt-3 overflow-y-scroll"

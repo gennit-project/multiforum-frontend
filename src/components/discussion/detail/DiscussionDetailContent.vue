@@ -144,7 +144,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full space-y-2">
+  <div class="w-full space-y-2 lg:px-6">
     <p v-if="getDiscussionLoading">Loading...</p>
     <ErrorBanner
       class="mt-2"
@@ -177,7 +177,7 @@ export default defineComponent({
       </RequireAuth>
     </div>
     <div v-if="discussion" class="min-w-md mx-auto max-w-4xl space-y-3">
-      <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center">
+      <!-- <div v-if="route.name !== 'DiscussionDetail'" class="flex justify-center">
         <div
           class="flex w-full justify-between rounded-lg border bg-gray-100 px-3 py-2 text-xs text-gray-500 dark:border-gray-800 dark:bg-gray-900"
         >
@@ -194,12 +194,12 @@ export default defineComponent({
             ></span
           >
         </div>
-      </div>
-      <div class="w-full">
+      </div> -->
+      <div class="w-full mt-4 mb-2">
         <div ref="discussionDetail">
           <div class="min-w-0">
             <h2
-              class="text-wrap text-2xl font-bold leading-7 sm:tracking-tight"
+              class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
             >
               {{ discussion.title }}
             </h2>

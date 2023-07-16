@@ -49,6 +49,9 @@ module.exports = {
               listStyleType: 'decimal',
               wordWrap: 'break-word',
             },
+            li: {
+              wordWrap: 'break-word',
+            },
             p: {
               wordWrap: 'break-word',
             },
