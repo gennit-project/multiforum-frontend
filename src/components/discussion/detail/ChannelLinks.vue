@@ -5,6 +5,7 @@ import { useRoute } from "vue-router";
 
 import { ChannelData } from "@/types/channelTypes";
 import { DiscussionData } from "@/types/discussionTypes";
+import { DiscussionChannelData } from "@/types/commentTypes";
 
 export default defineComponent({
   props: {
@@ -24,7 +25,7 @@ export default defineComponent({
     const route = useRoute();
 
     const getCommentCount = (channelId: string) => {
-      const discussionChannels = props.discussion.DiscussionChannel;
+      const discussionChannels = props.discussion.DiscussionChannels;
 
       const activeDiscussionChannel = discussionChannels.find((cs: any) => {
         return cs.Channel?.uniqueName === channelId;
@@ -42,13 +43,19 @@ export default defineComponent({
       // On the discussion detail page, hide the current channel because
       // that would link to the current page.
 
-      return props.discussion.Channels.filter((channel: ChannelData) => {
-        return channel.uniqueName !== props.channelId;
-      }).sort((a: ChannelData, b: ChannelData) => {
-        const countA = getCommentCount(a.uniqueName);
-        const countB = getCommentCount(b.uniqueName);
-        return countB - countA;
-      });
+      return props.discussion.DiscussionChannels.filter(
+        (discussionChannel: DiscussionChannelData) => {
+          return discussionChannel.Channel?.uniqueName !== props.channelId;
+        },
+      )
+        .sort((a: DiscussionChannelData, b: DiscussionChannelData) => {
+          const countA = getCommentCount(a.Channel?.uniqueName);
+          const countB = getCommentCount(b.Channel?.uniqueName);
+          return countB - countA;
+        })
+        .map((discussionChannel: DiscussionChannelData) => {
+          return discussionChannel.Channel;
+        });
     });
     return {
       channelLinks,
@@ -60,10 +67,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    v-if="!channelId"
-    class="my-4"
-  >
+  <div v-if="!channelId" class="my-4">
     <h2 class="text-lg">Comments in Channels</h2>
     <ul class="list-disc pl-3">
       <ChannelLink
@@ -83,27 +87,27 @@ export default defineComponent({
     </ul>
   </div>
   <div v-else-if="route.name !== 'DiscussionDetail'">
-     <h2 class="text-lg">Comments in this Channel</h2>
-      <ul class="list-disc pl-3">
-        <ChannelLink
-          :channelId="channelId"
-          :comment-count="getCommentCount(channelId)"
-          :discussionId="discussion.id"
-        />
-      </ul>
+    <h2 class="text-lg">Comments in this Channel</h2>
+    <ul class="list-disc pl-3">
+      <ChannelLink
+        :channelId="channelId"
+        :comment-count="getCommentCount(channelId)"
+        :discussionId="discussion.id"
+      />
+    </ul>
 
-     <h2 class="text-lg mt-4">Comments in Other Channels</h2>
-      <ul class="list-disc pl-3">
-        <ChannelLink
-          v-for="channel in channelLinks"
-          :key="channel.uniqueName"
-          :channelId="channel.uniqueName"
-          :comment-count="getCommentCount(channel.uniqueName)"
-          :discussionId="discussion.id"
-        />
-      </ul>
-      <p class="text-sm" v-if="channelLinks.length === 0">
-        The post was not submitted to any other channels.
-      </p>
+    <h2 class="mt-4 text-lg">Comments in Other Channels</h2>
+    <ul class="list-disc pl-3">
+      <ChannelLink
+        v-for="channel in channelLinks"
+        :key="channel.uniqueName"
+        :channelId="channel.uniqueName"
+        :comment-count="getCommentCount(channel.uniqueName)"
+        :discussionId="discussion.id"
+      />
+    </ul>
+    <p class="text-sm" v-if="channelLinks.length === 0">
+      The post was not submitted to any other channels.
+    </p>
   </div>
 </template>

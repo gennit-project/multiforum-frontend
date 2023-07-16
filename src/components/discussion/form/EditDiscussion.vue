@@ -17,6 +17,7 @@ import {
 import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
+import { DiscussionChannelData } from "@/types/commentTypes";
 
 export default defineComponent({
   name: "EditDiscussion",
@@ -52,12 +53,12 @@ export default defineComponent({
 
     const ownerList = computed(() => {
       if (discussion.value && discussion.value.Author) {
-        return [discussion.value.Author.username]
+        return [discussion.value.Author.username];
       }
-      return []
-    })
+      return [];
+    });
 
-    const getDefaultFormValues = () => {
+    const getDefaultFormValues = (): CreateEditDiscussionFormValues => {
       // If the discussion data is already loaded, start with
       // the existing values. This will be used if you load the page,
       // navigate away and come back.
@@ -68,10 +69,10 @@ export default defineComponent({
           selectedTags: discussion.value.Tags.map((tag: TagData) => {
             return tag.text;
           }),
-          selectedChannels: discussion.value.Channels.map(
-            (channel: ChannelData) => {
-              return channel.uniqueName;
-            }
+          selectedChannels: discussion.value.DiscussionChannels.map(
+            (discussionChannel: DiscussionChannelData) => {
+              return discussionChannel.Channel.uniqueName;
+            },
           ),
           author: discussion.value.Author.username,
         };
@@ -89,7 +90,7 @@ export default defineComponent({
     };
 
     const formValues = ref<CreateEditDiscussionFormValues>(
-      getDefaultFormValues()
+      getDefaultFormValues(),
     );
 
     onGetDiscussionResult((value) => {
@@ -101,9 +102,11 @@ export default defineComponent({
         selectedTags: discussion.Tags.map((tag: TagData) => {
           return tag.text;
         }),
-        selectedChannels: discussion.Channels.map((channel: ChannelData) => {
-          return channel.uniqueName;
-        }),
+        selectedChannels: discussion.DiscussionChannels.map(
+          (discussionChannel: DiscussionChannelData) => {
+            return discussionChannel.Channel.uniqueName;
+          },
+        ),
         author: discussion.Author.username,
       };
     });
@@ -122,7 +125,7 @@ export default defineComponent({
       return getDiscussionResult.value.discussions[0].Tags.map(
         (tag: TagData) => {
           return tag.text;
-        }
+        },
       );
     });
 
@@ -137,7 +140,7 @@ export default defineComponent({
       return getDiscussionResult.value.discussions[0].Channels.map(
         (channel: ChannelData) => {
           return channel.uniqueName;
-        }
+        },
       );
     });
 
@@ -156,7 +159,7 @@ export default defineComponent({
               },
             },
           };
-        }
+        },
       );
 
       const tagDisconnections = existingTags.value
@@ -178,11 +181,13 @@ export default defineComponent({
           return {
             where: {
               node: {
-                uniqueName: channel,
+                Channel: {
+                  uniqueName: channel,
+                },
               },
             },
           };
-        }
+        },
       );
 
       const channelDisconnections = existingChannels.value
@@ -193,7 +198,9 @@ export default defineComponent({
           return {
             where: {
               node: {
-                uniqueName: channel,
+                Channel:{
+                  uniqueName: channel,
+                }
               },
             },
           };
@@ -202,7 +209,7 @@ export default defineComponent({
       return {
         title: formValues.value.title,
         body: formValues.value.body,
-        Channels: {
+        DiscussionChannels: {
           connect: channelConnections,
           disconnect: channelDisconnections,
         },
@@ -235,7 +242,6 @@ export default defineComponent({
         },
       });
     });
-
 
     return {
       channelId,
@@ -280,12 +286,11 @@ export default defineComponent({
       />
     </template>
     <template v-slot:does-not-have-auth>
-      <div class="p-8 flex justify-center">
+      <div class="flex justify-center p-8">
         You don't have permission to see this page.
       </div>
     </template>
   </RequireAuth>
 </template>
 
-<style>
-</style>
+<style></style>

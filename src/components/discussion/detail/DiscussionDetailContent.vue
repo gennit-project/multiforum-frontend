@@ -19,6 +19,7 @@ import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import { ChannelData } from "@/types/channelTypes";
 import "md-editor-v3/lib/style.css";
+import { DiscussionChannelData } from "@/types/commentTypes";
 
 export default defineComponent({
   components: {
@@ -96,13 +97,18 @@ export default defineComponent({
       // On the discussion detail page, hide the current channel because
       // that would link to the current page.
 
-      return discussion.value.Channels.filter((channel: ChannelData) => {
-        return channel.uniqueName !== channelId.value;
-      }).sort((a: ChannelData, b: ChannelData) => {
-        const countA = getCommentCount(a.uniqueName);
-        const countB = getCommentCount(b.uniqueName);
-        return countB - countA;
-      });
+      return discussion.value.DiscussionChannels
+        .filter((discussionChannel: DiscussionChannelData) => {
+          return discussionChannel.Channel?.uniqueName !== channelId.value;
+        })
+        .sort((a: DiscussionChannelData, b: DiscussionChannelData) => {
+          const countA = getCommentCount(a.Channel?.uniqueName);
+          const countB = getCommentCount(b.Channel?.uniqueName);
+          return countB - countA;
+        })
+        .map((discussionChannel: DiscussionChannelData) => {
+          return discussionChannel.Channel;
+        });
     });
 
     const discussionChannelId = computed(() => {

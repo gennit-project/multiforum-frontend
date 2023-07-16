@@ -38,10 +38,10 @@ export default defineComponent({
     const route = useRoute();
 
     const defaultUniqueName = computed(() => {
-      if (!props.discussion.Channels || !props.discussion.Channels[0]) {
+      if (!props.discussion.DiscussionChannels || !props.discussion.DiscussionChannels[0]) {
         return "";
       }
-      return props.discussion.Channels[0].uniqueName;
+      return props.discussion.DiscussionChannels[0].Channel?.uniqueName;
     });
     return {
       previewIsOpen: false,
@@ -102,11 +102,11 @@ export default defineComponent({
     <div class="text-sm space-x-2 my-2">
       <router-link
         class="underline text-gray-500 hover:text-gray-700"
-        v-for="(channel, i) in discussion.Channels"
+        v-for="(discussionChannel, i) in discussion.DiscussionChannels"
         :key="i"
-        :to="`/channels/c/${channel.uniqueName}/discussions/d/${discussion.id}`"
+        :to="`/channels/c/${discussionChannel.Channel?.uniqueName}/discussions/d/${discussion.id}`"
       >
-      {{ `c/${channel.uniqueName}` }}
+      {{ `c/${discussionChannel.Channel?.uniqueName}` }}
       </router-link>
     </div>
   </li>

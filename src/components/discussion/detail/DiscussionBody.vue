@@ -2,9 +2,8 @@
 import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
-import LinkPreview from "../../generic/LinkPreview.vue";
+// import LinkPreview from "../../generic/LinkPreview.vue";
 import { MdPreview } from "md-editor-v3";
-import { ChannelData } from "@/types/channelTypes";
 import { useRoute } from "vue-router";
 import Tag from "../../tag/Tag.vue";
 import "md-editor-v3/lib/preview.css";
@@ -13,7 +12,7 @@ import gql from "graphql-tag";
 
 export default defineComponent({
   components: {
-    LinkPreview,
+    // LinkPreview,
     MdPreview,
     Tag,
   },
@@ -86,19 +85,6 @@ export default defineComponent({
         : 0;
     };
 
-    const channelLinks = computed<ChannelData[]>(() => {
-      // On the discussion detail page, hide the current channel because
-      // that would link to the current page.
-
-      return props.discussion.Channels.filter((channel: ChannelData) => {
-        return channel.uniqueName !== channelId.value;
-      }).sort((a: ChannelData, b: ChannelData) => {
-        const countA = getCommentCount(a.uniqueName);
-        const countB = getCommentCount(b.uniqueName);
-        return countB - countA;
-      });
-    });
-
     const GET_THEME = gql`
       query GetTheme {
         theme @client
@@ -111,7 +97,6 @@ export default defineComponent({
       return result.value?.theme || "light";
     });
     return {
-      channelLinks,
       linksInBody,
       route,
       bodyText,
@@ -168,14 +153,14 @@ export default defineComponent({
       "
     />
     <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">Link Previews</h2>
-    <div v-if="linksInBody.length > 0">
+    <!-- <div v-if="linksInBody.length > 0">
       <LinkPreview
         v-for="(link, i) in linksInBody"
         :key="i"
         class="mb-2"
         :url="link"
       />
-    </div>
+    </div> -->
   </div>
 </template>
 <style scoped>

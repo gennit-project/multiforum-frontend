@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import Tag from "../../tag/Tag.vue";
 
 export default defineComponent({
-  name: "OverviewPage",
+  name: "ChannelLink",
   components: {
     TagComponent: Tag,
   },

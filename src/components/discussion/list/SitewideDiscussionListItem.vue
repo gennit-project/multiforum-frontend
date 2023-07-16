@@ -51,7 +51,7 @@ export default defineComponent({
       return "";
     });
     const defaultUniqueName = computed(() => {
-      return props.discussion.Channels[0].uniqueName;
+      return props.discussion.DiscussionChannels[0]?.Channel?.uniqueName;
     });
     return {
       previewIsOpen: false,
@@ -83,7 +83,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="border-l-4 dark:border-gray-700 relative pb-2 pt-3 px-4 space-x-2 flex gap-3"
+    class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-3 dark:border-gray-700"
   >
     <span class="mt-1 w-6"
       >{{
@@ -97,18 +97,19 @@ export default defineComponent({
       </v-tooltip>
     </span>
 
-    <div class="h-10 w-10 flex items-center justify-center bg-gray-100 dark:bg-gray-800 rounded">
+    <div
+      class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
+    >
       <div>💬</div>
     </div>
-    
 
     <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')">
-        <p class="text-md font-bold cursor-pointer hover:text-gray-500">
+        <p class="text-md cursor-pointer font-bold hover:text-gray-500">
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>
       </router-link>
-      <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+      <p class="font-medium mt-1 text-sm text-slate-600 hover:no-underline">
         <Tag
           class="my-1"
           :active="selectedTags.includes(tag)"
@@ -118,24 +119,28 @@ export default defineComponent({
           @click="$emit('filterByTag', tag)"
         />
       </p>
-      <p class="text-xs font-medium text-slate-600 dark:text-slate-200 no-underline">
+      <p
+        class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200"
+      >
         {{ `Posted ${relativeTime} by ${authorUsername} in ` }}
         <span
-          v-for="(channel, i) in discussion.Channels"
+          v-for="(discussionChannel, i) in discussion.DiscussionChannels"
           class="cursor-pointer hover:text-blue-400"
           :key="i"
           :class="[
-            selectedChannels.includes(channel.uniqueName)
+            selectedChannels.includes(discussionChannel.Channel?.uniqueName)
               ? 'text-blue-500'
               : 'text-slate-500 hover:text-slate-400 dark:text-slate-400 dark:hover:text-slate-300',
           ]"
           :channel-mode="true"
-          @click="$emit('filterByChannel', channel.uniqueName)"
+          @click="
+            $emit('filterByChannel', discussionChannel.Channel?.uniqueName)
+          "
         >
-          {{ channel.uniqueName }}<span v-if="i < discussion.Channels.length - 1">, </span>
+          {{ discussionChannel.Channel?.uniqueName
+          }}<span v-if="i < discussion.DiscussionChannels.length - 1">, </span>
         </span>
       </p>
-      
     </div>
   </li>
 </template>

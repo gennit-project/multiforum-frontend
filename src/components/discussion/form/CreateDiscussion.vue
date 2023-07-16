@@ -20,7 +20,7 @@ export default defineComponent({
   name: "CreateDiscussion",
   components: {
     CreateEditDiscussionFields,
-    RequireAuth
+    RequireAuth,
   },
   apollo: {},
   setup() {
@@ -67,50 +67,12 @@ export default defineComponent({
               },
             },
           };
-        }
+        },
       );
 
       const channelConnections = formValues.value.selectedChannels.map(
-        (channel: string | string[]) => {
+        (channel: string) => {
           return {
-            where: {
-              node: {
-                uniqueName: channel,
-              },
-            },
-          };
-        }
-      );
-
-      const input = {
-        title: formValues.value.title || null,
-        body: formValues.value.body || null,
-        Channels: {
-          connect: channelConnections,
-        },
-        Tags: {
-          connectOrCreate: tagConnections,
-        },
-        Author: {
-          connect: {
-            where: {
-              node: {
-                username: username.value,
-              },
-            },
-          },
-        },
-        UpvotedByUsers: {
-              connect: {
-                where: {
-                  node: {
-                    username: username.value,
-                  },
-                },
-              },
-        },
-        DiscussionChannels: {
-          create: {
             node: {
               UpvotedByUsers: {
                 connect: {
@@ -125,16 +87,35 @@ export default defineComponent({
                 connect: {
                   where: {
                     node: {
-                      uniqueName: "test"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      };
+                      uniqueName: channel,
+                    },
+                  },
+                },
+              },
+            },
+          };
+        },
+      );
 
+      const input = {
+        title: formValues.value.title || null,
+        body: formValues.value.body || null,
+        Tags: {
+          connectOrCreate: tagConnections,
+        },
+        Author: {
+          connect: {
+            where: {
+              node: {
+                username: username.value,
+              },
+            },
+          },
+        },
+        DiscussionChannels: {
+          create: channelConnections,
+        },
+      };
 
       return [input];
     });
@@ -169,7 +150,7 @@ export default defineComponent({
               // present in the cache, we don't need to add it again.
               if (
                 existingDiscussionRefs.some(
-                  (ref: any) => readField("id", ref) === newDiscussion.id
+                  (ref: any) => readField("id", ref) === newDiscussion.id,
                 )
               ) {
                 return existingDiscussionRefs;
@@ -222,15 +203,15 @@ export default defineComponent({
       createDiscussionInput,
       formValues,
       router,
-      username
+      username,
     };
   },
 
   methods: {
     async submit() {
-      if (!this.username){
-        console.error("No username found")
-        return
+      if (!this.username) {
+        console.error("No username found");
+        return;
       }
       this.createDiscussion();
     },
@@ -257,12 +238,11 @@ export default defineComponent({
       />
     </template>
     <template v-slot:does-not-have-auth>
-      <div class="p-8 flex justify-center">
+      <div class="flex justify-center p-8">
         You don't have permission to see this page.
       </div>
     </template>
   </RequireAuth>
 </template>
 
-<style>
-</style>
+<style></style>

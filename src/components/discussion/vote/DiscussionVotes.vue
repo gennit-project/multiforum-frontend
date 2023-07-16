@@ -57,7 +57,7 @@ export default defineComponent({
       if (channelIdInParams.value) {
         return channelIdInParams.value;
       }
-      return props.discussion.Channels[0].uniqueName;
+      return props.discussion.DiscussionChannels[0]?.Channel?.uniqueName;
     });
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
@@ -82,40 +82,6 @@ export default defineComponent({
       }
       return localModProfileNameResult.value.modProfileName;
     });
-
-    const { mutate: downvoteDiscussion, error: downvoteDiscussionError } =
-      useMutation(DOWNVOTE_DISCUSSION, () => ({
-        variables: {
-          id: props.discussion.id,
-          displayName: loggedInUserModName.value,
-        },
-      }));
-
-    const { mutate: upvoteDiscussion, error: upvoteDiscussionError } =
-      useMutation(UPVOTE_DISCUSSION, () => ({
-        variables: {
-          id: props.discussion.id,
-          username: localUsernameResult.value?.username || "",
-        },
-      }));
-
-    const { mutate: undoUpvoteDiscussion, error: undoUpvoteDiscussionError } =
-      useMutation(UNDO_UPVOTE_DISCUSSION, () => ({
-        variables: {
-          id: props.discussion.id,
-          username: localUsernameResult.value?.username || "",
-        },
-      }));
-
-    const {
-      mutate: undoDownvoteDiscussion,
-      error: undoDownvoteDiscussionError,
-    } = useMutation(UNDO_DOWNVOTE_DISCUSSION, () => ({
-      variables: {
-        id: props.discussion.id,
-        displayName: localModProfileNameResult.value?.modProfileName || "",
-      },
-    }));
 
     const activeDiscussionChannel = ref(props.discussion.DiscussionChannels[0]);
 
@@ -290,18 +256,6 @@ export default defineComponent({
           downvote: downvoteDiscussionChannelError,
           undoUpvote: undoUpvoteDiscussionChannelError,
           undoDownvote: undoDownvoteDiscussionChannelError,
-        },
-      },
-      discussionMutations: {
-        upvote: upvoteDiscussion,
-        downvote: downvoteDiscussion,
-        undoUpvote: undoUpvoteDiscussion,
-        undoDownvote: undoDownvoteDiscussion,
-        errors: {
-          upvote: upvoteDiscussionError,
-          downvote: downvoteDiscussionError,
-          undoUpvote: undoUpvoteDiscussionError,
-          undoDownvote: undoDownvoteDiscussionError,
         },
       },
       upvoteCount,

@@ -261,8 +261,8 @@ export default defineComponent({
       if (!props.discussion) {
         return false;
       }
-      return !props.discussion.Channels.find((c) => {
-        return c.uniqueName === props.channelId;
+      return !props.discussion.DiscussionChannels.find((dc) => {
+        return dc.Channel.uniqueName === props.channelId;
       });
     });
 

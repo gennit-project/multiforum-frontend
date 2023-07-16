@@ -41,16 +41,6 @@ const cache = new InMemoryCache({
         DiscussionChannels: {
           merge: false,
         },
-        DownvotedByModerators: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
-        UpvotedByUsers: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
       },
     },
     Comment: {

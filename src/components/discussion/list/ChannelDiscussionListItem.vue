@@ -83,7 +83,7 @@ export default defineComponent({
       if (channelIdInParams.value) {
         return channelIdInParams.value;
       }
-      return props.discussion.Channels[0].uniqueName;
+      return props.discussion.DiscussionChannels[0]?.Channel?.uniqueName;
     });
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
