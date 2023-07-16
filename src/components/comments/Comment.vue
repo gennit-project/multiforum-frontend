@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
-import { MdEditor, MdPreview, MdCatalog } from "md-editor-v3";
+import { MdPreview } from "md-editor-v3";
 import {
   CommentData,
   CreateReplyInputData,
@@ -33,7 +33,6 @@ export default defineComponent({
     TextEditor,
     WarningModal,
     MdPreview,
-    MdCatalog,
     ProfileAvatar,
   },
   setup(props) {

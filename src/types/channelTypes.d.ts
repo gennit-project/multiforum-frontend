@@ -6,10 +6,10 @@ export type ChannelData = {
     name: string;
     description?: string;
     Admins: Array[UserData];
-    DiscussionsAggregate: {
+    DiscussionChannelsAggregate: {
         count: string;
     };
-    EventsAggregate: {
+    EventChannelsAggregate: {
         count: string;
     };
     Tags: Array[TagData];

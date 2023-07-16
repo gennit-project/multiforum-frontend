@@ -24,7 +24,7 @@ export const GET_CHANNEL = gql`
 export const GET_CHANNELS = gql`
   query getChannels(
     $channelWhere: ChannelWhere
-    $eventWhere: EventWhere
+    $eventChannelWhere: EventChannelWhere
     $limit: Int
     $offset: Int
   ) {
@@ -40,7 +40,7 @@ export const GET_CHANNELS = gql`
       Tags {
         text
       }
-      EventChannelsAggregate(where: $eventWhere) {
+      EventChannelsAggregate(where: $eventChannelWhere) {
         count
       }
       DiscussionChannelsAggregate {

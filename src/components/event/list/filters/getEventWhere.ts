@@ -135,7 +135,11 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // that channel, even if a channel filter has accidentally
     // gotten into the query params.
     conditions.push({
-      Channels: { uniqueName_MATCHES: `(?i)${channelId}` },
+      EventChannels: { 
+        Channel: {
+          uniqueName_MATCHES: `(?i)${channelId}` 
+        }
+      },
     });
   } else if (truthyChannels.length > 0) {
     // If we are in the sitewide event search page,

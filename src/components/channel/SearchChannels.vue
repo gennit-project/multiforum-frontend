@@ -94,8 +94,10 @@ export default defineComponent({
       error,
     } = useQuery(GET_CHANNELS, {
       channelWhere: channelWhere,
-      eventWhere: {
-        startTime_GT: new Date().toISOString(),
+      eventChannelWhere: {
+        Event: {
+          startTime_GT: new Date().toISOString(),
+        },
       },
       limit: 25,
       offset: 0,

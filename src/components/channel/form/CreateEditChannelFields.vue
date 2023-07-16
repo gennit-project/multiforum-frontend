@@ -122,7 +122,7 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow>
+          <FormRow class="h-72 overflow-scroll">
             <template v-slot:icon>
               <AnnotationIcon class="float-right h-6 w-6" />
               <v-tooltip activator="parent" location="top">

@@ -38,10 +38,7 @@ const cache = new InMemoryCache({
         Tags: {
           merge: false,
         },
-        Channels: {
-          merge: false,
-        },
-        DiscussionChannel: {
+        DiscussionChannels: {
           merge: false,
         },
         DownvotedByModerators: {

@@ -4,16 +4,17 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
-import { MdEditor }from "md-editor-v3";
+import { MdPreview }from "md-editor-v3";
 import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
 import ProfileAvatar from "../user/ProfileAvatar.vue";
+import gql from "graphql-tag";
 
 export default defineComponent({
-  name: "OverviewPage",
+  name: "AboutPage",
   components: {
-    MdEditor,
+    MdPreview,
     RequireAuth,
     Tag,
     ProfileAvatar,
@@ -61,6 +62,24 @@ export default defineComponent({
     });
 
     const { mdAndDown } = useDisplay();
+    const GET_THEME = gql`
+      query getTheme {
+        theme @client
+      }
+    `;
+
+    const {
+      result: themeResult,
+      loading: themeLoading,
+      error: themeError,
+    } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      if (themeLoading.value || themeError.value) {
+        return "";
+      }
+      return themeResult.value.theme;
+    });
 
     return {
       admins,
@@ -73,6 +92,7 @@ export default defineComponent({
       ownerList,
       router,
       tags,
+      theme
     };
   },
 
@@ -99,7 +119,6 @@ export default defineComponent({
       </span>
       <button @click="$emit('closeLeftColumn')" class="p-2">
         <!-- This is a simple right arrow SVG icon, indicating the collapse action. -->
-
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
@@ -127,11 +146,12 @@ export default defineComponent({
       <div v-else-if="channel">
         <div v-if="!mdAndDown">
           <div v-if="channel.description">
-            <md-editor
-              v-model="channel.description"
-              language="en-US"
+            <MdPreview
+              :style="{ margin: 0, padding: 0 }"
+              :editorId="'md-editor-v3-preview'"
+              :modelValue="channel.description"
               previewTheme="github"
-              preview-only
+              :theme="theme"
             />
           </div>
           <p v-else class="text-xs">
@@ -180,11 +200,8 @@ export default defineComponent({
           <p class="text-sm mb-6 mx-6 my-3" v-else>
             This channel does not have any admins.
           </p>
-          
         </div>
-        
       </div>
-     
       <RequireAuth :require-ownership="true" :owners="ownerList" :justify-left="true" class="w-full">
         <template v-slot:has-auth>
           <div class="flex justify-between border-b border-gray-500 w-full">
@@ -199,13 +216,6 @@ export default defineComponent({
             :to="`/channels/c/${channelId}/edit`"
             >Edit</router-link
           >
-          <!-- &#8226;
-          <span
-            class="underline font-medium text-gray-900 cursor-pointer"
-            @click="confirmDeleteIsOpen = true"
-          >
-            Delete
-          </span> -->
         </template>
       </RequireAuth>
     </div>

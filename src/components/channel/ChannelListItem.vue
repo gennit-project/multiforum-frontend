@@ -40,48 +40,40 @@ export default defineComponent({
 <template>
   <div class="grid grid-cols-12">
     <div
-      class="
-        relative
-        rounded-lg
-        dark:bg-gray-900
-        dark:text-gray-200
-        py-3
-        border
-        border-gray-200
-        dark:border-gray-700
-        col-span-12
-        px-8
-      "
+      class="relative col-span-12 rounded-lg border border-gray-200 px-8 py-3 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
     >
-      <div >
+      <div>
         <p class="mb-6">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
             class="cursor-pointer"
           >
-          <h3 class="mb-2 text-xl">
-            <HighlightedSearchTerms
-              :text="channel.uniqueName"
-              :search-input="searchInput"
-            />
-          </h3>
+            <h3 class="mb-2 text-xl">
+              <HighlightedSearchTerms
+                :text="channel.uniqueName"
+                :search-input="searchInput"
+              />
+            </h3>
           </router-link>
         </p>
       </div>
       <div class="mt-1">
-        <p v-if="channel.description" class="text-sm truncate font-normal text-gray-600 dark:text-gray-200 my-1">
+        <p
+          v-if="channel.description"
+          class="font-normal my-1 truncate text-sm text-gray-600 dark:text-gray-200"
+        >
           <HighlightedSearchTerms
             :text="channel.description"
             :search-input="searchInput"
           />
         </p>
-        <p class="text-sm truncate font-normal space-x-2">
+        <p class="font-normal space-x-2 truncate text-sm">
           <router-link
             class="underline"
             :to="`/channels/c/${channel.uniqueName}/discussions`"
-            >{{ channel.DiscussionsAggregate.count }}
+            >{{ channel.DiscussionChannelsAggregate.count }}
             {{
-              channel.DiscussionsAggregate.count === "1"
+              channel.DiscussionChannelsAggregate.count === "1"
                 ? "Discussion"
                 : "Discussions"
             }}</router-link
@@ -91,7 +83,7 @@ export default defineComponent({
             class="underline"
             :to="`/channels/c/${channel.uniqueName}/events/search`"
           >
-            {{ channel.EventsAggregate.count }} Upcoming Events</router-link
+            {{ channel.EventChannelsAggregate.count }} Upcoming Events</router-link
           >
         </p>
         <Tag

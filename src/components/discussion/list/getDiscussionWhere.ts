@@ -47,7 +47,11 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
     // that channel, even if a channel filter has accidentally
     // gotten into the query params.
     conditions.push({
-      Channels: { uniqueName_MATCHES: `(?i)${channelId}` },
+      DiscussionChannels: { 
+        Channel: {
+          uniqueName_MATCHES: `(?i)${channelId}` 
+        }
+      },
     });
   } else if (truthyChannels.length > 0) {
     // If we are in the sitewide discussion search page,

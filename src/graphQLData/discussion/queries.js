@@ -24,6 +24,8 @@ const DISCUSSION_CHANNEL_VOTE_FIELDS = gql`
 `;
 
 const DISCUSSION_FIELDS = gql`
+  ${DISCUSSION_CHANNEL_VOTE_FIELDS}
+  ${AUTHOR_FIELDS}
   fragment DiscussionFields on Discussion {
     id
     title
@@ -50,10 +52,10 @@ const DISCUSSION_FIELDS = gql`
       text
     }
   }
-  ${AUTHOR_FIELDS}
 `;
 
 export const SITEWIDE_GET_DISCUSSIONS = gql`
+  ${DISCUSSION_FIELDS}
   query getDiscussions(
     $where: DiscussionWhere
     $resultsOrder: [DiscussionSort!]
@@ -68,22 +70,13 @@ export const SITEWIDE_GET_DISCUSSIONS = gql`
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
       ...DiscussionFields
-      DiscussionChannels {
-        id
-        __typenameDiscussion {
-            id
-            title
-        }
-      }
     }
   }
-  ${AUTHOR_FIELDS}
-  ${DISCUSSION_FIELDS}
 `;
 
 export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
+  ${DISCUSSION_FIELDS}
   query getDiscussions(
-    $channelId: String
     $where: DiscussionWhere
     $resultsOrder: [DiscussionSort!]
     $offset: Int
@@ -99,19 +92,13 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       ...DiscussionFields
     }
   }
-  ${AUTHOR_FIELDS}
-  ${DISCUSSION_FIELDS}
-  ${DISCUSSION_CHANNEL_VOTE_FIELDS}
 `;
 
-// get discussion by ID
 export const GET_DISCUSSION = gql`
+  ${DISCUSSION_FIELDS}
   query getDiscussion($id: ID!) {
     discussions(where: { id: $id }) {
       ...DiscussionFields
     }
   }
-  ${AUTHOR_FIELDS}
-  ${DISCUSSION_FIELDS}
-  ${DISCUSSION_CHANNEL_VOTE_FIELDS}
 `;
