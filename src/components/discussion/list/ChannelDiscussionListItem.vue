@@ -26,17 +26,7 @@ export default defineComponent({
     },
     discussionChannel: {
       type: Object as PropType<DiscussionChannelData>,
-      required: false,
-      default: () => {
-        return {
-          id: "",
-          DiscussionId: "",
-          ChannelId: "",
-          Channel: {
-            uniqueName: "",
-          },
-        };
-      },
+      required: true,
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
@@ -83,17 +73,11 @@ export default defineComponent({
       if (channelIdInParams.value) {
         return channelIdInParams.value;
       }
-      return props.discussion.DiscussionChannels[0]?.Channel?.uniqueName;
+      return props.discussion.DiscussionChannels[0]?.Channel?.channelUniqueName;
     });
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
       useQuery(GET_LOCAL_USERNAME);
-
-    const {
-      result: localModProfileNameResult,
-      loading: localModProfileNameLoading,
-      error: localModProfileNameError,
-    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
     const username = computed(() => {
       if (localUsernameLoading.value) {
@@ -102,43 +86,9 @@ export default defineComponent({
       return localUsernameResult.value?.username || "";
     });
 
-    const loggedInUserModName = computed(() => {
-      if (localModProfileNameLoading.value || localModProfileNameError.value) {
-        return "";
-      }
-      return localModProfileNameResult.value.modProfileName;
-    });
-
     const discussionChannelId = computed(() => {
       return props.discussionChannel?.id || "";
     });
-
-    const {
-      mutate: createDiscussionChannel,
-      error: createDiscussionChannelError,
-    } = useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
-      errorPolicy: "all",
-      variables: {
-        createDiscussionChannelInput: [
-          {
-            Discussion: {
-              connect: {
-                where: {
-                  node: {
-                    id: discussionIdInParams.value,
-                  },
-                },
-              },
-            },
-            Channel: {
-              connect: {
-                where: { node: { uniqueName: channelIdInParams.value } },
-              },
-            },
-          },
-        ],
-      },
-    }));
 
     const loggedInUserUpvoted = computed(() => {
       if (
@@ -158,31 +108,6 @@ export default defineComponent({
       return match;
     });
 
-    const loggedInUserDownvoted = computed(() => {
-      if (
-        localUsernameLoading.value ||
-        !localUsernameResult.value ||
-        !discussionChannelId.value
-      ) {
-        return false;
-      }
-      const mods = props.discussionChannel.DownvotedByModerators || [];
-      const loggedInMod = localModProfileNameResult.value.modProfileName;
-      const match =
-        mods.filter((mod: any) => {
-          return mod.displayName === loggedInMod;
-        }).length === 1;
-      return match;
-    });
-
-    const downvoteCount = computed(() => {
-      if (props.discussion.DiscussionChannels[0]) {
-        return props.discussion.DiscussionChannels[0]
-          .DownvotedByModeratorsAggregate?.count;
-      }
-      return 0;
-    });
-
     const upvoteCount = computed(() => {
       if (props.discussion.DiscussionChannels[0]) {
         return props.discussion.DiscussionChannels[0].UpvotedByUsersAggregate
@@ -195,19 +120,14 @@ export default defineComponent({
 
     return {
       discussionChannelId,
-      createDiscussionChannel,
-      createDiscussionChannelError,
       defaultUniqueName,
       discussionIdInParams,
-      downvoteCount,
       lgAndUp,
       errorMessage: ref(""),
       isActive: computed(
         () => discussionIdInParams.value === props.discussion.id,
       ),
       loggedInUserUpvoted,
-      loggedInUserDownvoted,
-      loggedInUserModName,
       upvoteCount,
       username,
       route,
@@ -253,7 +173,7 @@ export default defineComponent({
     <div class="flex w-full gap-3">
       <DiscussionVotes
         :discussion="discussion"
-        :comment-section="discussion.DiscussionChannels[0]"
+        :comment-section="discussionChannel"
         :show-downvote="false"
       />
       <div

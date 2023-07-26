@@ -76,20 +76,26 @@ export const SITEWIDE_GET_DISCUSSIONS = gql`
 
 export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
   ${DISCUSSION_FIELDS}
-  query getDiscussions(
-    $where: DiscussionWhere
-    $resultsOrder: [DiscussionSort!]
+  query getDiscussionChannels(
+    $where: DiscussionChannelWhere
+    $resultsOrder: [DiscussionChannelSort!]
     $offset: Int
     $limit: Int
   ) {
-    discussionsAggregate(where: $where) {
+    discussionChannelsAggregate(where: $where) {
       count
     }
-    discussions(
+    discussionChannels(
       where: $where
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
-      ...DiscussionFields
+      id,
+      Channel {
+        uniqueName
+      }
+      Discussion {
+        ...DiscussionFields
+      }
     }
   }
 `;
