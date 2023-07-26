@@ -18,6 +18,7 @@ import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
 import { DiscussionChannelData } from "@/types/commentTypes";
+import { DiscussionUpdateInput } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "EditDiscussion",
@@ -32,8 +33,19 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
-    const channelId: string | string[] = route.params.channelId;
-    const discussionId: string | string[] = route.params.discussionId;
+    const channelId = computed(() => {
+      if (typeof route.params.channelId !== "string") {
+        return "";
+      }
+      return route.params.channelId;
+    });
+
+    const discussionId = computed(() => {
+      if (typeof route.params.discussionId !== "string") {
+        return "";
+      }
+      return route.params.discussionId;
+    });
 
     const {
       result: getDiscussionResult,
@@ -94,7 +106,15 @@ export default defineComponent({
     );
 
     onGetDiscussionResult((value) => {
+      console.log("onGetDiscussionResult" , value)
+      if (value.loading === true) {
+        return;
+      }
+      if (value.data.discussions.length === 0) {
+        return;
+      }
       const discussion = value.data.discussions[0];
+      console.log("discussion", discussion)
 
       formValues.value = {
         title: discussion.title,
@@ -144,7 +164,7 @@ export default defineComponent({
       );
     });
 
-    const updateDiscussionInput = computed(() => {
+    const updateDiscussionInput = computed<DiscussionUpdateInput>(() => {
       const tagConnections = formValues.value.selectedTags.map(
         (tag: string) => {
           return {
@@ -238,7 +258,7 @@ export default defineComponent({
         name: "DiscussionDetail",
         params: {
           channelId: formValues.value.selectedChannels[0],
-          discussionId,
+          discussionId: discussionId.value,
         },
       });
     });

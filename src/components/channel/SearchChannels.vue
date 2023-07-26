@@ -65,7 +65,7 @@ export default defineComponent({
       const tagSearch = {
         Tags: {
           OR: selectedTags.value.map((tag: string) => {
-            return { text_MATCHES: `(?i)${tag}` };
+            return { text_CONTAINS: tag };
           }),
         },
       };

@@ -3,7 +3,6 @@ import TagData from './tagTypes';
 import DiscussionChannelData from './commentTypes';
 import { ChannelData } from './channelTypes';
 import { ModProfile } from '@/components/mod/ModProfile.vue';
-import { Discussion } from '@/__generated__/graphql';
 
 export interface DiscussionData {
     id: string;

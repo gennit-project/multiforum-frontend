@@ -1,9 +1,14 @@
 import { gql } from "@apollo/client/core";
 
-export const CREATE_DISCUSSION = gql`
-  mutation createDiscussion($createDiscussionInput: [DiscussionCreateInput!]!) {
-    createDiscussions(input: $createDiscussionInput) {
-      discussions {
+export const CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
+  mutation createDiscussion(
+    $discussionCreateInput: DiscussionCreateInput
+    $channelConnections: [String]
+  ) {
+    createDiscussionWithChannelConnections(
+      discussionCreateInput: $discussionCreateInput
+      channelConnections: $channelConnections
+    ) {
         id
         title
         body
@@ -21,7 +26,7 @@ export const CREATE_DISCUSSION = gql`
           text
         }
       }
-    }
+    
   }
 `;
 

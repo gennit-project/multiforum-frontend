@@ -15,10 +15,10 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
     conditions.push({
       OR: [
         {
-          title_MATCHES: `(?i).*${searchInput}.*`,
+          title_CONTAINS: searchInput,
         },
         {
-          body_MATCHES: `(?i).*${searchInput}.*`,
+          body_CONTAINS: searchInput,
         },
       ],
     });
@@ -27,7 +27,7 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
   // Tag filter
   if (tags.length > 0) {
     const matchTags = tags.reduce((prev: any, curr: any) => {
-      return prev.concat({ text_MATCHES: `(?i)${curr}` });
+      return prev.concat({ text_CONTAINS: curr });
     }, []);
     conditions.push({
       Tags: {
@@ -49,7 +49,7 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
     conditions.push({
       DiscussionChannels: { 
         Channel: {
-          uniqueName_MATCHES: `(?i)${channelId}` 
+          uniqueName_CONTAINS: channelId
         }
       },
     });
@@ -61,7 +61,7 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
       // Technically a selected channel could be an array
       // of strings, but we expect it to always be a string.
       (prev: any, curr: any) => {
-        return prev.concat({ uniqueName_MATCHES: `(?i)${curr}` });
+        return prev.concat({ uniqueName_CONTAINS: curr });
       },
       []
     );

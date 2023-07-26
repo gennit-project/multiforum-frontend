@@ -8,12 +8,13 @@ import {
 } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
 import { apolloClient } from "@/main";
-import { CREATE_DISCUSSION } from "@/graphQLData/discussion/mutations";
+import { CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/discussion/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { DiscussionData } from "@/types/discussionTypes";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 import RequireAuth from "../../auth/RequireAuth.vue";
+import { DiscussionCreateInput } from "@/__generated__/graphql";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
@@ -48,11 +49,12 @@ export default defineComponent({
       body: "",
       selectedChannels: channelId ? [channelId] : [],
       selectedTags: [],
+      author: username.value,
     };
 
     const formValues = ref(createDiscussionDefaultValues);
 
-    const createDiscussionInput = computed(() => {
+    const discussionCreateInput = computed<DiscussionCreateInput>(() => {
       const tagConnections = formValues.value.selectedTags.map(
         (tag: string) => {
           return {
@@ -70,36 +72,9 @@ export default defineComponent({
         },
       );
 
-      const channelConnections = formValues.value.selectedChannels.map(
-        (channel: string) => {
-          return {
-            node: {
-              UpvotedByUsers: {
-                connect: {
-                  where: {
-                    node: {
-                      username: username.value,
-                    },
-                  },
-                },
-              },
-              Channel: {
-                connect: {
-                  where: {
-                    node: {
-                      uniqueName: channel,
-                    },
-                  },
-                },
-              },
-            },
-          };
-        },
-      );
-
       const input = {
-        title: formValues.value.title || null,
-        body: formValues.value.body || null,
+        title: formValues.value.title,
+        body: formValues.value.body,
         Tags: {
           connectOrCreate: tagConnections,
         },
@@ -112,26 +87,28 @@ export default defineComponent({
             },
           },
         },
-        DiscussionChannels: {
-          create: channelConnections,
-        },
       };
 
-      return [input];
+      return input;
+    });
+
+    const channelConnections = computed(() => {
+      return formValues.value.selectedChannels;
     });
 
     const {
       mutate: createDiscussion,
       error: createDiscussionError,
       onDone,
-    } = useMutation(CREATE_DISCUSSION, () => ({
+    } = useMutation(CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS, () => ({
       errorPolicy: "all",
       variables: {
-        createDiscussionInput: createDiscussionInput.value,
+        discussionCreateInput: discussionCreateInput.value,
+        channelConnections: channelConnections.value,
       },
       update: (cache: any, result: any) => {
         const newDiscussion: DiscussionData =
-          result.data?.createDiscussions?.discussions[0];
+          result.data?.createDiscussionWithChannelConnections;
 
         cache.modify({
           fields: {
@@ -163,7 +140,8 @@ export default defineComponent({
     }));
 
     onDone((response: any) => {
-      const newDiscussionId = response.data.createDiscussions.discussions[0].id;
+      const newDiscussionId =
+        response.data?.createDiscussionWithChannelConnections.id;
 
       /*
         If the discussion was created in the context
@@ -200,7 +178,6 @@ export default defineComponent({
       channelId,
       createDiscussion,
       createDiscussionError,
-      createDiscussionInput,
       formValues,
       router,
       username,
