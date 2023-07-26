@@ -9,56 +9,54 @@ export const CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
       discussionCreateInput: $discussionCreateInput
       channelConnections: $channelConnections
     ) {
-        id
-        title
-        body
-        DiscussionChannels {
-          Channel {
-            uniqueName
-          }
-        }
-        Author {
-          username
-        }
-        createdAt
-        updatedAt
-        Tags {
-          text
+      id
+      title
+      body
+      DiscussionChannels {
+        Channel {
+          uniqueName
         }
       }
-    
+      Author {
+        username
+      }
+      createdAt
+      updatedAt
+      Tags {
+        text
+      }
+    }
   }
 `;
 
-export const UPDATE_DISCUSSION = gql`
+export const UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
   mutation updateDiscussions(
-    $updateDiscussionInput: DiscussionUpdateInput
-    $discussionWhere: DiscussionWhere
+    $updateDiscussionInput: DiscussionUpdateInput!
+    $discussionWhere: DiscussionWhere!
+    $channelConnections: [String!]!
+    $channelDisconnections: [String!]!
   ) {
-    updateDiscussions(update: $updateDiscussionInput, where: $discussionWhere) {
-      discussions {
-        id
-        title
-        body
-        DiscussionChannels {
-          Channel {
-            uniqueName
-          }
-          UpvotedByUsersAggregate {
-            count
-          }
-          DownvotedByModeratorsAggregate {
-            count
-          }
+    updateDiscussionWithChannelConnections(
+      discussionUpdateInput: $updateDiscussionInput
+      discussionWhere: $discussionWhere
+      channelConnections: $channelConnections
+      channelDisconnections: $channelDisconnections
+    ) {
+      id
+      title
+      body
+      DiscussionChannels {
+        Channel {
+          uniqueName
         }
-        Author {
-          username
-        }
-        createdAt
-        updatedAt
-        Tags {
-          text
-        }
+      }
+      Author {
+        username
+      }
+      createdAt
+      updatedAt
+      Tags {
+        text
       }
     }
   }

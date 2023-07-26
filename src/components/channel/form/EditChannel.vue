@@ -92,7 +92,13 @@ export default defineComponent({
       return []
     })
 
+    const dataLoaded = ref(false); 
+
     onGetChannelResult((value) => {
+      if (value.loading) {
+        return;
+      }
+      
       const channel = value.data.channels[0];
 
       formValues.value = {
@@ -102,6 +108,8 @@ export default defineComponent({
           return tag.text;
         }),
       };
+
+      dataLoaded.value = true;
     });
 
     const channelUpdateInput = computed(() => {
@@ -182,6 +190,7 @@ export default defineComponent({
       channelId,
       existingTags,
       formValues,
+      dataLoaded,
       getChannelError,
       getChannelLoading,
       getChannelResult,
@@ -212,6 +221,7 @@ export default defineComponent({
   <RequireAuth :require-ownership="true" :owners="ownerList">
     <template v-slot:has-auth>
       <CreateEditChannelFields
+      :key="dataLoaded.toString()"
         :edit-mode="true"
         :channel-loading="getChannelLoading"
         :get-channel-error="getChannelError"

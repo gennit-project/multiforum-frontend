@@ -1,6 +1,6 @@
 <script lang="ts">
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import { UPDATE_DISCUSSION } from "@/graphQLData/discussion/mutations";
+import { UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/discussion/mutations";
 import { defineComponent, computed, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import {
@@ -9,7 +9,6 @@ import {
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { TagData } from "@/types/tagTypes";
-import { ChannelData } from "@/types/channelTypes";
 import {
   CreateEditDiscussionFormValues,
   DiscussionData,
@@ -18,7 +17,11 @@ import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
 import { DiscussionChannelData } from "@/types/commentTypes";
-import { DiscussionUpdateInput } from "@/__generated__/graphql";
+import {
+  DiscussionTagsConnectOrCreateFieldInput,
+  DiscussionTagsDisconnectFieldInput,
+  DiscussionUpdateInput,
+} from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "EditDiscussion",
@@ -105,18 +108,15 @@ export default defineComponent({
       getDefaultFormValues(),
     );
 
+    const dataLoaded = ref(false);
+
     onGetDiscussionResult((value) => {
-      console.log("onGetDiscussionResult" , value)
       if (value.loading === true) {
         return;
       }
-      if (value.data.discussions.length === 0) {
-        return;
-      }
       const discussion = value.data.discussions[0];
-      console.log("discussion", discussion)
 
-      formValues.value = {
+      const formFields: CreateEditDiscussionFormValues = {
         title: discussion.title,
         body: discussion.body,
         selectedTags: discussion.Tags.map((tag: TagData) => {
@@ -129,6 +129,8 @@ export default defineComponent({
         ),
         author: discussion.Author.username,
       };
+      formValues.value = formFields;
+      dataLoaded.value = true;
     });
 
     // Remember the existing tags so that if the user removes
@@ -149,24 +151,9 @@ export default defineComponent({
       );
     });
 
-    const existingChannels = computed(() => {
-      if (
-        getDiscussionLoading.value ||
-        getDiscussionError.value ||
-        !getDiscussionResult.value.discussions[0].Channels
-      ) {
-        return [];
-      }
-      return getDiscussionResult.value.discussions[0].Channels.map(
-        (channel: ChannelData) => {
-          return channel.uniqueName;
-        },
-      );
-    });
-
     const updateDiscussionInput = computed<DiscussionUpdateInput>(() => {
-      const tagConnections = formValues.value.selectedTags.map(
-        (tag: string) => {
+      const tagConnections: DiscussionTagsConnectOrCreateFieldInput[] =
+        formValues.value.selectedTags.map((tag: string) => {
           return {
             onCreate: {
               node: {
@@ -179,77 +166,60 @@ export default defineComponent({
               },
             },
           };
-        },
-      );
-
-      const tagDisconnections = existingTags.value
-        .filter((tag: string) => {
-          return !formValues.value.selectedTags.includes(tag);
-        })
-        .map((tag: string) => {
-          return {
-            where: {
-              node: {
-                text: tag,
-              },
-            },
-          };
         });
 
-      const channelConnections = formValues.value.selectedChannels.map(
-        (channel: string) => {
-          return {
-            where: {
-              node: {
-                Channel: {
-                  uniqueName: channel,
+      const tagDisconnections: DiscussionTagsDisconnectFieldInput[] =
+        existingTags.value
+          .filter((tag: string) => {
+            return !formValues.value.selectedTags.includes(tag);
+          })
+          .map((tag: string) => {
+            return {
+              where: {
+                node: {
+                  text: tag,
                 },
               },
-            },
-          };
-        },
-      );
+            };
+          });
 
-      const channelDisconnections = existingChannels.value
-        .filter((channel: string) => {
-          return !formValues.value.selectedChannels.includes(channel);
-        })
-        .map((channel: string) => {
-          return {
-            where: {
-              node: {
-                Channel:{
-                  uniqueName: channel,
-                }
-              },
-            },
-          };
-        });
-
-      return {
+      const result: DiscussionUpdateInput = {
         title: formValues.value.title,
         body: formValues.value.body,
-        DiscussionChannels: {
-          connect: channelConnections,
-          disconnect: channelDisconnections,
-        },
-        Tags: {
-          connectOrCreate: tagConnections,
-          disconnect: tagDisconnections,
-        },
+        Tags: [
+          {
+            connectOrCreate: tagConnections,
+            disconnect: tagDisconnections,
+          },
+        ],
       };
+      return result;
+    });
+
+    const channelConnections = computed(() => {
+      // Keep track of what channels were added so that we can
+      // connect the relevant DiscussionChannel nodes to the discussion.
+      return formValues.value.selectedChannels;
     });
 
     const {
       mutate: updateDiscussion,
       error: updateDiscussionError,
       onDone,
-    } = useMutation(UPDATE_DISCUSSION, () => ({
+    } = useMutation(UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS, () => ({
       variables: {
         discussionWhere: {
-          id: discussionId,
+          id: discussionId.value,
         },
         updateDiscussionInput: updateDiscussionInput.value,
+        channelConnections: channelConnections.value,
+        channelDisconnections: discussion.value.DiscussionChannels.filter(
+          (dc) => {
+            return !channelConnections.value.includes(dc.Channel.uniqueName);
+          },
+        ).map((dc) => {
+          return dc.Channel.uniqueName;
+        }),
       },
     }));
 
@@ -265,8 +235,8 @@ export default defineComponent({
 
     return {
       channelId,
+      dataLoaded,
       discussionId,
-      existingChannels,
       existingTags,
       formValues,
       getDiscussionError,
@@ -294,8 +264,10 @@ export default defineComponent({
 </script>
 <template>
   <RequireAuth :require-ownership="true" :owners="ownerList">
+    {{ formValues }}
     <template v-slot:has-auth>
       <CreateEditDiscussionFields
+        :key="dataLoaded.toString()"
         :edit-mode="true"
         :discussion-loading="getDiscussionLoading"
         :get-discussion-error="getDiscussionError"
