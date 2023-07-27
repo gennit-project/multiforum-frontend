@@ -4,10 +4,6 @@ import ChannelDiscussionList from "./ChannelDiscussionList.vue";
 import SitewideDiscussionList from "./SitewideDiscussionList.vue";
 import DrawerFlyout from "../../generic/DrawerFlyout.vue";
 import { useRoute, useRouter } from "vue-router";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPanes.vue";
-import PrimaryButton from "../../generic/PrimaryButton.vue";
-import RequireAuth from "../../auth/RequireAuth.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
 import { useDisplay } from "vuetify";
@@ -52,13 +48,13 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-      })
+      }),
     );
 
     const selectedTags: Ref<Array<string>> = ref(
       route.params.tag && typeof route.params.tag === "string"
         ? [route.params.tag]
-        : []
+        : [],
     );
 
     const setSelectedTags = (tag: Array<string>) => {
@@ -121,94 +117,109 @@ export default defineComponent({
     handleClickTag(tagText: string) {
       const currentQuery = this.$route.query;
 
-      if (currentQuery.tags) {
-        if (
-          typeof currentQuery.tags === "string" &&
-          tagText === currentQuery.tags
-        ) {
-          // If we're already filtering by the tag, clear it.
-          const newQuery = { ...this.$route.query };
-          delete newQuery["tags"];
+      const clearTags = () => {
+        // If we're already filtering by the tag only, clear it.
+        const newQuery = { ...this.$route.query };
+        delete newQuery["tags"];
 
-          this.$router.replace({
-            query: {
-              ...newQuery,
-            },
-          });
+        this.$router.replace({
+          query: {
+            ...newQuery,
+          },
+        });
 
-          this.filterValues.tags = this.filterValues.tags.filter(
-            (t: string) => t !== tagText
-          );
-        } else if (
-          typeof currentQuery.tags === "object" &&
-          currentQuery.tags.includes(tagText)
-        ) {
-          // If we're already filtering by multiple tags including this tag,
-          // remove only this tag.
-          const newQuery = { ...this.$route.query };
-          newQuery.tags = newQuery.tags.filter((tag: string) => {
-            return tag !== tagText;
-          });
+        this.filterValues.tags = this.filterValues.tags.filter(
+          (t: string) => t !== tagText,
+        );
+      };
 
-          this.$router.replace({
-            query: {
-              ...newQuery,
-            },
-          });
-          this.filterValues.tags.push(tagText);
-        } else {
-          // If we are not already filtering by the tag,
-          // overwrite existing tag filters with it.
-          this.updateFilters({ tags: [tagText] });
-        }
+      const removeOnlyThisTag = () => {
+        // If we're already filtering by multiple tags including this tag,
+        // remove only this tag.
+        const newQuery = { ...this.$route.query };
+        newQuery.tags = newQuery.tags.filter((tag: string) => {
+          return tag !== tagText;
+        });
+
+        this.$router.replace({
+          query: {
+            ...newQuery,
+          },
+        });
+        this.filterValues.tags.push(tagText);
+      };
+
+      const alreadyFilteringByOnlyThisTag =
+        currentQuery.tags &&
+        typeof currentQuery.tags === "string" &&
+        tagText === currentQuery.tags;
+
+      const alreadyFilteringByMultipleTagsIncludingThisTag =
+        currentQuery.tags &&
+        typeof currentQuery.tags === "object" &&
+        currentQuery.tags.includes(tagText);
+
+      if (alreadyFilteringByOnlyThisTag) {
+        clearTags();
+      } else if (alreadyFilteringByMultipleTagsIncludingThisTag) {
+        removeOnlyThisTag();
       } else {
+        // If we are not already filtering by the tag,
+        // overwrite existing tag filters with it.
         this.updateFilters({ tags: [tagText] });
       }
     },
     handleClickChannel(uniqueName: string) {
       const currentQuery = this.$route.query;
 
-      if (currentQuery.channels) {
-        if (
-          typeof currentQuery.channels === "string" &&
-          uniqueName === currentQuery.channels
-        ) {
-          // If we're already filtering by the channel, clear it.
-          const newQuery = { ...this.$route.query };
-          delete newQuery["channels"];
+      const alreadyFilteringByThisChannel =
+        currentQuery.channels &&
+        typeof currentQuery.channels === "string" &&
+        uniqueName === currentQuery.channels;
+      const alreadyFilteringByMultipleChannelsIncludingThisChannel =
+        currentQuery.channels &&
+        typeof currentQuery.channels === "object" &&
+        currentQuery.channels.includes(uniqueName);
 
-          this.$router.replace({
-            query: {
-              ...newQuery,
-            },
-          });
+      const clearChannels = () => {
+        // If we're already filtering by the channel, clear it.
+        const newQuery = { ...this.$route.query };
+        delete newQuery["channels"];
 
-          this.filterValues.channels = this.filterValues.channels.filter(
-            (c: string) => c !== uniqueName
-          );
-        } else if (
-          typeof currentQuery.channels === "object" &&
-          currentQuery.channels.includes(uniqueName)
-        ) {
-          // If we're already filtering by multiple channels including this channel,
-          // remove only this channel.
-          const newQuery = { ...this.$route.query };
-          newQuery.channels = newQuery.channels.filter((channel: string) => {
-            return channel !== uniqueName;
-          });
+        this.$router.replace({
+          query: {
+            ...newQuery,
+          },
+        });
 
-          this.$router.replace({
-            query: {
-              ...newQuery,
-            },
-          });
-          this.filterValues.channels.push(uniqueName);
-        } else {
-          // If we are not already filtering by the channel,
-          // overwrite existing channel filters with it.
-          this.updateFilters({ channels: [uniqueName] });
-        }
+        this.filterValues.channels = this.filterValues.channels.filter(
+          (c: string) => c !== uniqueName,
+        );
+      };
+
+      const removeOnlyThisChannel = () => {
+        // If we're already filtering by multiple channels including this channel,
+        // remove only this channel.
+        const newQuery = { ...this.$route.query };
+        newQuery.channels = newQuery.channels.filter((channel: string) => {
+          return channel !== uniqueName;
+        });
+
+        this.$router.replace({
+          query: {
+            ...newQuery,
+          },
+        });
+        this.filterValues.channels.push(uniqueName);
+      };
+
+      if (alreadyFilteringByThisChannel) {
+        clearChannels();
+      } else if (alreadyFilteringByMultipleChannelsIncludingThisChannel) {
+        removeOnlyThisChannel();
       } else {
+        // If we are not already filtering by the channel,
+        // overwrite existing channel filters with it.
         this.updateFilters({ channels: [uniqueName] });
       }
     },
@@ -236,14 +247,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid >
+  <v-container fluid>
     <v-row>
       <v-col cols="12">
         <DiscussionFilterBar />
 
         <v-row>
           <!-- Left column -->
-          <v-col cols="12" md=8 lg="4" xl="3" class="scrollable-column">
+          <v-col cols="12" md="8" lg="4" xl="3" class="scrollable-column">
             <SitewideDiscussionList
               v-if="!channelId"
               :search-input="filterValues.searchInput"
@@ -265,12 +276,25 @@ export default defineComponent({
             />
           </v-col>
 
-          <v-col  v-if="!mdAndDown" cols="12" :lg="6" xl="6" class="scrollable-column">
+          <v-col
+            v-if="!mdAndDown"
+            cols="12"
+            :lg="6"
+            xl="6"
+            class="scrollable-column"
+          >
             <router-view></router-view>
           </v-col>
 
           <!-- Right column -->
-          <v-col cols="12" md=4 lg="2" xl="3" v-if="channelId" class="scrollable-column">
+          <v-col
+            cols="12"
+            md="4"
+            lg="2"
+            xl="3"
+            v-if="channelId"
+            class="scrollable-column"
+          >
             <AboutColumn />
           </v-col>
         </v-row>
