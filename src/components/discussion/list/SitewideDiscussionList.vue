@@ -4,12 +4,15 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import SitewideDiscussionListItem from "./SitewideDiscussionListItem.vue";
 import LoadMore from "../../generic/LoadMore.vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { SITEWIDE_GET_DISCUSSIONS } from "@/graphQLData/discussion/queries";
+import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/discussion/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useRouter, useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
+import { DiscussionChannel } from "@/__generated__/graphql";
+
+const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
   // The reason we have separate components for the sidewide discussion
@@ -29,50 +32,82 @@ export default defineComponent({
     });
 
     const filterValues: Ref<SearchDiscussionValues> = ref(
-      getFilterValuesFromParams({ route, channelId: channelId.value })
+      getFilterValuesFromParams({ route, channelId: channelId.value }),
     );
 
     const discussionWhere = computed(() => {
       return getDiscussionWhere(filterValues.value, channelId.value);
     });
 
+    const discussionChannelWhere = computed(() => {
+      return {
+        Discussion: discussionWhere.value,
+      };
+    });
+
     const {
-      result: discussionResult,
+      result: discussionChannelResult,
       error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
       onResult: onGetDiscussionResult,
       fetchMore,
-    } = useQuery(
-      SITEWIDE_GET_DISCUSSIONS,
-      {
-        where: discussionWhere,
-        limit: 25,
-        offset: 0,
-        resultsOrder: {
-          createdAt: "DESC",
-        },
+    } = useQuery(GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA, {
+      where: discussionChannelWhere,
+      limit: DISCUSSION_PAGE_LIMIT,
+      offset: 0,
+      resultsOrder: {
+        upvoteCount: "DESC",
       },
-      {
-        fetchPolicy: "network-only",
+      fetchPolicy: "cache-and-network",
+    });
+
+    const aggregateChannelCount = computed(() => {
+      if (!discussionChannelResult.value) {
+        return 0;
       }
-    );
+      return discussionChannelResult.value.discussionChannelsAggregate.count;
+    });
+
+    const discussionChannels = computed(() => {
+      if (!discussionChannelResult.value) {
+        return [];
+      }
+      const submissions = discussionChannelResult.value.discussionChannels;
+
+      // Deduplicate by the discussionId field of the discussionChannels
+      const deduplicatedSubmissions = submissions.reduce(
+        (acc: DiscussionChannel[], current: DiscussionChannel) => {
+          const x = acc.find(
+            (item: DiscussionChannel) =>
+              item.discussionId === current.discussionId,
+          );
+          if (!x) {
+            return acc.concat([current]);
+          } else {
+            return acc;
+          }
+        },
+        [] as Array<DiscussionData>,
+      );
+      return deduplicatedSubmissions;
+    });
 
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: discussionResult.value.discussions.length,
+          offset: discussionChannelResult.value.discussionChannels.length,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
 
           return {
             ...previousResult,
-            discussions: [
-              ...previousResult.discussions,
-              ...fetchMoreResult.discussions,
+            discussionChannels: [
+              ...previousResult.discussionChannels,
+              ...fetchMoreResult.discussionChannels,
             ],
           };
         },
@@ -101,17 +136,20 @@ export default defineComponent({
     onGetDiscussionResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
-      if (!value.data || value.data.discussions.length === 0) {
+      if (!value.data || value.data.discussionChannels.length === 0) {
         return;
       }
-      const defaultSelectedDiscussion = value.data.discussions[0];
+      const defaultSelectedDiscussion =
+        value.data.discussionChannels[0].Discussion;
 
       sendToPreview(defaultSelectedDiscussion.id);
     });
+
     return {
+      aggregateChannelCount,
       discussionError,
       discussionLoading,
-      discussionResult,
+      discussionChannels,
       filterValues,
       loadMore,
       reachedEndOfResults,
@@ -153,11 +191,13 @@ export default defineComponent({
     });
     if (
       !this.discussionId &&
-      this.discussionResult &&
-      this.discussionResult.discussions &&
-      this.discussionResult.discussions.length > 0
+      this.discussionChannelResult &&
+      this.discussionChannelResult.discussionChannels &&
+      this.discussionChannelResult.discussionChannels.length > 0
     ) {
-      this.sendToPreview(this.discussionResult.discussions[0].id);
+      this.sendToPreview(
+        this.discussionChannelResult.discussionChannels[0].discussionId,
+      );
     }
   },
   components: {
@@ -194,32 +234,27 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full h-full">
+  <div class="h-full w-full">
     <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       class="max-w-5xl"
       v-else-if="discussionError"
       :text="discussionError.message"
     />
-    <p
-      v-else-if="discussionResult && discussionResult.discussions.length === 0"
-      class="px-4 my-6"
-    >
+    <p v-else-if="discussionChannels.length === 0" class="my-6 px-4">
       There are no results.
     </p>
-    <!-- <p v-else class="sm:px-4">
-      Showing {{ discussionResult.discussions.length }} of
-      {{ discussionResult.discussionsAggregate.count }} results
-    </p> -->
-    <div
-      v-if="discussionResult && discussionResult.discussions.length > 0"
-      class="h-full"
-    >
-      <ul role="list" class=" my-6 mr-2 divide-y" data-testid="sitewide-discussion-list">
+    <div v-if="discussionChannels.length > 0" class="h-full">
+      <ul
+        role="list"
+        class="my-6 mr-2 divide-y"
+        data-testid="sitewide-discussion-list"
+      >
         <SitewideDiscussionListItem
-          v-for="discussion in discussionResult.discussions"
-          :key="discussion.id"
-          :discussion="discussion"
+          v-for="discussionChannel in discussionChannels"
+          :key="discussionChannel.id"
+          :discussion="discussionChannel.Discussion"
+          :default-unique-name="discussionChannel.channelUniqueName"
           :search-input="searchInput"
           :selected-tags="selectedTags"
           :selected-channels="selectedChannels"
@@ -229,12 +264,11 @@ export default defineComponent({
         />
       </ul>
 
-      <div v-if="discussionResult && discussionResult.discussions.length > 0">
+      <div v-if="discussionChannels.length > 0">
         <LoadMore
           class="justify-self-center"
           :reached-end-of-results="
-            discussionResult.discussionsAggregate.count ===
-            discussionResult.discussions.length
+            aggregateChannelCount === discussionChannels.length
           "
           @loadMore="$emit('loadMore')"
         />

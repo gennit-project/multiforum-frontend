@@ -2,10 +2,7 @@
 import { defineComponent, computed, PropType } from "vue";
 import ChannelLink from "./ChannelLink.vue";
 import { useRoute } from "vue-router";
-
-import { ChannelData } from "@/types/channelTypes";
-import { DiscussionData } from "@/types/discussionTypes";
-import { DiscussionChannelData } from "@/types/commentTypes";
+import { DiscussionData, DiscussionChannelData } from "@/types/discussionTypes";
 
 export default defineComponent({
   props: {
@@ -39,13 +36,28 @@ export default defineComponent({
         : 0;
     };
 
-    const channelLinks = computed<ChannelData[]>(() => {
+    const getVoteCount = (channelId: string) => {
+      const discussionChannels = props.discussion.DiscussionChannels;
+
+      const activeDiscussionChannel = discussionChannels.find(
+        (dc: DiscussionChannelData) => {
+          return dc.channelUniqueName === channelId;
+        },
+      );
+
+      if (!activeDiscussionChannel) {
+        return 0;
+      }
+      return activeDiscussionChannel.upvoteCount;
+    };
+
+    const channelLinks = computed(() => {
       // On the discussion detail page, hide the current channel because
       // that would link to the current page.
 
       return props.discussion.DiscussionChannels.filter(
         (discussionChannel: DiscussionChannelData) => {
-          return discussionChannel.Channel?.uniqueName !== props.channelId;
+          return discussionChannel.channelUniqueName !== props.channelId;
         },
       )
         .sort((a: DiscussionChannelData, b: DiscussionChannelData) => {
@@ -54,12 +66,16 @@ export default defineComponent({
           return countB - countA;
         })
         .map((discussionChannel: DiscussionChannelData) => {
-          return discussionChannel.Channel;
+          return {
+            channelUniqueName: discussionChannel.channelUniqueName,
+            upvoteCount: discussionChannel.upvoteCount,
+          };
         });
     });
     return {
       channelLinks,
       getCommentCount,
+      getVoteCount,
       route,
     };
   },
@@ -75,13 +91,15 @@ export default defineComponent({
         v-if="channelId"
         :channelId="channelId"
         :comment-count="getCommentCount(channelId)"
+        :upvote-count="getVoteCount(channelId)"
         :discussionId="discussion.id"
       />
       <ChannelLink
         v-for="channel in channelLinks"
-        :key="channel.uniqueName"
-        :channelId="channel.uniqueName"
-        :comment-count="getCommentCount(channel.uniqueName)"
+        :key="channel.channelUniqueName"
+        :channelId="channel.channelUniqueName"
+        :comment-count="getCommentCount(channel.channelUniqueName)"
+        :upvote-count="channel.upvoteCount"
         :discussionId="discussion.id"
       />
     </ul>
@@ -92,6 +110,7 @@ export default defineComponent({
       <ChannelLink
         :channelId="channelId"
         :comment-count="getCommentCount(channelId)"
+        :upvote-count="getVoteCount(channelId)"
         :discussionId="discussion.id"
       />
     </ul>
@@ -100,9 +119,10 @@ export default defineComponent({
     <ul class="list-disc pl-3">
       <ChannelLink
         v-for="channel in channelLinks"
-        :key="channel.uniqueName"
-        :channelId="channel.uniqueName"
-        :comment-count="getCommentCount(channel.uniqueName)"
+        :key="channel.channelUniqueName"
+        :channelId="channel.channelUniqueName"
+        :comment-count="getCommentCount(channel.channelUniqueName)"
+        :upvote-count="channel.upvoteCount"
         :discussionId="discussion.id"
       />
     </ul>

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { DiscussionData } from "../../../types/discussionTypes";
+import { DiscussionChannelData, DiscussionData } from "../../../types/discussionTypes";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
@@ -8,6 +8,10 @@ import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.
 
 export default defineComponent({
   props: {
+    defaultUniqueName: {
+      type: String,
+      default: "",
+    },
     discussion: {
       type: Object as PropType<DiscussionData>,
       required: true,
@@ -50,12 +54,24 @@ export default defineComponent({
       }
       return "";
     });
-    const defaultUniqueName = computed(() => {
-      return props.discussion.DiscussionChannels[0]?.Channel?.uniqueName;
+
+    const upvoteCountInDefaultChannel = computed(() => {
+      const discussionChannels = props.discussion.DiscussionChannels;
+
+      const activeDiscussionChannel = discussionChannels.find(
+        (dc: DiscussionChannelData) => {
+          return dc.channelUniqueName === props.defaultUniqueName;
+        },
+      );
+
+      if (!activeDiscussionChannel) {
+        return 0;
+      }
+      return activeDiscussionChannel.upvoteCount;
     });
+
     return {
       previewIsOpen: false,
-      defaultUniqueName, //props.discussion.DiscussionSections[0].Channel.uniqueName,
       title: props.discussion.title,
       body: props.discussion.body || "",
       createdAt: props.discussion.createdAt,
@@ -67,6 +83,7 @@ export default defineComponent({
       tags: props.discussion.Tags.map((tag) => {
         return tag.text;
       }),
+      upvoteCount: upvoteCountInDefaultChannel,
     };
   },
   computed: {
@@ -86,14 +103,9 @@ export default defineComponent({
     class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-3 dark:border-gray-700"
   >
     <span class="mt-1 w-6"
-      >{{
-        (discussion.UpvotedByUsersAggregate?.count || 0) -
-        (discussion.DownvotedByModeratorsAggregate?.count || 0)
-      }}
+      >{{ upvoteCount }}
       <v-tooltip activator="parent" location="top">
-        <span>{{
-          "Sum of votes in all channels, deduped by user. To vote, go to a channel and vote within it."
-        }}</span>
+        <span>{{ `Upvotes in ${defaultUniqueName}` }}</span>
       </v-tooltip>
     </span>
 
@@ -102,7 +114,6 @@ export default defineComponent({
     >
       <div>💬</div>
     </div>
-
     <div class="w-full">
       <router-link :to="previewLink" @click="$emit('openPreview')">
         <p class="text-md cursor-pointer font-bold hover:text-gray-500">
@@ -126,18 +137,16 @@ export default defineComponent({
         <span
           v-for="(discussionChannel, i) in discussion.DiscussionChannels"
           class="cursor-pointer hover:text-blue-400"
-          :key="i"
+          :key="discussionChannel.id"
           :class="[
-            selectedChannels.includes(discussionChannel.Channel?.uniqueName)
+            selectedChannels.includes(discussionChannel.channelUniqueName)
               ? 'text-blue-500'
               : 'text-slate-500 hover:text-slate-400 dark:text-slate-400 dark:hover:text-slate-300',
           ]"
           :channel-mode="true"
-          @click="
-            $emit('filterByChannel', discussionChannel.Channel?.uniqueName)
-          "
+          @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
         >
-          {{ discussionChannel.Channel?.uniqueName
+          {{ discussionChannel.channelUniqueName
           }}<span v-if="i < discussion.DiscussionChannels.length - 1">, </span>
         </span>
       </p>

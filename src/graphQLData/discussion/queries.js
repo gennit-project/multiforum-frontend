@@ -37,6 +37,11 @@ const DISCUSSION_FIELDS = gql`
     }
     DiscussionChannels {
       id
+      upvoteCount
+      UpvotedByUsers {
+        username
+      }
+      channelUniqueName
       Channel {
         uniqueName
       }
@@ -50,26 +55,6 @@ const DISCUSSION_FIELDS = gql`
     }
     Tags {
       text
-    }
-  }
-`;
-
-export const SITEWIDE_GET_DISCUSSIONS = gql`
-  ${DISCUSSION_FIELDS}
-  query getDiscussions(
-    $where: DiscussionWhere
-    $resultsOrder: [DiscussionSort!]
-    $offset: Int
-    $limit: Int
-  ) {
-    discussionsAggregate(where: $where) {
-      count
-    }
-    discussions(
-      where: $where
-      options: { sort: $resultsOrder, offset: $offset, limit: $limit }
-    ) {
-      ...DiscussionFields
     }
   }
 `;
@@ -90,6 +75,8 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
       id,
+      discussionId
+      channelUniqueName
       Channel {
         uniqueName
       }

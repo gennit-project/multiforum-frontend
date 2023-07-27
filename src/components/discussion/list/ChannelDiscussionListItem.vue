@@ -181,7 +181,6 @@ export default defineComponent({
       >
         <div>💬</div>
       </div>
-
       <div>
         <router-link :to="detailLink" class="hover:text-gray-500">
           <p class="text-md cursor-pointer font-bold hover:text-gray-500">

@@ -20,6 +20,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    upvoteCount: {
+      type: Number,
+      required: true,
+    },
   },
   setup() {
     return {}
@@ -41,7 +45,7 @@ export default defineComponent({
     >
       {{ `${commentCount} comments` }}
     </router-link>
-    in
+    and {{ upvoteCount }} votes in
     <router-link
       :to="{
         name: 'DiscussionDetail',
