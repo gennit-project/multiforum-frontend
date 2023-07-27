@@ -168,7 +168,7 @@ export default defineComponent({
 <template>
   <li
     class="relative my-2 flex space-x-1 space-y-3 border-b py-2 dark:border-gray-800"
-    :class="[isActive ? 'text-blue-500' : '']"
+    :class="[isActive ? 'text-gray-500' : '']"
   >
     <div class="flex w-full gap-3">
       <DiscussionVotes
@@ -184,7 +184,7 @@ export default defineComponent({
 
       <div>
         <router-link :to="detailLink" class="hover:text-gray-500">
-          <p class="cursor-pointer text-sm font-bold">
+          <p class="text-md cursor-pointer font-bold hover:text-gray-500">
             <HighlightedSearchTerms :text="title" :search-input="searchInput" />
           </p>
         </router-link>

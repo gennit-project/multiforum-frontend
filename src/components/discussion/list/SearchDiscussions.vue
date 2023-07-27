@@ -165,7 +165,7 @@ export default defineComponent({
         removeOnlyThisTag();
       } else {
         // If we are not already filtering by the tag,
-        // overwrite existing tag filters with it.
+        // add it to the existing tag filters.
         this.updateFilters({ tags: [tagText] });
       }
     },
@@ -219,7 +219,7 @@ export default defineComponent({
         removeOnlyThisChannel();
       } else {
         // If we are not already filtering by the channel,
-        // overwrite existing channel filters with it.
+        // add it to the existing channel filters.
         this.updateFilters({ channels: [uniqueName] });
       }
     },

@@ -48,9 +48,7 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
     // gotten into the query params.
     conditions.push({
       DiscussionChannels: { 
-        Channel: {
-          uniqueName_CONTAINS: channelId
-        }
+        channelUniqueName: channelId
       },
     });
   } else if (truthyChannels.length > 0) {
@@ -61,12 +59,14 @@ const getDiscussionWhere = (filterValues: SearchDiscussionValues, channelId: str
       // Technically a selected channel could be an array
       // of strings, but we expect it to always be a string.
       (prev: any, curr: any) => {
-        return prev.concat({ uniqueName_CONTAINS: curr });
+        return prev.concat({ 
+          channelUniqueName: curr 
+        });
       },
       []
     );
     conditions.push({
-      Channels: {
+      DiscussionChannels: {
         OR: matchChannels,
       },
     });
