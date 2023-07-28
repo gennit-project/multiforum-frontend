@@ -79,6 +79,9 @@ export const UPVOTE_DISCUSSION_CHANNEL = gql`
     ) {
       discussionChannels {
         id
+        discussionId 
+        channelUniqueName
+        upvoteCount
         UpvotedByUsers {
           username
         }
@@ -100,6 +103,9 @@ export const UNDO_UPVOTE_DISCUSSION_CHANNEL = gql`
     ) {
       discussionChannels {
         id
+        discussionId
+        channelUniqueName
+        upvoteCount
         UpvotedByUsers {
           username
         }
@@ -123,6 +129,9 @@ export const DOWNVOTE_DISCUSSION_CHANNEL = gql`
     ) {
       discussionChannels {
         id
+        discussionId
+        channelUniqueName
+        upvoteCount
         DownvotedByModerators {
           displayName
         }
@@ -146,6 +155,9 @@ export const UNDO_DOWNVOTE_DISCUSSION_CHANNEL = gql`
     ) {
       discussionChannels {
         id
+        discussionId
+        channelUniqueName
+        upvoteCount
         DownvotedByModerators {
           displayName
         }

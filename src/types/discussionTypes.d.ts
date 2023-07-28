@@ -16,6 +16,13 @@ export interface DiscussionChannelData {
     };
     upvoteCount;
     UpvotedByUsers: [UserData];
+    UpvotedByUsersAggregate: {
+        count: number;
+    };
+    DownvotedByModerators: [ModProfile];
+    DownvotedByModeratorsAggregate: {
+        count: number;
+    };
 }
 
 export interface DiscussionData {
