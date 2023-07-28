@@ -149,7 +149,7 @@ export default defineComponent({
       mdAndUp,
       relativeTime,
       route,
-      router,
+      router
     };
   },
 });

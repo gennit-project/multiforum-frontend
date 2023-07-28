@@ -16,6 +16,10 @@ import {
   UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/discussion/mutations";
 import { UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT } from "@/graphQLData/discussion/mutations";
+import { modProfileNameVar } from "@/cache";
+import WarningModal from "@/components/generic/WarningModal.vue";
+import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
+import { generateSlug } from "random-word-slugs";
 
 export default defineComponent({
   props: {
@@ -38,6 +42,7 @@ export default defineComponent({
   },
   components: {
     VoteButtons,
+    WarningModal,
   },
   setup(props) {
     const route = useRoute();
@@ -181,8 +186,26 @@ export default defineComponent({
       return 0;
     });
 
+    const randomWords = generateSlug(4, { format: "camel" });
+
+    const { mutate: createModProfile, onDone: onDoneCreateModProfile } =
+      useMutation(CREATE_MOD_PROFILE, () => ({
+        variables: {
+          displayName: randomWords,
+          username: username,
+        },
+      }));
+
+    onDoneCreateModProfile((data: any) => {
+      const updatedUser = data.data.updateUsers.users[0];
+
+      const newModProfileName = updatedUser.ModerationProfile.displayName;
+      modProfileNameVar(newModProfileName);
+    });
+
     return {
       activeDiscussionChannel,
+      createModProfile,
       discussionChannelId,
       defaultUniqueName,
       discussionIdInParams,
@@ -200,10 +223,16 @@ export default defineComponent({
       upvoteCount,
       username,
       route,
+      showModProfileModal: ref(false),
     };
   },
   inheritAttrs: false,
   methods: {
+    async handleCreateModProfileClick() {
+      await this.createModProfile();
+      this.downvote();
+      this.showModProfileModal = false;
+    },
     handleClickUp() {
       if (this.loggedInUserUpvoted) {
         this.undoUpvote();
@@ -217,11 +246,11 @@ export default defineComponent({
         if (!this.loggedInUserDownvoted) {
           this.downvote();
         } else {
-          this.undoDownvoteDiscussionChannel();
+          this.discussionChannelMutations.undoDownvoteDiscussionChannel();
         }
       } else {
         // Create mod profile, then downvote comment
-        // this.openModProfile()
+        this.$emit("openModProfile");
       }
     },
     async downvote() {
@@ -273,9 +302,17 @@ export default defineComponent({
     :show-downvote="showDownvote"
     @downvote="handleClickDown"
     @upvote="handleClickUp"
-    @openModProfile="$emit('openModProfile')"
+    @openModProfile="showModProfileModal = true"
     @undoUpvote="handleClickUp"
     @undoDownvote="handleClickDown"
+  />
+  <WarningModal
+    :title="'Create Mod Profile'"
+    :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
+    :open="showModProfileModal"
+    :primaryButtonText="'Yes, create a mod profile'"
+    @close="showModProfileModal = false"
+    @primaryButtonClick="handleCreateModProfileClick"
   />
 </template>
 <style>
