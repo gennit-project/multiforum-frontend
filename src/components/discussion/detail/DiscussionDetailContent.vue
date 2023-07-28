@@ -97,10 +97,11 @@ export default defineComponent({
       // On the discussion detail page, hide the current channel because
       // that would link to the current page.
 
-      return discussion.value.DiscussionChannels
-        .filter((discussionChannel: DiscussionChannelData) => {
+      return discussion.value.DiscussionChannels.filter(
+        (discussionChannel: DiscussionChannelData) => {
           return discussionChannel.Channel?.uniqueName !== channelId.value;
-        })
+        },
+      )
         .sort((a: DiscussionChannelData, b: DiscussionChannelData) => {
           const countA = getCommentCount(a.Channel?.uniqueName);
           const countB = getCommentCount(b.Channel?.uniqueName);
@@ -111,7 +112,7 @@ export default defineComponent({
         });
     });
 
-    const discussionChannelId = computed(() => {
+    const activeDiscussionChannel = computed(() => {
       if (discussion.value?.DiscussionChannels) {
         const discussionChannel = discussion.value.DiscussionChannels.find(
           (discussionChannel) => {
@@ -122,13 +123,21 @@ export default defineComponent({
           },
         );
         if (discussionChannel) {
-          return discussionChannel.id;
+          return discussionChannel;
         }
+      }
+      return null;
+    });
+
+    const discussionChannelId = computed(() => {
+      if (activeDiscussionChannel.value) {
+        return activeDiscussionChannel.value.id;
       }
       return "";
     });
 
     return {
+      activeDiscussionChannel,
       channelId,
       channelLinks,
       discussionChannelId,
@@ -180,7 +189,7 @@ export default defineComponent({
       </RequireAuth>
     </div>
     <div v-if="discussion" class="min-w-md mx-auto max-w-4xl space-y-3">
-      <div class="w-full mt-4 mb-2">
+      <div class="mb-2 mt-4 w-full">
         <div ref="discussionDetail">
           <div class="min-w-0">
             <h2
@@ -192,21 +201,20 @@ export default defineComponent({
         </div>
       </div>
 
-      <div class="rounded-lg border border-blue-400 dark:border-blue-800 px-4 pb-2 dark:bg-gray-950">
+      <div
+        class="rounded-lg border border-blue-400 px-4 pb-2 dark:border-blue-800 dark:bg-gray-950"
+      >
         <DiscussionHeader
           v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
           :discussion="discussion"
           :channel-id="channelId || channelLinks[0]?.uniqueName"
           :compact-mode="compactMode"
         />
-        <DiscussionBody
-          :discussion="discussion"
-          :channel-id="channelId"
-        />
+        <DiscussionBody :discussion="discussion" :channel-id="channelId" />
         <DiscussionVotes
-          v-if="channelId"
+          v-if="channelId && activeDiscussionChannel"
           :discussion="discussion"
-          :discussion-channel="discussion.DiscussionChannels[0]"
+          :discussion-channel="activeDiscussionChannel"
         />
       </div>
       <CreateRootCommentForm
@@ -218,9 +226,7 @@ export default defineComponent({
         class="my-4 mb-2 rounded-lg py-6"
         v-if="route.name === 'DiscussionDetail' || channelId"
       >
-        <CommentSection
-          :discussion-channel-id="discussionChannelId"
-        />
+        <CommentSection :discussion-channel-id="discussionChannelId" />
       </div>
       <ChannelLinks
         class="my-4"

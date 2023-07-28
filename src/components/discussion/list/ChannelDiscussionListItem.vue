@@ -118,7 +118,27 @@ export default defineComponent({
 
     const { lgAndUp } = useDisplay();
 
+    const activeDiscussionChannel = computed(() => {
+      if (props.discussion.DiscussionChannels) {
+        const discussionChannel = props.discussion.DiscussionChannels.find(
+          (discussionChannel) => {
+            if (discussionChannel && discussionChannel.Channel) {
+              return (
+                discussionChannel.Channel.uniqueName === defaultUniqueName.value
+              );
+            }
+            return false;
+          },
+        );
+        if (discussionChannel) {
+          return discussionChannel;
+        }
+      }
+      return null;
+    });
+
     return {
+      activeDiscussionChannel,
       discussionChannelId,
       defaultUniqueName,
       discussionIdInParams,
@@ -172,8 +192,9 @@ export default defineComponent({
   >
     <div class="flex w-full gap-3">
       <DiscussionVotes
+        v-if="activeDiscussionChannel"
         :discussion="discussion"
-        :comment-section="discussionChannel"
+        :discussion-channel="activeDiscussionChannel"
         :show-downvote="false"
       />
       <div
