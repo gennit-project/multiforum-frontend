@@ -202,6 +202,8 @@ export const CREATE_DISCUSSION_CHANNEL = gql`
     createDiscussionChannels(input: $createDiscussionChannelInput) {
       discussionChannels {
         id
+        channelUniqueName
+        discussionId
         Discussion {
           id
           title
@@ -224,6 +226,7 @@ export const CREATE_DISCUSSION_CHANNEL = gql`
         DownvotedByModeratorsAggregate {
           count
         }
+        upvoteCount
         Comments {
           id
           text

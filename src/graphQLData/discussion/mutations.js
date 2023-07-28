@@ -13,6 +13,8 @@ export const CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
       title
       body
       DiscussionChannels {
+        id
+        upvoteCount
         Channel {
           uniqueName
         }
@@ -46,6 +48,10 @@ export const UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
       title
       body
       DiscussionChannels {
+        id
+        upvoteCount
+        channelUniqueName
+        discussionId
         Channel {
           uniqueName
         }
@@ -71,6 +77,17 @@ export const DELETE_DISCUSSION = gql`
   }
 `;
 
+export const UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT = gql`
+  mutation updateDiscussionChannelUpvote($id: ID!) {
+    updateDiscussionChannelUpvoteCount(id: $id) {
+      id
+      discussionId
+      channelUniqueName
+      upvoteCount
+    }
+  }
+`;
+
 export const UPVOTE_DISCUSSION_CHANNEL = gql`
   mutation upvoteDiscussionChannel($id: ID!, $username: String!) {
     updateDiscussionChannels(
@@ -79,7 +96,7 @@ export const UPVOTE_DISCUSSION_CHANNEL = gql`
     ) {
       discussionChannels {
         id
-        discussionId 
+        discussionId
         channelUniqueName
         upvoteCount
         UpvotedByUsers {

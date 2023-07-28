@@ -37,11 +37,12 @@ const DISCUSSION_FIELDS = gql`
     }
     DiscussionChannels {
       id
+      discussionId
+      channelUniqueName
       upvoteCount
       UpvotedByUsers {
         username
       }
-      channelUniqueName
       Channel {
         uniqueName
       }
@@ -77,6 +78,7 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       id,
       discussionId
       channelUniqueName
+      upvoteCount
       Channel {
         uniqueName
       }

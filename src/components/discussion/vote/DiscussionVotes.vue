@@ -15,7 +15,7 @@ import {
   UNDO_UPVOTE_DISCUSSION_CHANNEL,
   UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/discussion/mutations";
-import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/discussion/queries";
+import { UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT } from "@/graphQLData/discussion/mutations";
 
 export default defineComponent({
   props: {
@@ -94,35 +94,42 @@ export default defineComponent({
       return activeDiscussionChannel.value.id || "";
     });
 
-    const {
-      mutate: downvoteDiscussionChannel,
-      error: downvoteDiscussionChannelError,
-    } = useMutation(DOWNVOTE_DISCUSSION_CHANNEL);
+    const { mutate: downvoteDiscussionChannel } = useMutation(
+      DOWNVOTE_DISCUSSION_CHANNEL,
+    );
 
-    const {
-      mutate: upvoteDiscussionChannel,
-      error: upvoteDiscussionChannelError,
-    } = useMutation(UPVOTE_DISCUSSION_CHANNEL);
+    const { mutate: upvoteDiscussionChannel } = useMutation(
+      UPVOTE_DISCUSSION_CHANNEL,
+    );
 
-    const {
-      mutate: undoUpvoteDiscussionChannel,
-      error: undoUpvoteDiscussionChannelError,
-    } = useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
-      variables: {
-        id: props.discussionChannel?.id || "",
-        username: localUsernameResult.value?.username || "",
-      },
-    }));
+    const { mutate: undoUpvoteDiscussionChannel } = useMutation(
+      UNDO_UPVOTE_DISCUSSION_CHANNEL,
+      () => ({
+        variables: {
+          id: props.discussionChannel?.id || "",
+          username: localUsernameResult.value?.username || "",
+        },
+      }),
+    );
 
-    const {
-      mutate: undoDownvoteDiscussionChannel,
-      error: undoDownvoteDiscussionChannelError,
-    } = useMutation(UNDO_DOWNVOTE_DISCUSSION_CHANNEL, () => ({
-      variables: {
-        id: props.discussionChannel?.id || "",
-        displayName: localModProfileNameResult.value?.modProfileName || "",
-      },
-    }));
+    const { mutate: undoDownvoteDiscussionChannel } = useMutation(
+      UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
+      () => ({
+        variables: {
+          id: props.discussionChannel?.id || "",
+          displayName: localModProfileNameResult.value?.modProfileName || "",
+        },
+      }),
+    );
+
+    const { mutate: updateDiscussionChannelUpvoteCount } = useMutation(
+      UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT,
+      () => ({
+        variables: {
+          id: props.discussionChannel?.id || "",
+        },
+      }),
+    );
 
     const loggedInUserUpvoted = computed(() => {
       if (
@@ -188,12 +195,7 @@ export default defineComponent({
         downvoteDiscussionChannel,
         undoUpvoteDiscussionChannel,
         undoDownvoteDiscussionChannel,
-        errors: {
-          upvote: upvoteDiscussionChannelError,
-          downvote: downvoteDiscussionChannelError,
-          undoUpvote: undoUpvoteDiscussionChannelError,
-          undoDownvote: undoDownvoteDiscussionChannelError,
-        },
+        updateDiscussionChannelUpvoteCount,
       },
       upvoteCount,
       username,
@@ -208,6 +210,7 @@ export default defineComponent({
       } else {
         this.upvote();
       }
+      this.discussionChannelMutations.updateDiscussionChannelUpvoteCount();
     },
     handleClickDown() {
       if (this.loggedInUserModName) {

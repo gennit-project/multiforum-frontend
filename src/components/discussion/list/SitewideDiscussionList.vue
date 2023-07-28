@@ -77,18 +77,17 @@ export default defineComponent({
 
       // Deduplicate by the discussionId field of the discussionChannels
       const deduplicatedSubmissions = submissions.reduce(
-        (acc: DiscussionChannel[], current: DiscussionChannel) => {
-          const x = acc.find(
-            (item: DiscussionChannel) =>
-              item.discussionId === current.discussionId,
+        (acc: DiscussionChannel[], submission: DiscussionChannel) => {
+          const existingSubmission = acc.find(
+            (existingSubmission) =>
+              existingSubmission.discussionId === submission.discussionId,
           );
-          if (!x) {
-            return acc.concat([current]);
-          } else {
+          if (existingSubmission) {
             return acc;
           }
+          return [...acc, submission];
         },
-        [] as Array<DiscussionData>,
+        [],
       );
       return deduplicatedSubmissions;
     });

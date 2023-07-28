@@ -48,6 +48,9 @@ export const GET_DISCUSSION_CHANNEL = gql`
       }
     ) {
       id
+      upvoteCount
+      discussionId
+      channelUniqueName
       Channel {
         uniqueName
       }

@@ -113,6 +113,10 @@ export const GET_USER_DISCUSSIONS = gql`
           Channel {
             uniqueName
           }
+          upvoteCount 
+          id
+          discussionId
+          channelUniqueName
         }
         Tags {
           text
@@ -195,6 +199,9 @@ export const USER_LOOKUP = gql`
         id
         DiscussionChannels {
           id
+          discussionId
+          channelUniqueName
+          upvoteCount
           Discussion {
             id
             title
@@ -262,6 +269,9 @@ export const USER_LOOKUP = gql`
         }
         DiscussionChannels {
           id
+          upvoteCount
+          discussionId
+          channelUniqueName
           CommentsAggregate {
             count
           }

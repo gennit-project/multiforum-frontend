@@ -83,7 +83,7 @@ export default defineComponent({
           />
         </div>
         <div class="flex text-sm space-x-1 text-gray-500 dark:text-white">
-          <ChannelIcon class="h-6 w-6 mr-1 text-blue-400" /><span
+          <ChannelIcon class="h-6 w-6 mr-1 text-blue-600" /><span
           
             >gennit</span
           >
