@@ -192,7 +192,7 @@ export default defineComponent({
       useMutation(CREATE_MOD_PROFILE, () => ({
         variables: {
           displayName: randomWords,
-          username: username,
+          username: username.value,
         },
       }));
 
@@ -201,6 +201,10 @@ export default defineComponent({
 
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
+      downvoteDiscussionChannel({
+        id: props.discussionChannel?.id || "",
+        displayName: newModProfileName,
+      });
     });
 
     return {
@@ -230,7 +234,7 @@ export default defineComponent({
   methods: {
     async handleCreateModProfileClick() {
       await this.createModProfile();
-      this.downvote();
+
       this.showModProfileModal = false;
     },
     handleClickUp() {
@@ -254,14 +258,15 @@ export default defineComponent({
       }
     },
     async downvote() {
-      if (!this.loggedInUserModName) {
+      const loggedInUserModNameValue = this.loggedInUserModName; // Cache the computed value
+      if (!loggedInUserModNameValue) {
         throw new Error("Username is required to downvote");
       }
 
       if (this.discussionChannel && this.discussionChannel.id) {
         this.discussionChannelMutations.downvoteDiscussionChannel({
           id: this.discussionChannel.id,
-          displayName: this.loggedInUserModName || "",
+          displayName: loggedInUserModNameValue, // Use the cached value
         });
       } else {
         throw new Error("Discussion channel id is required to downvote");
