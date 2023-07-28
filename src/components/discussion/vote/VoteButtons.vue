@@ -41,10 +41,6 @@ export default defineComponent({
       if (this.hasModProfile) {
         if (!this.downvoteActive) {
           this.$emit("downvote");
-
-          if (this.upvoteActive) {
-            this.$emit("undoUpvote");
-          }
         } else {
           this.$emit("undoDownvote");
         }
@@ -56,10 +52,6 @@ export default defineComponent({
     clickUpvote() {
       if (!this.upvoteActive) {
         this.$emit("upvote");
-
-        if (this.downvoteActive) {
-          this.$emit("undoDownvote");
-        }
       } else {
         this.$emit("undoUpvote");
       }
