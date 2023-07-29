@@ -215,7 +215,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex w-full text-gray-500">
+    <div class="flex w-full">
       <div :class="'text-sm'" class="w-full">
         <div
           class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
@@ -239,15 +239,9 @@ export default defineComponent({
             <span class="mx-2" v-if="commentData.updatedAt"> &middot; </span>
             <span>{{ editedAtFormatted }}</span>
           </p>
-          <div class="prose max-w-none w-full" v-if="!themeLoading">
-            <div v-if="commentData.text && !showEditCommentField" class="w-full">
-              <MdPreview
-                :editorId="id"
-                :modelValue="textCopy"
-                previewTheme="github"
-                :theme="theme"
-                class="-ml-4 mt-1 w-full"
-              />
+          <div class="max-w-none w-full dark:text-gray-200" v-if="!themeLoading">
+            <div v-if="commentData.text && !showEditCommentField" class="w-full -ml-6">
+              <v-md-preview :text="textCopy"></v-md-preview>
             </div>
             <TextEditor
               class="mt-3 overflow-y-scroll"
@@ -285,18 +279,6 @@ export default defineComponent({
               @hideEditCommentField="showEditCommentField = false"
               @showReplies="showReplies = true"
               @updateNewComment="updateNewComment"
-            />
-            <h2
-              v-if="linksInText && linksInText.length > 0"
-              class="mb-2 text-lg"
-            >
-              Link Previews
-            </h2>
-            <LinkPreview
-              v-for="(link, i) in linksInText"
-              :key="i"
-              class="mb-2"
-              :url="link"
             />
           </div>
         </div>

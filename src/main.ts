@@ -18,7 +18,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import { createAuth0 } from "@auth0/auth0-vue";
 import '@fortawesome/fontawesome-free/css/all.css';
-
+import enUS from '@kangc/v-md-editor/lib/lang/en-US';
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
 import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
@@ -60,7 +60,7 @@ import 'codemirror/addon/scroll/simplescrollbars.css';
 import 'codemirror/lib/codemirror.css';
 
 VMdEditor.Codemirror = Codemirror;
-
+VMdEditor.lang.use('en-US', enUS);
 VMdEditor.use(githubTheme);
 
 VMdPreview.use(githubTheme, {

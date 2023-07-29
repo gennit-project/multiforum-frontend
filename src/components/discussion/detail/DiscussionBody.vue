@@ -2,7 +2,6 @@
 import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
-import { MdPreview } from "md-editor-v3";
 import { useRoute } from "vue-router";
 import Tag from "../../tag/Tag.vue";
 import "md-editor-v3/lib/preview.css";
@@ -11,7 +10,6 @@ import gql from "graphql-tag";
 
 export default defineComponent({
   components: {
-    MdPreview,
     Tag,
   },
   props: {
@@ -101,15 +99,8 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion.body" class="body prose max-w-none">
+    <div v-if="discussion.body" class="-ml-6 max-w-none">
       <v-md-preview :text="bodyText"></v-md-preview>
-      <button
-        v-if="shouldShowMoreButton"
-        @click="toggleShowFullText"
-        class="text-blue-600"
-      >
-        {{ showFullText ? "Show Less" : "Show More" }}
-      </button>
     </div>
     <Tag
       class="mt-2"
@@ -122,7 +113,13 @@ export default defineComponent({
         }
       "
     />
-    <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">Link Previews</h2>
+    <button
+      v-if="shouldShowMoreButton"
+      @click="toggleShowFullText"
+      class="text-blue-600"
+    >
+      {{ showFullText ? "Show Less" : "Show More" }}
+    </button>
   </div>
 </template>
 <style scoped>

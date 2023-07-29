@@ -46,6 +46,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    placeholder: {
+      type: String,
+      default: "Write your comment here...",
+    },
   },
   methods: {
     setTab(selected: string) {
@@ -61,12 +65,10 @@ export default defineComponent({
   },
   created() {
     if (!this.disableAutoFocus) {
-      
       this.$nextTick(() => {
         if (this.$refs.editor) {
           this.$refs.editor.focus();
         }
-       
       });
     }
   },
@@ -102,17 +104,23 @@ export default defineComponent({
         </Tab>
       </TabList>
       <TabPanels class="mt-2">
-        <TabPanel class="-m-0.5 rounded-lg p-0.5">
+        <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1">
           <label for="comment" class="sr-only">Comment</label>
           <v-md-editor
             v-model="text"
             ref="editor"
+            mode="edit"
+            height="200px"
+            :placeholder="placeholder"
             @update:model-value="$emit('update', text)"
           >
           </v-md-editor>
         </TabPanel>
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
-          <v-md-preview :text="text"></v-md-preview>
+          <v-md-preview
+            :text="text"
+            class="block w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
+          ></v-md-preview>
         </TabPanel>
       </TabPanels>
     </TabGroup>

@@ -198,48 +198,51 @@ export default defineComponent({
 </script>
 <template>
   <div class="mt-1 flex w-full flex-col space-x-2 px-1 py-4">
-    <ProfileAvatar v-if="username" class="h-5 w-5" :username="username" />
+    <div class="flex gap-2 min-h-36">
+      <ProfileAvatar v-if="username" class="h-5 w-5" :username="username" />
 
-    <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
-      <template v-slot:has-auth>
-        <textarea
-          data-testid="addComment"
-          id="addComment"
-          @click="showEditorInCommentSection = true"
-          name="addcomment"
-          rows="1"
-          placeholder="Write a reply"
-          class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
+      <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
+        <template v-slot:has-auth>
+          <textarea
+            data-testid="addComment"
+            id="addComment"
+            @click="showEditorInCommentSection = true"
+            name="addcomment"
+            rows="1"
+            placeholder="Write a reply"
+            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
+          />
+        </template>
+        <template v-slot:does-not-have-auth>
+          <textarea
+            id="addCommentLoginPrompt"
+            name="addcomment"
+            rows="1"
+            placeholder="Write a reply"
+            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-black"
+          />
+        </template>
+      </RequireAuth>
+      <div v-else class="w-full flex flex-col">
+        <TextEditor
+          :placeholder="'Please be kind'"
+          @update="handleUpdateComment"
         />
-      </template>
-      <template v-slot:does-not-have-auth>
-        <textarea
-          id="addCommentLoginPrompt"
-          name="addcomment"
-          rows="1"
-          placeholder="Write a reply"
-          class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-black"
-        />
-      </template>
-    </RequireAuth>
-    <div v-else class="w-full flex flex-col">
-      <TextEditor
-        :placeholder="'Please be kind'"
-        @update="handleUpdateComment"
-      />
-      <div class="flex justify-start">
-        <CancelButton @click="showEditorInCommentSection = false" />
-        <SaveButton
-          data-testid="createCommentButton"
-          @click.prevent="
-            () => {
-              handleCreateComment();
-              showEditorInCommentSection = false;
-            }
-          "
-          :disabled="this.createFormValues.text.length === 0"
-        />
+        <div class="flex justify-start mt-3">
+          <CancelButton @click="showEditorInCommentSection = false" />
+          <SaveButton
+            data-testid="createCommentButton"
+            @click.prevent="
+              () => {
+                handleCreateComment();
+                showEditorInCommentSection = false;
+              }
+            "
+            :disabled="this.createFormValues.text.length === 0"
+          />
+        </div>
       </div>
     </div>
+   
   </div>
 </template>
