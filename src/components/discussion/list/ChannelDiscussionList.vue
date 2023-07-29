@@ -69,7 +69,7 @@ export default defineComponent({
       limit: DISCUSSION_PAGE_LIMIT,
       offset: 0,
       resultsOrder: {
-        upvoteCount: "DESC",
+        upvoteCount: "ASC",
       },
     });
 

@@ -2,7 +2,6 @@
 import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { DiscussionData } from "@/types/discussionTypes";
-// import LinkPreview from "../../generic/LinkPreview.vue";
 import { MdPreview } from "md-editor-v3";
 import { useRoute } from "vue-router";
 import Tag from "../../tag/Tag.vue";
@@ -12,7 +11,6 @@ import gql from "graphql-tag";
 
 export default defineComponent({
   components: {
-    // LinkPreview,
     MdPreview,
     Tag,
   },
@@ -63,28 +61,6 @@ export default defineComponent({
       return links;
     });
 
-    const channelId = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
-
-    const getCommentCount = (channelId: string) => {
-      const discussionChannels = props.discussion?.DiscussionChannels;
-
-      const activeDiscussionChannel = discussionChannels.find((cs: any) => {
-        return cs.Channel?.uniqueName === channelId;
-      });
-
-      if (!activeDiscussionChannel) {
-        return 0;
-      }
-      return activeDiscussionChannel.CommentsAggregate?.count
-        ? activeDiscussionChannel.CommentsAggregate.count
-        : 0;
-    };
-
     const GET_THEME = gql`
       query GetTheme {
         theme @client
@@ -126,13 +102,7 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="discussion.body" class="body prose max-w-none">
-      <MdPreview
-        :editorId="id"
-        :modelValue="bodyText"
-        previewTheme="github"
-        :theme="theme"
-      />
-    
+      <v-md-preview :text="bodyText"></v-md-preview>
       <button
         v-if="shouldShowMoreButton"
         @click="toggleShowFullText"
@@ -153,14 +123,6 @@ export default defineComponent({
       "
     />
     <h2 v-if="linksInBody.length > 0" class="text-lg mb-2">Link Previews</h2>
-    <!-- <div v-if="linksInBody.length > 0">
-      <LinkPreview
-        v-for="(link, i) in linksInBody"
-        :key="i"
-        class="mb-2"
-        :url="link"
-      />
-    </div> -->
   </div>
 </template>
 <style scoped>

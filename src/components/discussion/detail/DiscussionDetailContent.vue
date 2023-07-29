@@ -218,15 +218,16 @@ export default defineComponent({
         />
       </div>
       <CreateRootCommentForm
-        v-if="route.name === 'DiscussionDetail' || channelId"
+        v-if="activeDiscussionChannel?.id && (route.name === 'DiscussionDetail' || channelId)"
         :discussion="discussion"
         :channel-id="channelId"
+        :discussion-channel-id="activeDiscussionChannel?.id"
       />
       <div
         class="my-4 mb-2 rounded-lg py-6"
-        v-if="route.name === 'DiscussionDetail' || channelId"
+        v-if="activeDiscussionChannel?.id && (route.name === 'DiscussionDetail' || channelId)"
       >
-        <CommentSection :discussion-channel-id="discussionChannelId" />
+        <CommentSection :discussion-channel-id="activeDiscussionChannel?.id" />
       </div>
       <ChannelLinks
         class="my-4"

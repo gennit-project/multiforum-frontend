@@ -237,11 +237,11 @@ export default defineComponent({
 
       this.showModProfileModal = false;
     },
-    handleClickUp() {
+    async handleClickUp() {
       if (this.loggedInUserUpvoted) {
-        this.undoUpvote();
+        await this.undoUpvote();
       } else {
-        this.upvote();
+        await this.upvote();
       }
       this.discussionChannelMutations.updateDiscussionChannelUpvoteCount();
     },

@@ -26,6 +26,10 @@ export default defineComponent({
     TextEditor,
   },
   props: {
+    discussionChannelId: {
+      type: String,
+      required: true,
+    },
     channelId: {
       type: String,
       required: true,
@@ -75,7 +79,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                id: discussionChannelId.value,
+                id: props.discussionChannelId,
               },
             },
           },
@@ -92,104 +96,6 @@ export default defineComponent({
       };
 
       return [input];
-    });
-
-    const {
-      mutate: createDiscussionChannel,
-      onDone: onDoneCreatingDiscussionChannel,
-    } = useMutation(CREATE_DISCUSSION_CHANNEL, () => ({
-      errorPolicy: "all",
-      variables: {
-        createDiscussionChannelInput: [
-          {
-            Discussion: {
-              connect: {
-                where: {
-                  node: {
-                    id: props.discussion.id,
-                  },
-                },
-              },
-            },
-
-            Channel: {
-              connect: { where: { node: { uniqueName: props.channelId } } },
-            },
-          },
-        ],
-      },
-
-      update: (cache: any, result: any) => {
-        // when comment section is created, update discussion in cache to add it there
-        cache.modify({
-          fields: {
-            discussions() {
-              const readQueryResult = cache.readQuery({
-                query: GET_DISCUSSION,
-                variables: {
-                  id: props.discussion.id,
-                },
-              });
-              if (readQueryResult) {
-                const existingDiscussion = readQueryResult.discussions[0];
-                const newDiscussionChannel =
-                  result.data?.createDiscussionChannels?.discussionChannels[0];
-                cache.writeQuery({
-                  query: GET_DISCUSSION,
-                  data: {
-                    discussions: [
-                      {
-                        ...existingDiscussion,
-                        DiscussionChannels: [
-                          ...existingDiscussion.DiscussionChannels,
-                          {
-                            ...newDiscussionChannel,
-                            id: newDiscussionChannel.id,
-                            Channel: newDiscussionChannel.Channel,
-                            Discussion: newDiscussionChannel.Discussion,
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  variables: {
-                    id: props.discussion.id,
-                  },
-                });
-              }
-            },
-          },
-        });
-      },
-    }));
-
-    // Update this ID when creating the first comment and comment
-    // section to go with it
-    const newDiscussionChannelId = ref("");
-
-    onDoneCreatingDiscussionChannel((cs: any) => {
-      const data = cs.data.createDiscussionChannels?.discussionChannels[0];
-      newDiscussionChannelId.value = data.id;
-    });
-
-    const discussionChannelId = computed(() => {
-      if (!props.discussion) {
-        return "";
-      }
-      if (props.discussion.discussionChannels) {
-        const discussionChannel = props.discussion.DiscussionChannels.find(
-          (discussionChannel) => {
-            if (discussionChannel && discussionChannel.Channel) {
-              return discussionChannel.Channel.uniqueName === props.channelId;
-            }
-            return false;
-          },
-        );
-        if (discussionChannel) {
-          return discussionChannel.id;
-        }
-      }
-      return newDiscussionChannelId.value;
     });
 
     const { mutate: createComment, error: createCommentError } = useMutation(
@@ -212,7 +118,7 @@ export default defineComponent({
           const readQueryResult = cache.readQuery({
             query: GET_DISCUSSION_CHANNEL,
             variables: {
-              id: discussionChannelId.value,
+              id: props.discussionChannelId,
             },
           });
 
@@ -250,7 +156,7 @@ export default defineComponent({
               ],
             },
             variables: {
-              id: discussionChannelId.value,
+              id: props.discussionChannelId,
             },
           });
         },
@@ -267,11 +173,9 @@ export default defineComponent({
     });
 
     return {
-      discussionChannelId,
       discussionChannelIsLocked,
       createComment,
       createCommentError,
-      createDiscussionChannel,
       createFormValues,
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
@@ -287,26 +191,13 @@ export default defineComponent({
       this.createFormValues.text = text;
     },
     async handleCreateComment() {
-      if (!this.discussionChannelId) {
-        if (!this.channelId) {
-          throw new Error(
-            "Cannot create comment section because there is no channel ID.",
-          );
-        }
-        if (!this.discussion.id) {
-          throw new Error(
-            "Cannot create comment section because there is no discussion ID.",
-          );
-        }
-        await this.createDiscussionChannel();
-      }
       this.createComment();
     },
   },
 });
 </script>
 <template>
-  <div class="mt-1 flex w-full space-x-2 px-1 py-4">
+  <div class="mt-1 flex w-full flex-col space-x-2 px-1 py-4">
     <ProfileAvatar v-if="username" class="h-5 w-5" :username="username" />
 
     <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
@@ -331,9 +222,8 @@ export default defineComponent({
         />
       </template>
     </RequireAuth>
-    <div v-else class="w-full">
+    <div v-else class="w-full flex flex-col">
       <TextEditor
-        class="overflow-y-auto"
         :placeholder="'Please be kind'"
         @update="handleUpdateComment"
       />
