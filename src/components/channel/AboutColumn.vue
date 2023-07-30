@@ -113,7 +113,7 @@ export default defineComponent({
   <div class="flex-shrink-0 border-gray-600">
     <div class="flex justify-between border-b border-gray-700">
       <span
-        class="dark:bg-gray-950 my-2 font-bold text-gray-500 text-sm leading-6 mb-2 dark:text-gray-300"
+        class=" my-2 font-bold text-gray-500 text-sm leading-6 mb-2 dark:text-gray-300"
       >
         About
       </span>
@@ -145,14 +145,8 @@ export default defineComponent({
       </div>
       <div v-else-if="channel">
         <div v-if="!mdAndDown">
-          <div v-if="channel.description">
-            <MdPreview
-              :style="{ margin: 0, padding: 0 }"
-              :editorId="'md-editor-v3-preview'"
-              :modelValue="channel.description"
-              previewTheme="github"
-              :theme="theme"
-            />
+          <div v-if="channel.description" class="-ml-6">
+            <v-md-preview :text="channel.description"></v-md-preview>
           </div>
           <p v-else class="text-xs">
             {{ "This channel has no description." }}

@@ -29,7 +29,7 @@ export default defineComponent({
     },
     discussionChannel: {
       type: Object as PropType<DiscussionChannelData>,
-      required: false,
+      required: true,
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
@@ -103,11 +103,11 @@ export default defineComponent({
       DOWNVOTE_DISCUSSION_CHANNEL,
     );
 
-    const { mutate: upvoteDiscussionChannel } = useMutation(
+    const { mutate: upvoteDiscussionChannel, onDone: onDoneUpvote } = useMutation(
       UPVOTE_DISCUSSION_CHANNEL,
     );
 
-    const { mutate: undoUpvoteDiscussionChannel } = useMutation(
+    const { mutate: undoUpvoteDiscussionChannel, onDone: onDoneUndoUpvote } = useMutation(
       UNDO_UPVOTE_DISCUSSION_CHANNEL,
       () => ({
         variables: {
@@ -131,10 +131,18 @@ export default defineComponent({
       UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT,
       () => ({
         variables: {
-          id: props.discussionChannel?.id || "",
+          id: props.discussionChannel.id,
         },
       }),
     );
+
+    onDoneUpvote(() => {
+      updateDiscussionChannelUpvoteCount();
+    })
+
+    onDoneUndoUpvote(() => {
+      updateDiscussionChannelUpvoteCount();
+    })
 
     const loggedInUserUpvoted = computed(() => {
       if (
@@ -243,7 +251,6 @@ export default defineComponent({
       } else {
         await this.upvote();
       }
-      this.discussionChannelMutations.updateDiscussionChannelUpvoteCount();
     },
     handleClickDown() {
       if (this.loggedInUserModName) {
@@ -305,11 +312,9 @@ export default defineComponent({
     :downvote-active="loggedInUserDownvoted"
     :has-mod-profile="!!loggedInUserModName"
     :show-downvote="showDownvote"
-    @downvote="handleClickDown"
-    @upvote="handleClickUp"
+    @clickDown="handleClickDown"
+    @clickUp="handleClickUp"
     @openModProfile="showModProfileModal = true"
-    @undoUpvote="handleClickUp"
-    @undoDownvote="handleClickDown"
   />
   <WarningModal
     :title="'Create Mod Profile'"

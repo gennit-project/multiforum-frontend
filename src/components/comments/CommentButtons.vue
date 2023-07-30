@@ -234,7 +234,6 @@ export default defineComponent({
           </div>
         </template>
       </RequireAuth>
-
       <RequireAuth
         class="flex"
         :full-width="false"
@@ -289,19 +288,6 @@ export default defineComponent({
       >
         Permalink
       </span>
-
-      <span
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
-        v-if="loggedInUserUpvoted"
-        @click="() => undoUpvoteComment()"
-        >Unvote</span
-      >
-      <span
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
-        v-if="loggedInUserDownvoted"
-        @click="() => undoDownvoteComment()"
-        >Unvote</span
-      >
       <span
         v-if="showEditCommentField"
         class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
@@ -341,32 +327,30 @@ export default defineComponent({
         />
       </MenuButton>
     </div>
-    <div v-if="showReplyEditor" class="mt-1 flex space-x-2 px-3">
-      <div>
-        <TextEditor
-          class="my-3 h-48"
-          :placeholder="'Please be kind'"
-          @update="
-            $emit('updateNewComment', {
-              text: $event,
-              parentCommentId: commentData.id,
-              depth: depth + 1,
-            })
+    <div v-if="showReplyEditor" class="mt-1 px-3">
+      <TextEditor
+        class="my-3"
+        :placeholder="'Please be kind'"
+        @update="
+          $emit('updateNewComment', {
+            text: $event,
+            parentCommentId: commentData.id,
+            depth: depth + 1,
+          })
+        "
+      />
+      <div class="flex justify-start space-x-2">
+        <CancelButton @click="$emit('hideReplyEditor')" />
+        <SaveButton
+          @click.prevent="
+            () => {
+              $emit('createComment', parentCommentId);
+              $emit('hideReplyEditor');
+            }
           "
-        />
-        <div class="flex justify-start">
-          <CancelButton @click="$emit('hideReplyEditor')" />
-          <SaveButton
-            @click.prevent="
-              () => {
-                $emit('createComment', parentCommentId);
-                $emit('hideReplyEditor');
-              }
-            "
-            :disabled="commentData.text.length === 0"
-          >
-          </SaveButton>
-        </div>
+          :disabled="commentData.text.length === 0"
+        >
+        </SaveButton>
       </div>
     </div>
     <ErrorBanner v-if="upvoteCommentError" :text="upvoteCommentError.message" />

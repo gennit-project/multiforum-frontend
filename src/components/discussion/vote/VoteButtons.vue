@@ -37,24 +37,11 @@ export default defineComponent({
     return {};
   },
   methods: {
-    clickDownvote() {
-      if (this.hasModProfile) {
-        if (!this.downvoteActive) {
-          this.$emit("downvote");
-        } else {
-          this.$emit("undoDownvote");
-        }
-      } else {
-        // Create mod profile, then downvote comment
-        this.$emit("openModProfile");
-      }
+    clickDown() {
+      this.$emit("clickDown");
     },
-    clickUpvote() {
-      if (!this.upvoteActive) {
-        this.$emit("upvote");
-      } else {
-        this.$emit("undoUpvote");
-      }
+    clickUp() {
+      this.$emit("clickUp");
     },
   },
 });
@@ -64,7 +51,7 @@ export default defineComponent({
     <VoteButton
       :count="upvoteCount"
       :active="upvoteActive"
-      @click="clickUpvote"
+      @vote="clickUp"
     >
       <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
     </VoteButton>
@@ -72,7 +59,7 @@ export default defineComponent({
       v-if="showDownvote"
       :count="downvoteCount"
       :active="downvoteActive"
-      @click="clickDownvote"
+      @vote="clickDown"
     >
       <i class="fa-solid fa-arrow-down mr-2 w-3"></i>
     </VoteButton>

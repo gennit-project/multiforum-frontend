@@ -114,7 +114,7 @@ export default defineComponent({
       "
     />
     <button
-      v-if="shouldShowMoreButton"
+      v-if="discussion.body && shouldShowMoreButton"
       @click="toggleShowFullText"
       class="text-blue-600"
     >

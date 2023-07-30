@@ -84,7 +84,7 @@ export default defineComponent({
               selected
                 ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400 hover:dark:bg-gray-700'
                 : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:bg-black dark:hover:text-gray-400',
-              'font-medium rounded-md border border-transparent px-3 py-1.5 text-sm',
+              'font-medium rounded-md border border-transparent px-3 py-1.5 text-sm dark:hover:text-gray-400',
             ]"
           >
             Write
@@ -96,7 +96,7 @@ export default defineComponent({
               selected
                 ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-400'
                 : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:bg-black',
-              'font-medium ml-2 rounded-md border border-transparent px-3 py-1.5 text-sm',
+              'font-medium ml-2 rounded-md border border-transparent px-3 py-1.5 text-sm dark:hover:text-gray-400',
             ]"
           >
             Preview
