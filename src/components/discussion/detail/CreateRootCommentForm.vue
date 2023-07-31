@@ -124,8 +124,6 @@ export default defineComponent({
 
           const existingDiscussionChannelData =
             readQueryResult?.discussionChannels[0];
-          //commentResult.discussionChannels[0].CommentsConnection.edges"
-          //   :key="comment.node.id"
           let rootCommentsCopy = [
             newComment,
             ...(existingDiscussionChannelData?.Comments || []),

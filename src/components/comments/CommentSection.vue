@@ -263,7 +263,7 @@ export default defineComponent({
             });
 
             const existingDiscussionChannelData =
-              readQueryResult?.discussionChannel[0];
+              readQueryResult?.discussionChannels[0];
 
             let existingCommentAggregate =
               existingDiscussionChannelData?.CommentsAggregate

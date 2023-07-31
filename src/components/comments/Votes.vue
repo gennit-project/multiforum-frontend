@@ -76,7 +76,7 @@ export default defineComponent({
     >
       <i class="fa-solid fa-arrow-down mr-2 w-3"></i>
       <v-tooltip activator="parent" location="top"
-      >This comment should be less visible to others</v-tooltip
+      >Feedback</v-tooltip
     >
     </VoteButton>
   </div>
