@@ -212,11 +212,12 @@ export default defineComponent({
     <div class="flex w-full">
       <div :class="'text-sm'" class="w-full">
         <div
-          class="my-1 rounded-lg border border-gray-200 px-4 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          class="my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           data-testid="comment"
         >
           <p class="flex items-center space-x-2">
             <ProfileAvatar
+              class="ml-2 mt-1"
               v-if="commentData.CommentAuthor"
               :username="commentData.CommentAuthor.username"
             />
@@ -234,7 +235,7 @@ export default defineComponent({
             <span>{{ editedAtFormatted }}</span>
           </p>
           <div class="max-w-none w-full dark:text-gray-200" v-if="!themeLoading">
-            <div v-if="commentData.text && !showEditCommentField" class="w-full -ml-6">
+            <div v-if="commentData.text && !showEditCommentField" class="w-full -ml-4">
               <v-md-preview :text="textCopy"></v-md-preview>
             </div>
             <TextEditor
@@ -247,6 +248,7 @@ export default defineComponent({
             >
             </TextEditor>
             <CommentButtons
+              class="ml-2 -mt-4"
               :comment-data="commentData"
               :depth="depth"
               :locked="locked"

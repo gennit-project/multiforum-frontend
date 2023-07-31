@@ -152,7 +152,6 @@ export default defineComponent({
     color: white !important;
   }
   .dark {
-    .github-markdown-body,
     table,
     thead,
     tbody,
