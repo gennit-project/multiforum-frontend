@@ -158,7 +158,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full space-y-2 ">
+  <div class="w-full space-y-2">
     <div
       :class="'align-center mt-4 flex justify-between'"
       v-if="route.name === 'DiscussionDetail'"
@@ -183,7 +183,8 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <v-row class="mt-1 px-4">
+    <v-row class="mt-1 px-4 flex justify-center">
+      <v-col cols="12" class="max-w-7xl">
       <div v-if="discussion" class="space-y-3">
         <div class="mb-2 mt-4 w-full">
           <div ref="discussionDetail">
@@ -197,8 +198,9 @@ export default defineComponent({
           </div>
         </div>
       </div>
+    </v-col>
     </v-row>
-    <v-row class="mt-1">
+    <v-row class="mt-1 flex justify-center">
       <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12" class="scrollable-column max-w-4xl">
         <p v-if="getDiscussionLoading">Loading...</p>
         <ErrorBanner
