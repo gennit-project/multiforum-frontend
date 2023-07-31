@@ -108,17 +108,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-shrink-0 border-gray-600">
-    <div v-if="channel && channel.uniqueName" class="flex justify-start gap-2 items-center border-b border-gray-700">
-      <Avatar :text="channel.uniqueName" :is-square="true"/>
-      <span
-        class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
-      >
-        About {{ channel.uniqueName }}
-      </span>
+  <div class="flex-shrink-0 border dark:border-gray-600 rounded-lg shadow px-4">
+    <div v-if="channel && channel.uniqueName" class="flex justify-center ">
+      <Avatar :text="channel.uniqueName" :is-square="true" :is-large="true"/>
     </div>
+    <h1 v-if="channel && channel.uniqueName"
+        class="my-2 mb-2 flex justify-center border-b border-gray-700 text-lg font-bold leading-6 text-gray-500 dark:text-gray-300"
+      >
+       Welcome to {{ channel.uniqueName }}
+      </h1>
 
-    <div class="h-full w-full py-3">
+    <div class="w-full py-3">
       <p v-if="getChannelLoading">Loading...</p>
       <div v-else-if="getChannelError">
         <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">

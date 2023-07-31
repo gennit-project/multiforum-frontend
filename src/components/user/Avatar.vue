@@ -16,6 +16,11 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false
+    },
+    isLarge: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   setup() {
@@ -65,7 +70,13 @@ export default defineComponent({
 <template>
 
   <img v-if="!isSquare" class="h-8 w-8 rounded-full" :src="identiconData" :alt="text">
-  <img v-else class="h-12 w-12 rounded-md" :src="identiconData" :alt="text">
+  <img 
+    v-else 
+    :class="[isLarge ? 'h-24 w-24' :'h-12 w-12']"
+    class="rounded-md" 
+    :src="identiconData" 
+    :alt="text"
+  >
 </template>
 
 

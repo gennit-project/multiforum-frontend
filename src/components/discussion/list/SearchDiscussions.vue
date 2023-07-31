@@ -253,7 +253,15 @@ export default defineComponent({
         <DiscussionFilterBar />
 
         <v-row class="mt-1">
-          <!-- Left column -->
+          <v-col
+          cols="12"
+          md="4"
+          lg="2"
+          v-if="channelId"
+          class="scrollable-column"
+        >
+          <AboutColumn />
+        </v-col>
           <v-col cols="12" md="8" lg="4"  class="scrollable-column">
             <SitewideDiscussionList
               v-if="!channelId"
@@ -285,16 +293,8 @@ export default defineComponent({
             <router-view></router-view>
           </v-col>
 
-          <!-- Right column -->
-          <v-col
-            cols="12"
-            md="4"
-            lg="2"
-            v-if="channelId"
-            class="scrollable-column"
-          >
-            <AboutColumn />
-          </v-col>
+         
+         
         </v-row>
       </v-col>
     </v-row>

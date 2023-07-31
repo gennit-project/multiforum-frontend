@@ -160,7 +160,7 @@ export default defineComponent({
 <template>
   <div class="w-full space-y-2">
     <div
-      :class="'align-center mt-4 flex justify-between'"
+      :class="'align-center flex justify-between'"
       v-if="route.name === 'DiscussionDetail'"
     >
       <router-link
@@ -201,7 +201,7 @@ export default defineComponent({
     </v-col>
     </v-row>
     <v-row class="mt-1 flex justify-center">
-      <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12" class="scrollable-column max-w-4xl">
+      <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12" class="max-w-4xl">
         <p v-if="getDiscussionLoading">Loading...</p>
         <ErrorBanner
           class="mt-2"
