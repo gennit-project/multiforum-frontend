@@ -99,7 +99,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion.body" class="-ml-6 max-w-none">
+    <div v-if="discussion.body" class="-ml-4 max-w-none">
       <v-md-preview :text="bodyText"></v-md-preview>
     </div>
     <Tag
