@@ -33,7 +33,7 @@ export default defineComponent({
         <div v-bind="props">
           <button
             :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
-            class=" border mr-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 inline-flex max-height-3 py-2.5 text-xs font-small rounded-md  text-gray-700 dark:text-gray-200  whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            class=" border dark:border-gray-600 mr-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 inline-flex max-height-3 py-2.5 text-xs font-small rounded-md  text-gray-700 dark:text-gray-200  whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           >
             <slot name="icon"></slot>
 

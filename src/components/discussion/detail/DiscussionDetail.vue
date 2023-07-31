@@ -58,7 +58,7 @@ export default defineComponent({
   
     <div
       class="mb-10 flex justify-center rounded-lg"
-      :class="route.name == 'DiscussionDetail' ? 'md:px-4' : ''"
+     
     >
       <DiscussionDetailContent
         v-if="discussionId"

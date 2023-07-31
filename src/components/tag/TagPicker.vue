@@ -88,7 +88,7 @@ export default defineComponent({
       </div>
     </div>
     <div v-else class="divide-y divide-solid dark:bg-gray-950">
-      <div class="tagpicker">
+      <div class="tagpicker gap-2">
         <Tag
           :key="tag"
           :data-testid="`tag-picker-${tag}`"

@@ -20,9 +20,11 @@ import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import { ChannelData } from "@/types/channelTypes";
 import "md-editor-v3/lib/style.css";
 import { DiscussionChannelData } from "@/types/commentTypes";
+import AboutColumn from "@/components/channel/AboutColumn.vue";
 
 export default defineComponent({
   components: {
+    AboutColumn,
     ChannelLinks,
     CreateRootCommentForm,
     CommentSection,
@@ -149,21 +151,14 @@ export default defineComponent({
       mdAndUp,
       relativeTime,
       route,
-      router
+      router,
     };
   },
 });
 </script>
 
 <template>
-  <div class="w-full space-y-2 lg:px-6">
-    <p v-if="getDiscussionLoading">Loading...</p>
-    <ErrorBanner
-      class="mt-2"
-      v-else-if="getDiscussionError"
-      :text="getDiscussionError.message"
-    />
-
+  <div class="w-full space-y-2 ">
     <div
       :class="'align-center mt-4 flex justify-between'"
       v-if="route.name === 'DiscussionDetail'"
@@ -188,52 +183,79 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <div v-if="discussion" class="min-w-md mx-auto max-w-4xl space-y-3">
-      <div class="mb-2 mt-4 w-full">
-        <div ref="discussionDetail">
-          <div class="min-w-0">
-            <h2
-              class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
-            >
-              {{ discussion.title }}
-            </h2>
+    <v-row class="mt-1 px-4">
+      <div v-if="discussion" class="space-y-3">
+        <div class="mb-2 mt-4 w-full">
+          <div ref="discussionDetail">
+            <div class="min-w-0">
+              <h2
+                class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
+              >
+                {{ discussion.title }}
+              </h2>
+            </div>
           </div>
         </div>
       </div>
+    </v-row>
+    <v-row class="mt-1">
+      <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12" class="scrollable-column max-w-4xl">
+        <p v-if="getDiscussionLoading">Loading...</p>
+        <ErrorBanner
+          class="mt-2"
+          v-else-if="getDiscussionError"
+          :text="getDiscussionError.message"
+        />
 
-      <div
-        class="rounded-lg border border-blue-400 px-4 pb-2 dark:border-blue-800 dark:bg-gray-950"
-      >
-        <DiscussionHeader
-          v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
-          :discussion="discussion"
-          :channel-id="channelId || channelLinks[0]?.uniqueName"
-          :compact-mode="compactMode"
-        />
-        <DiscussionBody :discussion="discussion" :channel-id="channelId" />
-        <DiscussionVotes
-          v-if="channelId && activeDiscussionChannel"
-          :discussion="discussion"
-          :discussion-channel="activeDiscussionChannel"
-        />
-      </div>
-      <CreateRootCommentForm
-        v-if="activeDiscussionChannel?.id && (route.name === 'DiscussionDetail' || channelId)"
-        :discussion="discussion"
-        :channel-id="channelId"
-        :discussion-channel-id="activeDiscussionChannel?.id"
-      />
-      <div
-        class="my-4 mb-2 rounded-lg py-6"
-        v-if="activeDiscussionChannel?.id && (route.name === 'DiscussionDetail' || channelId)"
-      >
-        <CommentSection :discussion-channel-id="activeDiscussionChannel?.id" />
-      </div>
-      <ChannelLinks
-        class="my-4"
-        :discussion="discussion"
-        :channelId="channelId"
-      />
-    </div>
+        <div v-if="discussion" class="min-w-md space-y-3">
+          <div
+            class="rounded-lg border border-blue-400 px-4 pb-2 dark:border-blue-800 dark:bg-gray-950"
+          >
+            <DiscussionHeader
+              v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
+              :discussion="discussion"
+              :channel-id="channelId || channelLinks[0]?.uniqueName"
+              :compact-mode="compactMode"
+            />
+            <DiscussionBody :discussion="discussion" :channel-id="channelId" />
+            <DiscussionVotes
+              v-if="channelId && activeDiscussionChannel"
+              :discussion="discussion"
+              :discussion-channel="activeDiscussionChannel"
+            />
+          </div>
+          <CreateRootCommentForm
+            v-if="
+              activeDiscussionChannel?.id &&
+              (route.name === 'DiscussionDetail' || channelId)
+            "
+            :discussion="discussion"
+            :channel-id="channelId"
+            :discussion-channel-id="activeDiscussionChannel?.id"
+          />
+          <div
+            class="my-4 mb-2 rounded-lg py-6"
+            v-if="
+              activeDiscussionChannel?.id &&
+              (route.name === 'DiscussionDetail' || channelId)
+            "
+          >
+            <CommentSection
+              :discussion-channel-id="activeDiscussionChannel?.id"
+            />
+          </div>
+          <ChannelLinks
+            class="my-4"
+            :discussion="discussion"
+            :channelId="channelId"
+          />
+        </div>
+      </v-col>
+
+      <!-- Right column -->
+      <v-col cols="12" md="3" v-if="channelId && route.name === 'DiscussionDetail'" class="scrollable-column">
+        <AboutColumn />
+      </v-col>
+    </v-row>
   </div>
 </template>
