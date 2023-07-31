@@ -131,16 +131,16 @@ export default defineComponent({
         />
       </p>
       <div
-        class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex items-center gap-1"
+        class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex flex-wrap items-center gap-1"
       >
         <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
-        <span><Tag
+        <Tag
           v-for="(discussionChannel, i) in discussion.DiscussionChannels"
           :key="discussionChannel.id"
           :class="[
             selectedChannels.includes(discussionChannel.channelUniqueName)
               ? 'text-blue-500'
-              : 'text-slate-500 hover:text-slate-400 dark:text-slate-400 dark:hover:text-slate-300',
+              : 'hover:text-black dark:text-slate-400 dark:hover:text-slate-300',
           ]"
           :channel-mode="true"
           :tag="discussionChannel.channelUniqueName"
@@ -149,7 +149,7 @@ export default defineComponent({
         >
           {{ discussionChannel.channelUniqueName
           }}
-        </Tag></span>
+        </Tag>
       </div>
     </div>
   </li>

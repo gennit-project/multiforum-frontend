@@ -12,12 +12,6 @@ import gql from "graphql-tag";
 
 export default defineComponent({
   name: "AboutPage",
-  props: {
-    channelId: {
-      type: String,
-      required: true,
-    },
-  },
   components: {
     RequireAuth,
     Tag,
@@ -27,12 +21,19 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
 
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
+
     const {
       error: getChannelError,
       result: getChannelResult,
       loading: getChannelLoading,
     } = useQuery(GET_CHANNEL, {
-      uniqueName: props.channelId,
+      uniqueName: channelId.value,
     });
 
     const channel = computed(() => {
@@ -86,6 +87,7 @@ export default defineComponent({
     return {
       admins,
       channel,
+      channelId,
       confirmDeleteIsOpen: ref(false),
       getChannelLoading,
       getChannelError,

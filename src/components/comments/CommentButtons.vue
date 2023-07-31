@@ -211,12 +211,12 @@ export default defineComponent({
             />
             <div
               data-testid="reply-comment-button "
-              class=" border dark:border-gray-800 rounded-full px-2 py-1 mx-2 cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-800 dark:text-gray-500 dark:hover:text-white"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
-            ><i class="fa-regular fa-comment h-4 w-4"></i>
-              Reply</div
             >
+              <i class="fa-regular fa-comment h-4 w-4"></i> Reply
+            </div>
           </div>
         </template>
         <template v-slot:does-not-have-auth>
@@ -227,10 +227,13 @@ export default defineComponent({
               "
               :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
             />
-            <span
-              class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
-              >Reply</span
+            <div
+              data-testid="reply-comment-button "
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-800 dark:text-gray-500 dark:hover:text-white"
             >
+              <i class="fa-regular fa-comment h-4 w-4"></i>
+              Reply
+            </div>
           </div>
         </template>
       </RequireAuth>

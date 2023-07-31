@@ -257,7 +257,7 @@ export default defineComponent({
           cols="12"
           md="4"
           lg="2"
-          v-if="channelId"
+          v-if="channelId && !mdAndDown"
           class="scrollable-column"
         >
           <AboutColumn :channel-id="channelId"/>
