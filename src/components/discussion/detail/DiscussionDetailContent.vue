@@ -256,7 +256,7 @@ export default defineComponent({
 
       <!-- Right column -->
       <v-col cols="12" md="3" v-if="channelId && route.name === 'DiscussionDetail'" class="scrollable-column">
-        <AboutColumn />
+        <AboutColumn :channel-id="channelId" />
       </v-col>
     </v-row>
   </div>

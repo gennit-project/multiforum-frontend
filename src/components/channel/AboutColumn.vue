@@ -12,23 +12,27 @@ import gql from "graphql-tag";
 
 export default defineComponent({
   name: "AboutPage",
+  props: {
+    channelId: {
+      type: String,
+      required: true,
+    },
+  },
   components: {
     RequireAuth,
     Tag,
     Avatar,
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
     const router = useRouter();
-
-    const channelId: string | string[] = route.params.channelId;
 
     const {
       error: getChannelError,
       result: getChannelResult,
       loading: getChannelLoading,
     } = useQuery(GET_CHANNEL, {
-      uniqueName: channelId,
+      uniqueName: props.channelId,
     });
 
     const channel = computed(() => {
@@ -82,7 +86,6 @@ export default defineComponent({
     return {
       admins,
       channel,
-      channelId,
       confirmDeleteIsOpen: ref(false),
       getChannelLoading,
       getChannelError,
@@ -109,13 +112,13 @@ export default defineComponent({
 
 <template>
   <div class="flex-shrink-0 border dark:border-gray-600 rounded-lg shadow px-4">
-    <div v-if="channel && channel.uniqueName" class="flex justify-center ">
-      <Avatar :text="channel.uniqueName" :is-square="true" :is-large="true"/>
+    <div v-if="channelId" class="flex justify-center ">
+      <Avatar :text="channelId" :is-square="true" :is-large="true"/>
     </div>
-    <h1 v-if="channel && channel.uniqueName"
+    <h1 v-if="channelId"
         class="my-2 mb-2 flex justify-center border-b border-gray-700 text-lg font-bold leading-6 text-gray-500 dark:text-gray-300"
       >
-       Welcome to {{ channel.uniqueName }}
+       Welcome to {{ channelId }}
       </h1>
 
     <div class="w-full py-3">

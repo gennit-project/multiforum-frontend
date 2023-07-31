@@ -260,7 +260,7 @@ export default defineComponent({
           v-if="channelId"
           class="scrollable-column"
         >
-          <AboutColumn />
+          <AboutColumn :channel-id="channelId"/>
         </v-col>
           <v-col cols="12" md="8" lg="4"  class="scrollable-column">
             <SitewideDiscussionList
