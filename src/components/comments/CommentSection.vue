@@ -595,6 +595,9 @@ export default defineComponent({
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <div class="mb-6">
+        <div v-if="commentResult.discussionChannels[0].Comments.length === 0">
+          This comment section is empty.
+        </div>
         <Comment
           v-for="comment in commentResult.discussionChannels[0].Comments"
           :key="comment.id"
