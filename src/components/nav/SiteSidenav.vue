@@ -9,6 +9,7 @@ import UserCircle from "@/components/icons/UserCircle.vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import clickOutside from 'vue-click-outside'
 
 type NavigationItem = {
   name: string;
@@ -36,6 +37,9 @@ const navigation: NavigationItem[] = [
 ];
 
 export default defineComponent({
+  directives: {
+    clickOutside
+  },
   components: {
     CalendarIcon,
     LocationIcon,
@@ -75,11 +79,17 @@ export default defineComponent({
       required: true,
     },
   },
+  methods: {
+    outside () {
+      this.$emit('close')
+    }
+  },
 });
 </script>
 <template>
   <div
     v-if="showDropdown"
+    v-click-outside="outside"
     class="fixed top-0 left-0 z-50 w-[250px] h-screen overflow-y-auto bg-white dark:bg-slate-900 py-2 border flex flex-col justify-between"
   >
     <div>
