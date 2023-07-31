@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs'
 import vuetify from 'vite-plugin-vuetify'
 const path = require('path')
+import prismjs from 'vite-plugin-prismjs';
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
@@ -18,6 +19,9 @@ export default defineConfig(() => {
       viteCommonjs(),
       vuetify({
         autoImport: true,
+      }),
+      prismjs({
+        languages: 'all',
       }),
     ],
     define: { 'process.env': {} },

@@ -19,14 +19,15 @@ import * as directives from 'vuetify/directives'
 import { createAuth0 } from "@auth0/auth0-vue";
 import '@fortawesome/fontawesome-free/css/all.css';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
+
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
+
+
 import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
 import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
-
-import hljs from 'highlight.js';
 
 import { 
   faFaceSmile,
@@ -36,6 +37,7 @@ import {
   faDesktop
  } from "@fortawesome/free-solid-svg-icons";
 
+ import hljs from 'highlight.js';
 
 // Resources for the codemirror editor
 import Codemirror from 'codemirror';
@@ -61,11 +63,14 @@ import 'codemirror/lib/codemirror.css';
 
 VMdEditor.Codemirror = Codemirror;
 VMdEditor.lang.use('en-US', enUS);
-VMdEditor.use(githubTheme);
+VMdEditor.use(githubTheme, {
+  Hljs: hljs,
+});
 
 VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
+
 
 
 const vuetify = createVuetify({

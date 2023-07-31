@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
-import { MdPreview } from "md-editor-v3";
 import {
   CommentData,
   CreateReplyInputData,
@@ -9,7 +8,6 @@ import {
 import "md-editor-v3/lib/style.css";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { relativeTime } from "../../dateTimeUtils";
-import EmojiExtension from "./EmojiExtension/index.vue";
 import TextEditor from "../generic/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
 import ProfileAvatar from "../user/ProfileAvatar.vue";
@@ -20,7 +18,6 @@ import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
-import LinkPreview from "../generic/LinkPreview.vue";
 import { gql } from "@apollo/client/core";
 
 export default defineComponent({
@@ -28,11 +25,8 @@ export default defineComponent({
   components: {
     CommentButtons,
     ChildComments,
-    EmojiExtension,
-    LinkPreview,
     TextEditor,
     WarningModal,
-    MdPreview,
     ProfileAvatar,
   },
   setup(props) {
@@ -251,12 +245,6 @@ export default defineComponent({
               :editor-id="editorId"
               @update="updateExistingComment($event, depth)"
             >
-              <template #defToolbars>
-                <emoji-extension
-                  :editor-id="editorId"
-                  @on-change="updateText"
-                />
-              </template>
             </TextEditor>
             <CommentButtons
               :comment-data="commentData"
