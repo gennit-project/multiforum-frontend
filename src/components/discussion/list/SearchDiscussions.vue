@@ -248,11 +248,11 @@ export default defineComponent({
 
 <template>
   <v-container fluid>
-    <v-row>
+    <v-row >
       <v-col cols="12">
         <DiscussionFilterBar />
 
-        <v-row>
+        <v-row class="mt-1">
           <!-- Left column -->
           <v-col cols="12" md="8" lg="4"  class="scrollable-column">
             <SitewideDiscussionList

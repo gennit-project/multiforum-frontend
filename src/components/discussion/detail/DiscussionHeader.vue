@@ -115,24 +115,20 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div class="text-sm mt-4">
-      <div class="flex items-center space-x-2 mb-2 mt-4 w-full text-gray-600 dark:text-gray-500">
+      <p class="flex text-sm mt-2 flex-wrap items-center space-x-2">
         <ProfileAvatar v-if="discussion.Author?.username" :username="discussion.Author.username" />
+
         <router-link
-          v-if="discussion.Author"
-          class="font-bold cursor-pointer text-black dark:text-white hover:underline"
-          :to="`/u/${discussion.Author.username}`"
-        >
-          {{ discussion.Author.username }}
+        v-if="discussion.Author"
+        class="font-bold cursor-pointer text-black dark:text-white hover:underline"
+        :to="`/u/${discussion.Author.username}`"
+      >
+        {{ discussion.Author.username }}
         </router-link>
         <span v-else>[Deleted]</span>
-
-        <div class="flex items-center">
-          <div>{{ createdAt }}</div>
-          <span v-if="discussion.updatedAt" class="mx-2"> &#8226; </span>
-          <div>{{ editedAt }}</div>
-        </div>
-       
+        <div>{{ createdAt }}</div>
+        <span v-if="discussion.updatedAt" class="mx-2"> &#8226; </span>
+        <div>{{ editedAt }}</div>
         <RequireAuth
           v-if="discussion?.Author?.username"
           :full-width="false"
@@ -166,9 +162,10 @@ export default defineComponent({
             >
           </template>
         </RequireAuth>
-      </div>
-     
-    </div>
+      </p>
+
+
+
     <WarningModal
       :title="'Delete Discussion'"
       :body="'Are you sure you want to delete this discussion?'"
