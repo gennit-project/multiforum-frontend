@@ -134,10 +134,11 @@ export default defineComponent({
         </div>
        
         <RequireAuth
+          v-if="discussion?.Author?.username"
           :full-width="false"
           class=" space-x-2 "
           :require-ownership="true"
-          :owners="[discussion?.Author.username]"
+          :owners="[discussion.Author.username]"
         >
           <template v-slot:has-auth>
             <span class="mx-2"> &#8226;</span>
