@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex flex-wrap items-center space-x-2 text-xs text-gray-400">
+    <div class="flex flex-wrap items-center text-xs text-gray-400">
       <RequireAuth v-if="!locked" :full-width="false">
         <template v-slot:has-auth>
           <div class="flex items-center">
@@ -209,13 +209,13 @@ export default defineComponent({
               @undoUpvote="undoUpvoteComment"
               @undoDownvote="undoDownvoteComment"
             />
-            <span
-              data-testid="reply-comment-button"
-              class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+            <div
+              data-testid="reply-comment-button "
+              class=" border dark:border-gray-800 rounded-full px-2 py-1 mx-2 cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
-            >
-              Reply</span
+            ><i class="fa-regular fa-comment h-4 w-4"></i>
+              Reply</div
             >
           </div>
         </template>
