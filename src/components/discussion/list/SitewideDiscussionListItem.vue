@@ -130,13 +130,12 @@ export default defineComponent({
           @click="$emit('filterByTag', tag)"
         />
       </p>
-      <p
-        class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200"
+      <div
+        class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex items-center gap-1"
       >
-        {{ `Posted ${relativeTime} by ${authorUsername} in ` }}
-        <span
+        <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
+        <span><Tag
           v-for="(discussionChannel, i) in discussion.DiscussionChannels"
-          class="cursor-pointer hover:text-blue-400"
           :key="discussionChannel.id"
           :class="[
             selectedChannels.includes(discussionChannel.channelUniqueName)
@@ -144,12 +143,14 @@ export default defineComponent({
               : 'text-slate-500 hover:text-slate-400 dark:text-slate-400 dark:hover:text-slate-300',
           ]"
           :channel-mode="true"
+          :tag="discussionChannel.channelUniqueName"
+          
           @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
         >
           {{ discussionChannel.channelUniqueName
-          }}<span v-if="i < discussion.DiscussionChannels.length - 1">, </span>
-        </span>
-      </p>
+          }}
+        </Tag></span>
+      </div>
     </div>
   </li>
 </template>

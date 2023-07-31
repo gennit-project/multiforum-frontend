@@ -2,7 +2,7 @@
 import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import ProfileAvatar from "@/components/user/ProfileAvatar.vue";
+import Avatar from "@/components/user/Avatar.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_MOD } from "@/graphQLData/mod/queries";
 import UsernameLabel from "../generic/UsernameLabel.vue";
@@ -50,7 +50,7 @@ export default defineComponent({
   },
   components: {
     ErrorBanner,
-    ProfileAvatar,
+    Avatar,
     UsernameLabel
   },
 });
@@ -74,7 +74,7 @@ export default defineComponent({
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
             <div class="flex">
-              <ProfileAvatar v-if="displayName" :username="displayName" class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32" />
+              <Profile v-if="displayName" :text="displayName" class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32" />
             </div>
             <div
               class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"

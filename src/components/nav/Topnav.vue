@@ -6,6 +6,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
+import Avatar from '@/components/user/Avatar.vue'
 import {
   GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
@@ -16,6 +17,7 @@ import { useRoute } from "vue-router";
 export default defineComponent({
   name: "TopNav",
   components: {
+    Avatar,
     ThemeSwitcher,
     MenuButton,
     // NotificationButton,
@@ -76,18 +78,18 @@ export default defineComponent({
   <div class="bg-white dark:bg-black w-full shadow-sm">
     <div class="px-4 py-1 flex items-center justify-between">
       <div class="flex items-center lg:px-0">
-        <div class="flex cursor-pointer">
           <MenuButton
             @click="$emit('toggleDropdown')"
             data-testid="menu-button"
+            class="cursor-pointer"
           />
-        </div>
-        <div class="flex text-sm space-x-1 text-gray-500 dark:text-white">
+        <div class="flex items-center text-sm space-x-1 text-gray-500 dark:text-white">
           <ChannelIcon class="h-6 w-6 mr-1 text-blue-600" /><span
           
             >gennit</span
           >
-         <div v-if="channelId" class="space-x-1"> <span>/</span>
+         <div v-if="channelId" class=" flex items-center gap-1"> <span>/</span>
+          <Avatar :text="channelId" :is-square="true" class="h-6 w-6"/>
           <span class="dark:text-white font-bold text-blue-500">{{
             channelId
           }}</span></div>

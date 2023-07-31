@@ -9,7 +9,7 @@ import { DateTime } from "luxon";
 import { DELETE_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import WarningModal from "../../generic/WarningModal.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import ProfileAvatar from "@/components/user/ProfileAvatar.vue";
+import Avatar from "@/components/user/Avatar.vue";
 import { useDisplay } from "vuetify";
 
 export default defineComponent({
@@ -17,7 +17,7 @@ export default defineComponent({
     ErrorBanner,
     RequireAuth,
     WarningModal,
-    ProfileAvatar,
+    Avatar,
   },
   props: {
     discussion: {
@@ -116,7 +116,7 @@ export default defineComponent({
 <template>
   <div class="mb-4">
       <p class="flex text-sm mt-2 flex-wrap items-center space-x-2">
-        <ProfileAvatar v-if="discussion.Author?.username" :username="discussion.Author.username" />
+        <Avatar v-if="discussion.Author?.username" :text="discussion.Author.username" />
 
         <router-link
         v-if="discussion.Author"

@@ -2,16 +2,14 @@
 import { defineComponent, ref, PropType, computed } from "vue";
 import {
   CREATE_COMMENT,
-  CREATE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/comment/mutations";
 import { GET_DISCUSSION_CHANNEL } from "@/graphQLData/comment/queries";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { DiscussionData } from "@/types/discussionTypes";
 import { CommentData } from "@/types/commentTypes";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
-import ProfileAvatar from "../../user/ProfileAvatar.vue";
+import Avatar from "../../user/Avatar.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
 import TextEditor from "../../generic/TextEditor.vue";
 import CancelButton from "../../generic/CancelButton.vue";
@@ -20,7 +18,7 @@ import SaveButton from "../../generic/SaveButton.vue";
 export default defineComponent({
   components: {
     CancelButton,
-    ProfileAvatar,
+    Avatar,
     RequireAuth,
     SaveButton,
     TextEditor,
@@ -197,7 +195,7 @@ export default defineComponent({
 <template>
   <div class="mt-1 flex w-full flex-col space-x-2 px-1 py-4">
     <div class="flex gap-2 min-h-36">
-      <ProfileAvatar v-if="username" class="h-5 w-5" :username="username" />
+      <Avatar v-if="username" class="h-5 w-5" :text="username" />
 
       <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
         <template v-slot:has-auth>

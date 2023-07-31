@@ -1,13 +1,13 @@
 <script>
 import { defineComponent } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
-import ProfileAvatar from "../user/ProfileAvatar.vue";
+import Avatar from "../user/Avatar.vue";
 import IconButtonDropdown from "../generic/IconButtonDropdown.vue";
 
 export default defineComponent({
   components: {
     IconButtonDropdown,
-    ProfileAvatar,
+    Avatar,
   },
   props: {
     modName: {
@@ -75,6 +75,6 @@ export default defineComponent({
     @goToUserProfile="goToUserProfile"
     @goToModProfile="goToModProfile"
   >
-    <ProfileAvatar :username="username"/>
+    <Avatar :text="username"/>
   </IconButtonDropdown>
 </template>

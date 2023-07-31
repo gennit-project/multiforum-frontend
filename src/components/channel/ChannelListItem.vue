@@ -4,6 +4,7 @@ import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
 import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
 import Tag from "@/components/tag/Tag.vue";
+import Avatar from '@/components/user/Avatar.vue'
 
 export default defineComponent({
   setup() {},
@@ -31,6 +32,7 @@ export default defineComponent({
     };
   },
   components: {
+    Avatar,
     HighlightedSearchTerms,
     Tag,
   },
@@ -46,8 +48,9 @@ export default defineComponent({
         <p class="mb-6">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
-            class="cursor-pointer"
+            class="cursor-pointer flex gap-4 items-center "
           >
+          <Avatar :text="channel.uniqueName" :is-square="true"/>
             <h3 class="mb-2 text-xl">
               <HighlightedSearchTerms
                 :text="channel.uniqueName"

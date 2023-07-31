@@ -22,7 +22,8 @@ export default defineComponent({
     },
     upvoteCount: {
       type: Number,
-      required: true,
+      required: false,
+      default: 0
     },
   },
   setup() {
@@ -31,7 +32,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <li>
+  <li >
+    <div class="flex items-center gap-1">
     <router-link
     :data-testid="`comments-in-${channelId}`"
       class="mr-1 underline"
@@ -45,8 +47,9 @@ export default defineComponent({
     >
       {{ `${commentCount} comments` }}
     </router-link>
-    and {{ upvoteCount }} votes in
+    and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ?  'vote' : 'votes'}} in
     <router-link
+      class="flex items-center gap-1"
       :to="{
         name: 'DiscussionDetail',
         params: {
@@ -61,5 +64,6 @@ export default defineComponent({
         :channel-mode="true"
       />
     </router-link>
+  </div>
   </li>
 </template>

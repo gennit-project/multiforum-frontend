@@ -10,7 +10,7 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { relativeTime } from "../../dateTimeUtils";
 import TextEditor from "../generic/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
-import ProfileAvatar from "../user/ProfileAvatar.vue";
+import Avatar from "../user/Avatar.vue";
 import CommentButtons from "./CommentButtons.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { generateSlug } from "random-word-slugs";
@@ -27,7 +27,7 @@ export default defineComponent({
     ChildComments,
     TextEditor,
     WarningModal,
-    ProfileAvatar,
+    Avatar,
   },
   setup(props) {
     const GET_THEME = gql`
@@ -216,10 +216,10 @@ export default defineComponent({
           data-testid="comment"
         >
           <p class="flex flex-wrap items-center space-x-2">
-            <ProfileAvatar
+            <Avatar
               class="ml-2 mt-1"
               v-if="commentData.CommentAuthor"
-              :username="commentData.CommentAuthor.username"
+              :text="commentData.CommentAuthor.username"
             />
 
             <router-link

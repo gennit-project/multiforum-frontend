@@ -8,9 +8,14 @@ import gql from "graphql-tag";
 export default defineComponent({
 
   props: {
-    username: {
+    text: {
       type: String,
       required: true
+    },
+    isSquare: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
   setup() {
@@ -39,8 +44,8 @@ export default defineComponent({
   },
   computed: {
     identiconData() {
-      // Hash the username
-      const hash = sha256(this.username).toString();
+      // Hash the text
+      const hash = sha256(this.text).toString();
 
       // Generate the identicon and get the data for the img src
       const data = new Identicon(hash, {
@@ -59,7 +64,8 @@ export default defineComponent({
 </script>
 <template>
 
-  <img class="h-8 w-8 rounded-full" :src="identiconData" :alt="username">
+  <img v-if="!isSquare" class="h-8 w-8 rounded-full" :src="identiconData" :alt="text">
+  <img v-else class="h-12 w-12 rounded-md" :src="identiconData" :alt="text">
 </template>
 
 

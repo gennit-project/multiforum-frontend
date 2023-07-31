@@ -5,7 +5,7 @@ import { GET_USER } from "@/graphQLData/user/queries";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import ProfileAvatar from "./ProfileAvatar.vue";
+import Avatar from "./Avatar.vue";
 import { relativeTime } from "@/utils/dateTimeUtils";
 import TabButton from "@/components/generic/TabButton.vue";
 
@@ -13,7 +13,7 @@ export default defineComponent({
   components: {
     TabButton,
     ErrorBanner,
-    ProfileAvatar,
+    Avatar,
   },
   setup() {
     const route = useRoute();
@@ -103,9 +103,9 @@ export default defineComponent({
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
               <div class="flex">
-                <ProfileAvatar
+                <Avatar
                   v-if="username"
-                  :username="username"
+                  :text="username"
                   class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32"
                 />
               </div>

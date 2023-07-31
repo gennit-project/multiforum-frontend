@@ -114,6 +114,8 @@ export default defineComponent({
         :discussionId="discussion.id"
       />
     </ul>
+    </div>
+    <div v-else>
     <h2 class="mt-4 text-lg">Comments in Other Channels</h2>
     <ul class="list-disc pl-3">
       <ChannelLink

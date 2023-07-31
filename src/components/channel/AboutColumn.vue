@@ -7,7 +7,7 @@ import Tag from "@/components/tag/Tag.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
-import ProfileAvatar from "../user/ProfileAvatar.vue";
+import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 
 export default defineComponent({
@@ -15,7 +15,7 @@ export default defineComponent({
   components: {
     RequireAuth,
     Tag,
-    ProfileAvatar,
+    Avatar,
   },
   setup() {
     const route = useRoute();
@@ -109,11 +109,12 @@ export default defineComponent({
 
 <template>
   <div class="flex-shrink-0 border-gray-600">
-    <div class="flex justify-between border-b border-gray-700">
+    <div v-if="channel && channel.uniqueName" class="flex justify-start gap-2 items-center border-b border-gray-700">
+      <Avatar :text="channel.uniqueName" :is-square="true"/>
       <span
         class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
       >
-        About
+        About {{ channel.uniqueName }}
       </span>
     </div>
 
@@ -171,7 +172,7 @@ export default defineComponent({
                 :to="`/u/${admin.username}`"
                 class="flex items-center"
               >
-                <ProfileAvatar :username="admin.username" class="mr-2" />
+                <Avatar :text="admin.username" class="mr-2" />
                 {{ admin.username }}
               </router-link>
             </li>
