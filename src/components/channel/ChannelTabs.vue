@@ -58,14 +58,14 @@ export default defineComponent({
           :label="'Discussions'"
           :is-active="$route.path.includes('discussions')"
           >
-          <DiscussionIcon class="h-6 w-6"/>
+          <i class="fa-regular fa-comment h-6 w-6"></i>
         </TabButton>
         <TabButton
           :to="tabRoutes.events"
           :label="'Events'"
           :is-active="route.name.includes('Event')"
         >
-          <CalendarIcon class="h-6 w-6"/>
+         <i class="fa-regular fa-calendar h-6 w-6"></i> 
         </TabButton>
         <TabButton
           v-if="mdAndDown"
