@@ -7,11 +7,9 @@ import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import {
-  GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
-import { CREATE_DISCUSSION_CHANNEL } from "@/graphQLData/comment/mutations";
-import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";

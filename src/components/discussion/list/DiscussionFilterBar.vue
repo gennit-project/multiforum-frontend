@@ -154,6 +154,41 @@ export default defineComponent({
         @updateSearchInput="updateSearchInput"
       />
       <div>
+        <FilterChip
+          class="align-middle"
+          data-testid="channel-filter-button"
+          v-if="!channelId"
+          :label="channelLabel"
+          :highlighted="channelLabel !== defaultFilterLabels.channels"
+        >
+          <template v-slot:icon>
+            <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </template>
+          <template v-slot:content>
+            <ChannelPicker
+              :selected-channels="filterValues.channels"
+              @setSelectedChannels="setSelectedChannels"
+            />
+          </template>
+        </FilterChip>
+        <FilterChip
+          class="align-middle"
+          data-testid="tag-filter-button"
+          :label="tagLabel"
+          :highlighted="tagLabel !== defaultFilterLabels.tags"
+        >
+          <template v-slot:icon>
+            <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+          </template>
+          <template v-slot:content>
+            <TagPicker
+              :selected-tags="filterValues.tags"
+              @setSelectedTags="setSelectedTags"
+            />
+          </template>
+        </FilterChip>
+      </div>
+      <div>
       <RequireAuth class="align-middle" :full-width="false">
         <template v-slot:has-auth>
           <CreateButton
@@ -169,40 +204,6 @@ export default defineComponent({
     </div>
     </div>
 
-    <div>
-      <FilterChip
-        class="align-middle"
-        data-testid="channel-filter-button"
-        v-if="!channelId"
-        :label="channelLabel"
-        :highlighted="channelLabel !== defaultFilterLabels.channels"
-      >
-        <template v-slot:icon>
-          <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
-        </template>
-        <template v-slot:content>
-          <ChannelPicker
-            :selected-channels="filterValues.channels"
-            @setSelectedChannels="setSelectedChannels"
-          />
-        </template>
-      </FilterChip>
-      <FilterChip
-        class="align-middle"
-        data-testid="tag-filter-button"
-        :label="tagLabel"
-        :highlighted="tagLabel !== defaultFilterLabels.tags"
-      >
-        <template v-slot:icon>
-          <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
-        </template>
-        <template v-slot:content>
-          <TagPicker
-            :selected-tags="filterValues.tags"
-            @setSelectedTags="setSelectedTags"
-          />
-        </template>
-      </FilterChip>
-    </div>
+   
   </div>
 </template>

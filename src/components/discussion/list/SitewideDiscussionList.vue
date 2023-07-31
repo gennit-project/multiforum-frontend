@@ -233,7 +233,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="h-full w-full">
+  <div class="w-full">
     <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       class="max-w-5xl"
@@ -243,7 +243,7 @@ export default defineComponent({
     <p v-else-if="discussionChannels.length === 0" class="my-6 px-4">
       There are no results.
     </p>
-    <div v-if="discussionChannels.length > 0" class="h-full">
+    <div v-if="discussionChannels.length > 0" >
       <ul
         role="list"
         class="my-6 mr-2 divide-y"
