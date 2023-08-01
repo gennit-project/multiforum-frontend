@@ -53,8 +53,16 @@ export default defineComponent({
 
     const discussionChannelWhere = computed(() => {
       return {
-        channelUniqueName: channelId.value,
-        // Discussion: discussionWhere.value
+        OR: [
+          {
+            channelUniqueName: channelId.value,
+            Discussion: discussionWhere.value,
+          },
+          {
+            channelUniqueName: channelId.value,
+            Discussion: null,
+          },
+        ],
       };
     });
 
@@ -226,13 +234,15 @@ export default defineComponent({
       this.discussionResult.discussions &&
       this.discussionResult.discussions.length > 0
     ) {
-      this.sendToPreview(this.discussionResult.discussionChannels[0].discussionId);
+      this.sendToPreview(
+        this.discussionResult.discussionChannels[0].discussionId,
+      );
     }
   },
 });
 </script>
 <template>
-  <div class=" w-full">
+  <div class="w-full">
     <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       class="max-w-5xl"
@@ -240,7 +250,10 @@ export default defineComponent({
       :text="discussionError.message"
     />
     <p
-      v-else-if="discussionChannelResult && discussionChannelResult.discussionChannels.length === 0"
+      v-else-if="
+        discussionChannelResult &&
+        discussionChannelResult.discussionChannels.length === 0
+      "
       class="my-6 px-4"
     >
       There are no results.

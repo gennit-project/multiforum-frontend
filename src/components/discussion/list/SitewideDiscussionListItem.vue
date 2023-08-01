@@ -1,10 +1,13 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { DiscussionChannelData, DiscussionData } from "../../../types/discussionTypes";
+import {
+  DiscussionData,
+} from "../../../types/discussionTypes";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
+import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   props: {
@@ -17,8 +20,8 @@ export default defineComponent({
       required: false,
     },
     discussionChannel: {
-      type: Object as PropType<DiscussionChannelData>,
-      required: true
+      type: Object as PropType<DiscussionChannel>,
+      required: true,
     },
     searchInput: {
       type: String,
@@ -59,21 +62,23 @@ export default defineComponent({
       return "";
     });
 
-
-
     return {
       previewIsOpen: false,
       title: props.discussion?.title || "[Deleted]",
       body: props.discussion?.body || "[Deleted]",
       createdAt: props.discussion?.createdAt || "",
       discussionIdInParams,
-      relativeTime: props.discussionChannel ? relativeTime(props.discussionChannel?.createdAt) : '',
+      relativeTime: props.discussionChannel
+        ? relativeTime(props.discussionChannel?.createdAt)
+        : "",
       authorUsername: props.discussion?.Author
         ? props.discussion.Author.username
         : "Deleted",
-      tags: props.discussion ? props.discussion.Tags.map((tag) => {
-        return tag.text;
-      }) : [],
+      tags: props.discussion
+        ? props.discussion.Tags.map((tag) => {
+            return tag.text;
+          })
+        : [],
       upvoteCount: props.discussionChannel.upvoteCount || 0,
     };
   },
@@ -120,11 +125,11 @@ export default defineComponent({
       </p>
       <div
         v-if="discussion && discussion.DiscussionChannels"
-        class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex flex-wrap items-center gap-1"
+        class="font-medium flex flex-wrap items-center gap-1 text-xs text-slate-600 no-underline dark:text-slate-200"
       >
         <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
         <Tag
-          v-for="(discussionChannel) in discussion.DiscussionChannels"
+          v-for="discussionChannel in discussion.DiscussionChannels"
           :key="discussionChannel.id"
           :class="[
             selectedChannels.includes(discussionChannel.channelUniqueName)
@@ -133,17 +138,15 @@ export default defineComponent({
           ]"
           :channel-mode="true"
           :tag="discussionChannel.channelUniqueName"
-          
           @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
         >
-          {{ discussionChannel.channelUniqueName
-          }}
+          {{ discussionChannel.channelUniqueName }}
         </Tag>
       </div>
-      <div v-else-if="discussionChannel"
-      class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex flex-wrap items-center gap-1"
+      <div
+        v-else-if="discussionChannel"
+        class="font-medium flex flex-wrap items-center gap-1 text-xs text-slate-600 no-underline dark:text-slate-200"
       >
-
         <Tag
           :class="[
             selectedChannels.includes(discussionChannel.channelUniqueName)
@@ -154,8 +157,7 @@ export default defineComponent({
           :tag="discussionChannel.channelUniqueName"
           @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
         >
-          {{ discussionChannel.channelUniqueName
-          }}
+          {{ discussionChannel.channelUniqueName }}
         </Tag>
       </div>
     </div>

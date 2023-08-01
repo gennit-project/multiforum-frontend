@@ -210,10 +210,10 @@ export default defineComponent({
           />
         </div>
         <ChannelLinks
-          v-if="discussion"
           class="my-4"
-          :discussion="discussion"
-          :channelId="channelId"
+          v-if="discussion && discussion.DiscussionChannels"
+          :discussion-channels="discussion.DiscussionChannels"
+          :channelId="activeDiscussionChannel ? activeDiscussionChannel.channelUniqueName : ''"
         />
       </v-col>
 

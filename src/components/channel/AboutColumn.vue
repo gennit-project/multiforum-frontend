@@ -113,16 +113,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-shrink-0 border dark:border-gray-600 rounded-lg shadow px-4">
-    <div v-if="channelId" class="flex justify-center ">
-      <Avatar :text="channelId" :is-square="true" :is-large="true"/>
-    </div>
-    <h1 v-if="channelId"
-        class="my-2 mb-2 flex justify-center border-b border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
-      >
-       {{ channelId }}
-      </h1>
+  <div class="flex-shrink-0 rounded-lg border px-4 shadow dark:border-gray-600">
+    <div v-if="channelId" class="flex items-center border-b my-4">
+      <Avatar :text="channelId" :is-square="true"  />
+      <h1
+      v-if="channelId"
+      class="my-2 mb-2 flex justify-center  border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
+    >
+      {{ channelId }}
+    </h1>
 
+    </div>
+    
     <div class="w-full py-3">
       <p v-if="getChannelLoading">Loading...</p>
       <div v-else-if="getChannelError">
