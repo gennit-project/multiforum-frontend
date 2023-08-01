@@ -6,9 +6,7 @@ import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
-import {
-  GET_LOCAL_USERNAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
@@ -108,7 +106,14 @@ export default defineComponent({
 
     const upvoteCount = computed(() => {
       if (props.discussionChannel) {
-        return props.discussionChannel.upvoteCount
+        return props.discussionChannel.upvoteCount;
+      }
+      return 0;
+    });
+
+    const commentCount = computed(() => {
+      if (props.discussionChannel) {
+        return props.discussionChannel.CommentsAggregate?.count || 0;
       }
       return 0;
     });
@@ -116,13 +121,15 @@ export default defineComponent({
     const { lgAndUp } = useDisplay();
 
     return {
+      commentCount,
       discussionChannelId,
       defaultUniqueName,
       discussionIdInParams,
       lgAndUp,
       errorMessage: ref(""),
       isActive: computed(
-        () => discussionIdInParams.value === props.discussionChannel.discussionId,
+        () =>
+          discussionIdInParams.value === props.discussionChannel.discussionId,
       ),
       loggedInUserUpvoted,
       upvoteCount,
@@ -140,9 +147,11 @@ export default defineComponent({
       body: props.discussion?.body || "[Deleted]",
       createdAt: props.discussionChannel.createdAt,
       relativeTime: relativeTime(props.discussionChannel.createdAt),
-      tags: props.discussion ? props.discussion.Tags.map((tag) => {
-        return tag.text;
-      }) : [],
+      tags: props.discussion
+        ? props.discussion.Tags.map((tag) => {
+            return tag.text;
+          })
+        : [],
     };
   },
   computed: {
@@ -161,44 +170,58 @@ export default defineComponent({
 <template>
   <li
     class="relative my-2 flex space-x-1 space-y-3 border-b py-2 dark:border-gray-800"
-    :class="[isActive ? 'text-gray-500' : '']"
+    :class="[isActive ? 'text-blue-500' : '']"
   >
-    <div class="flex w-full gap-3">
-      <DiscussionVotes
-        v-if="discussionChannel"
-        :discussion="discussion"
-        :discussion-channel="discussionChannel"
-        :show-downvote="false"
-      />
-      <div
-        class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
-      >
-        <div>💬</div>
-      </div>
-      <div>
-        <router-link :to="detailLink" class="hover:text-gray-500">
-          <p class="text-md cursor-pointer font-bold hover:text-gray-500">
-            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-          </p>
-        </router-link>
-        <p class="font-medium my-1 text-xs text-slate-600 hover:no-underline">
-          <Tag
-            class="my-1"
-            :active="selectedTags.includes(tag)"
-            :key="tag"
-            v-for="tag in tags"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
+    <v-row>
+      <v-col cols="9">
+        <div class="flex w-full gap-3">
+          <DiscussionVotes
+            v-if="discussionChannel"
+            :discussion="discussion"
+            :discussion-channel="discussionChannel"
+            :show-downvote="false"
           />
-        </p>
-        <p
-          class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
-        >
-          {{ `Posted ${relativeTime} by ${authorUsername}` }}
-        </p>
-      </div>
-    </div>
-    <ErrorBanner v-if="errorMessage" :text="errorMessage" />
+          <div
+            class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
+          >
+            <div>💬</div>
+          </div>
+          <div>
+            <router-link :to="detailLink" class="hover:text-gray-500">
+              <p class="text-md cursor-pointer font-bold hover:text-gray-500">
+                <HighlightedSearchTerms
+                  :text="title"
+                  :search-input="searchInput"
+                />
+              </p>
+            </router-link>
+            <p
+              class="font-medium my-1 text-xs text-slate-600 hover:no-underline"
+            >
+              <Tag
+                class="my-1"
+                :active="selectedTags.includes(tag)"
+                :key="tag"
+                v-for="tag in tags"
+                :tag="tag"
+                @click="$emit('filterByTag', tag)"
+              />
+            </p>
+            <p
+              class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
+            >
+              {{ `Posted ${relativeTime} by ${authorUsername}` }}
+            </p>
+          </div>
+        </div>
+      </v-col>
+      <v-col cols="3">
+        <i class="fa-regular fa-comment h-6 w-6"></i>
+        {{ commentCount }}
+      </v-col>
+
+      <ErrorBanner v-if="errorMessage" :text="errorMessage" />
+    </v-row>
   </li>
 </template>
 <style>

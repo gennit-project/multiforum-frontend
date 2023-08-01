@@ -78,10 +78,16 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       id,
       discussionId
       channelUniqueName
+      CommentsAggregate {
+        count
+      }
       upvoteCount
       createdAt
       Channel {
         uniqueName
+      }
+      UpvotedByUsers {
+        username
       }
       Discussion {
         ...DiscussionFields
