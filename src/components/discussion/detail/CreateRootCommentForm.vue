@@ -3,10 +3,8 @@ import { defineComponent, ref, PropType, computed } from "vue";
 import {
   CREATE_COMMENT,
 } from "@/graphQLData/comment/mutations";
-import { GET_DISCUSSION_CHANNEL } from "@/graphQLData/comment/queries";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { DiscussionData } from "@/types/discussionTypes";
 import { CommentData } from "@/types/commentTypes";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import Avatar from "../../user/Avatar.vue";
@@ -14,6 +12,8 @@ import RequireAuth from "../../auth/RequireAuth.vue";
 import TextEditor from "../../generic/TextEditor.vue";
 import CancelButton from "../../generic/CancelButton.vue";
 import SaveButton from "../../generic/SaveButton.vue";
+import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
+import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
@@ -24,16 +24,12 @@ export default defineComponent({
     TextEditor,
   },
   props: {
-    discussionChannelId: {
-      type: String,
-      required: true,
-    },
     channelId: {
       type: String,
       required: true,
     },
-    discussion: {
-      type: Object as PropType<DiscussionData>,
+    discussionChannel: {
+      type: Object as PropType<DiscussionChannel>,
       required: true,
     },
   },
@@ -77,7 +73,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                id: props.discussionChannelId,
+                id: props.discussionChannel.id,
               },
             },
           },
@@ -114,9 +110,10 @@ export default defineComponent({
           // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
           const readQueryResult = cache.readQuery({
-            query: GET_DISCUSSION_CHANNEL,
+            query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
             variables: {
-              id: props.discussionChannelId,
+              discussionId: props.discussionChannel.discussionId,
+              channelUniqueName: props.discussionChannel.channelUniqueName
             },
           });
 
@@ -138,7 +135,11 @@ export default defineComponent({
             };
           }
           cache.writeQuery({
-            query: GET_DISCUSSION_CHANNEL,
+            query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+            variables: {
+              discussionId: props.discussionChannel.discussionId,
+              channelUniqueName: props.discussionChannel.channelUniqueName
+            },
             data: {
               ...readQueryResult,
               discussionChannels: [
@@ -151,21 +152,16 @@ export default defineComponent({
                 },
               ],
             },
-            variables: {
-              id: props.discussionChannelId,
-            },
           });
         },
       }),
     );
 
     const discussionChannelIsLocked = computed(() => {
-      if (!props.discussion) {
+      if (!props.discussionChannel) {
         return false;
       }
-      return !props.discussion.DiscussionChannels.find((dc) => {
-        return dc.Channel.uniqueName === props.channelId;
-      });
+      return props.discussionChannel.locked;
     });
 
     return {

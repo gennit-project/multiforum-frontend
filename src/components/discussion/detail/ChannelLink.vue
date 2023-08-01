@@ -47,7 +47,7 @@ export default defineComponent({
     >
       {{ `${commentCount} comments` }}
     </router-link>
-    and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ?  'vote' : 'votes'}} in
+   <span> and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ?  'vote' : 'votes'}} in</span>
     <router-link
       class="flex items-center gap-1"
       :to="{

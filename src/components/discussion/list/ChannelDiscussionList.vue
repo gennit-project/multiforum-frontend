@@ -16,6 +16,7 @@ import { getFilterValuesFromParams } from "@/components/event/list/filters/getFi
 import { SearchDiscussionValues } from "../../../types/discussionTypes";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 import { useDisplay } from "vuetify";
+import { DiscussionWhere } from "@/__generated__/graphql";
 
 const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -46,14 +47,14 @@ export default defineComponent({
       }),
     );
 
-    const discussionWhere = computed(() => {
+    const discussionWhere = computed<DiscussionWhere>(() => {
       return getDiscussionWhere(filterValues.value, channelId.value);
     });
 
     const discussionChannelWhere = computed(() => {
       return {
         channelUniqueName: channelId.value,
-        Discussion: discussionWhere.value
+        // Discussion: discussionWhere.value
       };
     });
 
@@ -119,9 +120,9 @@ export default defineComponent({
       if (!value.data || value.data.discussionChannels.length === 0) {
         return;
       }
-      const defaultSelectedDiscussion = value.data.discussionChannels[0].Discussion;
+      const defaultSelectedDiscussionChannel = value.data.discussionChannels[0];
 
-      sendToPreview(defaultSelectedDiscussion.id);
+      sendToPreview(defaultSelectedDiscussionChannel.discussionId);
     });
 
     const {
@@ -225,7 +226,7 @@ export default defineComponent({
       this.discussionResult.discussions &&
       this.discussionResult.discussions.length > 0
     ) {
-      this.sendToPreview(this.discussionResult.discussions[0].id);
+      this.sendToPreview(this.discussionResult.discussionChannels[0].discussionId);
     }
   },
 });

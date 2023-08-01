@@ -40,11 +40,53 @@ const COMMENT_FIELDS = gql`
   ${AUTHOR_FIELDS}
 `;
 
-export const GET_DISCUSSION_CHANNEL = gql`
+export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
   query getDiscussionChannel($id: ID!) {
     discussionChannels(
       where: {
         id: $id
+      }
+    ) {
+      id
+      id
+      upvoteCount
+      discussionId
+      channelUniqueName
+      Channel {
+        uniqueName
+      }
+      Discussion {
+        id
+        title
+        Author {
+          ...AuthorFields
+        }
+      }
+      CommentsAggregate {
+        count
+      }
+      Comments(
+        where: {
+          isRootComment: true
+        }
+      ) {
+        ...CommentFields
+        ChildComments {
+          ...CommentFields
+        }
+      }
+    }
+  }
+  ${AUTHOR_FIELDS}
+  ${COMMENT_FIELDS}
+  ${COMMENT_VOTE_FIELDS}
+`;
+export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
+  query getDiscussionChannel($channelUniqueName: String!, $discussionId: ID!) {
+    discussionChannels(
+      where: {
+        channelUniqueName: $channelUniqueName
+        discussionId: $discussionId
       }
     ) {
       id

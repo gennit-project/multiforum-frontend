@@ -19,7 +19,7 @@ export default defineComponent({
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
+      required: false,
     },
   },
   setup(props) {
@@ -39,6 +39,9 @@ export default defineComponent({
     };
 
     const bodyText = computed(() => {
+      if (!props.discussion || !props.discussion.body) {
+        return "";
+      }
       if (showFullText.value) {
         return props.discussion.body;
       } else {
@@ -50,11 +53,17 @@ export default defineComponent({
     });
 
     const shouldShowMoreButton = computed(() => {
+      if (!props.discussion || !props.discussion.body) {
+        return false;
+      }
       const words = props.discussion.body.split(" ");
       return words.length > wordLimit;
     });
 
     const linksInBody = computed(() => {
+      if (!props.discussion || !props.discussion.body) {
+        return [];
+      }
       const links = getLinksInText(props.discussion.body);
       return links;
     });
@@ -99,12 +108,12 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion.body" class="-ml-4 max-w-none">
+    <div v-if="discussion?.body" class="-ml-4 max-w-none">
       <v-md-preview :text="bodyText"></v-md-preview>
     </div>
     <Tag
       class="mt-2"
-      v-for="tag in discussion.Tags"
+      v-for="tag in discussion?.Tags"
       :tag="tag.text"
       :key="tag.text"
       @click="
@@ -114,7 +123,7 @@ export default defineComponent({
       "
     />
     <button
-      v-if="discussion.body && shouldShowMoreButton"
+      v-if="discussion?.body && shouldShowMoreButton"
       @click="toggleShowFullText"
       class="text-blue-600"
     >

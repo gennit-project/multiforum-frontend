@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { DiscussionChannelData } from "../../../types/commentTypes";
+import { DiscussionChannel } from "@/__generated__/graphql";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
 import {
@@ -28,12 +28,12 @@ export default defineComponent({
       required: false,
     },
     discussionChannel: {
-      type: Object as PropType<DiscussionChannelData>,
+      type: Object as PropType<DiscussionChannel>,
       required: true,
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
+      required: false,
     },
     showDownvote: {
       type: Boolean,
@@ -61,12 +61,6 @@ export default defineComponent({
       return "";
     });
 
-    const defaultUniqueName = computed(() => {
-      if (channelIdInParams.value) {
-        return channelIdInParams.value;
-      }
-      return props.discussion.DiscussionChannels[0]?.Channel?.uniqueName;
-    });
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
       useQuery(GET_LOCAL_USERNAME);
@@ -91,12 +85,8 @@ export default defineComponent({
       return localModProfileNameResult.value.modProfileName;
     });
 
-    const activeDiscussionChannel = computed(
-      () => props.discussion.DiscussionChannels[0],
-    );
-
     const discussionChannelId = computed(() => {
-      return activeDiscussionChannel.value.id || "";
+      return props.discussionChannel.discussionId || "";
     });
 
     const { mutate: downvoteDiscussionChannel } = useMutation(
@@ -111,7 +101,7 @@ export default defineComponent({
       UNDO_UPVOTE_DISCUSSION_CHANNEL,
       () => ({
         variables: {
-          id: props.discussionChannel?.id || "",
+          id: props.discussionChannel.id || "",
           username: localUsernameResult.value?.username || "",
         },
       }),
@@ -121,7 +111,7 @@ export default defineComponent({
       UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
       () => ({
         variables: {
-          id: props.discussionChannel?.id || "",
+          id: props.discussionChannel.id || "",
           displayName: localModProfileNameResult.value?.modProfileName || "",
         },
       }),
@@ -131,7 +121,7 @@ export default defineComponent({
       UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT,
       () => ({
         variables: {
-          id: props.discussionChannel.id,
+          id: props.discussionChannel.id || "",
         },
       }),
     );
@@ -148,11 +138,11 @@ export default defineComponent({
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !activeDiscussionChannel.value
+        !props.discussionChannel
       ) {
         return false;
       }
-      const users = activeDiscussionChannel.value?.UpvotedByUsers || [];
+      const users =props.discussionChannel?.UpvotedByUsers || [];
 
       const loggedInUser = localUsernameResult.value.username;
       const match =
@@ -166,11 +156,11 @@ export default defineComponent({
       if (
         localUsernameLoading.value ||
         !localUsernameResult.value ||
-        !activeDiscussionChannel.value
+        !props.discussionChannel
       ) {
         return false;
       }
-      const mods = activeDiscussionChannel.value?.DownvotedByModerators || [];
+      const mods = props.discussionChannel.DownvotedByModerators || [];
       const loggedInMod = localModProfileNameResult.value.modProfileName;
       const match =
         mods.filter((mod: any) => {
@@ -180,16 +170,9 @@ export default defineComponent({
     });
 
     const downvoteCount = computed(() => {
-      if (activeDiscussionChannel.value) {
-        return activeDiscussionChannel.value.DownvotedByModeratorsAggregate
+      if (props.discussionChannel) {
+        return props.discussionChannel.DownvotedByModeratorsAggregate
           ?.count;
-      }
-      return 0;
-    });
-
-    const upvoteCount = computed(() => {
-      if (activeDiscussionChannel.value) {
-        return activeDiscussionChannel.value.UpvotedByUsersAggregate?.count;
       }
       return 0;
     });
@@ -210,16 +193,15 @@ export default defineComponent({
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
       downvoteDiscussionChannel({
-        id: props.discussionChannel?.id || "",
+        id: discussionChannelId.value?.id,
         displayName: newModProfileName,
       });
     });
 
     return {
-      activeDiscussionChannel,
       createModProfile,
       discussionChannelId,
-      defaultUniqueName,
+      defaultUniqueName: props.discussionChannel.channelUniqueName,
       discussionIdInParams,
       downvoteCount,
       loggedInUserUpvoted,
@@ -232,7 +214,7 @@ export default defineComponent({
         undoDownvoteDiscussionChannel,
         updateDiscussionChannelUpvoteCount,
       },
-      upvoteCount,
+      upvoteCount: props.discussionChannel.upvoteCount || 0,
       username,
       route,
       showModProfileModal: ref(false),

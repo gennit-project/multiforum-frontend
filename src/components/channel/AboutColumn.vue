@@ -17,7 +17,7 @@ export default defineComponent({
     Tag,
     Avatar,
   },
-  setup(props) {
+  setup() {
     const route = useRoute();
     const router = useRouter();
 
@@ -118,9 +118,9 @@ export default defineComponent({
       <Avatar :text="channelId" :is-square="true" :is-large="true"/>
     </div>
     <h1 v-if="channelId"
-        class="my-2 mb-2 flex justify-center border-b border-gray-700 text-lg font-bold leading-6 text-gray-500 dark:text-gray-300"
+        class="my-2 mb-2 flex justify-center border-b border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
       >
-       Welcome to {{ channelId }}
+       {{ channelId }}
       </h1>
 
     <div class="w-full py-3">

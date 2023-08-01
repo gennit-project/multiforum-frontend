@@ -22,7 +22,7 @@ export default defineComponent({
   props: {
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
+      required: false,
     },
     compactMode: {
       type: Boolean,
@@ -40,14 +40,17 @@ export default defineComponent({
     const router = useRouter();
 
     const editedAt = computed(() => {
-      if (!props.discussion.updatedAt) {
+      if (!props.discussion?.updatedAt) {
         return "";
       }
       return `Edited ${relativeTime(props.discussion.updatedAt)}`;
     });
 
     const createdAt = computed(() => {
-      return `posted ${relativeTime(props.discussion.createdAt)}`;
+      if (!props.discussion?.createdAt) {
+        return "";
+      }
+      return `posted ${relativeTime(props.discussion?.createdAt)}`;
     });
 
     const {
@@ -56,7 +59,7 @@ export default defineComponent({
       onDone: onDoneDeleting,
     } = useMutation(DELETE_DISCUSSION, {
       variables: {
-        id: props.discussion.id,
+        id: props.discussion?.id,
       },
       update: (cache: any) => {
         cache.modify({
@@ -65,7 +68,7 @@ export default defineComponent({
               const readField = fieldInfo.readField;
 
               return existingDiscussionRefs.filter((ref) => {
-                return readField("id", ref) !== props.discussion.id;
+                return readField("id", ref) !== props.discussion?.id;
               });
             },
           },
@@ -115,19 +118,19 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-      <p class="flex text-sm mt-2 flex-wrap items-center space-x-2">
-        <Avatar v-if="discussion.Author?.username" :text="discussion.Author.username" />
+      <div class="flex text-sm mt-2 flex-wrap items-center space-x-2">
+        <Avatar :text="discussion && discussion.Author?.username ? discussion.Author.username : '[Deleted]'" />
 
         <router-link
-        v-if="discussion.Author"
-        class="font-bold cursor-pointer text-black dark:text-white hover:underline"
-        :to="`/u/${discussion.Author.username}`"
-      >
+          v-if="discussion && discussion.Author"
+          class="font-bold cursor-pointer text-black dark:text-white hover:underline"
+          :to="`/u/${discussion.Author.username}`"
+        >
         {{ discussion.Author.username }}
         </router-link>
         <span v-else>[Deleted]</span>
         <div>{{ createdAt }}</div>
-        <span v-if="discussion.updatedAt" class="mx-2"> &#8226; </span>
+        <span v-if="discussion && discussion.updatedAt" class="mx-2"> &#8226; </span>
         <div>{{ editedAt }}</div>
         <RequireAuth
           v-if="discussion?.Author?.username"
@@ -148,7 +151,7 @@ export default defineComponent({
         </RequireAuth>
         <RequireAuth
           class=" space-x-2"
-          v-if="discussion.Author && route.name === 'DiscussionDetail'"
+          v-if="discussion && discussion.Author && route.name === 'DiscussionDetail'"
           :require-ownership="true"
           :owners="[discussion.Author.username]"
           :full-width="false"
@@ -162,10 +165,7 @@ export default defineComponent({
             >
           </template>
         </RequireAuth>
-      </p>
-
-
-
+    </div>
     <WarningModal
       :title="'Delete Discussion'"
       :body="'Are you sure you want to delete this discussion?'"

@@ -14,7 +14,11 @@ export default defineComponent({
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
+      required: false,
+    },
+    discussionChannel: {
+      type: Object as PropType<DiscussionChannelData>,
+      required: true
     },
     searchInput: {
       type: String,
@@ -55,43 +59,27 @@ export default defineComponent({
       return "";
     });
 
-    const upvoteCountInDefaultChannel = computed(() => {
-      const discussionChannels = props.discussion.DiscussionChannels;
 
-      const activeDiscussionChannel = discussionChannels.find(
-        (dc: DiscussionChannelData) => {
-          return dc.channelUniqueName === props.defaultUniqueName;
-        },
-      );
-
-      if (!activeDiscussionChannel) {
-        return 0;
-      }
-      return activeDiscussionChannel.upvoteCount;
-    });
 
     return {
       previewIsOpen: false,
-      title: props.discussion.title,
-      body: props.discussion.body || "",
-      createdAt: props.discussion.createdAt,
+      title: props.discussion?.title || "[Deleted]",
+      body: props.discussion?.body || "[Deleted]",
+      createdAt: props.discussion?.createdAt || "",
       discussionIdInParams,
-      relativeTime: relativeTime(props.discussion.createdAt),
-      authorUsername: props.discussion.Author
+      relativeTime: props.discussionChannel ? relativeTime(props.discussionChannel?.createdAt) : '',
+      authorUsername: props.discussion?.Author
         ? props.discussion.Author.username
         : "Deleted",
-      tags: props.discussion.Tags.map((tag) => {
+      tags: props.discussion ? props.discussion.Tags.map((tag) => {
         return tag.text;
-      }),
-      upvoteCount: upvoteCountInDefaultChannel,
+      }) : [],
+      upvoteCount: props.discussionChannel.upvoteCount || 0,
     };
   },
   computed: {
     previewLink() {
-      if (!this.discussion) {
-        return "";
-      }
-      return `/discussions/search/${this.discussion.id}`;
+      return `/discussions/search/${this.discussionChannel.discussionId}`;
     },
   },
   inheritAttrs: false,
@@ -131,11 +119,12 @@ export default defineComponent({
         />
       </p>
       <div
+        v-if="discussion && discussion.DiscussionChannels"
         class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex flex-wrap items-center gap-1"
       >
         <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
         <Tag
-          v-for="(discussionChannel, i) in discussion.DiscussionChannels"
+          v-for="(discussionChannel) in discussion.DiscussionChannels"
           :key="discussionChannel.id"
           :class="[
             selectedChannels.includes(discussionChannel.channelUniqueName)
@@ -145,6 +134,24 @@ export default defineComponent({
           :channel-mode="true"
           :tag="discussionChannel.channelUniqueName"
           
+          @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
+        >
+          {{ discussionChannel.channelUniqueName
+          }}
+        </Tag>
+      </div>
+      <div v-else-if="discussionChannel"
+      class="font-medium text-xs text-slate-600 no-underline dark:text-slate-200 flex flex-wrap items-center gap-1"
+      >
+
+        <Tag
+          :class="[
+            selectedChannels.includes(discussionChannel.channelUniqueName)
+              ? 'text-blue-500'
+              : 'hover:text-black dark:text-slate-400 dark:hover:text-slate-300',
+          ]"
+          :channel-mode="true"
+          :tag="discussionChannel.channelUniqueName"
           @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
         >
           {{ discussionChannel.channelUniqueName

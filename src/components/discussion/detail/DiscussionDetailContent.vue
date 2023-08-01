@@ -3,6 +3,7 @@ import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
 import { relativeTime } from "../../../dateTimeUtils";
 import { DiscussionData } from "@/types/discussionTypes";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -17,10 +18,9 @@ import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
-import { ChannelData } from "@/types/channelTypes";
 import "md-editor-v3/lib/style.css";
-import { DiscussionChannelData } from "@/types/commentTypes";
 import AboutColumn from "@/components/channel/AboutColumn.vue";
+import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
@@ -67,6 +67,15 @@ export default defineComponent({
       loading: getDiscussionLoading,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
+    const {
+      result: getDiscussionChannelResult,
+      error: getDiscussionChannelError,
+      loading: getDiscussionChannelLoading,
+    } = useQuery(GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID, {
+      discussionId: discussionId,
+      channelUniqueName: channelId,
+    });
+
     const discussion = computed<DiscussionData>(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
         return null;
@@ -76,73 +85,27 @@ export default defineComponent({
 
     const { lgAndUp, mdAndUp } = useDisplay();
 
-    const getCommentCount = (channelId: string) => {
-      const discussionChannels = discussion.value?.DiscussionChannels;
+    const activeDiscussionChannel = computed<DiscussionChannel>(() => {
+      if (
+        getDiscussionChannelLoading.value ||
+        getDiscussionChannelError.value
+      ) {
+        return null;
+      }
+      return getDiscussionChannelResult.value.discussionChannels[0];
+    });
 
-      const activeDiscussionChannel = discussionChannels.find((ds: any) => {
-        return ds.Channel?.uniqueName === channelId;
-      });
-
-      if (!activeDiscussionChannel) {
+    const commentCount = computed(() => {
+      if (!activeDiscussionChannel.value) {
         return 0;
       }
-      return activeDiscussionChannel.CommentsAggregate?.count
-        ? activeDiscussionChannel.CommentsAggregate.count
-        : 0;
-    };
-
-    const channelLinks = computed<ChannelData[]>(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value) {
-        return [];
-      }
-
-      // On the discussion detail page, hide the current channel because
-      // that would link to the current page.
-
-      return discussion.value.DiscussionChannels.filter(
-        (discussionChannel: DiscussionChannelData) => {
-          return discussionChannel.Channel?.uniqueName !== channelId.value;
-        },
-      )
-        .sort((a: DiscussionChannelData, b: DiscussionChannelData) => {
-          const countA = getCommentCount(a.Channel?.uniqueName);
-          const countB = getCommentCount(b.Channel?.uniqueName);
-          return countB - countA;
-        })
-        .map((discussionChannel: DiscussionChannelData) => {
-          return discussionChannel.Channel;
-        });
-    });
-
-    const activeDiscussionChannel = computed(() => {
-      if (discussion.value?.DiscussionChannels) {
-        const discussionChannel = discussion.value.DiscussionChannels.find(
-          (discussionChannel) => {
-            if (discussionChannel && discussionChannel.Channel) {
-              return discussionChannel.Channel.uniqueName === channelId.value;
-            }
-            return false;
-          },
-        );
-        if (discussionChannel) {
-          return discussionChannel;
-        }
-      }
-      return null;
-    });
-
-    const discussionChannelId = computed(() => {
-      if (activeDiscussionChannel.value) {
-        return activeDiscussionChannel.value.id;
-      }
-      return "";
+      return activeDiscussionChannel.value.CommentsAggregate?.count || 0;
     });
 
     return {
       activeDiscussionChannel,
       channelId,
-      channelLinks,
-      discussionChannelId,
+      commentCount,
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
@@ -183,25 +146,29 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <v-row class="mt-1 px-4 flex justify-center">
+    <v-row class="mt-1 flex justify-center px-4">
       <v-col cols="12" class="max-w-7xl">
-      <div v-if="discussion" class="space-y-3">
-        <div class="mb-2 mt-4 w-full">
-          <div ref="discussionDetail">
-            <div class="min-w-0">
-              <h2
-                class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
-              >
-                {{ discussion.title }}
-              </h2>
+        <div class="space-y-3">
+          <div class="mb-2 mt-4 w-full">
+            <div ref="discussionDetail">
+              <div class="min-w-0">
+                <h2
+                  class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
+                >
+                  {{ discussion ? discussion.title : "[Deleted]" }}
+                </h2>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </v-col>
+      </v-col>
     </v-row>
     <v-row class="mt-1 flex justify-center">
-      <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12" class="max-w-4xl">
+      <v-col
+        cols="12"
+        :md="route.name === 'DiscussionDetail' ? 9 : 12"
+        class="max-w-4xl"
+      >
         <p v-if="getDiscussionLoading">Loading...</p>
         <ErrorBanner
           class="mt-2"
@@ -209,53 +176,54 @@ export default defineComponent({
           :text="getDiscussionError.message"
         />
 
-        <div v-if="discussion" class="min-w-md space-y-3">
+        <div class="min-w-md space-y-3">
           <div
             class="rounded-lg border border-blue-400 px-4 pb-2 dark:border-blue-800 dark:bg-gray-950"
           >
             <DiscussionHeader
-              v-if="discussion && (channelId || channelLinks[0]?.uniqueName)"
               :discussion="discussion"
-              :channel-id="channelId || channelLinks[0]?.uniqueName"
+              :channel-id="channelId"
               :compact-mode="compactMode"
             />
             <DiscussionBody :discussion="discussion" :channel-id="channelId" />
             <DiscussionVotes
-              v-if="channelId && activeDiscussionChannel"
+              v-if="channelId && discussionId && activeDiscussionChannel"
               :discussion="discussion"
               :discussion-channel="activeDiscussionChannel"
             />
           </div>
-          <CreateRootCommentForm
-            v-if="
-              activeDiscussionChannel?.id &&
-              (route.name === 'DiscussionDetail' || channelId)
-            "
-            :discussion="discussion"
-            :channel-id="channelId"
-            :discussion-channel-id="activeDiscussionChannel?.id"
-          />
-          <div
-            class="my-4 mb-2 rounded-lg py-6"
-            v-if="
-              activeDiscussionChannel?.id &&
-              (route.name === 'DiscussionDetail' || channelId)
-            "
-          >
-            <CommentSection
-              :discussion-channel-id="activeDiscussionChannel?.id"
-            />
-          </div>
-          <ChannelLinks
-            class="my-4"
-            :discussion="discussion"
-            :channelId="channelId"
+        </div>
+        <CreateRootCommentForm
+          v-if="
+            activeDiscussionChannel &&
+            (route.name === 'DiscussionDetail' || channelId)
+          "
+          :key="`${channelId}${discussionId}`"
+          :channel-id="channelId"
+          :discussion-channel="activeDiscussionChannel"
+        />
+        <div class="my-4 mb-2 rounded-lg py-6">
+          <CommentSection
+            v-if="activeDiscussionChannel"
+            :key="activeDiscussionChannel.id"
+            :discussion-channel="activeDiscussionChannel"
           />
         </div>
+        <ChannelLinks
+          v-if="discussion"
+          class="my-4"
+          :discussion="discussion"
+          :channelId="channelId"
+        />
       </v-col>
 
       <!-- Right column -->
-      <v-col cols="12" md="3" v-if="channelId && route.name === 'DiscussionDetail'" class="scrollable-column">
+      <v-col
+        cols="12"
+        md="3"
+        v-if="channelId && route.name === 'DiscussionDetail'"
+        class="scrollable-column"
+      >
         <AboutColumn :channel-id="channelId" />
       </v-col>
     </v-row>

@@ -6,6 +6,10 @@ import { DiscussionData } from './discussionTypes'
 
 export type DiscussionChannelData = {
   id: string
+  createdAt: string
+  discussionId: string
+  upvoteCount: number
+  channelUniqueName: string
   CommentsAggregate: {
     count: number
   }
@@ -39,7 +43,7 @@ export type DeleteCommentInputData = {
 
 export type CommentData = {
   id: string
-  CommentAuthor: UserData
+  CommentAuthor?: UserData
   text: string
   isRootComment: Boolean
   DiscussionChannel?: DiscussionChannelData

@@ -138,10 +138,10 @@ export default defineComponent({
       if (!value.data || value.data.discussionChannels.length === 0) {
         return;
       }
-      const defaultSelectedDiscussion =
-        value.data.discussionChannels[0].Discussion;
+      const defaultSelectedDiscussionChannel =
+        value.data.discussionChannels[0];
 
-      sendToPreview(defaultSelectedDiscussion.id);
+      sendToPreview(defaultSelectedDiscussionChannel.discussionId);
     });
 
     return {
@@ -253,6 +253,7 @@ export default defineComponent({
           v-for="discussionChannel in discussionChannels"
           :key="discussionChannel.id"
           :discussion="discussionChannel.Discussion"
+          :discussion-channel="discussionChannel"
           :default-unique-name="discussionChannel.channelUniqueName"
           :search-input="searchInput"
           :selected-tags="selectedTags"

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
+import { defineComponent, ref, computed, PropType } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
 // import LoadMore from "../generic/LoadMore.vue";
@@ -10,8 +10,8 @@ import {
   DeleteCommentInputData,
 } from "@/types/commentTypes";
 import {
-  GET_DISCUSSION_CHANNEL,
   GET_COMMENT_REPLIES,
+  GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
 } from "@/graphQLData/comment/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
@@ -28,11 +28,12 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
+import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   props: {
-    discussionChannelId: {
-      type: String,
+    discussionChannel: {
+      type: Object as PropType<DiscussionChannel>,
       required: true,
     },
   },
@@ -45,10 +46,6 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
 
-    const discussionChannelId = computed(() => {
-      // Makes component rerender when DiscussionChannel ID changes
-      return props.discussionChannelId;
-    });
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
@@ -57,17 +54,6 @@ export default defineComponent({
         return username;
       }
       return "";
-    });
-
-    const {
-      result: commentResult,
-      error: commentError,
-      loading: commentLoading,
-      //   fetchMore,
-    } = useQuery(GET_DISCUSSION_CHANNEL, {
-      id: discussionChannelId,
-      // limit: 25,
-      // offset: 0,
     });
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
@@ -87,7 +73,7 @@ export default defineComponent({
     };
 
     const createFormValues = ref<CreateEditCommentFormValues>(
-      createCommentDefaultValues
+      createCommentDefaultValues,
     );
 
     const updateCommentInput = computed(() => {
@@ -130,7 +116,7 @@ export default defineComponent({
           cache.modify({
             id: cache.identify({
               __typename: "DiscussionChannel",
-              id: props.discussionChannelId,
+              id: props.discussionChannel.id,
             }),
             fields: {
               Comments(existingComments: any, { readField }: any) {
@@ -146,7 +132,7 @@ export default defineComponent({
         cache.modify({
           id: cache.identify({
             __typename: "DiscussionChannel",
-            id: props.discussionChannelId,
+            id: props.discussionChannel.id,
           }),
           fields: {
             CommentsAggregate(existingValue: any) {
@@ -193,7 +179,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                id: props.discussionChannelId,
+                id: props.discussionChannel.id,
               },
             },
           },
@@ -248,7 +234,7 @@ export default defineComponent({
 
           if (createFormValues.value.depth === 2) {
             // For second level comments, the cache update logic
-            // is to update the GET_DISCUSSION_CHANNEL query because
+            // is to update the query that gets the discussion channel because
             // the first two levels of comments are loaded when
             // the comment section is first loaded.
 
@@ -256,9 +242,10 @@ export default defineComponent({
             // in the discussion component.)
 
             const readQueryResult = cache.readQuery({
-              query: GET_DISCUSSION_CHANNEL,
+              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
               variables: {
-                id: props.discussionChannelId,
+                discussionId: props.discussionChannel.discussionId,
+                channelUniqueName: props.discussionChannel.channelUniqueName,
               },
             });
 
@@ -305,7 +292,11 @@ export default defineComponent({
             });
 
             cache.writeQuery({
-              query: GET_DISCUSSION_CHANNEL,
+              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+              variables: {
+                discussionId: props.discussionChannel.discussionId,
+                channelUniqueName: props.discussionChannel.channelUniqueName,
+              },
               data: {
                 ...readQueryResult,
                 discussionChannels: [
@@ -317,9 +308,6 @@ export default defineComponent({
                       : existingCommentAggregate,
                   },
                 ],
-              },
-              variables: {
-                id: props.discussionChannelId,
               },
             });
           }
@@ -399,9 +387,10 @@ export default defineComponent({
 
             // Update the total count of comments
             const readDiscussionChannelQueryResult = cache.readQuery({
-              query: GET_DISCUSSION_CHANNEL,
+              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
               variables: {
-                id: props.discussionChannelId,
+                discussionId: props.discussionChannel.discussionId,
+                channelUniqueName: props.discussionChannel.channelUniqueName,
               },
             });
 
@@ -423,7 +412,11 @@ export default defineComponent({
             }
 
             cache.writeQuery({
-              query: GET_DISCUSSION_CHANNEL,
+              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+              variables: {
+                discussionId: props.discussionChannel.discussionId,
+                channelUniqueName: props.discussionChannel.channelUniqueName,
+              },
               data: {
                 ...readQueryResult,
                 discussionChannels: [
@@ -434,14 +427,11 @@ export default defineComponent({
                       : existingCommentAggregate,
                   },
                 ],
-                variables: {
-                  id: props.discussionChannelId,
-                },
               },
             });
           }
         },
-      })
+      }),
     );
 
     const {
@@ -460,12 +450,9 @@ export default defineComponent({
     const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT);
 
     return {
-      commentError,
-      commentLoading,
       commentToEdit,
       commentToDeleteId,
       commentToDeleteReplyCount,
-      commentResult,
       createComment,
       createCommentError,
       createCommentInput,
@@ -541,7 +528,7 @@ export default defineComponent({
       }
       if (!modProfileName) {
         throw new Error(
-          "loggedInUserModName is required to downvote a comment"
+          "loggedInUserModName is required to downvote a comment",
         );
       }
       this.downvoteComment({
@@ -554,52 +541,44 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div >
-    <p v-if="commentLoading">Loading comments...</p>
-    <ErrorBanner
-      class="mt-2"
-      v-else-if="commentError"
-      :text="commentError.message"
-    />
-    <div
-      v-else-if="
-        commentResult.discussionChannels.length === 0 &&
-        route.name === 'DiscussionDetail'
-      "
-    >
-      <h2 class="text-lg mb-2" id="comments" ref="commentSectionHeader">
+  <div>
+    <div v-if="discussionChannel.CommentsAggregate?.count === 0">
+      <h2 class="mb-2 text-lg" id="comments" ref="commentSectionHeader">
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
-        class="mt-2 mr-10"
+        class="mr-10 mt-2"
         v-if="locked"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <p v-else>There are no comments yet.</p>
     </div>
 
-    <div v-else-if="commentResult.discussionChannels.length > 0">
+    <div
+      v-else-if="
+        discussionChannel.CommentsAggregate &&
+        discussionChannel.CommentsAggregate.count > 0
+      "
+    >
       <h2
         v-if="route.name === 'DiscussionDetail'"
         id="comments"
         ref="commentSectionHeader"
         class="text-lg"
       >
-        {{
-          `Comments (${commentResult.discussionChannels[0].CommentsAggregate.count})`
-        }}
+        {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
       </h2>
       <ErrorBanner
-        class="mt-2 mr-10"
+        class="mr-10 mt-2"
         v-if="locked"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <div class="mb-6">
-        <div v-if="commentResult.discussionChannels[0].Comments.length === 0">
+        <div v-if="discussionChannel.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
         <Comment
-          v-for="comment in commentResult.discussionChannels[0].Comments"
+          v-for="comment in discussionChannel.Comments"
           :key="comment.id"
           :compact="true"
           :commentData="comment"

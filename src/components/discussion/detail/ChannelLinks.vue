@@ -83,52 +83,53 @@ export default defineComponent({
 </script>
 
 <template>
-  <div v-if="!channelId" class="my-4">
-    <h2 class="text-lg">Comments in Channels</h2>
-    <ul class="list-disc pl-3">
-      <ChannelLink
-        data-testid="comment-page-link"
-        v-if="channelId"
-        :channelId="channelId"
-        :comment-count="getCommentCount(channelId)"
-        :upvote-count="getVoteCount(channelId)"
-        :discussionId="discussion.id"
-      />
-      <ChannelLink
-        v-for="channel in channelLinks"
-        :key="channel.channelUniqueName"
-        :channelId="channel.channelUniqueName"
-        :comment-count="getCommentCount(channel.channelUniqueName)"
-        :upvote-count="channel.upvoteCount"
-        :discussionId="discussion.id"
-      />
-    </ul>
-  </div>
-  <div v-else-if="route.name !== 'DiscussionDetail'">
-    <h2 class="text-lg">Comments in this Channel</h2>
-    <ul class="list-disc pl-3">
-      <ChannelLink
-        :channelId="channelId"
-        :comment-count="getCommentCount(channelId)"
-        :upvote-count="getVoteCount(channelId)"
-        :discussionId="discussion.id"
-      />
-    </ul>
+  <div>
+    <div v-if="!channelId" class="my-4">
+      <h2 class="text-lg">Comments in Channels</h2>
+      <ul class="list-disc pl-3">
+        <ChannelLink
+          v-if="channelId"
+          :channelId="channelId"
+          :comment-count="getCommentCount(channelId)"
+          :upvote-count="getVoteCount(channelId)"
+          :discussionId="discussion.id"
+        />
+        <ChannelLink
+          v-for="channel in channelLinks"
+          :key="channel.channelUniqueName"
+          :channelId="channel.channelUniqueName"
+          :comment-count="getCommentCount(channel.channelUniqueName)"
+          :upvote-count="channel.upvoteCount"
+          :discussionId="discussion.id"
+        />
+      </ul>
     </div>
-    <div v-else>
-    <h2 class="mt-4 text-lg">Comments in Other Channels</h2>
-    <ul class="list-disc pl-3">
-      <ChannelLink
-        v-for="channel in channelLinks"
-        :key="channel.channelUniqueName"
-        :channelId="channel.channelUniqueName"
-        :comment-count="getCommentCount(channel.channelUniqueName)"
-        :upvote-count="channel.upvoteCount"
-        :discussionId="discussion.id"
-      />
-    </ul>
-    <p class="text-sm" v-if="channelLinks.length === 0">
-      The post was not submitted to any other channels.
-    </p>
+    <div>
+      <h2 class="text-lg">Comments in this Channel</h2>
+      <ul class="list-disc pl-3">
+        <ChannelLink
+          :channelId="channelId"
+          :comment-count="getCommentCount(channelId)"
+          :upvote-count="getVoteCount(channelId)"
+          :discussionId="discussion.id"
+        />
+      </ul>
+    </div>
+    <div>
+      <h2 class="mt-4 text-lg">Comments in Other Channels</h2>
+      <ul class="list-disc pl-3">
+        <ChannelLink
+          v-for="channel in channelLinks"
+          :key="channel.channelUniqueName"
+          :channelId="channel.channelUniqueName"
+          :comment-count="getCommentCount(channel.channelUniqueName)"
+          :upvote-count="channel.upvoteCount"
+          :discussionId="discussion.id"
+        />
+      </ul>
+      <p class="text-sm" v-if="channelLinks.length === 0">
+        The post was not submitted to any other channels.
+      </p>
+    </div>
   </div>
 </template>

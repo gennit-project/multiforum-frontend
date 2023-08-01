@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { DiscussionChannelData } from "../../../types/commentTypes";
+import { DiscussionChannel } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
@@ -23,12 +23,12 @@ export default defineComponent({
       },
     },
     discussionChannel: {
-      type: Object as PropType<DiscussionChannelData>,
+      type: Object as PropType<DiscussionChannel>,
       required: true,
     },
     discussion: {
       type: Object as PropType<DiscussionData>,
-      required: true,
+      required: false,
     },
     searchInput: {
       type: String,
@@ -71,7 +71,7 @@ export default defineComponent({
       if (channelIdInParams.value) {
         return channelIdInParams.value;
       }
-      return props.discussion.DiscussionChannels[0]?.Channel?.channelUniqueName;
+      return props.discussionChannel.channelUniqueName;
     });
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
@@ -107,43 +107,22 @@ export default defineComponent({
     });
 
     const upvoteCount = computed(() => {
-      if (props.discussion.DiscussionChannels[0]) {
-        return props.discussion.DiscussionChannels[0].UpvotedByUsersAggregate
-          ?.count;
+      if (props.discussionChannel) {
+        return props.discussionChannel.upvoteCount
       }
       return 0;
     });
 
     const { lgAndUp } = useDisplay();
 
-    const activeDiscussionChannel = computed(() => {
-      if (props.discussion.DiscussionChannels) {
-        const discussionChannel = props.discussion.DiscussionChannels.find(
-          (discussionChannel) => {
-            if (discussionChannel && discussionChannel.Channel) {
-              return (
-                discussionChannel.Channel.uniqueName === defaultUniqueName.value
-              );
-            }
-            return false;
-          },
-        );
-        if (discussionChannel) {
-          return discussionChannel;
-        }
-      }
-      return null;
-    });
-
     return {
-      activeDiscussionChannel,
       discussionChannelId,
       defaultUniqueName,
       discussionIdInParams,
       lgAndUp,
       errorMessage: ref(""),
       isActive: computed(
-        () => discussionIdInParams.value === props.discussion.id,
+        () => discussionIdInParams.value === props.discussionChannel.discussionId,
       ),
       loggedInUserUpvoted,
       upvoteCount,
@@ -153,30 +132,26 @@ export default defineComponent({
   },
   data(props) {
     return {
-      authorUsername: props.discussion.Author
+      authorUsername: props.discussion?.Author
         ? props.discussion.Author.username
         : "Deleted",
       previewIsOpen: false,
-      title: props.discussion.title,
-      body: props.discussion.body || "",
-      createdAt: props.discussion.createdAt,
-      relativeTime: relativeTime(props.discussion.createdAt),
-      tags: props.discussion.Tags.map((tag) => {
+      title: props.discussion?.title || "[Deleted]",
+      body: props.discussion?.body || "[Deleted]",
+      createdAt: props.discussionChannel.createdAt,
+      relativeTime: relativeTime(props.discussionChannel.createdAt),
+      tags: props.discussion ? props.discussion.Tags.map((tag) => {
         return tag.text;
-      }),
+      }) : [],
     };
   },
   computed: {
     detailLink() {
-      if (!this.discussion) {
-        return "";
-      }
-
       if (this.lgAndUp) {
-        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
+        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussionChannel.discussionId}`;
       }
 
-      return `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussion.id}`;
+      return `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
     },
   },
   inheritAttrs: false,
@@ -190,9 +165,9 @@ export default defineComponent({
   >
     <div class="flex w-full gap-3">
       <DiscussionVotes
-        v-if="activeDiscussionChannel"
+        v-if="discussionChannel"
         :discussion="discussion"
-        :discussion-channel="activeDiscussionChannel"
+        :discussion-channel="discussionChannel"
         :show-downvote="false"
       />
       <div

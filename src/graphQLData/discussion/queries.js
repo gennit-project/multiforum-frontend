@@ -79,6 +79,7 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       discussionId
       channelUniqueName
       upvoteCount
+      createdAt
       Channel {
         uniqueName
       }
