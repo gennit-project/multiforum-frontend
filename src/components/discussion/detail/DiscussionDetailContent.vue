@@ -123,12 +123,12 @@ export default defineComponent({
 <template>
   <div class="w-full space-y-2">
     <div
-      :class="'align-center flex justify-between'"
+      :class="'align-center flex mt-2 justify-between'"
       v-if="route.name === 'DiscussionDetail'"
     >
       <router-link
         :to="`/channels/c/${channelId}/discussions`"
-        class="mb-4 text-xs underline"
+        class="text-xs underline"
       >
         <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
         {{ `Discussion list in c/${channelId}` }}
@@ -146,10 +146,10 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <v-row class="mt-1 flex justify-center px-4">
-      <v-col cols="12" class="max-w-7xl">
+    <v-row class="flex justify-start px-4">
+      
         <div class="space-y-3">
-          <div class="mb-2 mt-4 w-full">
+          <div class="mt-2 w-full">
             <div ref="discussionDetail">
               <div class="min-w-0">
                 <h2
@@ -161,7 +161,6 @@ export default defineComponent({
             </div>
           </div>
         </div>
-      </v-col>
     </v-row>
     <v-row class="mt-1 flex justify-center">
       <v-col

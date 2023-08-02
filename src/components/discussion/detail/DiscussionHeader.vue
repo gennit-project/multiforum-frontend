@@ -120,7 +120,6 @@ export default defineComponent({
   <div class="mb-4">
       <div class="flex text-sm mt-2 flex-wrap items-center space-x-2">
         <Avatar :text="discussion && discussion.Author?.username ? discussion.Author.username : '[Deleted]'" />
-
         <router-link
           v-if="discussion && discussion.Author"
           class="font-bold cursor-pointer text-black dark:text-white hover:underline"
