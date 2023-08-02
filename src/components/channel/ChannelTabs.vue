@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
 import TabButton from "@/components/generic/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
@@ -15,20 +15,24 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const channelId = computed(() => {
-      return props.route.params.channelId;
-    });
-
+    const channelId = ref(props.route.params.channelId);
     const { mdAndDown } = useDisplay();
+    watch(
+      () => props.route,
+      (to) => {
+        channelId.value = to.params.channelId;
+      },
+    );
+    const tabRoutes = computed(() => ({
+      discussions: `/channels/c/${channelId.value}/discussions`,
+      events: `/channels/c/${channelId.value}/events/search`,
+      about: `/channels/c/${channelId.value}/about`,
+    }));
 
     return {
       channelId,
       mdAndDown,
-      tabRoutes: {
-        discussions: `/channels/c/${channelId.value}/discussions`,
-        events: `/channels/c/${channelId.value}/events/search`,
-        about: `/channels/c/${channelId.value}/about`,
-      } as any,
+      tabRoutes,
     };
   },
   data() {
@@ -47,9 +51,9 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class=" sm:block">
+    <div class="sm:block">
       <nav
-        class="text-lg max-w-7xl space-x-2"
+        class="max-w-7xl space-x-2 text-lg"
         aria-label="Tabs"
       >
         <TabButton
@@ -64,7 +68,7 @@ export default defineComponent({
           :label="'Events'"
           :is-active="route.name.includes('Event')"
         >
-          <i class="fa-regular fa-calendar h-6 w-6" /> 
+          <i class="fa-regular fa-calendar h-6 w-6" />
         </TabButton>
         <TabButton
           v-if="mdAndDown"
