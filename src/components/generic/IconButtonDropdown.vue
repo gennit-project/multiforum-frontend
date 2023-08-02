@@ -24,6 +24,7 @@ export default defineComponent({
     menuButtonIcon: {
       type: String,
       required: false,
+      default: "",
     },
   },
   setup() {

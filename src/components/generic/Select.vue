@@ -16,8 +16,9 @@ export default defineComponent({
   },
   props: {
     defaultOption: {
-      type: Object as PropType<SelectOptionData>,
-      required: false
+      type: Object as PropType<SelectOptionData | null>,
+      required: false,
+      default: null,
     },
     options: {
       type: Array as PropType<Array<SelectOptionData>>,
@@ -99,7 +100,7 @@ export default defineComponent({
         <ListboxOption
           v-for="(option, i) in options"
           :key="i"
-          v-slot="{ active, selected }"
+          v-slot="{ active, selected: isSelected }"
           as="template"
           :value="option"
         >
@@ -119,7 +120,7 @@ export default defineComponent({
             </span>
 
             <span
-              v-if="selected"
+              v-if="isSelected"
               :class="[
                 active ? 'text-white' : 'text-blue-600',
                 'absolute inset-y-0 right-0 flex items-center pr-4',

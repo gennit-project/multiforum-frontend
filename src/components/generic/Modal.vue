@@ -23,6 +23,7 @@ export default defineComponent({
     primaryButtonText: {
       type: String,
       required: false,
+      default: "",
     },
     show: {
       type: Boolean,

@@ -12,6 +12,7 @@ export default defineComponent({
     channelId: {
       type: String,
       required: false,
+      default: ''
     },
     discussionChannels: {
       type: Array as PropType<Array<DiscussionChannel>>,

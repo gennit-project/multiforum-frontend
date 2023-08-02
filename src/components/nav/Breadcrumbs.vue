@@ -2,8 +2,8 @@
 import { defineComponent, PropType } from "vue";
 
 interface Link {
-  path: string
-  label: string
+  path: string;
+  label: string;
 }
 
 export default defineComponent({
@@ -11,17 +11,18 @@ export default defineComponent({
   props: {
     links: {
       type: Array as PropType<Link[]>,
-    }
+      required: true,
+    },
   },
   setup() {
-
+    return {};
   },
 });
 </script>
 
 <template>
   <nav
-    class="flex mt-2 mb-1"
+    class="mb-1 mt-2 flex"
     aria-label="Breadcrumb"
   >
     <ol
@@ -29,14 +30,14 @@ export default defineComponent({
       class="flex items-center space-x-4"
     >
       <li
-        v-for="link, i in links"
+        v-for="(link, i) in links"
         :key="link.path"
       >
         <div class="flex items-center">
           <!-- Heroicon name: solid/chevron-right -->
           <svg
             v-if="i !== 0"
-            class="flex-shrink-0 h-5 w-5 mr-4 text-gray-400"
+            class="mr-4 h-5 w-5 flex-shrink-0 text-gray-400"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 20 20"
             fill="currentColor"
@@ -51,7 +52,7 @@ export default defineComponent({
           <router-link
             v-if="link.path"
             :to="`/${link.path}/`"
-            class="text-xs text-gray-500 hover:text-gray-700 underline"
+            class="text-xs text-gray-500 underline hover:text-gray-700"
             active-class="text-gray-700"
           >
             {{ link.label }}

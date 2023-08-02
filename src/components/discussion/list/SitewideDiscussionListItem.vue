@@ -21,8 +21,9 @@ export default defineComponent({
       default: "",
     },
     discussion: {
-      type: Object as PropType<DiscussionData>,
+      type: Object as PropType<DiscussionData | null>,
       required: false,
+      default: null,
     },
     discussionChannel: {
       type: Object as PropType<DiscussionChannel>,
@@ -137,18 +138,18 @@ export default defineComponent({
       >
         <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
         <Tag
-          v-for="discussionChannel in discussion.DiscussionChannels"
-          :key="discussionChannel.id"
+          v-for="dc in discussion.DiscussionChannels"
+          :key="dc.id"
           :class="[
-            selectedChannels.includes(discussionChannel.channelUniqueName)
+            selectedChannels.includes(dc.channelUniqueName)
               ? 'text-blue-500'
               : 'hover:text-black dark:text-slate-400 dark:hover:text-slate-300',
           ]"
           :channel-mode="true"
-          :tag="discussionChannel.channelUniqueName"
-          @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
+          :tag="dc.channelUniqueName"
+          @click="$emit('filterByChannel', dc.channelUniqueName)"
         >
-          {{ discussionChannel.channelUniqueName }}
+          {{ dc.channelUniqueName }}
         </Tag>
       </div>
       <div

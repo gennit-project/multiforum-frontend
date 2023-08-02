@@ -35,8 +35,11 @@ export default defineComponent({
       },
     },
     formValues: {
-      type: Object as PropType<CreateEditChannelFormValues>,
+      type: Object as PropType<CreateEditChannelFormValues | null>,
       required: false,
+      default: () => {
+        return null;
+      },
     },
     getChannelError: {
       type: Object as PropType<ApolloError | null>,

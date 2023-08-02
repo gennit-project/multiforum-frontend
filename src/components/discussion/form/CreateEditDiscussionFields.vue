@@ -39,8 +39,11 @@ export default defineComponent({
       },
     },
     formValues: {
-      type: Object as PropType<CreateEditDiscussionFormValues>,
+      type: Object as PropType<CreateEditDiscussionFormValues | null>,
       required: false,
+      default: () => {
+        return null;
+      },
     },
     getDiscussionError: {
       type: Object as PropType<ApolloError | null>,
