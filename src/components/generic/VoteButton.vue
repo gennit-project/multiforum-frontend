@@ -23,7 +23,7 @@ export default defineComponent({
     class="inline-flex max-h-7 cursor-pointer items-center rounded-full border px-3 py-1"
     :class="[
       active
-        ? 'border-blue-400 bg-blue-50 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-transparent dark:hover:bg-blue-950'
+        ? 'border-blue-400 bg-blue-50 hover:bg-blue-100 dark:border-blue-600 dark:bg-blue-transparent-lighter dark:hover:bg-blue-950'
         : 'border-gray-200 hover:bg-gray-100 dark:border-gray-800 dark:hover:bg-gray-900',
     ]"
     @click="$emit('vote')"

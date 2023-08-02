@@ -152,22 +152,26 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <v-row class="flex justify-start px-4">
-      <div class="space-y-3">
-        <div class="mt-2 w-full">
-          <div ref="discussionDetail">
-            <div class="min-w-0">
-              <h2
-                class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
-              >
-                {{ discussion ? discussion.title : "[Deleted]" }}
-              </h2>
+    <v-row class="mt-1 flex justify-center">
+      <v-col
+        cols="12"
+        :md="route.name === 'DiscussionDetail' ? 9 : 12"
+        class="max-w-7xl"
+      >
+        <div class="space-y-3">
+          <div class="mt-2 w-full">
+            <div ref="discussionDetail">
+              <div class="min-w-0">
+                <h2
+                  class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
+                >
+                  {{ discussion ? discussion.title : "[Deleted]" }}
+                </h2>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </v-row>
-    <v-row class="mt-1 flex justify-center">
+      </v-col>
       <v-col
         cols="12"
         :md="route.name === 'DiscussionDetail' ? 9 : 12"

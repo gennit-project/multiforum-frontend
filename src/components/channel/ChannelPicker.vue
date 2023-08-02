@@ -132,5 +132,6 @@ export default defineComponent({
   flex-wrap: wrap;
   padding: 10px;
   max-width: 600px;
+  gap: 10px;
 }
 </style>
