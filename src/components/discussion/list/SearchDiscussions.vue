@@ -250,47 +250,49 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-col
-    cols="12"
-    :lg="channelId ? 5 : 4"
-    class="scrollable-column shadow-right-lg"
-  >
-    <DiscussionFilterBar />
-    <SitewideDiscussionList
-      v-if="!channelId"
-      :search-input="filterValues.searchInput"
-      :selected-tags="filterValues.tags"
-      :selected-channels="filterValues.channels"
-      @filterByTag="handleClickTag"
-      @filterByChannel="handleClickChannel"
-      @openPreview="openPreview"
-    />
-    <ChannelDiscussionList
-      v-else
-      :channel-id="channelId"
-      :search-input="filterValues.searchInput"
-      :selected-tags="filterValues.tags"
-      :selected-channels="filterValues.channels"
-      @filterByTag="handleClickTag"
-      @filterByChannel="handleClickChannel"
-      @openPreview="openPreview"
-    />
-  </v-col>
-  <v-col
-    v-if="!mdAndDown"
-    cols="12"
-    :lg="channelId ? 7 : 4"
-    class="scrollable-column border-l border-gray-200 px-6 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
-  >
-    <router-view />
-  </v-col>
-  <DrawerFlyout
-    v-if="mdAndDown"
-    :is-open="previewIsOpen"
-    @closePreview="closePreview"
-  >
-    <DiscussionDetail />
-  </DrawerFlyout>
+  <v-row class="mt-2 mx-1">
+    <v-col
+      cols="12"
+      :lg="channelId ? 5 : 4"
+      class="scrollable-column shadow-right-lg"
+    >
+      <DiscussionFilterBar />
+      <SitewideDiscussionList
+        v-if="!channelId"
+        :search-input="filterValues.searchInput"
+        :selected-tags="filterValues.tags"
+        :selected-channels="filterValues.channels"
+        @filterByTag="handleClickTag"
+        @filterByChannel="handleClickChannel"
+        @openPreview="openPreview"
+      />
+      <ChannelDiscussionList
+        v-else
+        :channel-id="channelId"
+        :search-input="filterValues.searchInput"
+        :selected-tags="filterValues.tags"
+        :selected-channels="filterValues.channels"
+        @filterByTag="handleClickTag"
+        @filterByChannel="handleClickChannel"
+        @openPreview="openPreview"
+      />
+    </v-col>
+    <v-col
+      v-if="!mdAndDown"
+      cols="12"
+      :lg="channelId ? 7 : 8"
+      class="scrollable-column border-l border-gray-200 px-6 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+    >
+      <router-view />
+    </v-col>
+    <DrawerFlyout
+      v-if="mdAndDown"
+      :is-open="previewIsOpen"
+      @closePreview="closePreview"
+    >
+      <DiscussionDetail />
+    </DrawerFlyout>
+  </v-row>
 </template>
 
 <style>
