@@ -264,7 +264,8 @@ export default defineComponent({
               @update="updateExistingComment($event, depth)"
             />
             <CommentButtons
-              class="-mt-4 ml-2"
+              :class="!showEditCommentField ? '-mt-4' : 'mt-2'"
+              class="ml-2"
               :comment-data="commentData"
               :depth="depth"
               :locked="locked"

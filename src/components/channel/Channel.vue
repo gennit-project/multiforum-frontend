@@ -103,7 +103,6 @@ export default defineComponent({
                       cols="12"
                       md="3"
                       lg="2"
-                      class="scrollable-column shadow-lg"
                     >
                       <ChannelSidebar :channel-id="channelId">
                         <div class="mt-6">

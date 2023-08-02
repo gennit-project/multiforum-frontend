@@ -113,7 +113,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="dark:border-gray-600">
+  <div class="h-full dark:border-gray-600 overflow-y-auto shadow px-4">
     <div
       v-if="channelId"
       class="my-4 flex items-center border-b"

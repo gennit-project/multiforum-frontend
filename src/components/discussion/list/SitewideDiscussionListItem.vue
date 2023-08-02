@@ -46,10 +46,18 @@ export default defineComponent({
       },
     },
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
 
+    const commentCount = computed(() => {
+      if (props.discussionChannel) {
+        return props.discussionChannel.CommentsAggregate?.count || 0;
+      }
+      return 0;
+    });
+
     return {
+      commentCount,
       route,
     };
   },
@@ -94,7 +102,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-3 dark:border-gray-700"
+    class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-4 dark:border-gray-700"
   >
     <span class="mt-1 w-6">{{ upvoteCount }}
       <v-tooltip
@@ -104,12 +112,7 @@ export default defineComponent({
         <span>{{ `Upvotes in ${defaultUniqueName}` }}</span>
       </v-tooltip>
     </span>
-
-    <div
-      class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
-    >
-      <div>💬</div>
-    </div>
+    
     <div class="w-full">
       <router-link
         :to="previewLink"
@@ -122,6 +125,7 @@ export default defineComponent({
           />
         </p>
       </router-link>
+     
       <p class="font-medium mt-1 text-sm text-slate-600 hover:no-underline">
         <Tag
           v-for="tag in tags"
@@ -132,6 +136,7 @@ export default defineComponent({
           @click="$emit('filterByTag', tag)"
         />
       </p>
+      
       <div
         v-if="discussion && discussion.DiscussionChannels"
         class="font-medium flex flex-wrap items-center gap-1 text-xs text-slate-600 no-underline dark:text-slate-200"
@@ -170,6 +175,10 @@ export default defineComponent({
         </Tag>
       </div>
     </div>
+    <span class="flex gap-1 items-center">
+      <i class="fa-regular fa-comment h-6 w-6 mt-1 text-gray-500" />
+      {{ commentCount }}
+    </span>
   </li>
 </template>
 <style>

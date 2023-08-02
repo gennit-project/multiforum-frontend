@@ -250,7 +250,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-row class="mt-2 mx-1">
+  <v-row class="mt-2">
     <v-col
       cols="12"
       :lg="channelId ? 5 : 4"
