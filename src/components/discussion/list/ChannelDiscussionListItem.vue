@@ -34,7 +34,7 @@ export default defineComponent({
     discussion: {
       type: Object as PropType<DiscussionData | null>,
       required: false,
-      default: null
+      default: null,
     },
     searchInput: {
       type: String,
@@ -174,7 +174,7 @@ export default defineComponent({
     :class="[isActive ? 'text-blue-500' : '']"
   >
     <v-row>
-      <v-col cols="9">
+      <v-col cols="2">
         <div class="flex w-full gap-3">
           <DiscussionVotes
             v-if="discussionChannel"
@@ -182,44 +182,46 @@ export default defineComponent({
             :discussion-channel="discussionChannel"
             :show-downvote="false"
           />
-          <div
-            class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
-          >
-            <div>💬</div>
-          </div>
-          <div>
-            <router-link
-              :to="detailLink"
-              class="hover:text-gray-500"
-            >
-              <p class="text-md cursor-pointer font-bold hover:text-gray-500">
-                <HighlightedSearchTerms
-                  :text="title"
-                  :search-input="searchInput"
-                />
-              </p>
-            </router-link>
-            <p
-              class="font-medium my-1 text-xs text-slate-600 hover:no-underline"
-            >
-              <Tag
-                v-for="tag in tags"
-                :key="tag"
-                class="my-1"
-                :active="selectedTags.includes(tag)"
-                :tag="tag"
-                @click="$emit('filterByTag', tag)"
-              />
-            </p>
-            <p
-              class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
-            >
-              {{ `Posted ${relativeTime} by ${authorUsername}` }}
-            </p>
-          </div>
         </div>
       </v-col>
-      <v-col cols="3">
+      <v-col cols="1">
+        <div
+          class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
+        >
+          <div>💬</div>
+        </div>
+      </v-col>
+      <v-col cols="7">
+        <div class="ml-2">
+          <router-link
+            :to="detailLink"
+            class="hover:text-gray-500"
+          >
+            <p class="text-md cursor-pointer font-bold hover:text-gray-500">
+              <HighlightedSearchTerms
+                :text="title"
+                :search-input="searchInput"
+              />
+            </p>
+          </router-link>
+          <p class="font-medium my-1 text-xs text-slate-600 hover:no-underline">
+            <Tag
+              v-for="tag in tags"
+              :key="tag"
+              class="my-1"
+              :active="selectedTags.includes(tag)"
+              :tag="tag"
+              @click="$emit('filterByTag', tag)"
+            />
+          </p>
+          <p
+            class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
+          >
+            {{ `Posted ${relativeTime} by ${authorUsername}` }}
+          </p>
+        </div>
+      </v-col>
+      <v-col cols="2">
         <i class="fa-regular fa-comment h-6 w-6" />
         {{ commentCount }}
       </v-col>
