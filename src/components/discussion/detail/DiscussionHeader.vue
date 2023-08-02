@@ -144,7 +144,7 @@ export default defineComponent({
       </span>
       <div>{{ editedAt }}</div>
       <RequireAuth
-        v-if="discussion?.Author?.username"
+        v-if="discussion?.Author?.username && channelId"
         :full-width="false"
         class="space-x-2"
         :require-ownership="true"
