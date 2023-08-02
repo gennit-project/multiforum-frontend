@@ -251,7 +251,6 @@ export default defineComponent({
     <v-row>
       <v-col cols="12">
         <DiscussionFilterBar />
-
         <v-row class="mt-1">
           <v-col
             v-if="channelId && !mdAndDown"
@@ -288,11 +287,10 @@ export default defineComponent({
               @openPreview="openPreview"
             />
           </v-col>
-
           <v-col
             v-if="!mdAndDown"
             cols="12"
-            :lg="6"
+            :lg="channelId ? 6 : 8"
             class="scrollable-column"
           >
             <router-view />

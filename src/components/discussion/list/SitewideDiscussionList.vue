@@ -119,6 +119,7 @@ export default defineComponent({
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
+      console.log('load more ran')
       fetchMore({
         variables: {
           offset: discussionChannelResult.value.discussionChannels.length,
@@ -275,7 +276,7 @@ export default defineComponent({
           :reached-end-of-results="
             aggregateChannelCount === discussionChannels.length
           "
-          @loadMore="$emit('loadMore')"
+          @loadMore="loadMore"
         />
       </div>
     </div>

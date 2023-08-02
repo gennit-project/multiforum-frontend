@@ -121,7 +121,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full space-y-2">
+  <div class="mt-1 w-full space-y-2">
     <div
       v-if="route.name === 'DiscussionDetail'"
       :class="'align-center mt-2 flex justify-between'"
@@ -156,10 +156,10 @@ export default defineComponent({
       <v-col
         cols="12"
         :md="route.name === 'DiscussionDetail' ? 9 : 12"
-        class="max-w-7xl"
+        class="max-w-4xl"
       >
         <div class="space-y-3">
-          <div class="mt-2 w-full">
+          <div class="mt-2 mb-3 w-full">
             <div ref="discussionDetail">
               <div class="min-w-0">
                 <h2
@@ -171,12 +171,6 @@ export default defineComponent({
             </div>
           </div>
         </div>
-      </v-col>
-      <v-col
-        cols="12"
-        :md="route.name === 'DiscussionDetail' ? 9 : 12"
-        class="max-w-4xl"
-      >
         <p v-if="getDiscussionLoading">
           Loading...
         </p>

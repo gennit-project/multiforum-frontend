@@ -40,9 +40,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="grid grid-cols-12">
+  <div class="grid grid-cols-12 shadow rounded-lg">
     <div
-      class="relative col-span-12 rounded-lg border border-gray-200 px-8 py-3 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200"
+      class="relative col-span-12 rounded-lg border border-gray-200 px-8 py-3 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
     >
       <div>
         <p class="mb-6">
