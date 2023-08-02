@@ -134,7 +134,7 @@ export default defineComponent({
                       </ChannelSidebar>
                     </v-col>
                     <v-col>
-                      <v-row class="w-full px-4">
+                      <v-row>
                         <router-view />
                       </v-row>
                     </v-col>
