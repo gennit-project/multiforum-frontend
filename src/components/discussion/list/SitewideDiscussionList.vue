@@ -15,6 +15,30 @@ import { DiscussionChannel } from "@/__generated__/graphql";
 const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
+  components: {
+    ErrorBanner,
+    LoadMore,
+    SitewideDiscussionListItem,
+  },
+  inheritAttrs: false,
+  props: {
+    searchInput: {
+      type: String,
+      default: "",
+    },
+    selectedTags: {
+      type: Array as PropType<Array<string>>,
+      default: () => {
+        return [];
+      },
+    },
+    selectedChannels: {
+      type: Array as PropType<Array<string>>,
+      default: () => {
+        return [];
+      },
+    },
+  },
   // The reason we have separate components for the sidewide discussion
   // list and the channel discussion list is because the channel discussion
   // list needs the query to get discussions to return more information,
@@ -156,24 +180,6 @@ export default defineComponent({
       selectedDiscussion: {} as DiscussionData,
     };
   },
-  props: {
-    searchInput: {
-      type: String,
-      default: "",
-    },
-    selectedTags: {
-      type: Array as PropType<Array<String>>,
-      default: () => {
-        return [];
-      },
-    },
-    selectedChannels: {
-      type: Array as PropType<Array<String>>,
-      default: () => {
-        return [];
-      },
-    },
-  },
   data() {
     return {
       previewIsOpen: false,
@@ -198,11 +204,6 @@ export default defineComponent({
         this.discussionChannelResult.discussionChannels[0].discussionId,
       );
     }
-  },
-  components: {
-    ErrorBanner,
-    LoadMore,
-    SitewideDiscussionListItem,
   },
   methods: {
     openPreview(data: DiscussionData) {
@@ -229,21 +230,25 @@ export default defineComponent({
       });
     },
   },
-  inheritAttrs: false,
 });
 </script>
 <template>
   <div class="w-full">
-    <p v-if="discussionLoading">Loading...</p>
+    <p v-if="discussionLoading">
+      Loading...
+    </p>
     <ErrorBanner
-      class="max-w-5xl"
       v-else-if="discussionError"
+      class="max-w-5xl"
       :text="discussionError.message"
     />
-    <p v-else-if="discussionChannels.length === 0" class="my-6 px-4">
+    <p
+      v-else-if="discussionChannels.length === 0"
+      class="my-6 px-4"
+    >
       There are no results.
     </p>
-    <div v-if="discussionChannels.length > 0" >
+    <div v-if="discussionChannels.length > 0">
       <ul
         role="list"
         class="my-6 mr-2 divide-y"

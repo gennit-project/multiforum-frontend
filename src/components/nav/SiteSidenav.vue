@@ -48,6 +48,12 @@ export default defineComponent({
     XIcon,
     UserCircle,
   },
+  props: {
+    showDropdown: {
+      type: Boolean,
+      required: true,
+    },
+  },
   setup() {
     const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
 
@@ -73,12 +79,6 @@ export default defineComponent({
       username,
     };
   },
-  props: {
-    showDropdown: {
-      type: Boolean,
-      required: true,
-    },
-  },
   methods: {
     outside() {
       this.$emit("close");
@@ -87,83 +87,90 @@ export default defineComponent({
 });
 </script>
 <template>
-    <div v-if="showDropdown">
-      <!-- Overlay (shadow) for the rest of the UI -->
-      <div
-        @click="$emit('close')"
-        class="fixed inset-0 z-40 bg-black opacity-50"
-      ></div>
+  <div v-if="showDropdown">
+    <!-- Overlay (shadow) for the rest of the UI -->
+    <div
+      class="fixed inset-0 z-40 bg-black opacity-50"
+      @click="$emit('close')"
+    />
 
-      <div
-        v-click-outside="outside"
-        class="fixed left-0 top-0 z-50 flex h-screen w-[250px] flex-col justify-between overflow-y-auto border bg-white py-2 dark:bg-slate-900"
-      >
-        <div>
-          <div class="mt-2 block px-6">
-            <div class="flex h-7">
-              <button
-                type="button"
-                class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    <div
+      v-click-outside="outside"
+      class="fixed left-0 top-0 z-50 flex h-screen w-[250px] flex-col justify-between overflow-y-auto border bg-white py-2 dark:bg-slate-900"
+    >
+      <div>
+        <div class="mt-2 block px-6">
+          <div class="flex h-7">
+            <button
+              type="button"
+              class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              @click="$emit('close')"
+            >
+              <span class="sr-only">Close panel</span>
+              <XIcon
+                class="h-6 w-6"
+                aria-hidden="true"
+              />
+            </button>
+          </div>
+        </div>
+
+        <nav class="mt-16">
+          <ul role="list">
+            <li
+              v-for="item in navigation"
+              :key="item.name"
+              class="px-6"
+            >
+              <router-link
+                :to="item.href"
+                :active="$route.path.includes(item.href)"
+                :data-testid="`nav-link-${item.name}`"
+                active-class="text-blue-600"
+                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
                 @click="$emit('close')"
               >
-                <span class="sr-only">Close panel</span>
-                <XIcon class="h-6 w-6" aria-hidden="true" />
-              </button>
-            </div>
-          </div>
-
-          <nav class="mt-16">
-            <ul role="list">
-              <li v-for="item in navigation" :key="item.name" class="px-6">
-                <router-link
-                  :to="item.href"
-                  :active="$route.path.includes(item.href)"
-                  :data-testid="`nav-link-${item.name}`"
-                  active-class="text-blue-600"
-                  class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
-                  @click="$emit('close')"
-                >
-                  <component
-                    :is="item.icon"
-                    class="list-item-icon h-6 w-6 shrink-0"
-                    aria-hidden="true"
-                  />
-                  {{ item.name }}
-                </router-link>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <ul class="mb-6 px-6">
-          <router-link
-            v-if="isAuthenticated"
-            :to="`/u/${username}`"
-            active-class="text-blue-600"
-            @click="$emit('close')"
-            class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
-          >
-            My Profile
-          </router-link>
-          <button
-            v-if="!isAuthenticated"
-            @click="login"
-            class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
-          >
-            Log In
-          </button>
-          <router-link
-            v-if="isAuthenticated"
-            to="/logout"
-            @click="logout"
-            active-class="text-blue-600"
-            class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
-          >
-            Sign Out
-          </router-link>
-        </ul>
+                <component
+                  :is="item.icon"
+                  class="list-item-icon h-6 w-6 shrink-0"
+                  aria-hidden="true"
+                />
+                {{ item.name }}
+              </router-link>
+            </li>
+          </ul>
+        </nav>
       </div>
+      <ul class="mb-6 px-6">
+        <router-link
+          v-if="isAuthenticated"
+          :to="`/u/${username}`"
+          active-class="text-blue-600"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          @click="$emit('close')"
+        >
+          My Profile
+        </router-link>
+        <button
+          v-if="!isAuthenticated"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          @click="login"
+        >
+          Log In
+        </button>
+        <router-link
+          v-if="isAuthenticated"
+          to="/logout"
+          active-class="text-blue-600"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          @click="logout"
+        >
+          Sign Out
+        </router-link>
+      </ul>
     </div>
-  </template>
+  </div>
+</template>
 
   <style lang="scss" scoped>
     nav li:hover,

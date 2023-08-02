@@ -69,7 +69,6 @@ export default defineComponent({
       mutate: deleteEvent,
       error: deleteEventError,
       onDone: onDoneDeleting,
-      // @ts-ignore
     } = useMutation(DELETE_EVENT, {
       variables: {
         id: eventId.value,
@@ -152,40 +151,43 @@ export default defineComponent({
       }}
 
       <RequireAuth
-        class="flex inline-flex"
         v-if="eventData.Poster && route.name === 'EventDetail'"
+        class="flex inline-flex"
         :require-ownership="true"
         :owners="[eventData.Poster.username]"
       >
-        <template v-slot:has-auth>
+        <template #has-auth>
           <span>&#8226;</span>
           <span
             class="ml-1 underline font-medium cursor-pointer"
             data-testid="delete-event-button"
             @click="confirmDeleteIsOpen = true"
-            >Delete</span
-          >
-          <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1"
-            >&#8226;</span
-          >
+          >Delete</span>
+          <span
+            v-if="!compactMode && !eventData.canceled"
+            class="ml-1 mr-1"
+          >&#8226;</span>
           <span
             v-if="!eventData.canceled"
             class="underline font-medium cursor-pointer"
             data-testid="cancel-event-button"
             @click="confirmCancelIsOpen = true"
-            >Cancel</span
-          >
+          >Cancel</span>
         </template>
       </RequireAuth>
 
-      <span v-if="route.name !== 'EventDetail'" class="ml-1 mr-1">&#8226;</span>
+      <span
+        v-if="route.name !== 'EventDetail'"
+        class="ml-1 mr-1"
+      >&#8226;</span>
 
       <router-link
         v-if="!channelId && channelsExceptCurrent.length > 0"
         class="underline font-medium cursor-pointer"
         :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
-        >Permalink</router-link
       >
+        Permalink
+      </router-link>
 
       <router-link
         v-if="channelId && route.name !== 'EventDetail'"
@@ -199,16 +201,16 @@ export default defineComponent({
       {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
     </div>
   </div>
- <ErrorBanner
-        class="mt-2 mb-2"
-        v-if="deleteEventError"
-        :text="deleteEventError.message"
-      />
-      <ErrorBanner
-        class="mt-2 mb-2"
-        v-if="cancelEventError"
-        :text="cancelEventError.message"
-      />
+  <ErrorBanner
+    v-if="deleteEventError"
+    class="mt-2 mb-2"
+    :text="deleteEventError.message"
+  />
+  <ErrorBanner
+    v-if="cancelEventError"
+    class="mt-2 mb-2"
+    :text="cancelEventError.message"
+  />
   <WarningModal
     :title="'Delete Event'"
     :body="'Are you sure you want to delete this event?'"

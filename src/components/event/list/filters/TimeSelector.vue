@@ -17,14 +17,14 @@ import ResetButton from "@/components/generic/ResetButton.vue";
 
 
 export default defineComponent({
+  components: {
+    ResetButton
+  },
   props: {
     selectedHourRanges: {
       type: Object as PropType<SelectedHourRanges>,
       required: true,
     },
-  },
-  components: {
-    ResetButton
   },
   setup(props) {
     const workingCopyOfSelectedHourRanges: Ref<SelectedHourRanges> = ref(
@@ -121,19 +121,22 @@ export default defineComponent({
         :key="range['12-hour-label']"
         class="p-2 rounded"
       >
-        <label :for="'timeRange-' + range['12-hour-label']" class="flex items-center">
+        <label
+          :for="'timeRange-' + range['12-hour-label']"
+          class="flex items-center"
+        >
           <input
-            type="checkbox"
             :id="'timeRange-' + range['12-hour-label']"
+            type="checkbox"
             :data-testid="`timeRange-${range['12-hour-label']}`"
             class="cursor-pointer text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
             :checked="workingCopyOfSelectedHourRanges[range['12-hour-label']]"
             @input="() => toggleSelectTimeRange(range)"
-          />
+          >
           <span class="ml-2 text-sm font-medium whitespace-nowrap">{{ range["12-hour-label"] }}</span>
         </label>
       </div>
     </div>
-    <ResetButton @reset="reset"/>
+    <ResetButton @reset="reset" />
   </div>
 </template>

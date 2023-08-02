@@ -21,8 +21,9 @@ export default defineComponent({
   },
   props: {
     discussion: {
-      type: Object as PropType<DiscussionData>,
+      type: Object as PropType<DiscussionData | null>,
       required: false,
+      default: null
     },
     compactMode: {
       type: Boolean,
@@ -118,63 +119,75 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-      <div class="flex text-sm mt-2 flex-wrap items-center space-x-2">
-        <Avatar :text="discussion && discussion.Author?.username ? discussion.Author.username : '[Deleted]'" />
-        <router-link
-          v-if="discussion && discussion.Author"
-          class="font-bold cursor-pointer text-black dark:text-white hover:underline"
-          :to="`/u/${discussion.Author.username}`"
-        >
+    <div class="mt-2 flex flex-wrap items-center space-x-2 text-sm">
+      <Avatar
+        :text="
+          discussion && discussion.Author?.username
+            ? discussion.Author.username
+            : '[Deleted]'
+        "
+      />
+      <router-link
+        v-if="discussion && discussion.Author"
+        class="cursor-pointer font-bold text-black hover:underline dark:text-white"
+        :to="`/u/${discussion.Author.username}`"
+      >
         {{ discussion.Author.username }}
-        </router-link>
-        <span v-else>[Deleted]</span>
-        <div>{{ createdAt }}</div>
-        <span v-if="discussion && discussion.updatedAt" class="mx-2"> &#8226; </span>
-        <div>{{ editedAt }}</div>
-        <RequireAuth
-          v-if="discussion?.Author?.username"
-          :full-width="false"
-          class=" space-x-2 "
-          :require-ownership="true"
-          :owners="[discussion.Author.username]"
-        >
-          <template v-slot:has-auth>
-            <span class="mx-2"> &#8226;</span>
-            <router-link
-              class="ml-1 underline font-medium cursor-pointer"
-              :to="`/channels/c/${channelId}/discussions/d/${discussion.id}/edit`"
-            >
-              <span>Edit</span>
-            </router-link>
-          </template>
-        </RequireAuth>
-        <RequireAuth
-          class=" space-x-2"
-          v-if="discussion && discussion.Author && route.name === 'DiscussionDetail'"
-          :require-ownership="true"
-          :owners="[discussion.Author.username]"
-          :full-width="false"
-        >
-          <template v-slot:has-auth>
-            <span> &#8226;</span>
-            <span
-              class="ml-1 underline font-medium cursor-pointer"
-              @click="deleteModalIsOpen = true"
-              >Delete</span
-            >
-          </template>
-        </RequireAuth>
+      </router-link>
+      <span v-else>[Deleted]</span>
+      <div>{{ createdAt }}</div>
+      <span
+        v-if="discussion && discussion.updatedAt"
+        class="mx-2"
+      >
+        &#8226;
+      </span>
+      <div>{{ editedAt }}</div>
+      <RequireAuth
+        v-if="discussion?.Author?.username"
+        :full-width="false"
+        class="space-x-2"
+        :require-ownership="true"
+        :owners="[discussion.Author.username]"
+      >
+        <template #has-auth>
+          <span class="mx-2"> &#8226;</span>
+          <router-link
+            class="font-medium ml-1 cursor-pointer underline"
+            :to="`/channels/c/${channelId}/discussions/d/${discussion.id}/edit`"
+          >
+            <span>Edit</span>
+          </router-link>
+        </template>
+      </RequireAuth>
+      <RequireAuth
+        v-if="
+          discussion && discussion.Author && route.name === 'DiscussionDetail'
+        "
+        class="space-x-2"
+        :require-ownership="true"
+        :owners="[discussion.Author.username]"
+        :full-width="false"
+      >
+        <template #has-auth>
+          <span> &#8226;</span>
+          <span
+            class="font-medium ml-1 cursor-pointer underline"
+            @click="deleteModalIsOpen = true"
+          >Delete</span>
+        </template>
+      </RequireAuth>
     </div>
     <WarningModal
       :title="'Delete Discussion'"
       :body="'Are you sure you want to delete this discussion?'"
       :open="deleteModalIsOpen"
       @close="deleteModalIsOpen = false"
-      @primaryButtonClick="deleteDiscussion"
+      @primary-button-click="deleteDiscussion"
     />
     <ErrorBanner
-      class="mt-2"
       v-if="deleteDiscussionError"
+      class="mt-2"
       :text="deleteDiscussionError.message"
     />
   </div>

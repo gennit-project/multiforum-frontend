@@ -51,7 +51,10 @@ export default defineComponent({
         pointer-events-none
       "
     >
-      <SelectorIcon class="h-5 w-5 text-gray-400" aria-hidden="true" />
+      <SelectorIcon
+        class="h-5 w-5 text-gray-400"
+        aria-hidden="true"
+      />
     </span>
   </ListboxButton>
 </template>

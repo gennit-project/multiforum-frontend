@@ -31,7 +31,7 @@ import DownvotedComments from "@/components/mod/DownvotedComments.vue";
 import UserComments from "@/components/user/UserComments.vue"
 import UserDiscussions from "@/components/user/UserDiscussions.vue"
 import UserEvents from "@/components/user/UserEvents.vue"
-import HomePage from "@/components/nav/HomePage.vue";
+
 export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: "active",

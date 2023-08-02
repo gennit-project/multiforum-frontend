@@ -27,17 +27,18 @@ export default defineComponent({
   <div>
     <div class="grid grid-cols-2 gap-2">
       <div class="p-2 rounded cursor-pointer">
-        <label :for="'free'" class="flex items-center">
+        <label
+          :for="'free'"
+          class="flex items-center"
+        >
           <input
             type="checkbox"
             :data-testid="'free-checkbox'"
             class="text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
             :checked="copyOfShowOnlyFree"
             @input="() => toggleShowOnlyFree()"
-          />
-          <span class="ml-2 text-sm font-medium whitespace-nowrap"
-            >Show only free events</span
           >
+          <span class="ml-2 text-sm font-medium whitespace-nowrap">Show only free events</span>
         </label>
       </div>
     </div>

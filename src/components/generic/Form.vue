@@ -7,6 +7,12 @@ import FormRow from "@/components/generic/FormRow.vue";
 
 export default defineComponent({
   name: "FormComponent",
+  components: {
+    CancelButton,
+    FormTitle,
+    FormRow,
+    SaveButton,
+  },
   props: {
     formTitle: {
       type: String,
@@ -16,12 +22,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-  },
-  components: {
-    CancelButton,
-    FormTitle,
-    FormRow,
-    SaveButton,
   },
   setup() {},
 });
@@ -35,14 +35,16 @@ export default defineComponent({
           autocomplete="off"
         >
           <FormRow class="xs:mx-2 sm:mx-4 md:mx-">
-            <template v-slot:content>
+            <template #content>
               <div class="flow-root">
-                <FormTitle class="float-left"> {{ formTitle }} </FormTitle>
+                <FormTitle class="float-left">
+                  {{ formTitle }}
+                </FormTitle>
                 <div class="float-right">
                   <CancelButton @click="$router.go(-1)" />
                   <SaveButton
-                    @click.prevent="$emit('submit')"
                     :disabled="needsChanges"
+                    @click.prevent="$emit('submit')"
                   />
                 </div>
               </div>
@@ -50,13 +52,13 @@ export default defineComponent({
           </FormRow>
           <slot />
           <FormRow>
-            <template v-slot:content>
+            <template #content>
               <div class="pt-5 pb-5">
                 <div class="flex justify-end">
                   <CancelButton @click="$router.go(-1)" />
                   <SaveButton
-                    @click.prevent="$emit('submit')"
                     :disabled="needsChanges"
+                    @click.prevent="$emit('submit')"
                   />
                 </div>
               </div>

@@ -64,13 +64,23 @@ export default defineComponent({
   },
 });
 </script>
-  <template>
-  <div class="flex align-middle" :class="[!justifyLeft ? 'justify-center' : '', fullWidth ? 'w-full' : '']">
-    <div v-if="isAuthenticated && (!requireOwnership || isOwner)" class="w-full">
-      <slot name="has-auth"></slot>
+<template>
+  <div
+    class="flex align-middle"
+    :class="[!justifyLeft ? 'justify-center' : '', fullWidth ? 'w-full' : '']"
+  >
+    <div
+      v-if="isAuthenticated && (!requireOwnership || isOwner)"
+      class="w-full"
+    >
+      <slot name="has-auth" />
     </div>
-    <div v-else @click="login" :class="[fullWidth ? 'w-full' : '']">
-      <slot name="does-not-have-auth"></slot>
+    <div
+      v-else
+      :class="[fullWidth ? 'w-full' : '']"
+      @click="login"
+    >
+      <slot name="does-not-have-auth" />
     </div>
   </div>
 </template>

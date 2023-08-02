@@ -8,7 +8,11 @@ import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
 export default defineComponent({
-  setup() {},
+  components: {
+    Tag,
+    HighlightedSearchTerms,
+  },
+  inheritAttrs: false,
   props: {
     event: {
       type: Object as PropType<EventData>,
@@ -19,22 +23,19 @@ export default defineComponent({
       default: "",
     },
     selectedTags: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
     selectedChannels: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
   },
-  components: {
-    Tag,
-    HighlightedSearchTerms,
-  },
+  setup() {},
   data(props) {
     const route = useRoute();
 
@@ -73,7 +74,6 @@ export default defineComponent({
       return `/events/search/${this.event.id}`;
     },
   },
-  inheritAttrs: false,
 });
 </script>
 
@@ -83,15 +83,18 @@ export default defineComponent({
     @click="$emit('openPreview')"
   >
     <p class="text-lg font-bold ">
-      <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+      <HighlightedSearchTerms
+        :text="title"
+        :search-input="searchInput"
+      />
     </p>
 
     <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
       <Tag
+        v-for="tag in tags"
+        :key="tag"
         class="my-1"
         :active="selectedTags.includes(tag)"
-        :key="tag"
-        v-for="tag in tags"
         :tag="tag"
         @click="$emit('filterByTag', tag)"
       />
@@ -101,9 +104,9 @@ export default defineComponent({
     </p>
     <div class="text-sm space-x-2 my-2">
       <router-link
-        class="underline text-gray-500 hover:text-gray-700"
         v-for="(channel, i) in event.Channels"
         :key="i"
+        class="underline text-gray-500 hover:text-gray-700"
         :to="`/channels/c/${channel.uniqueName}/events/e/${event.id}`"
       >
         {{ `c/${channel.uniqueName}` }}

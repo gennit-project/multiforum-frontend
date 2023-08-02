@@ -22,37 +22,28 @@ import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { generateSlug } from "random-word-slugs";
 
 export default defineComponent({
+  components: {
+    VoteButtons,
+    WarningModal,
+  },
+  inheritAttrs: false,
   props: {
-    discussionQueryFilters: {
-      type: Object as PropType<Object>,
-      required: false,
-    },
     discussionChannel: {
       type: Object as PropType<DiscussionChannel>,
       required: true,
     },
     discussion: {
-      type: Object as PropType<DiscussionData>,
+      type: Object as PropType<DiscussionData | null>,
       required: false,
+      default: null,
     },
     showDownvote: {
       type: Boolean,
       default: true,
     },
   },
-  components: {
-    VoteButtons,
-    WarningModal,
-  },
   setup(props) {
     const route = useRoute();
-
-    const channelIdInParams = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
 
     const discussionIdInParams = computed(() => {
       if (typeof route.params.discussionId === "string") {
@@ -220,7 +211,6 @@ export default defineComponent({
       showModProfileModal: ref(false),
     };
   },
-  inheritAttrs: false,
   methods: {
     async handleCreateModProfileClick() {
       await this.createModProfile();
@@ -302,7 +292,7 @@ export default defineComponent({
     :title="'Create Mod Profile'"
     :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
     :open="showModProfileModal"
-    :primaryButtonText="'Yes, create a mod profile'"
+    :primary-button-text="'Yes, create a mod profile'"
     @close="showModProfileModal = false"
     @primaryButtonClick="handleCreateModProfileClick"
   />

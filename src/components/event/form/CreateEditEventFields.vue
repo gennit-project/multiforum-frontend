@@ -24,6 +24,58 @@ import { checkUrl } from "@/utils/formValidation";
 import { DateTime, Interval } from "luxon";
 
 export default defineComponent({
+  components: {
+    AnnotationIcon,
+    ChannelIcon,
+    CheckBox,
+    ClockIcon,
+    ErrorBanner,
+    ErrorMessage,
+    HomeIcon,
+    TailwindForm: Form,
+    FormRow,
+    LinkIcon,
+    LocationIcon,
+    LocationSearchBar,
+    PencilIcon,
+    TagIcon,
+    TagInput,
+    TextEditor,
+    TextInput,
+    TicketIcon,
+  },
+  props: {
+    editMode: {
+      type: Boolean,
+      required: true,
+    },
+    createEventError: {
+      type: Object as PropType<ApolloError | null>,
+      default: () => {
+        return null;
+      },
+    },
+    formValues: {
+      type: Object as PropType<CreateEditEventFormValues>,
+      required: true,
+    },
+    getEventError: {
+      type: Object as PropType<ApolloError | null>,
+      default: () => {
+        return null;
+      },
+    },
+    updateEventError: {
+      type: Object as PropType<ApolloError | null>,
+      default: () => {
+        return null;
+      },
+    },
+    eventLoading: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup(props) {
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
     // TIME_SIMPLE yields the time in this format: 1:30 PM
@@ -82,65 +134,6 @@ export default defineComponent({
       formattedEndTimeTime,
     };
   },
-  props: {
-    editMode: {
-      type: Boolean,
-      required: true,
-    },
-    createEventError: {
-      type: Object as PropType<ApolloError | null>,
-      default: () => {
-        return null;
-      },
-    },
-    formValues: {
-      type: Object as PropType<CreateEditEventFormValues>,
-      required: true,
-    },
-    getEventError: {
-      type: Object as PropType<ApolloError | null>,
-      default: () => {
-        return null;
-      },
-    },
-    updateEventError: {
-      type: Object as PropType<ApolloError | null>,
-      default: () => {
-        return null;
-      },
-    },
-    eventLoading: {
-      type: Boolean,
-      default: false,
-    },
-  },
-  components: {
-    AnnotationIcon,
-    ChannelIcon,
-    CheckBox,
-    ClockIcon,
-    ErrorBanner,
-    ErrorMessage,
-    HomeIcon,
-    TailwindForm: Form,
-    FormRow,
-    LinkIcon,
-    LocationIcon,
-    LocationSearchBar,
-    PencilIcon,
-    TagIcon,
-    TagInput,
-    TextEditor,
-    TextInput,
-    TicketIcon,
-  },
-  created() {
-    nextTick(() => {
-      if (this.titleInputRef) {
-        this.titleInputRef?.$el?.children[0].childNodes[0].focus();
-      }
-    });
-  },
   computed: {
     datePickerErrorMessage() {
       if (this.startTime < new Date()) {
@@ -192,6 +185,13 @@ export default defineComponent({
     urlIsValid() {
       return checkUrl(this.formValues.virtualEventUrl);
     },
+  },
+  created() {
+    nextTick(() => {
+      if (this.titleInputRef) {
+        this.titleInputRef?.$el?.children[0].childNodes[0].focus();
+      }
+    });
   },
   methods: {
     handleStartTimeDateChange(dateTimeValue: string) {
@@ -375,17 +375,26 @@ export default defineComponent({
 <template>
   <v-container fluid>
     <v-row class="justify-center">
-      <v-col cols="12" md="10" lg="10">
-        <div v-if="eventLoading">Loading...</div>
+      <v-col
+        cols="12"
+        md="10"
+        lg="10"
+      >
+        <div v-if="eventLoading">
+          Loading...
+        </div>
         <div v-else-if="getEventError">
-          <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">
+          <div
+            v-for="(error, i) of getEventError?.graphQLErrors"
+            :key="i"
+          >
             {{ error.message }}
           </div>
         </div>
         <TailwindForm
+          v-else-if="formValues"
           class="pt-8 w-full"
           data-testid="event-form"
-          v-else-if="formValues"
           :form-title="formTitle"
           :needs-changes="needsChanges"
           @input="touched = true"
@@ -393,17 +402,21 @@ export default defineComponent({
         >
           <div class="divide-y divide-gray-200 w-full">
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <PencilIcon class="inline-flex float-right h-6 w-6" /><span
                   class="text-red-500"
-                  >*</span
+                >*</span>
+                <v-tooltip
+                  activator="parent"
+                  location="top"
                 >
-                <v-tooltip activator="parent" location="top">Title</v-tooltip>
+                  Title
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <TextInput
-                  :test-id="'title-input'"
                   ref="titleInputRef"
+                  :test-id="'title-input'"
                   :value="formValues.title"
                   :full-width="true"
                   :placeholder="'Add title'"
@@ -412,16 +425,18 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <ChannelIcon class="float-right h-6 w-6" /><span
                   class="text-red-500"
-                  >*</span
+                >*</span>
+                <v-tooltip
+                  activator="parent"
+                  location="top"
                 >
-                <v-tooltip activator="parent" location="top"
-                  >Channels</v-tooltip
-                >
+                  Channels
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <TagInput
                   :test-id="'channel-input'"
                   :selected-channels="formValues.selectedChannels"
@@ -433,11 +448,16 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <ClockIcon class="float-right h-6" />
-                <v-tooltip activator="parent" location="top">Time</v-tooltip>
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Time
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <div class="inline-block xl:flex items-center my-2 space-x-2">
                   <div class="inline-block xl:flex items-center my-2 space-x-2">
                     <input
@@ -448,7 +468,7 @@ export default defineComponent({
                       label="Start"
                       :value="formattedStartTimeDate"
                       @input="handleStartTimeDateChange($event?.target?.value)"
-                    />
+                    >
                     <input
                       data-testid="start-time-time-input"
                       class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
@@ -457,7 +477,7 @@ export default defineComponent({
                       label="Start Time"
                       :value="formattedStartTimeTime"
                       @input="handleStartTimeTimeChange($event?.target?.value)"
-                    />
+                    >
                   </div>
 
                   <div class="inline-block xl:flex items-center my-2 space-x-2">
@@ -469,7 +489,7 @@ export default defineComponent({
                       label="Start"
                       :value="formattedEndTimeDate"
                       @input="handleEndTimeDateChange($event?.target?.value)"
-                    />
+                    >
                     <input
                       data-testid="end-time-time-input"
                       class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
@@ -478,7 +498,7 @@ export default defineComponent({
                       label="Start Time"
                       :value="formattedEndTimeTime"
                       @input="handleEndTimeTimeChange($event?.target?.value)"
-                    />
+                    >
                   </div>
 
                   <div>
@@ -489,11 +509,16 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <LinkIcon class="float-right h-6 w-6" />
-                <v-tooltip activator="parent" location="top">Link</v-tooltip>
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Link
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <TextInput
                   data-testid="link-input"
                   :value="formValues.virtualEventUrl"
@@ -507,9 +532,9 @@ export default defineComponent({
                 <ErrorMessage
                   :text="
                     touched &&
-                    formValues.virtualEventUrl &&
-                    formValues.virtualEventUrl.length > 0 &&
-                    !urlIsValid
+                      formValues.virtualEventUrl &&
+                      formValues.virtualEventUrl.length > 0 &&
+                      !urlIsValid
                       ? 'Must be a valid URL starting with https://'
                       : ''
                   "
@@ -517,13 +542,19 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
-                <LocationIcon :wide="true" class="float-right h-6 w-6" />
-                <v-tooltip activator="parent" location="top"
-                  >Location</v-tooltip
+              <template #icon>
+                <LocationIcon
+                  :wide="true"
+                  class="float-right h-6 w-6"
+                />
+                <v-tooltip
+                  activator="parent"
+                  location="top"
                 >
+                  Location
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <LocationSearchBar
                   data-testid="location-input"
                   :search-placeholder="'Add an address'"
@@ -538,11 +569,16 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <AnnotationIcon class="float-right" />
-                <v-tooltip activator="parent" location="top">Details</v-tooltip>
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Details
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <TextEditor
                   data-testid="description-input"
                   class="mb-3 h-56"
@@ -554,11 +590,16 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <TagIcon class="float-right h-6" />
-                <v-tooltip activator="parent" location="top">Tags</v-tooltip>
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Tags
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <TagInput
                   data-testid="tag-input"
                   :selected-tags="formValues.selectedTags"
@@ -569,32 +610,35 @@ export default defineComponent({
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <HomeIcon class="float-right" />
-                <v-tooltip activator="parent" location="top"
-                  >Private Residence</v-tooltip
+                <v-tooltip
+                  activator="parent"
+                  location="top"
                 >
+                  Private Residence
+                </v-tooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <CheckBox
                   data-testid="private-residence-input"
                   class="align-middle"
                   :checked="formValues.isInPrivateResidence"
                   @input="togglePrivateResidenceField"
                 />
-                <span class="ml-2 align-middle"
-                  >This event is in a private residence</span
-                >
+                <span class="ml-2 align-middle">This event is in a private residence</span>
               </template>
             </FormRow>
             <FormRow>
-              <template v-slot:icon>
+              <template #icon>
                 <VTooltip class="inline-flex">
                   <TicketIcon class="float-right" />
-                  <template #popper> Cost to Attend </template>
+                  <template #popper>
+                    Cost to Attend
+                  </template>
                 </VTooltip>
               </template>
-              <template v-slot:content>
+              <template #content>
                 <CheckBox
                   data-testid="free-input"
                   class="align-middle"
@@ -603,8 +647,8 @@ export default defineComponent({
                 />
                 <span class="ml-2 align-middle">This event is free</span>
                 <TextInput
-                  data-testid="cost-input"
                   v-show="!formValues.free"
+                  data-testid="cost-input"
                   :value="formValues.cost"
                   :full-width="true"
                   :placeholder="'Add cost details'"

@@ -5,11 +5,12 @@
   "scripts": {
     "serve": "vite preview",
     "build": "vite build",
-    "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
+    "lint": "eslint --ext .js,.vue --quiet --ignore-path .gitignore --fix src/components",
     "deploy": "./deploy-master-to-dev.sh",
     "dev": "vite",
     "compile": "graphql-codegen",
-    "watch": "graphql-codegen -w"
+    "watch": "graphql-codegen -w",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",
@@ -26,6 +27,7 @@
     "@heroicons/vue": "^2.0.18",
     "@kangc/v-md-editor": "^2.3.16",
     "@mdi/font": "5.9.55",
+    "@nuxt/typescript-build": "^3.0.1",
     "@popperjs/core": "^2.11.5",
     "@shoelace-style/shoelace": "^2.3.0",
     "@tailwindcss/forms": "^0.5.1",
@@ -82,13 +84,14 @@
     "@types/prismjs": "^1.26.0",
     "@types/webfontloader": "^1.0.0",
     "@types/webpack-env": "^1.18.0",
-    "@typescript-eslint/eslint-plugin": "^5.31.0",
-    "@typescript-eslint/parser": "^5.31.0",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
     "@vitejs/plugin-vue": "^3.0.3",
     "@vue/compiler-sfc": "^3.2.37",
-    "@vue/eslint-config-typescript": "^11.0.0",
+    "@vue/eslint-config-typescript": "^11.0.3",
     "eslint": "8",
-    "eslint-plugin-vue": "^9.3.0",
+    "eslint-plugin-vue": "^9.16.1",
+    "husky": "^8.0.3",
     "postcss": "^8.4.14",
     "prettier": "^3.0.0",
     "prettier-plugin-tailwindcss": "^0.4.1",
@@ -116,6 +119,14 @@
       "no-console": 1,
       "no-debugger": 1
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix"
+    ],
+    "*.vue": [
+      "eslint --fix"
+    ]
   },
   "browserslist": [
     "> 1%",

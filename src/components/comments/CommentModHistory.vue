@@ -33,26 +33,41 @@ export default defineComponent({
 
 <template>
   <div>
-    <h3 class="mt-2 text-gray-500">Downvote Details</h3>
-    <p class="mt-4" v-if="mods.length === 0">There are no downvotes.</p>
-    <TableComponent class="mb-4 mt-2" v-else>
-      <template v-slot:head>
+    <h3 class="mt-2 text-gray-500">
+      Downvote Details
+    </h3>
+    <p
+      v-if="mods.length === 0"
+      class="mt-4"
+    >
+      There are no downvotes.
+    </p>
+    <TableComponent
+      v-else
+      class="mb-4 mt-2"
+    >
+      <template #head>
         <tr>
-          <TableHead v-for="header in headers" :key="header">
+          <TableHead
+            v-for="header in headers"
+            :key="header"
+          >
             <span>{{ header }}</span>
           </TableHead>
         </tr>
       </template>
-      <template v-slot:body>
+      <template #body>
         <tr
-          :class="i % 2 === 0 ? 'bg-gray-100' : ''"
-          :key="mod.displayName"
           v-for="(mod, i) in mods"
+          :key="mod.displayName"
+          :class="i % 2 === 0 ? 'bg-gray-100' : ''"
         >
           <td
             class="px-2 py-2 text-left whitespace-nowrap text-sm text-gray-500 underline"
           >
-            <router-link :to="`/mod/${mod.displayName}`">{{ mod.displayName }}</router-link>
+            <router-link :to="`/mod/${mod.displayName}`">
+              {{ mod.displayName }}
+            </router-link>
           </td>
           <td
             class="px-2 py-2 text-left whitespace-nowrap text-sm text-gray-500"

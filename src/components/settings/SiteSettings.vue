@@ -3,6 +3,9 @@ import { defineComponent, computed } from "vue";
 import Breadcrumbs from "../nav/Breadcrumbs.vue";
 
 export default defineComponent({
+  components: {
+    Breadcrumbs,
+  },
   setup() {
 
     const links = computed(() => {
@@ -16,9 +19,6 @@ export default defineComponent({
     return {
       links,
     };
-  },
-  components: {
-    Breadcrumbs,
   },
 });
 </script>

@@ -78,21 +78,27 @@ export default defineComponent({
   <div class="bg-white dark:bg-black w-full shadow-sm">
     <div class="px-4 py-1 flex items-center justify-between">
       <div class="flex items-center lg:px-0">
-          <MenuButton
-            @click="$emit('toggleDropdown')"
-            data-testid="menu-button"
-            class="cursor-pointer"
-          />
+        <MenuButton
+          data-testid="menu-button"
+          class="cursor-pointer"
+          @click="$emit('toggleDropdown')"
+        />
         <div class="flex items-center text-sm space-x-1 text-gray-500 dark:text-white">
-          <ChannelIcon class="h-6 w-6 mr-1 text-blue-600" /><span
-          
-            >gennit</span
+          <ChannelIcon class="h-6 w-6 mr-1 text-blue-600" /><span>gennit</span>
+          <div
+            v-if="channelId"
+            class=" flex items-center gap-1"
           >
-         <div v-if="channelId" class=" flex items-center gap-1"> <span>/</span>
-          <Avatar :text="channelId" :is-square="true" class="h-6 w-6"/>
-          <span class="dark:text-white font-bold text-blue-500">{{
-            channelId
-          }}</span></div>
+            <span>/</span>
+            <Avatar
+              :text="channelId"
+              :is-square="true"
+              class="h-6 w-6"
+            />
+            <span class="dark:text-white font-bold text-blue-500">{{
+              channelId
+            }}</span>
+          </div>
         </div>
       </div>
       <!-- <div class="flex justify-center w-full">
@@ -102,9 +108,9 @@ export default defineComponent({
         class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
       >
         <button
+          v-if="!isAuthenticated"
           data-testid="login-button"
           class="text-gray-300 inline-flex items-center hover:bg-gray-700 hover:text-white px-3 py-1 rounded-full text-xs font-medium"
-          v-if="!isAuthenticated"
           @click="login"
         >
           Log In
@@ -113,7 +119,10 @@ export default defineComponent({
 
       <div class="flex items-center">
         <ThemeSwitcher />
-        <div v-if="isAuthenticated && username" class="hidden lg:block lg:ml-4">
+        <div
+          v-if="isAuthenticated && username"
+          class="hidden lg:block lg:ml-4"
+        >
           <div class="flex items-center">
             <!-- <NotificationButton/> -->
             <div class="relative flex-shrink-0">

@@ -51,25 +51,29 @@
     name: 'EmojiExtension'
   };
   </script>
-  <template>
-    <dropdown-toolbar title="emoji" :visible="state.visible" @on-change="onChange">
-      <template #overlay>
-        <div class="emoji-container">
-          <ol class="emojis">
-            <li
-              v-for="(emoji, index) of emojis"
-              :key="`emoji-${index}`"
-              @click="emojiHandler(emoji)"
-              v-text="emoji"
-            ></li>
-          </ol>
-        </div>
-      </template>
-      <template #trigger>
-        &#128578;
-      </template>
-    </dropdown-toolbar>
-  </template>
+<template>
+  <dropdown-toolbar
+    title="emoji"
+    :visible="state.visible"
+    @on-change="onChange"
+  >
+    <template #overlay>
+      <div class="emoji-container">
+        <ol class="emojis">
+          <li
+            v-for="(emoji, index) of emojis"
+            :key="`emoji-${index}`"
+            @click="emojiHandler(emoji)"
+            v-text="emoji"
+          />
+        </ol>
+      </div>
+    </template>
+    <template #trigger>
+      &#128578;
+    </template>
+  </dropdown-toolbar>
+</template>
   <style lang="scss">
 
 

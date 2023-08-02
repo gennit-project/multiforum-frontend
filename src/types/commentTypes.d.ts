@@ -45,7 +45,7 @@ export type CommentData = {
   id: string
   CommentAuthor?: UserData
   text: string
-  isRootComment: Boolean
+  isRootComment: boolean
   DiscussionChannel?: DiscussionChannelData
   ParentComment?: CommentData
   ChildCommentsAggregate?: { 

@@ -10,6 +10,7 @@ import { usernameVar, modProfileNameVar } from "./cache";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 
 export default defineComponent({
+  name: "WithAuth",
   components: {
     CreateUsernamePage,
     ErrorBanner,
@@ -97,7 +98,12 @@ export default defineComponent({
       showTopNav,
     };
   },
-  name: "WithAuth",
+  data() {
+    return {
+      showDropdown: false,
+      showUserProfileDropdown: false,
+    };
+  },
   methods: {
     closeUserProfileDropdown() {
       this.showUserProfileDropdown = false;
@@ -109,24 +115,23 @@ export default defineComponent({
       this.showUserProfileDropdown = !this.showUserProfileDropdown;
     },
   },
-  data() {
-    return {
-      showDropdown: false,
-      showUserProfileDropdown: false,
-    };
-  },
 });
 </script>
 
 <template>
   <div>
-    <div v-if="isLoading || emailLoading">Loading...</div>
+    <div v-if="isLoading || emailLoading">
+      Loading...
+    </div>
     <div v-else-if="isAuthenticated && hasEmailButNotUsername">
-      <CreateUsernamePage/>
+      <CreateUsernamePage />
     </div> 
-    <ErrorBanner v-else-if="error" :text="error"/>
+    <ErrorBanner
+      v-else-if="error"
+      :text="error"
+    />
     <div v-else>
-      <slot></slot>
+      <slot />
     </div>
   </div>
 </template>

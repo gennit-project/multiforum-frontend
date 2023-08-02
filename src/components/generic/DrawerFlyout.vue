@@ -42,12 +42,15 @@ export default defineComponent({
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="isOpen">
+  <TransitionRoot
+    as="template"
+    :show="isOpen"
+  >
     <TailwindDialog
       as="div"
       class="fixed inset-y-0 overflow-hidden z-20"
       :class="openFromLeft ? 'left-0' : 'right-0'"
-      :initialFocus="cancelButtonRef"
+      :initial-focus="cancelButtonRef"
       @close="$emit('closePreview')"
     >
       <div class="absolute inset-0 overflow-hidden">
@@ -55,7 +58,10 @@ export default defineComponent({
           class="absolute inset-y-0 bg-black bg-opacity-50"
           :class="openFromLeft ? 'right-0' : 'left-0'"
         />
-        <div class="fixed inset-y-0 max-w-full flex" :class="openFromLeft ? 'left-0 pr-10' : 'right-0 pl-10' ">
+        <div
+          class="fixed inset-y-0 max-w-full flex"
+          :class="openFromLeft ? 'left-0 pr-10' : 'right-0 pl-10' "
+        >
           <TransitionChild
             as="template"
             enter="transform transition ease-in-out duration-100 sm:duration-100"
@@ -65,45 +71,53 @@ export default defineComponent({
             leave-from="translate-x-0"
             :leave-to="openFromLeft ? '-translate-x-full' : 'translate-x-full'"
           >
-          <DialogPanel class="pointer-events-auto w-screen max-w-lg">
-            <div
-              class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-black dark:text-gray-200"
-            >
+            <DialogPanel class="pointer-events-auto w-screen max-w-lg">
               <div
-                class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
+                class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-black dark:text-gray-200"
               >
-                <div>
-                  <div class="flex items-start justify-between">
-                    <div class="h-7 flex items-center">
-                      <button
-                        :ref="cancelButtonRef"
-                        type="button"
-                        class="ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @click="$emit('closePreview')"
-                      >
-                        <span data-testid="close-drawer-top-button" class="sr-only">Close panel</span>
-                        <XIcon class="h-6 w-6" aria-hidden="true" />
-                      </button>
-                      <h1 class="text-lg mt-2 mx-2" >{{ title }}</h1>
+                <div
+                  class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"
+                >
+                  <div>
+                    <div class="flex items-start justify-between">
+                      <div class="h-7 flex items-center">
+                        <button
+                          :ref="cancelButtonRef"
+                          type="button"
+                          class="ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          @click="$emit('closePreview')"
+                        >
+                          <span
+                            data-testid="close-drawer-top-button"
+                            class="sr-only"
+                          >Close panel</span>
+                          <XIcon
+                            class="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                        </button>
+                        <h1 class="text-lg mt-2 mx-2">
+                          {{ title }}
+                        </h1>
+                      </div>
                     </div>
                   </div>
+                  <div class="relative flex-1 m-8">
+                    <slot />
+                  </div>
                 </div>
-                <div class="relative flex-1 m-8">
-                  <slot></slot>
+                <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+                  <button
+                    type="button"
+                    data-testid="close-drawer-bottom-button"
+                    class="py-2 px-4 border border-gray-300 dark:bg-gray-700 dark:border-gray-700 dark:text-gray-400 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    @click="$emit('closePreview')"
+                  >
+                    Close
+                  </button>
                 </div>
               </div>
-              <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-                <button
-                  type="button"
-                  data-testid="close-drawer-bottom-button"
-                  class="py-2 px-4 border border-gray-300 dark:bg-gray-700 dark:border-gray-700 dark:text-gray-400 rounded-full shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                  @click="$emit('closePreview')"
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </DialogPanel>
+            </DialogPanel>
           </TransitionChild>
         </div>
       </div>

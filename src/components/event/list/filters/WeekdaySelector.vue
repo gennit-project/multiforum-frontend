@@ -85,15 +85,18 @@ export default defineComponent({
         :key="weekday.shortName"
         class="p-2 rounded"
       >
-        <label :for="'weekday-' + weekday.number" class="flex items-center">
+        <label
+          :for="'weekday-' + weekday.number"
+          class="flex items-center"
+        >
           <input
+            :id="'weekday-' + weekday.number"
             type="checkbox"
             :data-testid="`weekday-${weekday.number}-checkbox`"
-            :id="'weekday-' + weekday.number"
             class="cursor-pointer text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
             :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
             @input="() => toggleSelectWeekday(weekday)"
-          />
+          >
           <span>{{ weekday.shortName }}</span>
         </label>
       </div>

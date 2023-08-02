@@ -5,6 +5,10 @@ import XMarkIcon from "../icons/XmarkIcon.vue";
 
 export default defineComponent({
   name: "NotificationComponent",
+  components: {
+    CheckCircleIcon,
+    XMarkIcon,
+  },
   props: {
     show: {
         type: Boolean,
@@ -18,10 +22,6 @@ export default defineComponent({
         type: String,
         required: false
     }
-  },
-  components: {
-    CheckCircleIcon,
-    XMarkIcon,
   },
 });
 </script>
@@ -75,14 +75,16 @@ export default defineComponent({
                 <p class="text-sm font-medium text-gray-900">
                   {{ title }}
                 </p>
-                <p v-if="detail" class="mt-1 text-sm text-gray-500">
+                <p
+                  v-if="detail"
+                  class="mt-1 text-sm text-gray-500"
+                >
                   {{ detail }}
                 </p>
               </div>
               <div class="ml-4 flex-shrink-0 flex">
                 <button
                   type="button"
-                  @click="$emit('closeNotification')"
                   class="
                      
                     rounded-full
@@ -94,9 +96,13 @@ export default defineComponent({
                     focus:ring-offset-2
                     focus:ring-indigo-500
                   "
+                  @click="$emit('closeNotification')"
                 >
                   <span class="sr-only">Close</span>
-                  <XMarkIcon class="h-5 w-5" aria-hidden="true" />
+                  <XMarkIcon
+                    class="h-5 w-5"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </div>

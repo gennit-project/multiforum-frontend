@@ -5,7 +5,10 @@ import ChannelListItem from "@/components/channel/ChannelListItem.vue";
 import LoadMore from "../generic/LoadMore.vue";
 
 export default defineComponent({
-  setup() {},
+  components: {
+    ChannelListItem,
+    LoadMore
+  },
   props: {
     channels: {
       type: Array as PropType<Array<ChannelData>>,
@@ -28,10 +31,7 @@ export default defineComponent({
       },
     },
   },
-  components: {
-    ChannelListItem,
-    LoadMore
-  },
+  setup() {},
   methods: {
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
@@ -42,8 +42,16 @@ export default defineComponent({
 
 <template>
   <div>
-    <p class="text-sm font-normal mt-2 dark:text-white" v-if="channels.length === 0">There are no results.</p>
-    <p class="text-sm font-normal mt-2 dark:text-white" v-else>
+    <p
+      v-if="channels.length === 0"
+      class="text-sm font-normal mt-2 dark:text-white"
+    >
+      There are no results.
+    </p>
+    <p
+      v-else
+      class="text-sm font-normal mt-2 dark:text-white"
+    >
       Showing {{ channels.length }} of {{ resultCount }} results
     </p>
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
@@ -56,14 +64,12 @@ export default defineComponent({
         @filterByTag="filterByTag"
       />
     </div>
-    <div  class="grid justify-items-stretch m-10">
+    <div class="grid justify-items-stretch m-10">
       <LoadMore
         class="justify-self-center font-normal"
         :reached-end-of-results="resultCount === channels.length"
         @loadMore="$emit('loadMore')"
       />
     </div>
-    
   </div>
- 
 </template>

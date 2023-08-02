@@ -218,10 +218,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <RequireAuth :require-ownership="true" :owners="ownerList">
-    <template v-slot:has-auth>
+  <RequireAuth
+    :require-ownership="true"
+    :owners="ownerList"
+  >
+    <template #has-auth>
       <CreateEditChannelFields
-      :key="dataLoaded.toString()"
+        :key="dataLoaded.toString()"
         :edit-mode="true"
         :channel-loading="getChannelLoading"
         :get-channel-error="getChannelError"
@@ -232,7 +235,7 @@ export default defineComponent({
         @updateFormValues="updateFormValues"
       />
     </template>
-    <template v-slot:does-not-have-auth>
+    <template #does-not-have-auth>
       <div class="p-8">
         You don't have permission to see this page.
       </div>

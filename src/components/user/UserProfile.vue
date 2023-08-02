@@ -85,10 +85,17 @@ export default defineComponent({
 
 <template>
   <div>
-    
-    <div v-if="loading">Loading...</div>
-    <ErrorBanner :text="error.message" v-else-if="error" :error="error" />
-    <div v-else-if="!user">User not found</div>
+    <div v-if="loading">
+      Loading...
+    </div>
+    <ErrorBanner
+      v-else-if="error"
+      :text="error.message"
+      :error="error"
+    />
+    <div v-else-if="!user">
+      User not found
+    </div>
     <main v-else>
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
@@ -142,11 +149,12 @@ export default defineComponent({
               </li>
             </ul>
             <router-link
-              class="underline text-sm text-gray-500"
               v-if="loggedInUserModName"
+              class="underline text-sm text-gray-500"
               :to="`/mod/${loggedInUserModName}`"
-              >Go to mod profile</router-link
             >
+              Go to mod profile
+            </router-link>
           </div>
         </div>
 
@@ -169,7 +177,7 @@ export default defineComponent({
             </div>
           </div>
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12 dark:bg-gray-800">
-            <router-view></router-view>
+            <router-view />
           </div>
         </div>
       </article>

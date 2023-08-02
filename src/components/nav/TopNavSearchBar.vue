@@ -43,19 +43,22 @@ export default defineComponent({
   <div class="px-2 lg:ml-6">
     <div class="flex items-center">
       <TopNavDropdown 
-        @updateRoute="updateRoute" 
-        @updateSelectedSearchType="setSelectedSearchType"
         :selected-search-type="selectedSearchType" 
+        @updateRoute="updateRoute"
+        @updateSelectedSearchType="setSelectedSearchType" 
       />
       <div class="flex flex-grow">
-        <label for="search" class="sr-only">Search</label>
+        <label
+          for="search"
+          class="sr-only"
+        >Search</label>
         <input
           id="search"
           name="search"
           class="pr-3 h-10 leading-5 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm flex-grow"
           placeholder="Search Gennit"
           type="search"
-        />
+        >
       </div>
       <LocationSearchBar
         v-if="

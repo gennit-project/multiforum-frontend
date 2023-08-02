@@ -3,6 +3,7 @@ import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
+  name: "MainLayout",
   setup() {
     const route = useRoute();
     const channelId = computed(() => {
@@ -13,13 +14,12 @@ export default defineComponent({
       channelId,
     };
   },
-  name: "MainLayout",
 });
 </script>
 
 <template>
   <div>
-      <router-view></router-view>
+    <router-view />
   </div>
 </template>
 

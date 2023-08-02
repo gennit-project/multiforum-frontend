@@ -6,7 +6,7 @@ import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 
 export default defineComponent({
-
+  name: "AvatarPicture",
   props: {
     text: {
       type: String,
@@ -68,8 +68,12 @@ export default defineComponent({
 });
 </script>
 <template>
-
-  <img v-if="!isSquare" class="h-8 w-8 rounded-full" :src="identiconData" :alt="text">
+  <img
+    v-if="!isSquare"
+    class="h-8 w-8 rounded-full"
+    :src="identiconData"
+    :alt="text"
+  >
   <img 
     v-else 
     :class="[isLarge ? 'h-24 w-24' :'h-12 w-12']"

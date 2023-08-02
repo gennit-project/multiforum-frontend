@@ -155,16 +155,16 @@ export default defineComponent({
       />
       <div>
         <FilterChip
+          v-if="!channelId"
           class="align-middle"
           data-testid="channel-filter-button"
-          v-if="!channelId"
           :label="channelLabel"
           :highlighted="channelLabel !== defaultFilterLabels.channels"
         >
-          <template v-slot:icon>
+          <template #icon>
             <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
           </template>
-          <template v-slot:content>
+          <template #content>
             <ChannelPicker
               :selected-channels="filterValues.channels"
               @setSelectedChannels="setSelectedChannels"
@@ -177,10 +177,10 @@ export default defineComponent({
           :label="tagLabel"
           :highlighted="tagLabel !== defaultFilterLabels.tags"
         >
-          <template v-slot:icon>
+          <template #icon>
             <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
           </template>
-          <template v-slot:content>
+          <template #content>
             <TagPicker
               :selected-tags="filterValues.tags"
               @setSelectedTags="setSelectedTags"
@@ -189,21 +189,25 @@ export default defineComponent({
         </FilterChip>
       </div>
       <div>
-      <RequireAuth class="align-middle" :full-width="false">
-        <template v-slot:has-auth>
-          <CreateButton
-            class="ml-2"
-            :to="createDiscussionPath"
-            :label="'New Discussion'"
-          />
-        </template>
-        <template v-slot:does-not-have-auth>
-          <PrimaryButton class="ml-2" :label="'New Discussion'" />
-        </template>
-      </RequireAuth>
+        <RequireAuth
+          class="align-middle"
+          :full-width="false"
+        >
+          <template #has-auth>
+            <CreateButton
+              class="ml-2"
+              :to="createDiscussionPath"
+              :label="'New Discussion'"
+            />
+          </template>
+          <template #does-not-have-auth>
+            <PrimaryButton
+              class="ml-2"
+              :label="'New Discussion'"
+            />
+          </template>
+        </RequireAuth>
+      </div>
     </div>
-    </div>
-
-   
   </div>
 </template>

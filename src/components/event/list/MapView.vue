@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, ref, Ref, computed, watch } from "vue";
+import { defineComponent, PropType, ref, Ref, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
 import EventPreview from "./EventPreview.vue";
@@ -30,31 +30,6 @@ import gql from "graphql-tag";
 
 export default defineComponent({
   name: "MapView",
-  // The SearchEvent component writes to the query
-  // params, while the MapView and EventListView
-  // components consume the query params.
-  props: {
-    selectedTags: {
-      type: Array as PropType<Array<String>>,
-      default: () => {
-        return [];
-      },
-    },
-    selectedChannels: {
-      type: Array as PropType<Array<String>>,
-      default: () => {
-        return [];
-      },
-    },
-    channelId: {
-      type: String,
-      default: "",
-    },
-    searchInput: {
-      type: String,
-      default: "",
-    },
-  },
   components: {
     CloseButton,
     CreateButton,
@@ -68,6 +43,31 @@ export default defineComponent({
     RequireAuth,
     TimeShortcuts,
     TwoSeparatelyScrollingPanes,
+  },
+  // The SearchEvent component writes to the query
+  // params, while the MapView and EventListView
+  // components consume the query params.
+  props: {
+    selectedTags: {
+      type: Array as PropType<Array<string>>,
+      default: () => {
+        return [];
+      },
+    },
+    selectedChannels: {
+      type: Array as PropType<Array<string>>,
+      default: () => {
+        return [];
+      },
+    },
+    channelId: {
+      type: String,
+      default: "",
+    },
+    searchInput: {
+      type: String,
+      default: "",
+    },
   },
   setup() {
     const { smAndDown } = useDisplay();
@@ -237,6 +237,14 @@ export default defineComponent({
       selectedEvents: [],
     };
   },
+  created() {
+    this.$watch("$route.query", () => {
+      this.filterValues = getFilterValuesFromParams({
+        route: this.route,
+        channelId: this.channelId,
+      });
+    });
+  },
   methods: {
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
@@ -314,6 +322,7 @@ export default defineComponent({
 
       if (markerMap[eventLocationId]) {
         markerMap[eventLocationId].marker.setIcon({
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           url: require("@/assets/images/highlighted-place-icon.svg").default,
           scaledSize: { width: 20, height: 20 },
         });
@@ -424,6 +433,7 @@ export default defineComponent({
 
         if (markerMap[this.highlightedEventLocationId]) {
           markerMap[this.highlightedEventLocationId].marker.setIcon({
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
             url: require("@/assets/images/place-icon.svg").default,
             scaledSize: { width: 20, height: 20 },
           });
@@ -491,30 +501,30 @@ export default defineComponent({
     //   }
     // },
   },
-  created() {
-    this.$watch("$route.query", () => {
-      this.filterValues = getFilterValuesFromParams({
-        route: this.route,
-        channelId: this.channelId,
-      });
-    });
-  },
 });
 </script>
 <template>
   <div class="h-full">
-    <div v-if="mdAndUp" id="mapViewFullScreen">
+    <div
+      v-if="mdAndUp"
+      id="mapViewFullScreen"
+    >
       <TwoSeparatelyScrollingPanes
         class="mt-3"
         :show-right-pane-at-medium-screen-width="true"
       >
-        <template v-slot:leftpane>
-          <div class="overflow-y-auto h-full px-4" style="width: 40vw">
+        <template #leftpane>
+          <div
+            class="overflow-y-auto h-full px-4"
+            style="width: 40vw"
+          >
             <EventFilterBar class="w-full mt-6" />
-            <div v-if="eventLoading">Loading...</div>
+            <div v-if="eventLoading">
+              Loading...
+            </div>
             <ErrorBanner
-              class="block"
               v-else-if="eventError"
+              class="block"
               :text="eventError.message"
             />
             <EventList
@@ -538,7 +548,7 @@ export default defineComponent({
             />
           </div>
         </template>
-        <template v-slot:rightpane>
+        <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
               <div class="shortcut-buttons-wrapper">
@@ -547,15 +557,15 @@ export default defineComponent({
                 </div>
               </div>
               <EventMap
-                class="fixed"
-                :key="eventResult.events.length"
                 v-if="
                   !eventLoading &&
-                  !eventError &&
-                  eventResult &&
-                  eventResult.events &&
-                  eventResult.events.length > 0
+                    !eventError &&
+                    eventResult &&
+                    eventResult.events &&
+                    eventResult.events.length > 0
                 "
+                :key="eventResult.events.length"
+                class="fixed"
                 :events="eventResult.events"
                 :preview-is-open="
                   eventPreviewIsOpen || multipleEventPreviewIsOpen
@@ -574,12 +584,15 @@ export default defineComponent({
       </TwoSeparatelyScrollingPanes>
     </div>
 
-    <div id="mapViewMobileWidth" v-else-if="eventResult && eventResult.events">
+    <div
+      v-else-if="eventResult && eventResult.events"
+      id="mapViewMobileWidth"
+    >
       <div>
         <div>
           <TimeShortcuts />
         </div>
-        <div class="event-map-container"></div>
+        <div class="event-map-container" />
         <EventMap
           v-if="eventResult.events.length > 0"
           :events="eventResult.events"
@@ -595,14 +608,14 @@ export default defineComponent({
       </div>
       <div class="w-full h-1/3">
         <RequireAuth class="flex inline-flex">
-          <template v-slot:has-auth>
+          <template #has-auth>
             <CreateButton
               class="align-middle ml-2 mt-4"
               :to="createEventPath"
               :label="'+ Create Event'"
             />
           </template>
-          <template v-slot:does-not-have-auth>
+          <template #does-not-have-auth>
             <PrimaryButton
               class="align-middle ml-2"
               :label="'+ Create Event'"
@@ -632,11 +645,11 @@ export default defineComponent({
 
     <EventPreview
       :top-layer="true"
-      :isOpen="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
+      :is-open="eventPreviewIsOpen && !multipleEventPreviewIsOpen"
       @closePreview="closeEventPreview"
     />
     <PreviewContainer
-      :isOpen="multipleEventPreviewIsOpen"
+      :is-open="multipleEventPreviewIsOpen"
       :header="'Events at this Location'"
       @closePreview="closeMultipleEventPreview"
     >
@@ -655,11 +668,11 @@ export default defineComponent({
         <CloseButton @click="closeMultipleEventPreview" />
       </div>
       <PreviewContainer
-        :isOpen="multipleEventPreviewIsOpen && eventPreviewIsOpen"
+        :is-open="multipleEventPreviewIsOpen && eventPreviewIsOpen"
         :top-layer="true"
         @closePreview="closeEventPreview"
       >
-        <router-view></router-view>
+        <router-view />
       </PreviewContainer>
     </PreviewContainer>
   </div>

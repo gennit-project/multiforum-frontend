@@ -263,9 +263,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <RequireAuth :require-ownership="true" :owners="ownerList">
+  <RequireAuth
+    :require-ownership="true"
+    :owners="ownerList"
+  >
     {{ formValues }}
-    <template v-slot:has-auth>
+    <template #has-auth>
       <CreateEditDiscussionFields
         :key="dataLoaded.toString()"
         :edit-mode="true"
@@ -277,7 +280,7 @@ export default defineComponent({
         @updateFormValues="updateFormValues"
       />
     </template>
-    <template v-slot:does-not-have-auth>
+    <template #does-not-have-auth>
       <div class="flex justify-center p-8">
         You don't have permission to see this page.
       </div>

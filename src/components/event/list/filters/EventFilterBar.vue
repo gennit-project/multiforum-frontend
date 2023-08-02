@@ -458,7 +458,10 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-2">
-    <div v-if="route.name !== 'EventDetail'" class="w-full">
+    <div
+      v-if="route.name !== 'EventDetail'"
+      class="w-full"
+    >
       <div class="flex flex-wrap align-middle justify-between space-x-4 mr-6">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
@@ -484,16 +487,19 @@ export default defineComponent({
           :small="true"
           @updateSearchInput="updateSearchInput"
         />
-        <RequireAuth class="align-middle" :full-width="false">
-          <template v-slot:has-auth>
+        <RequireAuth
+          class="align-middle"
+          :full-width="false"
+        >
+          <template #has-auth>
             <PrimaryButton
               data-testid="real-create-event-button"
               class="align-middle ml-2"
-              @click="router.push({ path: createEventPath })"
               :label="'+ Create Event'"
+              @click="router.push({ path: createEventPath })"
             />
           </template>
-          <template v-slot:does-not-have-auth>
+          <template #does-not-have-auth>
             <PrimaryButton
               data-testid="fake-create-event-button"
               class="align-middle ml-2"
@@ -505,16 +511,16 @@ export default defineComponent({
 
       <div class="flex flex-wrap align-middle space-x-2">
         <FilterChip
+          v-if="!channelId"
           class="align-middle items-center"
           data-testid="channel-filter-button"
-          v-if="!channelId"
           :label="channelLabel"
           :highlighted="channelLabel !== defaultFilterLabels.channels"
         >
-          <template v-slot:icon>
+          <template #icon>
             <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
           </template>
-          <template v-slot:content>
+          <template #content>
             <ChannelPicker
               :selected-channels="filterValues.channels"
               @setSelectedChannels="setSelectedChannels"
@@ -527,10 +533,10 @@ export default defineComponent({
           :label="tagLabel"
           :highlighted="tagLabel !== defaultFilterLabels.tags"
         >
-          <template v-slot:icon>
+          <template #icon>
             <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
           </template>
-          <template v-slot:content>
+          <template #content>
             <TagPicker
               :selected-tags="filterValues.tags"
               @setSelectedTags="setSelectedTags"
@@ -555,7 +561,7 @@ export default defineComponent({
         :title="'Search and Filter Events'"
         placement="start"
         class="drawer-placement-start"
-        :isOpen="drawerIsOpen"
+        :is-open="drawerIsOpen"
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
@@ -579,8 +585,8 @@ export default defineComponent({
           <div v-if="selectedDistanceUnit === MilesOrKm.KM">
             <GenericButton
               v-for="distance in distanceOptionsForKilometers"
-              :data-testid="`distance-${distance.value}`"
               :key="distance.value"
+              :data-testid="`distance-${distance.value}`"
               :text="`${distance.label} ${distance.value !== 0 ? 'km' : ''}`"
               :active="distance.value === filterValues.radius"
               class="mr-2"
@@ -590,8 +596,8 @@ export default defineComponent({
           <div v-else>
             <GenericButton
               v-for="distance in distanceOptionsForMiles"
-              :data-testid="`distance-${distance.value}`"
               :key="distance.value"
+              :data-testid="`distance-${distance.value}`"
               :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
               :active="distance.value === filterValues.radius"
               class="mr-2"
@@ -624,18 +630,27 @@ export default defineComponent({
             v-if="!channelId"
             class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
           >
-            <ClockIcon class="h-4 w-4 mr-2 text-gray-500" aria-hidden="true" />
+            <ClockIcon
+              class="h-4 w-4 mr-2 text-gray-500"
+              aria-hidden="true"
+            />
             Times
           </h2>
 
-          <TimeShortcuts :is-list-view="!showMap" class="mt-6" />
+          <TimeShortcuts
+            :is-list-view="!showMap"
+            class="mt-6"
+          />
         </div>
 
         <div class="p-2 border rounded-md my-2">
           <h2
             class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
           >
-            <TagIcon class="h-4 w-4 mr-2 text-gray-500" aria-hidden="true" />
+            <TagIcon
+              class="h-4 w-4 mr-2 text-gray-500"
+              aria-hidden="true"
+            />
             Tags
           </h2>
           <TagPicker
@@ -654,13 +669,16 @@ export default defineComponent({
           @updateShowOnlyFree="updateShowOnlyFree"
         />
 
-        <hr class="mt-6 mb-4" />
+        <hr class="mt-6 mb-4">
         <SecondaryButton
           data-testid="show-advanced-button"
           :label="showAdvanced ? 'Hide Advanced' : 'Show Advanced'"
           @click="showAdvanced = !showAdvanced"
         />
-        <div id="advancedFilters" v-if="showAdvanced">
+        <div
+          v-if="showAdvanced"
+          id="advancedFilters"
+        >
           <h2
             class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
           >
@@ -688,7 +706,10 @@ export default defineComponent({
           <h2
             class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
           >
-            <ClockIcon class="h-6 w-6 mr-2 text-gray-500" aria-hidden="true" />
+            <ClockIcon
+              class="h-6 w-6 mr-2 text-gray-500"
+              aria-hidden="true"
+            />
             Time Slots
           </h2>
 

@@ -13,7 +13,6 @@ export default defineComponent({
     Tag,
     TagPicker,
   },
-  setup() {},
   props: {
     channelMode: {
       type: Boolean,
@@ -36,6 +35,7 @@ export default defineComponent({
       default: "",
     },
   },
+  setup() {},
   data() {
     return {
       tags: this.channelMode ? this.selectedChannels : this.selectedTags,
@@ -74,8 +74,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <FloatingDropdown  v-model="showMenu">
-    <template v-slot:button>
+  <FloatingDropdown v-model="showMenu">
+    <template #button>
       <div
         class="
           tag-container
@@ -90,8 +90,8 @@ export default defineComponent({
       >
         <Tag
           v-for="(tag, i) of tags"
-          :data-testid="`${testId}-tag-${tag}`"
           :key="tag"
+          :data-testid="`${testId}-tag-${tag}`"
           :active="true"
           :channel-mode="channelMode"
           :clearable="true"
@@ -100,19 +100,19 @@ export default defineComponent({
           @delete="deleteTag($event)"
         />
         <input
+          v-model="currentInput"
           :data-testid="testId"
           class="flex-1 block min-w-0 pl-3 pt-2 pb-2 dark:bg-black rounded-lg sm:text-sm  dark:text-gray-100 border-gray-300 dark:border-gray-800"
-          v-model="currentInput"
           :placeholder="channelMode ? 'Add channels' : 'Add tags'"
           @keydown.enter="(event) => {
-            this.saveTagAndClose(event)
-            this.$emit('close')
+            saveTagAndClose(event)
+            $emit('close')
           }"
           @keydown.delete="backspaceDelete"
-        />
+        >
       </div>
     </template>
-    <template v-slot:content>
+    <template #content>
       <TagPicker
         v-if="!channelMode"
         :selected-tags="selectedTags"

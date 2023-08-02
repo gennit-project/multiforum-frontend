@@ -241,7 +241,7 @@ export default defineComponent({
 </script>
 <template>
   <RequireAuth>
-    <template v-slot:has-auth>
+    <template #has-auth>
       <CreateEditEventFields
         :create-event-error="createEventError"
         :edit-mode="false"
@@ -250,10 +250,10 @@ export default defineComponent({
         @updateFormValues="updateFormValues"
       />
     </template>
-    <template v-slot:does-not-have-auth>
-       <div class="p-8 flex justify-center">
-          You don't have permission to see this page.
-       </div>
+    <template #does-not-have-auth>
+      <div class="p-8 flex justify-center">
+        You don't have permission to see this page.
+      </div>
     </template>
-</RequireAuth>
+  </RequireAuth>
 </template>

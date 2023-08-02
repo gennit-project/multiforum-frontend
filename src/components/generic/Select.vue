@@ -39,7 +39,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <Listbox as="div" v-model="selected" @update:modelValue="handleSelect">
+  <Listbox
+    v-model="selected"
+    as="div"
+    @update:modelValue="handleSelect"
+  >
     <div class="mt-1 relative">
       <ListboxButton
         class="
@@ -71,8 +75,7 @@ export default defineComponent({
             pr-2
             pointer-events-none
           "
-        >
-        </span>
+        />
       </ListboxButton>
       <ListboxOptions
         class="
@@ -94,11 +97,11 @@ export default defineComponent({
         "
       >
         <ListboxOption
-          as="template"
           v-for="(option, i) in options"
           :key="i"
-          :value="option"
           v-slot="{ active, selected }"
+          as="template"
+          :value="option"
         >
           <li
             :class="[
@@ -122,7 +125,10 @@ export default defineComponent({
                 'absolute inset-y-0 right-0 flex items-center pr-4',
               ]"
             >
-              <CheckIcon class="h-5 w-5" aria-hidden="true" />
+              <CheckIcon
+                class="h-5 w-5"
+                aria-hidden="true"
+              />
             </span>
           </li>
         </ListboxOption>

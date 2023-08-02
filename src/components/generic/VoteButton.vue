@@ -35,7 +35,7 @@ export default defineComponent({
           : 'text-gray-400 dark:text-gray-500',
       ]"
     >
-      <slot></slot>
+      <slot />
     </span>
     <span
       class="justify-center"
@@ -44,8 +44,7 @@ export default defineComponent({
           ? 'text-blue-400 dark:text-blue-600'
           : 'text-gray-400 dark:text-gray-500'
       "
-      >{{ count }}</span
-    >
+    >{{ count }}</span>
   </div>
 </template>
 

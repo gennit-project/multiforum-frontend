@@ -13,9 +13,16 @@ import { useDisplay } from "vuetify";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 
 export default defineComponent({
+  components: {
+    ErrorBanner,
+    HighlightedSearchTerms,
+    Tag,
+    DiscussionVotes,
+  },
+  inheritAttrs: false,
   props: {
     discussionQueryFilters: {
-      type: Object as PropType<Object>,
+      type: Object as PropType<object>,
       default: () => {
         return {};
       },
@@ -25,31 +32,26 @@ export default defineComponent({
       required: true,
     },
     discussion: {
-      type: Object as PropType<DiscussionData>,
+      type: Object as PropType<DiscussionData | null>,
       required: false,
+      default: null
     },
     searchInput: {
       type: String,
       default: "",
     },
     selectedTags: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
     selectedChannels: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
-  },
-  components: {
-    ErrorBanner,
-    HighlightedSearchTerms,
-    Tag,
-    DiscussionVotes,
   },
   setup(props) {
     const route = useRoute();
@@ -163,7 +165,6 @@ export default defineComponent({
       return `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
     },
   },
-  inheritAttrs: false,
 });
 </script>
 
@@ -187,7 +188,10 @@ export default defineComponent({
             <div>💬</div>
           </div>
           <div>
-            <router-link :to="detailLink" class="hover:text-gray-500">
+            <router-link
+              :to="detailLink"
+              class="hover:text-gray-500"
+            >
               <p class="text-md cursor-pointer font-bold hover:text-gray-500">
                 <HighlightedSearchTerms
                   :text="title"
@@ -199,10 +203,10 @@ export default defineComponent({
               class="font-medium my-1 text-xs text-slate-600 hover:no-underline"
             >
               <Tag
+                v-for="tag in tags"
+                :key="tag"
                 class="my-1"
                 :active="selectedTags.includes(tag)"
-                :key="tag"
-                v-for="tag in tags"
                 :tag="tag"
                 @click="$emit('filterByTag', tag)"
               />
@@ -216,11 +220,14 @@ export default defineComponent({
         </div>
       </v-col>
       <v-col cols="3">
-        <i class="fa-regular fa-comment h-6 w-6"></i>
+        <i class="fa-regular fa-comment h-6 w-6" />
         {{ commentCount }}
       </v-col>
 
-      <ErrorBanner v-if="errorMessage" :text="errorMessage" />
+      <ErrorBanner
+        v-if="errorMessage"
+        :text="errorMessage"
+      />
     </v-row>
   </li>
 </template>

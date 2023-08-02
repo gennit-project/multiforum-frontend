@@ -32,38 +32,38 @@ export default defineComponent({
 });
 </script>
 <template>
-  <li >
+  <li>
     <div class="flex items-center gap-1">
-    <router-link
-    :data-testid="`comments-in-${channelId}`"
-      class="mr-1 underline"
-      :to="{
-        name: 'DiscussionDetail',
-        params: {
-          discussionId,
-          channelId,
-        },
-      }"
-    >
-      {{ `${commentCount} comments` }}
-    </router-link>
-   <span> and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ?  'vote' : 'votes'}} in</span>
-    <router-link
-      class="flex items-center gap-1"
-      :to="{
-        name: 'DiscussionDetail',
-        params: {
-          discussionId,
-          channelId,
-        },
-      }"
-    >
-      <TagComponent
-        class="mt-2"
-        :tag="channelId"
-        :channel-mode="true"
-      />
-    </router-link>
-  </div>
+      <router-link
+        :data-testid="`comments-in-${channelId}`"
+        class="mr-1 underline"
+        :to="{
+          name: 'DiscussionDetail',
+          params: {
+            discussionId,
+            channelId,
+          },
+        }"
+      >
+        {{ `${commentCount} comments` }}
+      </router-link>
+      <span> and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ? 'vote' : 'votes' }} in</span>
+      <router-link
+        class="flex items-center gap-1"
+        :to="{
+          name: 'DiscussionDetail',
+          params: {
+            discussionId,
+            channelId,
+          },
+        }"
+      >
+        <TagComponent
+          class="mt-2"
+          :tag="channelId"
+          :channel-mode="true"
+        />
+      </router-link>
+    </div>
   </li>
 </template>

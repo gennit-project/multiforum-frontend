@@ -31,30 +31,33 @@
   });
   </script>
   
-  <template>
-    <TransitionRoot as="template" :show="isOpen">
-      <TailwindDialog
-        as="div"
-        :class="[topLayer ? 'z-30' : 'z-20']"
-        class="fixed inset-0 overflow-hidden z-20"
-        @close="$emit('closePreview')"
-      >
-        <div class="absolute inset-0 overflow-hidden">
-          <DialogOverlay class="absolute inset-0" />
+<template>
+  <TransitionRoot
+    as="template"
+    :show="isOpen"
+  >
+    <TailwindDialog
+      as="div"
+      :class="[topLayer ? 'z-30' : 'z-20']"
+      class="fixed inset-0 overflow-hidden z-20"
+      @close="$emit('closePreview')"
+    >
+      <div class="absolute inset-0 overflow-hidden">
+        <DialogOverlay class="absolute inset-0" />
   
-          <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
-            <TransitionChild
-              as="template"
-              enter="transform transition ease-in-out duration-100 sm:duration-100"
-              enter-from="translate-x-full"
-              enter-to="translate-x-0"
-              leave="transform transition ease-in-out duration-100 sm:duration-100"
-              leave-from="translate-x-0"
-              leave-to="translate-x-full"
-            >
-              <div class="w-screen max-w-xl">
-                <div
-                  class="
+        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+          <TransitionChild
+            as="template"
+            enter="transform transition ease-in-out duration-100 sm:duration-100"
+            enter-from="translate-x-full"
+            enter-to="translate-x-0"
+            leave="transform transition ease-in-out duration-100 sm:duration-100"
+            leave-from="translate-x-0"
+            leave-to="translate-x-full"
+          >
+            <div class="w-screen max-w-xl">
+              <div
+                class="
                     h-full
                     divide-y divide-gray-200
                     flex flex-col
@@ -62,17 +65,16 @@
                     dark:text-gray-200
                     shadow-xl
                   "
+              >
+                <div
+                  class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll bg-white dark:bg-gray-800 dark:text-gray-200"
                 >
-                  <div
-                    class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll bg-white dark:bg-gray-800 dark:text-gray-200"
-                  >
-                    <div>
-                      <div class="flex items-start justify-between">
-                        
-                        <div class="h-7 flex items-center">
-                          <button
-                            type="button"
-                            class="
+                  <div>
+                    <div class="flex items-start justify-between">
+                      <div class="h-7 flex items-center">
+                        <button
+                          type="button"
+                          class="
                               bg-white dark:bg-black
                               ml-8
                               rounded-full
@@ -80,22 +82,25 @@
                               hover:text-gray-500
                               focus:outline-none focus:ring-2 focus:ring-blue-500
                             "
-                            @click="$emit('closePreview')"
-                          >
-                            <span class="sr-only">Close panel</span>
-                            <XIcon class="h-6 w-6" aria-hidden="true" />
-                          </button>
-                        </div>
+                          @click="$emit('closePreview')"
+                        >
+                          <span class="sr-only">Close panel</span>
+                          <XIcon
+                            class="h-6 w-6"
+                            aria-hidden="true"
+                          />
+                        </button>
                       </div>
                     </div>
-                    <div class="relative flex-1">
-                      <EventDetail :compact-mode="true"/>
-                    </div>
                   </div>
-                  <div class="flex-shrink-0 px-4 py-4 flex justify-end">
-                    <button
-                      type="button"
-                      class="
+                  <div class="relative flex-1">
+                    <EventDetail :compact-mode="true" />
+                  </div>
+                </div>
+                <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+                  <button
+                    type="button"
+                    class="
                         bg-white dark:bg-black
                         py-2
                         px-4
@@ -111,11 +116,11 @@
                         focus:ring-offset-2
                         focus:ring-blue-500
                       "
-                      @click="$emit('closePreview')"
-                    >
-                      Close
-                    </button>
-                    <!-- <button
+                    @click="$emit('closePreview')"
+                  >
+                    Close
+                  </button>
+                  <!-- <button
                       type="submit"
                       class="
                         ml-4
@@ -139,13 +144,13 @@
                     >
                       Save
                     </button> -->
-                  </div>
                 </div>
               </div>
-            </TransitionChild>
-          </div>
+            </div>
+          </TransitionChild>
         </div>
-      </TailwindDialog>
-    </TransitionRoot>
-  </template>
+      </div>
+    </TailwindDialog>
+  </TransitionRoot>
+</template>
   

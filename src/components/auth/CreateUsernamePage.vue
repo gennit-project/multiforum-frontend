@@ -27,15 +27,20 @@ export default defineComponent({
   }
 });
 </script>
-  <template>
+<template>
   <div class="flex justify-center mx-auto m-8">
     <div class="block w-96">
       <div class="flex items-start">
         <div class="flex-shrink-0">
-          <CheckCircleIcon class="h-6 w-6 text-green-400" aria-hidden="true" />
+          <CheckCircleIcon
+            class="h-6 w-6 text-green-400"
+            aria-hidden="true"
+          />
         </div>
         <div class="ml-3 w-0 flex-1 pt-0.5">
-          <p class="text-sm font-medium text-gray-900">Success</p>
+          <p class="text-sm font-medium text-gray-900">
+            Success
+          </p>
           <p class="mt-1 text-sm text-gray-500">
             Authenticated as <span>{{ user.email }}</span>
           </p>
@@ -44,8 +49,8 @@ export default defineComponent({
 
       <CreateUsernameForm 
         v-if="user && user.email" 
-        @updateUsername="updateUsername"
         :email="user.email"
+        @updateUsername="updateUsername"
       />
     </div>
   </div>

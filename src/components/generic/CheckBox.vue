@@ -2,7 +2,6 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {},
   props: {
     disabled: {
       type: Boolean,
@@ -13,6 +12,7 @@ export default defineComponent({
       default: false,
     },
   },
+  setup() {},
 });
 </script>
 
@@ -23,5 +23,5 @@ export default defineComponent({
     class="focus:ring-blue-500 h-4 w-4 border-gray-400 rounded"
     :checked="checked"
     :disabled="disabled"
-  />
+  >
 </template>

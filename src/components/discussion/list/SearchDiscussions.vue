@@ -101,6 +101,16 @@ export default defineComponent({
       tagLabel,
     };
   },
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.$route.query) {
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+        });
+      }
+    });
+  },
   methods: {
     updateFilters(params: SearchDiscussionValues) {
       const existingQuery = this.$route.query;
@@ -233,36 +243,31 @@ export default defineComponent({
       this.selectedChannels = channels;
     },
   },
-  created() {
-    this.$watch("$route.query", () => {
-      if (this.$route.query) {
-        this.filterValues = getFilterValuesFromParams({
-          route: this.route,
-          channelId: this.channelId,
-        });
-      }
-    });
-  },
 });
 </script>
 
 <template>
   <v-container fluid>
-    <v-row >
+    <v-row>
       <v-col cols="12">
         <DiscussionFilterBar />
 
         <v-row class="mt-1">
           <v-col
-          cols="12"
-          md="4"
-          lg="2"
-          v-if="channelId && !mdAndDown"
-          class="scrollable-column"
-        >
-          <AboutColumn :channel-id="channelId"/>
-        </v-col>
-          <v-col cols="12" md="8" lg="4"  class="scrollable-column">
+            v-if="channelId && !mdAndDown"
+            cols="12"
+            md="4"
+            lg="2"
+            class="scrollable-column"
+          >
+            <AboutColumn :channel-id="channelId" />
+          </v-col>
+          <v-col
+            cols="12"
+            md="8"
+            lg="4"
+            class="scrollable-column"
+          >
             <SitewideDiscussionList
               v-if="!channelId"
               :search-input="filterValues.searchInput"
@@ -290,17 +295,14 @@ export default defineComponent({
             :lg="6"
             class="scrollable-column"
           >
-            <router-view></router-view>
+            <router-view />
           </v-col>
-
-         
-         
         </v-row>
       </v-col>
     </v-row>
     <DrawerFlyout
       v-if="mdAndDown"
-      :isOpen="previewIsOpen"
+      :is-open="previewIsOpen"
       @closePreview="closePreview"
     >
       <DiscussionDetail />

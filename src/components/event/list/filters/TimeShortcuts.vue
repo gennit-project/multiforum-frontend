@@ -9,14 +9,14 @@ import { SearchEventValues } from "@/types/eventTypes";
 import Tag from "@/components/tag/Tag.vue";
 export default defineComponent({
   name: "SearchEvents",
+  components: {
+    Tag,
+  },
   props: {
     isListView: {
       type: Boolean,
       default: false,
     },
-  },
-  components: {
-    Tag,
   },
   setup(props) {
     const route = useRoute();
@@ -173,10 +173,10 @@ export default defineComponent({
 <template>
   <div class="time-shortcuts flex">
     <Tag
-      class="align-middle"
-      :data-testid="`time-shortcut-${shortcut.label}`"
       v-for="shortcut in timeFilterShortcuts"
       :key="shortcut.label"
+      class="align-middle"
+      :data-testid="`time-shortcut-${shortcut.label}`"
       :tag="shortcut.label"
       :active="shortcut.value === filterValues.timeShortcut"
       :hide-icon="true"

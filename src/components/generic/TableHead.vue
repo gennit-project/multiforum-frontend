@@ -18,6 +18,6 @@ export default defineComponent({
       tracking-wider
     "
   >
-    <slot/>
+    <slot />
   </th>
 </template>

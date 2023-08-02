@@ -191,21 +191,28 @@ export default defineComponent({
 <template>
   <div class="mt-1 flex w-full flex-col space-x-2 px-1 py-4">
     <div class="flex gap-2 min-h-36">
-      <Avatar v-if="username" class="h-5 w-5" :text="username" />
+      <Avatar
+        v-if="username"
+        class="h-5 w-5"
+        :text="username"
+      />
 
-      <RequireAuth class="w-full" v-if="!showEditorInCommentSection">
-        <template v-slot:has-auth>
+      <RequireAuth
+        v-if="!showEditorInCommentSection"
+        class="w-full"
+      >
+        <template #has-auth>
           <textarea
-            data-testid="addComment"
             id="addComment"
-            @click="showEditorInCommentSection = true"
+            data-testid="addComment"
             name="addcomment"
             rows="1"
             placeholder="Write a reply"
             class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
+            @click="showEditorInCommentSection = true"
           />
         </template>
-        <template v-slot:does-not-have-auth>
+        <template #does-not-have-auth>
           <textarea
             id="addCommentLoginPrompt"
             name="addcomment"
@@ -215,7 +222,10 @@ export default defineComponent({
           />
         </template>
       </RequireAuth>
-      <div v-else class="w-full flex flex-col">
+      <div
+        v-else
+        class="w-full flex flex-col"
+      >
         <TextEditor
           :placeholder="'Please be kind'"
           @update="handleUpdateComment"
@@ -224,17 +234,16 @@ export default defineComponent({
           <CancelButton @click="showEditorInCommentSection = false" />
           <SaveButton
             data-testid="createCommentButton"
+            :disabled="createFormValues.text.length === 0"
             @click.prevent="
               () => {
                 handleCreateComment();
                 showEditorInCommentSection = false;
               }
             "
-            :disabled="this.createFormValues.text.length === 0"
           />
         </div>
       </div>
     </div>
-   
   </div>
 </template>

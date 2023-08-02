@@ -4,7 +4,6 @@
 
 <template>
   <button
-    @click="$router.go(-1)"
     type="button"
     class="
       inline-flex
@@ -22,6 +21,7 @@
       focus:outline-none
       focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
     "
+    @click="$router.go(-1)"
   >
     ← Back
   </button>

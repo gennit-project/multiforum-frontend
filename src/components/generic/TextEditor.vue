@@ -12,6 +12,24 @@ export default defineComponent({
     TabPanel,
     TabPanels,
   },
+  props: {
+    disableAutoFocus: {
+      type: Boolean,
+      default: false,
+    },
+    initialValue: {
+      type: String,
+      default: "",
+    },
+    testId: {
+      type: String,
+      default: "",
+    },
+    placeholder: {
+      type: String,
+      default: "Write your comment here...",
+    },
+  },
   setup(props) {
     const GET_THEME = gql`
       query GetTheme {
@@ -33,36 +51,6 @@ export default defineComponent({
       id: "text-editor",
     };
   },
-  props: {
-    disableAutoFocus: {
-      type: Boolean,
-      default: false,
-    },
-    initialValue: {
-      type: String,
-      default: "",
-    },
-    testId: {
-      type: String,
-      default: "",
-    },
-    placeholder: {
-      type: String,
-      default: "Write your comment here...",
-    },
-  },
-  methods: {
-    setTab(selected: string) {
-      this.selected = selected;
-    },
-    toggleShowFormatted() {
-      this.showFormatted = !this.showFormatted;
-    },
-    updateText(text: string) {
-      this.text = text;
-      this.$emit("update", text);
-    },
-  },
   created() {
     if (!this.disableAutoFocus) {
       this.$nextTick(() => {
@@ -78,13 +66,28 @@ export default defineComponent({
       });
     });
   },
+  methods: {
+    setTab(selected: string) {
+      this.selected = selected;
+    },
+    toggleShowFormatted() {
+      this.showFormatted = !this.showFormatted;
+    },
+    updateText(text: string) {
+      this.text = text;
+      this.$emit("update", text);
+    },
+  },
 });
 </script>
 <template>
   <form>
     <TabGroup>
       <TabList class="flex items-center">
-        <Tab as="template" v-slot="{ selected }">
+        <Tab
+          v-slot="{ selected }"
+          as="template"
+        >
           <button
             :class="[
               selected
@@ -96,7 +99,10 @@ export default defineComponent({
             Write
           </button>
         </Tab>
-        <Tab as="template" v-slot="{ selected }">
+        <Tab
+          v-slot="{ selected }"
+          as="template"
+        >
           <button
             :class="[
               selected
@@ -111,22 +117,24 @@ export default defineComponent({
       </TabList>
       <TabPanels class="mt-2">
         <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1">
-          <label for="comment" class="sr-only">Comment</label>
+          <label
+            for="comment"
+            class="sr-only"
+          >Comment</label>
           <v-md-editor
-            v-model="text"
             ref="editor"
+            v-model="text"
             mode="edit"
             height="200px"
             :placeholder="placeholder"
             @update:model-value="$emit('update', text)"
-          >
-          </v-md-editor>
+          />
         </TabPanel>
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
           <v-md-preview
             :text="text"
             class="block w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
-          ></v-md-preview>
+          />
         </TabPanel>
       </TabPanels>
     </TabGroup>

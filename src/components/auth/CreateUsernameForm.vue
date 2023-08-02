@@ -167,18 +167,20 @@ export default defineComponent({
   },
 });
 </script>
-  <template>
+<template>
   <div>
     <div class="  px-10 py-6 my-4 h-72">
-      <h1 class="text-xl flex justify-center my-8">Create Username</h1>
-      <label for="username" class="block text-sm font-medium text-gray-700"
-        >Username</label
-      >
+      <h1 class="text-xl flex justify-center my-8">
+        Create Username
+      </h1>
+      <label
+        for="username"
+        class="block text-sm font-medium text-gray-700"
+      >Username</label>
       <div class="mt-1 flex relative rounded-full shadow-sm">
         <input
           ref="usernameInput"
           v-model="newUsername"
-          @update:model-value="updateUsername"
           type="text"
           :class="[
             usernameIsTaken
@@ -196,7 +198,8 @@ export default defineComponent({
             dark:bg-gray-800
             border-gray-300
           "
-        />
+          @update:model-value="updateUsername"
+        >
         <div
           v-if="usernameIsTaken"
           class="
@@ -209,7 +212,10 @@ export default defineComponent({
             pointer-posts-none
           "
         >
-          <ExclamationIcon class="h-5 w-5 text-red-500" aria-hidden="true" />
+          <ExclamationIcon
+            class="h-5 w-5 text-red-500"
+            aria-hidden="true"
+          />
         </div>
       </div>
 
@@ -217,33 +223,40 @@ export default defineComponent({
         <p class="text-xs my-1">
           {{ usernameIsTaken ? "The username is already taken." : "" }}
         </p>
-        <div v-if="confirmedAvailable" class="flex items-start">
+        <div
+          v-if="confirmedAvailable"
+          class="flex items-start"
+        >
           <div class="flex-shrink-0">
             <CheckCircleIcon
               class="h-6 w-6 mr-2 text-green-400"
               aria-hidden="true"
             />
           </div>
-          <p class="mt-1 text-sm text-gray-500">This username is available</p>
+          <p class="mt-1 text-sm text-gray-500">
+            This username is available
+          </p>
         </div>
       </div>
 
       <PrimaryButton
         class="mb-3 float-right"
-        @click="createEmailAndUser"
         :label="'Save'"
         :disabled="!confirmedAvailable"
+        @click="createEmailAndUser"
       />
-      <p v-if="createEmailAndUserLoading">Loading...</p>
+      <p v-if="createEmailAndUserLoading">
+        Loading...
+      </p>
     </div>
     <ErrorBanner
-      class="my-3 mx-auto max-w-5xl"
       v-if="createEmailAndUserError"
+      class="my-3 mx-auto max-w-5xl"
       :text="createEmailAndUserError.message"
     />
     <ErrorBanner
-      class="my-3 mx-auto max-w-5xl"
       v-if="linkUserToEmailError"
+      class="my-3 mx-auto max-w-5xl"
       :text="linkUserToEmailError.message"
     />
   </div>

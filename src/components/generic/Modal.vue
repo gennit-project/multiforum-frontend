@@ -40,8 +40,16 @@ export default defineComponent({
 });
 </script>
 <template>
-  <TransitionRoot @click="$emit('close')" as="template" :show="show">
-    <TailwindDialog as="div" class="relative z-10" @close="$emit('close')">
+  <TransitionRoot
+    as="template"
+    :show="show"
+    @click="$emit('close')"
+  >
+    <TailwindDialog
+      as="div"
+      class="relative z-10"
+      @close="$emit('close')"
+    >
       <TransitionChild
         as="template"
         enter="ease-out duration-300"
@@ -121,7 +129,7 @@ export default defineComponent({
                     {{ title }}
                   </DialogTitle>
                   <div class="mt-2">
-                    <slot name="content"></slot>
+                    <slot name="content" />
                   </div>
                 </div>
               </div>

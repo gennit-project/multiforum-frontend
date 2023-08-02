@@ -50,30 +50,37 @@ export default defineComponent({
 </script>
 <template>
   <RequireAuth class="flex flex-row space-x-3">
-    <template v-slot:has-auth>
-      <VoteButton :count="upvoteCount" :active="upvoteActive" @vote="clickUp">
-        <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
+    <template #has-auth>
+      <VoteButton
+        :count="upvoteCount"
+        :active="upvoteActive"
+        @vote="clickUp"
+      >
+        <i class="fa-solid fa-arrow-up mr-2 w-3" />
       </VoteButton>
       <VoteButton
-        class="ml-2"
         v-if="showDownvote"
+        class="ml-2"
         :count="downvoteCount"
         :active="downvoteActive"
         @vote="clickDown"
       >
-        <i class="fa-solid fa-arrow-down mr-2 w-3"></i>
+        <i class="fa-solid fa-arrow-down mr-2 w-3" />
       </VoteButton>
     </template>
-    <template v-slot:does-not-have-auth>
-      <VoteButton :count="upvoteCount" :active="upvoteActive">
-        <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
+    <template #does-not-have-auth>
+      <VoteButton
+        :count="upvoteCount"
+        :active="upvoteActive"
+      >
+        <i class="fa-solid fa-arrow-up mr-2 w-3" />
       </VoteButton>
       <VoteButton
         v-if="showDownvote"
         :count="downvoteCount"
         :active="downvoteActive"
       >
-        <i class="fa-solid fa-arrow-down w-3"></i>
+        <i class="fa-solid fa-arrow-down w-3" />
       </VoteButton>
     </template>
   </RequireAuth>

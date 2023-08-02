@@ -6,13 +6,13 @@ export default defineComponent({
   components: {
     ChannelIcon,
   },
-  setup() {},
   props: {
     channelId: {
       type: String,
       required: true,
     },
   },
+  setup() {},
 });
 </script>
 
@@ -25,7 +25,7 @@ export default defineComponent({
           {{ channelId }}
         </h1>
       </div>
-      <slot></slot>
+      <slot />
     </div>
   </section>
 </template>

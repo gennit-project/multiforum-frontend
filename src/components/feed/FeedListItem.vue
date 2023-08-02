@@ -3,13 +3,13 @@ import { defineComponent, PropType } from "vue";
 import { FeedData } from "../../types/feedTypes";
 
 export default defineComponent({
-  setup() {},
   props: {
     feed: {
       type: Object as PropType<FeedData>,
       required: true,
     },
   },
+  setup() {},
   data() {
     return {
       previewIsOpen: false,
@@ -32,7 +32,6 @@ export default defineComponent({
         class="block cursor-pointer"
         @click="$emit('openFeedPreview', feed)"
       >
-        
         <p class="text-md font-medium text-blue-600 truncate">
           <span>{{ feed.title }}</span>
         </p>
@@ -49,8 +48,7 @@ export default defineComponent({
           font-medium
           text-sm text-gray-500
         "
-        >{{ feed.time }}</time
-      >
+      >{{ feed.time }}</time>
     </div>
     <div class="mt-1">
       <p class="line-clamp-2 text-sm font-medium text-gray-600">
@@ -59,7 +57,8 @@ export default defineComponent({
     </div>
     <div class="mt-3 text-sm">
       <router-link
-        :to="`/feeds/${feed.id}`" class=" font-medium text-blue-600 hover:text-blue-500 "
+        :to="`/feeds/${feed.id}`"
+        class=" font-medium text-blue-600 hover:text-blue-500 "
       >
         View Comments
         <span aria-hidden="true">&rarr;</span>

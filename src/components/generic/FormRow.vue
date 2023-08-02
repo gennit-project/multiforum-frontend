@@ -3,13 +3,13 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {},
   props: {
     sectionTitle: {
       type: String,
       default: "",
     },
   },
+  setup() {},
 });
 </script>
 
@@ -53,10 +53,10 @@ export default defineComponent({
         align-right
       "
     >
-      <slot name="icon" ></slot>
+      <slot name="icon" />
     </div>
     <div class="sm:col-span-11">
-       <slot name="content"></slot>
+      <slot name="content" />
     </div>
   </div>
 </template>

@@ -12,6 +12,7 @@ import TextEditor from "@/components/generic/TextEditor.vue";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
 
 export default defineComponent({
+  name: "CreateEditChannelFields",
   components: {
     AnnotationIcon,
     TagIcon,
@@ -22,7 +23,6 @@ export default defineComponent({
     TagInput,
     PencilIcon,
   },
-  name: "CreateEditChannelFields",
   props: {
     editMode: {
       type: Boolean,
@@ -72,9 +72,14 @@ export default defineComponent({
 </script>
 <template>
   <div class="mt-8 flex justify-center">
-    <div v-if="channelLoading">Loading...</div>
+    <div v-if="channelLoading">
+      Loading...
+    </div>
     <div v-else-if="getChannelError">
-      <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
+      <div
+        v-for="(error, i) of getChannelError?.graphQLErrors"
+        :key="i"
+      >
         {{ error.message }}
       </div>
     </div>
@@ -89,14 +94,21 @@ export default defineComponent({
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
         <div class="sm:mt-5 space-y-4 sm:space-y-5">
           <FormRow>
-            <template v-slot:icon>
+            <template #icon>
               <div class="flex justify-end">
-                <span v-if="!editMode" class="text-red-500">*</span
-                ><PencilIcon class="h-6 w-6" />
-                <v-tooltip activator="parent" location="top"> Title </v-tooltip>
+                <span
+                  v-if="!editMode"
+                  class="text-red-500"
+                >*</span><PencilIcon class="h-6 w-6" />
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Title
+                </v-tooltip>
               </div>
             </template>
-            <template v-slot:content>
+            <template #content>
               <TextInput
                 :test-id="'title-input'"
                 :disabled="editMode"
@@ -108,11 +120,16 @@ export default defineComponent({
             </template>
           </FormRow>
           <FormRow>
-            <template v-slot:icon>
+            <template #icon>
               <TagIcon class="float-right h-6 w-6" />
-              <v-tooltip activator="parent" location="top"> Tags </v-tooltip>
+              <v-tooltip
+                activator="parent"
+                location="top"
+              >
+                Tags
+              </v-tooltip>
             </template>
-            <template v-slot:content>
+            <template #content>
               <TagInput
                 :test-id="'tags-input'"
                 :selected-tags="formValues?.selectedTags"
@@ -123,13 +140,16 @@ export default defineComponent({
             </template>
           </FormRow>
           <FormRow class="h-72 overflow-scroll">
-            <template v-slot:icon>
+            <template #icon>
               <AnnotationIcon class="float-right h-6 w-6" />
-              <v-tooltip activator="parent" location="top">
+              <v-tooltip
+                activator="parent"
+                location="top"
+              >
                 Description
               </v-tooltip>
             </template>
-            <template v-slot:content>
+            <template #content>
               <TextEditor
                 class="mb-3"
                 :test-id="'description-input'"
@@ -143,7 +163,10 @@ export default defineComponent({
       </div>
     </TailwindForm>
 
-    <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
+    <div
+      v-for="(error, i) of getChannelError?.graphQLErrors"
+      :key="i"
+    >
       {{ error.message }}
     </div>
   </div>

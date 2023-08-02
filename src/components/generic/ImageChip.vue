@@ -18,59 +18,62 @@
 
 </script>
 <template>
-    <v-menu
-        v-model="menu"
-        location="top start"
-        origin="top start"
-        transition="scale-transition"
+  <v-menu
+    v-model="menu"
+    location="top start"
+    origin="top start"
+    transition="scale-transition"
+  >
+    <template #activator="{ props }">
+      <v-chip
+        pill
+        v-bind="props"
+        link
       >
-        <template v-slot:activator="{ props }">
-          <v-chip
-            pill
-            v-bind="props"
-            link
-          >
-            <v-avatar start>
-              <v-img src="https://cdn.vuetifyjs.com/images/john.png"></v-img>
-            </v-avatar>
+        <v-avatar start>
+          <v-img src="https://cdn.vuetifyjs.com/images/john.png" />
+        </v-avatar>
 
-            John Leider
-          </v-chip>
-        </template>
+        John Leider
+      </v-chip>
+    </template>
 
-        <v-card width="300">
-          <v-list bg-color="black">
-            <v-list-item>
-              <template v-slot:prepend>
-                <v-avatar image="https://cdn.vuetifyjs.com/images/john.png"></v-avatar>
-              </template>
+    <v-card width="300">
+      <v-list bg-color="black">
+        <v-list-item>
+          <template #prepend>
+            <v-avatar image="https://cdn.vuetifyjs.com/images/john.png" />
+          </template>
 
-              <v-list-item-title>John Leider</v-list-item-title>
+          <v-list-item-title>John Leider</v-list-item-title>
 
-              <v-list-item-subtitle>john@google.com</v-list-item-subtitle>
+          <v-list-item-subtitle>john@google.com</v-list-item-subtitle>
 
-              <template v-slot:append>
-                <v-list-item-action>
-                  <v-btn
-                    icon
-                    variant="text"
-                    @click="menu = false"
-                  >
-                    <v-icon>mdi-close-circle</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </template>
-            </v-list-item>
-          </v-list>
+          <template #append>
+            <v-list-item-action>
+              <v-btn
+                icon
+                variant="text"
+                @click="menu = false"
+              >
+                <v-icon>mdi-close-circle</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </template>
+        </v-list-item>
+      </v-list>
 
-          <v-list>
-            <v-list-item link prepend-icon="mdi-briefcase">
-              <v-list-item-subtitle>john@gmail.com</v-list-item-subtitle>
-            </v-list-item>
-          </v-list>
-        </v-card>
-      </v-menu>
-  </template>
+      <v-list>
+        <v-list-item
+          link
+          prepend-icon="mdi-briefcase"
+        >
+          <v-list-item-subtitle>john@gmail.com</v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+    </v-card>
+  </v-menu>
+</template>
 
   
   <style scoped>

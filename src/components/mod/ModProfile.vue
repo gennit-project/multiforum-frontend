@@ -2,13 +2,16 @@
 import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import Avatar from "@/components/user/Avatar.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_MOD } from "@/graphQLData/mod/queries";
 import UsernameLabel from "../generic/UsernameLabel.vue";
 import { relativeTime } from "@/utils/dateTimeUtils";
 
 export default defineComponent({
+  components: {
+    ErrorBanner,
+    UsernameLabel
+  },
   setup() {
     const route = useRoute();
 
@@ -48,22 +51,25 @@ export default defineComponent({
       ],
     };
   },
-  components: {
-    ErrorBanner,
-    Avatar,
-    UsernameLabel
-  },
 });
 </script>
 
 <template>
   <div class="flex-1">
-    <div v-if="loading">Loading...</div>
-    <ErrorBanner :text="error.message" v-else-if="error" :error="error" />
-    <div v-else-if="!mod">
-      <p class="m-4">Mod profile not found.</p>
+    <div v-if="loading">
+      Loading...
     </div>
-    <article v-else >
+    <ErrorBanner
+      v-else-if="error"
+      :text="error.message"
+      :error="error"
+    />
+    <div v-else-if="!mod">
+      <p class="m-4">
+        Mod profile not found.
+      </p>
+    </div>
+    <article v-else>
       <div>
         <div>
           <div
@@ -74,7 +80,11 @@ export default defineComponent({
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
             <div class="flex">
-              <Profile v-if="displayName" :text="displayName" class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32" />
+              <Profile
+                v-if="displayName"
+                :text="displayName"
+                class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32"
+              />
             </div>
             <div
               class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
@@ -112,7 +122,10 @@ export default defineComponent({
       <div class="mt-6 sm:mt-2 2xl:mt-5  ">
         <div class="border-b border-gray-200 bg-gray-100">
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-            <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+            <nav
+              class="-mb-px flex space-x-8"
+              aria-label="Tabs"
+            >
               <a
                 v-for="tab in tabs"
                 :key="tab.name"
@@ -124,13 +137,12 @@ export default defineComponent({
                   'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm',
                 ]"
                 :aria-current="tab.current ? 'page' : undefined"
-                >{{ tab.name }}</a
-              >
+              >{{ tab.name }}</a>
             </nav>
           </div>
         </div>
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
-          <router-view></router-view>
+          <router-view />
         </div>
       </div>
     </article>

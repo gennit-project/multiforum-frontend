@@ -75,6 +75,6 @@ export default defineComponent({
     @goToUserProfile="goToUserProfile"
     @goToModProfile="goToModProfile"
   >
-    <Avatar :text="username"/>
+    <Avatar :text="username" />
   </IconButtonDropdown>
 </template>

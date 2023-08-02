@@ -38,12 +38,18 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">Error</div>
-    <div v-else-if="result && result.users.length === 0">No results</div>
+    <div v-if="loading">
+      Loading...
+    </div>
+    <div v-else-if="error">
+      Error
+    </div>
+    <div v-else-if="result && result.users.length === 0">
+      No results
+    </div>
     <DiscussionItemInProfile
-      v-else-if="result && result.users.length > 0"
       v-for="discussion in result.users[0].Discussions"
+      v-else-if="result && result.users.length > 0"
       :key="discussion.id"
       :discussion="discussion"
     />

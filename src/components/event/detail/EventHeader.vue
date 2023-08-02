@@ -110,25 +110,31 @@ export default defineComponent({
         {{ eventData.title }}
       </h2>
     </div>
-    <div v-if="channelId && route.name === 'EventDetail'" class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4">
+    <div
+      v-if="channelId && route.name === 'EventDetail'"
+      class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4"
+    >
       <div class="float-right">
         <span>
           <RequireAuth
-            class="flex inline-flex"
             v-if="eventData.Poster"
+            class="flex inline-flex"
             :require-ownership="true"
             :owners="[eventData.Poster.username]"
           >
-            <template v-slot:has-auth>
+            <template #has-auth>
               <router-link
                 :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
               >
-                <GenericButton :text="'Edit'" data-testid="edit-event-button"/>
+                <GenericButton
+                  :text="'Edit'"
+                  data-testid="edit-event-button"
+                />
               </router-link>
             </template>
           </RequireAuth>
           <RequireAuth class="flex inline-flex">
-            <template v-slot:has-auth>
+            <template #has-auth>
               <CreateButton
                 class="ml-2"
                 data-testid="real-create-event-button"
@@ -136,8 +142,12 @@ export default defineComponent({
                 :label="'Create Event'"
               />
             </template>
-            <template v-slot:does-not-have-auth>
-              <PrimaryButton data-testid="fake-create-event-button" class="ml-2" :label="'Create Event'" />
+            <template #does-not-have-auth>
+              <PrimaryButton
+                data-testid="fake-create-event-button"
+                class="ml-2"
+                :label="'Create Event'"
+              />
             </template>
           </RequireAuth>
         </span>
@@ -153,21 +163,33 @@ export default defineComponent({
         </div>
         <span>{{ `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}` }}</span>
       </li>
-      <li class="flex items-start hanging-indent" v-if="eventData.isInPrivateResidence">
+      <li
+        v-if="eventData.isInPrivateResidence"
+        class="flex items-start hanging-indent"
+      >
         <div class="h-5 w-5 mr-3">
           <HomeIcon />
         </div>
         <span>This event is in a private residence.</span>
       </li>
-      <li class="flex items-start hanging-indent" v-if="eventData.virtualEventUrl">
+      <li
+        v-if="eventData.virtualEventUrl"
+        class="flex items-start hanging-indent"
+      >
         <div class="h-5 w-5 mr-3">
           <LinkIcon />
         </div>
-        <span class="underline cursor-pointer" @click="openLink">
+        <span
+          class="underline cursor-pointer"
+          @click="openLink"
+        >
           {{ eventData.virtualEventUrl }}
         </span>
       </li>
-      <li class="flex items-start hanging-indent" v-if="eventData.address">
+      <li
+        v-if="eventData.address"
+        class="flex items-start hanging-indent"
+      >
         <div class="h-5 w-5 mr-3">
           <LocationIcon />
         </div>
@@ -191,8 +213,8 @@ export default defineComponent({
         </span>
       </li>
       <li
-        class="flex items-start hanging-indent"
         v-if="!eventData.free && eventData.cost && eventData.cost !== '0'"
+        class="flex items-start hanging-indent"
       >
         <div class="h-5 w-5 mr-3">
           <TicketIcon class="text-gray-700" />
@@ -206,6 +228,4 @@ export default defineComponent({
       @closeNotification="showAddressCopiedNotification = false"
     />
   </div>
-  
-    
 </template>

@@ -31,17 +31,18 @@ import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
-  props: {
-    discussionChannel: {
-      type: Object as PropType<DiscussionChannel>,
-      required: true,
-    },
-  },
   components: {
     Comment,
     ErrorBanner,
     // LoadMore,
     WarningModal,
+  },
+  inheritAttrs: false,
+  props: {
+    discussionChannel: {
+      type: Object as PropType<DiscussionChannel>,
+      required: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -537,27 +538,32 @@ export default defineComponent({
       });
     },
   },
-  inheritAttrs: false,
 });
 </script>
 <template>
   <div>
     <div v-if="discussionChannel.CommentsAggregate?.count === 0">
-      <h2 class="mb-2 text-lg" id="comments" ref="commentSectionHeader">
+      <h2
+        id="comments"
+        ref="commentSectionHeader"
+        class="mb-2 text-lg"
+      >
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
-        class="mr-10 mt-2"
         v-if="locked"
+        class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      <p v-else>There are no comments yet.</p>
+      <p v-else>
+        There are no comments yet.
+      </p>
     </div>
 
     <div
       v-else-if="
         discussionChannel.CommentsAggregate &&
-        discussionChannel.CommentsAggregate.count > 0
+          discussionChannel.CommentsAggregate.count > 0
       "
     >
       <h2
@@ -569,8 +575,8 @@ export default defineComponent({
         {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
       </h2>
       <ErrorBanner
-        class="mr-10 mt-2"
         v-if="locked"
+        class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <div class="mb-6">
@@ -581,7 +587,7 @@ export default defineComponent({
           v-for="comment in discussionChannel.Comments"
           :key="comment.id"
           :compact="true"
-          :commentData="comment"
+          :comment-data="comment"
           :depth="1"
           :locked="locked"
           @clickEditComment="handleClickEdit"

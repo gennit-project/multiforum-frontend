@@ -21,6 +21,31 @@ import { DiscussionWhere } from "@/__generated__/graphql";
 const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
+  components: {
+    ChannelDiscussionListItem,
+    ErrorBanner,
+    LoadMore,
+    WarningModal,
+  },
+  inheritAttrs: false,
+  props: {
+    searchInput: {
+      type: String,
+      default: "",
+    },
+    selectedTags: {
+      type: Array as PropType<Array<string>>,
+      default: () => {
+        return [];
+      },
+    },
+    selectedChannels: {
+      type: Array as PropType<Array<string>>,
+      default: () => {
+        return [];
+      },
+    },
+  },
   // The reason we have separate components for the sidewide discussion
   // list and the channel discussion list is because the channel discussion
   // list needs the query to get discussions to return more information,
@@ -179,46 +204,6 @@ export default defineComponent({
       showModProfileModal: ref(false),
     };
   },
-  props: {
-    searchInput: {
-      type: String,
-      default: "",
-    },
-    selectedTags: {
-      type: Array as PropType<Array<String>>,
-      default: () => {
-        return [];
-      },
-    },
-    selectedChannels: {
-      type: Array as PropType<Array<String>>,
-      default: () => {
-        return [];
-      },
-    },
-  },
-  components: {
-    ChannelDiscussionListItem,
-    ErrorBanner,
-    LoadMore,
-    WarningModal,
-  },
-  methods: {
-    filterByTag(tag: string) {
-      this.$emit("filterByTag", tag);
-    },
-    filterByChannel(channel: string) {
-      this.$emit("filterByChannel", channel);
-    },
-    async handleCreateModProfileClick() {
-      await this.createModProfile();
-      modProfileNameVar();
-      this.downvote();
-      this.showModProfileModal = false;
-      // show snack
-    },
-  },
-  inheritAttrs: false,
   created() {
     this.$watch("$route.query", () => {
       if (this.$route.query) {
@@ -239,20 +224,37 @@ export default defineComponent({
       );
     }
   },
+  methods: {
+    filterByTag(tag: string) {
+      this.$emit("filterByTag", tag);
+    },
+    filterByChannel(channel: string) {
+      this.$emit("filterByChannel", channel);
+    },
+    async handleCreateModProfileClick() {
+      await this.createModProfile();
+      modProfileNameVar();
+      this.downvote();
+      this.showModProfileModal = false;
+      // show snack
+    },
+  },
 });
 </script>
 <template>
   <div class="w-full">
-    <p v-if="discussionLoading">Loading...</p>
+    <p v-if="discussionLoading">
+      Loading...
+    </p>
     <ErrorBanner
-      class="max-w-5xl"
       v-else-if="discussionError"
+      class="max-w-5xl"
       :text="discussionError.message"
     />
     <p
       v-else-if="
         discussionChannelResult &&
-        discussionChannelResult.discussionChannels.length === 0
+          discussionChannelResult.discussionChannels.length === 0
       "
       class="my-6 px-4"
     >
@@ -273,7 +275,7 @@ export default defineComponent({
             :search-input="searchInput"
             :selected-tags="selectedTags"
             :selected-channels="selectedChannels"
-            @openModProfile="this.showModProfileModal = true"
+            @openModProfile="showModProfileModal = true"
             @filterByTag="filterByTag"
             @filterByChannel="filterByChannel"
           />
@@ -283,7 +285,7 @@ export default defineComponent({
             class="justify-self-center"
             :reached-end-of-results="
               discussionChannelResult.discussionChannelsAggregate?.count ===
-              discussionChannelResult.discussionChannels.length
+                discussionChannelResult.discussionChannels.length
             "
             @loadMore="$emit('loadMore')"
           />
@@ -294,7 +296,7 @@ export default defineComponent({
       :title="'Create Mod Profile'"
       :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
       :open="showModProfileModal"
-      :primaryButtonText="'Yes, create a mod profile'"
+      :primary-button-text="'Yes, create a mod profile'"
       @close="showModProfileModal = false"
       @primaryButtonClick="handleCreateModProfileClick"
     />

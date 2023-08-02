@@ -9,6 +9,40 @@ import { DateTime } from "luxon";
 import { SearchEventValues } from "@/types/eventTypes";
 
 export default defineComponent({
+  components: {
+    Tag,
+    HighlightedSearchTerms,
+  },
+  props: {
+    event: {
+      type: Object as PropType<EventData>,
+      required: true,
+    },
+    selectedTags: {
+      type: Array as PropType<string[]>,
+      default: () => {
+        return [];
+      },
+    },
+    selectedChannels: {
+      type: Array as PropType<string[]>,
+      default: () => {
+        return [];
+      },
+    },
+    currentChannelId: {
+      type: String,
+      required: true,
+    },
+    searchInput: {
+      type: String,
+      default: "",
+    },
+    showMap: {
+      type: Boolean,
+      required: true,
+    },
+  },
   setup(props) {
     const route = useRoute();
     const startTimeObj = DateTime.fromISO(props.event.startTime);
@@ -48,35 +82,12 @@ export default defineComponent({
       timeOfDay,
     };
   },
-  props: {
-    event: {
-      type: Object as PropType<EventData>,
-      required: true,
-    },
-    selectedTags: {
-      type: Array as PropType<String[]>,
-      default: () => {
-        return [];
-      },
-    },
-    selectedChannels: {
-      type: Array as PropType<String[]>,
-      default: () => {
-        return [];
-      },
-    },
-    currentChannelId: {
-      type: String,
-      required: true,
-    },
-    searchInput: {
-      type: String,
-      default: "",
-    },
-    showMap: {
-      type: Boolean,
-      required: true,
-    },
+  data(props) {
+    return {
+      hover: false,
+      previewIsOpen: false,
+      isWithinChannel: props.currentChannelId ? true : false,
+    };
   },
   computed: {
     selectedTagsMap() {
@@ -218,17 +229,6 @@ export default defineComponent({
       });
     },
   },
-  data(props) {
-    return {
-      hover: false,
-      previewIsOpen: false,
-      isWithinChannel: props.currentChannelId ? true : false,
-    };
-  },
-  components: {
-    Tag,
-    HighlightedSearchTerms,
-  },
 });
 </script>
 
@@ -283,27 +283,34 @@ export default defineComponent({
                 </span>
 
                 <span
-                  class="text-red-800 bg-red-100 dark:text-white dark:bg-red-900 py-1 text-sm rounded-lg px-3"
                   v-if="event.canceled"
-                  >Canceled</span
-                >
+                  class="text-red-800 bg-red-100 dark:text-white dark:bg-red-900 py-1 text-sm rounded-lg px-3"
+                >Canceled</span>
               </p>
               <p
                 class="mt-2 flex flex-wrap text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2"
               >
                 {{ `${event.locationName || ""}` }}
               </p>
-              <p v-if="event.virtualEventUrl">Online event</p>
-              <p v-if="event.free" class="text-sm font-medium text-gray-600">
+              <p v-if="event.virtualEventUrl">
+                Online event
+              </p>
+              <p
+                v-if="event.free"
+                class="text-sm font-medium text-gray-600"
+              >
                 Free
               </p>
-              <div class="text-sm" v-if="!isWithinChannel">
+              <div
+                v-if="!isWithinChannel"
+                class="text-sm"
+              >
                 <Tag
+                  v-for="channel in event.Channels"
+                  :key="channel.uniqueName"
                   class="my-1"
                   :active="selectedChannels.includes(channel.uniqueName)"
-                  :key="channel.uniqueName"
                   :channel-mode="true"
-                  v-for="channel in event.Channels"
                   :tag="channel.uniqueName"
                   @click="
                     () => {
@@ -316,10 +323,10 @@ export default defineComponent({
                 class="text-sm text-slate-600 hover:no-underline font-medium mt-1"
               >
                 <Tag
+                  v-for="tag in event.Tags"
+                  :key="tag"
                   class="my-1"
                   :active="selectedTags.includes(tag.text)"
-                  :key="tag"
-                  v-for="tag in event.Tags"
                   :tag="tag.text"
                   @click="
                     () => {

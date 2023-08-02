@@ -177,6 +177,17 @@ export default defineComponent({
       route,
     };
   },
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.route.query) {
+        this.filterValues = getFilterValuesFromParams({
+          route: this.route,
+          channelId: this.channelId,
+          isEventListView: true,
+        });
+      }
+    });
+  },
   methods: {
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
@@ -223,21 +234,13 @@ export default defineComponent({
       this.updateFilters({ channels: channel });
     },
   },
-  created() {
-    this.$watch("$route.query", () => {
-      if (this.route.query) {
-        this.filterValues = getFilterValuesFromParams({
-          route: this.route,
-          channelId: this.channelId,
-          isEventListView: true,
-        });
-      }
-    });
-  },
 });
 </script>
 <template>
-  <v-container fluid class="mx-auto max-w-7xl">
+  <v-container
+    fluid
+    class="mx-auto max-w-7xl"
+  >
     <v-row>
       <v-col cols="12">
         <div class="mt-3">
@@ -248,47 +251,57 @@ export default defineComponent({
             />
           </div>
           <div class="w-full">
-              <ErrorBanner
-                class="mx-auto block"
-                v-if="eventError"
-                :text="eventError.message"
-              />
-              <p v-else-if="eventLoading">Loading...</p>
-              <TwoSeparatelyScrollingPanes class="block w-full">
-                <template v-slot:leftpane>
-                  <TimeShortcuts :is-list-view="true" class="px-4"/>
-                  <EventList
-                    id="listView"
-                    v-if="!eventLoading && eventResult"
-                    :class="[!channelId ? '' : '']"
-                    class="relative"
-                    :result-count="
-                      eventResult ? eventResult.eventsAggregate?.count : 0
-                    "
-                    :events="eventResult.events"
-                    :channel-id="channelId"
-                    :search-input="filterValues.searchInput"
-                    :selected-tags="filterValues.tags"
-                    :selected-channels="filterValues.channels"
-                    :show-map="false"
-                    @filterByTag="filterByTag"
-                    @filterByChannel="filterByChannel"
-                    @loadMore="loadMore"
-                    @openPreview="openPreview"
-                  />
-                  <div class="mx-auto" v-if="eventLoading">Loading...</div>
-                  <DrawerFlyout
-                    v-if="eventId"
-                    :isOpen="previewIsOpen"
-                    @closePreview="closePreview"
-                  >
-                    <EventDetail />
-                  </DrawerFlyout>
-                </template>
-                <template v-slot:rightpane>
-                  <router-view></router-view>
-                </template>
-              </TwoSeparatelyScrollingPanes>
+            <ErrorBanner
+              v-if="eventError"
+              class="mx-auto block"
+              :text="eventError.message"
+            />
+            <p v-else-if="eventLoading">
+              Loading...
+            </p>
+            <TwoSeparatelyScrollingPanes class="block w-full">
+              <template #leftpane>
+                <TimeShortcuts
+                  :is-list-view="true"
+                  class="px-4"
+                />
+                <EventList
+                  v-if="!eventLoading && eventResult"
+                  id="listView"
+                  :class="[!channelId ? '' : '']"
+                  class="relative"
+                  :result-count="
+                    eventResult ? eventResult.eventsAggregate?.count : 0
+                  "
+                  :events="eventResult.events"
+                  :channel-id="channelId"
+                  :search-input="filterValues.searchInput"
+                  :selected-tags="filterValues.tags"
+                  :selected-channels="filterValues.channels"
+                  :show-map="false"
+                  @filterByTag="filterByTag"
+                  @filterByChannel="filterByChannel"
+                  @loadMore="loadMore"
+                  @openPreview="openPreview"
+                />
+                <div
+                  v-if="eventLoading"
+                  class="mx-auto"
+                >
+                  Loading...
+                </div>
+                <DrawerFlyout
+                  v-if="eventId"
+                  :is-open="previewIsOpen"
+                  @closePreview="closePreview"
+                >
+                  <EventDetail />
+                </DrawerFlyout>
+              </template>
+              <template #rightpane>
+                <router-view />
+              </template>
+            </TwoSeparatelyScrollingPanes>
           </div>
         </div>
       </v-col>

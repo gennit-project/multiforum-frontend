@@ -32,10 +32,15 @@ export default defineComponent({
   <div
     class="rounded-lg space-y-4 shadow-md   text-gray-900 p-4 mr-4 narrow"
   >
-    <div class="text-lg mb-2">Crossposted To Channels</div>
+    <div class="text-lg mb-2">
+      Crossposted To Channels
+    </div>
 
     <ul class="list-disc pl-3">
-      <li v-for="channel in channelLinks" :key="channel.uniqueName">
+      <li
+        v-for="channel in channelLinks"
+        :key="channel.uniqueName"
+      >
         <router-link
           class="mr-1 underline"
           :to="{
@@ -58,7 +63,11 @@ export default defineComponent({
             },
           }"
         >
-          <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
+          <Tag
+            class="mt-2"
+            :tag="channel.uniqueName"
+            :channel-mode="true"
+          />
         </router-link>
       </li>
     </ul>

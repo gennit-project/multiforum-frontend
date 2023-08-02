@@ -86,17 +86,28 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="channelsLoading">Loading...</div>
+    <div v-if="channelsLoading">
+      Loading...
+    </div>
     <div v-else-if="channelsError">
-      <div v-for="(error, i) of channelsError?.graphQLErrors" :key="i">
+      <div
+        v-for="(error, i) of channelsError?.graphQLErrors"
+        :key="i"
+      >
         {{ error.message }}
       </div>
     </div>
-    <div v-else class="divide-y divide-solid dark:bg-gray-950">
-      <div data-testid="channel-picker" class="channel-picker">
+    <div
+      v-else
+      class="divide-y divide-solid dark:bg-gray-950"
+    >
+      <div
+        data-testid="channel-picker"
+        class="channel-picker"
+      >
         <Tag
-          :key="channel"
           v-for="channel in channelOptionLabels"
+          :key="channel"
           :data-testid="`channel-picker-${channel}`"
           :active="!!selectedChannelsMap[channel]"
           :tag="channel"
@@ -106,7 +117,7 @@ export default defineComponent({
         />
       </div>
       <div class="h-14">
-        <ResetButton @reset="resetChannels"/>
+        <ResetButton @reset="resetChannels" />
       </div>
     </div>
   </div>

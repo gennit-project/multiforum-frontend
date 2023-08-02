@@ -5,6 +5,9 @@ import { useRoute } from "vue-router";
 import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
+  components: {
+    ChannelLink,
+  },
   props: {
     channelId: {
       type: String,
@@ -14,9 +17,6 @@ export default defineComponent({
       type: Array as PropType<Array<DiscussionChannel>>,
       required: true,
     },
-  },
-  components: {
-    ChannelLink,
   },
   setup(props) {
     const route = useRoute();
@@ -77,51 +77,62 @@ export default defineComponent({
 
 <template>
   <div class="px-4">
-    <div class="my-4" v-if="!channelId">
-      <h2 class="text-lg">Comments in Channels</h2>
+    <div
+      v-if="!channelId"
+      class="my-4"
+    >
+      <h2 class="text-lg">
+        Comments in Channels
+      </h2>
 
       <ul class="list-disc pl-3">
         <ChannelLink
           v-for="discussionChannel in discussionChannels"
           :key="discussionChannel.id"
-          :channelId="discussionChannel.channelUniqueName"
+          :channel-id="discussionChannel.channelUniqueName"
           :comment-count="discussionChannel.CommentsAggregate?.count || 0"
           :upvote-count="discussionChannel.upvoteCount || 0"
-          :discussionId="discussionChannel.discussionId"
+          :discussion-id="discussionChannel.discussionId"
         />
       </ul>
     </div>
 
 
     <div v-if="channelId">
-      <h2 class="text-lg">Comments in this Channel</h2>
+      <h2 class="text-lg">
+        Comments in this Channel
+      </h2>
       <ul class="list-disc pl-3">
         <ChannelLink
           v-if="channelId"
-          :channelId="channelId"
+          :channel-id="channelId"
           :comment-count="getCommentCount(channelId)"
           :upvote-count="getVoteCount(channelId)"
-          :discussionId="activeDiscussionChannel.discussionId"
+          :discussion-id="activeDiscussionChannel.discussionId"
         />
       </ul>
 
       <div>
-        <h2 class="mt-4 text-lg">Comments in Other Channels</h2>
+        <h2 class="mt-4 text-lg">
+          Comments in Other Channels
+        </h2>
         <ul class="list-disc pl-3">
           <ChannelLink
             v-for="dc in channelsExceptActive"
             :key="dc.id"
-            :channelId="dc.channelUniqueName"
+            :channel-id="dc.channelUniqueName"
             :comment-count="dc.CommentsAggregate?.count || 0"
             :upvote-count="dc.upvoteCount || 0"
-            :discussionId="dc.discussionId"
+            :discussion-id="dc.discussionId"
           />
         </ul>
-        <p class="text-sm" v-if="channelsExceptActive.length === 0">
+        <p
+          v-if="channelsExceptActive.length === 0"
+          class="text-sm"
+        >
           The post was not submitted to any other channels.
         </p>
       </div>
     </div>
- 
   </div>
 </template>

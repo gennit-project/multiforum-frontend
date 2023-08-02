@@ -11,6 +11,14 @@ import XIcon from "@/components/icons/XmarkIcon.vue";
 import { FeedData } from "../../types/feedTypes";
 
 export default defineComponent({
+  components: {
+    DialogComponent: Dialog,
+    DialogOverlay,
+    DialogTitle,
+    TransitionChild,
+    TransitionRoot,
+    XIcon,
+  },
   props: {
     isOpen: {
       type: Boolean,
@@ -22,19 +30,14 @@ export default defineComponent({
     },
   },
   setup() {},
-  components: {
-    DialogComponent: Dialog,
-    DialogOverlay,
-    DialogTitle,
-    TransitionChild,
-    TransitionRoot,
-    XIcon,
-  },
 });
 </script>
 
 <template>
-  <TransitionRoot as="template" :show="isOpen">
+  <TransitionRoot
+    as="template"
+    :show="isOpen"
+  >
     <DialogComponent
       as="div"
       class="fixed inset-0 overflow-hidden z-20"
@@ -85,7 +88,10 @@ export default defineComponent({
                           @click="$emit('closePreview')"
                         >
                           <span class="sr-only">Close panel</span>
-                          <XIcon class="h-6 w-6" aria-hidden="true" />
+                          <XIcon
+                            class="h-6 w-6"
+                            aria-hidden="true"
+                          />
                         </button>
                       </div>
                     </div>

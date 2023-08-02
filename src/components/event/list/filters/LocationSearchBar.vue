@@ -8,12 +8,6 @@ export default defineComponent({
   components: {
     LocationIcon,
   },
-  setup() {
-    const route = useRoute();
-    return {
-      route,
-    };
-  },
   props: {
     compact: {
       type: Boolean,
@@ -36,6 +30,12 @@ export default defineComponent({
       default: false,
     },
   },
+  setup() {
+    const route = useRoute();
+    return {
+      route,
+    };
+  },
   methods: {
     updateLocationInput(placeData: any) {
       this.$emit("updateLocationInput", placeData);
@@ -48,7 +48,10 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex">
-    <label for="search" class="sr-only">Search Location</label>
+    <label
+      for="search"
+      class="sr-only"
+    >Search Location</label>
     <div class="relative">
       <div
         v-if="route.name !== 'EditEvent' && route.name !== 'CreateEvent'"
@@ -64,10 +67,9 @@ export default defineComponent({
         autocomplete="false"
         class="pl-10 pr-3 leading-5 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
         :placeholder="searchPlaceholder"
-        disablePortal
+        disable-portal
         @place_changed="updateLocationInput"
-      >
-      </GMapAutocomplete>
+      />
     </div>
   </div>
 </template>

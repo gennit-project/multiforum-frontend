@@ -10,6 +10,11 @@ import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.
 import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
+  components: {
+    HighlightedSearchTerms,
+    Tag,
+  },
+  inheritAttrs: false,
   props: {
     defaultUniqueName: {
       type: String,
@@ -28,21 +33,17 @@ export default defineComponent({
       default: "",
     },
     selectedTags: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
     selectedChannels: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
-  },
-  components: {
-    HighlightedSearchTerms,
-    Tag,
   },
   setup() {
     const route = useRoute();
@@ -87,7 +88,6 @@ export default defineComponent({
       return `/discussions/search/${this.discussionChannel.discussionId}`;
     },
   },
-  inheritAttrs: false,
 });
 </script>
 
@@ -95,9 +95,11 @@ export default defineComponent({
   <li
     class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-3 dark:border-gray-700"
   >
-    <span class="mt-1 w-6"
-      >{{ upvoteCount }}
-      <v-tooltip activator="parent" location="top">
+    <span class="mt-1 w-6">{{ upvoteCount }}
+      <v-tooltip
+        activator="parent"
+        location="top"
+      >
         <span>{{ `Upvotes in ${defaultUniqueName}` }}</span>
       </v-tooltip>
     </span>
@@ -108,17 +110,23 @@ export default defineComponent({
       <div>💬</div>
     </div>
     <div class="w-full">
-      <router-link :to="previewLink" @click="$emit('openPreview')">
+      <router-link
+        :to="previewLink"
+        @click="$emit('openPreview')"
+      >
         <p class="text-md cursor-pointer font-bold hover:text-gray-500">
-          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+          <HighlightedSearchTerms
+            :text="title"
+            :search-input="searchInput"
+          />
         </p>
       </router-link>
       <p class="font-medium mt-1 text-sm text-slate-600 hover:no-underline">
         <Tag
+          v-for="tag in tags"
+          :key="tag"
           class="my-1"
           :active="selectedTags.includes(tag)"
-          :key="tag"
-          v-for="tag in tags"
           :tag="tag"
           @click="$emit('filterByTag', tag)"
         />

@@ -6,9 +6,6 @@ export default defineComponent({
   components: {
     ChevronDownIcon,
   },
-  setup() {
-    return { showMenu: ref(false) };
-  },
   props: {
     label: {
       type: String,
@@ -18,6 +15,9 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+  },
+  setup() {
+    return { showMenu: ref(false) };
   },
 });
 </script>
@@ -29,13 +29,13 @@ export default defineComponent({
       :close-on-content-click="false"
       location="bottom"
     >
-      <template v-slot:activator="{ props }">
+      <template #activator="{ props }">
         <div v-bind="props">
           <button
             :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
             class=" border dark:border-gray-600 mr-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 inline-flex max-height-3 py-2.5 text-xs font-small rounded-md  text-gray-700 dark:text-gray-200  whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           >
-            <slot name="icon"></slot>
+            <slot name="icon" />
 
             {{ label }}
             <ChevronDownIcon
@@ -45,7 +45,7 @@ export default defineComponent({
           </button>
         </div>
       </template>
-      <v-card> <slot name="content"></slot></v-card>
+      <v-card> <slot name="content" /></v-card>
     </v-menu>
   </div>
 </template>

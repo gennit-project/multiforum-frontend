@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <script lang="ts">
 import { defineComponent, onMounted, ref, SetupContext, watch, computed } from "vue";
 import { Loader } from "@googlemaps/js-api-loader";
@@ -121,8 +122,9 @@ export default defineComponent({
             clickable: true,
             draggable: true,
             icon: {
+              // eslint-disable-next-line @typescript-eslint/no-var-requires
               url: require("@/assets/images/place-icon.svg").default,
-              scaledSize: { width: 20, height: 20 },
+              scaledSize: { width: 20, height: 20, equals: () => false },
             },
           });
 
@@ -153,6 +155,7 @@ export default defineComponent({
                 }
 
                 marker.setIcon({
+                  // eslint-disable-next-line @typescript-eslint/no-var-requires
                   url: require("@/assets/images/place-icon.svg").default,
                   scaledSize: { width: 20, height: 20 },
                 });
@@ -226,19 +229,22 @@ export default defineComponent({
 
 <template>
   <div class="text-black">
-    <p class="mx-3" v-if="events.length === 0">
+    <p
+      v-if="events.length === 0"
+      class="mx-3"
+    >
       Could not find any events with a location.
     </p>
     <div
       v-else-if="useMobileStyles"
       ref="mobileMapDiv"
       style="width: 100vw; height: 50vw"
-    ></div>
+    />
     <div
       v-else-if="!useMobileStyles"
       ref="desktopMapDiv"
       style="position: fixed; width: 50vw; height: 100vh"
-    ></div>
+    />
   </div>
 </template>
 <style>

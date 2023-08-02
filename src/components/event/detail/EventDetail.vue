@@ -17,12 +17,6 @@ import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
 
 export default defineComponent({
-  props: {
-    compactMode: {
-      type: Boolean,
-      default: false,
-    },
-  },
   components: {
     ErrorBanner,
     EventFooter,
@@ -30,6 +24,12 @@ export default defineComponent({
     LeftArrowIcon,
     MdEditor,
     Tag,
+  },
+  props: {
+    compactMode: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const route = useRoute();
@@ -176,10 +176,15 @@ export default defineComponent({
         <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
         <span class="underline">{{ `Event list in c/${channelId}` }}</span>
       </router-link>
-      <p class="px-4 lg:px-10" v-if="eventLoading">Loading...</p>
-      <ErrorBanner
+      <p
+        v-if="eventLoading"
         class="px-4 lg:px-10"
+      >
+        Loading...
+      </p>
+      <ErrorBanner
         v-else-if="eventError"
+        class="px-4 lg:px-10"
         :text="eventError.message"
       />
 
@@ -192,45 +197,45 @@ export default defineComponent({
         class="dark:bg-dark-700 pt-4 max-w-2xl mx-auto"
       >
         <ErrorBanner
-          class="mt-2 mb-2"
           v-if="eventIsInThePast"
+          class="mt-2 mb-2"
           :text="'This event is in the past.'"
         />
         <ErrorBanner
+          v-if="eventData.canceled"
           data-testid="canceled-event-banner"
           class="mt-2 mb-2"
-          v-if="eventData.canceled"
           :text="'This event is canceled.'"
         />
         <EventHeader :event-data="eventData" />
         <div class="mt-4">
           <md-editor
             v-if="eventData.description"
-            class="max-w-2xl small-text"
             v-model="visibleDescription"
-            previewTheme="github"
+            class="max-w-2xl small-text"
+            preview-theme="github"
             language="en-US"
-            :noMermaid="true"
+            :no-mermaid="true"
             preview-only
           />
           <button
             v-if="
               eventData?.description &&
-              eventData.description.split(' ').length > 50
+                eventData.description.split(' ').length > 50
             "
-            @click="toggleDescription"
             class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
+            @click="toggleDescription"
           >
             {{ showFullDescription ? "Show less" : "Show more" }}
           </button>
         </div>
         <div class="mx-4 my-2">
           <Tag
-            class="mt-2"
             v-for="tag in eventData.Tags"
-            :tag="tag.text"
             :key="tag.text"
-            :eventId="eventId"
+            class="mt-2"
+            :tag="tag.text"
+            :event-id="eventId"
           />
           <div
             v-if="channelId && channelsExceptCurrent.length > 0"
@@ -244,7 +249,11 @@ export default defineComponent({
             :key="channel.uniqueName"
             :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
           >
-            <Tag class="mt-2" :tag="channel.uniqueName" :channel-mode="true" />
+            <Tag
+              class="mt-2"
+              :tag="channel.uniqueName"
+              :channel-mode="true"
+            />
           </router-link>
         </div>
         <EventFooter

@@ -114,30 +114,46 @@ export default defineComponent({
 
 <template>
   <div class="flex-shrink-0 rounded-lg border px-4 shadow dark:border-gray-600">
-    <div v-if="channelId" class="flex items-center border-b my-4">
-      <Avatar :text="channelId" :is-square="true"  />
-      <h1
+    <div
       v-if="channelId"
-      class="my-2 mb-2 flex justify-center  border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
+      class="flex items-center border-b my-4"
     >
-      {{ channelId }}
-    </h1>
-
+      <Avatar
+        :text="channelId"
+        :is-square="true"
+      />
+      <h1
+        v-if="channelId"
+        class="my-2 mb-2 flex justify-center  border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
+      >
+        {{ channelId }}
+      </h1>
     </div>
     
     <div class="w-full py-3">
-      <p v-if="getChannelLoading">Loading...</p>
+      <p v-if="getChannelLoading">
+        Loading...
+      </p>
       <div v-else-if="getChannelError">
-        <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
+        <div
+          v-for="(error, i) of getChannelError?.graphQLErrors"
+          :key="i"
+        >
           {{ error.message }}
         </div>
       </div>
       <div v-else-if="channel">
         <div v-if="!mdAndDown">
-          <div v-if="channel.description" class="-ml-6">
-            <v-md-preview :text="channel.description"></v-md-preview>
+          <div
+            v-if="channel.description"
+            class="-ml-6"
+          >
+            <v-md-preview :text="channel.description" />
           </div>
-          <p v-else class="text-xs">
+          <p
+            v-else
+            class="text-xs"
+          >
             {{ "This channel has no description." }}
           </p>
         </div>
@@ -154,10 +170,10 @@ export default defineComponent({
 
             <div class="mb-6 mt-2 flex flex-wrap">
               <Tag
-                class="mb-1"
                 v-for="tag in channel.Tags"
-                :tag="tag.text"
                 :key="tag.text"
+                class="mb-1"
+                :tag="tag.text"
                 @click="filterChannelsByTag(tag.text)"
               />
             </div>
@@ -170,21 +186,30 @@ export default defineComponent({
             </span>
           </div>
           <ul
-            class="my-3 text-sm font-bold underline"
             v-if="channel.Admins.length > 0"
+            class="my-3 text-sm font-bold underline"
           >
-            <li v-for="admin in channel.Admins" :key="admin.username">
+            <li
+              v-for="admin in channel.Admins"
+              :key="admin.username"
+            >
               <router-link
                 :key="admin.username"
                 :to="`/u/${admin.username}`"
                 class="flex items-center"
               >
-                <Avatar :text="admin.username" class="mr-2" />
+                <Avatar
+                  :text="admin.username"
+                  class="mr-2"
+                />
                 {{ admin.username }}
               </router-link>
             </li>
           </ul>
-          <p class="mx-6 my-3 mb-6 text-sm" v-else>
+          <p
+            v-else
+            class="mx-6 my-3 mb-6 text-sm"
+          >
             This channel does not have any admins.
           </p>
         </div>
@@ -195,7 +220,7 @@ export default defineComponent({
         :justify-left="true"
         class="w-full"
       >
-        <template v-slot:has-auth>
+        <template #has-auth>
           <div class="flex w-full justify-between border-b border-gray-500">
             <span
               class="my-2 mb-2 w-full text-sm font-bold leading-6 text-gray-600 dark:text-gray-300"
@@ -206,8 +231,9 @@ export default defineComponent({
           <router-link
             class="my-3 text-sm underline"
             :to="`/channels/c/${channelId}/edit`"
-            >Edit</router-link
           >
+            Edit
+          </router-link>
         </template>
       </RequireAuth>
     </div>

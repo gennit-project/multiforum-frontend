@@ -108,14 +108,17 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion?.body" class="-ml-4 max-w-none">
-      <v-md-preview :text="bodyText"></v-md-preview>
+    <div
+      v-if="discussion?.body"
+      class="-ml-4 max-w-none"
+    >
+      <v-md-preview :text="bodyText" />
     </div>
     <Tag
-      class="mt-2"
       v-for="tag in discussion?.Tags"
-      :tag="tag.text"
       :key="tag.text"
+      class="mt-2"
+      :tag="tag.text"
       @click="
         () => {
           filterByTag(tag.text);
@@ -124,8 +127,8 @@ export default defineComponent({
     />
     <button
       v-if="discussion?.body && shouldShowMoreButton"
-      @click="toggleShowFullText"
       class="text-blue-600"
+      @click="toggleShowFullText"
     >
       {{ showFullText ? "Show Less" : "Show More" }}
     </button>

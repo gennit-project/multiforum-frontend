@@ -1,13 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 export default defineComponent({
-  setup(){},
   props: {
     wide: {
       type: Boolean,
       default: false
     }
-  }
+  },
+  setup(){}
 })
 </script>
 <template>

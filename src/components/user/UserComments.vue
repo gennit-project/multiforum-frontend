@@ -38,12 +38,18 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">Error</div>
-    <div v-else-if="result && result.users.length === 0">No results</div>
+    <div v-if="loading">
+      Loading...
+    </div>
+    <div v-else-if="error">
+      Error
+    </div>
+    <div v-else-if="result && result.users.length === 0">
+      No results
+    </div>
     <Comment
-      v-else-if="result && result.users.length > 0"
       v-for="comment in result.users[0].Comments"
+      v-else-if="result && result.users.length > 0"
       :key="comment.id"
       :comment-data="comment"
       :depth="0"

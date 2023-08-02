@@ -6,6 +6,10 @@ import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "FeedComponent",
+  components: {
+    Breadcrumbs,
+    GoBack,
+  },
   setup() {
     const route = useRoute();
     const feedId = computed(() => {
@@ -26,10 +30,6 @@ export default defineComponent({
       links,
     };
   },
-  components: {
-    Breadcrumbs,
-    GoBack,
-  },
 });
 </script>
 
@@ -40,6 +40,8 @@ export default defineComponent({
     <p class="text-md font-medium text-gray-800 truncate">
       <span>Title {{ feedId }}</span>
     </p>
-    <p class="text-sm font-medium text-gray-800 truncate">Body</p>
+    <p class="text-sm font-medium text-gray-800 truncate">
+      Body
+    </p>
   </div>
 </template>

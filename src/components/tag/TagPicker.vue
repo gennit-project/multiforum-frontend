@@ -81,18 +81,32 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="px-4 lg:px-12" v-if="tagsLoading">Loading...</div>
-    <div class="px-4 lg:px-12" v-else-if="tagsError">
-      <div v-for="(error, i) of tagsError?.graphQLErrors" :key="i">
+    <div
+      v-if="tagsLoading"
+      class="px-4 lg:px-12"
+    >
+      Loading...
+    </div>
+    <div
+      v-else-if="tagsError"
+      class="px-4 lg:px-12"
+    >
+      <div
+        v-for="(error, i) of tagsError?.graphQLErrors"
+        :key="i"
+      >
         {{ error.message }}
       </div>
     </div>
-    <div v-else class="divide-y divide-solid dark:bg-gray-950">
+    <div
+      v-else
+      class="divide-y divide-solid dark:bg-gray-950"
+    >
       <div class="tagpicker gap-2">
         <Tag
+          v-for="tag in tagOptionLabels"
           :key="tag"
           :data-testid="`tag-picker-${tag}`"
-          v-for="tag in tagOptionLabels"
           :active="!!selectedTagsMap[tag]"
           :tag="tag"
           @select="select"

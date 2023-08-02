@@ -3,11 +3,11 @@ import { defineComponent } from "vue";
 import RefreshIcon from "@/components/icons/RefreshIcon.vue";
 
 export default defineComponent({
-  setup() {},
 
   components: {
     RefreshIcon,
   },
+  setup() {},
 });
 </script>
 <template>
@@ -16,7 +16,10 @@ export default defineComponent({
       class="bg-white dark:bg-gray-700 float-right inline-flex py-2 px-4 border border-gray-300 rounded-full shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 dark:border-gray-700 dark:hover:bg-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
       @click.prevent="$emit('reset')"
     >
-      <RefreshIcon class="h-5" @click="$emit('reset')" />Reset
+      <RefreshIcon
+        class="h-5"
+        @click="$emit('reset')"
+      />Reset
     </button>
   </div>
 </template>

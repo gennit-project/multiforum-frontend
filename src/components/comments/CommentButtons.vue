@@ -192,8 +192,11 @@ export default defineComponent({
 <template>
   <div>
     <div class="flex flex-wrap items-center text-xs text-gray-400">
-      <RequireAuth v-if="!locked" :full-width="false">
-        <template v-slot:has-auth>
+      <RequireAuth
+        v-if="!locked"
+        :full-width="false"
+      >
+        <template #has-auth>
           <div class="flex items-center">
             <VotesComponent
               :downvote-count="
@@ -215,11 +218,11 @@ export default defineComponent({
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
             >
-              <i class="fa-regular fa-comment h-4 w-4"></i> Reply
+              <i class="fa-regular fa-comment h-4 w-4" /> Reply
             </div>
           </div>
         </template>
-        <template v-slot:does-not-have-auth>
+        <template #does-not-have-auth>
           <div class="flex">
             <VotesComponent
               :downvote-count="
@@ -231,20 +234,20 @@ export default defineComponent({
               data-testid="reply-comment-button "
               class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-800 dark:text-gray-500 dark:hover:text-white"
             >
-              <i class="fa-regular fa-comment h-4 w-4"></i>
+              <i class="fa-regular fa-comment h-4 w-4" />
               Reply
             </div>
           </div>
         </template>
       </RequireAuth>
       <RequireAuth
+        v-if="commentData.CommentAuthor"
         class="flex"
         :full-width="false"
-        v-if="commentData.CommentAuthor"
         :require-ownership="true"
         :owners="[commentData.CommentAuthor.username]"
       >
-        <template v-slot:has-auth>
+        <template #has-auth>
           <span
             data-testid="delete-comment-button"
             class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
@@ -257,8 +260,7 @@ export default defineComponent({
                 replyCount,
               })
             "
-            >Delete</span
-          >
+          >Delete</span>
           <span
             v-if="!showEditCommentField"
             data-testid="edit-comment-button"
@@ -269,8 +271,7 @@ export default defineComponent({
                 $emit('showEditCommentField');
               }
             "
-            >Edit</span
-          >
+          >Edit</span>
         </template>
       </RequireAuth>
       <span
@@ -278,6 +279,7 @@ export default defineComponent({
           route.params.channelId && route.name !== 'DiscussionCommentPermalink'
         "
         :to="`${route.path}/comments/${commentData.id}`"
+        class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="
           $router.push({
             name: 'DiscussionCommentPermalink',
@@ -287,7 +289,6 @@ export default defineComponent({
             },
           })
         "
-        class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
       >
         Permalink
       </span>
@@ -295,8 +296,7 @@ export default defineComponent({
         v-if="showEditCommentField"
         class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="$emit('hideEditCommentField')"
-        >Cancel</span
-      >
+      >Cancel</span>
       <span
         v-if="showEditCommentField"
         class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
@@ -306,31 +306,34 @@ export default defineComponent({
             $emit('hideEditCommentField');
           }
         "
-        >Save</span
-      >
+      >Save</span>
       <span
         v-if="showReplies && replyCount > 0"
         class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="$emit('hideReplies')"
-        >{{
-          `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
-        }}</span
-      >
+      >{{
+        `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
+      }}</span>
       <span
         v-if="!showReplies"
         class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="$emit('showReplies')"
-        >{{
-          `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
-        }}</span
+      >{{
+        `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
+      }}</span>
+      <MenuButton
+        v-if="commentMenuItems.length > 0"
+        :items="commentMenuItems"
       >
-      <MenuButton v-if="commentMenuItems.length > 0" :items="commentMenuItems">
         <EllipsisVertical
           class="h-4 w-4 cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
         />
       </MenuButton>
     </div>
-    <div v-if="showReplyEditor" class="mt-1 px-3">
+    <div
+      v-if="showReplyEditor"
+      class="mt-1 px-3"
+    >
       <TextEditor
         class="my-3"
         :placeholder="'Please be kind'"
@@ -345,18 +348,20 @@ export default defineComponent({
       <div class="flex justify-start space-x-2">
         <CancelButton @click="$emit('hideReplyEditor')" />
         <SaveButton
+          :disabled="commentData.text.length === 0"
           @click.prevent="
             () => {
               $emit('createComment', parentCommentId);
               $emit('hideReplyEditor');
             }
           "
-          :disabled="commentData.text.length === 0"
-        >
-        </SaveButton>
+        />
       </div>
     </div>
-    <ErrorBanner v-if="upvoteCommentError" :text="upvoteCommentError.message" />
+    <ErrorBanner
+      v-if="upvoteCommentError"
+      :text="upvoteCommentError.message"
+    />
     <ErrorBanner
       v-if="undoUpvoteCommentError"
       :text="undoUpvoteCommentError.message"

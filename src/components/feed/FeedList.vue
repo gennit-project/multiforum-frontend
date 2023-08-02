@@ -31,6 +31,10 @@ const feeds = [
 ];
 
 export default defineComponent({
+  components: {
+    FeedPreview,
+    FeedListItem,
+  },
   setup() {
     return {
       feeds,
@@ -41,10 +45,6 @@ export default defineComponent({
     return {
       previewIsOpen: false,
     };
-  },
-  components: {
-    FeedPreview,
-    FeedListItem,
   },
   methods: {
     openPreview(data: FeedData) {
@@ -58,7 +58,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <ul role="list" class="divide-y divide-gray-200">
+  <ul
+    role="list"
+    class="divide-y divide-gray-200"
+  >
     <FeedListItem
       v-for="feed in feeds"
       :key="feed.id"
@@ -67,7 +70,7 @@ export default defineComponent({
       @openFeedPreview="openPreview"
     />
     <FeedPreview
-      :isOpen="previewIsOpen"
+      :is-open="previewIsOpen"
       :feed="selectedFeed"
       @closePreview="closePreview"
     />

@@ -25,7 +25,7 @@ export default defineComponent({
 <template>
   <PrimaryButton
     data-testid="primary-button"
-    @click="router.push(to)"
     :label="label"
+    @click="router.push(to)"
   />
 </template>

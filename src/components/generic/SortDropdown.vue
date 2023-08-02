@@ -14,6 +14,7 @@ export default defineComponent({
   <div class="relative inline-block">
     <div class="flex">
       <button
+        id="menu-button"
         type="button"
         class="
           py-2
@@ -25,7 +26,6 @@ export default defineComponent({
           text-gray-700
           hover:text-gray-900
         "
-        id="menu-button"
         aria-expanded="false"
         aria-haspopup="true"
         @click="isOpen = !isOpen"
@@ -86,38 +86,41 @@ export default defineComponent({
       aria-labelledby="menu-button"
       tabindex="-1"
     >
-      <div class="py-1" role="none">
+      <div
+        class="py-1"
+        role="none"
+      >
         <!--
                 Active: "bg-gray-100", Not Active: ""
 
                 Selected: "font-medium text-gray-900", Not Selected: "text-gray-500"
               -->
         <a
+          id="menu-item-0"
           href="#"
           class="font-medium text-gray-900 block px-4 py-2 text-sm"
           role="menuitem"
           tabindex="-1"
-          id="menu-item-0"
         >
           Most Popular
         </a>
 
         <a
+          id="menu-item-1"
           href="#"
           class="text-gray-500 block px-4 py-2 text-sm"
           role="menuitem"
           tabindex="-1"
-          id="menu-item-1"
         >
           Best Rating
         </a>
 
         <a
+          id="menu-item-2"
           href="#"
           class="text-gray-500 block px-4 py-2 text-sm"
           role="menuitem"
           tabindex="-1"
-          id="menu-item-2"
         >
           Newest
         </a>

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
    props: {
@@ -21,20 +21,24 @@ export default defineComponent({
 </script>
 
 <template>
-<div>
-  <v-menu 
-    :model-value="modelValue"  
-    :close-on-content-click="false"
-    location="bottom"
-    @update:modelValue="$emit('update:modelValue', $event)"
-  >
-  <template v-slot:activator="{ props }">
-    <div v-bind="props">
-      <slot name="button" v-bind="props" @close="close"/>
-    </div>
-  </template>
-  <v-card> <slot name="content" ></slot></v-card>
-</v-menu>
-</div>
+  <div>
+    <v-menu 
+      :model-value="modelValue"  
+      :close-on-content-click="false"
+      location="bottom"
+      @update:modelValue="$emit('update:modelValue', $event)"
+    >
+      <template #activator="{ props }">
+        <div v-bind="props">
+          <slot
+            name="button"
+            v-bind="props"
+            @close="close"
+          />
+        </div>
+      </template>
+      <v-card> <slot name="content" /></v-card>
+    </v-menu>
+  </div>
 </template>
 

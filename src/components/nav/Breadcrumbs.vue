@@ -8,21 +8,30 @@ interface Link {
 
 export default defineComponent({
   name: "BreadCrumbs",
-  setup() {
-
-  },
   props: {
     links: {
       type: Array as PropType<Link[]>,
     }
   },
+  setup() {
+
+  },
 });
 </script>
 
 <template>
-  <nav class="flex mt-2 mb-1" aria-label="Breadcrumb">
-    <ol role="list" class="flex items-center space-x-4">
-      <li v-for="link, i in links" :key="link.path">
+  <nav
+    class="flex mt-2 mb-1"
+    aria-label="Breadcrumb"
+  >
+    <ol
+      role="list"
+      class="flex items-center space-x-4"
+    >
+      <li
+        v-for="link, i in links"
+        :key="link.path"
+      >
         <div class="flex items-center">
           <!-- Heroicon name: solid/chevron-right -->
           <svg
@@ -44,7 +53,8 @@ export default defineComponent({
             :to="`/${link.path}/`"
             class="text-xs text-gray-500 hover:text-gray-700 underline"
             active-class="text-gray-700"
-            >{{ link.label }}
+          >
+            {{ link.label }}
           </router-link>
         </div>
       </li>

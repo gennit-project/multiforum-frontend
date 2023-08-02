@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, nextTick, ref, computed } from "vue";
+import { defineComponent, PropType, nextTick, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/generic/TextEditor.vue";
 import FormRow from "@/components/generic/FormRow.vue";
@@ -102,16 +102,24 @@ export default defineComponent({
 <template>
   <v-container fluid>
     <v-row class="justify-center">
-      <v-col cols="12" md="10" >
-        <div v-if="discussionLoading">Loading...</div>
+      <v-col
+        cols="12"
+        md="10"
+      >
+        <div v-if="discussionLoading">
+          Loading...
+        </div>
         <div v-else-if="getDiscussionError">
-          <div v-for="(error, i) of getDiscussionError?.graphQLErrors" :key="i">
+          <div
+            v-for="(error, i) of getDiscussionError?.graphQLErrors"
+            :key="i"
+          >
             {{ error.message }}
           </div>
         </div>
         <TailwindForm
-          class="pt-8"
           v-else-if="formValues"
+          class="pt-8"
           :form-title="formTitle"
           :needs-changes="needsChanges"
           @input="touched = true"
@@ -120,14 +128,18 @@ export default defineComponent({
           <div class="divide-y divide-gray-200">
             <div class="mt-6">
               <FormRow>
-                <template v-slot:icon>
+                <template #icon>
                   <PencilIcon class="inline-flex float-right h-6 w-6" /><span
                     class="text-red-500"
-                    >*</span
+                  >*</span>
+                  <v-tooltip
+                    activator="parent"
+                    location="top"
                   >
-                  <v-tooltip activator="parent" location="top">Title</v-tooltip>
+                    Title
+                  </v-tooltip>
                 </template>
-                <template v-slot:content>
+                <template #content>
                   <TextInput
                     ref="titleInputRef"
                     :test-id="'title-input'"
@@ -140,16 +152,18 @@ export default defineComponent({
               </FormRow>
 
               <FormRow>
-                <template v-slot:icon>
+                <template #icon>
                   <ChannelIcon class="float-right h-6 w-6" /><span
                     class="text-red-500"
-                    >*</span
+                  >*</span>
+                  <v-tooltip
+                    activator="parent"
+                    location="top"
                   >
-                  <v-tooltip activator="parent" location="top">
                     Channels
                   </v-tooltip>
                 </template>
-                <template v-slot:content>
+                <template #content>
                   <TagInput
                     :test-id="'channel-input'"
                     :selected-channels="formValues.selectedChannels"
@@ -162,13 +176,16 @@ export default defineComponent({
               </FormRow>
 
               <FormRow class="h-72 overflow-auto">
-                <template v-slot:icon>
+                <template #icon>
                   <AnnotationIcon class="inline-flex h-6 w-6" />
-                  <v-tooltip activator="parent" location="top">
+                  <v-tooltip
+                    activator="parent"
+                    location="top"
+                  >
                     Details
                   </v-tooltip>
                 </template>
-                <template v-slot:content>
+                <template #content>
                   <TextEditor
                     class="mb-3 h-56"
                     :test-id="'body-input'"
@@ -181,13 +198,16 @@ export default defineComponent({
               </FormRow>
 
               <FormRow>
-                <template v-slot:icon>
+                <template #icon>
                   <TagIcon class="inline-flex h-6 w-6" />
-                  <v-tooltip activator="parent" location="top">
+                  <v-tooltip
+                    activator="parent"
+                    location="top"
+                  >
                     Tags
                   </v-tooltip>
                 </template>
-                <template v-slot:content>
+                <template #content>
                   <TagInput
                     :test-id="'tags-input'"
                     :selected-tags="formValues?.selectedTags"
@@ -199,7 +219,10 @@ export default defineComponent({
               </FormRow>
             </div>
           </div>
-          <ErrorBanner v-if="needsChanges" :text="changesRequiredMessage" />
+          <ErrorBanner
+            v-if="needsChanges"
+            :text="changesRequiredMessage"
+          />
           <ErrorBanner
             v-if="createDiscussionError"
             :text="createDiscussionError.message"

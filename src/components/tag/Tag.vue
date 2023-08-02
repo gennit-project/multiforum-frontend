@@ -1,14 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import XmarkIcon from "@/components/icons/XmarkIcon.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import Avatar from "../user/Avatar.vue";
 
 export default defineComponent({
   name: "TagComponent",
   components: {
     Avatar,
-    ChannelIcon,
     XmarkIcon,
   },
   props: {
@@ -100,23 +98,23 @@ export default defineComponent({
 <template>
   <span
     :data-testid="dataTestId"
+    :class="tagClasses"
     @mouseenter="highlightedByMouse = true"
     @mouseleave="highlightedByMouse = false"
     @click="handleTagClick(tag, active)"
-    :class="tagClasses"
   >
     <Avatar
+      v-if="channelMode && !hideIcon"
       :class="[clearable ? 'mr-1' : '', titleMode ? 'h-6 w-6' : 'h-5 w-5']"
       class="inline-flex"
-      v-if="channelMode && !hideIcon"
       :text="tag"
       :is-square="true"
     />
     {{ tag }}
     <XmarkIcon
+      v-if="clearable"
       data-testid="tag-delete"
       class="mr-1 h-3 w-3 cursor-pointer"
-      v-if="clearable"
       @click="$emit('delete', index)"
     />
   </span>

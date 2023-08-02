@@ -2,15 +2,11 @@
 import { defineComponent, computed } from "vue";
 import TabButton from "@/components/generic/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-import CalendarIcon from '@/components/icons/CalendarIcon.vue'
-import DiscussionIcon from '@/components/icons/DiscussionIcon.vue'
 
 export default defineComponent({
-  name: "channelTabs",
+  name: "ChannelTabs",
   components: {
     TabButton,
-    CalendarIcon,
-    DiscussionIcon,
   },
   props: {
     route: {
@@ -52,20 +48,23 @@ export default defineComponent({
 <template>
   <div>
     <div class=" sm:block">
-      <nav class="text-lg max-w-7xl space-x-2" aria-label="Tabs">
+      <nav
+        class="text-lg max-w-7xl space-x-2"
+        aria-label="Tabs"
+      >
         <TabButton
           :to="tabRoutes.discussions"
           :label="'Discussions'"
           :is-active="$route.path.includes('discussions')"
-          >
-          <i class="fa-regular fa-comment h-6 w-6"></i>
+        >
+          <i class="fa-regular fa-comment h-6 w-6" />
         </TabButton>
         <TabButton
           :to="tabRoutes.events"
           :label="'Events'"
           :is-active="route.name.includes('Event')"
         >
-         <i class="fa-regular fa-calendar h-6 w-6"></i> 
+          <i class="fa-regular fa-calendar h-6 w-6" /> 
         </TabButton>
         <TabButton
           v-if="mdAndDown"
@@ -73,10 +72,10 @@ export default defineComponent({
           :label="'About'"
           :is-active="route.name.includes('About')"
         >
-          <i class="fa-solid fa-info-circle h-6 w-6"></i>
-      </TabButton>
+          <i class="fa-solid fa-info-circle h-6 w-6" />
+        </TabButton>
       </nav>
     </div>
-    <div class="width-full"></div>
+    <div class="width-full" />
   </div>
 </template>

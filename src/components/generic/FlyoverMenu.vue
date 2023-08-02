@@ -23,21 +23,24 @@ export default {
     PopoverPanel,
     ChevronDownIcon,
   },
-  setup() {
-    return {
-      solutions,
-    };
-  },
   props: {
     name: {
       type: String,
       required: true,
     },
   },
+  setup() {
+    return {
+      solutions,
+    };
+  },
 };
 </script>
 <template>
-  <Popover class="relative inline-flex" v-slot="{ open }">
+  <Popover
+    v-slot="{ open }"
+    class="relative inline-flex"
+  >
     <PopoverButton
       :class="[
         open ? 'text-gray-900' : 'text-gray-500',
@@ -45,7 +48,10 @@ export default {
       ]"
     >
       <span>{{ name }}</span>
-      <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
+      <ChevronDownIcon
+        class="-mr-1 ml-2 h-4 w-4"
+        aria-hidden="true"
+      />
     </PopoverButton>
 
     <transition

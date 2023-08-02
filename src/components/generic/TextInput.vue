@@ -6,7 +6,6 @@ export default defineComponent({
   components: {
     ExclamationTriangleIcon,
   },
-  setup() {},
   props: {
     disabled: {
       type: Boolean,
@@ -33,6 +32,7 @@ export default defineComponent({
       default: "",
     },
   },
+  setup() {},
   data(props) {
     return {
       text: props.value,
@@ -45,7 +45,6 @@ export default defineComponent({
     <div class="mt-1 flex relative rounded-full shadow-sm">
       <input
         v-model="text"
-        @update:model-value="$emit('update', text)"
         :data-testid="testId"
         :placeholder="placeholder"
         :disabled="disabled"
@@ -57,7 +56,8 @@ export default defineComponent({
             : 'focus:ring-blue-500 focus:border-blue-500',
         ]"
         class="dark:text-gray-300 dark:bg-black pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300  dark:text-gray-100 dark:border-gray-700"
-      />
+        @update:model-value="$emit('update', text)"
+      >
       <div
         v-if="invalid"
         class="

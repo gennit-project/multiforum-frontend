@@ -1,7 +1,7 @@
 <script>
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { useRoute } from "vue-router";
 
 const DropdownButton = defineComponent({
@@ -31,11 +31,6 @@ const DropdownButton = defineComponent({
       route
     };
   },
-  methods: {
-    setSelectedSearchType(type) {
-      this.$emit("updateSelectedSearchType", type);
-    },
-  },
   created() {
     this.$watch("$route.path", () => {
       if (this.$route.path) {
@@ -43,17 +38,28 @@ const DropdownButton = defineComponent({
       }
     });
   },
+  methods: {
+    setSelectedSearchType(type) {
+      this.$emit("updateSelectedSearchType", type);
+    },
+  },
 });
 export default DropdownButton;
 </script>
 <template>
   <div class="flex inline-flex h-10 w-fit-content">
-    <MenuElement as="div" class="relative -ml-px block">
+    <MenuElement
+      as="div"
+      class="relative -ml-px block"
+    >
       <MenuButton
         class="relative inline-flex items-center rounded-l-md pr-2 pl-3 h-full text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 focus:z-10"
       >
         <span class="text-xs mr-1">{{ selectedSearchType }}</span>
-        <ChevronDownIcon class="h-3 w-3" aria-hidden="true" />
+        <ChevronDownIcon
+          class="h-3 w-3"
+          aria-hidden="true"
+        />
       </MenuButton>
       <transition
         enter-active-class="transition ease-out duration-100"
@@ -73,11 +79,11 @@ export default DropdownButton;
               v-slot="{ active }"
             >
               <div
-                @click="setSelectedSearchType(item.name)"
                 :class="[
                   active ? 'text-gray-900' : 'text-gray-700',
                   'block px-4 py-2 text-sm',
                 ]"
+                @click="setSelectedSearchType(item.name)"
               >
                 {{ item.name }}
               </div>

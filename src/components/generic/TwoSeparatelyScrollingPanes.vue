@@ -4,6 +4,7 @@ import { useDisplay } from "vuetify";
 import { useRoute } from "vue-router";
 
 export default defineComponent({
+  components: {},
   props: {
     showRightPaneAtMediumScreenWidth: {
       type: Boolean,
@@ -24,12 +25,14 @@ export default defineComponent({
       route,
     };
   },
-  components: {},
 });
 </script>
 
 <template>
-  <v-container fluid class="w-full p-0">
+  <v-container
+    fluid
+    class="w-full p-0"
+  >
     <v-row class="w-full p-0">
       <v-col
         :cols="mdAndDown ? 12 : 5"
@@ -39,11 +42,11 @@ export default defineComponent({
         ]"
         class="lg:overflow-y-auto"
       >
-        <slot name="leftpane"></slot>
+        <slot name="leftpane" />
       </v-col>
       <v-col
-        :cols="mdAndDown ? 12 : 7"
         v-if="lgAndUp || (mdAndUp && showRightPaneAtMediumScreenWidth)"
+        :cols="mdAndDown ? 12 : 7"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
@@ -51,7 +54,7 @@ export default defineComponent({
           'lg:overflow-y-auto',
         ]"
       >
-        <slot name="rightpane"></slot>
+        <slot name="rightpane" />
       </v-col>
     </v-row>
   </v-container>

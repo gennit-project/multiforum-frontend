@@ -8,6 +8,7 @@ import SiteSidenav from "@/components/nav/SiteSidenav.vue";
 import { useDisplay } from "vuetify";
 
 export default defineComponent({
+  name: "App",
   components: {
     MainLayout,
     WithAuth,
@@ -43,7 +44,6 @@ export default defineComponent({
       showDropdown: ref(false)
     };
   },
-  name: "App",
   methods: {
     closeUserProfileDropdown() {
       this.showUserProfileDropdown = false
@@ -74,8 +74,16 @@ export default defineComponent({
         @close="showDropdown = false"
       />
       <div class="w-full ">
-        <div v-if="isLoading" class="flex justify-center mt-8">Loading...</div>
-        <WithAuth v-else-if="emailFromAuth0" :email-from-auth0="emailFromAuth0">
+        <div
+          v-if="isLoading"
+          class="flex justify-center mt-8"
+        >
+          Loading...
+        </div>
+        <WithAuth
+          v-else-if="emailFromAuth0"
+          :email-from-auth0="emailFromAuth0"
+        >
           <MainLayout />
         </WithAuth>
         <MainLayout v-else />

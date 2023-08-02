@@ -7,7 +7,11 @@ import Tag from "@/components/tag/Tag.vue";
 import Avatar from '@/components/user/Avatar.vue'
 
 export default defineComponent({
-  setup() {},
+  components: {
+    Avatar,
+    HighlightedSearchTerms,
+    Tag,
+  },
   props: {
     channel: {
       type: Object as PropType<ChannelData>,
@@ -18,23 +22,19 @@ export default defineComponent({
       default: "",
     },
     selectedTags: {
-      type: Array as PropType<Array<String>>,
+      type: Array as PropType<Array<string>>,
       default: () => {
         return [];
       },
     },
   },
+  setup() {},
   data(props) {
     return {
       tags: props.channel.Tags.map((tag: TagData) => {
         return tag.text;
       }),
     };
-  },
-  components: {
-    Avatar,
-    HighlightedSearchTerms,
-    Tag,
   },
 });
 </script>
@@ -50,7 +50,10 @@ export default defineComponent({
             :to="`/channels/c/${channel.uniqueName}/discussions`"
             class="cursor-pointer flex gap-4 items-center "
           >
-          <Avatar :text="channel.uniqueName" :is-square="true"/>
+            <Avatar
+              :text="channel.uniqueName"
+              :is-square="true"
+            />
             <h3 class="mb-2 text-xl">
               <HighlightedSearchTerms
                 :text="channel.uniqueName"
@@ -74,25 +77,26 @@ export default defineComponent({
           <router-link
             class="underline"
             :to="`/channels/c/${channel.uniqueName}/discussions`"
-            >{{ channel.DiscussionChannelsAggregate.count }}
+          >
+            {{ channel.DiscussionChannelsAggregate.count }}
             {{
               channel.DiscussionChannelsAggregate.count === "1"
                 ? "Discussion"
                 : "Discussions"
-            }}</router-link
-          >
+            }}
+          </router-link>
 
           <router-link
             class="underline"
             :to="`/channels/c/${channel.uniqueName}/events/search`"
           >
-            {{ channel.EventChannelsAggregate.count }} Upcoming Events</router-link
-          >
+            {{ channel.EventChannelsAggregate.count }} Upcoming Events
+          </router-link>
         </p>
         <Tag
-          :active="selectedTags.includes(tag)"
-          :key="tag"
           v-for="tag in tags"
+          :key="tag"
+          :active="selectedTags.includes(tag)"
           :tag="tag"
           @click="$emit('filterByTag', tag)"
         />

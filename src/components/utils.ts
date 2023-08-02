@@ -1,7 +1,7 @@
 import { TagData } from "@/types/tagTypes";
 import { gql } from "@apollo/client/core";
 
-export const getTagLabel = (selectedTags: Array<String>) => {
+export const getTagLabel = (selectedTags: Array<string>) => {
   if (selectedTags.length === 0) {
     return "Tags"
   }

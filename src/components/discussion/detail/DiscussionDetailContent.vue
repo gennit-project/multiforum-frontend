@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
@@ -123,8 +123,8 @@ export default defineComponent({
 <template>
   <div class="w-full space-y-2">
     <div
-      :class="'align-center mt-2 flex justify-between'"
       v-if="route.name === 'DiscussionDetail'"
+      :class="'align-center mt-2 flex justify-between'"
     >
       <router-link
         :to="`/channels/c/${channelId}/discussions`"
@@ -133,16 +133,22 @@ export default defineComponent({
         <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
         {{ `Discussion list in c/${channelId}` }}
       </router-link>
-      <RequireAuth :full-width="false" class="inline-flex max-w-sm">
-        <template v-slot:has-auth>
+      <RequireAuth
+        :full-width="false"
+        class="inline-flex max-w-sm"
+      >
+        <template #has-auth>
           <CreateButton
             class="ml-2"
             :to="`/channels/c/${channelId}/discussions/create`"
             :label="'New Discussion'"
           />
         </template>
-        <template v-slot:does-not-have-auth>
-          <PrimaryButton class="ml-2" :label="'New Discussion'" />
+        <template #does-not-have-auth>
+          <PrimaryButton
+            class="ml-2"
+            :label="'New Discussion'"
+          />
         </template>
       </RequireAuth>
     </div>
@@ -167,10 +173,12 @@ export default defineComponent({
         :md="route.name === 'DiscussionDetail' ? 9 : 12"
         class="max-w-4xl"
       >
-        <p v-if="getDiscussionLoading">Loading...</p>
+        <p v-if="getDiscussionLoading">
+          Loading...
+        </p>
         <ErrorBanner
-          class="mt-2"
           v-else-if="getDiscussionError"
+          class="mt-2"
           :text="getDiscussionError.message"
         />
 
@@ -183,7 +191,10 @@ export default defineComponent({
               :channel-id="channelId"
               :compact-mode="compactMode"
             />
-            <DiscussionBody :discussion="discussion" :channel-id="channelId" />
+            <DiscussionBody
+              :discussion="discussion"
+              :channel-id="channelId"
+            />
             <DiscussionVotes
               v-if="channelId && discussionId && activeDiscussionChannel"
               :discussion="discussion"
@@ -194,7 +205,7 @@ export default defineComponent({
         <CreateRootCommentForm
           v-if="
             activeDiscussionChannel &&
-            (route.name === 'DiscussionDetail' || channelId)
+              (route.name === 'DiscussionDetail' || channelId)
           "
           :key="`${channelId}${discussionId}`"
           :channel-id="channelId"
@@ -208,10 +219,10 @@ export default defineComponent({
           />
         </div>
         <ChannelLinks
-          class="my-4"
           v-if="discussion && discussion.DiscussionChannels"
+          class="my-4"
           :discussion-channels="discussion.DiscussionChannels"
-          :channelId="
+          :channel-id="
             activeDiscussionChannel
               ? activeDiscussionChannel.channelUniqueName
               : ''
@@ -221,9 +232,9 @@ export default defineComponent({
 
       <!-- Right column -->
       <v-col
+        v-if="channelId && route.name === 'DiscussionDetail'"
         cols="12"
         md="3"
-        v-if="channelId && route.name === 'DiscussionDetail'"
         class="scrollable-column"
       >
         <AboutColumn :channel-id="channelId" />

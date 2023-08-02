@@ -72,10 +72,16 @@ export default defineComponent({
 <template>
   <div class="h-screen dark:bg-black">
     <!-- Tabs -->
-    <div v-if="route.name !== 'EditChannel'" class="border-b border-gray-300 dark:border-gray-800">
+    <div
+      v-if="route.name !== 'EditChannel'"
+      class="border-b border-gray-300 dark:border-gray-800"
+    >
       <div class="px-4 sm:px-6 lg:px-8">
         <div class="flex justify-start pt-1 text-center">
-          <ChannelTabs class="block" :route="route" />
+          <ChannelTabs
+            class="block"
+            :route="route"
+          />
         </div>
       </div>
     </div>
@@ -85,7 +91,7 @@ export default defineComponent({
           class="relative z-0 flex-1 focus:outline-none xl:order-last"
         >
           <div class="block">
-            <router-view></router-view>
+            <router-view />
           </div>
         </article>
       </div>

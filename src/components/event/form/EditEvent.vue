@@ -314,8 +314,11 @@ export default defineComponent({
 });
 </script>
 <template>
-  <RequireAuth :require-ownership="true" :owners="ownerList">
-    <template v-slot:has-auth>
+  <RequireAuth
+    :require-ownership="true"
+    :owners="ownerList"
+  >
+    <template #has-auth>
       <CreateEditEventFields
         :edit-mode="true"
         :event-loading="getEventLoading"
@@ -326,10 +329,10 @@ export default defineComponent({
         @updateFormValues="updateFormValues"
       />
     </template>
-    <template v-slot:does-not-have-auth>
+    <template #does-not-have-auth>
       <div class="p-8 flex justify-center">
         You don't have permission to see this page.
       </div>
     </template>
- </RequireAuth>
+  </RequireAuth>
 </template>

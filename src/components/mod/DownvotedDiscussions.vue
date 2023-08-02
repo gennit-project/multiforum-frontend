@@ -40,7 +40,10 @@ export default defineComponent({
   <div>
     Downvoted discussions
     <ul>
-      <li v-for="discussion in discussions" :key="discussion.id">
+      <li
+        v-for="discussion in discussions"
+        :key="discussion.id"
+      >
         {{ discussion.title }}
       </li>
     </ul>

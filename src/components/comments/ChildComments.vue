@@ -4,6 +4,12 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_COMMENT_REPLIES } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
+  props: {
+    parentCommentId: {
+      type: String,
+      required: true
+    },
+  },
 
   setup(props) {
     // The only reason this component exists is because you can't
@@ -43,18 +49,16 @@ export default defineComponent({
       comments
     };
   },
-  props: {
-    parentCommentId: {
-      type: String,
-      required: true
-    },
-  },
 });
 </script>
 <template>
-    <div v-if="commentLoading">Loading...</div>
-    <div v-else-if="commentError">{{ commentError.message }}</div>
-    <div v-else>
-        <slot :comments="comments"></slot>
-    </div>
+  <div v-if="commentLoading">
+    Loading...
+  </div>
+  <div v-else-if="commentError">
+    {{ commentError.message }}
+  </div>
+  <div v-else>
+    <slot :comments="comments" />
+  </div>
 </template>

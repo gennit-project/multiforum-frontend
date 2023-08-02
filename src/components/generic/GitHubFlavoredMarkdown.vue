@@ -17,9 +17,9 @@
   };
   </script>
   
-  <template>
-    <div class="github-readme github-markdown-light dark:github-markdown-dark">
-      <VueShowdown :markdown="text" />
-    </div>
-  </template>
+<template>
+  <div class="github-readme github-markdown-light dark:github-markdown-dark">
+    <VueShowdown :markdown="text" />
+  </div>
+</template>
   

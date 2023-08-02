@@ -19,7 +19,6 @@ export default defineComponent({
 
 <template>
   <button
-    v-on:keydown.enter.prevent
     type="button"
     :class="[active ? 'ring-1 ring-blue-500 border-blue-500' : '']"
     class="
@@ -35,8 +34,9 @@ export default defineComponent({
       hover:bg-gray-50
       focus:ring-1 focus:ring-blue-500 focus:border-blue-500
     "
+    @keydown.enter.prevent
   >
-    <slot></slot>
+    <slot />
     <span class="whitespace-nowrap">{{ text }}</span>
   </button>
 </template>

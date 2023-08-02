@@ -4,6 +4,16 @@ import { defineComponent, computed } from "vue";
 // Used help from https://stackoverflow.com/questions/29652862/highlight-text-using-reactjs
 
 export default defineComponent({
+  props: {
+    text: {
+      type: String,
+      default: '',
+    },
+    searchInput: {
+      type: String,
+      default: '',
+    },
+  },
   setup(props) {
 
     const parts = computed(() => {
@@ -18,16 +28,6 @@ export default defineComponent({
       parts,
     };
   },
-  props: {
-    text: {
-      type: String,
-      default: '',
-    },
-    searchInput: {
-      type: String,
-      default: '',
-    },
-  },
   methods: {
     match(part: string, searchInput: string) {
       if (!part) {
@@ -39,7 +39,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <span :key="i" v-for="(part, i) in parts">
+  <span
+    v-for="(part, i) in parts"
+    :key="i"
+  >
     <mark v-if="match(part, searchInput)">
       {{ part }}
     </mark>

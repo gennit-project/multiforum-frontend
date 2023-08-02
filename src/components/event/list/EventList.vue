@@ -6,19 +6,9 @@ import { EventData } from "@/types/eventTypes";
 import LoadMore from "../../generic/LoadMore.vue";
 
 export default defineComponent({
-  setup() {
-    const route = useRoute();
-    const router = useRouter();
-    const channelId = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
-    return {
-      channelId,
-      router,
-    };
+  components: {
+    EventListItem,
+    LoadMore,
   },
   props: {
     highlightedEventLocationId: {
@@ -44,13 +34,13 @@ export default defineComponent({
       default: 0,
     },
     selectedTags: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: () => {
         return [];
       },
     },
     selectedChannels: {
-      type: Array as PropType<String[]>,
+      type: Array as PropType<string[]>,
       default: () => {
         return [];
       },
@@ -64,9 +54,19 @@ export default defineComponent({
       default: "",
     },
   },
-  components: {
-    EventListItem,
-    LoadMore,
+  setup() {
+    const route = useRoute();
+    const router = useRouter();
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
+    return {
+      channelId,
+      router,
+    };
   },
   methods: {
     filterByTag(tag: string) {
@@ -124,19 +124,28 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="events.length === 0">
-      <p v-if="!showMap" class="mt-3 px-4">Could not find any events.</p>
-      <p v-else class="p-8">
+      <p
+        v-if="!showMap"
+        class="mt-3 px-4"
+      >
+        Could not find any events.
+      </p>
+      <p
+        v-else
+        class="p-8"
+      >
         Could not find any events that can be shown on a map.
       </p>
     </div>
-    <ul v-if="events.length > 0" 
+    <ul
+      v-if="events.length > 0" 
       role="list" 
       class="mb-4"
       data-testid="event-list"
     >
       <EventListItem
-        :ref="`#${event.id}`"
         v-for="event in events"
+        :ref="`#${event.id}`"
         :key="event.id"
         :event="event"
         :selected-tags="selectedTags"
@@ -145,8 +154,8 @@ export default defineComponent({
         :current-channel-id="channelId"
         :class="[
           event.id === highlightedEventId ||
-          (!highlightedEventId &&
-            highlightedEventLocationId === getEventLocationId(event))
+            (!highlightedEventId &&
+              highlightedEventLocationId === getEventLocationId(event))
             ? 'bg-gray-200 dark:bg-slate-700'
             : '',
         ]"

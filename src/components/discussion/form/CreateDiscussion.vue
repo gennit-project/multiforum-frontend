@@ -205,7 +205,7 @@ export default defineComponent({
 </script>
 <template>
   <RequireAuth>
-    <template v-slot:has-auth>
+    <template #has-auth>
       <CreateEditDiscussionFields
         :create-discussion-error="createDiscussionError"
         :edit-mode="false"
@@ -214,7 +214,7 @@ export default defineComponent({
         @updateFormValues="updateFormValues"
       />
     </template>
-    <template v-slot:does-not-have-auth>
+    <template #does-not-have-auth>
       <div class="flex justify-center p-8">
         You don't have permission to see this page.
       </div>

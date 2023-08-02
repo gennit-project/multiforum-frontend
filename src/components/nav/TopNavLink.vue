@@ -2,7 +2,6 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {},
   props: {
     to: {
       type: String,
@@ -13,6 +12,7 @@ export default defineComponent({
       required: true,
     },
   },
+  setup() {},
 });
 </script>
 

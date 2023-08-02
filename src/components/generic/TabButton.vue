@@ -2,7 +2,6 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  setup() {},
   props: {
     to: {
       type: String,
@@ -17,6 +16,7 @@ export default defineComponent({
       required: true,
     },
   },
+  setup() {},
 });
 </script>
 
@@ -30,12 +30,12 @@ export default defineComponent({
         : 'border-transparent text-gray-500',
     ]"
   >
-  <div class=" h-8 flex items-center space-x-2  hover:bg-gray-100 dark:hover:bg-gray-900 py-2 px-3 my-2 rounded-lg">
-
-    <div class="text-gray-400 dark:text-gray-500"><slot></slot></div>
-    <span class="text-gray-800 dark:text-white font-bold text-sm">{{ label }}</span>
-  </div>
-  
+    <div class=" h-8 flex items-center space-x-2  hover:bg-gray-100 dark:hover:bg-gray-900 py-2 px-3 my-2 rounded-lg">
+      <div class="text-gray-400 dark:text-gray-500">
+        <slot />
+      </div>
+      <span class="text-gray-800 dark:text-white font-bold text-sm">{{ label }}</span>
+    </div>
   </router-link>
 </template>
 <style>

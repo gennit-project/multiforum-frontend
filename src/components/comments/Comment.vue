@@ -29,6 +29,36 @@ export default defineComponent({
     WarningModal,
     Avatar,
   },
+  props: {
+    commentData: {
+      type: Object as PropType<CommentData>,
+      required: true,
+    },
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+    depth: {
+      type: Number,
+      required: true,
+    },
+    locked: {
+      type: Boolean,
+      default: false,
+    },
+    parentCommentId: {
+      type: String,
+      default: "",
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    showChannel: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup(props) {
     const GET_THEME = gql`
       query getTheme {
@@ -115,34 +145,24 @@ export default defineComponent({
       id: `comment-preview-${props.commentData.id}`,
     };
   },
-  props: {
-    commentData: {
-      type: Object as PropType<CommentData>,
-      required: true,
+  computed: {
+    createdAtFormatted() {
+      if (!this.commentData.createdAt) {
+        return "";
+      }
+      return `${this.compact ? "" : "posted "}${this.relativeTime(
+        this.commentData.createdAt,
+      )}${
+        this.showChannel
+          ? " in c/" + this.commentData.DiscussionChannel.Channel.uniqueName
+          : ""
+      }`;
     },
-    compact: {
-      type: Boolean,
-      default: false,
-    },
-    depth: {
-      type: Number,
-      required: true,
-    },
-    locked: {
-      type: Boolean,
-      default: false,
-    },
-    parentCommentId: {
-      type: String,
-      default: "",
-    },
-    readonly: {
-      type: Boolean,
-      default: false,
-    },
-    showChannel: {
-      type: Boolean,
-      default: false,
+    editedAtFormatted() {
+      if (!this.commentData.updatedAt) {
+        return "";
+      }
+      return `Edited ${this.relativeTime(this.commentData.updatedAt)}`;
     },
   },
   methods: {
@@ -185,40 +205,23 @@ export default defineComponent({
       this.showModProfileModal = false;
     },
   },
-  computed: {
-    createdAtFormatted() {
-      if (!this.commentData.createdAt) {
-        return "";
-      }
-      return `${this.compact ? "" : "posted "}${this.relativeTime(
-        this.commentData.createdAt,
-      )}${
-        this.showChannel
-          ? " in c/" + this.commentData.DiscussionChannel.Channel.uniqueName
-          : ""
-      }`;
-    },
-    editedAtFormatted() {
-      if (!this.commentData.updatedAt) {
-        return "";
-      }
-      return `Edited ${this.relativeTime(this.commentData.updatedAt)}`;
-    },
-  },
 });
 </script>
 <template>
   <div>
     <div class="flex w-full">
-      <div :class="'text-sm'" class="w-full">
+      <div
+        :class="'text-sm'"
+        class="w-full"
+      >
         <div
           class="my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
           data-testid="comment"
         >
           <p class="flex flex-wrap items-center space-x-2">
             <Avatar
-              class="ml-2 mt-1"
               v-if="commentData.CommentAuthor"
+              class="ml-2 mt-1"
               :text="commentData.CommentAuthor.username"
             />
 
@@ -229,32 +232,37 @@ export default defineComponent({
             >
               {{ commentData.CommentAuthor.username }}
             </router-link>
-            <span v-else class="font-bold">[Deleted]</span>
+            <span
+              v-else
+              class="font-bold"
+            >[Deleted]</span>
             <span class="mx-2">&middot;</span>
             <span>{{ createdAtFormatted }}</span>
-            <span class="mx-2" v-if="commentData.updatedAt"> &middot; </span>
+            <span
+              v-if="commentData.updatedAt"
+              class="mx-2"
+            > &middot; </span>
             <span>{{ editedAtFormatted }}</span>
           </p>
 
           <div
-            class="w-full max-w-none dark:text-gray-200"
             v-if="!themeLoading"
+            class="w-full max-w-none dark:text-gray-200"
           >
             <div
               v-if="commentData.text && !showEditCommentField"
               class="-ml-4 w-full"
             >
-              <v-md-preview :text="textCopy"></v-md-preview>
+              <v-md-preview :text="textCopy" />
             </div>
             <TextEditor
-              class="mt-3 overflow-y-scroll"
-              id="editExistingComment"
               v-if="!readonly && showEditCommentField"
+              id="editExistingComment"
+              class="mt-3 overflow-y-scroll"
               :initial-value="commentData.text"
               :editor-id="editorId"
               @update="updateExistingComment($event, depth)"
-            >
-            </TextEditor>
+            />
             <CommentButtons
               class="-mt-4 ml-2"
               :comment-data="commentData"
@@ -271,7 +279,7 @@ export default defineComponent({
               @hideReplyEditor="showReplyEditor = false"
               @deleteComment="handleClickDelete"
               @hideReplies="showReplies = false"
-              @openModProfile="this.showModProfileModal = true"
+              @openModProfile="showModProfileModal = true"
               @saveEdit="$emit('saveEdit')"
               @showEditCommentField="showEditCommentField = true"
               @hideEditCommentField="showEditCommentField = false"
@@ -281,8 +289,8 @@ export default defineComponent({
           </div>
         </div>
         <div
-          id="childComments"
           v-if="replyCount > 0 && showReplies"
+          id="childComments"
           class="mt-2 w-full border-l border-gray-300 pl-4 pt-1 dark:border-gray-700"
         >
           <ChildComments
@@ -295,10 +303,10 @@ export default defineComponent({
               v-for="(childComment, i) in slotProps.comments"
               :key="i"
               :compact="true"
-              :commentData="childComment"
+              :comment-data="childComment"
               :depth="depth + 1"
               :locked="locked"
-              :parentCommentId="commentData.id"
+              :parent-comment-id="commentData.id"
               @clickEditComment="$emit('clickEditComment', $event)"
               @deleteComment="handleClickDelete"
               @createComment="$emit('createComment')"
@@ -314,7 +322,7 @@ export default defineComponent({
       :title="'Create Mod Profile'"
       :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
       :open="showModProfileModal"
-      :primaryButtonText="'Yes, create a mod profile'"
+      :primary-button-text="'Yes, create a mod profile'"
       @close="showModProfileModal = false"
       @primaryButtonClick="handleCreateModProfileClick"
     />

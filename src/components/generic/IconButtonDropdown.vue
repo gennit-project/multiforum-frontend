@@ -10,8 +10,11 @@ type MenuItemType = {
 
 export default defineComponent({
   name: "IconButtonDropdown",
-  setup() {
-    return {};
+  components: {
+    DropdownMenu: Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
   },
   props: {
     items: {
@@ -23,23 +26,26 @@ export default defineComponent({
       required: false,
     },
   },
-  components: {
-    DropdownMenu: Menu,
-    MenuButton,
-    MenuItem,
-    MenuItems,
+  setup() {
+    return {};
   },
 });
 </script>
 <template>
-  <DropdownMenu as="div" class="relative inline-block text-left">
+  <DropdownMenu
+    as="div"
+    class="relative inline-block text-left"
+  >
     <div>
       <MenuButton
         class="h-10 inline-flex w-full justify-center items-center gap-x-1.5 rounded-full px-2 text-sm font-semibold text-black dark:text-white hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-900"
       >
-        <i v-if="menuButtonIcon" :class="` ${menuButtonIcon} `"></i>
+        <i
+          v-if="menuButtonIcon"
+          :class="` ${menuButtonIcon} `"
+        />
         <div v-else>
-          <slot></slot>
+          <slot />
         </div>
       </MenuButton>
     </div>
@@ -59,8 +65,8 @@ export default defineComponent({
             v-for="(item, i) in items"
             :key="i"
             v-slot="{ active }"
-            @click="$emit(item.event || 'click', item)"
             class="cursor-pointer"
+            @click="$emit(item.event || 'click', item)"
           >
             <span
               :class="[
@@ -70,7 +76,10 @@ export default defineComponent({
                 'block px-4 py-2 text-sm',
               ]"
             >
-              <i v-if="item.icon" :class="item.icon"></i> {{ item.label }}
+              <i
+                v-if="item.icon"
+                :class="item.icon"
+              /> {{ item.label }}
             </span>
           </MenuItem>
         </div>

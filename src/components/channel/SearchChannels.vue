@@ -189,7 +189,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div >
+  <div>
     <div class="px-4">
       <div class="pt-2 flex justify-between mx-auto max-w-5xl">
         <div class="flex inline-flex py-2 w-full">
@@ -203,10 +203,10 @@ export default defineComponent({
             :label="tagLabel"
             :highlighted="tagLabel !== defaultLabels.tags"
           >
-            <template v-slot:icon>
+            <template #icon>
               <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
             </template>
-            <template v-slot:content>
+            <template #content>
               <TagPicker
                 :selected-tags="selectedTags"
                 @setSelectedTags="setSelectedTags"
@@ -216,22 +216,25 @@ export default defineComponent({
         </div>
 
         <RequireAuth>
-          <template v-slot:has-auth>
-            <CreateButton :to="createChannelPath" :label="'Create Channel'" />
+          <template #has-auth>
+            <CreateButton
+              :to="createChannelPath"
+              :label="'Create Channel'"
+            />
           </template>
-          <template v-slot:does-not-have-auth>
+          <template #does-not-have-auth>
             <PrimaryButton :label="'Create Channel'" />
           </template>
         </RequireAuth>
       </div>
       <ErrorBanner
-        class="mx-auto max-w-5xl"
         v-if="channelError"
+        class="mx-auto max-w-5xl"
         :text="channelError.message"
       />
       <ChannelList
-        class="flex-1 text-xl font-bold mx-auto max-w-5xl"
         v-if="channelResult && channelResult.channels"
+        class="flex-1 text-xl font-bold mx-auto max-w-5xl"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate?.count || 0"
         :search-input="searchInput"
@@ -239,7 +242,10 @@ export default defineComponent({
         @filterByTag="filterByTag"
         @loadMore="loadMore"
       />
-      <div class="flex-1 mx-auto max-w-5xl" v-if="channelLoading">
+      <div
+        v-if="channelLoading"
+        class="flex-1 mx-auto max-w-5xl"
+      >
         Loading...
       </div>
     </div>

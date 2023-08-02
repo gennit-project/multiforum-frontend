@@ -30,19 +30,22 @@ export default defineComponent({
 </script>
 
 <template>
-    <RequireAuth
-    class="flex inline-flex"
+  <RequireAuth
     v-if="$route.name === 'DiscussionDetail'"
+    class="flex inline-flex"
   >
-    <template v-slot:has-auth>
+    <template #has-auth>
       <CreateButton
         class="ml-2"
         :to="`/channels/c/${channelId}/discussions/create`"
         :label="'New Discussion'"
       />
     </template>
-    <template v-slot:does-not-have-auth>
-      <PrimaryButton class="ml-2" :label="'New Discussion'" />
+    <template #does-not-have-auth>
+      <PrimaryButton
+        class="ml-2"
+        :label="'New Discussion'"
+      />
     </template>
   </RequireAuth>
 </template>

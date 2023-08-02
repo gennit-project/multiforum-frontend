@@ -6,10 +6,6 @@ interface Ref<T> {
 }
 
 export default defineComponent({
-  setup(props) {
-    const input: Ref<string> = ref(props.initialValue);
-    return { input };
-  },
   props: {
 
     initialValue: {
@@ -25,8 +21,12 @@ export default defineComponent({
       default: false,
     },
   },
+  setup(props) {
+    const input: Ref<string> = ref(props.initialValue);
+    return { input };
+  },
   methods: {
-    removeQuotationMarks(input: String) {
+    removeQuotationMarks(input: string) {
       // Prevent errors when quotation marks are added
       // to GraphQL query
       return input.split("'").join("").split('"').join("");
@@ -46,7 +46,10 @@ export default defineComponent({
 </script>
 <template>
   <div class="h-10">
-    <label for="search" class="sr-only">Search</label>
+    <label
+      for="search"
+      class="sr-only"
+    >Search</label>
     <div class="relative items-center w-full">
       <div
         class="
@@ -98,9 +101,9 @@ export default defineComponent({
           text-sm
         "
         :placeholder="searchPlaceholder"
-        @keyup="updateSearchInput"
         type="text"
-      />
+        @keyup="updateSearchInput"
+      >
       <div
         class="
           absolute
@@ -113,7 +116,7 @@ export default defineComponent({
         "
         @click="clear"
       >
-        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400"></i>
+        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400" />
       </div>
     </div>
   </div>

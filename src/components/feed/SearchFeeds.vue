@@ -13,7 +13,7 @@ export default defineComponent({
 <template>
   <div class="mx-auto max-w-4xl">
     <div class="relative h-full text-lg">
-      <FeedList/>
+      <FeedList />
     </div>
   </div>
 </template>

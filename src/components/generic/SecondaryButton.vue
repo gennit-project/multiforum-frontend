@@ -28,6 +28,6 @@ export default defineComponent({
     ]"
     class="inline-flex whitespace-nowrap items-center max-height-4 px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
   >
-    <slot></slot>{{ label }}
+    <slot />{{ label }}
   </button>
 </template>
