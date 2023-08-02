@@ -119,7 +119,6 @@ export default defineComponent({
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
-      console.log('load more ran')
       fetchMore({
         variables: {
           offset: discussionChannelResult.value.discussionChannels.length,
@@ -128,7 +127,8 @@ export default defineComponent({
           if (!fetchMoreResult) return previousResult;
 
           return {
-            ...previousResult,
+            discussionChannelsAggregate:
+              fetchMoreResult.discussionChannelsAggregate,
             discussionChannels: [
               ...previousResult.discussionChannels,
               ...fetchMoreResult.discussionChannels,
@@ -163,8 +163,7 @@ export default defineComponent({
       if (!value.data || value.data.discussionChannels.length === 0) {
         return;
       }
-      const defaultSelectedDiscussionChannel =
-        value.data.discussionChannels[0];
+      const defaultSelectedDiscussionChannel = value.data.discussionChannels[0];
 
       sendToPreview(defaultSelectedDiscussionChannel.discussionId);
     });
@@ -173,11 +172,13 @@ export default defineComponent({
       aggregateChannelCount,
       discussionError,
       discussionLoading,
-      discussionChannels,
+      deduplicatedSubmissions: discussionChannels,
+      discussionChannelResult,
       filterValues,
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
+      sendToPreview,
       selectedDiscussion: {} as DiscussionData,
     };
   },
@@ -244,19 +245,19 @@ export default defineComponent({
       :text="discussionError.message"
     />
     <p
-      v-else-if="discussionChannels.length === 0"
+      v-else-if="deduplicatedSubmissions.length === 0"
       class="my-6 px-4"
     >
       There are no results.
     </p>
-    <div v-if="discussionChannels.length > 0">
+    <div v-if="deduplicatedSubmissions.length > 0">
       <ul
         role="list"
         class="my-6 mr-2 divide-y"
         data-testid="sitewide-discussion-list"
       >
         <SitewideDiscussionListItem
-          v-for="discussionChannel in discussionChannels"
+          v-for="discussionChannel in deduplicatedSubmissions"
           :key="discussionChannel.id"
           :discussion="discussionChannel.Discussion"
           :discussion-channel="discussionChannel"
@@ -268,16 +269,17 @@ export default defineComponent({
           @filterByChannel="filterByChannel"
           @openPreview="openPreview"
         />
-        <div v-if="discussionChannels.length > 0">
-          <LoadMore
-            class="justify-self-center"
-            :reached-end-of-results="
-              aggregateChannelCount === discussionChannels.length
-            "
-            @loadMore="loadMore"
-          />
-        </div>
       </ul>
+      <div v-if="discussionChannelResult.discussionChannels.length > 0">
+        <LoadMore
+          class="ml-4 justify-self-center"
+          :reached-end-of-results="
+            aggregateChannelCount ===
+              discussionChannelResult.discussionChannels.length
+          "
+          @loadMore="loadMore"
+        />
+      </div>
     </div>
   </div>
 </template>

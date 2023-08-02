@@ -170,7 +170,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative my-2 flex space-x-1 space-y-3 border-b py-2 dark:border-gray-800"
+    class="relative flex space-x-1 space-y-3 border-b py-4 dark:border-gray-800"
     :class="[isActive ? 'text-blue-500' : '']"
   >
     <v-row>

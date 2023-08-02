@@ -118,10 +118,11 @@ export default defineComponent({
           if (!fetchMoreResult) return previousResult;
 
           return {
-            ...previousResult,
-            discussions: [
-              ...previousResult.discussions,
-              ...fetchMoreResult.discussions,
+            discussionChannelsAggregate:
+              fetchMoreResult.discussionChannelsAggregate,
+            discussionChannels: [
+              ...previousResult.discussionChannels,
+              ...fetchMoreResult.discussionChannels,
             ],
           };
         },
@@ -261,7 +262,7 @@ export default defineComponent({
       There are no results.
     </p>
     <div v-else>
-      <div class="h-full">
+      <div>
         <ul
           role="list"
           class="relative my-2 rounded"
@@ -287,7 +288,7 @@ export default defineComponent({
               discussionChannelResult.discussionChannelsAggregate?.count ===
                 discussionChannelResult.discussionChannels.length
             "
-            @loadMore="$emit('loadMore')"
+            @loadMore="loadMore"
           />
         </div>
       </div>

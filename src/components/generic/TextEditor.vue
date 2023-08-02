@@ -142,19 +142,12 @@ export default defineComponent({
 </template>
 <style lang="scss">
 @media (prefers-color-scheme: dark) {
-  .v-md-editor,
+
   .v-md-editor--preview,
   .v-md-pre-wrapper {
     background-color: transparent !important;
   }
 
-  .v-md-editor.v-md-editor--edit {
-    background-color: transparent;
-  }
-  .v-md-editor__toolbar {
-    background-color: transparent;
-    color: white;
-  }
   .v-md-textarea-editor textarea {
     background-color: transparent;
     color: white !important;
@@ -182,41 +175,6 @@ export default defineComponent({
 }
 
 @media (prefers-color-scheme: light) {
-  .v-md-editor,
-  .v-md-editor--preview,
-  .v-md-pre-wrapper {
-    background-color: transparent !important;
-  }
 
-  .v-md-editor.v-md-editor--edit {
-    background-color: transparent;
-  }
-  .v-md-editor__toolbar {
-    background-color: transparent;
-    color: black;
-  }
-  .v-md-textarea-editor textarea {
-    background-color: transparent;
-    color: black !important;
-  }
-  .github-markdown-body,
-  table,
-  thead,
-  tbody,
-  th,
-  td {
-    background-color: inherit !important;
-    color: inherit !important;
-  }
-  div.github-markdown-body {
-    background-color: transparent !important;
-    table,
-    tbody,
-    thead,
-    th,
-    td {
-      background-color: transparent;
-    }
-  }
 }
 </style>

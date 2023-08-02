@@ -82,7 +82,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="dark:bg-black">
+  <div class="dark:bg-black overflow-hidden">
     <div class="h-fit dark:bg-gray-950">
       <div>
         <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
