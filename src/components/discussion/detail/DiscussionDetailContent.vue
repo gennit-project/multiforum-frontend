@@ -123,7 +123,7 @@ export default defineComponent({
 <template>
   <div class="w-full space-y-2">
     <div
-      :class="'align-center flex mt-2 justify-between'"
+      :class="'align-center mt-2 flex justify-between'"
       v-if="route.name === 'DiscussionDetail'"
     >
       <router-link
@@ -147,20 +147,19 @@ export default defineComponent({
       </RequireAuth>
     </div>
     <v-row class="flex justify-start px-4">
-      
-        <div class="space-y-3">
-          <div class="mt-2 w-full">
-            <div ref="discussionDetail">
-              <div class="min-w-0">
-                <h2
-                  class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
-                >
-                  {{ discussion ? discussion.title : "[Deleted]" }}
-                </h2>
-              </div>
+      <div class="space-y-3">
+        <div class="mt-2 w-full">
+          <div ref="discussionDetail">
+            <div class="min-w-0">
+              <h2
+                class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
+              >
+                {{ discussion ? discussion.title : "[Deleted]" }}
+              </h2>
             </div>
           </div>
         </div>
+      </div>
     </v-row>
     <v-row class="mt-1 flex justify-center">
       <v-col
@@ -212,7 +211,11 @@ export default defineComponent({
           class="my-4"
           v-if="discussion && discussion.DiscussionChannels"
           :discussion-channels="discussion.DiscussionChannels"
-          :channelId="activeDiscussionChannel ? activeDiscussionChannel.channelUniqueName : ''"
+          :channelId="
+            activeDiscussionChannel
+              ? activeDiscussionChannel.channelUniqueName
+              : ''
+          "
         />
       </v-col>
 

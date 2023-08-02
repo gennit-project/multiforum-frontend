@@ -19,12 +19,12 @@ export default defineComponent({
   setup() {
     const route = useRoute();
 
-    const updateDiscussionId= () => {
+    const updateDiscussionId = () => {
       if (typeof route.params.discussionId === "string") {
         return route.params.discussionId;
       }
       return "";
-    }
+    };
 
     const discussionId = ref(updateDiscussionId());
 
@@ -55,11 +55,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-4 py-1">
-  
-    <div
-      class="mb-10 flex justify-center rounded-lg"
-     
-    >
+    <div class="mb-10 flex justify-center rounded-lg">
       <DiscussionDetailContent
         v-if="discussionId"
         :discussion-id="discussionId"

@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/VoteButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
+    RequireAuth,
     VoteButton,
   },
   props: {
@@ -47,23 +49,34 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex flex-row space-x-3">
-    <VoteButton
-      :count="upvoteCount"
-      :active="upvoteActive"
-      @vote="clickUp"
-    >
-      <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
-    </VoteButton>
-    <VoteButton
-      v-if="showDownvote"
-      :count="downvoteCount"
-      :active="downvoteActive"
-      @vote="clickDown"
-    >
-      <i class="fa-solid fa-arrow-down mr-2 w-3"></i>
-    </VoteButton>
-  </div>
+  <RequireAuth class="flex flex-row space-x-3">
+    <template v-slot:has-auth>
+      <VoteButton :count="upvoteCount" :active="upvoteActive" @vote="clickUp">
+        <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
+      </VoteButton>
+      <VoteButton
+        class="ml-2"
+        v-if="showDownvote"
+        :count="downvoteCount"
+        :active="downvoteActive"
+        @vote="clickDown"
+      >
+        <i class="fa-solid fa-arrow-down mr-2 w-3"></i>
+      </VoteButton>
+    </template>
+    <template v-slot:does-not-have-auth>
+      <VoteButton :count="upvoteCount" :active="upvoteActive">
+        <i class="fa-solid fa-arrow-up mr-2 w-3"></i>
+      </VoteButton>
+      <VoteButton
+        v-if="showDownvote"
+        :count="downvoteCount"
+        :active="downvoteActive"
+      >
+        <i class="fa-solid fa-arrow-down w-3"></i>
+      </VoteButton>
+    </template>
+  </RequireAuth>
 </template>
 
 <style scoped></style>
