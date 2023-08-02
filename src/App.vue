@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen dark:text-slate-200 relative list-disc">
+  <div class=" dark:text-slate-200 relative list-disc">
     <nav class="shadow-sm">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"

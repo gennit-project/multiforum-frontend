@@ -96,7 +96,7 @@ export default defineComponent({
 
     <div
       v-click-outside="outside"
-      class="fixed left-0 top-0 z-50 flex h-screen w-[250px] flex-col justify-between overflow-y-auto border bg-white py-2 dark:bg-slate-900"
+      class="fixed left-0 top-0 z-50 flex h-full w-[250px] flex-col justify-between overflow-y-auto border bg-white py-2 dark:bg-slate-900"
     >
       <div>
         <div class="mt-2 block px-6">

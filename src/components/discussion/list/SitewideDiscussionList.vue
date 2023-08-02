@@ -268,17 +268,16 @@ export default defineComponent({
           @filterByChannel="filterByChannel"
           @openPreview="openPreview"
         />
+        <div v-if="discussionChannels.length > 0">
+          <LoadMore
+            class="justify-self-center"
+            :reached-end-of-results="
+              aggregateChannelCount === discussionChannels.length
+            "
+            @loadMore="loadMore"
+          />
+        </div>
       </ul>
-
-      <div v-if="discussionChannels.length > 0">
-        <LoadMore
-          class="justify-self-center"
-          :reached-end-of-results="
-            aggregateChannelCount === discussionChannels.length
-          "
-          @loadMore="loadMore"
-        />
-      </div>
     </div>
   </div>
 </template>

@@ -12,7 +12,6 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
 import { useRoute } from "vue-router";
-// import TopNavSearchBar from "./TopNavSearchBar.vue";
 
 export default defineComponent({
   name: "TopNav",
@@ -20,10 +19,8 @@ export default defineComponent({
     Avatar,
     ThemeSwitcher,
     MenuButton,
-    // NotificationButton,
     UserProfileDropdownMenu,
     ChannelIcon,
-    // TopNavSearchBar,
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
@@ -101,9 +98,6 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <!-- <div class="flex justify-center w-full">
-        <TopNavSearchBar />
-      </div> -->
       <div
         class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
       >

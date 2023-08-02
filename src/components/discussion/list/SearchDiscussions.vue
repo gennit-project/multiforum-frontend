@@ -304,7 +304,7 @@ export default defineComponent({
 }
 
 .scrollable-column {
-  height: 100vh;
+  height: 99vh;
   overflow-y: auto;
 }
 </style>

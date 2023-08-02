@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex flex-wrap items-center text-xs text-gray-400">
+    <div class="flex flex-wrap gap-2 items-center text-xs text-gray-400">
       <RequireAuth
         v-if="!locked"
         :full-width="false"
@@ -279,7 +279,7 @@ export default defineComponent({
           route.params.channelId && route.name !== 'DiscussionCommentPermalink'
         "
         :to="`${route.path}/comments/${commentData.id}`"
-        class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
         @click="
           $router.push({
             name: 'DiscussionCommentPermalink',
