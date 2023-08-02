@@ -106,6 +106,15 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
       CommentsAggregate {
         count
       }
+      UpvotedByUsers {
+        username
+      }
+      DownvotedByModerators {
+        displayName
+      }
+      DownvotedByModeratorsAggregate {
+        count
+      }
       Comments(
         where: {
           isRootComment: true

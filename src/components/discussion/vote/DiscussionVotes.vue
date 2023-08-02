@@ -52,7 +52,6 @@ export default defineComponent({
       return "";
     });
 
-
     const { result: localUsernameResult, loading: localUsernameLoading } =
       useQuery(GET_LOCAL_USERNAME);
 
@@ -77,26 +76,23 @@ export default defineComponent({
     });
 
     const discussionChannelId = computed(() => {
-      return props.discussionChannel.discussionId || "";
+      return props.discussionChannel.id || "";
     });
 
     const { mutate: downvoteDiscussionChannel } = useMutation(
       DOWNVOTE_DISCUSSION_CHANNEL,
     );
 
-    const { mutate: upvoteDiscussionChannel, onDone: onDoneUpvote } = useMutation(
-      UPVOTE_DISCUSSION_CHANNEL,
-    );
+    const { mutate: upvoteDiscussionChannel, onDone: onDoneUpvote } =
+      useMutation(UPVOTE_DISCUSSION_CHANNEL);
 
-    const { mutate: undoUpvoteDiscussionChannel, onDone: onDoneUndoUpvote } = useMutation(
-      UNDO_UPVOTE_DISCUSSION_CHANNEL,
-      () => ({
+    const { mutate: undoUpvoteDiscussionChannel, onDone: onDoneUndoUpvote } =
+      useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
         variables: {
           id: props.discussionChannel.id || "",
           username: localUsernameResult.value?.username || "",
         },
-      }),
-    );
+      }));
 
     const { mutate: undoDownvoteDiscussionChannel } = useMutation(
       UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
@@ -119,21 +115,17 @@ export default defineComponent({
 
     onDoneUpvote(() => {
       updateDiscussionChannelUpvoteCount();
-    })
+    });
 
     onDoneUndoUpvote(() => {
       updateDiscussionChannelUpvoteCount();
-    })
+    });
 
     const loggedInUserUpvoted = computed(() => {
-      if (
-        localUsernameLoading.value ||
-        !localUsernameResult.value ||
-        !props.discussionChannel
-      ) {
+      if (localUsernameLoading.value || !localUsernameResult.value) {
         return false;
       }
-      const users =props.discussionChannel?.UpvotedByUsers || [];
+      const users = props.discussionChannel?.UpvotedByUsers || [];
 
       const loggedInUser = localUsernameResult.value.username;
       const match =
@@ -162,8 +154,7 @@ export default defineComponent({
 
     const downvoteCount = computed(() => {
       if (props.discussionChannel) {
-        return props.discussionChannel.DownvotedByModeratorsAggregate
-          ?.count;
+        return props.discussionChannel.DownvotedByModeratorsAggregate?.count;
       }
       return 0;
     });
@@ -189,6 +180,13 @@ export default defineComponent({
       });
     });
 
+    const upvoteCount = computed(() => {
+      if (props.discussionChannel) {
+        return props.discussionChannel.upvoteCount;
+      }
+      return 0;
+    });
+
     return {
       createModProfile,
       discussionChannelId,
@@ -205,7 +203,7 @@ export default defineComponent({
         undoDownvoteDiscussionChannel,
         updateDiscussionChannelUpvoteCount,
       },
-      upvoteCount: props.discussionChannel.upvoteCount || 0,
+      upvoteCount,
       username,
       route,
       showModProfileModal: ref(false),
@@ -257,7 +255,7 @@ export default defineComponent({
       }
 
       if (this.discussionChannel && this.discussionChannel.id) {
-        this.discussionChannelMutations.upvoteDiscussionChannel({
+        await this.discussionChannelMutations.upvoteDiscussionChannel({
           id: this.discussionChannelId,
           username: this.username || "",
         });
@@ -279,7 +277,7 @@ export default defineComponent({
   <VoteButtons
     class="my-1"
     :downvote-count="downvoteCount"
-    :upvote-count="upvoteCount"
+    :upvote-count="upvoteCount || 0"
     :upvote-active="loggedInUserUpvoted"
     :downvote-active="loggedInUserDownvoted"
     :has-mod-profile="!!loggedInUserModName"
