@@ -12,14 +12,13 @@ import { SearchDiscussionValues } from "@/types/discussionTypes";
 import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import DiscussionDetail from "../detail/DiscussionDetail.vue";
-import AboutColumn from "@/components/channel/AboutColumn.vue";
+
 interface Ref<T> {
   value: T;
 }
 
 export default defineComponent({
   components: {
-    AboutColumn,
     ChannelDiscussionList,
     DiscussionDetail,
     DiscussionFilterBar,
@@ -81,11 +80,15 @@ export default defineComponent({
     const previewIsOpen = ref(false);
 
     const { lgAndDown, lgAndUp, mdAndDown } = useDisplay();
+    const createDiscussionPath = channelId.value
+      ? `/channels/c/${channelId.value}/discussions/create`
+      : "/discussions/create";
 
     return {
       channelId,
       channelLabel,
       compareDate,
+      createDiscussionPath,
       defaultLabels,
       discussionId,
       discussionWhere,
@@ -247,65 +250,47 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row>
-      <v-col cols="12">
-        <DiscussionFilterBar />
-        <v-row class="mt-1">
-          <v-col
-            v-if="channelId && !mdAndDown"
-            cols="12"
-            md="4"
-            lg="2"
-            class="scrollable-column"
-          >
-            <AboutColumn :channel-id="channelId" />
-          </v-col>
-          <v-col
-            cols="12"
-            md="8"
-            lg="4"
-            class="scrollable-column"
-          >
-            <SitewideDiscussionList
-              v-if="!channelId"
-              :search-input="filterValues.searchInput"
-              :selected-tags="filterValues.tags"
-              :selected-channels="filterValues.channels"
-              @filterByTag="handleClickTag"
-              @filterByChannel="handleClickChannel"
-              @openPreview="openPreview"
-            />
-            <ChannelDiscussionList
-              v-else
-              :channel-id="channelId"
-              :search-input="filterValues.searchInput"
-              :selected-tags="filterValues.tags"
-              :selected-channels="filterValues.channels"
-              @filterByTag="handleClickTag"
-              @filterByChannel="handleClickChannel"
-              @openPreview="openPreview"
-            />
-          </v-col>
-          <v-col
-            v-if="!mdAndDown"
-            cols="12"
-            :lg="channelId ? 6 : 8"
-            class="scrollable-column"
-          >
-            <router-view />
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-    <DrawerFlyout
-      v-if="mdAndDown"
-      :is-open="previewIsOpen"
-      @closePreview="closePreview"
-    >
-      <DiscussionDetail />
-    </DrawerFlyout>
-  </v-container>
+  <v-col
+    cols="12"
+    :lg="channelId ? 5 : 4"
+    class="scrollable-column shadow-right-lg"
+  >
+    <DiscussionFilterBar />
+    <SitewideDiscussionList
+      v-if="!channelId"
+      :search-input="filterValues.searchInput"
+      :selected-tags="filterValues.tags"
+      :selected-channels="filterValues.channels"
+      @filterByTag="handleClickTag"
+      @filterByChannel="handleClickChannel"
+      @openPreview="openPreview"
+    />
+    <ChannelDiscussionList
+      v-else
+      :channel-id="channelId"
+      :search-input="filterValues.searchInput"
+      :selected-tags="filterValues.tags"
+      :selected-channels="filterValues.channels"
+      @filterByTag="handleClickTag"
+      @filterByChannel="handleClickChannel"
+      @openPreview="openPreview"
+    />
+  </v-col>
+  <v-col
+    v-if="!mdAndDown"
+    cols="12"
+    :lg="channelId ? 7 : 4"
+    class="scrollable-column border-l border-gray-200 px-6 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+  >
+    <router-view />
+  </v-col>
+  <DrawerFlyout
+    v-if="mdAndDown"
+    :is-open="previewIsOpen"
+    @closePreview="closePreview"
+  >
+    <DiscussionDetail />
+  </DrawerFlyout>
 </template>
 
 <style>

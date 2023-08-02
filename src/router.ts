@@ -10,7 +10,7 @@ import DiscussionTab from "@/components/channel/DiscussionTab.vue"
 import EventTab from "@/components/channel/EventTab.vue";
 import DiscussionDetail from "./components/discussion/detail/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/list/SearchDiscussions.vue";
-import AboutColumn from "./components/channel/AboutColumn.vue";
+import ChannelAboutPage from "./components/channel/ChannelAboutPage.vue";
 import SiteSettings from "./components/settings/SiteSettings.vue";
 import CreateEvent from "@/components/event/form/CreateEvent.vue";
 import EditEvent from "@/components/event/form/EditEvent.vue";
@@ -162,7 +162,7 @@ export const router = createRouter({
         {
           name: "About",
           path: "about",
-          component: AboutColumn,
+          component: ChannelAboutPage,
         },
         {
           name: "Discussions",

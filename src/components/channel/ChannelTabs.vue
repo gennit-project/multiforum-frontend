@@ -13,6 +13,10 @@ export default defineComponent({
       type: Object,
       required: true,
     },
+    vertical: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const channelId = ref(props.route.params.channelId);
@@ -48,38 +52,68 @@ export default defineComponent({
   },
 });
 </script>
+>
 
 <template>
   <div>
-    <div class="sm:block">
-      <nav
-        class="max-w-7xl space-x-2 text-lg"
-        aria-label="Tabs"
+    <nav
+      v-if="vertical"
+      class="flex max-w-7xl flex-col text-lg"
+      aria-label="Tabs"
+    >
+      <TabButton
+        :to="tabRoutes.discussions"
+        :label="'Discussions'"
+        :is-active="$route.path.includes('discussions')"
+        :vertical="true"
       >
-        <TabButton
-          :to="tabRoutes.discussions"
-          :label="'Discussions'"
-          :is-active="$route.path.includes('discussions')"
-        >
-          <i class="fa-regular fa-comment h-6 w-6" />
-        </TabButton>
-        <TabButton
-          :to="tabRoutes.events"
-          :label="'Events'"
-          :is-active="route.name.includes('Event')"
-        >
-          <i class="fa-regular fa-calendar h-6 w-6" />
-        </TabButton>
-        <TabButton
-          v-if="mdAndDown"
-          :to="tabRoutes.about"
-          :label="'About'"
-          :is-active="route.name.includes('About')"
-        >
-          <i class="fa-solid fa-info-circle h-6 w-6" />
-        </TabButton>
-      </nav>
-    </div>
-    <div class="width-full" />
+        <i class="fa-regular fa-comment h-6 w-6" />
+      </TabButton>
+      <TabButton
+        :to="tabRoutes.events"
+        :label="'Events'"
+        :is-active="route.name.includes('Event')"
+        :vertical="true"
+      >
+        <i class="fa-regular fa-calendar h-6 w-6" />
+      </TabButton>
+      <TabButton
+        v-if="mdAndDown"
+        :to="tabRoutes.about"
+        :label="'About'"
+        :is-active="route.name.includes('About')"
+        :vertical="true"
+      >
+        <i class="fa-solid fa-info-circle h-6 w-6" />
+      </TabButton>
+    </nav>
+    <nav
+      v-else
+      class="max-w-7xl space-x-2 text-lg"
+      aria-label="Tabs"
+    >
+      <TabButton
+        :to="tabRoutes.discussions"
+        :label="'Discussions'"
+        :is-active="$route.path.includes('discussions')"
+      >
+        <i class="fa-regular fa-comment h-6 w-6" />
+      </TabButton>
+      <TabButton
+        :to="tabRoutes.events"
+        :label="'Events'"
+        :is-active="route.name.includes('Event')"
+      >
+        <i class="fa-regular fa-calendar h-6 w-6" />
+      </TabButton>
+      <TabButton
+        v-if="mdAndDown"
+        :to="tabRoutes.about"
+        :label="'About'"
+        :is-active="route.name.includes('About')"
+      >
+        <i class="fa-solid fa-info-circle h-6 w-6" />
+      </TabButton>
+    </nav>
   </div>
 </template>

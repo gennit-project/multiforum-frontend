@@ -1,17 +1,23 @@
 <script lang="ts">
 import ChannelTabs from "./ChannelTabs.vue";
-// import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-
+import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import ChannelSidebarButton from "@/components/channel/ChannelSidebarButton.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
+import { router } from "@/router";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
-    // ChannelIcon,
+    ChannelSidebar,
+    ChannelSidebarButton,
+    PrimaryButton,
+    RequireAuth,
     ChannelTabs,
   },
   setup() {
@@ -46,11 +52,15 @@ export default defineComponent({
     const eventId = computed(() => {
       return route.value.params.eventId;
     });
-    const { lgAndDown, lgAndUp, mdAndUp, mdAndDown } = useDisplay();
+    const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
+    const createDiscussionPath = channelId.value
+      ? `/channels/c/${channelId.value}/discussions/create`
+      : "/discussions/create";
 
     return {
       channel,
       channelId,
+      createDiscussionPath,
       discussionId,
       eventId,
       route,
@@ -59,6 +69,8 @@ export default defineComponent({
       mdAndDown,
       lgAndUp,
       mdAndUp,
+      router,
+      smAndDown
     };
   },
   created() {
@@ -71,27 +83,65 @@ export default defineComponent({
 
 <template>
   <div class="h-screen dark:bg-black">
-    <!-- Tabs -->
-    <div
-      v-if="route.name !== 'EditChannel'"
-      class="border-b border-gray-300 dark:border-gray-800"
-    >
-      <div class="px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-start pt-1 text-center">
-          <ChannelTabs
-            class="block"
-            :route="route"
-          />
-        </div>
-      </div>
-    </div>
-    <div class="dark:bg-gray-950 h-fit">
-      <div class="px-4 sm:px-6 lg:px-8">
-        <article
-          class="relative z-0 flex-1 focus:outline-none xl:order-last"
-        >
+    <div class="h-fit dark:bg-gray-950">
+      <div>
+        <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
           <div class="block">
-            <router-view />
+            <v-container fluid>
+              <v-row>
+                <v-col cols="12">
+                  <ChannelTabs
+                    v-if="smAndDown"
+                    :vertical="false"
+                    class="mb-4 block border-b"
+                    :route="route"
+                  />
+                  <v-row>
+                    <v-col
+                      v-if="channelId && !smAndDown"
+                      gap="6"
+                      cols="12"
+                      md="3"
+                      lg="2"
+                      class="scrollable-column shadow-lg"
+                    >
+                      <ChannelSidebar :channel-id="channelId">
+                        <div class="mt-6">
+                          <RequireAuth
+                            class="align-middle"
+                            :full-width="false"
+                          >
+                            <template #has-auth>
+                              <ChannelSidebarButton
+                                :to="createDiscussionPath"
+                                :label="'New Discussion'"
+                              />
+                            </template>
+                            <template #does-not-have-auth>
+                              <PrimaryButton
+                                class="ml-2"
+                                :label="'New Discussion'"
+                              />
+                            </template>
+                          </RequireAuth>
+                        </div>
+                        <ChannelTabs
+                          v-if="route.name !== 'EditChannel'"
+                          class="block"
+                          :route="route"
+                          :vertical="true"
+                        />
+                      </ChannelSidebar>
+                    </v-col>
+                    <v-col>
+                      <v-row class="w-full px-4">
+                        <router-view />
+                      </v-row>
+                    </v-col>
+                  </v-row>
+                </v-col>
+              </v-row>
+            </v-container>
           </div>
         </article>
       </div>

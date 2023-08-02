@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-// need to get channel id, render differently if clicked within channel
-
 export default defineComponent({
   props: {
     disabled: {

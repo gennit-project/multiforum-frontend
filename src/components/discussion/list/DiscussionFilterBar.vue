@@ -10,9 +10,6 @@ import SearchBar from "../../generic/SearchBar.vue";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 
 export default defineComponent({
   name: "DiscussionFilterBar",
@@ -22,11 +19,8 @@ export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
-    CreateButton,
     FilterChip,
-    RequireAuth,
     SearchBar,
-    PrimaryButton,
     TagIcon,
     TagPicker,
   },
@@ -62,7 +56,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-      })
+      }),
     );
 
     const channelLabel = computed(() => {
@@ -73,14 +67,9 @@ export default defineComponent({
       return getTagLabel(filterValues.value.tags);
     });
 
-    const createDiscussionPath = channelId.value
-      ? `/channels/c/${channelId.value}/discussions/create`
-      : "/discussions/create";
-
     return {
       channelId,
       channelLabel,
-      createDiscussionPath,
       defaultFilterLabels,
       drawerIsOpen: ref(false),
       filterValues,
@@ -144,7 +133,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-2">
-    <div class="flex justify-between items-center w-full">
+    <div class="flex w-full items-center justify-between">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
@@ -162,7 +151,7 @@ export default defineComponent({
           :highlighted="channelLabel !== defaultFilterLabels.channels"
         >
           <template #icon>
-            <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
           </template>
           <template #content>
             <ChannelPicker
@@ -178,7 +167,7 @@ export default defineComponent({
           :highlighted="tagLabel !== defaultFilterLabels.tags"
         >
           <template #icon>
-            <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
           </template>
           <template #content>
             <TagPicker
@@ -187,26 +176,6 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-      </div>
-      <div>
-        <RequireAuth
-          class="align-middle"
-          :full-width="false"
-        >
-          <template #has-auth>
-            <CreateButton
-              class="ml-2"
-              :to="createDiscussionPath"
-              :label="'New Discussion'"
-            />
-          </template>
-          <template #does-not-have-auth>
-            <PrimaryButton
-              class="ml-2"
-              :label="'New Discussion'"
-            />
-          </template>
-        </RequireAuth>
       </div>
     </div>
   </div>

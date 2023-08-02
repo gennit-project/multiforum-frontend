@@ -175,7 +175,7 @@ export default defineComponent({
   >
     <v-row>
       <v-col cols="2">
-        <div class="flex w-full gap-3">
+        <div class="flex w-full px-2">
           <DiscussionVotes
             v-if="discussionChannel"
             :discussion="discussion"
@@ -184,14 +184,7 @@ export default defineComponent({
           />
         </div>
       </v-col>
-      <v-col cols="1">
-        <div
-          class="flex h-10 w-10 items-center justify-center rounded bg-gray-100 dark:bg-gray-800"
-        >
-          <div>💬</div>
-        </div>
-      </v-col>
-      <v-col cols="7">
+      <v-col :cols="8">
         <div class="ml-2">
           <router-link
             :to="detailLink"

@@ -113,10 +113,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex-shrink-0 rounded-lg border px-4 shadow dark:border-gray-600">
+  <div class="dark:border-gray-600">
     <div
       v-if="channelId"
-      class="flex items-center border-b my-4"
+      class="my-4 flex items-center border-b"
     >
       <Avatar
         :text="channelId"
@@ -124,12 +124,12 @@ export default defineComponent({
       />
       <h1
         v-if="channelId"
-        class="my-2 mb-2 flex justify-center  border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
+        class="my-2 mb-2 flex justify-center border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
       >
         {{ channelId }}
       </h1>
     </div>
-    
+
     <div class="w-full py-3">
       <p v-if="getChannelLoading">
         Loading...
@@ -157,6 +157,7 @@ export default defineComponent({
             {{ "This channel has no description." }}
           </p>
         </div>
+        <slot />
 
         <div class="mt-6">
           <div v-if="channel.Tags.length > 0">

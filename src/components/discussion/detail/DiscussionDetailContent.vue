@@ -19,12 +19,10 @@ import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import "md-editor-v3/lib/style.css";
-import AboutColumn from "@/components/channel/AboutColumn.vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
-    AboutColumn,
     ChannelLinks,
     CreateRootCommentForm,
     CommentSection,
@@ -226,16 +224,6 @@ export default defineComponent({
               : ''
           "
         />
-      </v-col>
-
-      <!-- Right column -->
-      <v-col
-        v-if="channelId && route.name === 'DiscussionDetail'"
-        cols="12"
-        md="3"
-        class="scrollable-column"
-      >
-        <AboutColumn :channel-id="channelId" />
       </v-col>
     </v-row>
   </div>
