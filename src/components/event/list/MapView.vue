@@ -129,10 +129,10 @@ export default defineComponent({
     onGetEventResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
-      if (!value.data || value.data.events.length === 0) {
+      if (!value.data || value.data.eventChannels.length === 0) {
         return;
       }
-      const defaultSelectedEvent = value.data.events[0];
+      const defaultSelectedEvent = value.data.eventChannels[0].eventId;
 
       sendToPreview(defaultSelectedEvent.id, "");
     });

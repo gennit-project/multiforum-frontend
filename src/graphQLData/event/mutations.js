@@ -1,5 +1,71 @@
 import { gql } from "@apollo/client/core";
 
+export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
+  mutation createEvent(
+    $eventCreateInput: EventCreateInput
+    $channelConnections: [String]
+  ) {
+    createEventWithChannelConnections(
+      eventCreateInput: $eventCreateInput
+      channelConnections: $channelConnections
+    ) {
+      id
+      title
+      description
+      EventChannels {
+        id
+        Channel {
+          uniqueName
+        }
+      }
+      Poster {
+        username
+      }
+      createdAt
+      updatedAt
+      Tags {
+        text
+      }
+    }
+  }
+`;
+
+export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
+  mutation updateEvents(
+    $updateEventInput: EventUpdateInput!
+    $eventWhere: EventWhere!
+    $channelConnections: [String!]!
+    $channelDisconnections: [String!]!
+  ) {
+    updateEventWithChannelConnections(
+      eventUpdateInput: $updateEventInput
+      eventWhere: $eventWhere
+      channelConnections: $channelConnections
+      channelDisconnections: $channelDisconnections
+    ) {
+      id
+      title
+      description
+      EventChannels {
+        id
+        channelUniqueName
+        eventId
+        Channel {
+          uniqueName
+        }
+      }
+      Poster {
+        username
+      }
+      createdAt
+      updatedAt
+      Tags {
+        text
+      }
+    }
+  }
+`;
+
 export const CREATE_EVENT = gql`
 mutation ($createEventInput: [EventCreateInput!]!) {
   createEvents(input: $createEventInput) {

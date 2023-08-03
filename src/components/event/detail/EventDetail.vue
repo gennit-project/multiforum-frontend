@@ -3,9 +3,8 @@ import { defineComponent, computed, ref } from "vue";
 import Tag from "@/components/tag/Tag.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
-import { ChannelData } from "@/types/channelTypes";
 import { GET_EVENT } from "@/graphQLData/event/queries";
-import { EventData } from "@/types/eventTypes";
+import { Event, EventChannel } from "@/__generated__/graphql"
 import { relativeTime } from "../../../dateTimeUtils";
 import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -81,10 +80,10 @@ export default defineComponent({
       if (!eventResult.value || !eventResult.value.events[0]) {
         return [];
       }
-      const event: EventData = eventResult.value.events[0];
-      const channels = event.Channels;
-      const channelsExceptCurrent = channels.filter((channel: ChannelData) => {
-        return channel.uniqueName !== channelId.value;
+      const event: Event = eventResult.value.events[0];
+      const eventChannels = event.EventChannels;
+      const channelsExceptCurrent = eventChannels.filter((ec: EventChannel) => {
+        return ec.channelUniqueName !== channelId.value;
       });
       return channelsExceptCurrent;
     });
@@ -245,13 +244,13 @@ export default defineComponent({
           </div>
 
           <router-link
-            v-for="channel in channelsExceptCurrent"
-            :key="channel.uniqueName"
-            :to="`/channels/c/${channel.uniqueName}/events/e/${eventId}`"
+            v-for="ec in channelsExceptCurrent"
+            :key="ec.channelUniqueName"
+            :to="`/channels/c/${ec.channelUniqueName}/events/e/${eventId}`"
           >
             <Tag
               class="mt-2"
-              :tag="channel.uniqueName"
+              :tag="ec.channelUniqueName"
               :channel-mode="true"
             />
           </router-link>

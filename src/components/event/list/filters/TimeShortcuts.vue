@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 import { useRoute } from "vue-router";
-import { reverseChronologicalOrder, chronologicalOrder } from "./filterStrings";
 import { timeFilterShortcuts } from "./eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
@@ -83,17 +82,12 @@ export default defineComponent({
         this.activeDateShortcut = this.timeFilterShortcuts.NONE;
         this.updateFilters({
           timeShortcut: this.timeFilterShortcuts.NONE,
-          resultsOrder: chronologicalOrder,
         });
       } else {
         // If the filter is not already selected, select it.
         this.activeDateShortcut = shortcut;
         this.updateFilters({
           timeShortcut: shortcut,
-          resultsOrder:
-            shortcut === this.timeFilterShortcuts.PAST_EVENTS
-              ? reverseChronologicalOrder
-              : chronologicalOrder,
         });
       }
     },

@@ -270,15 +270,23 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
 
   return {
     AND: (conditions = [
+      // Ignore the typescript warnings. These filters are part 
+      // of the real EventWhere on the backend, but not the 
+      // auto-generated typescript types that exist only
+      // for our convenience on the frontend.
+      // @ts-ignore
       ...conditions,
-      {
-        ChannelsAggregate: {
-          count_GT: 0,
-        },
-      },
+       // @ts-ignore
+      // {
+      //   EventChannelsAggregate: {
+      //     count_GT: 0,
+      //   },
+      // },
+       // @ts-ignore
       {
         startTime_GT: `${beginningOfDateRangeISO}`,
       },
+       // @ts-ignore
       {
         startTime_LT: `${endOfDateRangeISO}`,
       },

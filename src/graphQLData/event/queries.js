@@ -25,6 +25,9 @@ const EVENT_FIELDS = gql`
       text
     }
     EventChannels {
+      id
+      eventId
+      channelUniqueName
       Channel {
         uniqueName
       }
@@ -72,8 +75,33 @@ export const GET_EVENTS = gql`
       where: $where
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
-      ...EventFields
+      id
+    title
+    description
+    startTime
+    endTime
+    locationName
+    address
+    virtualEventUrl
+    startTimeDayOfWeek
+    canceled
+    location {
+      latitude
+      longitude
+    }
+    cost
+    Poster {
+      username
+    }
+    Tags {
+      text
+    }
+    EventChannels {
+      id
+      eventId
+      channelUniqueName
+
+    }
     }
   }
-  ${EVENT_FIELDS}
 `;

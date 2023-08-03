@@ -18,6 +18,7 @@ module.exports = {
     rules: {
       "vue/no-setup-props-destructure": "off",
       "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/ban-ts-comment": "off",
       "vue/v-on-event-hyphenation": "off",
       "vue/require-explicit-emits": "off",
     }

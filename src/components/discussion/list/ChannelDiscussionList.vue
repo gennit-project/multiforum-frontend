@@ -78,16 +78,8 @@ export default defineComponent({
 
     const discussionChannelWhere = computed(() => {
       return {
-        OR: [
-          {
-            channelUniqueName: channelId.value,
-            Discussion: discussionWhere.value,
-          },
-          {
-            channelUniqueName: channelId.value,
-            Discussion: null,
-          },
-        ],
+        channelUniqueName: channelId.value,
+        Discussion: discussionWhere.value,
       };
     });
 

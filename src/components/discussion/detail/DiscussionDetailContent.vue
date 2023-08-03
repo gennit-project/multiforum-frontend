@@ -150,33 +150,36 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
-    <v-row class="mt-1 flex justify-center">
+    <p v-if="getDiscussionLoading">
+      Loading...
+    </p>
+    <ErrorBanner
+      v-else-if="getDiscussionError"
+      class="mt-2"
+      :text="getDiscussionError.message"
+    />
+    <v-row
+      v-else
+      class="mt-1 flex justify-center"
+    >
       <v-col
         cols="12"
         :md="route.name === 'DiscussionDetail' ? 9 : 12"
         class="max-w-4xl"
       >
         <div class="space-y-3">
-          <div class="mt-2 mb-3 w-full">
+          <div class="mb-3 mt-2 w-full">
             <div ref="discussionDetail">
               <div class="min-w-0">
                 <h2
                   class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
                 >
-                  {{ discussion ? discussion.title : "[Deleted]" }}
+                  {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
                 </h2>
               </div>
             </div>
           </div>
         </div>
-        <p v-if="getDiscussionLoading">
-          Loading...
-        </p>
-        <ErrorBanner
-          v-else-if="getDiscussionError"
-          class="mt-2"
-          :text="getDiscussionError.message"
-        />
 
         <div class="min-w-md space-y-3">
           <div

@@ -8,7 +8,7 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
-import { CREATE_EVENT } from "@/graphQLData/event/mutations";
+import { CREATE_EVENT_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/event/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { apolloClient } from "@/main";
 import { getTimePieces } from "@/utils/dateTimeUtils";
@@ -17,7 +17,6 @@ import { EventData } from "@/types/eventTypes";
 import { gql } from "@apollo/client/core";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import RequireAuth from "../../auth/RequireAuth.vue";
-// import { CREATE_DISCUSSION_CHANNEL } from "@/graphQLData/comment/queries";
 
 export default defineComponent({
   name: "CreateEvent",
@@ -54,37 +53,9 @@ export default defineComponent({
     const defaultStartTimeObj = now.startOf("hour").plus({ hours: 1 });
 
     const startTimePieces = ref(getTimePieces(defaultStartTimeObj));
-    // const defaultEndTimeISO = defaultStartTimeObj.plus({ minutes: 30 }).toISO();
 
     const createEventInput = computed(() => {
-      const tagConnections = formValues.value.selectedTags.map(
-        (tag: string) => {
-          return {
-            onCreate: {
-              node: {
-                text: tag,
-              },
-            },
-            where: {
-              node: {
-                text: tag,
-              },
-            },
-          };
-        }
-      );
-
-      const channelConnections = formValues.value.selectedChannels.map(
-        (channel: string | string[]) => {
-          return {
-            where: {
-              node: {
-                uniqueName: channel,
-              },
-            },
-          };
-        }
-      );
+      const tagConnections = formValues.value.selectedTags;
 
       let input = {
         /*
@@ -103,9 +74,6 @@ export default defineComponent({
         free: formValues.value.free || false,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
-        Channels: {
-          connect: channelConnections,
-        },
         Tags: {
           connectOrCreate: tagConnections,
         },
@@ -133,18 +101,19 @@ export default defineComponent({
         input = { ...input, ...locationValues };
       }
 
-      return [input];
+      return input;
     }); // End of createEventInput
 
     const {
       mutate: createEvent,
       error: createEventError,
       onDone,
-    } = useMutation(CREATE_EVENT, () => {
+    } = useMutation(CREATE_EVENT_WITH_CHANNEL_CONNECTIONS, () => {
       return {
         errorPolicy: "all",
         variables: {
           createEventInput: createEventInput.value,
+          channelConnections: formValues.value.selectedChannels
         },
         update: (cache: any, result: any) => {
           const newEvent: EventData = result.data?.createEvents?.events[0];
@@ -162,8 +131,6 @@ export default defineComponent({
                   `,
                 });
 
-                // Quick safety check - if the new event is already
-                // present in the cache, we don't need to add it again.
                 if (
                   existingEventRefs.some(
                     (ref: any) => readField("id", ref) === newEventRef.id
