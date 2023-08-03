@@ -54,7 +54,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full space-y-4 py-1">
+  <div class="w-full h-screen overflow-auto space-y-4 py-1">
     <div class="mb-10 flex justify-center rounded-lg">
       <DiscussionDetailContent
         v-if="discussionId"
