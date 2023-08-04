@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from "vue";
-import TabButton from "@/components/generic/TabButton.vue";
+import TabButton from "@/components/nav/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 
 export default defineComponent({

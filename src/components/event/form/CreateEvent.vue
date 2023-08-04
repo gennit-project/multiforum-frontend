@@ -103,6 +103,7 @@ export default defineComponent({
 
       return input;
     }); // End of createEventInput
+    console.log('create input', createEventInput.value)
 
     const {
       mutate: createEvent,
@@ -112,7 +113,7 @@ export default defineComponent({
       return {
         errorPolicy: "all",
         variables: {
-          createEventInput: createEventInput.value,
+          createEventInput,
           channelConnections: formValues.value.selectedChannels
         },
         update: (cache: any, result: any) => {

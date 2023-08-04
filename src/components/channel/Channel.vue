@@ -126,7 +126,7 @@ export default defineComponent({
                         </div>
                         <ChannelTabs
                           v-if="route.name !== 'EditChannel'"
-                          class="block"
+                          class="block mt-4"
                           :route="route"
                           :vertical="true"
                         />

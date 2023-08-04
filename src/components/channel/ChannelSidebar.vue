@@ -159,7 +159,7 @@ export default defineComponent({
         </div>
         <slot />
 
-        <div class="mt-6">
+        <div>
           <div v-if="channel.Tags.length > 0">
             <div class="flex justify-between border-b border-gray-800">
               <span

@@ -115,17 +115,19 @@ export default defineComponent({
     >
       <v-md-preview :text="bodyText" />
     </div>
-    <Tag
-      v-for="tag in discussion?.Tags"
-      :key="tag.text"
-      class="mt-2"
-      :tag="tag.text"
-      @click="
-        () => {
-          filterByTag(tag.text);
-        }
-      "
-    />
+    <div class="flex gap-1">
+      <Tag
+        v-for="tag in discussion?.Tags"
+        :key="tag.text"
+        class="mt-2"
+        :tag="tag.text"
+        @click="
+          () => {
+            filterByTag(tag.text);
+          }
+        "
+      />
+    </div>
     <button
       v-if="discussion?.body && shouldShowMoreButton"
       class="text-blue-600"
@@ -139,5 +141,4 @@ export default defineComponent({
 li {
   list-style-type: disc;
 }
-
 </style>

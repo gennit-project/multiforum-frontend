@@ -50,7 +50,7 @@ export default defineComponent({
     const selectedTags: Ref<Array<string>> = ref(
       route.params.tag && typeof route.params.tag === "string"
         ? [route.params.tag]
-        : []
+        : [],
     );
     const searchInput: Ref<string> = ref("");
 
@@ -191,10 +191,10 @@ export default defineComponent({
 <template>
   <div>
     <div class="px-4">
-      <div class="pt-2 flex justify-between mx-auto max-w-5xl">
-        <div class="flex inline-flex py-2 w-full">
+      <div class="mx-auto flex max-w-5xl items-center justify-between py-2">
+        <div class="flex w-full">
           <SearchBar
-            class="align-middle mr-2"
+            class="mr-2 align-middle"
             :search-placeholder="'Search channels'"
             @updateSearchInput="updateSearchResult"
           />
@@ -204,7 +204,7 @@ export default defineComponent({
             :highlighted="tagLabel !== defaultLabels.tags"
           >
             <template #icon>
-              <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+              <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
             </template>
             <template #content>
               <TagPicker
@@ -220,10 +220,14 @@ export default defineComponent({
             <CreateButton
               :to="createChannelPath"
               :label="'Create Channel'"
+              class="float-right"
             />
           </template>
           <template #does-not-have-auth>
-            <PrimaryButton :label="'Create Channel'" />
+            <PrimaryButton 
+              :label="'Create Channel'"
+              class="float-right"
+            />
           </template>
         </RequireAuth>
       </div>
@@ -234,7 +238,7 @@ export default defineComponent({
       />
       <ChannelList
         v-if="channelResult && channelResult.channels"
-        class="flex-1 text-xl font-bold mx-auto max-w-5xl"
+        class="mx-auto max-w-5xl flex-1 text-xl font-bold"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate?.count || 0"
         :search-input="searchInput"
@@ -244,7 +248,7 @@ export default defineComponent({
       />
       <div
         v-if="channelLoading"
-        class="flex-1 mx-auto max-w-5xl"
+        class="mx-auto max-w-5xl flex-1"
       >
         Loading...
       </div>

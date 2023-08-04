@@ -7,7 +7,7 @@ import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import Avatar from "./Avatar.vue";
 import { relativeTime } from "@/utils/dateTimeUtils";
-import TabButton from "@/components/generic/TabButton.vue";
+import TabButton from "@/components/nav/TabButton.vue";
 
 export default defineComponent({
   components: {
