@@ -206,7 +206,7 @@ export default defineComponent({
               />
             </p>
           </router-link>
-          <p class="font-medium my-1 text-xs text-slate-600 hover:no-underline">
+          <div class="flex space-x-1 font-medium my-1 text-xs text-slate-600 hover:no-underline">
             <Tag
               v-for="tag in tags"
               :key="tag"
@@ -215,7 +215,7 @@ export default defineComponent({
               :tag="tag"
               @click="$emit('filterByTag', tag)"
             />
-          </p>
+          </div>
           <p
             class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
           >

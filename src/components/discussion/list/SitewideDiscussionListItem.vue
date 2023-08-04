@@ -126,7 +126,7 @@ export default defineComponent({
         </p>
       </router-link>
      
-      <p class="font-medium mt-1 text-sm text-slate-600 hover:no-underline">
+      <div class="flex space-x-1 font-medium mt-1 text-sm text-slate-600 hover:no-underline">
         <Tag
           v-for="tag in tags"
           :key="tag"
@@ -135,7 +135,7 @@ export default defineComponent({
           :tag="tag"
           @click="$emit('filterByTag', tag)"
         />
-      </p>
+      </div>
       
       <div
         v-if="discussion && discussion.DiscussionChannels"

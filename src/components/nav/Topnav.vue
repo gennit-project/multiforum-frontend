@@ -6,7 +6,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
-import Avatar from '@/components/user/Avatar.vue'
+import Avatar from "@/components/user/Avatar.vue";
 import {
   GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
@@ -65,6 +65,7 @@ export default defineComponent({
         }
       },
       modName,
+      route,
       username,
     };
   },
@@ -72,19 +73,21 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-black w-full shadow-sm">
-    <div class="px-4 py-1 flex items-center justify-between">
+  <div class="w-full bg-white shadow-sm dark:bg-black">
+    <div class="flex items-center justify-between px-4 py-1">
       <div class="flex items-center lg:px-0">
         <MenuButton
           data-testid="menu-button"
           class="cursor-pointer"
           @click="$emit('toggleDropdown')"
         />
-        <div class="flex items-center text-sm space-x-1 text-gray-500 dark:text-white">
-          <ChannelIcon class="h-6 w-6 mr-1 text-blue-600" /><span>gennit</span>
+        <div
+          class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
+        >
+          <ChannelIcon class="mr-1 h-6 w-6 text-blue-600" /><span>gennit</span>
           <div
             v-if="channelId"
-            class=" flex items-center gap-1"
+            class="flex items-center gap-1"
           >
             <span>/</span>
             <Avatar
@@ -92,19 +95,47 @@ export default defineComponent({
               :is-square="true"
               class="h-6 w-6"
             />
-            <span class="dark:text-white font-bold text-blue-500">{{
+            <span class="font-bold text-blue-500 dark:text-white">{{
               channelId
             }}</span>
+          </div>
+          <div
+            v-else-if="route.name === 'SitewideSearchDiscussionPreview'"
+            class="flex items-center gap-1"
+          >
+            <span>/</span>
+            discussions
+          </div>
+          <div
+            v-else-if="route.name === 'SitewideSearchEventPreview'"
+            class="flex items-center gap-1"
+          >
+            <span>/</span>
+            online events
+          </div>
+          <div
+            v-else-if="route.name === 'MapView'"
+            class="flex items-center gap-1"
+          >
+            <span>/</span>
+            events map
+          </div>
+          <div
+            v-else-if="route.name === 'SearchChannels'"
+            class="flex items-center gap-1"
+          >
+            <span>/</span>
+            channels
           </div>
         </div>
       </div>
       <div
-        class="flex items-center justify-end md:flex md:flex-1 lg:w-0 space-x-2"
+        class="flex items-center justify-end space-x-2 md:flex md:flex-1 lg:w-0"
       >
         <button
           v-if="!isAuthenticated"
           data-testid="login-button"
-          class="text-gray-300 inline-flex items-center hover:bg-gray-700 hover:text-white px-3 py-1 rounded-full text-xs font-medium"
+          class="font-medium inline-flex items-center rounded-full px-3 py-1 text-xs text-gray-300 hover:bg-gray-700 hover:text-white"
           @click="login"
         >
           Log In
@@ -115,7 +146,7 @@ export default defineComponent({
         <ThemeSwitcher />
         <div
           v-if="isAuthenticated && username"
-          class="hidden lg:block lg:ml-4"
+          class="hidden lg:ml-4 lg:block"
         >
           <div class="flex items-center">
             <!-- <NotificationButton/> -->
