@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, nextTick, PropType, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import Form from "@/components/generic/Form.vue";
@@ -61,6 +61,7 @@ export default defineComponent({
   setup() {
     return {
       touched: false,
+      titleInputRef: ref(null),
     };
   },
   computed: {
@@ -70,6 +71,13 @@ export default defineComponent({
       const needsChanges = !this.formValues.uniqueName;
       return needsChanges;
     },
+  },
+  created() {
+    nextTick(() => {
+      if (this.titleInputRef) {
+        this.titleInputRef?.$el?.children[0].childNodes[0].focus();
+      }
+    });
   },
 });
 </script>
@@ -95,7 +103,7 @@ export default defineComponent({
       @submit="$emit('submit')"
     >
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div class="sm:mt-5 space-y-4 sm:space-y-5">
+        <div class="space-y-4 sm:mt-5 sm:space-y-5">
           <FormRow>
             <template #icon>
               <div class="flex justify-end">
@@ -113,6 +121,7 @@ export default defineComponent({
             </template>
             <template #content>
               <TextInput
+                ref="titleInputRef"
                 :test-id="'title-input'"
                 :disabled="editMode"
                 :value="formValues.uniqueName"
@@ -158,6 +167,7 @@ export default defineComponent({
                 :test-id="'description-input'"
                 :initial-value="formValues.description || ''"
                 :placeholder="'Add description'"
+                :disable-auto-focus="true"
                 @update="$emit('updateFormValues', { description: $event })"
               />
             </template>
