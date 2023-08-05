@@ -22,7 +22,7 @@ export default defineComponent({
   name: "CreateEvent",
   components: {
     CreateEditEventFields,
-    RequireAuth
+    RequireAuth,
   },
   apollo: {},
   setup() {
@@ -116,15 +116,21 @@ export default defineComponent({
       return {
         errorPolicy: "all",
         variables: {
-        eventCreateInput: eventCreateInput.value,
-        channelConnections: channelConnections.value,
-      },
+          eventCreateInput: eventCreateInput.value,
+          channelConnections: channelConnections.value,
+        },
         update: (cache: any, result: any) => {
-          const newEvent: EventData = result.data?.createEvents?.events[0];
+          const newEvent: EventData =
+            result.data?.createEventWithChannelConnections;
 
           cache.modify({
             fields: {
               events(existingEventRefs = [], fieldInfo: any) {
+                if (!Array.isArray(existingEventRefs)) {
+                  // Without this check, it could break
+                  // when creating the first event in a channel.
+                  existingEventRefs = [];
+                }
                 const readField = fieldInfo.readField;
                 const newEventRef = cache.writeFragment({
                   data: newEvent,
@@ -137,7 +143,7 @@ export default defineComponent({
 
                 if (
                   existingEventRefs.some(
-                    (ref: any) => readField("id", ref) === newEventRef.id
+                    (ref: any) => readField("id", ref) === newEventRef.id,
                   )
                 ) {
                   return existingEventRefs;
@@ -151,7 +157,8 @@ export default defineComponent({
     });
 
     onDone((response: any) => {
-      const newEventId = response.data.createEventWithChannelConnections.id;
+      console.log("response", response);
+      const newEventId = response.data.createEventWithChannelConnections?.id;
 
       /*
         If the event was created in the context
@@ -183,7 +190,6 @@ export default defineComponent({
         });
       }
     });
-
 
     return {
       channelId,
@@ -221,7 +227,7 @@ export default defineComponent({
       />
     </template>
     <template #does-not-have-auth>
-      <div class="p-8 flex justify-center">
+      <div class="flex justify-center p-8">
         You don't have permission to see this page.
       </div>
     </template>
