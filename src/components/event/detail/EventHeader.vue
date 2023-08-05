@@ -45,7 +45,7 @@ export default defineComponent({
     const copyAddress = async () => {
       try {
         await toClipboard(
-          props.eventData.address ? props.eventData.address : ""
+          props.eventData.address ? props.eventData.address : "",
         );
         showAddressCopiedNotification.value = true;
       } catch (e: any) {
@@ -91,7 +91,7 @@ export default defineComponent({
       const startTimeObj = DateTime.fromISO(startTime);
 
       const formattedStartTimeString = startTimeObj.toLocaleString(
-        DateTime.TIME_SIMPLE
+        DateTime.TIME_SIMPLE,
       );
       return `${formattedStartTimeString} for ${formattedDuration}`;
     },
@@ -100,17 +100,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mb-4 md:flex md:items-center md:justify-between px-4 py-4">
-    <div class="flex-1 min-w-0">
+  <div class="mb-4 px-4 py-4 md:flex md:items-center md:justify-between">
+    <div class="min-w-0 flex-1">
       <h2
-        class="text-xl font-bold leading-7 sm:text-3xl sm:tracking-tight sm:truncate"
+        class="text-xl font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight"
       >
         {{ eventData.title }}
       </h2>
     </div>
     <div
       v-if="channelId && route.name === 'EventDetail'"
-      class="mt-4 flex-shrink-0 flex md:mt-0 md:ml-4"
+      class="mt-4 flex flex-shrink-0 md:ml-4 md:mt-0"
     >
       <div class="float-right">
         <span>
@@ -155,31 +155,37 @@ export default defineComponent({
 
   <div class="px-4 text-sm text-gray-700 text-gray-700 dark:text-slate-200">
     <ul class="space-y-2">
-      <li class="flex items-start hanging-indent">
-        <div class="h-5 w-5 mr-3">
+      <li class="hanging-indent flex items-start">
+        <div class="mr-3 h-5 w-5">
           <CalendarIcon />
         </div>
-        <span>{{ `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}` }}</span>
+        <span>{{
+          `${getFormattedDateString(
+            eventData.startTime,
+          )}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}`
+        }}</span>
       </li>
       <li
         v-if="eventData.virtualEventUrl"
-        class="flex items-start hanging-indent"
+        class="hanging-indent flex items-start"
       >
-        <div class="h-5 w-5 mr-3">
+        <div class="mr-3 h-5 w-5">
           <LinkIcon />
         </div>
-        <span
-          class="underline cursor-pointer"
-          @click="openLink"
+        <a
+          class="cursor-pointer underline"
+          target="_blank"
+          rel="noreferrer"
+          :href="eventData.virtualEventUrl"
         >
           {{ eventData.virtualEventUrl }}
-        </span>
+        </a>
       </li>
       <li
         v-if="eventData.address"
-        class="flex items-start hanging-indent"
+        class="hanging-indent flex items-start"
       >
-        <div class="h-5 w-5 mr-3">
+        <div class="mr-3 h-5 w-5">
           <LocationIcon />
         </div>
         <span>
@@ -203,9 +209,9 @@ export default defineComponent({
       </li>
       <li
         v-if="!eventData.free && eventData.cost && eventData.cost !== '0'"
-        class="flex items-start hanging-indent"
+        class="hanging-indent flex items-start"
       >
-        <div class="h-5 w-5 mr-3">
+        <div class="mr-3 h-5 w-5">
           <TicketIcon class="text-gray-700" />
         </div>
         <span>{{ eventData.cost }}</span>
