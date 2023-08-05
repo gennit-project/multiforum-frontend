@@ -48,13 +48,7 @@ export default defineComponent({
     >
       There are no results.
     </p>
-    <p
-      v-else
-      class="text-sm font-normal mt-2 dark:text-white"
-    >
-      Showing {{ channels.length }} of {{ resultCount }} results
-    </p>
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 mt-2">
+    <div class="divide-y">
       <ChannelListItem
         v-for="channel in channels"
         :key="channel.uniqueName"

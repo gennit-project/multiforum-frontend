@@ -40,68 +40,73 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="grid grid-cols-12 rounded-lg shadow">
+  <div class="grid grid-cols-12">
     <div
-      class="relative col-span-12 rounded-lg border border-gray-200 px-8 py-3 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+      class="relative col-span-12 flex gap-4 border-gray-200 py-3 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200 lg:col-span-6"
     >
+      <Avatar
+        :text="channel.uniqueName"
+        :is-square="true"
+      />
       <div>
-        <p class="mb-6">
-          <router-link
-            :to="`/channels/c/${channel.uniqueName}/discussions`"
-            class="flex cursor-pointer items-center gap-4"
-          >
-            <Avatar
-              :text="channel.uniqueName"
-              :is-square="true"
-            />
-            <h3 class="mb-2 text-xl">
-              <HighlightedSearchTerms
-                :text="channel.uniqueName"
-                :search-input="searchInput"
-              />
-            </h3>
-          </router-link>
-        </p>
-      </div>
-      <div class="mt-1">
-        <p
-          v-if="channel.description"
-          class="font-normal my-1 truncate text-sm text-gray-600 dark:text-gray-200"
+        <router-link
+          :to="`/channels/c/${channel.uniqueName}/discussions`"
+          class="mt-1 flex cursor-pointer items-center gap-4"
         >
-          <HighlightedSearchTerms
-            :text="channel.description"
-            :search-input="searchInput"
-          />
-        </p>
-        <p class="font-normal space-x-2 truncate text-sm">
-          <router-link
-            class="underline"
-            :to="`/channels/c/${channel.uniqueName}/discussions`"
+          <h3 class="text-xl">
+            <HighlightedSearchTerms
+              :text="channel.uniqueName"
+              :search-input="searchInput"
+            />
+          </h3>
+        </router-link>
+        <div class="mt-1">
+          <p
+            v-if="channel.description"
+            class="font-normal my-1 truncate text-sm text-gray-600 dark:text-gray-200"
           >
-            {{ channel.DiscussionChannelsAggregate.count }}
-            {{
-              channel.DiscussionChannelsAggregate.count === "1"
-                ? "Discussion"
-                : "Discussions"
-            }}
-          </router-link>
+            <HighlightedSearchTerms
+              :text="channel.description"
+              :search-input="searchInput"
+            />
+          </p>
 
-          <router-link
-            class="underline"
-            :to="`/channels/c/${channel.uniqueName}/events/search`"
-          >
-            {{ channel.EventChannelsAggregate.count }} Upcoming Events
-          </router-link>
-        </p>
-        <div class="flex">
-          <Tag
-            v-for="tag in tags"
-            :key="tag"
-            :active="selectedTags.includes(tag)"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
-          />
+          <div class="flex">
+            <Tag
+              v-for="tag in tags"
+              :key="tag"
+              :active="selectedTags.includes(tag)"
+              :tag="tag"
+              @click="$emit('filterByTag', tag)"
+            />
+          </div>
         </div>
+      </div>
+    </div>
+    <div class="col-span-12 flex justify-end gap-6 py-3 lg:col-span-6">
+      <div class="font-normal truncate text-sm">
+        <router-link
+          class="underline"
+          :to="`/channels/c/${channel.uniqueName}/discussions`"
+        >
+          <i class="fa-regular fa-comment h-6 w-6" />
+
+          {{ channel.DiscussionChannelsAggregate.count }}
+          {{
+            channel.DiscussionChannelsAggregate.count === "1"
+              ? "Discussion"
+              : "Discussions"
+          }}
+        </router-link>
+      </div>
+      <div class="font-normal truncate text-sm">
+        <router-link
+          class="underline"
+          :to="`/channels/c/${channel.uniqueName}/events/search`"
+        >
+          <i class="fa-regular fa-calendar h-6 w-6" />
+          {{ channel.EventChannelsAggregate.count }} Upcoming Events
+        </router-link>
       </div>
     </div>
   </div>
