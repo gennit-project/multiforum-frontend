@@ -4,7 +4,7 @@ import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
 import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
 import Tag from "@/components/tag/Tag.vue";
-import Avatar from '@/components/user/Avatar.vue'
+import Avatar from "@/components/user/Avatar.vue";
 
 export default defineComponent({
   components: {
@@ -40,7 +40,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="grid grid-cols-12 shadow rounded-lg">
+  <div class="grid grid-cols-12 rounded-lg shadow">
     <div
       class="relative col-span-12 rounded-lg border border-gray-200 px-8 py-3 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
     >
@@ -48,7 +48,7 @@ export default defineComponent({
         <p class="mb-6">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
-            class="cursor-pointer flex gap-4 items-center "
+            class="flex cursor-pointer items-center gap-4"
           >
             <Avatar
               :text="channel.uniqueName"
@@ -93,13 +93,15 @@ export default defineComponent({
             {{ channel.EventChannelsAggregate.count }} Upcoming Events
           </router-link>
         </p>
-        <Tag
-          v-for="tag in tags"
-          :key="tag"
-          :active="selectedTags.includes(tag)"
-          :tag="tag"
-          @click="$emit('filterByTag', tag)"
-        />
+        <div class="flex">
+          <Tag
+            v-for="tag in tags"
+            :key="tag"
+            :active="selectedTags.includes(tag)"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
+        </div>
       </div>
     </div>
   </div>
