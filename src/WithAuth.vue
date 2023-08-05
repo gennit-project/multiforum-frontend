@@ -15,19 +15,14 @@ export default defineComponent({
     CreateUsernamePage,
     ErrorBanner,
   },
-  props:{
+  props: {
     emailFromAuth0: {
       type: String,
       required: true,
     },
   },
   setup(props) {
-    const { 
-      isAuthenticated, 
-      isLoading,
-      user, 
-      error,
-     } = useAuth0();
+    const { isAuthenticated, isLoading, user, error } = useAuth0();
     const route = useRoute();
     const channelId = computed(() => {
       return route.params.channelId;
@@ -46,16 +41,18 @@ export default defineComponent({
       emailAddress: props.emailFromAuth0,
     });
 
-    const {
-      result: localUsernameResult,
-      loading: localUsernameLoading,
-    } = useQuery(GET_LOCAL_USERNAME);
+    const { result: localUsernameResult, loading: localUsernameLoading } =
+      useQuery(GET_LOCAL_USERNAME);
 
     const hasEmailButNotUsername = computed(() => {
       if (!isAuthenticated) {
         return false;
       }
-      if (isAuthenticated && user.value?.email && !localUsernameResult.value?.username) {
+      if (
+        isAuthenticated &&
+        user.value?.email &&
+        !localUsernameResult.value?.username
+      ) {
         return true;
       }
       return false;
@@ -64,8 +61,8 @@ export default defineComponent({
     onEmailResult(() => {
       let user = null;
       let modProfile = null;
-      let username = '';
-      let modProfileName = '';
+      let username = "";
+      let modProfileName = "";
 
       user = emailResult.value?.emails[0]?.User;
 
@@ -74,17 +71,17 @@ export default defineComponent({
         modProfile = user.ModerationProfile;
 
         if (modProfile) {
-          modProfileName = modProfile.displayName
-          modProfileNameVar(modProfileName)
+          modProfileName = modProfile.displayName;
+          modProfileNameVar(modProfileName);
         }
       }
 
-       if (username) {
+      if (username) {
         // Add user to application state to make the authenticated user's
         // username available throughout the app.
-        usernameVar(username)
-       }
-    })
+        usernameVar(username);
+      }
+    });
 
     return {
       channelId,
@@ -123,17 +120,16 @@ export default defineComponent({
     <div v-if="isLoading || emailLoading">
       Loading...
     </div>
+    <ErrorBanner
+      v-else-if="emailError"
+      :text="emailError?.message"
+    />
     <div v-else-if="isAuthenticated && hasEmailButNotUsername">
       <CreateUsernamePage />
-    </div> 
-    <ErrorBanner
-      v-else-if="error"
-      :text="error"
-    />
+    </div>
+
     <div v-else>
       <slot />
     </div>
   </div>
 </template>
-
-
