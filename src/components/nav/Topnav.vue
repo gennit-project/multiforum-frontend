@@ -84,7 +84,13 @@ export default defineComponent({
         <div
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
-          <ChannelIcon class="mr-1 h-6 w-6 text-blue-600" /><span>gennit</span>
+          <router-link
+            to="/"
+            class="flex items-center"
+          >
+            <ChannelIcon class="mr-1 h-6 w-6 text-blue-600" /><span>gennit</span>
+          </router-link>
+
           <div
             v-if="channelId"
             class="flex items-center gap-1"
