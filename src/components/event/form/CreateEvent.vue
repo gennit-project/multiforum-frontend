@@ -54,7 +54,7 @@ export default defineComponent({
 
     const startTimePieces = ref(getTimePieces(defaultStartTimeObj));
 
-    const createEventInput = computed(() => {
+    const eventCreateInput = computed(() => {
       const tagConnections = formValues.value.selectedTags;
 
       let input = {
@@ -103,7 +103,10 @@ export default defineComponent({
 
       return input;
     }); // End of createEventInput
-    console.log('create input', createEventInput.value)
+
+    const channelConnections = computed(() => {
+      return formValues.value.selectedChannels;
+    });
 
     const {
       mutate: createEvent,
@@ -113,9 +116,9 @@ export default defineComponent({
       return {
         errorPolicy: "all",
         variables: {
-          createEventInput,
-          channelConnections: formValues.value.selectedChannels
-        },
+        eventCreateInput: eventCreateInput.value,
+        channelConnections: channelConnections.value,
+      },
         update: (cache: any, result: any) => {
           const newEvent: EventData = result.data?.createEvents?.events[0];
 
@@ -148,8 +151,7 @@ export default defineComponent({
     });
 
     onDone((response: any) => {
-
-      const newEventId = response.data.createEvents.events[0].id;
+      const newEventId = response.data.createEventWithChannelConnections.id;
 
       /*
         If the event was created in the context
@@ -187,7 +189,7 @@ export default defineComponent({
       channelId,
       createEvent,
       createEventError,
-      createEventInput,
+      createEventInput: eventCreateInput,
       formValues,
       router,
     };

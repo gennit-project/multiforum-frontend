@@ -7,7 +7,6 @@ import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/CreateButton.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
-import HomeIcon from "@/components/icons/HomeIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
@@ -24,7 +23,6 @@ export default defineComponent({
     ClipboardIcon,
     CreateButton,
     GenericButton,
-    HomeIcon,
     LinkIcon,
     LocationIcon,
     Notification,
@@ -162,15 +160,6 @@ export default defineComponent({
           <CalendarIcon />
         </div>
         <span>{{ `${getFormattedDateString(eventData.startTime)}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}` }}</span>
-      </li>
-      <li
-        v-if="eventData.isInPrivateResidence"
-        class="flex items-start hanging-indent"
-      >
-        <div class="h-5 w-5 mr-3">
-          <HomeIcon />
-        </div>
-        <span>This event is in a private residence.</span>
       </li>
       <li
         v-if="eventData.virtualEventUrl"

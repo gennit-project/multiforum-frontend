@@ -18,7 +18,6 @@ import LinkIcon from "@/components/icons/LinkIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import TicketIcon from "@/components/icons/TicketIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
-import HomeIcon from "@/components/icons/HomeIcon.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import { DateTime, Interval } from "luxon";
@@ -31,7 +30,6 @@ export default defineComponent({
     ClockIcon,
     ErrorBanner,
     ErrorMessage,
-    HomeIcon,
     TailwindForm: Form,
     FormRow,
     LinkIcon,
@@ -607,26 +605,6 @@ export default defineComponent({
                     $emit('updateFormValues', { selectedTags: $event })
                   "
                 />
-              </template>
-            </FormRow>
-            <FormRow>
-              <template #icon>
-                <HomeIcon class="float-right" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Private Residence
-                </v-tooltip>
-              </template>
-              <template #content>
-                <CheckBox
-                  data-testid="private-residence-input"
-                  class="align-middle"
-                  :checked="formValues.isInPrivateResidence"
-                  @input="togglePrivateResidenceField"
-                />
-                <span class="ml-2 align-middle">This event is in a private residence</span>
               </template>
             </FormRow>
             <FormRow>
