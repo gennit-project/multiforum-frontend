@@ -39,10 +39,10 @@ export default defineComponent({
           label: "My Profile",
           event: "goToUserProfile",
         },
-        {
-          label: "My Mod Profile",
-          event: "goToModProfile",
-        },
+        // {
+        //   label: "My Mod Profile",
+        //   event: "goToModProfile",
+        // },
         {
           label: "Sign Out",
           event: "logout",
