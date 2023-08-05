@@ -182,6 +182,12 @@ export default defineComponent({
       this.setSearchInput(input);
     },
     filterByTag(tag: string) {
+      // If it is actively selected, clear it.
+      // Otherwise, set selected tags to [tag].
+      if (this.selectedTags.includes(tag)) {
+        this.setSelectedTags([]);
+        return;
+      }
       this.setSelectedTags([tag]);
     },
   },
