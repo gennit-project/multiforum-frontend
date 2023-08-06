@@ -10,7 +10,6 @@ import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
-import TicketIcon from "@/components/icons/TicketIcon.vue";
 import useClipboard from "vue-clipboard3";
 import Notification from "@/components/generic/Notification.vue";
 import { DateTime } from "luxon";
@@ -28,7 +27,6 @@ export default defineComponent({
     Notification,
     RequireAuth,
     PrimaryButton,
-    TicketIcon,
   },
   props: {
     eventData: {
@@ -212,7 +210,7 @@ export default defineComponent({
         class="hanging-indent flex items-start"
       >
         <div class="mr-3 h-5 w-5">
-          <TicketIcon class="text-gray-700" />
+          <i class="fa-solid fa-ticket h-5" />
         </div>
         <span>{{ eventData.cost }}</span>
       </li>

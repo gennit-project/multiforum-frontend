@@ -16,7 +16,6 @@ import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
-// import TicketIcon from "@/components/icons/TicketIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
@@ -40,7 +39,6 @@ export default defineComponent({
     TagInput,
     TextEditor,
     TextInput,
-    // TicketIcon,
   },
   props: {
     editMode: {
@@ -145,7 +143,7 @@ export default defineComponent({
     duration() {
       return this.getDuration(
         this.startTime.toISOString(),
-        this.endTime.toISOString()
+        this.endTime.toISOString(),
       );
     },
     needsChanges() {
@@ -265,7 +263,7 @@ export default defineComponent({
       // Format time as "1h 30m"
       const obj = Interval.fromDateTimes(
         DateTime.fromISO(startTime),
-        DateTime.fromISO(endTime)
+        DateTime.fromISO(endTime),
       )
         .toDuration()
         .shiftTo("hours", "minutes")
@@ -316,7 +314,7 @@ export default defineComponent({
       const existingStartTimeObject = DateTime.fromISO(startTimeISO);
       const newStartTimeObject = DateTime.fromFormat(
         event,
-        this.timeFormat
+        this.timeFormat,
       ).toObject();
 
       const { day, month, year } = newStartTimeObject;
@@ -333,7 +331,7 @@ export default defineComponent({
       const existingEndTimeObject = DateTime.fromISO(endTimeISO);
       const newEndTimeObject = DateTime.fromFormat(
         event,
-        this.timeFormat
+        this.timeFormat,
       ).toObject();
 
       const { day, month, year } = newEndTimeObject;
@@ -347,7 +345,7 @@ export default defineComponent({
     handleUpdateLocation(event: any) {
       if (!event.place_id) {
         throw new Error(
-          "Could not find a Google place ID based on the form input."
+          "Could not find a Google place ID based on the form input.",
         );
       }
       const {
@@ -391,17 +389,17 @@ export default defineComponent({
         </div>
         <TailwindForm
           v-else-if="formValues"
-          class="pt-8 w-full"
+          class="w-full pt-8"
           data-testid="event-form"
           :form-title="formTitle"
           :needs-changes="needsChanges"
           @input="touched = true"
           @submit="$emit('submit')"
         >
-          <div class="divide-y divide-gray-200 w-full">
+          <div class="w-full divide-y divide-gray-200">
             <FormRow>
               <template #icon>
-                <PencilIcon class="inline-flex float-right h-6 w-6" /><span
+                <PencilIcon class="float-right inline-flex h-6 w-6" /><span
                   class="text-red-500"
                 >*</span>
                 <v-tooltip
@@ -456,11 +454,11 @@ export default defineComponent({
                 </v-tooltip>
               </template>
               <template #content>
-                <div class="inline-block xl:flex items-center my-2 space-x-2">
-                  <div class="inline-block xl:flex items-center my-2 space-x-2">
+                <div class="my-2 inline-block items-center space-x-2 xl:flex">
+                  <div class="my-2 inline-block items-center space-x-2 xl:flex">
                     <input
                       data-testid="start-time-date-input"
-                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="date"
                       placeholder="Date"
                       label="Start"
@@ -469,7 +467,7 @@ export default defineComponent({
                     >
                     <input
                       data-testid="start-time-time-input"
-                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
@@ -478,10 +476,10 @@ export default defineComponent({
                     >
                   </div>
 
-                  <div class="inline-block xl:flex items-center my-2 space-x-2">
+                  <div class="my-2 inline-block items-center space-x-2 xl:flex">
                     <input
                       data-testid="end-time-date-input"
-                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="date"
                       placeholder="Date and Time"
                       label="Start"
@@ -490,7 +488,7 @@ export default defineComponent({
                     >
                     <input
                       data-testid="end-time-time-input"
-                      class="sl-input dark:bg-gray-800 cursor-pointer focus:ring-blue-500 focus:border-blue-500"
+                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
@@ -609,12 +607,13 @@ export default defineComponent({
             </FormRow>
             <FormRow>
               <template #icon>
-                <VTooltip class="inline-flex">
-                  <i class="fa-solid fa-ticket" />
-                  <template #popper>
-                    Cost to Attend
-                  </template>
-                </VTooltip>
+                <i class="fa-solid fa-ticket float-right h-6" />
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
+                  Tags
+                </v-tooltip>
               </template>
               <template #content>
                 <CheckBox
