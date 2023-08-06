@@ -70,7 +70,7 @@ export default defineComponent({
       lgAndUp,
       mdAndUp,
       router,
-      smAndDown
+      smAndDown,
     };
   },
   created() {
@@ -82,68 +82,66 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="dark:bg-black overflow-hidden">
+  <div class="overflow-hidden dark:bg-black">
     <div class="h-fit dark:bg-gray-950">
-      <div>
-        <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-          <div class="block">
-            <v-container fluid>
-              <v-row>
-                <v-col cols="12">
-                  <ChannelTabs
-                    v-if="smAndDown"
-                    :vertical="false"
-                    class="mb-4 block border-b"
-                    :route="route"
-                  />
-                  <v-row>
-                    <v-col
-                      v-if="channelId && !smAndDown"
-                      gap="6"
-                      cols="12"
-                      md="3"
-                      lg="2"
-                    >
-                      <ChannelSidebar :channel-id="channelId">
-                        <div class="mt-6">
-                          <RequireAuth
-                            class="align-middle"
-                            :full-width="false"
-                          >
-                            <template #has-auth>
-                              <ChannelSidebarButton
-                                :to="createDiscussionPath"
-                                :label="'New Discussion'"
-                              />
-                            </template>
-                            <template #does-not-have-auth>
-                              <PrimaryButton
-                                class="ml-2"
-                                :label="'New Discussion'"
-                              />
-                            </template>
-                          </RequireAuth>
-                        </div>
-                        <ChannelTabs
-                          v-if="route.name !== 'EditChannel'"
-                          class="block mt-4"
-                          :route="route"
-                          :vertical="true"
-                        />
-                      </ChannelSidebar>
-                    </v-col>
-                    <v-col>
-                      <v-row>
-                        <router-view />
-                      </v-row>
-                    </v-col>
-                  </v-row>
-                </v-col>
-              </v-row>
-            </v-container>
-          </div>
-        </article>
-      </div>
+      <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
+        <v-container
+          fluid
+          class="p-0"
+        >
+          <ChannelTabs
+            v-if="smAndDown"
+            :vertical="false"
+            class="mb-4 block border-b"
+            :route="route"
+          />
+          <v-row>
+            <v-col
+              v-if="channelId && !smAndDown"
+              
+              cols="12"
+              md="3"
+              lg="2"
+            >
+              <ChannelSidebar :channel-id="channelId">
+                <div class="mt-4 border-b">
+                  <RequireAuth
+                    class="align-middle"
+                    :full-width="false"
+                  >
+                    <template #has-auth>
+                      <ChannelSidebarButton
+                        :to="createDiscussionPath"
+                        :label="'New Discussion'"
+                      />
+                    </template>
+                    <template #does-not-have-auth>
+                      <PrimaryButton
+                        class="ml-2"
+                        :label="'New Discussion'"
+                      />
+                    </template>
+                  </RequireAuth>
+                </div>
+                <ChannelTabs
+                  v-if="route.name !== 'EditChannel'"
+                  class="mt-4 block"
+                  :route="route"
+                  :vertical="true"
+                />
+              </ChannelSidebar>
+            </v-col>
+            <v-col
+              class="pt-6"
+              :cols="channelId && !smAndDown ? 9 : 12"
+              :md="channelId && !smAndDown ? 9 : 12"
+              :lg="channelId && !smAndDown ? 10 : 12"
+            >
+              <router-view />
+            </v-col>
+          </v-row>
+        </v-container>
+      </article>
     </div>
   </div>
 </template>

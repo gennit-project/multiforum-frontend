@@ -250,8 +250,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="max-w-screen-2xl">
-    <v-row class="mt-2">
+  <v-container class="max-w-screen-2xl pt-4">
+    <v-row class="p-0">
       <v-col
         cols="12"
         :lg="channelId ? 5 : 5"
@@ -282,7 +282,7 @@ export default defineComponent({
         v-if="!mdAndDown"
         cols="12"
         :lg="channelId ? 7 : 7"
-        class="scrollable-column border-l border-gray-200 px-6 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+        class="border-l  p-0 border-gray-200 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
       >
         <router-view />
       </v-col>

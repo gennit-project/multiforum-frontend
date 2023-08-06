@@ -16,7 +16,7 @@ import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
-import TicketIcon from "@/components/icons/TicketIcon.vue";
+// import TicketIcon from "@/components/icons/TicketIcon.vue";
 import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
@@ -40,7 +40,7 @@ export default defineComponent({
     TagInput,
     TextEditor,
     TextInput,
-    TicketIcon,
+    // TicketIcon,
   },
   props: {
     editMode: {
@@ -610,7 +610,7 @@ export default defineComponent({
             <FormRow>
               <template #icon>
                 <VTooltip class="inline-flex">
-                  <TicketIcon class="float-right" />
+                  <i class="fa-solid fa-ticket" />
                   <template #popper>
                     Cost to Attend
                   </template>

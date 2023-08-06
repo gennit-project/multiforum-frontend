@@ -36,7 +36,7 @@ export default defineComponent({
             : ''
         } '  dark:border-blue-600`
         : 'border-transparent text-gray-500',
-      vertical ? 'rounded-lg hover:bg-gray-50' : 'border-b-2 ',
+      vertical ? 'pr-2 px-4 hover:bg-gray-50' : 'border-b-2 ',
     ]"
   >
     <div

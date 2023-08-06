@@ -113,10 +113,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-full dark:border-gray-600 overflow-y-auto shadow px-4">
+  <div class="h-full overflow-y-auto border-r-2 dark:border-gray-600">
     <div
       v-if="channelId"
-      class="my-4 flex items-center border-b"
+      class="my-4 flex items-center border-b px-2"
     >
       <Avatar
         :text="channelId"
@@ -143,7 +143,10 @@ export default defineComponent({
         </div>
       </div>
       <div v-else-if="channel">
-        <div v-if="!mdAndDown">
+        <div
+          v-if="!mdAndDown"
+          class="w-full border-b px-2"
+        >
           <div
             v-if="channel.description"
             class="-ml-6"
@@ -159,17 +162,17 @@ export default defineComponent({
         </div>
         <slot />
 
-        <div>
+        <div class="w-full border-b">
           <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b border-gray-800">
+            <div class="flex justify-between border-b border-gray-300">
               <span
-                class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                class="my-2 mb-2 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
               >
                 Tags
               </span>
             </div>
 
-            <div class="mb-6 mt-2 flex flex-wrap">
+            <div class="mb-6 mt-2 flex flex-wrap px-6">
               <Tag
                 v-for="tag in channel.Tags"
                 :key="tag.text"
@@ -179,16 +182,16 @@ export default defineComponent({
               />
             </div>
           </div>
-          <div class="flex justify-between border-b border-gray-800">
+          <div class="flex justify-between border-b border-gray-300">
             <span
-              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+              class="my-2 mb-2 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
             >
               Admins
             </span>
           </div>
           <ul
             v-if="channel.Admins.length > 0"
-            class="my-3 text-sm font-bold underline"
+            class="my-3 px-5 text-sm font-bold"
           >
             <li
               v-for="admin in channel.Admins"
@@ -224,13 +227,13 @@ export default defineComponent({
         <template #has-auth>
           <div class="flex w-full justify-between border-b border-gray-500">
             <span
-              class="my-2 mb-2 w-full text-sm font-bold leading-6 text-gray-600 dark:text-gray-300"
+              class="my-2 mb-2 w-full px-6 text-sm font-bold leading-6 text-gray-600 dark:text-gray-300"
             >
               Admin Actions
             </span>
           </div>
           <router-link
-            class="my-3 text-sm underline"
+            class="my-3 px-6 text-sm underline"
             :to="`/channels/c/${channelId}/edit`"
           >
             Edit
