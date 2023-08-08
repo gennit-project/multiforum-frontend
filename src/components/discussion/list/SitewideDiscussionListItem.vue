@@ -7,7 +7,6 @@ import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
-import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
@@ -16,18 +15,14 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    defaultUniqueName: {
-      type: String,
-      default: "",
-    },
     discussion: {
       type: Object as PropType<DiscussionData | null>,
       required: false,
       default: null,
     },
-    discussionChannel: {
-      type: Object as PropType<DiscussionChannel>,
-      required: true,
+    score: {
+      type: Number,
+      default: 0,
     },
     searchInput: {
       type: String,
@@ -46,18 +41,18 @@ export default defineComponent({
       },
     },
   },
-  setup(props) {
+  setup() {
     const route = useRoute();
 
-    const commentCount = computed(() => {
-      if (props.discussionChannel) {
-        return props.discussionChannel.CommentsAggregate?.count || 0;
-      }
-      return 0;
-    });
+    // const commentCount = computed(() => {
+    //   if (props.discussionChannel) {
+    //     return props.discussionChannel.CommentsAggregate?.count || 0;
+    //   }
+    //   return 0;
+    // });
 
     return {
-      commentCount,
+      commentCount: 99,
       route,
     };
   },
@@ -78,8 +73,8 @@ export default defineComponent({
       body: props.discussion?.body || "[Deleted]",
       createdAt: props.discussion?.createdAt || "",
       discussionIdInParams,
-      relativeTime: props.discussionChannel
-        ? relativeTime(props.discussionChannel?.createdAt)
+      relativeTime: props.discussion
+        ? relativeTime(props.discussion?.createdAt)
         : "",
       authorUsername: props.discussion?.Author
         ? props.discussion.Author.username
@@ -89,12 +84,11 @@ export default defineComponent({
             return tag.text;
           })
         : [],
-      upvoteCount: props.discussionChannel.upvoteCount || 0,
     };
   },
   computed: {
     previewLink() {
-      return `/discussions/search/${this.discussionChannel.discussionId}`;
+      return `/discussions/search/${this.discussion.id}`;
     },
   },
 });
@@ -104,12 +98,12 @@ export default defineComponent({
   <li
     class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-4 dark:border-gray-700"
   >
-    <span class="mt-1 w-6">{{ upvoteCount }}
+    <span class="mt-1 w-6">{{ score }}
       <v-tooltip
         activator="parent"
         location="top"
       >
-        <span>{{ `Upvotes in ${defaultUniqueName}` }}</span>
+        <span>{{ `Aggregated count of votes across the selected channels, deduplicated by user` }}</span>
       </v-tooltip>
     </span>
     
@@ -155,23 +149,6 @@ export default defineComponent({
           @click="$emit('filterByChannel', dc.channelUniqueName)"
         >
           {{ dc.channelUniqueName }}
-        </Tag>
-      </div>
-      <div
-        v-else-if="discussionChannel"
-        class="font-medium flex flex-wrap items-center gap-1 text-xs text-slate-600 no-underline dark:text-slate-200"
-      >
-        <Tag
-          :class="[
-            selectedChannels.includes(discussionChannel.channelUniqueName)
-              ? 'text-blue-500'
-              : 'hover:text-black dark:text-slate-400 dark:hover:text-slate-300',
-          ]"
-          :channel-mode="true"
-          :tag="discussionChannel.channelUniqueName"
-          @click="$emit('filterByChannel', discussionChannel.channelUniqueName)"
-        >
-          {{ discussionChannel.channelUniqueName }}
         </Tag>
       </div>
     </div>

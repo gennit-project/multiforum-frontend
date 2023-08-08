@@ -125,7 +125,7 @@ export default defineComponent({
             ref="editor"
             v-model="text"
             mode="edit"
-            height="min-h-72 h-fit"
+            height="250px"
             :placeholder="placeholder"
             @update:model-value="$emit('update', text)"
           />

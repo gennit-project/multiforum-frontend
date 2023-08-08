@@ -1,44 +1,26 @@
 <script lang="ts">
-import { computed, defineComponent, PropType, Ref, ref } from "vue";
+import { computed, defineComponent, Ref, ref } from "vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import SitewideDiscussionListItem from "./SitewideDiscussionListItem.vue";
-import LoadMore from "../../generic/LoadMore.vue";
+// import LoadMore from "../../generic/LoadMore.vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/discussion/queries";
+import { GET_SITE_WIDE_DISCUSSION_LIST } from "@/graphQLData/discussion/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useRouter, useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
-import { DiscussionChannel } from "@/__generated__/graphql";
+// import { DiscussionChannel } from "@/__generated__/graphql";
 
-const DISCUSSION_PAGE_LIMIT = 25;
+// const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
   components: {
     ErrorBanner,
-    LoadMore,
+    // LoadMore,
     SitewideDiscussionListItem,
   },
   inheritAttrs: false,
-  props: {
-    searchInput: {
-      type: String,
-      default: "",
-    },
-    selectedTags: {
-      type: Array as PropType<Array<string>>,
-      default: () => {
-        return [];
-      },
-    },
-    selectedChannels: {
-      type: Array as PropType<Array<string>>,
-      default: () => {
-        return [];
-      },
-    },
-  },
   // The reason we have separate components for the sidewide discussion
   // list and the channel discussion list is because the channel discussion
   // list needs the query to get discussions to return more information,
@@ -60,84 +42,75 @@ export default defineComponent({
     );
 
     const discussionWhere = computed(() => {
-      return getDiscussionWhere(filterValues.value, channelId.value);
+      return getDiscussionWhere(filterValues.value);
     });
 
-    const discussionChannelWhere = computed(() => {
-      return {
-        Discussion: discussionWhere.value,
-      };
-    });
+    const selectedChannelsComputed = computed(() => {
+      return filterValues.value.channels;
+    })
+
+    const selectedTagsComputed = computed(() => {
+      return filterValues.value.tags;
+    })
 
     const {
-      result: discussionChannelResult,
+      result: discussionResult,
       error: discussionError,
       loading: discussionLoading,
-      refetch: refetchDiscussions,
+      // refetch: refetchDiscussions,
       onResult: onGetDiscussionResult,
-      fetchMore,
-    } = useQuery(GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA, {
-      where: discussionChannelWhere,
-      limit: DISCUSSION_PAGE_LIMIT,
-      offset: 0,
-      resultsOrder: {
-        upvoteCount: "DESC",
-      },
+      // fetchMore,
+    } = useQuery(GET_SITE_WIDE_DISCUSSION_LIST, {
+      discussionWhere: discussionWhere,
+      selectedChannels: selectedChannelsComputed,
+      selectedTags: selectedTagsComputed,
+      // limit: DISCUSSION_PAGE_LIMIT,
+      // offset: 0,
+      // resultsOrder: {
+      //   upvoteCount: "DESC",
+      // },
       fetchPolicy: "cache-and-network",
     });
 
-    const aggregateChannelCount = computed(() => {
-      if (!discussionChannelResult.value) {
-        return 0;
-      }
-      return discussionChannelResult.value.discussionChannelsAggregate.count;
-    });
-
-    const discussionChannels = computed(() => {
-      if (!discussionChannelResult.value) {
+    const discussions = computed(() => {
+      if (!discussionResult.value) {
         return [];
       }
-      const submissions = discussionChannelResult.value.discussionChannels;
+      return discussionResult.value.getSiteWideDiscussionList;
+    })
 
-      // Deduplicate by the discussionId field of the discussionChannels
-      const deduplicatedSubmissions = submissions.reduce(
-        (acc: DiscussionChannel[], submission: DiscussionChannel) => {
-          const existingSubmission = acc.find(
-            (existingSubmission) =>
-              existingSubmission.discussionId === submission.discussionId,
-          );
-          if (existingSubmission) {
-            return acc;
-          }
-          return [...acc, submission];
-        },
-        [],
-      );
-      return deduplicatedSubmissions;
-    });
+    // const aggregateDiscussionCount = computed(() => {
+    //   if (!discussionResult.value) {
+    //     return 0;
+    //   }
+    //   return discussionResult.value.discussionsAggregate.count;
+    // });
 
-    const reachedEndOfResults = ref(false);
+    // const reachedEndOfResults = ref(false);
 
-    const loadMore = () => {
-      fetchMore({
-        variables: {
-          offset: discussionChannelResult.value.discussionChannels.length,
-        },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return previousResult;
+    // const loadMore = () => {
+    //   fetchMore({
+    //     variables: {
+    //       offset: discussionChannelResult.value.discussionChannels.length,
+    //     },
+    //     updateQuery: (previousResult, { fetchMoreResult }) => {
+    //       if (!fetchMoreResult) return previousResult;
 
-          return {
-            discussionChannelsAggregate:
-              fetchMoreResult.discussionChannelsAggregate,
-            discussionChannels: [
-              ...previousResult.discussionChannels,
-              ...fetchMoreResult.discussionChannels,
-            ],
-          };
-        },
-      });
-    };
+    //       return {
+    //         discussionChannelsAggregate:
+    //           fetchMoreResult.discussionChannelsAggregate,
+    //         discussionChannels: [
+    //           ...previousResult.discussionChannels,
+    //           ...fetchMoreResult.discussionChannels,
+    //         ],
+    //       };
+    //     },
+    //   });
+    // };
     const sendToPreview = (discussionId: string) => {
+      if (!discussionId) {
+        return;
+      }
       if (!route.params.discussionId) {
         if (!channelId.value) {
           router.push({
@@ -160,24 +133,25 @@ export default defineComponent({
     onGetDiscussionResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
-      if (!value.data || value.data.discussionChannels.length === 0) {
+      if (!value.data || value.data.getSiteWideDiscussionList.length === 0) {
         return;
       }
-      const defaultSelectedDiscussionChannel = value.data.discussionChannels[0];
+      const defaultSelectedDiscussion = value.data.getSiteWideDiscussionList[0].discussion;
 
-      sendToPreview(defaultSelectedDiscussionChannel.discussionId);
+      sendToPreview(defaultSelectedDiscussion.id);
     });
 
     return {
-      aggregateChannelCount,
+      // aggregateChannelCount,
       discussionError,
       discussionLoading,
-      deduplicatedSubmissions: discussionChannels,
-      discussionChannelResult,
+      discussions,
+      // deduplicatedSubmissions: discussionChannels,
+      // discussionChannelResult,
       filterValues,
-      loadMore,
-      reachedEndOfResults,
-      refetchDiscussions,
+      // loadMore,
+      // reachedEndOfResults,
+      // refetchDiscussions,
       sendToPreview,
       selectedDiscussion: {} as DiscussionData,
     };
@@ -198,12 +172,15 @@ export default defineComponent({
     });
     if (
       !this.discussionId &&
-      this.discussionChannelResult &&
-      this.discussionChannelResult.discussionChannels &&
-      this.discussionChannelResult.discussionChannels.length > 0
+      this.discussionResult &&
+      this.discussionResult.getSiteWideDiscussionList 
     ) {
+      const defaultSelectedDiscussion = this.discussionResult.getSiteWideDiscussionList[0]
+      if (defaultSelectedDiscussion) {
+        this.selectedDiscussion = defaultSelectedDiscussion;
+      }
       this.sendToPreview(
-        this.discussionChannelResult.discussionChannels[0].discussionId,
+        this.selectedDiscussion.id,
       );
     }
   },
@@ -245,32 +222,31 @@ export default defineComponent({
       :text="discussionError.message"
     />
     <p
-      v-else-if="deduplicatedSubmissions.length === 0"
+      v-else-if="discussions && discussions.length === 0"
       class="my-6 px-4"
     >
       There are no results.
     </p>
-    <div v-if="deduplicatedSubmissions.length > 0">
+    <div v-if="discussions && discussions.length > 0">
       <ul
         role="list"
         class="my-6 mr-2 divide-y"
         data-testid="sitewide-discussion-list"
       >
         <SitewideDiscussionListItem
-          v-for="discussionChannel in deduplicatedSubmissions"
-          :key="discussionChannel.id"
-          :discussion="discussionChannel.Discussion"
-          :discussion-channel="discussionChannel"
-          :default-unique-name="discussionChannel.channelUniqueName"
-          :search-input="searchInput"
-          :selected-tags="selectedTags"
-          :selected-channels="selectedChannels"
+          v-for="discussion in discussions"
+          :key="discussion.id"
+          :discussion="discussion.discussion"
+          :score="discussion.score"
+          :search-input="filterValues.searchInput"
+          :selected-tags="filterValues.tags"
+          :selected-channels="filterValues.channels"
           @filterByTag="filterByTag"
           @filterByChannel="filterByChannel"
           @openPreview="openPreview"
         />
       </ul>
-      <div v-if="discussionChannelResult.discussionChannels.length > 0">
+      <!-- <div v-if="discussionResult.discussionChannels.length > 0">
         <LoadMore
           class="ml-4 justify-self-center"
           :reached-end-of-results="
@@ -279,7 +255,7 @@ export default defineComponent({
           "
           @loadMore="loadMore"
         />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>

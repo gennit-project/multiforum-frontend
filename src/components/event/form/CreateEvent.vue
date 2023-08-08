@@ -157,7 +157,6 @@ export default defineComponent({
     });
 
     onDone((response: any) => {
-      console.log("response", response);
       const newEventId = response.data.createEventWithChannelConnections?.id;
 
       /*

@@ -55,16 +55,8 @@ export interface CreateEditDiscussionFormValues {
 }
 
 export type SearchDiscussionValues = {
-    // These values are used to build the
-    // EventWhere and ResultsOrder input parameters for the
-    // GET_DISCUSSIONS GraphQL query.
-    // They are also used in the URL query
-    // parameters on the discussion search pages.
-    // These must match because the URL query
-    // parameters are used to build the EventWhere.
     tags?: Array[string];
     channels?: Array[string];
     searchInput?: string;
-    resultsOrder?: string;
   };
   
