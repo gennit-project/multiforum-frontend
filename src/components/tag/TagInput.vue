@@ -103,7 +103,7 @@ export default defineComponent({
           v-model="currentInput"
           :data-testid="testId"
           class="flex-1 block min-w-0 pl-3 pt-2 pb-2 dark:bg-black rounded-lg sm:text-sm  dark:text-gray-100 border-gray-300 dark:border-gray-800"
-          :placeholder="channelMode ? 'Add channels' : 'Add tags'"
+          :placeholder="channelMode ? 'Add channels to select your intended audience' : 'Add tags'"
           @keydown.enter="(event) => {
             saveTagAndClose(event)
             $emit('close')

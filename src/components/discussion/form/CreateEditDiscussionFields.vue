@@ -64,7 +64,7 @@ export default defineComponent({
   },
   setup(props) {
     return {
-      formTitle: props.editMode ? "Edit Discussion" : "Create Discussion",
+      formTitle: props.editMode ? "Edit Discussion" : "Start Discussion",
       touched: false,
       titleInputRef: ref(null),
     };
@@ -147,7 +147,7 @@ export default defineComponent({
                     ref="titleInputRef"
                     :test-id="'title-input'"
                     :value="formValues.title"
-                    :placeholder="'Add title'"
+                    :placeholder="'Ask a question or share something new'"
                     :full-width="true"
                     @update="$emit('updateFormValues', { title: $event })"
                   />

@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import {
-  DiscussionData,
-} from "../../../types/discussionTypes";
+import { DiscussionData } from "../../../types/discussionTypes";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
@@ -41,18 +39,24 @@ export default defineComponent({
       },
     },
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
 
-    // const commentCount = computed(() => {
-    //   if (props.discussionChannel) {
-    //     return props.discussionChannel.CommentsAggregate?.count || 0;
-    //   }
-    //   return 0;
-    // });
+    const commentCount = computed(() => {
+      let count = 0;
+      if (props.discussion) {
+        const discussionChannels = props.discussion.DiscussionChannels;
+        if (discussionChannels) {
+          discussionChannels.forEach((dc) => {
+            count += dc.CommentsAggregate?.count || 0;
+          });
+        }
+      }
+      return count;
+    });
 
     return {
-      commentCount: 99,
+      commentCount,
       route,
     };
   },
@@ -103,10 +107,12 @@ export default defineComponent({
         activator="parent"
         location="top"
       >
-        <span>{{ `Aggregated count of votes across the selected channels, deduplicated by user` }}</span>
+        <span>{{
+          `Sum of votes across channels, deduplicated by user`
+        }}</span>
       </v-tooltip>
     </span>
-    
+
     <div class="w-full">
       <router-link
         :to="previewLink"
@@ -119,8 +125,10 @@ export default defineComponent({
           />
         </p>
       </router-link>
-     
-      <div class="flex space-x-1 font-medium mt-1 text-sm text-slate-600 hover:no-underline">
+
+      <div
+        class="font-medium mt-1 flex space-x-1 text-sm text-slate-600 hover:no-underline"
+      >
         <Tag
           v-for="tag in tags"
           :key="tag"
@@ -130,7 +138,7 @@ export default defineComponent({
           @click="$emit('filterByTag', tag)"
         />
       </div>
-      
+
       <div
         v-if="discussion && discussion.DiscussionChannels"
         class="font-medium flex flex-wrap items-center gap-1 text-xs text-slate-600 no-underline dark:text-slate-200"
@@ -152,9 +160,15 @@ export default defineComponent({
         </Tag>
       </div>
     </div>
-    <span class="flex gap-1 items-center">
-      <i class="fa-regular fa-comment h-6 w-6 mt-1 text-gray-500" />
+    <span class="flex items-center gap-1">
+      <i class="fa-regular fa-comment mt-1 h-6 w-6 text-gray-500" />
       {{ commentCount }}
+      <v-tooltip
+        activator="parent"
+        location="top"
+      >
+        <span>{{ `Sum of comments across channels` }}</span>
+      </v-tooltip>
     </span>
   </li>
 </template>
