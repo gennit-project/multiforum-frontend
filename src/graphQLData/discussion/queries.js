@@ -100,15 +100,16 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
 // For site wide list view
 export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
   query getSiteWideDiscussionList(
-    $discussionWhere: DiscussionWhere!
+    $searchInput: String!
     $selectedChannels: [String!]
     $selectedTags: [String!]
-  ) # $resultsOrder: [DiscussionSort!]
-  # $offset: Int
-  # $limit: Int
+    # $resultsOrder: [DiscussionSort!]
+    # $offset: Int
+    # $limit: Int
+  ) 
   {
     getSiteWideDiscussionList(
-      discussionWhere: $discussionWhere
+      searchInput: $searchInput
       selectedChannels: $selectedChannels
       selectedTags: $selectedTags
     ) # options: { sort: $resultsOrder, offset: $offset, limit: $limit }

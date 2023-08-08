@@ -9,8 +9,6 @@ import { useQuery } from "@vue/apollo-composable";
 import { useRouter, useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
-import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
-// import { DiscussionChannel } from "@/__generated__/graphql";
 
 // const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -41,16 +39,16 @@ export default defineComponent({
       getFilterValuesFromParams({ route, channelId: channelId.value }),
     );
 
-    const discussionWhere = computed(() => {
-      return getDiscussionWhere(filterValues.value);
-    });
-
     const selectedChannelsComputed = computed(() => {
       return filterValues.value.channels;
     })
 
     const selectedTagsComputed = computed(() => {
       return filterValues.value.tags;
+    })
+
+    const searchInputComputed = computed(() => {
+      return filterValues.value.searchInput || "";
     })
 
     const {
@@ -61,7 +59,7 @@ export default defineComponent({
       onResult: onGetDiscussionResult,
       // fetchMore,
     } = useQuery(GET_SITE_WIDE_DISCUSSION_LIST, {
-      discussionWhere: discussionWhere,
+      searchInput: searchInputComputed,
       selectedChannels: selectedChannelsComputed,
       selectedTags: selectedTagsComputed,
       // limit: DISCUSSION_PAGE_LIMIT,

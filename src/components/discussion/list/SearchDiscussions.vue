@@ -260,9 +260,6 @@ export default defineComponent({
         <DiscussionFilterBar />
         <SitewideDiscussionList
           v-if="!channelId"
-          :search-input="filterValues.searchInput"
-          :selected-tags="filterValues.tags"
-          :selected-channels="filterValues.channels"
           @filterByTag="handleClickTag"
           @filterByChannel="handleClickChannel"
           @openPreview="openPreview"
