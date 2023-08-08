@@ -102,6 +102,7 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
   query getSiteWideDiscussionList(
     $discussionWhere: DiscussionWhere!
     $selectedChannels: [String!]
+    $selectedTags: [String!]
   ) # $resultsOrder: [DiscussionSort!]
   # $offset: Int
   # $limit: Int
@@ -109,6 +110,7 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
     getSiteWideDiscussionList(
       discussionWhere: $discussionWhere
       selectedChannels: $selectedChannels
+      selectedTags: $selectedTags
     ) # options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     {
       score
