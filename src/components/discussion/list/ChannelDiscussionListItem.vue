@@ -158,21 +158,21 @@ export default defineComponent({
   },
   computed: {
     detailLink() {
-    // Convert current query parameters to string format
-    const queryString = new URLSearchParams(this.$route.query).toString();
+      // Convert current query parameters to string format
+      const queryString = new URLSearchParams(this.$route.query).toString();
 
-    // Base URL for lgAndUp and other screen sizes
-    let baseLink = '';
+      // Base URL for lgAndUp and other screen sizes
+      let baseLink = '';
 
-    if (this.lgAndUp) {
-      baseLink = `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussionChannel.discussionId}`;
-    } else {
-      baseLink = `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
+      if (this.lgAndUp) {
+        baseLink = `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussionChannel.discussionId}`;
+      } else {
+        baseLink = `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
+      }
+
+      // If there are query parameters, append them to the baseLink
+      return queryString ? `${baseLink}?${queryString}` : baseLink;
     }
-
-    // If there are query parameters, append them to the baseLink
-    return queryString ? `${baseLink}?${queryString}` : baseLink;
-  }
   },
 });
 </script>

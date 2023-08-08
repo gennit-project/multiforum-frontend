@@ -92,7 +92,11 @@ export default defineComponent({
   },
   computed: {
     previewLink() {
-      return `/discussions/search/${this.discussion.id}`;
+      // Convert current query parameters to string format
+      const queryString = new URLSearchParams(this.$route.query).toString();
+      const baseLink = `/discussions/search/${this.discussion.id}`;
+       // If there are query parameters, append them to the baseLink
+       return queryString ? `${baseLink}?${queryString}` : baseLink;
     },
   },
 });
