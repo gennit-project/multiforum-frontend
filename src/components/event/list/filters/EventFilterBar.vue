@@ -36,7 +36,6 @@ import SelectFree from "./SelectFree.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
-import TimeShortcuts from "./TimeShortcuts.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -63,7 +62,6 @@ export default defineComponent({
     TagIcon,
     TagPicker,
     TimeSelector,
-    TimeShortcuts,
     WeekdaySelector,
   },
   props: {
@@ -561,14 +559,6 @@ export default defineComponent({
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
-        <SearchBar
-          class="inline-flex w-full align-middle"
-          data-testid="event-drawer-search-bar"
-          :initial-value="filterValues.searchInput"
-          :search-placeholder="'Search text'"
-          :full-width="true"
-          @updateSearchInput="updateSearchInput"
-        />
         <LocationSearchBar
           v-if="showLocationSearchBarAndDistanceButtons"
           class="flex w-full flex-wrap"
@@ -600,59 +590,6 @@ export default defineComponent({
               @click="updateSelectedDistance(distance)"
             />
           </div>
-        </div>
-
-        <div class="my-2 rounded-md border p-2">
-          <h2
-            v-if="!channelId"
-            class="text-md font-small flex items-center text-gray-700 dark:text-gray-100"
-          >
-            <ChannelIcon
-              class="mr-2 h-4 w-4 text-gray-500"
-              aria-hidden="true"
-            />
-            Channels
-          </h2>
-
-          <ChannelPicker
-            v-if="!channelId"
-            :selected-channels="filterValues.channels"
-            @setSelectedChannels="setSelectedChannels"
-          />
-        </div>
-
-        <div class="my-2 rounded-md border">
-          <h2
-            v-if="!channelId"
-            class="text-md font-small flex items-center text-gray-700 dark:text-gray-100"
-          >
-            <ClockIcon
-              class="mr-2 h-4 w-4 text-gray-500"
-              aria-hidden="true"
-            />
-            Times
-          </h2>
-
-          <TimeShortcuts
-            :is-list-view="!showMap"
-            class="mt-6"
-          />
-        </div>
-
-        <div class="my-2 rounded-md border p-2">
-          <h2
-            class="text-md font-small flex items-center text-gray-700 dark:text-gray-100"
-          >
-            <TagIcon
-              class="mr-2 h-4 w-4 text-gray-500"
-              aria-hidden="true"
-            />
-            Tags
-          </h2>
-          <TagPicker
-            :selected-tags="filterValues.tags"
-            @setSelectedTags="setSelectedTags"
-          />
         </div>
 
         <SelectCanceled

@@ -45,7 +45,7 @@ export interface EventData {
   deleted: boolean;
   cost: string;
   free: boolean;
-  Channels: Array[ChannelData];
+  EventChannels: Array[ChannelData];
   Poster?: UserData;
   Tags: Array[TagData];
   updatedAt: string;

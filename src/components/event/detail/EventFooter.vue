@@ -9,6 +9,7 @@ import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
+import { EventChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
@@ -26,7 +27,7 @@ export default defineComponent({
       default: false,
     },
     channelsExceptCurrent: {
-      type: Array,
+      type: Array as PropType<EventChannel[]>,
       default: () => [],
     },
   },
@@ -184,7 +185,7 @@ export default defineComponent({
       <router-link
         v-if="!channelId && channelsExceptCurrent.length > 0"
         class="underline font-medium cursor-pointer"
-        :to="`/channels/c/${channelsExceptCurrent[0].uniqueName}/events/e/${eventId}`"
+        :to="`/channels/c/${channelsExceptCurrent[0].channelUniqueName}/events/e/${eventId}`"
       >
         Permalink
       </router-link>

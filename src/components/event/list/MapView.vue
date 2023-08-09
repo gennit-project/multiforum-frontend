@@ -88,11 +88,11 @@ export default defineComponent({
     });
 
     const filterValues: Ref<SearchEventValues> = ref(
-      getFilterValuesFromParams({ 
-        route: route, 
-        channelId: channelId.value, 
-        isEventListView: false 
-      })
+      getFilterValuesFromParams({
+        route: route,
+        channelId: channelId.value,
+        isEventListView: false,
+      }),
     );
 
     const resultsOrder = computed(() => {
@@ -104,9 +104,9 @@ export default defineComponent({
 
     const eventWhere = computed(() => {
       return getEventWhere({
-        filterValues: filterValues.value, 
-        showMap: false, 
-        channelId: channelId.value
+        filterValues: filterValues.value,
+        showMap: false,
+        channelId: channelId.value,
       });
     });
 
@@ -263,7 +263,7 @@ export default defineComponent({
 
       if (alreadySelected) {
         this.filterValues.channels = this.filterValues.channels.filter(
-          (c: string) => c !== channel
+          (c: string) => c !== channel,
         );
       } else {
         this.filterValues.channels.push(channel);
@@ -275,7 +275,7 @@ export default defineComponent({
 
       if (alreadySelected) {
         this.filterValues.tags = this.filterValues.tags.filter(
-          (t: string) => t !== tag
+          (t: string) => t !== tag,
         );
       } else {
         this.filterValues.tags.push(tag);
@@ -367,7 +367,7 @@ export default defineComponent({
         // open a specific infowindow.
         else if (clickedMapMarker && numberOfEvents === 1) {
           const defaultEventId = Object.keys(
-            markerMap[eventLocationId].events
+            markerMap[eventLocationId].events,
           )[0];
           this.highlightedEventId = defaultEventId;
           openSpecificInfowindow();
@@ -401,7 +401,7 @@ export default defineComponent({
       eventLocationId: string,
       eventId: string,
       eventData: EventData,
-      clickedMapMarker: boolean | false
+      clickedMapMarker: boolean | false,
     ) {
       this.sendToPreview(eventId, eventLocationId);
 
@@ -515,44 +515,46 @@ export default defineComponent({
       >
         <template #leftpane>
           <div
-            class="overflow-y-auto h-full px-4"
+            class="h-full m-8 overflow-y-auto"
             style="width: 40vw"
           >
-            <EventFilterBar class="w-full mt-6" />
-            <div v-if="eventLoading">
-              Loading...
+            <div>
+              <EventFilterBar class="mt-6" />
+              <div v-if="eventLoading">
+                Loading...
+              </div>
+              <ErrorBanner
+                v-else-if="eventError"
+                class="block"
+                :text="eventError.message"
+              />
+              <EventList
+                v-else-if="eventResult && eventResult.events"
+                key="highlightedEventId"
+                :events="eventResult.events"
+                :channel-id="channelId"
+                :highlighted-event-location-id="highlightedEventLocationId"
+                :highlighted-event-id="highlightedEventId"
+                :search-input="filterValues.searchInput"
+                :selected-tags="filterValues.tags"
+                :selected-channels="filterValues.channels"
+                :loaded-event-count="eventResult.events.length"
+                :result-count="eventResult.eventsAggregate?.count"
+                :show-map="true"
+                @filterByTag="filterByTag"
+                @filterByChannel="filterByChannel"
+                @highlightEvent="highlightEvent"
+                @open-preview="openPreview"
+                @unhighlight="unhighlight"
+              />
             </div>
-            <ErrorBanner
-              v-else-if="eventError"
-              class="block"
-              :text="eventError.message"
-            />
-            <EventList
-              v-else-if="eventResult && eventResult.events"
-              key="highlightedEventId"
-              :events="eventResult.events"
-              :channel-id="channelId"
-              :highlighted-event-location-id="highlightedEventLocationId"
-              :highlighted-event-id="highlightedEventId"
-              :search-input="filterValues.searchInput"
-              :selected-tags="filterValues.tags"
-              :selected-channels="filterValues.channels"
-              :loaded-event-count="eventResult.events.length"
-              :result-count="eventResult.eventsAggregate?.count"
-              :show-map="true"
-              @filterByTag="filterByTag"
-              @filterByChannel="filterByChannel"
-              @highlightEvent="highlightEvent"
-              @open-preview="openPreview"
-              @unhighlight="unhighlight"
-            />
           </div>
         </template>
         <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
               <div class="shortcut-buttons-wrapper">
-                <div class="shortcut-buttons">
+                <div class="shortcut-buttons pt-2">
                   <TimeShortcuts />
                 </div>
               </div>
@@ -587,6 +589,7 @@ export default defineComponent({
     <div
       v-else-if="eventResult && eventResult.events"
       id="mapViewMobileWidth"
+      class="p-4"
     >
       <div>
         <div>
@@ -606,40 +609,42 @@ export default defineComponent({
           @setMarkerData="setMarkerData"
         />
       </div>
-      <div class="w-full h-1/3">
-        <RequireAuth class="flex inline-flex">
-          <template #has-auth>
-            <CreateButton
-              class="align-middle ml-2 mt-4"
-              :to="createEventPath"
-              :label="'+ Create Event'"
-            />
-          </template>
-          <template #does-not-have-auth>
-            <PrimaryButton
-              class="align-middle ml-2"
-              :label="'+ Create Event'"
-            />
-          </template>
-        </RequireAuth>
-        <EventFilterBar class="w-full mt-6" />
-        <EventList
-          key="highlightedEventId"
-          :events="eventResult.events"
-          :channel-id="channelId"
-          :highlighted-event-location-id="highlightedEventLocationId"
-          :highlighted-event-id="highlightedEventId"
-          :search-input="filterValues.searchInput"
-          :selected-tags="filterValues.tags"
-          :selected-channels="filterValues.channels"
-          :loaded-event-count="eventResult.events.length"
-          :result-count="eventResult.eventsAggregate?.count"
-          @filterByTag="filterByTag"
-          @filterByChannel="filterByChannel"
-          @highlightEvent="highlightEvent"
-          @open-preview="openPreview"
-          @unhighlight="unhighlight"
-        />
+      <div class="h-1/3 w-full">
+        <div class="mx-auto">
+          <RequireAuth class="flex inline-flex">
+            <template #has-auth>
+              <CreateButton
+                class="ml-2 mt-4 align-middle"
+                :to="createEventPath"
+                :label="'+ Create Event'"
+              />
+            </template>
+            <template #does-not-have-auth>
+              <PrimaryButton
+                class="ml-2 align-middle"
+                :label="'+ Create Event'"
+              />
+            </template>
+          </RequireAuth>
+          <EventFilterBar class="mt-6 w-full" />
+          <EventList
+            key="highlightedEventId"
+            :events="eventResult.events"
+            :channel-id="channelId"
+            :highlighted-event-location-id="highlightedEventLocationId"
+            :highlighted-event-id="highlightedEventId"
+            :search-input="filterValues.searchInput"
+            :selected-tags="filterValues.tags"
+            :selected-channels="filterValues.channels"
+            :loaded-event-count="eventResult.events.length"
+            :result-count="eventResult.eventsAggregate?.count"
+            @filterByTag="filterByTag"
+            @filterByChannel="filterByChannel"
+            @highlightEvent="highlightEvent"
+            @open-preview="openPreview"
+            @unhighlight="unhighlight"
+          />
+        </div>
       </div>
     </div>
 
@@ -655,7 +660,7 @@ export default defineComponent({
     >
       <EventList
         v-if="selectedEvents"
-        class="overscroll-auto overflow-auto"
+        class="overflow-auto overscroll-auto"
         :events="selectedEvents"
         :result-count="selectedEvents.length"
         :channel-id="channelId"
@@ -664,7 +669,7 @@ export default defineComponent({
         @highlightEvent="highlightEvent"
         @open-preview="openPreview"
       />
-      <div class="flex-shrink-0 px-4 py-4 flex justify-end">
+      <div class="flex flex-shrink-0 justify-end px-4 py-4">
         <CloseButton @click="closeMultipleEventPreview" />
       </div>
       <PreviewContainer

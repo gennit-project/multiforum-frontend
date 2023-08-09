@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
 import { useRoute } from "vue-router";
-import { EventData } from "@/types/eventTypes";
+import { Event } from "@/__generated__/graphql";
 import { getDatePieces } from "@/utils/dateTimeUtils";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "../../generic/HighlightedSearchTerms.vue";
@@ -15,7 +15,7 @@ export default defineComponent({
   },
   props: {
     event: {
-      type: Object as PropType<EventData>,
+      type: Object as PropType<Event>,
       required: true,
     },
     selectedTags: {
@@ -240,7 +240,7 @@ export default defineComponent({
         ? 'border-blue-500 px-4'
         : 'border-blue-200 '
     "
-    class="relative bg-white dark:bg-gray-900 pl-6 pt-3 pb-2 border-l-4"
+    class="relative border-l-4 bg-white pb-2 pl-6 pt-3 dark:bg-gray-900"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
@@ -251,9 +251,11 @@ export default defineComponent({
         <div class="py-1">
           <div class="flex">
             <div
-              class="w-16 h-16 pt-3 flex flex-col justify-center items-center rounded-lg mr-4"
+              class="mr-4 flex h-16 w-16 flex-col items-center justify-center rounded-lg pt-3"
             >
-              <div class="text-xs uppercase text-gray-500 dark:text-gray-200 font-semibold">
+              <div
+                class="font-semibold text-xs uppercase text-gray-500 dark:text-gray-200"
+              >
                 {{
                   new Date(event.startTime).toLocaleString("en-US", {
                     weekday: "short",
@@ -263,7 +265,9 @@ export default defineComponent({
               <div class="text-2xl font-bold">
                 {{ new Date(event.startTime).getDate() }}
               </div>
-              <div class="text-xs lowercase text-gray-500 dark:text-gray-200 font-semibold">
+              <div
+                class="font-semibold text-xs lowercase text-gray-500 dark:text-gray-200"
+              >
                 {{
                   new Date(event.startTime).toLocaleString("en-US", {
                     month: "short",
@@ -274,7 +278,7 @@ export default defineComponent({
             <div>
               <p class="space-x-2">
                 <span
-                  class="text-md font-bold truncate cursor-pointer hover:underline"
+                  class="text-md cursor-pointer truncate font-bold hover:underline"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"
@@ -284,11 +288,11 @@ export default defineComponent({
 
                 <span
                   v-if="event.canceled"
-                  class="text-red-800 bg-red-100 dark:text-white dark:bg-red-900 py-1 text-sm rounded-lg px-3"
+                  class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-800 dark:bg-red-900 dark:text-white"
                 >Canceled</span>
               </p>
               <p
-                class="mt-2 flex flex-wrap text-sm text-gray-500 sm:mt-1 sm:mr-6 space-x-2"
+                class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 sm:mr-6 sm:mt-1"
               >
                 {{ `${event.locationName || ""}` }}
               </p>
@@ -297,30 +301,30 @@ export default defineComponent({
               </p>
               <p
                 v-if="event.free"
-                class="text-sm font-medium text-gray-600"
+                class="font-medium text-sm text-gray-600"
               >
                 Free
               </p>
               <div
                 v-if="!isWithinChannel"
-                class="text-sm"
+                class="flex text-sm"
               >
                 <Tag
-                  v-for="channel in event.Channels"
-                  :key="channel.uniqueName"
+                  v-for="ec in event.EventChannels"
+                  :key="ec.channelUniqueName"
                   class="my-1"
-                  :active="selectedChannels.includes(channel.uniqueName)"
+                  :active="selectedChannels.includes(ec.channelUniqueName)"
                   :channel-mode="true"
-                  :tag="channel.uniqueName"
+                  :tag="ec.channelUniqueName"
                   @click="
                     () => {
-                      handleClickChannel(channel.uniqueName);
+                      handleClickChannel(ec.channelUniqueName);
                     }
                   "
                 />
               </div>
               <p
-                class="text-sm text-slate-600 hover:no-underline font-medium mt-1"
+                class="font-medium mt-1 text-sm text-slate-600 hover:no-underline"
               >
                 <Tag
                   v-for="tag in event.Tags"
