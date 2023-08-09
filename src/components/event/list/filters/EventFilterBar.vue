@@ -33,8 +33,6 @@ import FilterChip from "@/components/generic/FilterChip.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 
 export default defineComponent({
@@ -54,8 +52,6 @@ export default defineComponent({
     GenericButton,
     LocationIcon,
     LocationSearchBar,
-    PrimaryButton,
-    RequireAuth,
     SearchBar,
     SelectCanceled,
     SelectFree,
@@ -472,37 +468,6 @@ export default defineComponent({
         </button>
       </div>
 
-      <div class="flex w-full items-center justify-between">
-        <SearchBar
-          class="mr-2 flex flex-grow"
-          data-testid="event-filter-search-bar"
-          :initial-value="filterValues.searchInput"
-          :search-placeholder="'Search events'"
-          :small="true"
-          @updateSearchInput="updateSearchInput"
-        />
-        <RequireAuth
-          class="align-middle"
-          :full-width="false"
-        >
-          <template #has-auth>
-            <PrimaryButton
-              data-testid="real-create-event-button"
-              class="ml-2 align-middle"
-              :label="'+ Create Event'"
-              @click="router.push({ path: createEventPath })"
-            />
-          </template>
-          <template #does-not-have-auth>
-            <PrimaryButton
-              data-testid="fake-create-event-button"
-              class="ml-2 align-middle"
-              :label="'+ Create Event'"
-            />
-          </template>
-        </RequireAuth>
-      </div>
-
       <div class="flex flex-wrap space-x-2 align-middle">
         <FilterChip
           v-if="!channelId"
@@ -559,6 +524,14 @@ export default defineComponent({
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
+        <SearchBar
+          class="inline-flex w-full align-middle"
+          data-testid="event-drawer-search-bar"
+          :initial-value="filterValues.searchInput"
+          :search-placeholder="'Search text'"
+          :full-width="true"
+          @updateSearchInput="updateSearchInput"
+        />
         <LocationSearchBar
           v-if="showLocationSearchBarAndDistanceButtons"
           class="flex w-full flex-wrap"

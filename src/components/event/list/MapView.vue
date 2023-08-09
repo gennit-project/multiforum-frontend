@@ -21,9 +21,6 @@ import {
 } from "./filters/filterStrings";
 import { timeShortcutValues } from "./filters/eventSearchOptions";
 import EventFilterBar from "./filters/EventFilterBar.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
 import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrollingPanes.vue";
 import gql from "graphql-tag";
@@ -32,15 +29,12 @@ export default defineComponent({
   name: "MapView",
   components: {
     CloseButton,
-    CreateButton,
     ErrorBanner,
     EventFilterBar,
     EventList,
     EventMap,
     EventPreview,
     PreviewContainer,
-    PrimaryButton,
-    RequireAuth,
     TimeShortcuts,
     TwoSeparatelyScrollingPanes,
   },
@@ -242,6 +236,7 @@ export default defineComponent({
       this.filterValues = getFilterValuesFromParams({
         route: this.route,
         channelId: this.channelId,
+        isEventListView: false,
       });
     });
   },
@@ -484,22 +479,6 @@ export default defineComponent({
       this.selectedEvent = event;
       this.colorLocked = true;
     },
-    // clickCloseMap() {
-    //   if (this.backToChannel) {
-    //     this.$router.push({
-    //       name: "SearchEventsInChannel",
-    //       params: {
-    //         channelId: this.backToChannel,
-    //       },
-    //       query: this.$route.query,
-    //     });
-    //   } else {
-    //     this.$router.push({
-    //       path: "/events/list/search",
-    //       query: this.$route.query,
-    //     });
-    //   }
-    // },
   },
 });
 </script>
@@ -515,11 +494,14 @@ export default defineComponent({
       >
         <template #leftpane>
           <div
-            class="h-full m-8 overflow-y-auto"
+            class="m-8 h-full overflow-y-auto"
             style="width: 40vw"
           >
             <div>
-              <EventFilterBar class="mt-6" />
+              <EventFilterBar
+                class="mt-6"
+                :show-map="true"
+              />
               <div v-if="eventLoading">
                 Loading...
               </div>
@@ -558,11 +540,17 @@ export default defineComponent({
                   <TimeShortcuts />
                 </div>
               </div>
+              <div v-if="eventLoading">
+                Loading...
+              </div>
+              <ErrorBanner
+                v-else-if="eventError"
+                class="block"
+                :text="eventError.message"
+              />
               <EventMap
-                v-if="
-                  !eventLoading &&
-                    !eventError &&
-                    eventResult &&
+                v-else-if="
+                  eventResult &&
                     eventResult.events &&
                     eventResult.events.length > 0
                 "
@@ -611,22 +599,10 @@ export default defineComponent({
       </div>
       <div class="h-1/3 w-full">
         <div class="mx-auto">
-          <RequireAuth class="flex inline-flex">
-            <template #has-auth>
-              <CreateButton
-                class="ml-2 mt-4 align-middle"
-                :to="createEventPath"
-                :label="'+ Create Event'"
-              />
-            </template>
-            <template #does-not-have-auth>
-              <PrimaryButton
-                class="ml-2 align-middle"
-                :label="'+ Create Event'"
-              />
-            </template>
-          </RequireAuth>
-          <EventFilterBar class="mt-6 w-full" />
+          <EventFilterBar
+            class="mt-6 w-full"
+            :show-map="true"
+          />
           <EventList
             key="highlightedEventId"
             :events="eventResult.events"

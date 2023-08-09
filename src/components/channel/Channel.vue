@@ -92,13 +92,12 @@ export default defineComponent({
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"
-            class="mb-4 block border-b"
+            class="block border-b"
             :route="route"
           />
           <v-row>
             <v-col
               v-if="channelId && !smAndDown"
-              
               cols="12"
               md="3"
               lg="2"
@@ -125,7 +124,6 @@ export default defineComponent({
                 </div>
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"
-                  class="mt-4 block"
                   :route="route"
                   :vertical="true"
                 />

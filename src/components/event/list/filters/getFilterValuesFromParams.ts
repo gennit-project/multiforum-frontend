@@ -226,7 +226,7 @@ const getFilterValuesFromParams = function (
 
   const defaultRadius = channelId ? 0 : 160.934; // 100 miles
 
-  let filterValues: SearchEventValues = {
+  const filterValues: SearchEventValues = {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
     tags: tags || [],
     channels: channels || [],
@@ -274,10 +274,12 @@ const getFilterValuesFromParams = function (
       latitude: latitude || defaultPlace.latitude,
       longitude: longitude || defaultPlace.longitude,
     }
-    filterValues = {
-      ...locationParams,
+    const res = {
+      
       ...filterValues,
+      ...locationParams,
     }
+    return res
   }
   return filterValues;
 };
