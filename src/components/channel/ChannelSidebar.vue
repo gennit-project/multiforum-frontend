@@ -113,10 +113,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-full overflow-y-auto border-r-2 dark:border-gray-600">
+  <div class="h-screen overflow-y-auto border-r-2 dark:border-gray-600">
     <div
       v-if="channelId"
-      class="my-4 flex items-center px-2"
+      class="mt-6 mb-4 flex items-center px-4"
     >
       <Avatar
         :text="channelId"
@@ -145,17 +145,17 @@ export default defineComponent({
       <div v-else-if="channel">
         <div
           v-if="!mdAndDown"
-          class="w-full px-2"
+          class="w-full px-4"
         >
           <div
             v-if="channel.description"
-            class="-ml-6"
+            class="text-sm text-gray-600 px-2 my-2"
           >
-            <v-md-preview :text="channel.description" />
+            {{ channel.description }}
           </div>
           <p
             v-else
-            class="text-xs"
+            class="text-sm"
           >
             {{ "This channel has no description." }}
           </p>

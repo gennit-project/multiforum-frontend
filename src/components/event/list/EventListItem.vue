@@ -307,7 +307,7 @@ export default defineComponent({
               </p>
               <div
                 v-if="!isWithinChannel"
-                class="flex text-sm"
+                class="flex space-x-1 text-sm"
               >
                 <Tag
                   v-for="ec in event.EventChannels"
@@ -324,7 +324,7 @@ export default defineComponent({
                 />
               </div>
               <p
-                class="font-medium mt-1 text-sm text-slate-600 hover:no-underline"
+                class="font-medium mt-1 flex space-x-1 text-sm text-slate-600 hover:no-underline"
               >
                 <Tag
                   v-for="tag in event.Tags"

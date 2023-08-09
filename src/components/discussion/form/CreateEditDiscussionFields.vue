@@ -95,7 +95,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid>
+  <v-container
+    fluid
+    class="h-screen overflow-auto"
+  >
     <div v-if="discussionLoading">
       Loading...
     </div>
@@ -150,12 +153,11 @@ export default defineComponent({
           </FormRow>
 
           <FormRow
-            class="h-72 overflow-auto"
             section-title="Details"
           >
             <template #content>
               <TextEditor
-                class="mb-3 h-56"
+                class="mb-3"
                 :test-id="'body-input'"
                 :disable-auto-focus="true"
                 :initial-value="formValues.body || ''"

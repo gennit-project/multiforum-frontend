@@ -76,7 +76,7 @@ export default defineComponent({
   >
   <img 
     v-else 
-    :class="[isLarge ? 'h-24 w-24' :'h-12 w-12']"
+    :class="[isLarge ? 'h-24 w-24' :'h-10 w-10']"
     class="rounded-md" 
     :src="identiconData" 
     :alt="text"

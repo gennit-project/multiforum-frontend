@@ -113,7 +113,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   // Tag filter
   if (tags.length > 0) {
     const matchTags = tags.reduce((prev: any, curr: any) => {
-      return prev.concat({ CONTAINS: curr });
+      return prev.concat({ text_CONTAINS: curr });
     }, []);
     conditions.push({
       Tags: {

@@ -1,14 +1,13 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { GET_EVENT } from "@/graphQLData/event/queries";
-import { UPDATE_EVENT } from "@/graphQLData/event/mutations";
+import { UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/event/mutations";
 import {
   useQuery,
   useMutation,
   provideApolloClient,
 } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
-import { ChannelData } from "@/types/channelTypes";
 import { TagData } from "@/types/tagTypes";
 import { apolloClient } from "@/main";
 import { EventData, CreateEditEventFormValues } from "@/types/eventTypes";
@@ -16,13 +15,13 @@ import { DateTime } from "luxon";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
-import { EventChannel } from "@/__generated__/graphql";
+import { EventChannel, EventUpdateInput } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "EditEvent",
   components: {
     CreateEditEventFields,
-    RequireAuth
+    RequireAuth,
   },
   apollo: {},
   setup() {
@@ -56,10 +55,10 @@ export default defineComponent({
 
     const ownerList = computed(() => {
       if (event.value && event.value.Poster) {
-        return [event.value.Poster.username]
+        return [event.value.Poster.username];
       }
-      return []
-    })
+      return [];
+    });
 
     // Remember the existing tags so that if the user removes
     // one or more tags, we will know to manually disconnect
@@ -81,12 +80,15 @@ export default defineComponent({
       ) {
         return [];
       }
-      return event.value.Channels.map((channel: ChannelData) => {
-        return channel.uniqueName;
+      return event.value.EventChannels.map((ec: EventChannel) => {
+        return ec.channelUniqueName;
       });
     });
 
-    function getFormValuesFromEventData(event: EventData): CreateEditEventFormValues  {
+    function getFormValuesFromEventData(
+      event: EventData,
+    ): CreateEditEventFormValues {
+      console.log(event);
       return {
         title: event.title,
         description: event.description || "",
@@ -128,12 +130,25 @@ export default defineComponent({
     const formValues = ref<CreateEditEventFormValues>(getDefaultFormValues());
 
     onGetEventResult((value) => {
+      console.log(value);
+      if (value.loading) return;
+
       const event = value.data.events[0];
 
       formValues.value = getFormValuesFromEventData(event);
     });
 
-    const updateEventInput = computed(() => {
+    const channelConnections = computed(() => {
+      return formValues.value.selectedChannels;
+    });
+
+    const channelDisconnections = computed(() => {
+      return existingChannels.value.filter((channel: string) => {
+        return !formValues.value.selectedChannels.includes(channel);
+      });
+    });
+
+    const updateEventInput = computed<EventUpdateInput>(() => {
       const tagConnections = formValues.value.selectedTags.map(
         (tag: string) => {
           return {
@@ -148,7 +163,7 @@ export default defineComponent({
               },
             },
           };
-        }
+        },
       );
 
       const tagDisconnections = existingTags.value
@@ -160,37 +175,6 @@ export default defineComponent({
             where: {
               node: {
                 text: tag,
-              },
-            },
-          };
-        });
-
-      const channelConnections = formValues.value.selectedChannels.map(
-        (channel: string | string[]) => {
-          return {
-            onCreate: {
-              node: {
-                uniqueName: channel,
-              },
-            },
-            where: {
-              node: {
-                uniqueName: channel,
-              },
-            },
-          };
-        }
-      );
-
-      const channelDisconnections = existingChannels.value
-        .filter((channel: string) => {
-          return !formValues.value.selectedChannels.includes(channel);
-        })
-        .map((channel: string) => {
-          return {
-            where: {
-              node: {
-                uniqueName: channel,
               },
             },
           };
@@ -225,10 +209,6 @@ export default defineComponent({
         free: formValues.value.free,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
-        Channels: {
-          connectOrCreate: channelConnections,
-          disconnect: channelDisconnections,
-        },
         Tags: {
           connectOrCreate: tagConnections,
           disconnect: tagDisconnections,
@@ -255,11 +235,13 @@ export default defineComponent({
       mutate: updateEvent,
       error: updateEventError,
       onDone,
-    } = useMutation(UPDATE_EVENT, () => {
+    } = useMutation(UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS, () => {
       return {
         errorPolicy: "all",
         variables: {
           updateEventInput: updateEventInput.value,
+          channelConnections: channelConnections.value,
+          channelDisconnections: channelDisconnections.value,
           eventWhere: {
             id: eventId,
           },
@@ -268,7 +250,6 @@ export default defineComponent({
     });
 
     onDone(() => {
-  
       /*
         Redirect to the event detail page in the first
         channel that the event was submitted to.
@@ -276,13 +257,11 @@ export default defineComponent({
       router.push({
         name: "EventDetail",
         params: {
-          channelId: formValues.value.selectedChannels[0],
+          channelId: formValues.value.selectedChannels[0].channelUniqueName,
           eventId,
         },
       });
     });
-
-
 
     return {
       getEventError,
@@ -331,7 +310,7 @@ export default defineComponent({
       />
     </template>
     <template #does-not-have-auth>
-      <div class="p-8 flex justify-center">
+      <div class="flex justify-center p-8">
         You don't have permission to see this page.
       </div>
     </template>

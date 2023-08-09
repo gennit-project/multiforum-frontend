@@ -54,7 +54,6 @@ export default defineComponent({
     >Search Location</label>
     <div class="relative">
       <div
-        v-if="route.name !== 'EditEvent' && route.name !== 'CreateEvent'"
         class="absolute py-2.5 left-0 pl-3 flex items-center pointer-events-none"
       >
         <LocationIcon

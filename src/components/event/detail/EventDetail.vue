@@ -276,13 +276,16 @@ export default defineComponent({
               </button>
             </div>
             <div class="mx-4 my-2">
-              <Tag
-                v-for="tag in eventData.Tags"
-                :key="tag.text"
-                class="mt-2"
-                :tag="tag.text"
-                :event-id="eventId"
-              />
+              <div class="flex space-x-1">
+                <Tag
+                  v-for="tag in eventData.Tags"
+                  :key="tag.text"
+                  class="mt-2"
+                  :tag="tag.text"
+                  :event-id="eventId"
+                />
+              </div>
+
               <div
                 v-if="channelId && channelsExceptCurrent.length > 0"
                 class="mt-2"

@@ -357,7 +357,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid>
+  <v-container
+    fluid
+    class="h-screen overflow-auto"
+  >
     <v-row class="justify-center">
       <v-col
         cols="12"
