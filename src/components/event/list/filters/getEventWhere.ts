@@ -134,9 +134,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // gotten into the query params.
     conditions.push({
       EventChannels: { 
-        Channel: {
-          uniqueName_CONTAINS: channelId 
-        }
+        channelUniqueName_CONTAINS: channelId
       },
     });
   } else if (truthyChannels.length > 0) {
@@ -147,12 +145,12 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       // Technically a selected channel could be an array
       // of strings, but we expect it to always be a string.
       (prev: any, curr: any) => {
-        return prev.concat({ uniqueName_CONTAINS: curr });
+        return prev.concat({ channelUniqueName_CONTAINS: curr });
       },
       []
     );
     conditions.push({
-      Channels: {
+      EventChannels: {
         OR: matchChannels,
       },
     });
