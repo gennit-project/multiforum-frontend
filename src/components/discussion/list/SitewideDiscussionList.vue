@@ -103,22 +103,22 @@ export default defineComponent({
           },
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
-  if (!fetchMoreResult) return previousResult;
+          if (!fetchMoreResult) return previousResult;
 
-  return {
-    ...previousResult,
-    getSiteWideDiscussionList: {
-      __typename: previousResult.getSiteWideDiscussionList.__typename,
-      aggregateDiscussionCount:
-        fetchMoreResult.getSiteWideDiscussionList.aggregateDiscussionCount,
-      discussions: [
-        ...previousResult.getSiteWideDiscussionList.discussions,
-        ...fetchMoreResult.getSiteWideDiscussionList.discussions,
-      ],
-    },
-  };
-},
-
+          return {
+            ...previousResult,
+            getSiteWideDiscussionList: {
+              __typename: previousResult.getSiteWideDiscussionList.__typename,
+              aggregateDiscussionCount:
+                fetchMoreResult.getSiteWideDiscussionList
+                  .aggregateDiscussionCount,
+              discussions: [
+                ...previousResult.getSiteWideDiscussionList.discussions,
+                ...fetchMoreResult.getSiteWideDiscussionList.discussions,
+              ],
+            },
+          };
+        },
       });
     };
     const sendToPreview = (discussionId: string) => {
@@ -147,13 +147,17 @@ export default defineComponent({
     onGetDiscussionResult((value) => {
       // If the preview pane is blank, fill it with the details
       // of the first result, if there is one.
-      if (!value.data || value.data.getSiteWideDiscussionList.length === 0) {
+      if (
+        !value.data ||
+        value.data.getSiteWideDiscussionList.discussions.length === 0
+      ) {
         return;
       }
-      const defaultSelectedDiscussion =
+      const discussionData =
         value.data.getSiteWideDiscussionList.discussions[0];
+      const discussionId = discussionData.discussion.id;
 
-      sendToPreview(defaultSelectedDiscussion.id);
+      sendToPreview(discussionId);
     });
 
     return {
@@ -184,18 +188,6 @@ export default defineComponent({
         });
       }
     });
-    if (
-      !this.discussionId &&
-      this.discussionResult &&
-      this.discussionResult.getSiteWideDiscussionList
-    ) {
-      const defaultSelectedDiscussion =
-        this.discussionResult.getSiteWideDiscussionList[0];
-      if (defaultSelectedDiscussion) {
-        this.selectedDiscussion = defaultSelectedDiscussion;
-      }
-      this.sendToPreview(this.selectedDiscussion.id);
-    }
   },
   methods: {
     openPreview(data: DiscussionData) {

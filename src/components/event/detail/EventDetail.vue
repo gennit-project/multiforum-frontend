@@ -228,7 +228,7 @@ export default defineComponent({
             {{ showFullDescription ? "Show less" : "Show more" }}
           </button>
         </div>
-        <div class="mx-4 my-2">
+        <div class="mx-4 my-2 flex">
           <Tag
             v-for="tag in eventData.Tags"
             :key="tag.text"
