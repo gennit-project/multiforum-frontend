@@ -9,10 +9,7 @@ import { ChannelData } from "@/types/channelTypes.d";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
-import CreateButton from "@/components/generic/buttons/CreateButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
 import SearchBar from "../generic/SearchBar.vue";
@@ -24,11 +21,8 @@ interface Ref<T> {
 export default defineComponent({
   components: {
     ChannelList,
-    CreateButton,
     ErrorBanner,
     FilterChip,
-    PrimaryButton,
-    RequireAuth,
     SearchBar,
     TagPicker,
     TagIcon,
@@ -198,44 +192,25 @@ export default defineComponent({
   <div>
     <div class="px-4">
       <div class="mx-auto flex max-w-5xl items-center justify-between py-2">
-        <div class="flex w-full">
-          <SearchBar
-            class="mr-2 align-middle"
-            :search-placeholder="'Search channels'"
-            @updateSearchInput="updateSearchResult"
-          />
-          <FilterChip
-            class="align-middle"
-            :label="tagLabel"
-            :highlighted="tagLabel !== defaultLabels.tags"
-          >
-            <template #icon>
-              <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
-            </template>
-            <template #content>
-              <TagPicker
-                :selected-tags="selectedTags"
-                @setSelectedTags="setSelectedTags"
-              />
-            </template>
-          </FilterChip>
-        </div>
-
-        <RequireAuth>
-          <template #has-auth>
-            <CreateButton
-              :to="createChannelPath"
-              :label="'Create Channel'"
-              class="float-right"
+        <SearchBar
+          class="mr-2 w-full align-middle"
+          :search-placeholder="'Search channels'"
+          @updateSearchInput="updateSearchResult"
+        />
+        <FilterChip
+          :label="tagLabel"
+          :highlighted="tagLabel !== defaultLabels.tags"
+        >
+          <template #icon>
+            <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
+          </template>
+          <template #content>
+            <TagPicker
+              :selected-tags="selectedTags"
+              @setSelectedTags="setSelectedTags"
             />
           </template>
-          <template #does-not-have-auth>
-            <PrimaryButton 
-              :label="'Create Channel'"
-              class="float-right"
-            />
-          </template>
-        </RequireAuth>
+        </FilterChip>
       </div>
       <ErrorBanner
         v-if="channelError"

@@ -83,7 +83,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="col-span-12 flex justify-end gap-6 py-3 lg:col-span-6">
+    <div class="col-span-12 flex lg:justify-end gap-6 py-3 lg:col-span-6 text-gray-600 dark:text-gray-300">
       <div class="font-normal truncate text-sm">
         <router-link
           class="underline"

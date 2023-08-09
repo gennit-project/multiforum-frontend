@@ -418,8 +418,8 @@ export default defineComponent({
             </FormRow>
             <FormRow section-title="Time">
               <template #content>
-                <div class="my-2 inline-block items-center space-x-2 xl:flex">
-                  <div class="my-2 inline-block items-center space-x-2 xl:flex">
+                <div class="inline-block items-center space-x-2 xl:flex">
+                  <div class="inline-block items-center space-x-2 xl:flex">
                     <input
                       data-testid="start-time-date-input"
                       class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
@@ -440,7 +440,7 @@ export default defineComponent({
                     >
                   </div>
 
-                  <div class="my-2 inline-block items-center space-x-2 xl:flex">
+                  <div class="inline-block items-center space-x-2 xl:flex">
                     <input
                       data-testid="end-time-date-input"
                       class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
@@ -523,7 +523,7 @@ export default defineComponent({
               <template #content>
                 <TextEditor
                   data-testid="description-input"
-                  class="mb-3 h-56"
+                  class="mb-3"
                   :disable-auto-focus="true"
                   :initial-value="formValues.description"
                   :placeholder="'Add details'"

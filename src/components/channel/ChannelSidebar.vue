@@ -116,7 +116,7 @@ export default defineComponent({
   <div class="h-full overflow-y-auto border-r-2 dark:border-gray-600">
     <div
       v-if="channelId"
-      class="my-4 flex items-center border-b px-2"
+      class="my-4 flex items-center px-2"
     >
       <Avatar
         :text="channelId"
@@ -130,7 +130,7 @@ export default defineComponent({
       </h1>
     </div>
 
-    <div class="w-full py-3">
+    <div class="w-full">
       <p v-if="getChannelLoading">
         Loading...
       </p>
@@ -145,7 +145,7 @@ export default defineComponent({
       <div v-else-if="channel">
         <div
           v-if="!mdAndDown"
-          class="w-full border-b px-2"
+          class="w-full px-2"
         >
           <div
             v-if="channel.description"
@@ -162,9 +162,9 @@ export default defineComponent({
         </div>
         <slot />
 
-        <div class="w-full border-b">
+        <div class="w-full mt-6">
           <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b border-gray-300">
+            <div class="flex justify-between border-gray-300">
               <span
                 class="my-2 mb-2 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
               >
@@ -182,7 +182,7 @@ export default defineComponent({
               />
             </div>
           </div>
-          <div class="flex justify-between border-b border-gray-300">
+          <div class="flex justify-between">
             <span
               class="my-2 mb-2 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
             >
@@ -225,9 +225,9 @@ export default defineComponent({
         class="w-full"
       >
         <template #has-auth>
-          <div class="flex w-full justify-between border-b border-gray-500">
+          <div class="flex w-full justify-between border-gray-500">
             <span
-              class="my-2 mb-2 w-full px-6 text-sm font-bold leading-6 text-gray-600 dark:text-gray-300"
+              class="my-2 mb-2 w-full px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
             >
               Admin Actions
             </span>
