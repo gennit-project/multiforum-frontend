@@ -36,7 +36,6 @@ import SelectFree from "./SelectFree.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
-import SecondaryButton from "@/components/generic/SecondaryButton.vue";
 import TimeShortcuts from "./TimeShortcuts.vue";
 
 export default defineComponent({
@@ -58,7 +57,6 @@ export default defineComponent({
     LocationSearchBar,
     PrimaryButton,
     RequireAuth,
-    SecondaryButton,
     SearchBar,
     SelectCanceled,
     SelectFree,
@@ -98,7 +96,7 @@ export default defineComponent({
         route,
         channelId: channelId.value,
         isEventListView: !props.showMap,
-      })
+      }),
     );
 
     const channelLabel = computed(() => {
@@ -141,13 +139,13 @@ export default defineComponent({
     const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
       (val: DistanceUnit) => {
         return filterValues.value.radius === val.value;
-      }
+      },
     );
     const defaultMileSelection = ref(
-      distanceOptionsForMiles[currentDistanceIndex]
+      distanceOptionsForMiles[currentDistanceIndex],
     );
     const defaultKilometerSelection = ref(
-      distanceOptionsForKilometers[currentDistanceIndex]
+      distanceOptionsForKilometers[currentDistanceIndex],
     );
 
     const hourRanges: Ref<SelectedHourRanges> = ref({});
@@ -215,7 +213,6 @@ export default defineComponent({
       route,
       router,
       selectedDistanceUnit,
-      showAdvanced: ref(false),
       showLocationSearchBarAndDistanceButtons,
       showTimeSlotPicker: ref(false),
       tagLabel,
@@ -252,7 +249,7 @@ export default defineComponent({
           }
           return acc;
         },
-        {}
+        {},
       );
       const paramsWithoutEmptyValues = Object.keys(params).reduce(
         (acc: any, key: string) => {
@@ -261,7 +258,7 @@ export default defineComponent({
           }
           return acc;
         },
-        {}
+        {},
       );
 
       const existingQueryCopy = { ...this.$route.query };
@@ -341,7 +338,7 @@ export default defineComponent({
         const currentDistanceIndex = distanceOptionsForMiles.findIndex(
           (val: DistanceUnit) => {
             return this.filterValues.radius.toString() === val.label;
-          }
+          },
         );
         const newRadius =
           distanceOptionsForKilometers[currentDistanceIndex].value;
@@ -355,7 +352,7 @@ export default defineComponent({
         const currentDistanceIndex = distanceOptionsForKilometers.findIndex(
           (val: DistanceUnit) => {
             return this.filterValues.radius.toString() === val.label;
-          }
+          },
         );
         const newRadius = distanceOptionsForMiles[currentDistanceIndex].value;
         this.updateLocalState({ radius: newRadius });
@@ -462,23 +459,22 @@ export default defineComponent({
       v-if="route.name !== 'EventDetail'"
       class="w-full"
     >
-      <div class="flex flex-wrap align-middle justify-between space-x-4 mr-6">
+      <div class="mr-6 flex flex-wrap justify-between space-x-4 align-middle">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
-          class="flex my-1 items-center bg-white dark:bg-gray-700 whitespace-nowrap text-blue-500 dark:text-white shadow p-3 border-radius rounded-lg"
+          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white p-3 text-blue-500 shadow dark:bg-gray-700 dark:text-white"
           aria-label="Open event filters"
           data-testid="open-event-filters"
           @click="handleClickMoreFilters"
         >
           <LocationIcon class="h-6 w-6 text-blue-500" />
-          <h1 class="border border-none pb-0 text-md ml-1">
+          <h1 class="text-md ml-1 border border-none pb-0">
             {{ referencePointName }}: {{ displayDistance }}
           </h1>
         </button>
       </div>
 
-
-      <div class="flex justify-between items-center w-full">
+      <div class="flex w-full items-center justify-between">
         <SearchBar
           class="mr-2 flex flex-grow"
           data-testid="event-filter-search-bar"
@@ -494,7 +490,7 @@ export default defineComponent({
           <template #has-auth>
             <PrimaryButton
               data-testid="real-create-event-button"
-              class="align-middle ml-2"
+              class="ml-2 align-middle"
               :label="'+ Create Event'"
               @click="router.push({ path: createEventPath })"
             />
@@ -502,23 +498,23 @@ export default defineComponent({
           <template #does-not-have-auth>
             <PrimaryButton
               data-testid="fake-create-event-button"
-              class="align-middle ml-2"
+              class="ml-2 align-middle"
               :label="'+ Create Event'"
             />
           </template>
         </RequireAuth>
       </div>
 
-      <div class="flex flex-wrap align-middle space-x-2">
+      <div class="flex flex-wrap space-x-2 align-middle">
         <FilterChip
           v-if="!channelId"
-          class="align-middle items-center"
+          class="items-center align-middle"
           data-testid="channel-filter-button"
           :label="channelLabel"
           :highlighted="channelLabel !== defaultFilterLabels.channels"
         >
           <template #icon>
-            <ChannelIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
           </template>
           <template #content>
             <ChannelPicker
@@ -528,13 +524,13 @@ export default defineComponent({
           </template>
         </FilterChip>
         <FilterChip
-          class="align-middle items-center"
+          class="items-center align-middle"
           data-testid="tag-filter-button"
           :label="tagLabel"
           :highlighted="tagLabel !== defaultFilterLabels.tags"
         >
           <template #icon>
-            <TagIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
           </template>
           <template #content>
             <TagPicker
@@ -543,13 +539,13 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-        <div class="inline-flex align-middle items-center">
+        <div class="inline-flex items-center align-middle">
           <button
             data-testid="more-filters-button"
-            class="flex inline-flex inline-flex max-height-3 px-3.5 py-2.5 text-xs font-medium rounded-md text-gray-700 dark:text-gray-200 hover:bg-gray-50 whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            class="max-height-3 font-medium flex inline-flex inline-flex whitespace-nowrap rounded-md px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-200"
             @click="handleClickMoreFilters"
           >
-            <FilterIcon class="-ml-0.5 w-4 h-4 mr-2" />
+            <FilterIcon class="-ml-0.5 mr-2 h-4 w-4" />
             More Filters
           </button>
         </div>
@@ -566,7 +562,7 @@ export default defineComponent({
         @closePreview="drawerIsOpen = false"
       >
         <SearchBar
-          class="inline-flex align-middle w-full"
+          class="inline-flex w-full align-middle"
           data-testid="event-drawer-search-bar"
           :initial-value="filterValues.searchInput"
           :search-placeholder="'Search text'"
@@ -575,7 +571,7 @@ export default defineComponent({
         />
         <LocationSearchBar
           v-if="showLocationSearchBarAndDistanceButtons"
-          class="flex flex-wrap w-full"
+          class="flex w-full flex-wrap"
           data-testid="event-drawer-location-search-bar"
           :search-placeholder="referencePointAddress"
           :reference-point-address-name="referencePointName"
@@ -606,13 +602,13 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="p-2 border rounded-md my-2">
+        <div class="my-2 rounded-md border p-2">
           <h2
             v-if="!channelId"
-            class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
+            class="text-md font-small flex items-center text-gray-700 dark:text-gray-100"
           >
             <ChannelIcon
-              class="h-4 w-4 mr-2 text-gray-500"
+              class="mr-2 h-4 w-4 text-gray-500"
               aria-hidden="true"
             />
             Channels
@@ -625,13 +621,13 @@ export default defineComponent({
           />
         </div>
 
-        <div class="border rounded-md my-2">
+        <div class="my-2 rounded-md border">
           <h2
             v-if="!channelId"
-            class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
+            class="text-md font-small flex items-center text-gray-700 dark:text-gray-100"
           >
             <ClockIcon
-              class="h-4 w-4 mr-2 text-gray-500"
+              class="mr-2 h-4 w-4 text-gray-500"
               aria-hidden="true"
             />
             Times
@@ -643,12 +639,12 @@ export default defineComponent({
           />
         </div>
 
-        <div class="p-2 border rounded-md my-2">
+        <div class="my-2 rounded-md border p-2">
           <h2
-            class="text-md font-small text-gray-700 dark:text-gray-100 flex items-center"
+            class="text-md font-small flex items-center text-gray-700 dark:text-gray-100"
           >
             <TagIcon
-              class="h-4 w-4 mr-2 text-gray-500"
+              class="mr-2 h-4 w-4 text-gray-500"
               aria-hidden="true"
             />
             Tags
@@ -669,21 +665,14 @@ export default defineComponent({
           @updateShowOnlyFree="updateShowOnlyFree"
         />
 
-        <hr class="mt-6 mb-4">
-        <SecondaryButton
-          data-testid="show-advanced-button"
-          :label="showAdvanced ? 'Hide Advanced' : 'Show Advanced'"
-          @click="showAdvanced = !showAdvanced"
-        />
-        <div
-          v-if="showAdvanced"
-          id="advancedFilters"
-        >
+        <hr class="mb-4 mt-6">
+
+        <div id="advancedFilters">
           <h2
-            class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+            class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
           >
             <CalendarIcon
-              class="h-6 w-6 mr-2 text-gray-500"
+              class="mr-2 h-6 w-6 text-gray-500"
               aria-hidden="true"
             />
             Weekdays
@@ -691,7 +680,7 @@ export default defineComponent({
 
           <div class="flex flex-col">
             <div class="-my-2 sm:-mx-6 lg:-mx-8">
-              <div class="py-2 align-middle inline-block sm:px-6 lg:px-8">
+              <div class="inline-block py-2 align-middle sm:px-6 lg:px-8">
                 <div class="mb-4">
                   <WeekdaySelector
                     :selected-weekdays="filterValues.weekdays"
@@ -704,10 +693,10 @@ export default defineComponent({
           </div>
 
           <h2
-            class="text-md font-medium text-gray-900 dark:text-gray-100 mt-4 flex"
+            class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
           >
             <ClockIcon
-              class="h-6 w-6 mr-2 text-gray-500"
+              class="mr-2 h-6 w-6 text-gray-500"
               aria-hidden="true"
             />
             Time Slots
