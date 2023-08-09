@@ -37,7 +37,6 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     free,
     hasVirtualEventUrl,
   } = filterValues;
-
   // These conditions will be added to the filter
   // object under an AND operator.
   let conditions = [];
@@ -93,7 +92,6 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
         // and a virtual event url
         conditions.push({ location_NOT: null });
       }
-      conditions.push({ virtualEventUrl_NOT: null });
       break;
 
     case LocationFilterTypes.WITHIN_RADIUS:

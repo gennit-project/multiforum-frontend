@@ -245,7 +245,14 @@ const getFilterValuesFromParams = function (
     // In the list view, the map is not displayed and we are searching
     // for virtual events. ONLY_VIRTUAL will filter out events that 
     // do not have a virtual event URL.
-    filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
+
+    // If it is a channel view, though, we want to show all events,
+    // even if they are missing a virtual event URL and/or location.
+    if (channelId) {
+      filterValues.locationFilter = LocationFilterTypes.NONE;
+    } else {
+      filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
+    }
   }
 
   if (!isEventListView) {
