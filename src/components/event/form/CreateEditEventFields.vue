@@ -422,7 +422,7 @@ export default defineComponent({
                   <div class="inline-block items-center space-x-2 xl:flex">
                     <input
                       data-testid="start-time-date-input"
-                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
+                      class="cursor-pointer rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="date"
                       placeholder="Date"
                       label="Start"
@@ -431,7 +431,7 @@ export default defineComponent({
                     >
                     <input
                       data-testid="start-time-time-input"
-                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
+                      class="cursor-pointer rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
@@ -439,11 +439,11 @@ export default defineComponent({
                       @input="handleStartTimeTimeChange($event?.target?.value)"
                     >
                   </div>
-
+                  <span class="px-1">to</span>
                   <div class="inline-block items-center space-x-2 xl:flex">
                     <input
                       data-testid="end-time-date-input"
-                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
+                      class="cursor-pointer rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="date"
                       placeholder="Date and Time"
                       label="Start"
@@ -452,7 +452,7 @@ export default defineComponent({
                     >
                     <input
                       data-testid="end-time-time-input"
-                      class="sl-input cursor-pointer focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
+                      class="cursor-pointer rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"
                       type="time"
                       placeholder="Time"
                       label="Start Time"

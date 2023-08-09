@@ -29,7 +29,7 @@
     "@mdi/font": "5.9.55",
     "@nuxt/typescript-build": "^3.0.1",
     "@popperjs/core": "^2.11.5",
-    "@shoelace-style/shoelace": "^2.3.0",
+    "@shoelace-style/shoelace": "^2.6.0",
     "@tailwindcss/forms": "^0.5.1",
     "@tailwindcss/line-clamp": "^0.4.0",
     "@tailwindcss/typography": "^0.5.4",
