@@ -3,6 +3,7 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
+import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
@@ -16,6 +17,7 @@ export default defineComponent({
   components: {
     ChannelSidebar,
     ChannelSidebarButton,
+    ChevronDownIcon,
     PrimaryButton,
     RequireAuth,
     ChannelTabs,
@@ -53,14 +55,10 @@ export default defineComponent({
       return route.value.params.eventId;
     });
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
-    const createDiscussionPath = channelId.value
-      ? `/channels/c/${channelId.value}/discussions/create`
-      : "/discussions/create";
 
     return {
       channel,
       channelId,
-      createDiscussionPath,
       discussionId,
       eventId,
       route,
@@ -70,6 +68,7 @@ export default defineComponent({
       lgAndUp,
       mdAndUp,
       router,
+      showMenu: ref(false),
       smAndDown,
     };
   },
@@ -103,21 +102,52 @@ export default defineComponent({
               lg="2"
             >
               <ChannelSidebar :channel-id="channelId">
-                <div class="mt-4 border-b">
+                <div class="border-b">
                   <RequireAuth
                     class="align-middle"
                     :full-width="false"
                   >
                     <template #has-auth>
-                      <ChannelSidebarButton
-                        :to="createDiscussionPath"
-                        :label="'New Discussion'"
-                      />
+                      <v-menu
+                        v-model="showMenu"
+                        :close-on-content-click="true"
+                      >
+                        <template #activator="{ props }">
+                          <div>
+                            <button
+                              v-bind="props"
+                              class="max-height-3 font-small mx-4 my-2 mr-2 inline-flex whitespace-nowrap rounded-md border px-2 py-2.5 text-xs text-gray-700 hover:bg-gray-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
+                            >
+                              <slot name="icon" />
+
+                              + Create
+                              <ChevronDownIcon
+                                class="-mr-1 ml-1 mt-0.5 h-3 w-3"
+                                aria-hidden="true"
+                              />
+                            </button>
+                          </div>
+                        </template>
+                        <v-list>
+                          <v-list-item>
+                            <ChannelSidebarButton
+                              :to="`/channels/c/${channelId}/discussions/create`"
+                              :label="'New Discussion'"
+                            />
+                          </v-list-item>
+                          <v-list-item>
+                            <ChannelSidebarButton
+                              :to="`/channels/c/${channelId}/events/create`"
+                              :label="'New Event'"
+                            />
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
                     </template>
                     <template #does-not-have-auth>
                       <PrimaryButton
                         class="ml-2"
-                        :label="'New Discussion'"
+                        :label="'+ Create'"
                       />
                     </template>
                   </RequireAuth>

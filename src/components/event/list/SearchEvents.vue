@@ -57,7 +57,6 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex justify-center" />
     <router-view
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"

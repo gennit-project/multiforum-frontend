@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import { router } from "@/router";
 
 export default defineComponent({
+  name: "ChannelSidebarButton",
   props: {
     to: {
       type: String,
