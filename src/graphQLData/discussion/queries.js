@@ -103,48 +103,48 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
     $searchInput: String!
     $selectedChannels: [String!]
     $selectedTags: [String!]
-    # $resultsOrder: [DiscussionSort!]
-    # $offset: Int
-    # $limit: Int
-  ) 
-  {
+    $options: DiscussionListOptions
+  ) {
     getSiteWideDiscussionList(
       searchInput: $searchInput
       selectedChannels: $selectedChannels
       selectedTags: $selectedTags
-    ) # options: { sort: $resultsOrder, offset: $offset, limit: $limit }
-    {
-      score
-      discussion {
-        id
-        title
-        body
-        Author {
-          username
-        }
-        DiscussionChannels {
+      options: $options
+    ) {
+      aggregateDiscussionCount
+      discussions {
+        score
+        discussion {
           id
-          createdAt
-          channelUniqueName
-          discussionId
-          upvoteCount
-          UpvotedByUsers {
+          title
+          body
+          Author {
             username
           }
-          Channel {
-            uniqueName
-          }
-          Discussion {
+          DiscussionChannels {
             id
+            createdAt
+            channelUniqueName
+            discussionId
+            upvoteCount
+            UpvotedByUsers {
+              username
+            }
+            Channel {
+              uniqueName
+            }
+            Discussion {
+              id
+            }
+            CommentsAggregate {
+              count
+            }
           }
-          CommentsAggregate {
-            count
+          createdAt
+          updatedAt
+          Tags {
+            text
           }
-        }
-        createdAt
-        updatedAt
-        Tags {
-          text
         }
       }
     }
