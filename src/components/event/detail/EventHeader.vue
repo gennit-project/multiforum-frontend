@@ -2,10 +2,7 @@
 import { defineComponent, PropType, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
-import GenericButton from "@/components/generic/GenericButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
@@ -20,13 +17,11 @@ export default defineComponent({
   components: {
     CalendarIcon,
     ClipboardIcon,
-    CreateButton,
-    GenericButton,
+
     LinkIcon,
     LocationIcon,
     Notification,
-    RequireAuth,
-    PrimaryButton,
+  
   },
   props: {
     eventData: {
@@ -105,49 +100,6 @@ export default defineComponent({
       >
         {{ eventData.title }}
       </h2>
-    </div>
-    <div
-      v-if="channelId && route.name === 'EventDetail'"
-      class="mt-4 flex flex-shrink-0 md:ml-4 md:mt-0"
-    >
-      <div class="float-right">
-        <span>
-          <RequireAuth
-            v-if="eventData.Poster"
-            class="flex inline-flex"
-            :require-ownership="true"
-            :owners="[eventData.Poster.username]"
-          >
-            <template #has-auth>
-              <router-link
-                :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-              >
-                <GenericButton
-                  :text="'Edit'"
-                  data-testid="edit-event-button"
-                />
-              </router-link>
-            </template>
-          </RequireAuth>
-          <RequireAuth class="flex inline-flex">
-            <template #has-auth>
-              <CreateButton
-                class="ml-2"
-                data-testid="real-create-event-button"
-                :to="`/channels/c/${channelId}/events/create`"
-                :label="'Create Event'"
-              />
-            </template>
-            <template #does-not-have-auth>
-              <PrimaryButton
-                data-testid="fake-create-event-button"
-                class="ml-2"
-                :label="'Create Event'"
-              />
-            </template>
-          </RequireAuth>
-        </span>
-      </div>
     </div>
   </div>
 

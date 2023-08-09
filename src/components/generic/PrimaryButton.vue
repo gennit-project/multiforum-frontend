@@ -20,11 +20,11 @@ export default defineComponent({
     :disabled="disabled"
     :class="[
       disabled
-        ? 'bg-gray-200 cursor-default text-gray-600'
-        : 'text-white-700 bg-blue-500 hover:bg-blue-400 text-white dark:bg-blue-700 dark:hover:bg-blue-600',
+        ? 'cursor-default bg-gray-200 text-gray-600'
+        : 'text-white-700 bg-blue-500 text-white hover:bg-blue-400 dark:bg-blue-700 dark:hover:bg-blue-600',
       'dark:bg-opacity-60', // class for controlling the background opacity in dark mode
     ]"
-    class="inline-flex whitespace-nowrap items-center max-height-4 px-4 py-1 text-sm font-medium rounded-md focus:outline-none focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-blue-500"
+    class="max-height-4 text-sm font-medium mt-2 inline-flex items-center whitespace-nowrap rounded-md px-4 py-2 focus:outline-none focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
   >
     <slot />{{ label }}
   </button>

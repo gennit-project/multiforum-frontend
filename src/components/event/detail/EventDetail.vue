@@ -4,7 +4,7 @@ import Tag from "@/components/tag/Tag.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
 import { GET_EVENT } from "@/graphQLData/event/queries";
-import { Event, EventChannel } from "@/__generated__/graphql"
+import { Event, EventChannel } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -14,6 +14,10 @@ import EventFooter from "./EventFooter.vue";
 import { MdEditor } from "md-editor-v3";
 import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
+import GenericButton from "@/components/generic/GenericButton.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import CreateButton from "@/components/generic/CreateButton.vue";
+import PrimaryButton from "@/components/generic/PrimaryButton.vue";
 
 export default defineComponent({
   components: {
@@ -22,6 +26,10 @@ export default defineComponent({
     EventHeader,
     LeftArrowIcon,
     MdEditor,
+    CreateButton,
+    GenericButton,
+    RequireAuth,
+    PrimaryButton,
     Tag,
   },
   props: {
@@ -158,107 +166,148 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="height-constrained-more px-4 pb-36 pt-4 lg:w-full space-y-2 flex justify-center"
-  >
-    <div
-      :class="
-        route.name === 'EventDetail' && mdAndUp ? 'large-width' : 'w-full'
-      "
-      class="space-y-2"
-    >
-      <router-link
-        v-if="route.name === 'EventDetail'"
-        :to="`/channels/c/${channelId}/events/search`"
-        class="text-xs text-gray-500 mb-4"
-      >
-        <LeftArrowIcon class="h-4 w-4 mr-1 pb-1 inline-flex" />
-        <span class="underline">{{ `Event list in c/${channelId}` }}</span>
-      </router-link>
-      <p
-        v-if="eventLoading"
-        class="px-4 lg:px-10"
-      >
-        Loading...
-      </p>
-      <ErrorBanner
-        v-else-if="eventError"
-        class="px-4 lg:px-10"
-        :text="eventError.message"
-      />
-
-      <div v-else-if="!eventData">
-        <p>Could not find the event.</p>
-      </div>
-
-      <div
-        v-else-if="eventResult && eventResult.events && eventData"
-        class="dark:bg-dark-700 pt-4 max-w-2xl mx-auto"
-      >
-        <ErrorBanner
-          v-if="eventIsInThePast"
-          class="mt-2 mb-2"
-          :text="'This event is in the past.'"
-        />
-        <ErrorBanner
-          v-if="eventData.canceled"
-          data-testid="canceled-event-banner"
-          class="mt-2 mb-2"
-          :text="'This event is canceled.'"
-        />
-        <EventHeader :event-data="eventData" />
-        <div class="mt-4">
-          <md-editor
-            v-if="eventData.description"
-            v-model="visibleDescription"
-            class="max-w-2xl small-text"
-            preview-theme="github"
-            language="en-US"
-            :no-mermaid="true"
-            preview-only
-          />
-          <button
-            v-if="
-              eventData?.description &&
-                eventData.description.split(' ').length > 50
-            "
-            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2"
-            @click="toggleDescription"
+  <div class="h-screen w-full space-y-4 overflow-auto py-1 lg:px-8">
+    <div class="mb-10 flex w-full justify-center rounded-lg">
+      <div class="w-full">
+        <div
+          v-if="route.name === 'EventDetail'"
+          :class="'align-center mt-2 px-1 flex justify-between'"
+        >
+          <router-link
+            :to="`/channels/c/${channelId}/events`"
+            class="text-xs underline"
           >
-            {{ showFullDescription ? "Show less" : "Show more" }}
-          </button>
-        </div>
-        <div class="mx-4 my-2 flex">
-          <Tag
-            v-for="tag in eventData.Tags"
-            :key="tag.text"
-            class="mt-2"
-            :tag="tag.text"
-            :event-id="eventId"
-          />
+            <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
+            {{ `Event list in c/${channelId}` }}
+          </router-link>
           <div
-            v-if="channelId && channelsExceptCurrent.length > 0"
-            class="mt-2"
+            v-if="channelId && eventData"
+            class="mt-4 flex items-center flex-shrink-0 md:ml-4 md:mt-0"
           >
-            Crossposted To Channels
+            <RequireAuth
+              v-if="eventData.Poster"
+              class="flex inline-flex"
+              :require-ownership="true"
+              :owners="[eventData.Poster.username]"
+            >
+              <template #has-auth>
+                <router-link
+                  :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+                >
+                  <GenericButton
+                    :text="'Edit'"
+                    data-testid="edit-event-button"
+                  />
+                </router-link>
+              </template>
+            </RequireAuth>
+            <RequireAuth class="flex inline-flex">
+              <template #has-auth>
+                <CreateButton
+                  class="ml-2"
+                  data-testid="real-create-event-button"
+                  :to="`/channels/c/${channelId}/events/create`"
+                  :label="'Create Event'"
+                />
+              </template>
+              <template #does-not-have-auth>
+                <PrimaryButton
+                  data-testid="fake-create-event-button"
+                  class="ml-2"
+                  :label="'Create Event'"
+                />
+              </template>
+            </RequireAuth>
+          </div>
+        </div>
+
+        <div class="mt-1 w-full space-y-2 px-3">
+          <p
+            v-if="eventLoading"
+            class="px-4 lg:px-10"
+          >
+            Loading...
+          </p>
+          <ErrorBanner
+            v-else-if="eventError"
+            class="px-4 lg:px-10"
+            :text="eventError.message"
+          />
+
+          <div v-else-if="!eventData">
+            <p>Could not find the event.</p>
           </div>
 
-          <router-link
-            v-for="ec in channelsExceptCurrent"
-            :key="ec.channelUniqueName"
-            :to="`/channels/c/${ec.channelUniqueName}/events/e/${eventId}`"
+          <div
+            v-else-if="eventResult && eventResult.events && eventData"
+            class="dark:bg-dark-700 mx-auto max-w-2xl pt-4"
           >
-            <Tag
-              class="mt-2"
-              :tag="ec.channelUniqueName"
-              :channel-mode="true"
+            <ErrorBanner
+              v-if="eventIsInThePast"
+              class="mb-2 mt-2"
+              :text="'This event is in the past.'"
             />
-          </router-link>
+            <ErrorBanner
+              v-if="eventData.canceled"
+              data-testid="canceled-event-banner"
+              class="mb-2 mt-2"
+              :text="'This event is canceled.'"
+            />
+            <EventHeader :event-data="eventData" />
+            <div class="mt-4">
+              <md-editor
+                v-if="eventData.description"
+                v-model="visibleDescription"
+                class="small-text max-w-2xl"
+                preview-theme="github"
+                language="en-US"
+                :no-mermaid="true"
+                preview-only
+              />
+              <button
+                v-if="
+                  eventData?.description &&
+                    eventData.description.split(' ').length > 50
+                "
+                class="mt-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                @click="toggleDescription"
+              >
+                {{ showFullDescription ? "Show less" : "Show more" }}
+              </button>
+            </div>
+            <div class="mx-4 my-2 flex">
+              <Tag
+                v-for="tag in eventData.Tags"
+                :key="tag.text"
+                class="mt-2"
+                :tag="tag.text"
+                :event-id="eventId"
+              />
+              <div
+                v-if="channelId && channelsExceptCurrent.length > 0"
+                class="mt-2"
+              >
+                Crossposted To Channels
+              </div>
+
+              <router-link
+                v-for="ec in channelsExceptCurrent"
+                :key="ec.channelUniqueName"
+                :to="`/channels/c/${ec.channelUniqueName}/events/e/${eventId}`"
+              >
+                <Tag
+                  class="mt-2"
+                  :tag="ec.channelUniqueName"
+                  :channel-mode="true"
+                />
+              </router-link>
+            </div>
+            <EventFooter
+              :event-data="eventData"
+              :channels-except-current="channelsExceptCurrent"
+            />
+          </div>
         </div>
-        <EventFooter
-          :event-data="eventData"
-          :channels-except-current="channelsExceptCurrent"
-        />
       </div>
     </div>
   </div>
