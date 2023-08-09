@@ -174,7 +174,7 @@ export default defineComponent({
           :class="'align-center mt-2 px-1 flex justify-between'"
         >
           <router-link
-            :to="`/channels/c/${channelId}/events`"
+            :to="`/channels/c/${channelId}/events/search`"
             class="text-xs underline"
           >
             <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
