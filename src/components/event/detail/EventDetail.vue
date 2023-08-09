@@ -171,7 +171,7 @@ export default defineComponent({
       <div class="w-full">
         <div
           v-if="route.name === 'EventDetail'"
-          :class="'align-center mt-2 px-1 flex justify-between'"
+          :class="'align-center mt-2 flex justify-between px-1'"
         >
           <router-link
             :to="`/channels/c/${channelId}/events/search`"
@@ -182,7 +182,7 @@ export default defineComponent({
           </router-link>
           <div
             v-if="channelId && eventData"
-            class="mt-4 flex items-center flex-shrink-0 md:ml-4 md:mt-0"
+            class="mt-4 flex flex-shrink-0 items-center md:ml-4 md:mt-0"
           >
             <RequireAuth
               v-if="eventData.Poster"
@@ -275,7 +275,7 @@ export default defineComponent({
                 {{ showFullDescription ? "Show less" : "Show more" }}
               </button>
             </div>
-            <div class="mx-4 my-2 flex">
+            <div class="mx-4 my-2">
               <Tag
                 v-for="tag in eventData.Tags"
                 :key="tag.text"
@@ -289,18 +289,19 @@ export default defineComponent({
               >
                 Crossposted To Channels
               </div>
-
-              <router-link
-                v-for="ec in channelsExceptCurrent"
-                :key="ec.channelUniqueName"
-                :to="`/channels/c/${ec.channelUniqueName}/events/e/${eventId}`"
-              >
-                <Tag
-                  class="mt-2"
-                  :tag="ec.channelUniqueName"
-                  :channel-mode="true"
-                />
-              </router-link>
+              <div class="flex space-x-1">
+                <router-link
+                  v-for="ec in channelsExceptCurrent"
+                  :key="ec.channelUniqueName"
+                  :to="`/channels/c/${ec.channelUniqueName}/events/e/${eventId}`"
+                >
+                  <Tag
+                    class="mt-2"
+                    :tag="ec.channelUniqueName"
+                    :channel-mode="true"
+                  />
+                </router-link>
+              </div>
             </div>
             <EventFooter
               :event-data="eventData"

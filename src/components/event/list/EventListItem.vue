@@ -68,8 +68,8 @@ export default defineComponent({
       if (props.currentChannelId) {
         return props.currentChannelId;
       }
-      if (props.event.Channels[0]) {
-        return props.event.Channels[0].uniqueName;
+      if (props.event.EventChannels[0]) {
+        return props.event.EventChannels[0].channelUniqueName;
       }
       return "";
     });

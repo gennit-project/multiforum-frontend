@@ -30,11 +30,11 @@ export default defineComponent({
     <v-row class="justify-center">
       <v-col cols="12">
         <form
-          class="xs:px-2 mx-auto max-w-4xl space-y-3 divide-y divide-gray-200 border-gray-200 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-900 sm:px-4"
+          class="xs:px-2 mx-auto max-w-4xl py-3 space-y-3 divide-y divide-gray-200 border-gray-200 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
           autocomplete="off"
         >
           <div class="flex justify-between">
-            <h2 class="font-semibold pt-3 text-base leading-7 text-gray-900">
+            <h2 class="font-semibold pt-3 text-base leading-7 text-gray-900 dark:text-gray-300">
               {{ formTitle }}
             </h2>
             <div class="float-right">

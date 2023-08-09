@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { EventData } from "../../types/eventTypes";
 import { TagData } from "../../types/tagTypes"
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
+import { Event } from "@/__generated__/graphql"
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
 export default defineComponent({
@@ -15,7 +15,7 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     event: {
-      type: Object as PropType<EventData>,
+      type: Object as PropType<Event>,
       required: true,
     },
     searchInput: {
@@ -40,10 +40,10 @@ export default defineComponent({
     const route = useRoute();
 
     const defaultUniqueName = computed(() => {
-      if (!props.event.Channels || !props.event.Channels[0]) {
+      if (!props.event.EventChannels || !props.event.EventChannels[0]) {
         return "";
       }
-      return props.event.Channels[0].uniqueName;
+      return props.event.EventChannels[0].channelUniqueName;
     });
     return {
       previewIsOpen: false,
@@ -104,12 +104,12 @@ export default defineComponent({
     </p>
     <div class="text-sm space-x-2 my-2">
       <router-link
-        v-for="(channel, i) in event.Channels"
+        v-for="(ec, i) in event.EventChannels"
         :key="i"
         class="underline text-gray-500 hover:text-gray-700"
-        :to="`/channels/c/${channel.uniqueName}/events/e/${event.id}`"
+        :to="`/channels/c/${ec.channelUniqueName}/events/e/${event.id}`"
       >
-        {{ `c/${channel.uniqueName}` }}
+        {{ `c/${ec.channelUniqueName}` }}
       </router-link>
     </div>
   </li>

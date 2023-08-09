@@ -101,7 +101,7 @@ export default defineComponent({
           name: "EventDetail",
           params: {
             eventId: event.id,
-            channelId: event.Channels[0].uniqueName,
+            channelId: event.EventChannels[0].channelUniqueName,
           },
         });
       }

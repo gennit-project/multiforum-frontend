@@ -16,6 +16,7 @@ import { DateTime } from "luxon";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
+import { EventChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "EditEvent",
@@ -92,8 +93,8 @@ export default defineComponent({
         selectedTags: event.Tags.map((tag: TagData) => {
           return tag.text;
         }),
-        selectedChannels: event.Channels.map((channel: ChannelData) => {
-          return channel.uniqueName;
+        selectedChannels: event.EventChannels.map((ec: EventChannel) => {
+          return ec.channelUniqueName;
         }),
         address: event.address,
         placeId: event.placeId,
