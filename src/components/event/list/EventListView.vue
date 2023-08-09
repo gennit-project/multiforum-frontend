@@ -257,7 +257,6 @@ export default defineComponent({
         <EventFilterBar :show-distance-filters="false" />
         <TimeShortcuts
           :is-list-view="true"
-          class="px-4"
         />
         <EventList
           v-if="!eventLoading && eventResult"

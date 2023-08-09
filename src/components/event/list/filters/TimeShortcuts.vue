@@ -165,7 +165,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="time-shortcuts flex gap-2">
+  <div class="flex flex-wrap gap-1">
     <Tag
       v-for="shortcut in timeFilterShortcuts"
       :key="shortcut.label"
@@ -179,9 +179,3 @@ export default defineComponent({
     />
   </div>
 </template>
-<style>
-.time-shortcuts {
-  display: flex;
-  flex-wrap: wrap;
-}
-</style>
