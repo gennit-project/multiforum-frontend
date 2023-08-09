@@ -3,7 +3,6 @@ import { defineComponent, computed, ref, Ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import EventList from "./EventList.vue";
-import TwoSeparatelyScrollingPanes from "../../generic/TwoSeparatelyScrollingPanes.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
@@ -33,7 +32,6 @@ export default defineComponent({
     EventDetail,
     DrawerFlyout,
     TimeShortcuts,
-    TwoSeparatelyScrollingPanes,
   },
   setup(props, { emit }) {
     const route = useRoute();
@@ -50,7 +48,7 @@ export default defineComponent({
         route,
         channelId: channelId.value,
         isEventListView: true,
-      })
+      }),
     );
 
     const resultsOrder = computed(() => {
@@ -62,9 +60,9 @@ export default defineComponent({
 
     const eventWhere = computed(() => {
       return getEventWhere({
-        filterValues: filterValues.value, 
-        showMap: false, 
-        channelId: channelId.value
+        filterValues: filterValues.value,
+        showMap: false,
+        channelId: channelId.value,
       });
     });
 
@@ -88,7 +86,7 @@ export default defineComponent({
         // If it is not network only, the list
         // will not update when an event is updated or deleted in a way that affects
         // which search results it should be returned in.
-      }
+      },
     );
 
     const reachedEndOfResults = ref(false);
@@ -214,7 +212,7 @@ export default defineComponent({
 
       if (alreadySelected) {
         this.filterValues.tags = this.filterValues.tags.filter(
-          (t: string) => t !== tag
+          (t: string) => t !== tag,
         );
       } else {
         this.filterValues.tags.push(tag);
@@ -226,7 +224,7 @@ export default defineComponent({
 
       if (alreadySelected) {
         this.filterValues.channels = this.filterValues.channels.filter(
-          (c: string) => c !== channel
+          (c: string) => c !== channel,
         );
       } else {
         this.filterValues.channels.push(channel);
@@ -236,74 +234,69 @@ export default defineComponent({
   },
 });
 </script>
+
 <template>
-  <v-container
-    fluid
-    class="mx-auto max-w-7xl"
-  >
-    <v-row>
-      <v-col cols="12">
-        <div class="mt-3">
-          <div class="rounded">
-            <EventFilterBar
-              class="my-4"
-              :show-distance-filters="false"
-            />
-          </div>
-          <div class="w-full">
-            <ErrorBanner
-              v-if="eventError"
-              class="mx-auto block"
-              :text="eventError.message"
-            />
-            <p v-else-if="eventLoading">
-              Loading...
-            </p>
-            <TwoSeparatelyScrollingPanes class="block w-full">
-              <template #leftpane>
-                <TimeShortcuts
-                  :is-list-view="true"
-                  class="px-4"
-                />
-                <EventList
-                  v-if="!eventLoading && eventResult"
-                  id="listView"
-                  :class="[!channelId ? '' : '']"
-                  class="relative"
-                  :result-count="
-                    eventResult ? eventResult.eventsAggregate?.count : 0
-                  "
-                  :events="eventResult.events"
-                  :channel-id="channelId"
-                  :search-input="filterValues.searchInput"
-                  :selected-tags="filterValues.tags"
-                  :selected-channels="filterValues.channels"
-                  :show-map="false"
-                  @filterByTag="filterByTag"
-                  @filterByChannel="filterByChannel"
-                  @loadMore="loadMore"
-                  @openPreview="openPreview"
-                />
-                <div
-                  v-if="eventLoading"
-                  class="mx-auto"
-                >
-                  Loading...
-                </div>
-                <DrawerFlyout
-                  v-if="eventId"
-                  :is-open="previewIsOpen"
-                  @closePreview="closePreview"
-                >
-                  <EventDetail />
-                </DrawerFlyout>
-              </template>
-              <template #rightpane>
-                <router-view />
-              </template>
-            </TwoSeparatelyScrollingPanes>
-          </div>
+  <v-container class="max-w-screen-2xl pt-4">
+    <p v-if="eventLoading">
+      Loading...
+    </p>
+    <ErrorBanner
+      v-else-if="eventError"
+      class="mx-auto block"
+      :text="eventError.message"
+    />
+    <v-row
+      v-else
+      class="p-0"
+    >
+      <v-col
+        cols="12"
+        :lg="channelId ? 5 : 5"
+        class="scrollable-column shadow-right-lg"
+      >
+        <EventFilterBar :show-distance-filters="false" />
+        <TimeShortcuts
+          :is-list-view="true"
+          class="px-4"
+        />
+        <EventList
+          v-if="!eventLoading && eventResult"
+          id="listView"
+          :class="[!channelId ? '' : '']"
+          class="relative"
+          :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
+          :events="eventResult.events"
+          :channel-id="channelId"
+          :search-input="filterValues.searchInput"
+          :selected-tags="filterValues.tags"
+          :selected-channels="filterValues.channels"
+          :show-map="false"
+          @filterByTag="filterByTag"
+          @filterByChannel="filterByChannel"
+          @loadMore="loadMore"
+          @openPreview="openPreview"
+        />
+        <div
+          v-if="eventLoading"
+          class="mx-auto"
+        >
+          Loading...
         </div>
+        <DrawerFlyout
+          v-if="eventId"
+          :is-open="previewIsOpen"
+          @closePreview="closePreview"
+        >
+          <EventDetail />
+        </DrawerFlyout>
+      </v-col>
+      <v-col
+        v-if="!mdAndDown"
+        cols="12"
+        :lg="channelId ? 7 : 7"
+        class="border-l border-gray-200 p-0 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+      >
+        <router-view />
       </v-col>
     </v-row>
   </v-container>
