@@ -5,7 +5,7 @@ import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { useQuery } from "@vue/apollo-composable";
 import Tag from "@/components/tag/Tag.vue";
 
-import ResetButton from "@/components/generic/ResetButton.vue";
+import ResetButton from "@/components/generic/buttons/ResetButton.vue";
 
 export default defineComponent({
   components: {

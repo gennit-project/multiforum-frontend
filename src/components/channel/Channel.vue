@@ -5,7 +5,7 @@ import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import ChannelSidebarButton from "@/components/channel/ChannelSidebarButton.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";

@@ -9,9 +9,9 @@ import { CommentData } from "@/types/commentTypes";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import Avatar from "../../user/Avatar.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
-import TextEditor from "../../generic/TextEditor.vue";
-import CancelButton from "../../generic/CancelButton.vue";
-import SaveButton from "../../generic/SaveButton.vue";
+import TextEditor from "../../generic/forms/TextEditor.vue";
+import CancelButton from "../../generic/buttons/CancelButton.vue";
+import SaveButton from "../../generic/buttons/SaveButton.vue";
 import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
 import { DiscussionChannel } from "@/__generated__/graphql";
 

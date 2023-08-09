@@ -8,7 +8,7 @@ import EventMap from "./Map.vue";
 import PreviewContainer from "./PreviewContainer.vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
-import CloseButton from "../../generic/CloseButton.vue";
+import CloseButton from "../../generic/buttons/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
 import getEventWhere from "./filters/getEventWhere";

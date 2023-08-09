@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import IconButtonDropdown from "../generic/IconButtonDropdown.vue";
+import IconButtonDropdown from "../generic/buttons/IconButtonDropdown.vue";
 import { themeVar } from "@/cache";
 
 export default defineComponent({

@@ -8,7 +8,7 @@ import {
 import "md-editor-v3/lib/style.css";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { relativeTime } from "../../dateTimeUtils";
-import TextEditor from "../generic/TextEditor.vue";
+import TextEditor from "../generic/forms/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
 import Avatar from "../user/Avatar.vue";
 import CommentButtons from "./CommentButtons.vue";

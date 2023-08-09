@@ -16,8 +16,8 @@ import ChannelLinks from "./ChannelLinks.vue";
 import CreateRootCommentForm from "@/components/discussion/detail/CreateRootCommentForm.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import CreateButton from "@/components/generic/buttons/CreateButton.vue";
+import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
 

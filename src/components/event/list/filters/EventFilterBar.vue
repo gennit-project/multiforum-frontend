@@ -25,11 +25,11 @@ import {
   defaultSelectedHourRanges,
   defaultSelectedWeeklyHourRanges,
 } from "./eventSearchOptions";
-import GenericButton from "@/components/generic/GenericButton.vue";
+import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import WeekdaySelector from "./WeekdaySelector.vue";
 import TimeSelector from "./TimeSelector.vue";
-import FilterChip from "@/components/generic/FilterChip.vue";
+import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";

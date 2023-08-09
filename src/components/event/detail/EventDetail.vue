@@ -14,10 +14,10 @@ import EventFooter from "./EventFooter.vue";
 import { MdEditor } from "md-editor-v3";
 import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
-import GenericButton from "@/components/generic/GenericButton.vue";
+import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
-import CreateButton from "@/components/generic/CreateButton.vue";
-import PrimaryButton from "@/components/generic/PrimaryButton.vue";
+import CreateButton from "@/components/generic/buttons/CreateButton.vue";
+import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 
 export default defineComponent({
   components: {

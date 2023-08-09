@@ -2,7 +2,7 @@
 import { SelectOptionData } from "@/types/genericFormTypes";
 import { defineComponent, PropType } from "vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
-import ChevronDownIcon from "../icons/ChevronDownIcon.vue";
+import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 
 export default defineComponent({

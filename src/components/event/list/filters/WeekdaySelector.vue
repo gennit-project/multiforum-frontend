@@ -5,7 +5,7 @@ import {
   defaultSelectedWeekdays,
 } from "@/components/event/list/filters/eventSearchOptions";
 import { SelectedWeekdays, WeekdayData } from "@/types/eventTypes";
-import ResetButton from "@/components/generic/ResetButton.vue";
+import ResetButton from "@/components/generic/buttons/ResetButton.vue";
 
 export default defineComponent({
   components: {

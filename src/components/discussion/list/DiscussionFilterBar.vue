@@ -2,7 +2,7 @@
 import { defineComponent, computed, ref, Ref } from "vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
-import FilterChip from "@/components/generic/FilterChip.vue";
+import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";

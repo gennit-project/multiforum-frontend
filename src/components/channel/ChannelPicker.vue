@@ -5,7 +5,7 @@ import { ChannelData } from "@/types/channelTypes";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import Tag from "@/components/tag/Tag.vue";
-import ResetButton from "../generic/ResetButton.vue";
+import ResetButton from "../generic/buttons/ResetButton.vue";
 
 export default defineComponent({
   components: {

@@ -9,7 +9,7 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
 import ExclamationIcon from "../icons/ExclamationIcon.vue";
-import PrimaryButton from "../generic/PrimaryButton.vue";
+import PrimaryButton from "../generic/buttons/PrimaryButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import { usernameVar, modProfileNameVar } from "@/cache";
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
 import RequireAuth from "../auth/RequireAuth.vue";
-import CancelButton from "@/components/generic/CancelButton.vue";
-import SaveButton from "@/components/generic/SaveButton.vue";
-import MenuButton from "../generic/MenuButton.vue";
-import TextEditor from "../generic/TextEditor.vue";
+import CancelButton from "@/components/generic/buttons/CancelButton.vue";
+import SaveButton from "@/components/generic/buttons/SaveButton.vue";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import { CommentData } from "@/types/commentTypes";
 import {
   DOWNVOTE_COMMENT,

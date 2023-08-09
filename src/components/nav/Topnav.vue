@@ -16,7 +16,7 @@ import { useRoute } from "vue-router";
 import RequireAuth from "../auth/RequireAuth.vue";
 import ChevronDownIcon from "../icons/ChevronDownIcon.vue";
 import { useRouter } from "vue-router";
-import PrimaryButton from "../generic/PrimaryButton.vue";
+import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 
 export default defineComponent({
   name: "TopNav",

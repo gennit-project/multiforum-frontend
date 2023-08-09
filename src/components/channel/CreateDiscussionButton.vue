@@ -2,8 +2,8 @@
 import { defineComponent, computed } from "vue";
 import { useRoute } from "vue-router";
 import RequireAuth from "../auth/RequireAuth.vue";
-import CreateButton from "../generic/CreateButton.vue";
-import PrimaryButton from "../generic/PrimaryButton.vue";
+import CreateButton from "../generic/buttons/CreateButton.vue";
+import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 
 export default defineComponent({
   components: {
