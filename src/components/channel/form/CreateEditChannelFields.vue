@@ -1,12 +1,9 @@
 <script lang="ts">
 import { defineComponent, nextTick, PropType, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
-import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import Form from "@/components/generic/forms/Form.vue";
-import TagIcon from "@/components/icons/TagIcon.vue";
 import TagInput from "@/components/tag/TagInput.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
-import PencilIcon from "@/components/icons/PencilIcon.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import { CreateEditChannelFormValues } from "@/types/channelTypes";
@@ -14,14 +11,11 @@ import { CreateEditChannelFormValues } from "@/types/channelTypes";
 export default defineComponent({
   name: "CreateEditChannelFields",
   components: {
-    AnnotationIcon,
-    TagIcon,
     TextInput,
     FormRow,
     TailwindForm: Form,
     TextEditor,
     TagInput,
-    PencilIcon,
   },
   props: {
     editMode: {
@@ -82,7 +76,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-8 flex justify-center">
+  <v-container fluid>
     <div v-if="channelLoading">
       Loading...
     </div>
@@ -96,29 +90,17 @@ export default defineComponent({
     </div>
     <TailwindForm
       v-else-if="formValues"
-      class="max-w-2xl"
       :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
       :needs-changes="needsChanges"
       @input="touched = true"
       @submit="$emit('submit')"
     >
       <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
-        <div class="space-y-4 sm:mt-5 sm:space-y-5">
-          <FormRow>
-            <template #icon>
-              <div class="flex justify-end">
-                <span
-                  v-if="!editMode"
-                  class="text-red-500"
-                >*</span><PencilIcon class="h-6 w-6" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Title
-                </v-tooltip>
-              </div>
-            </template>
+        <div class="space-y-4 mt-5 sm:space-y-5">
+          <FormRow
+            section-title="Title"
+            :required="true"
+          >
             <template #content>
               <TextInput
                 ref="titleInputRef"
@@ -131,16 +113,7 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow>
-            <template #icon>
-              <TagIcon class="float-right h-6 w-6" />
-              <v-tooltip
-                activator="parent"
-                location="top"
-              >
-                Tags
-              </v-tooltip>
-            </template>
+          <FormRow section-title="Tags">
             <template #content>
               <TagInput
                 :test-id="'tags-input'"
@@ -151,19 +124,10 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow class="h-72 overflow-scroll">
-            <template #icon>
-              <AnnotationIcon class="float-right h-6 w-6" />
-              <v-tooltip
-                activator="parent"
-                location="top"
-              >
-                Description
-              </v-tooltip>
-            </template>
+          <FormRow section-title="Description">
             <template #content>
               <TextEditor
-                class="mb-3"
+                class="my-3"
                 :test-id="'description-input'"
                 :initial-value="formValues.description || ''"
                 :placeholder="'Add description'"
@@ -182,5 +146,5 @@ export default defineComponent({
     >
       {{ error.message }}
     </div>
-  </div>
+  </v-container>
 </template>

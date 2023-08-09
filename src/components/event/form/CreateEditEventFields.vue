@@ -1,41 +1,29 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref, nextTick } from "vue";
 import { ApolloError } from "@apollo/client/errors";
-import ClockIcon from "@/components/icons/ClockIcon.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import TagInput from "@/components/tag/TagInput.vue";
-import PencilIcon from "@/components/icons/PencilIcon.vue";
 import ErrorMessage from "@/components/generic/ErrorMessage.vue";
 import CheckBox from "@/components/generic/forms/CheckBox.vue";
 import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
-import LinkIcon from "@/components/icons/LinkIcon.vue";
-import TagIcon from "@/components/icons/TagIcon.vue";
-import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import { DateTime, Interval } from "luxon";
 
 export default defineComponent({
   components: {
-    AnnotationIcon,
-    ChannelIcon,
     CheckBox,
-    ClockIcon,
     ErrorBanner,
     ErrorMessage,
     TailwindForm: Form,
     FormRow,
-    LinkIcon,
     LocationIcon,
     LocationSearchBar,
-    PencilIcon,
-    TagIcon,
     TagInput,
     TextEditor,
     TextInput,
@@ -389,26 +377,19 @@ export default defineComponent({
         </div>
         <TailwindForm
           v-else-if="formValues"
-          class="w-full pt-8"
+          class="w-full"
           data-testid="event-form"
           :form-title="formTitle"
           :needs-changes="needsChanges"
           @input="touched = true"
           @submit="$emit('submit')"
         >
-          <div class="w-full divide-y divide-gray-200">
-            <FormRow>
-              <template #icon>
-                <PencilIcon class="float-right inline-flex h-6 w-6" /><span
-                  class="text-red-500"
-                >*</span>
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Title
-                </v-tooltip>
-              </template>
+          <div class="w-full space-y-5">
+            <FormRow
+              section-title="Title"
+              :required="true"
+              class="mt-6"
+            >
               <template #content>
                 <TextInput
                   ref="titleInputRef"
@@ -420,18 +401,10 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow>
-              <template #icon>
-                <ChannelIcon class="float-right h-6 w-6" /><span
-                  class="text-red-500"
-                >*</span>
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Channels
-                </v-tooltip>
-              </template>
+            <FormRow
+              section-title="Channels"
+              :required="true"
+            >
               <template #content>
                 <TagInput
                   :test-id="'channel-input'"
@@ -443,16 +416,7 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow>
-              <template #icon>
-                <ClockIcon class="float-right h-6" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Time
-                </v-tooltip>
-              </template>
+            <FormRow section-title="Time">
               <template #content>
                 <div class="my-2 inline-block items-center space-x-2 xl:flex">
                   <div class="my-2 inline-block items-center space-x-2 xl:flex">
@@ -504,16 +468,7 @@ export default defineComponent({
                 <ErrorMessage :text="datePickerErrorMessage" />
               </template>
             </FormRow>
-            <FormRow>
-              <template #icon>
-                <LinkIcon class="float-right h-6 w-6" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Link
-                </v-tooltip>
-              </template>
+            <FormRow section-title="Link">
               <template #content>
                 <TextInput
                   data-testid="link-input"
@@ -537,7 +492,7 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow>
+            <FormRow section-title="Location">
               <template #icon>
                 <LocationIcon
                   :wide="true"
@@ -564,16 +519,7 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow>
-              <template #icon>
-                <AnnotationIcon class="float-right" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Details
-                </v-tooltip>
-              </template>
+            <FormRow section-title="Details">
               <template #content>
                 <TextEditor
                   data-testid="description-input"
@@ -585,16 +531,7 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow>
-              <template #icon>
-                <TagIcon class="float-right h-6" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Tags
-                </v-tooltip>
-              </template>
+            <FormRow section-title="Tags">
               <template #content>
                 <TagInput
                   data-testid="tag-input"
@@ -605,16 +542,7 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow>
-              <template #icon>
-                <i class="fa-solid fa-ticket float-right h-6" />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Tags
-                </v-tooltip>
-              </template>
+            <FormRow section-title="Cost">
               <template #content>
                 <CheckBox
                   data-testid="free-input"

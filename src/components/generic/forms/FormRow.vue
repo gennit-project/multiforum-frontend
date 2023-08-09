@@ -1,4 +1,3 @@
-
 <script lang="ts">
 import { defineComponent } from "vue";
 
@@ -8,54 +7,28 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    required: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {},
 });
 </script>
 
 <template>
-  <div
-    class="
-      sm:grid
-      sm:grid-cols-12
-      sm:gap-4
-      sm:items-start
-      mt-1
-      px-4
-      pt-1
-    "
-  >
+  <div>
     <label
       v-if="sectionTitle"
-      for="title"
-      class="
-        block
-        text-sm
-        font-medium
-        text-gray-700
-        dark:text-gray-200
-        sm:mt-px sm:pt-2
-        align-right
-        
-      "
+      :for="sectionTitle"
+      class="font-medium block text-sm leading-6 text-gray-900"
     >
-      {{ sectionTitle }}
+      {{ sectionTitle }}<span
+        v-if="required"
+        class="ml-1 text-red-500"
+      >*</span>
     </label>
-    <div
-      v-else
-      for="title"
-      class="
-        text-sm
-        font-medium
-        text-gray-700
-        dark:text-gray-200
-        sm:mt-px sm:pt-2
-        align-right
-      "
-    >
-      <slot name="icon" />
-    </div>
-    <div class="sm:col-span-11">
+    <div>
       <slot name="content" />
     </div>
   </div>

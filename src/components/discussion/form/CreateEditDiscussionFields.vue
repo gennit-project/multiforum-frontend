@@ -4,11 +4,7 @@ import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagInput from "@/components/tag/TagInput.vue";
-import TagIcon from "@/components/icons/TagIcon.vue";
-import PencilIcon from "@/components/icons/PencilIcon.vue";
-import AnnotationIcon from "@/components/icons/AnnotationIcon.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
@@ -20,12 +16,8 @@ export default defineComponent({
     FormRow,
     TextEditor,
     TextInput,
-    ChannelIcon,
     TagInput,
-    PencilIcon,
-    AnnotationIcon,
     ErrorBanner,
-    TagIcon,
   },
   props: {
     editMode: {
@@ -104,138 +96,100 @@ export default defineComponent({
 </script>
 <template>
   <v-container fluid>
-    <v-row class="justify-center">
-      <v-col
-        cols="12"
-        md="10"
+    <div v-if="discussionLoading">
+      Loading...
+    </div>
+    <div v-else-if="getDiscussionError">
+      <div
+        v-for="(error, i) of getDiscussionError?.graphQLErrors"
+        :key="i"
       >
-        <div v-if="discussionLoading">
-          Loading...
-        </div>
-        <div v-else-if="getDiscussionError">
-          <div
-            v-for="(error, i) of getDiscussionError?.graphQLErrors"
-            :key="i"
+        {{ error.message }}
+      </div>
+    </div>
+    <TailwindForm
+      v-else-if="formValues"
+      class="pt-8"
+      :form-title="formTitle"
+      :needs-changes="needsChanges"
+      @input="touched = true"
+      @submit="$emit('submit')"
+    >
+      <div class="divide-y divide-gray-200">
+        <div class="mt-6 space-y-4">
+          <FormRow
+            section-title="Title"
+            :required="true"
           >
-            {{ error.message }}
-          </div>
+            <template #content>
+              <TextInput
+                ref="titleInputRef"
+                :test-id="'title-input'"
+                :value="formValues.title"
+                :placeholder="'Ask a question or share something new'"
+                :full-width="true"
+                @update="$emit('updateFormValues', { title: $event })"
+              />
+            </template>
+          </FormRow>
+
+          <FormRow
+            section-title="Channels"
+            :required="true"
+          >
+            <template #content>
+              <TagInput
+                :test-id="'channel-input'"
+                :selected-channels="formValues.selectedChannels"
+                :channel-mode="true"
+                @setSelectedTags="
+                  $emit('updateFormValues', { selectedChannels: $event })
+                "
+              />
+            </template>
+          </FormRow>
+
+          <FormRow
+            class="h-72 overflow-auto"
+            section-title="Details"
+          >
+            <template #content>
+              <TextEditor
+                class="mb-3 h-56"
+                :test-id="'body-input'"
+                :disable-auto-focus="true"
+                :initial-value="formValues.body || ''"
+                :placeholder="'Add details'"
+                @update="$emit('updateFormValues', { body: $event })"
+              />
+            </template>
+          </FormRow>
+
+          <FormRow section-title="Tags">
+            <template #content>
+              <TagInput
+                :test-id="'tags-input'"
+                :selected-tags="formValues?.selectedTags"
+                @setSelectedTags="
+                  $emit('updateFormValues', { selectedTags: $event })
+                "
+              />
+            </template>
+          </FormRow>
         </div>
-        <TailwindForm
-          v-else-if="formValues"
-          class="pt-8"
-          :form-title="formTitle"
-          :needs-changes="needsChanges"
-          @input="touched = true"
-          @submit="$emit('submit')"
-        >
-          <div class="divide-y divide-gray-200">
-            <div class="mt-6">
-              <FormRow>
-                <template #icon>
-                  <PencilIcon class="inline-flex float-right h-6 w-6" /><span
-                    class="text-red-500"
-                  >*</span>
-                  <v-tooltip
-                    activator="parent"
-                    location="top"
-                  >
-                    Title
-                  </v-tooltip>
-                </template>
-                <template #content>
-                  <TextInput
-                    ref="titleInputRef"
-                    :test-id="'title-input'"
-                    :value="formValues.title"
-                    :placeholder="'Ask a question or share something new'"
-                    :full-width="true"
-                    @update="$emit('updateFormValues', { title: $event })"
-                  />
-                </template>
-              </FormRow>
-
-              <FormRow>
-                <template #icon>
-                  <ChannelIcon class="float-right h-6 w-6" /><span
-                    class="text-red-500"
-                  >*</span>
-                  <v-tooltip
-                    activator="parent"
-                    location="top"
-                  >
-                    Channels
-                  </v-tooltip>
-                </template>
-                <template #content>
-                  <TagInput
-                    :test-id="'channel-input'"
-                    :selected-channels="formValues.selectedChannels"
-                    :channel-mode="true"
-                    @setSelectedTags="
-                      $emit('updateFormValues', { selectedChannels: $event })
-                    "
-                  />
-                </template>
-              </FormRow>
-
-              <FormRow class="h-72 overflow-auto">
-                <template #icon>
-                  <AnnotationIcon class="inline-flex h-6 w-6" />
-                  <v-tooltip
-                    activator="parent"
-                    location="top"
-                  >
-                    Details
-                  </v-tooltip>
-                </template>
-                <template #content>
-                  <TextEditor
-                    class="mb-3 h-56"
-                    :test-id="'body-input'"
-                    :disable-auto-focus="true"
-                    :initial-value="formValues.body || ''"
-                    :placeholder="'Add details'"
-                    @update="$emit('updateFormValues', { body: $event })"
-                  />
-                </template>
-              </FormRow>
-
-              <FormRow>
-                <template #icon>
-                  <TagIcon class="inline-flex h-6 w-6" />
-                  <v-tooltip
-                    activator="parent"
-                    location="top"
-                  >
-                    Tags
-                  </v-tooltip>
-                </template>
-                <template #content>
-                  <TagInput
-                    :test-id="'tags-input'"
-                    :selected-tags="formValues?.selectedTags"
-                    @setSelectedTags="
-                      $emit('updateFormValues', { selectedTags: $event })
-                    "
-                  />
-                </template>
-              </FormRow>
-            </div>
-          </div>
-          <ErrorBanner
-            v-if="needsChanges"
-            :text="changesRequiredMessage"
-          />
-          <ErrorBanner
-            v-if="createDiscussionError"
-            :text="createDiscussionError.message"
-          />
-          <ErrorBanner
-            v-if="updateDiscussionError"
-            :text="updateDiscussionError.message"
-          />
-        </TailwindForm>
-      </v-col>
-    </v-row>
+      </div>
+      <ErrorBanner
+        v-if="needsChanges"
+        :text="changesRequiredMessage"
+      />
+      <ErrorBanner
+        v-if="createDiscussionError"
+        :text="createDiscussionError.message"
+      />
+      <ErrorBanner
+        v-if="updateDiscussionError"
+        :text="updateDiscussionError.message"
+      />
+    </TailwindForm>
   </v-container>
 </template>
