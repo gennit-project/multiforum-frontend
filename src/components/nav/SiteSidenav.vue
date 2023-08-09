@@ -10,6 +10,7 @@ import XIcon from "@/components/icons/XmarkIcon.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import clickOutside from "vue-click-outside";
+import Avatar from "@/components/user/Avatar.vue";
 
 type NavigationItem = {
   name: string;
@@ -41,6 +42,7 @@ export default defineComponent({
     clickOutside,
   },
   components: {
+    Avatar,
     CalendarIcon,
     LocationIcon,
     DiscussionIcon,
@@ -146,9 +148,10 @@ export default defineComponent({
           v-if="isAuthenticated"
           :to="`/u/${username}`"
           active-class="text-blue-600"
-          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          class="font-semibold group flex items-center gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
           @click="$emit('close')"
         >
+          <Avatar :text="username" />
           My Profile
         </router-link>
         <button
