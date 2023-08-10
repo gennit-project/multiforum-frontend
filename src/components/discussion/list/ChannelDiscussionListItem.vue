@@ -158,10 +158,10 @@ export default defineComponent({
   },
   computed: {
     detailLink() {
-      // Convert current query parameters to string format
-      const queryString = new URLSearchParams(this.$route.query).toString();
-
-      // Base URL for lgAndUp and other screen sizes
+      if (!this.discussion) {
+        return "";
+      }
+       // Base URL for lgAndUp and other screen sizes
       let baseLink = '';
 
       if (this.lgAndUp) {
@@ -169,9 +169,16 @@ export default defineComponent({
       } else {
         baseLink = `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
       }
-
-      // If there are query parameters, append them to the baseLink
-      return queryString ? `${baseLink}?${queryString}` : baseLink;
+       return  baseLink;
+    },
+    filteredQuery() {
+      const query = { ...this.$route.query };
+      for (let key in query) {
+        if (!query[key]) {
+          delete query[key];
+        }
+      }
+      return query;
     }
   },
 });
@@ -196,7 +203,7 @@ export default defineComponent({
       <v-col :cols="8">
         <div class="ml-2">
           <router-link
-            :to="detailLink"
+            :to="{ path: detailLink, query: filteredQuery }"
             class="hover:text-gray-500"
           >
             <p class="text-md cursor-pointer font-bold hover:text-gray-500">

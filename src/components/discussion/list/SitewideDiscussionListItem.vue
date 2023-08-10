@@ -93,12 +93,21 @@ export default defineComponent({
   },
   computed: {
     previewLink() {
-      // Convert current query parameters to string format
-      const queryString = new URLSearchParams(this.$route.query).toString();
-      const baseLink = `/discussions/search/${this.discussion.id}`;
-       // If there are query parameters, append them to the baseLink
-       return queryString ? `${baseLink}?${queryString}` : baseLink;
+      if (!this.discussion) {
+        return "";
+      }
+       return `/discussions/search/${this.discussion.id}`;
+
     },
+    filteredQuery() {
+      const query = { ...this.$route.query };
+      for (let key in query) {
+        if (!query[key]) {
+          delete query[key];
+        }
+      }
+      return query;
+    }
   },
 });
 </script>
@@ -121,7 +130,7 @@ export default defineComponent({
 
     <div class="w-full">
       <router-link
-        :to="previewLink"
+        :to="{ path: previewLink, query: filteredQuery }"
         @click="$emit('openPreview')"
       >
         <p
