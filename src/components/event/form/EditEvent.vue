@@ -37,6 +37,8 @@ export default defineComponent({
 
     const eventId: string | string[] = route.params.eventId;
 
+    const dataLoaded = ref(false); 
+
     const {
       result: getEventResult,
       loading: getEventLoading,
@@ -134,6 +136,7 @@ export default defineComponent({
       const event = value.data.events[0];
 
       formValues.value = getFormValuesFromEventData(event);
+      dataLoaded.value = true;
     });
 
     const channelConnections = computed(() => {
@@ -262,6 +265,7 @@ export default defineComponent({
     });
 
     return {
+      dataLoaded,
       getEventError,
       getEventLoading,
       getEventResult,
@@ -298,6 +302,7 @@ export default defineComponent({
   >
     <template #has-auth>
       <CreateEditEventFields
+        :key="dataLoaded.toString()"
         :edit-mode="true"
         :event-loading="getEventLoading"
         :get-event-error="getEventError"
