@@ -17,11 +17,9 @@ export default defineComponent({
   components: {
     CalendarIcon,
     ClipboardIcon,
-
     LinkIcon,
     LocationIcon,
     Notification,
-  
   },
   props: {
     eventData: {

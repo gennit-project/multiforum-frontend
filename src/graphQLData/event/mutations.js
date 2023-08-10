@@ -12,6 +12,10 @@ export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       id
       title
       description
+      startTime
+      startTimeDayOfWeek
+      startTimeHourOfDay
+      endTime
       EventChannels {
         id
         Channel {
@@ -46,6 +50,10 @@ export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       id
       title
       description
+      startTime
+      startTimeDayOfWeek
+      startTimeHourOfDay
+      endTime
       EventChannels {
         id
         channelUniqueName

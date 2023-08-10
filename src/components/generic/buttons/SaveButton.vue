@@ -1,7 +1,11 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import PrimaryButton from '@/components/generic/buttons/PrimaryButton.vue'
 
 export default defineComponent({
+  components: {
+    PrimaryButton,
+  },
   props: {
     disabled: {
       type: Boolean,
@@ -12,7 +16,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <button
+  <PrimaryButton
+    label="Save"
     :disabled="disabled"
     :class="[
       disabled
@@ -33,7 +38,5 @@ export default defineComponent({
       rounded-full
     "
     @keydown.enter.prevent
-  >
-    Save
-  </button>
+  />
 </template>

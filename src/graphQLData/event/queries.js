@@ -76,32 +76,32 @@ export const GET_EVENTS = gql`
       options: { sort: $resultsOrder, offset: $offset, limit: $limit }
     ) {
       id
-    title
-    description
-    startTime
-    endTime
-    locationName
-    address
-    virtualEventUrl
-    startTimeDayOfWeek
-    canceled
-    location {
-      latitude
-      longitude
-    }
-    cost
-    Poster {
-      username
-    }
-    Tags {
-      text
-    }
-    EventChannels {
-      id
-      eventId
-      channelUniqueName
+      title
+      description
+      startTime
+      endTime
+      locationName
+      address
+      virtualEventUrl
+      startTimeDayOfWeek
+      canceled
+      location {
+        latitude
+        longitude
+      }
+      cost
+      Poster {
+        username
+      }
+      Tags {
+        text
+      }
+      EventChannels {
+        id
+        eventId
+        channelUniqueName
 
-    }
+      }
     }
   }
 `;

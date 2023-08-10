@@ -88,7 +88,6 @@ export default defineComponent({
     function getFormValuesFromEventData(
       event: EventData,
     ): CreateEditEventFormValues {
-      console.log(event);
       return {
         title: event.title,
         description: event.description || "",
@@ -130,7 +129,6 @@ export default defineComponent({
     const formValues = ref<CreateEditEventFormValues>(getDefaultFormValues());
 
     onGetEventResult((value) => {
-      console.log(value);
       if (value.loading) return;
 
       const event = value.data.events[0];
