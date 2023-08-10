@@ -38,7 +38,7 @@ export default defineComponent({
               {{ formTitle }}
             </h2>
             <div class="float-right">
-              <CancelButton @click="$router.go(-1)" />
+              <CancelButton @click.prevent="$router.go(-1)" />
               <SaveButton
                 :disabled="needsChanges"
                 @click.prevent="$emit('submit')"
@@ -50,7 +50,7 @@ export default defineComponent({
             <template #content>
               <div class="pb-5 pt-5">
                 <div class="flex justify-end">
-                  <CancelButton @click="$router.go(-1)" />
+                  <CancelButton @click.prevent="$router.go(-1)" />
                   <SaveButton
                     :disabled="needsChanges"
                     @click.prevent="$emit('submit')"
