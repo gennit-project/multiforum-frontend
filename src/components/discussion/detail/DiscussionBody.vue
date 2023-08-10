@@ -115,6 +115,14 @@ export default defineComponent({
     >
       <v-md-preview :text="bodyText" />
     </div>
+
+    <button
+      v-if="discussion?.body && shouldShowMoreButton"
+      class="text-blue-600"
+      @click="toggleShowFullText"
+    >
+      {{ showFullText ? "Show Less" : "Show More" }}
+    </button>
     <div class="flex gap-1">
       <Tag
         v-for="tag in discussion?.Tags"
@@ -128,13 +136,6 @@ export default defineComponent({
         "
       />
     </div>
-    <button
-      v-if="discussion?.body && shouldShowMoreButton"
-      class="text-blue-600"
-      @click="toggleShowFullText"
-    >
-      {{ showFullText ? "Show Less" : "Show More" }}
-    </button>
   </div>
 </template>
 <style scoped>
