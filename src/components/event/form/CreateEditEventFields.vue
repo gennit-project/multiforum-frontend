@@ -471,18 +471,29 @@ export default defineComponent({
                 <ErrorMessage :text="datePickerErrorMessage" />
               </template>
             </FormRow>
-            <FormRow section-title="Link">
+            <FormRow section-title="Virtual Event URL">
               <template #content>
-                <TextInput
-                  data-testid="link-input"
-                  :value="formValues.virtualEventUrl"
-                  :use-v-model="true"
-                  :full-width="true"
-                  :placeholder="'Add a virtual event URL'"
-                  @update="
-                    $emit('updateFormValues', { virtualEventUrl: $event })
-                  "
-                />
+                <div
+                  class="flex rounded-md shadow-sm ring-1 ring-inset ring-gray-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600 sm:max-w-md"
+                >
+                  <span
+                    class="flex select-none items-center pl-3 text-gray-500 sm:text-sm"
+                  >https://</span>
+
+                  <input
+                    id="virtualEventUrl"
+                    data-testid="link-input"
+                    type="text"
+                    name="virtualEventUrl"
+                    class="block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    :value="formValues.virtualEventUrl?.split('https://').join('')"
+                    @input="
+                      $emit('updateFormValues', {
+                        virtualEventUrl: `https://${$event.target.value}`,
+                      })
+                    "
+                  >
+                </div>
                 <ErrorMessage
                   :text="
                     touched &&

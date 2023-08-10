@@ -28,5 +28,7 @@ export function checkUrl(str: string) {
         "(\\#[-a-z\\d_]*)?$",
       "i"
     ); // fragment locator
-    return !!pattern.test(str);
+    const valid = !!pattern.test(str);
+    console.log("URL is valid: " + valid);
+    return valid;
   }
