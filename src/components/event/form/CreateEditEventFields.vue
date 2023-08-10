@@ -421,8 +421,8 @@ export default defineComponent({
             </FormRow>
             <FormRow section-title="Time">
               <template #content>
-                <div class="inline-block items-center space-x-2 xl:flex">
-                  <div class="inline-block items-center space-x-2 xl:flex">
+                <div class="flex-wrap items-center space-x-2 space-y-2 xl:flex">
+                  <div class="flex-wrap items-center space-x-2 xl:flex">
                     <input
                       data-testid="start-time-date-input"
                       class="cursor-pointer rounded border-gray-300 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800"

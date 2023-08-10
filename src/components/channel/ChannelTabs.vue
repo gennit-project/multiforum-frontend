@@ -2,11 +2,17 @@
 import { defineComponent, computed, ref, watch } from "vue";
 import TabButton from "@/components/nav/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
+import CalendarIcon from "@/components/icons/CalendarIcon.vue";
+import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
+import InfoIcon from "@/components/icons/InfoIcon.vue";
 
 export default defineComponent({
   name: "ChannelTabs",
   components: {
     TabButton,
+    InfoIcon,
+    CalendarIcon,
+    DiscussionIcon,
   },
   props: {
     route: {
@@ -67,7 +73,7 @@ export default defineComponent({
         :is-active="$route.path.includes('discussions')"
         :vertical="true"
       >
-        <i class="fa-regular fa-comment h-6 w-6" />
+        <DiscussionIcon class="h-6 w-6 shrink-0" />
       </TabButton>
       <TabButton
         :to="tabRoutes.events"
@@ -75,7 +81,7 @@ export default defineComponent({
         :is-active="route.name.includes('Event')"
         :vertical="true"
       >
-        <i class="fa-regular fa-calendar h-6 w-6" />
+        <CalendarIcon class="h-6 w-6 shrink-0" />
       </TabButton>
       <TabButton
         v-if="mdAndDown"
@@ -84,7 +90,7 @@ export default defineComponent({
         :is-active="route.name.includes('About')"
         :vertical="true"
       >
-        <i class="fa-solid fa-info-circle h-6 w-6" />
+        <InfoIcon class="h-6 w-6 shrink-0" />
       </TabButton>
     </nav>
     <nav
@@ -97,14 +103,14 @@ export default defineComponent({
         :label="'Discussions'"
         :is-active="$route.path.includes('discussions')"
       >
-        <i class="fa-regular fa-comment h-6 w-6" />
+        <DiscussionIcon class="h-6 w-6 shrink-0" />
       </TabButton>
       <TabButton
         :to="tabRoutes.events"
         :label="'Events'"
         :is-active="route.name.includes('Event')"
       >
-        <i class="fa-regular fa-calendar h-6 w-6" />
+        <CalendarIcon class="h-6 w-6 shrink-0" />
       </TabButton>
       <TabButton
         v-if="mdAndDown"
@@ -112,7 +118,7 @@ export default defineComponent({
         :label="'About'"
         :is-active="route.name.includes('About')"
       >
-        <i class="fa-solid fa-info-circle h-6 w-6" />
+        <InfoIcon class="h-6 w-6 shrink-0" />
       </TabButton>
     </nav>
   </div>
