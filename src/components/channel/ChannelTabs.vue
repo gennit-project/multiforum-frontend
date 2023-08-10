@@ -95,7 +95,7 @@ export default defineComponent({
     </nav>
     <nav
       v-else
-      class="max-w-7xl space-x-2 text-lg"
+      class="max-w-7xl space-x-2 pt-1 text-sm px-4"
       aria-label="Tabs"
     >
       <TabButton
@@ -103,14 +103,14 @@ export default defineComponent({
         :label="'Discussions'"
         :is-active="$route.path.includes('discussions')"
       >
-        <DiscussionIcon class="h-6 w-6 shrink-0" />
+        <DiscussionIcon class="h-5 w-5 shrink-0" />
       </TabButton>
       <TabButton
         :to="tabRoutes.events"
         :label="'Events'"
         :is-active="route.name.includes('Event')"
       >
-        <CalendarIcon class="h-6 w-6 shrink-0" />
+        <CalendarIcon class="h-5 w-5 shrink-0" />
       </TabButton>
       <TabButton
         v-if="mdAndDown"
@@ -118,7 +118,7 @@ export default defineComponent({
         :label="'About'"
         :is-active="route.name.includes('About')"
       >
-        <InfoIcon class="h-6 w-6 shrink-0" />
+        <InfoIcon class="h-5 w-5 shrink-0" />
       </TabButton>
     </nav>
   </div>
