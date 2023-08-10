@@ -72,11 +72,12 @@ export default defineComponent({
     });
 
     return {
+      discussionIdInParams,
+      discussionId: props.discussion?.id || "",
       previewIsOpen: false,
       title: props.discussion?.title || "[Deleted]",
       body: props.discussion?.body || "[Deleted]",
       createdAt: props.discussion?.createdAt || "",
-      discussionIdInParams,
       relativeTime: props.discussion
         ? relativeTime(props.discussion?.createdAt)
         : "",
@@ -104,13 +105,14 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex gap-3 space-x-2 border-l-4 px-4 pb-2 pt-4 dark:border-gray-700"
+    class="relative flex gap-3 space-x-2 pb-2 pt-4"
   >
-    <span class="mt-1 w-6">{{ score }}
+    <span class="mt-1 w-6"><span class="flex text-gray-500 text-sm items-center"><i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}</span>
       <v-tooltip
         activator="parent"
         location="top"
       >
+      
         <span>{{
           `Sum of votes across channels, deduplicated by user`
         }}</span>
@@ -122,7 +124,10 @@ export default defineComponent({
         :to="previewLink"
         @click="$emit('openPreview')"
       >
-        <p class="text-md cursor-pointer font-bold hover:text-gray-500">
+        <p
+          :class="discussionIdInParams === discussionId ? 'text-blue-500' : ''"
+          class="text-md cursor-pointer font-bold hover:text-gray-500"
+        >
           <HighlightedSearchTerms
             :text="title"
             :search-input="searchInput"
