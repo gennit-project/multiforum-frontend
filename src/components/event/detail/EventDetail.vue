@@ -11,7 +11,6 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
 import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
 import EventFooter from "./EventFooter.vue";
-import { MdEditor } from "md-editor-v3";
 import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
 import GenericButton from "@/components/generic/buttons/GenericButton.vue";
@@ -25,7 +24,6 @@ export default defineComponent({
     EventFooter,
     EventHeader,
     LeftArrowIcon,
-    MdEditor,
     CreateButton,
     GenericButton,
     RequireAuth,
@@ -255,14 +253,9 @@ export default defineComponent({
             />
             <EventHeader :event-data="eventData" />
             <div class="mt-4">
-              <md-editor
+              <v-md-preview
                 v-if="eventData.description"
-                v-model="visibleDescription"
-                class="small-text max-w-2xl"
-                preview-theme="github"
-                language="en-US"
-                :no-mermaid="true"
-                preview-only
+                :text="visibleDescription"
               />
               <button
                 v-if="

@@ -16,6 +16,16 @@ export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       startTimeDayOfWeek
       startTimeHourOfDay
       endTime
+      locationName
+      address
+      virtualEventUrl
+      startTimeDayOfWeek
+      canceled
+      location {
+        latitude
+        longitude
+      }
+      cost
       EventChannels {
         id
         Channel {
@@ -54,6 +64,16 @@ export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       startTimeDayOfWeek
       startTimeHourOfDay
       endTime
+      locationName
+      address
+      virtualEventUrl
+      startTimeDayOfWeek
+      canceled
+      location {
+        latitude
+        longitude
+      }
+      cost
       EventChannels {
         id
         channelUniqueName
@@ -69,88 +89,6 @@ export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       updatedAt
       Tags {
         text
-      }
-    }
-  }
-`;
-
-export const CREATE_EVENT = gql`
-mutation ($createEventInput: [EventCreateInput!]!) {
-  createEvents(input: $createEventInput) {
-    events {
-      id
-      title
-      description
-      EventChannels {
-        Channel {
-          uniqueName
-        }
-      }
-      Poster {
-        username
-      }
-      locationName
-      address
-      startTime
-      startTimeDayOfWeek
-      startTimeHourOfDay
-      endTime
-      virtualEventUrl
-      createdAt
-      isInPrivateResidence
-      cost
-      free
-      placeId
-      location {
-        latitude
-        longitude
-      }
-      canceled
-      Tags {
-        text
-      }
-    }
-  }
-}
-`;
-
-
-// Update event
-export const UPDATE_EVENT = gql`
-  mutation ($updateEventInput: EventUpdateInput, $eventWhere: EventWhere) {
-    updateEvents(update: $updateEventInput, where: $eventWhere) {
-      events {
-        id
-        title
-        description
-        EventChannels {
-          Channel {
-            uniqueName
-          }
-        }
-        Poster {
-          username
-        }
-        locationName
-        address
-        startTime
-        startTimeDayOfWeek
-        startTimeHourOfDay
-        endTime
-        virtualEventUrl
-        createdAt
-        isInPrivateResidence
-        cost
-        free
-        placeId
-        location {
-          latitude
-          longitude
-        }
-        canceled
-        Tags {
-          text
-        }
       }
     }
   }
