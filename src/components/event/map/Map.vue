@@ -4,7 +4,7 @@ import { defineComponent, onMounted, ref, SetupContext, watch, computed } from "
 import { Loader } from "@googlemaps/js-api-loader";
 import { useRouter } from "vue-router";
 import config from "@/config";
-import nightModeMapStyles from "@/components/event/list/nightModeMapStyles";
+import nightModeMapStyles from "@/components/event/map/nightModeMapStyles";
 
 interface Event {
   location: {

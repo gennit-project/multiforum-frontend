@@ -18,7 +18,7 @@ import CreateDiscussion from "@/components/discussion/form/CreateDiscussion.vue"
 import EditDiscussion from "@/components/discussion/form/EditDiscussion.vue";
 import CreateChannel from "@/components/channel/form/CreateChannel.vue";
 import EditChannel from "@/components/channel/form/EditChannel.vue";
-import MapView from "@/components/event/list/MapView.vue";
+import MapView from "@/components/event/map/MapView.vue";
 import EventListView from "@/components/event/list/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import LogoutPage from "@/components/auth/LogoutPage.vue";

@@ -2,26 +2,26 @@
 import { defineComponent, PropType, ref, Ref, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { EventData } from "@/types/eventTypes";
-import EventPreview from "./EventPreview.vue";
-import EventList from "./EventList.vue";
+import EventPreview from "../list/EventPreview.vue";
+import EventList from "../list/EventList.vue";
 import EventMap from "./Map.vue";
-import PreviewContainer from "./PreviewContainer.vue";
+import PreviewContainer from "../list/PreviewContainer.vue";
 import { useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
 import CloseButton from "../../generic/buttons/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "./filters/getEventWhere";
+import getEventWhere from "../list/filters/getEventWhere"
 import { SearchEventValues } from "@/types/eventTypes";
-import { getFilterValuesFromParams } from "./filters/getFilterValuesFromParams";
+import { getFilterValuesFromParams } from "../list/filters/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import {
   chronologicalOrder,
   reverseChronologicalOrder,
-} from "./filters/filterStrings";
-import { timeShortcutValues } from "./filters/eventSearchOptions";
-import EventFilterBar from "./filters/EventFilterBar.vue";
-import TimeShortcuts from "./filters/TimeShortcuts.vue";
+} from "../list/filters/filterStrings";
+import { timeShortcutValues } from "../list/filters/eventSearchOptions";
+import EventFilterBar from "../list/filters/EventFilterBar.vue";
+import TimeShortcuts from "../list/filters/TimeShortcuts.vue";
 import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrollingPanes.vue";
 import gql from "graphql-tag";
 
