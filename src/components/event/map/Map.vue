@@ -190,6 +190,10 @@ export default defineComponent({
       markerMap.infowindow = infowindow;
 
       map.value.fitBounds(bounds);
+      // Check if the zoom level is too high after fitting bounds
+      if (map.value.getZoom() > 15) {
+          map.value.setZoom(15);
+      }
 
       emit("setMarkerData", {
         markerMap,
