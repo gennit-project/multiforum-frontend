@@ -502,6 +502,7 @@ export default defineComponent({
                 class="mt-6"
                 :show-map="true"
               />
+              <TimeShortcuts />
               <div v-if="eventLoading">
                 Loading...
               </div>
@@ -535,11 +536,6 @@ export default defineComponent({
         <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
-              <div class="shortcut-buttons-wrapper">
-                <div class="shortcut-buttons pt-2">
-                  <TimeShortcuts />
-                </div>
-              </div>
               <div v-if="eventLoading">
                 Loading...
               </div>

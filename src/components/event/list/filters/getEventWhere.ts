@@ -103,8 +103,8 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
               latitude,
               longitude,
             },
-            // Radius is in km
-            distance: radius,
+            // Radius is in m
+            distance: radius * 1000,
           },
         });
       }
