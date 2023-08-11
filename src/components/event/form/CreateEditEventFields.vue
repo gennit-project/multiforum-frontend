@@ -207,8 +207,6 @@ export default defineComponent({
       startTime = startTime.set({
         hour: inputDateTime.hour,
         minute: inputDateTime.minute,
-        second: inputDateTime.second,
-        millisecond: inputDateTime.millisecond,
       });
 
       // Convert the DateTime back to an ISO string
@@ -235,12 +233,20 @@ export default defineComponent({
       this.$emit("updateFormValues", { endTime: mergedValue });
     },
     handleEndTimeTimeChange(timeValue: string) {
-      // Merge the date portion with the updated time portion
-      const dateValue = this.endTime.toISOString().split("T")[0];
-      const mergedValue = `${dateValue}T${timeValue}`;
+      // Parse the input date/time using Luxon
+      const inputDateTime = DateTime.fromISO(timeValue);
 
-      // Update the end time value
-      this.endTime = mergedValue;
+      // Create a Luxon DateTime object from this.endTime
+      let endTime = DateTime.fromJSDate(this.endTime);
+
+      // Set the time portion of startTime to match that of inputDateTime
+      endTime = endTime.set({
+        hour: inputDateTime.hour,
+        minute: inputDateTime.minute,
+      });
+
+      // Convert the DateTime back to an ISO string
+      const mergedValue = endTime.toISO();
 
       this.$emit("updateFormValues", { endTime: mergedValue });
     },
@@ -486,7 +492,9 @@ export default defineComponent({
                     type="text"
                     name="virtualEventUrl"
                     class="block w-full flex-1 border-0 bg-transparent py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
-                    :value="formValues.virtualEventUrl?.split('https://').join('')"
+                    :value="
+                      formValues.virtualEventUrl?.split('https://').join('')
+                    "
                     @input="
                       $emit('updateFormValues', {
                         virtualEventUrl: `https://${$event.target.value}`,
