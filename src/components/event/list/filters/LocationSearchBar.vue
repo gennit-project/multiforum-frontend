@@ -47,12 +47,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex">
+  <div class="flex w-full">
     <label
       for="search"
       class="sr-only"
     >Search Location</label>
-    <div class="relative">
+    <div class="relative w-full">
       <div
         class="absolute py-2.5 left-0 pl-3 flex items-center pointer-events-none"
       >
@@ -62,10 +62,10 @@ export default defineComponent({
         />
       </div>
       <GMapAutocomplete
-        :class="[inTopNav ? 'max-w-sm h-10' : 'rounded-lg h-12']"
+        :class="[inTopNav ? 'max-w-sm h-10' : 'rounded-lg h-12 w-full']"
         autocomplete="false"
         class="pl-10 pr-3 leading-5 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
-        :placeholder="searchPlaceholder"
+        :placeholder="referencePointAddressName"
         disable-portal
         @place_changed="updateLocationInput"
       />
