@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div class="grid grid-cols-12">
     <div
-      class="relative col-span-12 flex gap-4 border-gray-200 py-3 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200 lg:col-span-6"
+      class="relative col-span-12 flex gap-4 border-gray-200 py-5 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200 lg:col-span-6"
     >
       <Avatar
         :text="channel.uniqueName"
