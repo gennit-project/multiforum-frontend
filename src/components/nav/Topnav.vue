@@ -87,10 +87,10 @@ export default defineComponent({
   methods: {
     getLabel(){
       if (this.route.name === 'SitewideSearchDiscussionPreview'){
-        return "discussions"
+        return "/ discussions"
       }
       if (this.route.name === 'SitewideSearchEventPreview') {
-        return "online events"
+        return "/ online events"
       }
     }
   }
@@ -134,8 +134,7 @@ export default defineComponent({
             v-else
             class="flex items-center gap-1"
           >
-            <span>/</span>
-            {{ getLabel(route) }}
+            {{ getLabel() }}
           </div>
  
           <div
