@@ -1,10 +1,13 @@
 <script lang="ts">
 // This component uses some code from this CodePen: https://codepen.io/foucauld-gaudin/pen/abzBdRz
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, computed } from "vue";
 import ChannelPicker from "../channel/ChannelPicker.vue";
 import Tag from "@/components/tag/Tag.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
 import FloatingDropdown from "../generic/FloatingDropdown.vue";
+import { useQuery } from "@vue/apollo-composable";
+import { GET_CHANNELS } from "@/graphQLData/channel/queries";
+import { ChannelData } from "@/types/channelTypes";
 
 export default defineComponent({
   components: {
@@ -35,7 +38,21 @@ export default defineComponent({
       default: "",
     },
   },
-  setup() {},
+  setup() {
+    const {
+      loading: channelsLoading,
+      error: channelsError,
+      result: channelsResult,
+    } = useQuery(GET_CHANNELS);
+
+    const validChannels = computed<string[]>(() => {
+      if (!channelsResult.value || !channelsResult.value.channels) {
+        return [];
+      }
+      return channelsResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+    });
+    return { channelsLoading, channelsError, validChannels }
+  },
   data() {
     return {
       tags: this.channelMode ? this.selectedChannels : this.selectedTags,
@@ -46,7 +63,20 @@ export default defineComponent({
   },
   methods: {
     saveTagAndClose(e: any) {
+      if (this.channelsLoading || this.channelsError) {
+        return
+      }
       e.preventDefault()
+      if (this.channelMode) {
+        // In channel mode, you can't create a new item
+        // on key down. You can only select from the list.
+        // Therefore, when the user hits enter, check if the
+        // newly typed item is in the list. If it is 
+        // in the list, proceed. If not, return early.
+        if (this.validChannels.indexOf(this.currentInput) === -1) {
+          return
+        }
+      }
       const { tags, currentInput, set } = this;
       if ((set && tags.indexOf(currentInput) === -1) || !set) {
         tags.push(currentInput);

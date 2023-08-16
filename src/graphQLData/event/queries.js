@@ -12,6 +12,7 @@ const EVENT_FIELDS = gql`
     address
     virtualEventUrl
     startTimeDayOfWeek
+    startTimeHourOfDay
     canceled
     location {
       latitude

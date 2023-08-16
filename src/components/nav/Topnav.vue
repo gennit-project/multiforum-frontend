@@ -84,6 +84,16 @@ export default defineComponent({
       showCreateMenu: ref(false),
     };
   },
+  methods: {
+    getLabel(){
+      if (this.route.name === 'SitewideSearchDiscussionPreview'){
+        return "discussions"
+      }
+      if (this.route.name === 'SitewideSearchEventPreview') {
+        return "online events"
+      }
+    }
+  }
 });
 </script>
 
@@ -121,21 +131,15 @@ export default defineComponent({
             }}</span>
           </div>
           <div
-            v-else-if="route.name === 'SitewideSearchDiscussionPreview'"
+            v-else
             class="flex items-center gap-1"
           >
             <span>/</span>
-            discussions
+            {{ getLabel(route) }}
           </div>
+ 
           <div
-            v-else-if="route.name === 'SitewideSearchEventPreview'"
-            class="flex items-center gap-1"
-          >
-            <span>/</span>
-            online events
-          </div>
-          <div
-            v-else-if="route.name === 'MapView'"
+            v-if="route.name === 'MapView'"
             class="flex items-center gap-1"
           >
             <span>/</span>

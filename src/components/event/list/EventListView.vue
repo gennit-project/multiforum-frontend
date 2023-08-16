@@ -141,6 +141,7 @@ export default defineComponent({
         router.push({
           name: "SearchEventPreview",
           params: {
+            ...route.params,
             eventId,
           },
           hash: `#${eventLocationId}`,
@@ -275,12 +276,6 @@ export default defineComponent({
           @loadMore="loadMore"
           @openPreview="openPreview"
         />
-        <div
-          v-if="eventLoading"
-          class="mx-auto"
-        >
-          Loading...
-        </div>
         <DrawerFlyout
           v-if="eventId"
           :is-open="previewIsOpen"
