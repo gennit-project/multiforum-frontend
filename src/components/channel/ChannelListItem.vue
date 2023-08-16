@@ -5,12 +5,16 @@ import { TagData } from "@/types/tagTypes";
 import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
 import Tag from "@/components/tag/Tag.vue";
 import Avatar from "@/components/user/Avatar.vue";
+import CalendarIcon from "@/components/icons/CalendarIcon.vue";
+import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 
 export default defineComponent({
   components: {
     Avatar,
     HighlightedSearchTerms,
     Tag,
+    CalendarIcon,
+    DiscussionIcon,
   },
   props: {
     channel: {
@@ -86,10 +90,10 @@ export default defineComponent({
     <div class="col-span-12 flex lg:justify-end gap-6 py-3 lg:col-span-6 text-gray-600 dark:text-gray-300">
       <div class="font-normal truncate text-sm">
         <router-link
-          class="underline"
+          class="underline flex items-center gap-1"
           :to="`/channels/c/${channel.uniqueName}/discussions`"
         >
-          <i class="fa-regular fa-comment h-6 w-6" />
+          <DiscussionIcon class="h-6 w-6" />
 
           {{ channel.DiscussionChannelsAggregate.count }}
           {{
@@ -101,10 +105,10 @@ export default defineComponent({
       </div>
       <div class="font-normal truncate text-sm">
         <router-link
-          class="underline"
+          class="underline flex items-center gap-1"
           :to="`/channels/c/${channel.uniqueName}/events/search`"
         >
-          <i class="fa-regular fa-calendar h-6 w-6" />
+          <CalendarIcon class="h-6 w-6" />
           {{ channel.EventChannelsAggregate.count }} Upcoming Events
         </router-link>
       </div>
