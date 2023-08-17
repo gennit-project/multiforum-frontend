@@ -60,7 +60,7 @@ export default defineComponent({
 
 <template>
   <div class=" dark:text-slate-200 relative list-disc">
-    <nav class="shadow-sm">
+    <nav>
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
         @toggleDropdown="toggleDropdown"

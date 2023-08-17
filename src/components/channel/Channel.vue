@@ -3,11 +3,8 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
+import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
 import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
-import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import ChannelSidebarButton from "@/components/channel/ChannelSidebarButton.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
@@ -16,11 +13,8 @@ export default defineComponent({
   name: "ChannelComponent",
   components: {
     ChannelSidebar,
-    ChannelSidebarButton,
-    ChevronDownIcon,
-    PrimaryButton,
-    RequireAuth,
     ChannelTabs,
+    CreateAnythingButton
   },
   setup() {
     const route = ref(useRoute());
@@ -102,55 +96,8 @@ export default defineComponent({
               lg="2"
             >
               <ChannelSidebar :channel-id="channelId">
-                <div class="border-b">
-                  <RequireAuth
-                    class="align-middle"
-                    :full-width="false"
-                  >
-                    <template #has-auth>
-                      <v-menu
-                        v-model="showMenu"
-                        :close-on-content-click="true"
-                      >
-                        <template #activator="{ props }">
-                          <div>
-                            <button
-                              v-bind="props"
-                              class="max-height-3 font-small mx-4 my-2 mr-2 inline-flex whitespace-nowrap rounded-md border px-2 py-2.5 text-xs text-gray-700 hover:bg-gray-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-700"
-                            >
-                              <slot name="icon" />
-
-                              + Create
-                              <ChevronDownIcon
-                                class="-mr-1 ml-1 mt-0.5 h-3 w-3"
-                                aria-hidden="true"
-                              />
-                            </button>
-                          </div>
-                        </template>
-                        <v-list>
-                          <v-list-item>
-                            <ChannelSidebarButton
-                              :to="`/channels/c/${channelId}/discussions/create`"
-                              :label="'New Discussion'"
-                            />
-                          </v-list-item>
-                          <v-list-item>
-                            <ChannelSidebarButton
-                              :to="`/channels/c/${channelId}/events/create`"
-                              :label="'New Event'"
-                            />
-                          </v-list-item>
-                        </v-list>
-                      </v-menu>
-                    </template>
-                    <template #does-not-have-auth>
-                      <PrimaryButton
-                        class="ml-2"
-                        :label="'+ Create'"
-                      />
-                    </template>
-                  </RequireAuth>
+                <div class="border-b p-2 flex justify-end">
+                  <CreateAnythingButton />
                 </div>
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"

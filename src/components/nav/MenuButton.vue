@@ -2,6 +2,7 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  name: "HamburgerMenuButton",
   setup() {},
 });
 </script>
@@ -12,7 +13,7 @@ export default defineComponent({
     aria-controls="mobile-menu"
     aria-expanded="false"
   >
-    <span class="sr-only">Open main menu</span>
+    <span class="sr-only">Open site-wide navigation menu</span>
     <!--
             Icon when menu is closed.
 
@@ -21,7 +22,7 @@ export default defineComponent({
             Menu open: "hidden", Menu closed: "block"
           -->
     <svg
-      class="block h-6 w-6"
+      class="block h-5 w-5"
       xmlns="http://www.w3.org/2000/svg"
       fill="none"
       viewBox="0 0 24 24"

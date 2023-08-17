@@ -70,7 +70,7 @@ export default DropdownButton;
         leave-to-class="transform opacity-0 scale-95"
       >
         <MenuItems
-          class="absolute right-0 z-10 -mr-1 mt-2 w-56 origin-top-right rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          class="absolute right-0 z-10 -mr-1 mt-2 w-56 origin-top-right rounded-md ring-1 ring-black ring-opacity-5 focus:outline-none"
         >
           <div class="py-1">
             <MenuItem

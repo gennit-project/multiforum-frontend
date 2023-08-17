@@ -116,7 +116,7 @@ export default defineComponent({
   <div class="h-screen overflow-y-auto border-r-2 dark:border-gray-600">
     <div
       v-if="channelId"
-      class="mt-6 mb-4 flex items-center px-4"
+      class="mt-6 mb-4 flex gap-2 items-center px-4"
     >
       <Avatar
         :text="channelId"
