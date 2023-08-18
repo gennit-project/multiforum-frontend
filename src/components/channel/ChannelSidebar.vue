@@ -144,7 +144,6 @@ export default defineComponent({
       </div>
       <div v-else-if="channel">
         <div
-          v-if="!mdAndDown"
           class="w-full px-4"
         >
           <div

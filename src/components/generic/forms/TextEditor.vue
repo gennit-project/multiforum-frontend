@@ -116,7 +116,10 @@ export default defineComponent({
         </Tab>
       </TabList>
       <TabPanels class="mt-2">
-        <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1">
+        <TabPanel
+          class="-m-0.5 rounded-lg px-0.5 py-1"
+          :data-testid="testId"
+        >
           <label
             for="comment"
             class="sr-only"

@@ -16,15 +16,16 @@ describe("Basic channel operations", () => {
 
     // Test creating a channel
     cy.visit(CHANNEL_CREATION_FORM);
-    cy.get('input[data-testid="title-input"]').type(TEST_CHANNEL);
-
+   
     cy.get('div[data-testid="description-input"]')
       .find("textarea")
-      .type(TEST_DESCRIPTION, { force: true });
+      .type(TEST_DESCRIPTION, { force: true })
+
+    cy.get('input[data-testid="title-input"]').type(TEST_CHANNEL);
 
     cy.get("button").contains("Save").click();
     cy.get("h1").contains(TEST_CHANNEL);
-    cy.get("p").contains(TEST_DESCRIPTION);
+    cy.get("div").contains(TEST_DESCRIPTION);
 
     // Test editing a channel
     cy.get("a").contains("Edit").click();
@@ -38,7 +39,7 @@ describe("Basic channel operations", () => {
     cy.get(`span[data-testid="tag-picker-${TEST_TAG}"]`).click();
 
     cy.get("button").contains("Save").click();
-    cy.get("p").contains(TEST_DESCRIPTION_2);
+    cy.get("div").contains(TEST_DESCRIPTION_2);
     cy.get("span").contains(TEST_TAG);
   });
 });
