@@ -1,44 +1,70 @@
-import { EventCreateInput } from "../../../src/__generated__/graphql";
 
-const seedEvents = (events: EventCreateInput[]) => {
-  const operation = {
-    query: `
-        mutation CreateEvents($input: [EventCreateInput!]!) {
-          createEvents(input: $input) {
-            events {
-              id
-              title
-              description
-              startTime
-              endTime
-              Channels {
-                uniqueName
-              }
-              Poster {
-                username
-              }
-              isInPrivateResidence
-              cost
-              Tags {
-                text
-              }
+import { EventCreateInputWithChannels } from "../seedData/events";
+
+const createEvents = (events: EventCreateInputWithChannels[]) => {
+  const getOperation = (event: EventCreateInputWithChannels) => {
+    return {
+      query: `
+      mutation createEvent(
+        $eventCreateInput: EventCreateInput
+        $channelConnections: [String]
+      ) {
+        createEventWithChannelConnections(
+          eventCreateInput: $eventCreateInput
+          channelConnections: $channelConnections
+        ) {
+          id
+          title
+          description
+          startTime
+          startTimeDayOfWeek
+          startTimeHourOfDay
+          endTime
+          locationName
+          address
+          virtualEventUrl
+          startTimeDayOfWeek
+          canceled
+          location {
+            latitude
+            longitude
+          }
+          cost
+          EventChannels {
+            id
+            Channel {
+              uniqueName
             }
           }
+          Poster {
+            username
+          }
+          createdAt
+          updatedAt
+          Tags {
+            text
+          }
         }
+      }
       `,
-    variables: {
-      input: events,
-    },
+      variables: {
+        eventCreateInput: event.eventCreateInput,
+        channelConnections: event.channelConnections,
+      },
+    };
   };
 
-  cy.request({
-    url: "http://localhost:4000/graphql",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: operation,
-  });
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+    cy.request({
+      url: "http://localhost:4000/graphql",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: getOperation(event),
+    });
+  }
 };
 
-export default seedEvents;
+export default createEvents;

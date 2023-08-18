@@ -8,7 +8,7 @@ describe("Basic channel operations", () => {
     cy.loginWithCreateEventButton();
   });
 
-  it("creates, edits and deletes a channel", () => {
+  it("creates and edits a channel", () => {
     const TEST_CHANNEL = "testChannel";
     const TEST_DESCRIPTION = "Test description";
     const TEST_DESCRIPTION_2 = "Test description 2";
@@ -20,7 +20,7 @@ describe("Basic channel operations", () => {
 
     cy.get('div[data-testid="description-input"]')
       .find("textarea")
-      .type("Test description");
+      .type(TEST_DESCRIPTION, { force: true });
 
     cy.get("button").contains("Save").click();
     cy.get("h1").contains(TEST_CHANNEL);
@@ -40,6 +40,5 @@ describe("Basic channel operations", () => {
     cy.get("button").contains("Save").click();
     cy.get("p").contains(TEST_DESCRIPTION_2);
     cy.get("span").contains(TEST_TAG);
-
   });
 });

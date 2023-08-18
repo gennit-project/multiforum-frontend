@@ -159,11 +159,11 @@ export default defineComponent({
         });
       } else {
         /*
-        If the discussion was created in the context
-        of the server-wide discussions page,
-        redirect to the discussion detail page in the first
-        channel that the discussion was submitted to.
-      */
+          If the discussion was created in the context
+          of the server-wide discussions page,
+          redirect to the discussion detail page in the first
+          channel that the discussion was submitted to.
+        */
         router.push({
           name: "DiscussionDetail",
           params: {

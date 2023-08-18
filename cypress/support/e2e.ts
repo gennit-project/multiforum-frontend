@@ -1,10 +1,11 @@
 import './commands';
-import { EventCreateInput, DiscussionCreateInput } from '../../src/__generated__/graphql';
+import { EventCreateInputWithChannels } from './seedData/events';
+import { DiscussionCreateInputWithChannels } from './seedData/discussions';
+/* eslint-disable @typescript-eslint/no-namespace */
 
 declare global {
     namespace Cypress {
       interface Chainable {
-        loginProgrammatically(): Chainable<Element>;
         loginWithCreateEventButton(): Chainable<Element>;
         seedDiscussions(): Chainable<Element>;
         seedEvents(): Chainable<Element>;
@@ -12,8 +13,8 @@ declare global {
         seedUsers(): Chainable<Element>;
         seedChannels(): Chainable<Element>;
         seedTags(): Chainable<Element>;
-        createEvents(events: EventCreateInput[]): Chainable<Element>;
-        createDiscussions(discussions: DiscussionCreateInput[]): Chainable<Element>;
+        createEvents(events: EventCreateInputWithChannels[]): Chainable<Element>;
+        createDiscussions(discussions: DiscussionCreateInputWithChannels[]): Chainable<Element>;
         deleteEvents(): Chainable<Element>;
         deleteEmails(): Chainable<Element>;
         deleteUsers(): Chainable<Element>;

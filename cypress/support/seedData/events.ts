@@ -1,482 +1,384 @@
 import { EventCreateInput } from "../../../src/__generated__/graphql";
 
-const events: EventCreateInput[] = [
+export type EventCreateInputWithChannels = {
+  eventCreateInput: EventCreateInput;
+  channelConnections: string[];
+};
+
+const events: EventCreateInputWithChannels[] = [
   {
-    title: "GATHERING OF BONES",
-    description: "with Arsenic Kitchen, Commiserate, Killing Sunday",
-    startTime: "2024-01-20T05:21:37.146Z",
-    endTime: "2024-01-20T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "GATHERING OF BONES",
+      description: "with Arsenic Kitchen, Commiserate, Killing Sunday",
+      startTime: "2024-01-20T05:21:37.146Z",
+      endTime: "2024-01-20T05:21:37.146Z",
+      location: {
+        latitude: 33.39262,
+        longitude: -111.940498,
+      },
+      locationName: "Yucca Tap Room",
+      address: "29 W Southern Ave, Tempe, AZ 85282",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_music",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.39262,
-      longitude: -111.940498,
-    },
-    locationName: "Yucca Tap Room",
-    address: "29 W Southern Ave, Tempe, AZ 85282",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "Free",
+      startTimeDayOfWeek: "Thursday",
+      startTimeHourOfDay: 20,
+      canceled: false,
     },
-    cost: "Free",
-    startTimeDayOfWeek: "Thursday",
-    startTimeHourOfDay: 20,
-    canceled: false,
+    channelConnections: ["phx_music"],
   },
   {
-    title: "NEW YEARS EVE with PAO!",
-    description: "DJ Lady Staliet",
-    startTime: "2024-12-31T05:21:37.146Z",
-    endTime: "2024-12-31T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "NEW YEARS EVE with PAO!",
+      description: "DJ Lady Staliet",
+      startTime: "2024-12-31T05:21:37.146Z",
+      endTime: "2024-12-31T05:21:37.146Z",
+      location: {
+        latitude: 33.44999,
+        longitude: -112.07408,
+      },
+      locationName: "Valley Bar",
+      address: "130 N. Central Avenue, Phoenix, AZ, 85004",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.44999,
-      longitude: -112.07408,
-    },
-    locationName: "Valley Bar",
-    address: "130 N. Central Avenue, Phoenix, AZ, 85004",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "$15, $5 service fee",
+      startTimeDayOfWeek: "Friday",
+      startTimeHourOfDay: 20,
+      canceled: false,
     },
-    cost: "$15, $5 service fee",
-    startTimeDayOfWeek: "Friday",
-    startTimeHourOfDay: 20,
-    canceled: false,
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "MOST NECESSARY HIP HOP",
-    description: "2015-PRESENT HIP HOP/TRAP",
-    startTime: "2024-12-25T05:21:37.146Z",
-    endTime: "2024-12-25T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "MOST NECESSARY HIP HOP",
+      description: "2015-PRESENT HIP HOP/TRAP",
+      startTime: "2024-12-25T05:21:37.146Z",
+      endTime: "2024-12-25T05:21:37.146Z",
+      location: {
+        latitude: 33.44999,
+        longitude: -112.07408,
+      },
+      locationName: "Valley Bar",
+      address: "130 N. Central Avenue, Phoenix, AZ, 85004",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.44999,
-      longitude: -112.07408,
-    },
-    locationName: "Valley Bar",
-    address: "130 N. Central Avenue, Phoenix, AZ, 85004",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "Free",
+      startTimeDayOfWeek: "Saturday",
+      startTimeHourOfDay: 22,
+      canceled: false,
     },
-    cost: "Free",
-    startTimeDayOfWeek: "Saturday",
-    startTimeHourOfDay: 22,
-    canceled: false,
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "Seinfeld Trivia: Festivus Edition",
-    description: "Hosted by Emily the Lewis",
-    startTime: "2024-12-23T05:21:37.146Z",
-    endTime: "2024-12-23T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "Seinfeld Trivia: Festivus Edition",
+      description: "Hosted by Emily the Lewis",
+      startTime: "2024-12-23T05:21:37.146Z",
+      endTime: "2024-12-23T05:21:37.146Z",
+      location: {
+        latitude: 33.44999,
+        longitude: -112.07408,
+      },
+      locationName: "Valley Bar",
+      address: "130 N. Central Avenue, Phoenix, AZ, 85004",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.44999,
-      longitude: -112.07408,
-    },
-    locationName: "Valley Bar",
-    address: "130 N. Central Avenue, Phoenix, AZ, 85004",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
+      },
+      cost: "$10, $5 service fee",
+      startTimeDayOfWeek: "Thursday",
+      startTimeHourOfDay: 19,
+      canceled: false,
+      Tags: {
+        connect: [
+          {
+            where: {
+              node: { text: "trivia " },
+            },
           },
-        },
+        ],
       },
     },
-    cost: "$10, $5 service fee",
-    startTimeDayOfWeek: "Thursday",
-    startTimeHourOfDay: 19,
-    canceled: false,
-    Tags: {
-      connect: [
-        {
-          where: {
-            node: { text: "trivia " },
-          },
-        },
-      ],
-    },
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "Club Placebo Benefit Show",
-    startTime: "2024-01-08T05:21:37.146Z",
-    endTime: "2024-01-08T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "Club Placebo Benefit Show",
+      startTime: "2024-01-08T05:21:37.146Z",
+      endTime: "2024-01-08T05:21:37.146Z",
+      location: {
+        latitude: 33.448711,
+        longitude: -112.083603,
+      },
+      locationName: "Crescent Ballroom",
+      address: "308 N 2nd Ave, Phoenix, AZ 85003",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
-          },
-        },
-      ],
-    },
-    location: {
-      latitude: 33.448711,
-      longitude: -112.083603,
-    },
-    locationName: "Crescent Ballroom",
-    address: "308 N 2nd Ave, Phoenix, AZ 85003",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
           },
         },
       },
-    },
-    cost: "$10, $5 service fee",
-    startTimeDayOfWeek: "Saturday",
-    startTimeHourOfDay: 16,
-    canceled: false,
-    Tags: {
-      connect: [
-        {
-          where: {
-            node: { text: "music " },
-          },
-        },
-        {
-          where: {
-            node: {
-              text: "charityEvent",
+      cost: "$10, $5 service fee",
+      startTimeDayOfWeek: "Saturday",
+      startTimeHourOfDay: 16,
+      canceled: false,
+      Tags: {
+        connect: [
+          {
+            where: {
+              node: { text: "music " },
             },
           },
-        },
-      ],
+          {
+            where: {
+              node: {
+                text: "charityEvent",
+              },
+            },
+          },
+        ],
+      },
     },
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "New Year's Eve Block Party at Hance Park2",
-    startTime: "2024-12-31T02:21:37.146Z",
-    endTime: "2024-12-31T02:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "New Year's Eve Block Party at Hance Park2",
+      startTime: "2024-12-31T02:21:37.146Z",
+      endTime: "2024-12-31T02:21:37.146Z",
+      location: {
+        latitude: 33.46226,
+        longitude: -112.07448,
+      },
+      locationName: "Margaret T. Hance Park",
+      address: "67 W Culver St., Phoenix, AZ, 85003",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.46226,
-      longitude: -112.07448,
-    },
-    locationName: "Margaret T. Hance Park",
-    address: "67 W Culver St., Phoenix, AZ, 85003",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
+      },
+      cost: "$15",
+      startTimeDayOfWeek: "Friday",
+      startTimeHourOfDay: 20,
+      canceled: false,
+      Tags: {
+        connect: [
+          {
+            where: {
+              node: { text: "newYears " },
+            },
           },
-        },
+        ],
       },
     },
-    cost: "$15",
-    startTimeDayOfWeek: "Friday",
-    startTimeHourOfDay: 20,
-    canceled: false,
-    Tags: {
-      connect: [
-        {
-          where: {
-            node: { text: "newYears " },
-          },
-        },
-      ],
-    },
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "Selena Night",
-    startTime: "2024-01-01T02:21:37.146Z",
-    endTime: "2024-01-01T02:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "Selena Night",
+      startTime: "2024-01-01T02:21:37.146Z",
+      endTime: "2024-01-01T02:21:37.146Z",
+      location: {
+        latitude: 33.448711,
+        longitude: -112.083603,
+      },
+      locationName: "Crescent Ballroom",
+      address: "308 N 2nd Ave, Phoenix, AZ 85003",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.448711,
-      longitude: -112.083603,
-    },
-    locationName: "Crescent Ballroom",
-    address: "308 N 2nd Ave, Phoenix, AZ 85003",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
+      },
+      cost: "$15",
+      startTimeDayOfWeek: "Saturday",
+      startTimeHourOfDay: 20,
+      canceled: false,
+      Tags: {
+        connect: [
+          {
+            where: {
+              node: { text: "Selena " },
+            },
           },
-        },
+        ],
       },
     },
-    cost: "$15",
-    startTimeDayOfWeek: "Saturday",
-    startTimeHourOfDay: 20,
-    canceled: false,
-    Tags: {
-      connect: [
-        {
-          where: {
-            node: { text: "Selena " },
-          },
-        },
-      ],
-    },
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "The Unlikely Candidates",
-    description: "The Criticals, The Deadbeat Cousins",
-    startTime: "2024-01-04T05:21:37.146Z",
-    endTime: "2024-01-04T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "The Unlikely Candidates",
+      description: "The Criticals, The Deadbeat Cousins",
+      startTime: "2024-01-04T05:21:37.146Z",
+      endTime: "2024-01-04T05:21:37.146Z",
+      location: {
+        latitude: 33.448711,
+        longitude: -112.083603,
+      },
+      locationName: "Crescent Ballroom",
+      address: "308 N 2nd Ave, Phoenix, AZ 85003",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.448711,
-      longitude: -112.083603,
-    },
-    locationName: "Crescent Ballroom",
-    address: "308 N 2nd Ave, Phoenix, AZ 85003",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "$18, $5 service fee",
+      startTimeDayOfWeek: "Tuesday",
+      startTimeHourOfDay: 19,
+      canceled: false,
     },
-    cost: "$18, $5 service fee",
-    startTimeDayOfWeek: "Tuesday",
-    startTimeHourOfDay: 19,
-    canceled: false,
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "Desert Tails Benefit Show",
-    description: "feat. Ischemia, Atoll, Show-N-Tell, Nooses",
-    startTime: "2024-01-29T05:21:37.146Z",
-    endTime: "2024-01-20T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "Desert Tails Benefit Show",
+      description: "feat. Ischemia, Atoll, Show-N-Tell, Nooses",
+      startTime: "2024-01-29T05:21:37.146Z",
+      endTime: "2024-01-20T05:21:37.146Z",
+      location: {
+        latitude: 33.39262,
+        longitude: -111.940498,
+      },
+      locationName: "Yucca Tap Room",
+      address: "29 W Southern Ave, Tempe, AZ 85282",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_music",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.39262,
-      longitude: -111.940498,
-    },
-    locationName: "Yucca Tap Room",
-    address: "29 W Southern Ave, Tempe, AZ 85282",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "DONATIONS ENCOURAGED!",
+      startTimeDayOfWeek: "Saturday",
+      startTimeHourOfDay: 20,
+      canceled: false,
     },
-    cost: "DONATIONS ENCOURAGED!",
-    startTimeDayOfWeek: "Saturday",
-    startTimeHourOfDay: 20,
-    canceled: false,
+    channelConnections: ["phx_music"],
   },
   {
-    title: "OPEN MIC NIGHT",
-    description: "hosted by Haley Green, 8PM sign-up, 9PM music",
-    startTime: "2024-01-31T05:21:37.146Z",
-    endTime: "2024-01-31T05:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "OPEN MIC NIGHT",
+      description: "hosted by Haley Green, 8PM sign-up, 9PM music",
+      startTime: "2024-01-31T05:21:37.146Z",
+      endTime: "2024-01-31T05:21:37.146Z",
+      location: {
+        latitude: 33.39262,
+        longitude: -111.940498,
+      },
+      locationName: "Yucca Tap Room",
+      address: "29 W Southern Ave, Tempe, AZ 85282",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
-          },
-        },
-        {
-          where: {
-            node: {
-              uniqueName: "phx_music",
-            },
-          },
-        },
-      ],
-    },
-    location: {
-      latitude: 33.39262,
-      longitude: -111.940498,
-    },
-    locationName: "Yucca Tap Room",
-    address: "29 W Southern Ave, Tempe, AZ 85282",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
           },
         },
       },
+      cost: "0",
+      startTimeDayOfWeek: "Monday",
+      startTimeHourOfDay: 21,
+      canceled: false,
     },
-    cost: "0",
-    startTimeDayOfWeek: "Monday",
-    startTimeHourOfDay: 21,
-    canceled: false,
+    channelConnections: ["phx_music", "phx_concerts"],
   },
   {
-    title: "STRFKR, The Undercover Dream Lovers, Das Kope",
-    startTime: "2024-02-25T02:20:00.146Z",
-    endTime: "2024-02-25T02:20:00.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "STRFKR, The Undercover Dream Lovers, Das Kope",
+      startTime: "2024-02-25T02:20:00.146Z",
+      endTime: "2024-02-25T02:20:00.146Z",
+      location: {
+        latitude: 33.45113,
+        longitude: -112.079193,
+      },
+      locationName: "The Van Buren",
+      address: "401 W Van Buren St, Phoenix, AZ 85003",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_music",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.45113,
-      longitude: -112.079193,
-    },
-    locationName: "The Van Buren",
-    address: "401 W Van Buren St, Phoenix, AZ 85003",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "unknown",
+      startTimeDayOfWeek: "Friday",
+      startTimeHourOfDay: 20,
+      canceled: false,
     },
-    cost: "unknown",
-    startTimeDayOfWeek: "Friday",
-    startTimeHourOfDay: 20,
-    canceled: false,
+    channelConnections: ["phx_concerts"],
   },
   {
-    title: "We Were Promised Jetpacks",
-    startTime: "2024-03-21T02:21:37.146Z",
-    endTime: "2024-03-21T02:21:37.146Z",
-    Channels: {
-      connect: [
-        {
+    eventCreateInput: {
+      title: "We Were Promised Jetpacks",
+      startTime: "2024-03-21T02:21:37.146Z",
+      endTime: "2024-03-21T02:21:37.146Z",
+      location: {
+        latitude: 33.49454,
+        longitude: -112.0321,
+      },
+      locationName: "The Rebel Lounge",
+      address: "2303 E Indian School Rd, Phoenix, AZ 85016",
+      Poster: {
+        connect: {
           where: {
             node: {
-              uniqueName: "phx_concerts",
+              username: "Alice",
             },
           },
         },
-      ],
-    },
-    location: {
-      latitude: 33.49454,
-      longitude: -112.0321,
-    },
-    locationName: "The Rebel Lounge",
-    address: "2303 E Indian School Rd, Phoenix, AZ 85016",
-    Poster: {
-      connect: {
-        where: {
-          node: {
-            username: "Alice",
-          },
-        },
       },
+      cost: "$20",
+      startTimeDayOfWeek: "Monday",
+      startTimeHourOfDay: 20,
+      canceled: false,
     },
-    cost: "$20",
-    startTimeDayOfWeek: "Monday",
-    startTimeHourOfDay: 20,
-    canceled: false,
+    channelConnections: ["phx_concerts"],
   },
 ];
 

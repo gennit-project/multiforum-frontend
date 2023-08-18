@@ -42,6 +42,7 @@ export default defineComponent({
         class="relative inline-block text-left"
       >
         <MenuButton
+          data-testid="create-anything-button"
           class="font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-full px-2 text-sm text-black hover:bg-gray-100 focus:outline-none dark:text-white dark:hover:bg-gray-900"
         >
           + Create
@@ -65,6 +66,7 @@ export default defineComponent({
               <MenuItem
                 v-slot="{ active }"
                 class="cursor-pointer"
+                data-testid="create-discussion-menu-item"
                 @click="
                   router.push(
                     channelId
@@ -86,6 +88,7 @@ export default defineComponent({
               </MenuItem>
               <MenuItem
                 v-slot="{ active }"
+                data-testid="create-event-menu-item"
                 class="cursor-pointer"
                 @click="
                   router.push(
@@ -108,6 +111,7 @@ export default defineComponent({
               </MenuItem>
               <MenuItem
                 v-slot="{ active }"
+                data-testid="create-channel-menu-item"
                 class="cursor-pointer"
                 @click="router.push('/channels/create')"
               >
@@ -130,6 +134,7 @@ export default defineComponent({
     <template #does-not-have-auth>
       <PrimaryButton
         class="ml-2"
+        data-testid="fake-create-anything-button"
         :label="'+ Create'"
       />
     </template>

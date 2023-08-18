@@ -1,4 +1,3 @@
-import loginProgrammatically from "./commandFunctions/loginProgrammatically";
 import loginWithButtonClick from "./commandFunctions/loginWithButtonClick";
 import seedEvents from "./commandFunctions/seed/seedEvents";
 import seedEmails from "./commandFunctions/seed/seedEmails";
@@ -17,7 +16,6 @@ import createDiscussions from "./commandFunctions/createDiscussions";
 
 // LOGIN AND AUTH
 Cypress.Commands.add("loginWithCreateEventButton", loginWithButtonClick);
-Cypress.Commands.add("loginProgrammatically", loginProgrammatically);
 
 // ADDING SEED DATA
 Cypress.Commands.add("seedDiscussions", seedDiscussions);

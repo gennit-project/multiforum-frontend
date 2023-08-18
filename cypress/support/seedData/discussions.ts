@@ -1,20 +1,16 @@
-import { DiscussionCreateInput } from "../../../src/__generated__/graphql"
+import { DiscussionCreateInput } from "../../../src/__generated__/graphql";
 
-export const discussionsForFilteringTests: DiscussionCreateInput[] = [
+export type DiscussionCreateInputWithChannels = {
+  discussionCreateInput: DiscussionCreateInput;
+  channelConnections: string[];
+};
+
+export const discussionsForFilteringTests: DiscussionCreateInputWithChannels[] =
+  [
     {
+      discussionCreateInput: {
         title: "Example topic 1",
         body: "Test discussion body 1",
-        Channels: {
-          connect: [
-            {
-              where: {
-                node: {
-                  uniqueName: "cats",
-                },
-              },
-            },
-          ],
-        },
         Author: {
           connect: {
             where: {
@@ -25,34 +21,26 @@ export const discussionsForFilteringTests: DiscussionCreateInput[] = [
           },
         },
       },
-      {
+      channelConnections: ["cats"],
+    },
+    {
+      discussionCreateInput: {
         title: "Example topic 2",
-        Channels: {
-          connect: [
+        Tags: {
+          connectOrCreate: [
             {
+              onCreate: {
+                node: {
+                  text: "newYears",
+                },
+              },
               where: {
                 node: {
-                  uniqueName: "phx_music",
+                  text: "newYears",
                 },
               },
             },
           ],
-        },
-        Tags: {
-          "connectOrCreate": [
-            {
-              "onCreate": {
-                "node": {
-                  "text": "newYears"
-                }
-              },
-              "where": {
-                "node": {
-                  "text": "newYears"
-                }
-              }
-            }
-          ]
         },
         Author: {
           connect: {
@@ -64,34 +52,26 @@ export const discussionsForFilteringTests: DiscussionCreateInput[] = [
           },
         },
       },
-      {
+      channelConnections: ["phx_music"],
+    },
+    {
+      discussionCreateInput: {
         title: "Example topic 3",
-        Channels: {
-          connect: [
+        Tags: {
+          connectOrCreate: [
             {
+              onCreate: {
+                node: {
+                  text: "trivia",
+                },
+              },
               where: {
                 node: {
-                  uniqueName: "phx_music",
+                  text: "trivia",
                 },
               },
             },
           ],
-        },
-        Tags: {
-          "connectOrCreate": [
-            {
-              "onCreate": {
-                "node": {
-                  "text": "trivia"
-                }
-              },
-              "where": {
-                "node": {
-                  "text": "trivia"
-                }
-              }
-            }
-          ]
         },
         Author: {
           connect: {
@@ -103,6 +83,8 @@ export const discussionsForFilteringTests: DiscussionCreateInput[] = [
           },
         },
       },
-]
+      channelConnections: ["phx_music"],
+    },
+  ];
 
 export default discussionsForFilteringTests;

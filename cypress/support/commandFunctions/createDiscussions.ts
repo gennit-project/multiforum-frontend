@@ -1,40 +1,56 @@
-import { DiscussionCreateInput } from "../../../src/__generated__/graphql";
+import { DiscussionCreateInputWithChannels } from "../seedData/discussions";
 
-const seedDiscussions = (discussions: DiscussionCreateInput[]) => {
-  const operation = {
-    query: `
-        mutation CreateDiscussions($input: [DiscussionCreateInput!]!) {
-          createDiscussions(input: $input) {
-            discussions {
+const createDiscussions = (discussions: DiscussionCreateInputWithChannels[]) => {
+  const getOperation = (discussion: DiscussionCreateInputWithChannels) => {
+    return {
+      query: `
+          mutation createDiscussion(
+            $discussionCreateInput: DiscussionCreateInput
+            $channelConnections: [String]
+          ) {
+            createDiscussionWithChannelConnections(
+              discussionCreateInput: $discussionCreateInput
+              channelConnections: $channelConnections
+            ) {
               id
               title
               body
-              Channels {
-                uniqueName
+              DiscussionChannels {
+                id
+                upvoteCount
+                Channel {
+                  uniqueName
+                }
               }
               Author {
                 username
               }
+              createdAt
+              updatedAt
               Tags {
                 text
               }
             }
           }
-        }
-      `,
-    variables: {
-      input: discussions,
-    },
+        `,
+      variables: {
+        discussionCreateInput: discussion.discussionCreateInput,
+        channelConnections: discussion.channelConnections,
+      },
+    };
   };
 
-  cy.request({
-    url: "http://localhost:4000/graphql",
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: operation,
-  });
+  for (let i = 0; i < discussions.length; i++) {
+    const discussion = discussions[i];
+    cy.request({
+      url: "http://localhost:4000/graphql",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: getOperation(discussion),
+    });
+  }
 };
 
-export default seedDiscussions;
+export default createDiscussions;

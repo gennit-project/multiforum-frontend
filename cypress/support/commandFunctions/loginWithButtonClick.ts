@@ -2,7 +2,7 @@ const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search"
 
 const login = () => {
   cy.visit(ONLINE_EVENT_LIST)
-    .get('[data-testid="fake-create-event-button"]')
+    .get('[data-testid="fake-create-anything-button"]')
     .click();
 
   cy.origin("https://gennit.us.auth0.com", () => {
