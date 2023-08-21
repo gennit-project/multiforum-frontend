@@ -89,7 +89,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full bg-white dark:bg-gray-900">
+  <div class="w-full bg-gray-100 dark:bg-gray-900">
     <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-center lg:px-0">
         <HamburgerMenuButton

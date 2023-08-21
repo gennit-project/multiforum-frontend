@@ -191,7 +191,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex flex-wrap gap-2 items-center text-xs text-gray-400">
+    <div class="flex flex-wrap gap-2 items-center text-xs text-gray-400 dark:text-gray-200">
       <RequireAuth
         v-if="!locked"
         :full-width="false"
@@ -214,7 +214,7 @@ export default defineComponent({
             />
             <div
               data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-800 dark:text-gray-500 dark:hover:text-white"
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:hover:text-white"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
             >
@@ -232,7 +232,7 @@ export default defineComponent({
             />
             <div
               data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-800 dark:text-gray-500 dark:hover:text-white"
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-200 dark:hover:text-white"
             >
               <i class="fa-regular fa-comment h-4 w-4" />
               Reply
@@ -250,7 +250,7 @@ export default defineComponent({
         <template #has-auth>
           <span
             data-testid="delete-comment-button"
-            class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+            class="cursor-pointer underline hover:text-black  dark:text-gray-200 dark:hover:text-white"
             @click="
               $emit('deleteComment', {
                 commentId: commentData.id,
@@ -264,7 +264,7 @@ export default defineComponent({
           <span
             v-if="!showEditCommentField"
             data-testid="edit-comment-button"
-            class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+            class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
             @click="
               () => {
                 $emit('clickEditComment', commentData);
@@ -279,7 +279,7 @@ export default defineComponent({
           route.params.channelId && route.name !== 'DiscussionCommentPermalink'
         "
         :to="`${route.path}/comments/${commentData.id}`"
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="
           $router.push({
             name: 'DiscussionCommentPermalink',
@@ -294,7 +294,7 @@ export default defineComponent({
       </span>
       <span
         v-if="showEditCommentField"
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="$emit('hideEditCommentField')"
       >Cancel</span>
       <span
@@ -309,14 +309,14 @@ export default defineComponent({
       >Save</span>
       <span
         v-if="showReplies && replyCount > 0"
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="$emit('hideReplies')"
       >{{
         `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
       }}</span>
       <span
         v-if="!showReplies"
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="$emit('showReplies')"
       >{{
         `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
@@ -326,7 +326,7 @@ export default defineComponent({
         :items="commentMenuItems"
       >
         <EllipsisVertical
-          class="h-4 w-4 cursor-pointer hover:text-black dark:text-gray-500 dark:hover:text-white"
+          class="h-4 w-4 cursor-pointer hover:text-black dark:text-gray-200 dark:hover:text-white"
         />
       </MenuButton>
     </div>

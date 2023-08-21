@@ -92,7 +92,7 @@ export default defineComponent({
   <div v-if="showDropdown">
     <!-- Overlay (shadow) for the rest of the UI -->
     <div
-      class="fixed inset-0 z-40 bg-gray-900 opacity-50 dark:text-gray-200"
+      class="fixed inset-0 z-40 opacity-50 dark:text-gray-200 bg-gray-100 dark:bg-gray-900"
       @click="$emit('close')"
     />
 
@@ -127,7 +127,7 @@ export default defineComponent({
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
-                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100 dark:hover:bg-gray-800 "
+                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
                 @click="$emit('close')"
               >
                 <component
@@ -141,11 +141,11 @@ export default defineComponent({
           </ul>
         </nav>
       </div>
-      <ul class="mb-6 px-6">
+      <ul class="mb-6">
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}`"
-          class="font-semibold group flex items-center gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
+          class="pl-6 dark:hover:bg-gray-700 font-semibold group flex items-center gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
           @click="$emit('close')"
         >
           <Avatar :text="username" />
@@ -153,7 +153,7 @@ export default defineComponent({
         </router-link>
         <button
           v-if="!isAuthenticated"
-          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
+          class="pl-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
           @click="login"
         >
           Log In
@@ -161,7 +161,7 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           to="/logout"
-          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
+          class="pl-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
           @click="logout"
         >
           Sign Out

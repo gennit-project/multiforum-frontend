@@ -25,7 +25,7 @@ export default defineComponent({
     >
       {{ sectionTitle }}<span
         v-if="required"
-        class="ml-1 text-red-500"
+        class="ml-1 text-red-400"
       >*</span>
     </label>
     <div>

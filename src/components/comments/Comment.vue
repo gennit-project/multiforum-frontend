@@ -215,7 +215,7 @@ export default defineComponent({
         class="w-full"
       >
         <div
-          class="my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-800 dark:bg-gray-950"
+          class="my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-500 dark:bg-gray-950"
           data-testid="comment"
         >
           <p class="flex flex-wrap items-center space-x-2">
@@ -292,7 +292,7 @@ export default defineComponent({
         <div
           v-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="mt-2 w-full border-l border-gray-300 pl-4 pt-1 dark:border-gray-700"
+          class="mt-2 w-full border-l border-gray-300 pl-4 pt-1 dark:border-gray-500"
         >
           <ChildComments
             v-slot="slotProps"

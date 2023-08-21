@@ -64,7 +64,7 @@ export default defineComponent({
       >
         <!-- Heroicon name: solid/search -->
         <svg
-          class="h-4 w-4 text-gray-400 dark:text-gray-100"
+          class="h-4 w-4 text-gray-400 dark:text-gray-300"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -89,8 +89,8 @@ export default defineComponent({
           w-full
           dark:bg-gray-500
           dark:text-white
-          placeholder-gray-500
-          dark:placeholder-gray-100
+          placeholder-gray-400
+          dark:placeholder-gray-400
           dark:border-gray-700
           focus:outline-none
           focus:ring-1
@@ -116,7 +116,7 @@ export default defineComponent({
         "
         @click="clear"
       >
-        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400 dark:text-gray-100" />
+        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400 dark:text-gray-300" />
       </div>
     </div>
   </div>

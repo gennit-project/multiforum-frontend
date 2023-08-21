@@ -452,7 +452,7 @@ export default defineComponent({
       <div class="mr-6 flex flex-wrap justify-between space-x-4 align-middle">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
-          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white dark:bg-gray-700 p-3 text-blue-500 shadow dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white p-3  shadow dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
           aria-label="Open event filters"
           data-testid="open-event-filters"
           @click="handleClickMoreFilters"
@@ -501,7 +501,7 @@ export default defineComponent({
         <div class="inline-flex items-center align-middle">
           <button
             data-testid="more-filters-button"
-            class="dark:bg-gray-700 dark:hover:bg-gray-600 max-height-3 font-medium inline-flex whitespace-nowrap rounded-md px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-200"
+            class="dark:bg-gray-700 border dark:border-gray-600 dark:hover:bg-gray-600 max-height-3 font-medium inline-flex whitespace-nowrap rounded-md px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-200"
             @click="handleClickMoreFilters"
           >
             <FilterIcon class="-ml-0.5 mr-2 h-4 w-4" />

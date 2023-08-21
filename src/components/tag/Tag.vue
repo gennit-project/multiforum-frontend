@@ -77,17 +77,17 @@ export default defineComponent({
       if (this.active) {
         // for the channel buttons
         if (this.channelMode) {
-          return "bg-blue-100 dark:bg-blue-800 hover:bg-blue-700 dark:bg-blue-500 dark:text-gray-100 hover:bg-blue-300 dark:hover:bg-blue-400";
+          return "bg-gray-100 dark:bg-gray-800 hover:bg-gray-700 dark:bg-gray-500 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-400";
         }
         // for the tag buttons in the filter components
-        return "bg-blue-100 dark:bg-blue-800 dark:bg-blue-950 dark:text-blue-500 text-gray-800 dark:hover:bg-blue-700 hover:bg-gray-200 hover:bg-gray-200";
+        return "bg-gray-100 dark:bg-gray-800 dark:bg-gray-100 dark:hover:bg-gray-200 dark:text-gray-900 text-gray-800 hover:bg-gray-200";
       } else {
         // for the channel buttons
         if (this.channelMode) {
-          return "bg-blue-50 text-blue-900 hover:bg-blue-100 dark:bg-gray-500 dark:text-gray-100 dark:hover:bg-blue-700 dark:hover:text-white";
+          return "bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-500 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-white";
         }
         // for the tag buttons in the filter components
-        return `pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
+        return `bg-gray-200 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-400 pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
       }
     },
   },

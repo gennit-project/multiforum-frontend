@@ -184,7 +184,7 @@ export default defineComponent({
           type="text"
           :class="[
             usernameIsTaken
-              ? 'border-red-300 text-red-900 focus:outline-none focus:ring-red-500 focus:border-red-500'
+              ? 'border-red-300 text-red-500 focus:outline-none focus:ring-red-500 focus:border-red-500'
               : 'focus:ring-blue-500 focus:border-blue-500',
           ]"
           class="

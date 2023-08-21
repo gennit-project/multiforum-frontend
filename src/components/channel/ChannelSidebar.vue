@@ -40,6 +40,7 @@ export default defineComponent({
       if (getChannelLoading.value || getChannelError.value) {
         return null;
       }
+      console.log(getChannelResult.value);
       return getChannelResult.value.channels[0];
     });
 
@@ -113,7 +114,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen overflow-y-auto dark:bg-gray-900">
+  <div class="h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
     <div
       v-if="channelId"
       class="mt-6 mb-4 flex gap-2 items-center px-4"
@@ -141,6 +142,9 @@ export default defineComponent({
         >
           {{ error.message }}
         </div>
+      </div>
+      <div v-else-if="!channel" class="px-4">
+        Could not find the channel.
       </div>
       <div v-else-if="channel">
         <div
@@ -211,7 +215,7 @@ export default defineComponent({
           </ul>
           <p
             v-else
-            class="mx-6 my-3 mb-6 text-sm"
+            class="mx-6 my-3 mb-6 text-sm dark:text-gray-400"
           >
             This channel does not have any admins.
           </p>

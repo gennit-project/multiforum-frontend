@@ -88,8 +88,8 @@ export default defineComponent({
           <button
             :class="[
               selected
-                ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
-                : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
+                ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
+                : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
               'mr-2 font-medium border-transparent rounded-md border px-3 py-1.5 text-sm dark:border-gray-700 dark:hover:text-gray-400',
             ]"
           >
@@ -100,8 +100,8 @@ export default defineComponent({
           <button
             :class="[
               selected
-                ? 'bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
-                : 'bg-white text-gray-500 hover:bg-gray-100 hover:text-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
+                ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
+                : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
               'font-medium border-transparent rounded-md border px-3 py-1.5 text-sm dark:border-gray-700 dark:hover:text-gray-400',
             ]"
           >
@@ -117,7 +117,7 @@ export default defineComponent({
             name="comment"
             rows="7"
             :placeholder="placeholder"
-            class="focus:border-blue-500 placeholder-gray-300 dark:text-gray-100 focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm shadow-sm dark:border-gray-700 dark:bg-gray-500"
+            class="focus:border-blue-500 placeholder-gray-400 dark:text-gray-100 focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm shadow-sm dark:border-gray-700 dark:bg-gray-400"
             :value="text"
             @input="updateText($event?.target?.value)"
           />
