@@ -80,7 +80,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="min-w-md">
     <div
       v-if="tagsLoading"
       class="px-4 lg:px-12"

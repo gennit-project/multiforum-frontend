@@ -10,7 +10,8 @@
     "dev": "vite",
     "compile": "graphql-codegen",
     "watch": "graphql-codegen -w",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "cypress run"
   },
   "dependencies": {
     "@apollo/client": "^3.6.9",

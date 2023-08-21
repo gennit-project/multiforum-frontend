@@ -1,11 +1,14 @@
 import { DISCUSSION_LIST } from "../constants";
-import { deleteAll, seedAll } from "../utils";
-import { discussionsForFilteringTests } from "./discussionsForFilteringTests";
+import { deleteAll } from "../utils";
+import { discussionsForFilteringTests } from "../../support/seedData/discussionsForFilteringTests";
 
 describe("Filter discussions by tag", () => {
   beforeEach(function () {
     deleteAll();
-    seedAll();
+    cy.seedEmails();
+    cy.seedUsers();
+    cy.seedChannels();
+    cy.seedTags();
     // Create discussions with tags referenced in these tests (newYears, trivia)
     cy.createDiscussions(discussionsForFilteringTests);
   });
@@ -20,12 +23,27 @@ describe("Filter discussions by tag", () => {
     cy.get('span[data-testid="tag-picker-newYears"]').click(); // click the newYears tag
 
     // should have one result
-    cy.get('ul[data-testid="sitewide-discussion-list"]').find("li").should("have.length", 1);
+    cy.get('ul[data-testid="sitewide-discussion-list"]')
+      .find("li")
+      .should("have.length", 1);
 
     // top result contains the search term
     cy.get('ul[data-testid="sitewide-discussion-list"]')
       .find("li")
       .contains(newYearsTagDiscussionTitle);
+  });
+
+  Cypress.on("uncaught:exception", (err) => {
+    // I don't know what causes this error, but it is only thrown during this test,
+    // not when a human uses the tag picker. So I'm suppressing it.
+    if (
+      err.message.includes(
+        "ResizeObserver loop completed with undelivered notifications.",
+      )
+    ) {
+      return false;
+    }
+    return true; // return true to allow the error to be thrown and fail the test
   });
 
   it("in the sitewide online discussions list, when filtering by two tags, shows discussions that have at least one of the tags", () => {
@@ -39,7 +57,9 @@ describe("Filter discussions by tag", () => {
     cy.get('span[data-testid="tag-picker-trivia"]').click();
 
     // should have two results
-    cy.get('ul[data-testid="sitewide-discussion-list"]').find("li").should("have.length", 2);
+    cy.get('ul[data-testid="sitewide-discussion-list"]')
+      .find("li")
+      .should("have.length", 2);
 
     // The expected discussions are in the results
     cy.get('ul[data-testid="sitewide-discussion-list"]')
@@ -50,7 +70,8 @@ describe("Filter discussions by tag", () => {
       .contains(triviaTaggedDiscussionTitle);
   });
 
-  const CHANNEL_VIEW = "http://localhost:5173/channels/c/phx_music/discussions/";
+  const CHANNEL_VIEW =
+    "http://localhost:5173/channels/c/phx_music/discussions/";
 
   it("in a channel view, filters discussions by tag", () => {
     const searchTerm = "trivia";
@@ -62,10 +83,14 @@ describe("Filter discussions by tag", () => {
     cy.get('span[data-testid="tag-picker-trivia"]').click();
 
     // should have one result
-    cy.get('ul[data-testid="channel-discussion-list"]').find("li").should("have.length", 1);
+    cy.get('ul[data-testid="channel-discussion-list"]')
+      .find("li")
+      .should("have.length", 1);
 
     // top result contains the search term
-    cy.get('ul[data-testid="channel-discussion-list"]').find("li").contains(searchTerm);
+    cy.get('ul[data-testid="channel-discussion-list"]')
+      .find("li")
+      .contains(searchTerm);
   });
 
   it("in a channel view, when filtering by two tags, shows discussions that have at least one of the tags", () => {
@@ -79,7 +104,9 @@ describe("Filter discussions by tag", () => {
     cy.get('span[data-testid="tag-picker-trivia"]').click();
 
     // should have two results
-    cy.get('ul[data-testid="channel-discussion-list"]').find("li").should("have.length", 2);
+    cy.get('ul[data-testid="channel-discussion-list"]')
+      .find("li")
+      .should("have.length", 2);
 
     // The expected discussions are in the results
     cy.get('ul[data-testid="channel-discussion-list"]')

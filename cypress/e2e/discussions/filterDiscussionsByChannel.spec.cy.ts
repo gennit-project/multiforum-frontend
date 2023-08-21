@@ -1,11 +1,14 @@
 import { DISCUSSION_LIST } from "../constants";
-import { deleteAll, seedAll } from "../utils";
-import { discussionsForFilteringTests } from "./discussionsForFilteringTests";
+import { deleteAll } from "../utils";
+import { discussionsForFilteringTests } from "../../support/seedData/discussionsForFilteringTests";
 
 describe("Filter discussions by channel", () => {
   beforeEach(function () {
     deleteAll();
-    seedAll();
+    cy.seedEmails();
+    cy.seedUsers();
+    cy.seedChannels();
+    cy.seedTags();
      // Create discussions with channels referenced in these tests (cats, phx_music)
      cy.createDiscussions(discussionsForFilteringTests);
   });

@@ -227,6 +227,7 @@ export default defineComponent({
         class="w-full flex flex-col"
       >
         <TextEditor
+          :test-id="'texteditor-textarea'"
           :placeholder="'Please be kind'"
           @update="handleUpdateComment"
         />

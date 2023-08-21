@@ -30,3 +30,5 @@ plugins
 
 # Generated files
 /src/__generated__
+cypress/videos
+cypress/screenshots

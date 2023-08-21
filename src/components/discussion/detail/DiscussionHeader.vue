@@ -23,7 +23,7 @@ export default defineComponent({
     discussion: {
       type: Object as PropType<DiscussionData | null>,
       required: false,
-      default: null
+      default: null,
     },
     compactMode: {
       type: Boolean,
@@ -177,6 +177,14 @@ export default defineComponent({
           >Delete</span>
         </template>
       </RequireAuth>
+      <router-link
+        v-if="!channelId && discussion"
+        data-testid="discussion-permalink"
+        class="font-medium cursor-pointer underline"
+        :to="`/channels/c/${discussion.DiscussionChannels[0].channelUniqueName}/discussions/d/${discussion.id}`"
+      >
+        Permalink
+      </router-link>
     </div>
     <WarningModal
       :title="'Delete Discussion'"

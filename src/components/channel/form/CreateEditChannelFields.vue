@@ -139,7 +139,6 @@ export default defineComponent({
         </div>
       </div>
     </TailwindForm>
-
     <div
       v-for="(error, i) of getChannelError?.graphQLErrors"
       :key="i"

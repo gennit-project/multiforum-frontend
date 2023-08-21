@@ -24,7 +24,7 @@ describe("Basic root comment operations", () => {
     cy.get("textarea[data-testid='addComment']").click();
 
     // Type a comment
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT);
+    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT, { force: true });
 
     // Save the comment
     cy.get("button").contains("Save").click();

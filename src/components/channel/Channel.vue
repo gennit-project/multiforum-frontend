@@ -3,7 +3,6 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
 import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
@@ -14,7 +13,6 @@ export default defineComponent({
   components: {
     ChannelSidebar,
     ChannelTabs,
-    CreateAnythingButton
   },
   setup() {
     const route = ref(useRoute());
@@ -96,9 +94,6 @@ export default defineComponent({
               lg="2"
             >
               <ChannelSidebar :channel-id="channelId">
-                <div class="border-b p-2 flex justify-end">
-                  <CreateAnythingButton />
-                </div>
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"
                   :route="route"

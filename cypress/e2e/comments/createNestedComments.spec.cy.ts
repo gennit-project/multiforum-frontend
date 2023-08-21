@@ -38,7 +38,7 @@ describe("Basic root comment operations", () => {
 
     // Reply to that comment
     cy.contains('[data-testid="comment"]', TEST_COMMENT_TEXT_1)
-      .find('span[data-testid="reply-comment-button"]')
+      .find('div[data-testid="reply-comment-button"]')
       .click();
 
     // Type a first reply to the root comment
@@ -53,7 +53,7 @@ describe("Basic root comment operations", () => {
 
     // Type a second reply to the root comment
     cy.contains('[data-testid="comment"]', TEST_COMMENT_TEXT_1)
-      .find('span[data-testid="reply-comment-button"]')
+      .find('div[data-testid="reply-comment-button"]')
       .click();
     const TEST_COMMENT_TEXT_3 = "Test comment 3";
     cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_3);
@@ -65,7 +65,7 @@ describe("Basic root comment operations", () => {
 
     // Write a reply to the reply
     cy.contains("[data-testid='comment']", TEST_COMMENT_TEXT_3)
-      .find('span[data-testid="reply-comment-button"]')
+      .find('div[data-testid="reply-comment-button"]')
       .click();
 
     // Type a first reply to the second-level comment
@@ -82,7 +82,7 @@ describe("Basic root comment operations", () => {
     const TEST_COMMENT_TEXT_5 = "Test comment 5";
 
     cy.contains("[data-testid='comment']", TEST_COMMENT_TEXT_3)
-      .find('span[data-testid="reply-comment-button"]')
+      .find('div[data-testid="reply-comment-button"]')
       .click();
     cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_5);
 

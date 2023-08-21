@@ -115,7 +115,7 @@ export default defineComponent({
           </button>
         </Tab>
       </TabList>
-      <TabPanels class="mt-2">
+      <TabPanels class="mt-2 h-40">
         <TabPanel
           class="-m-0.5 rounded-lg px-0.5 py-1"
           :data-testid="testId"
@@ -124,13 +124,14 @@ export default defineComponent({
             for="comment"
             class="sr-only"
           >Comment</label>
-          <v-md-editor
-            ref="editor"
-            v-model="text"
-            mode="edit"
-            height="250px"
+          <textarea
+            id="texteditor-textarea"
+            name="comment"
+            rows="7"
             :placeholder="placeholder"
-            @update:model-value="$emit('update', text)"
+            class="block font-mono w-full rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-black"
+            :value="text"
+            @input="updateText($event?.target?.value)"
           />
         </TabPanel>
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
@@ -145,7 +146,6 @@ export default defineComponent({
 </template>
 <style lang="scss">
 @media (prefers-color-scheme: dark) {
-
   .v-md-editor--preview,
   .v-md-pre-wrapper {
     background-color: transparent !important;
@@ -178,6 +178,5 @@ export default defineComponent({
 }
 
 @media (prefers-color-scheme: light) {
-
 }
 </style>

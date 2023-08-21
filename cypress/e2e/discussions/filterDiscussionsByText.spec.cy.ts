@@ -1,6 +1,6 @@
 import { DISCUSSION_LIST } from "../constants";
 import { deleteAll, seedAll } from "../utils";
-import { discussionsForFilteringTests } from "./discussionsForFilteringTests";
+import { discussionsForFilteringTests } from "../../support/seedData/discussionsForFilteringTests";
 
 describe("Filter discussions by text", () => {
   beforeEach(function () {

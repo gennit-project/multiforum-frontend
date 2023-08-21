@@ -27,7 +27,7 @@ describe("Basic event operations", () => {
 
     cy.get('input[data-testid="end-time-time-input"]').type("09:30");
 
-    cy.get('div[data-testid="link-input"]').find("input").type(TEST_LINK);
+    cy.get('input[data-testid="link-input"]').find("input").type(TEST_LINK);
 
     cy.get('div[data-testid="description-input"]')
       .find("textarea")
