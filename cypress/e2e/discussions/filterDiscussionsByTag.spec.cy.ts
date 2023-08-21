@@ -18,7 +18,7 @@ describe("Filter discussions by tag", () => {
 
   it("in the sitewide online discussions list, filters discussions by tag", () => {
     cy.visit(DISCUSSION_LIST);
-    cy.get('div[data-testid="tag-filter-button"]').find("button").click().wait(500) // open the tag picker
+    cy.get('div[data-testid="tag-filter-button"]').find("button").click() // open the tag picker
 
     cy.get('span[data-testid="tag-picker-newYears"]').click(); // click the newYears tag
 
