@@ -19,7 +19,7 @@ export default defineComponent({
   },
   setup(props) {
     const workingCopyOfSelectedWeekdays: Ref<SelectedWeekdays> = ref(
-      props.selectedWeekdays
+      props.selectedWeekdays,
     );
 
     const flattenedWeekdays = computed(() => {
@@ -78,28 +78,23 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-2">
-      <div
-        v-for="weekday in weekdayData"
-        :key="weekday.shortName"
-        class="p-2 rounded"
-      >
-        <label
-          :for="'weekday-' + weekday.number"
-          class="flex items-center"
-        >
-          <input
-            :id="'weekday-' + weekday.number"
-            type="checkbox"
-            :data-testid="`weekday-${weekday.number}-checkbox`"
-            class="cursor-pointer text-blue-600 focus:ring-blue-500 h-4 w-4 mr-1 border-gray-400 rounded"
-            :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
-            @input="() => toggleSelectWeekday(weekday)"
-          >
-          <span>{{ weekday.shortName }}</span>
-        </label>
-      </div>
+  <div class="w-full">
+    <div
+      v-for="weekday in weekdayData"
+      :key="weekday.shortName"
+      class="rounded p-2"
+    >
+      <label :for="'weekday-' + weekday.number" class="flex items-center">
+        <input
+          :id="'weekday-' + weekday.number"
+          type="checkbox"
+          :data-testid="`weekday-${weekday.number}-checkbox`"
+          class="mr-1 h-4 w-4 cursor-pointer rounded border-gray-400 text-blue-600 focus:ring-blue-500 dark:bg-gray-300"
+          :checked="workingCopyOfSelectedWeekdays[weekday.number] === true"
+          @input="() => toggleSelectWeekday(weekday)"
+        />
+        <span>{{ weekday.shortName }}</span>
+      </label>
     </div>
     <ResetButton @reset="reset" />
   </div>

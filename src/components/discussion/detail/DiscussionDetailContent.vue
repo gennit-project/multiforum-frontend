@@ -183,7 +183,7 @@ export default defineComponent({
 
         <div class="min-w-md space-y-3">
           <div
-            class="rounded-lg border border-blue-400 px-4 pb-2 dark:border-blue-800 dark:bg-gray-950"
+            class="rounded-lg border border-blue-500 px-4 pb-2 dark:border-blue-500 dark:bg-gray-950"
           >
             <DiscussionHeader
               :discussion="discussion"

@@ -15,7 +15,6 @@ import {
   distanceUnitOptions,
 } from "@/components/event/list/filters/eventSearchOptions";
 import LocationFilterTypes from "./locationFilterTypes";
-import ClockIcon from "@/components/icons/ClockIcon.vue";
 import FilterIcon from "@/components/icons/FilterIcon.vue";
 import { SelectedWeekdays, SelectedHourRanges } from "@/types/eventTypes";
 import { useRoute, useRouter } from "vue-router";
@@ -30,7 +29,6 @@ import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import WeekdaySelector from "./WeekdaySelector.vue";
 import TimeSelector from "./TimeSelector.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
-import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
@@ -42,10 +40,8 @@ export default defineComponent({
   // components consume the query params, using those
   // for filtering.
   components: {
-    CalendarIcon,
     ChannelIcon,
     ChannelPicker,
-    ClockIcon,
     DrawerFlyout,
     FilterChip,
     FilterIcon,
@@ -456,7 +452,7 @@ export default defineComponent({
       <div class="mr-6 flex flex-wrap justify-between space-x-4 align-middle">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
-          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white p-3 text-blue-500 shadow dark:bg-gray-700 dark:text-white"
+          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white dark:bg-gray-700 p-3 text-blue-500 shadow dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
           aria-label="Open event filters"
           data-testid="open-event-filters"
           @click="handleClickMoreFilters"
@@ -505,7 +501,7 @@ export default defineComponent({
         <div class="inline-flex items-center align-middle">
           <button
             data-testid="more-filters-button"
-            class="max-height-3 font-medium flex inline-flex inline-flex whitespace-nowrap rounded-md px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-200"
+            class="dark:bg-gray-700 dark:hover:bg-gray-600 max-height-3 font-medium inline-flex whitespace-nowrap rounded-md px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-200"
             @click="handleClickMoreFilters"
           >
             <FilterIcon class="-ml-0.5 mr-2 h-4 w-4" />
@@ -581,14 +577,10 @@ export default defineComponent({
           <h2
             class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
           >
-            <CalendarIcon
-              class="mr-2 h-6 w-6 text-gray-500"
-              aria-hidden="true"
-            />
             Weekdays
           </h2>
 
-          <div class="flex flex-col">
+          <div class="flex ">
             <div class="-my-2 sm:-mx-6 lg:-mx-8">
               <div class="inline-block py-2 align-middle sm:px-6 lg:px-8">
                 <div class="mb-4">
@@ -605,10 +597,6 @@ export default defineComponent({
           <h2
             class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
           >
-            <ClockIcon
-              class="mr-2 h-6 w-6 text-gray-500"
-              aria-hidden="true"
-            />
             Time Slots
           </h2>
 

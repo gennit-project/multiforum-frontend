@@ -187,7 +187,7 @@ export default defineComponent({
 <template>
   <li
     class="relative flex space-x-1 space-y-3 border-b py-4 dark:border-gray-800"
-    :class="[isActive ? 'text-blue-500' : '']"
+    :class="[isActive ? 'text-bold' : '']"
   >
     <v-row>
       <v-col cols="2">
@@ -206,14 +206,14 @@ export default defineComponent({
             :to="{ path: detailLink, query: filteredQuery }"
             class="hover:text-gray-500"
           >
-            <p class="text-md cursor-pointer font-bold hover:text-gray-500">
+            <p class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100">
               <HighlightedSearchTerms
                 :text="title"
                 :search-input="searchInput"
               />
             </p>
           </router-link>
-          <div class="flex space-x-1 font-medium my-1 text-xs text-slate-600 hover:no-underline">
+          <div class="flex space-x-1 font-medium my-1 text-xs text-gray-600 hover:no-underline">
             <Tag
               v-for="tag in tags"
               :key="tag"
@@ -224,13 +224,13 @@ export default defineComponent({
             />
           </div>
           <p
-            class="font-medium text-xs text-slate-600 no-underline dark:text-gray-300"
+            class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
           >
             {{ `Posted ${relativeTime} by ${authorUsername}` }}
           </p>
         </div>
       </v-col>
-      <v-col cols="2">
+      <v-col cols="2" class="dark:text-gray-100">
         <i class="fa-regular fa-comment h-6 w-6" />
         {{ commentCount }}
       </v-col>

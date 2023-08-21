@@ -1,6 +1,8 @@
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref, computed } from "vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
 
 export default defineComponent({
   components: {
@@ -17,7 +19,25 @@ export default defineComponent({
     },
   },
   setup() {
-    return { showMenu: ref(false) };
+    const GET_THEME = gql`
+      query getTheme {
+        theme @client
+      }
+    `;
+
+    const {
+      result: themeResult,
+      loading: themeLoading,
+      error: themeError,
+    } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      if (themeLoading.value || themeError.value) {
+        return "";
+      }
+      return themeResult.value.theme;
+    });
+    return { showMenu: ref(false), theme };
   },
 });
 </script>
@@ -32,8 +52,8 @@ export default defineComponent({
       <template #activator="{ props }">
         <div v-bind="props">
           <button
-            :class="[highlighted ? 'ring-1 ring-blue-500 border-blue-500' : '']"
-            class=" border dark:border-gray-600 mr-2 hover:bg-gray-100 dark:hover:bg-gray-700 px-2 inline-flex max-height-3 py-2.5 text-xs font-small rounded-md  text-gray-700 dark:text-gray-200  whitespace-nowrap focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+            :class="[highlighted ? 'border-blue-500 ring-1 ring-blue-500' : '']"
+            class="max-height-3 font-small mr-2 inline-flex whitespace-nowrap rounded-md dark:bg-gray-700 border px-2 py-2.5 text-xs text-gray-700 hover:bg-gray-100 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
           >
             <slot name="icon" />
 
@@ -45,7 +65,7 @@ export default defineComponent({
           </button>
         </div>
       </template>
-      <v-card> <slot name="content" /></v-card>
+      <v-card :theme="theme"> <slot name="content" /></v-card>
     </v-menu>
   </div>
 </template>

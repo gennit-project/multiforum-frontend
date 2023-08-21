@@ -17,7 +17,7 @@ export default defineComponent({
   <div>
     <p
       v-if="reachedEndOfResults"
-      class="mt-4 mb-12 text-sm text-gray-500"
+      class="mt-4 mb-12 text-sm text-gray-500 dark:text-gray-200"
     >
       Reached the end of the results.
     </p>

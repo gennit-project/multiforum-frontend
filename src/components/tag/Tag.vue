@@ -77,19 +77,17 @@ export default defineComponent({
       if (this.active) {
         // for the channel buttons
         if (this.channelMode) {
-          return "bg-blue-100 hover:bg-blue-700 dark:bg-blue-500 dark:text-white hover:bg-blue-300 dark:hover:bg-blue-400";
+          return "bg-blue-100 dark:bg-blue-800 hover:bg-blue-700 dark:bg-blue-500 dark:text-gray-100 hover:bg-blue-300 dark:hover:bg-blue-400";
         }
         // for the tag buttons in the filter components
-        return "bg-blue-100 dark:bg-blue-950 dark:text-blue-500 text-slate-800 dark:text-black dark:bg-opacity-100 dark:hover:bg-blue-900 hover:bg-slate-200  hover:bg-slate-200";
+        return "bg-blue-100 dark:bg-blue-800 dark:bg-blue-950 dark:text-blue-500 text-gray-800 dark:hover:bg-blue-700 hover:bg-gray-200 hover:bg-gray-200";
       } else {
         // for the channel buttons
         if (this.channelMode) {
-          ("bg-blue-50 text-blue-900 hover:bg-blue-100 dark:bg-blue-900 dark:text-blue-300 dark:bg-opacity-100 dark:hover:bg-blue-900 dark:hover:text-white");
+          return "bg-blue-50 text-blue-900 hover:bg-blue-100 dark:bg-gray-500 dark:text-gray-100 dark:hover:bg-blue-700 dark:hover:text-white";
         }
         // for the tag buttons in the filter components
-        return `${
-          this.large ? "bg-white" : "bg-gray-100"
-        } dark:bg-gray-800 dark:hover:bg-gray-700 bg-gray-100 dark:bg-opacity-700 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-600'`;
+        return `pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
       }
     },
   },

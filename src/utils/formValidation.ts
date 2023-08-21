@@ -29,6 +29,5 @@ export function checkUrl(str: string) {
       "i"
     ); // fragment locator
     const valid = !!pattern.test(str);
-    console.log("URL is valid: " + valid);
     return valid;
   }

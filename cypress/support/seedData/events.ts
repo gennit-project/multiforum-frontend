@@ -346,7 +346,7 @@ const events: EventCreateInputWithChannels[] = [
           },
         },
       },
-      cost: "unknown",
+      cost: "Ticket price unknown",
       startTimeDayOfWeek: "Friday",
       startTimeHourOfDay: 20,
       canceled: false,

@@ -75,7 +75,7 @@
                         <button
                           type="button"
                           class="
-                              bg-white dark:bg-black
+                              bg-white dark:bg-gray-900
                               ml-8
                               rounded-full
                               text-gray-400
@@ -101,7 +101,7 @@
                   <button
                     type="button"
                     class="
-                        bg-white dark:bg-black
+                        bg-white dark:bg-gray-900
                         py-2
                         px-4
                         border
@@ -110,40 +110,17 @@
                         text-sm
                         font-medium
                         text-gray-700
+                        dark:text-gray-200
                         hover:bg-gray-50
                         focus:outline-none
                         focus:ring-2
                         focus:ring-offset-2
-                        focus:ring-blue-500
+                        focus:ring-blue-600
                       "
                     @click="$emit('closePreview')"
                   >
                     Close
                   </button>
-                  <!-- <button
-                      type="submit"
-                      class="
-                        ml-4
-                        inline-flex
-                        justify-center
-                        py-2
-                        px-4
-                        border border-transparent
-                        shadow-sm
-                        text-sm
-                        font-medium
-                        rounded-full
-                        text-white
-                        bg-blue-600
-                        hover:bg-blue-700
-                        focus:outline-none
-                        focus:ring-2
-                        focus:ring-offset-2
-                        focus:ring-blue-500
-                      "
-                    >
-                      Save
-                    </button> -->
                 </div>
               </div>
             </div>

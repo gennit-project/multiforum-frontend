@@ -235,7 +235,7 @@ export default defineComponent({
     <div v-if="discussions && discussions.length > 0">
       <ul
         role="list"
-        class="my-6 mr-2 divide-y"
+        class="my-6 mr-2"
         data-testid="sitewide-discussion-list"
       >
         <SitewideDiscussionListItem

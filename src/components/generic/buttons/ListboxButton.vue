@@ -20,7 +20,7 @@ export default defineComponent({
 <template>
   <ListboxButton
     class="
-      bg-white dark:bg-black
+      bg-white dark:bg-gray-900
       dark:text-gray-200
       relative
       w-full

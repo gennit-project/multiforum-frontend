@@ -57,14 +57,14 @@ export default defineComponent({
         class="absolute py-2.5 left-0 pl-3 flex items-center pointer-events-none"
       >
         <LocationIcon
-          class="h-5 w-5 text-gray-400 dark:text-gray-500"
+          class="h-5 w-5 text-gray-400 dark:text-gray-200"
           aria-hidden="true"
         />
       </div>
       <GMapAutocomplete
         :class="[inTopNav ? 'max-w-sm h-10' : 'rounded-lg h-12 w-full']"
         autocomplete="false"
-        class="pl-10 pr-3 leading-5 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
+        class="pl-10 pr-3 leading-5 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-200 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
         :placeholder="referencePointAddressName"
         disable-portal
         @place_changed="updateLocationInput"

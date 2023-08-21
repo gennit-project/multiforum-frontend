@@ -1,5 +1,7 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
+import gql from "graphql-tag";
+import { useQuery } from "@vue/apollo-composable";
 
 export default defineComponent({
    props: {
@@ -9,7 +11,27 @@ export default defineComponent({
     },
   },
   setup() {
+    const GET_THEME = gql`
+      query getTheme {
+        theme @client
+      }
+    `;
+
+    const {
+      result: themeResult,
+      loading: themeLoading,
+      error: themeError,
+    } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      if (themeLoading.value || themeError.value) {
+        return "";
+      }
+      return themeResult.value.theme;
+    });
+
     return {
+      theme
     };
   },
   methods: {
@@ -37,7 +59,9 @@ export default defineComponent({
           />
         </div>
       </template>
-      <v-card> <slot name="content" /></v-card>
+      <v-card
+        :theme="theme"
+      > <slot name="content" /></v-card>
     </v-menu>
   </div>
 </template>

@@ -64,7 +64,7 @@ export default defineComponent({
       >
         <!-- Heroicon name: solid/search -->
         <svg
-          class="h-4 w-4 text-gray-400"
+          class="h-4 w-4 text-gray-400 dark:text-gray-100"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 20 20"
           fill="currentColor"
@@ -87,17 +87,17 @@ export default defineComponent({
           rounded-lg
           leading-5
           w-full
-          dark:bg-black
+          dark:bg-gray-500
           dark:text-white
           placeholder-gray-500
-          dark:placeholder-gray-400
+          dark:placeholder-gray-100
           dark:border-gray-700
           focus:outline-none
           focus:ring-1
           focus:ring-blue-500
           focus:border-blue-500
-          border border-gray-300
-          dark:border-gray-700
+        border-gray-200
+        
           text-sm
         "
         :placeholder="searchPlaceholder"
@@ -116,7 +116,7 @@ export default defineComponent({
         "
         @click="clear"
       >
-        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400" />
+        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400 dark:text-gray-100" />
       </div>
     </div>
   </div>

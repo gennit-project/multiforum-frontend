@@ -55,7 +55,7 @@ export default defineComponent({
     >
       <div class="absolute inset-0 overflow-hidden">
         <DialogOverlay 
-          class="absolute inset-y-0 bg-black bg-opacity-50"
+          class="absolute inset-y-0 bg-gray-900 bg-opacity-50"
           :class="openFromLeft ? 'right-0' : 'left-0'"
         />
         <div
@@ -73,7 +73,7 @@ export default defineComponent({
           >
             <DialogPanel class="pointer-events-auto w-screen max-w-lg">
               <div
-                class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-black dark:text-gray-200"
+                class="h-full divide-y divide-gray-200 flex flex-col shadow-xl bg-white dark:bg-gray-900 dark:text-gray-200"
               >
                 <div
                   class="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll"

@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 <template>
   <li>
-    <div class="flex items-center gap-1">
+    <div>
       <router-link
         :data-testid="`comments-in-${channelId}`"
         class="mr-1 underline"

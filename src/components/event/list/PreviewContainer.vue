@@ -86,6 +86,7 @@ export default defineComponent({
                              
                             rounded-full
                             text-gray-400
+                            dark:text-gray-200
                             hover:text-gray-500
                             focus:outline-none
                             focus:ring-2

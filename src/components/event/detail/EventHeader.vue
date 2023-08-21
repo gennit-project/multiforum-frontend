@@ -91,7 +91,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mb-4 px-4 py-4 md:flex md:items-center md:justify-between">
+  <div class="mb-4 px-4 py-4 md:flex md:items-center md:justify-between dark:text-gray-100">
     <div class="min-w-0 flex-1">
       <h2
         class="text-xl font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight"
@@ -101,7 +101,7 @@ export default defineComponent({
     </div>
   </div>
 
-  <div class="px-4 text-sm text-gray-700 text-gray-700 dark:text-slate-200">
+  <div class="px-4 text-sm text-gray-700 dark:text-gray-200">
     <ul class="space-y-2">
       <li class="hanging-indent flex items-start">
         <div class="mr-3 h-5 w-5">

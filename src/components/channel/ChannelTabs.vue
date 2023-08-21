@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from "vue";
-import TabButton from "@/components/nav/TabButton.vue";
+import TabButton from "@/components/channel/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";

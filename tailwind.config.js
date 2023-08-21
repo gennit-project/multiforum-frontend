@@ -7,6 +7,32 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
+    colors: {
+      gray: {
+        900: '#171c28',
+        800: '#1d2433',
+        700: '#21273b',
+        600: '#2a2f3e',
+        500: '#293147',
+        400: '#4c546b',
+        300: '#7c8da6',
+        200: '#b4bdc9',
+        100: '#e3e8ee',
+      },
+      white: "#ffffff",
+      black: "#000000",
+      blue: {
+        900: '#022021',
+        800: '#013336',
+        700: '#13505e',
+        600: '#1b8196',
+        500: '#23bcd9',
+        400: '#8be0f0',
+        300: '#b3eaf5',
+        200: '#d1fdff',
+        100: '#ebf7f7',
+      }
+    },
     fontWeight: {
       bold: '700',
     },
@@ -24,7 +50,7 @@ module.exports = {
         'red-transparent': 'rgba(255, 0, 0, 0.1)',
         'green-transparent': 'rgba(0, 255, 0, 0.1)',
         'blue-transparent': 'rgba(0, 0, 255, 0.1)',
-        'blue-transparent-lighter': 'rgba(0, 0, 255, 0.2)',
+        'blue-transparent-lighter': 'rgba(162, 248, 252, 0.05)',
         'yellow-transparent': 'rgba(255, 255, 0, 0.1)',
       },
       backgroundImage: (theme) => ({

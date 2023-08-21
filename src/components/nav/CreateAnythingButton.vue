@@ -32,15 +32,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <RequireAuth
-    class="align-middle"
-    :full-width="false"
-  >
+  <RequireAuth class="align-middle" :full-width="false">
     <template #has-auth>
-      <DropdownMenu
-        as="div"
-        class="relative inline-block text-left"
-      >
+      <DropdownMenu as="div" class="relative inline-block text-left">
         <MenuButton
           data-testid="create-anything-button"
           class="font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-full px-2 text-sm text-black hover:bg-gray-100 focus:outline-none dark:text-white dark:hover:bg-gray-900"
@@ -78,7 +72,7 @@ export default defineComponent({
                 <span
                   :class="[
                     active
-                      ? 'bg-gray-100 text-gray-900'
+                      ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
                       : 'text-gray-700 dark:text-gray-200',
                     'block px-4 py-2 text-sm',
                   ]"
@@ -101,7 +95,7 @@ export default defineComponent({
                 <span
                   :class="[
                     active
-                      ? 'bg-gray-100 text-gray-900'
+                      ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
                       : 'text-gray-700 dark:text-gray-200',
                     'block px-4 py-2 text-sm',
                   ]"
@@ -118,7 +112,7 @@ export default defineComponent({
                 <span
                   :class="[
                     active
-                      ? 'bg-gray-100 text-gray-900'
+                      ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
                       : 'text-gray-700 dark:text-gray-200',
                     'block px-4 py-2 text-sm',
                   ]"

@@ -113,7 +113,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen overflow-y-auto border-r-2 dark:border-gray-600">
+  <div class="h-screen overflow-y-auto dark:bg-gray-900">
     <div
       v-if="channelId"
       class="mt-6 mb-4 flex gap-2 items-center px-4"
@@ -124,7 +124,7 @@ export default defineComponent({
       />
       <h1
         v-if="channelId"
-        class="my-2 mb-2 flex justify-center border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
+        class="my-2 mb-2 flex justify-center border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
         {{ channelId }}
       </h1>
@@ -144,17 +144,17 @@ export default defineComponent({
       </div>
       <div v-else-if="channel">
         <div
-          class="w-full px-4"
+          class="w-full px-4 mb-4"
         >
           <div
             v-if="channel.description"
-            class="text-sm text-gray-600 px-2 my-2"
+            class="text-sm  dark:text-gray-200 px-2 my-2"
           >
             {{ channel.description }}
           </div>
           <p
             v-else
-            class="text-sm"
+            class="text-sm dark:text-gray-200"
           >
             {{ "This channel has no description." }}
           </p>

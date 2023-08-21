@@ -240,7 +240,7 @@ export default defineComponent({
         ? 'border-blue-500 px-4'
         : 'border-blue-200 '
     "
-    class="relative border-l-4 bg-white pb-2 pl-6 pt-3 dark:bg-gray-900"
+    class="relative border-l-4 bg-white pb-2 pl-6 pt-3 dark:bg-gray-800"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
     @mouseenter="hover = true"
@@ -278,7 +278,7 @@ export default defineComponent({
             <div>
               <p class="space-x-2">
                 <span
-                  class="text-md cursor-pointer truncate font-bold hover:underline"
+                  class="text-md cursor-pointer truncate font-bold dark:text-gray-100 hover:underline"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"
@@ -292,7 +292,7 @@ export default defineComponent({
                 >Canceled</span>
               </p>
               <p
-                class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 sm:mr-6 sm:mt-1"
+                class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
               >
                 {{ `${event.locationName || ""}` }}
               </p>
@@ -324,7 +324,7 @@ export default defineComponent({
                 />
               </div>
               <p
-                class="font-medium mt-1 flex space-x-1 text-sm text-slate-600 hover:no-underline"
+                class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
               >
                 <Tag
                   v-for="tag in event.Tags"

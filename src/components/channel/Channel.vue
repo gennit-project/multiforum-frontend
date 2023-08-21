@@ -73,7 +73,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-hidden dark:bg-black">
+  <div class="overflow-hidden dark:bg-gray-800">
     <div class="h-fit dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container
@@ -83,7 +83,7 @@ export default defineComponent({
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"
-            class="block border-b"
+            class="block border-b border-gray-200 dark:border-gray-600"
             :route="route"
           />
           <v-row>

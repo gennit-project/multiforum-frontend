@@ -208,7 +208,7 @@ export default defineComponent({
             name="addcomment"
             rows="1"
             placeholder="Write a reply"
-            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:bg-black dark:text-slate-200"
+            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-300 dark:focus:ring-gray-9"
             @click="showEditorInCommentSection = true"
           />
         </template>
@@ -218,7 +218,7 @@ export default defineComponent({
             name="addcomment"
             rows="1"
             placeholder="Write a reply"
-            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-black"
+            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-900"
           />
         </template>
       </RequireAuth>

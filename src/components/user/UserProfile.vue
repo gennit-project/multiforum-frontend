@@ -7,7 +7,7 @@ import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import Avatar from "./Avatar.vue";
 import { relativeTime } from "@/utils/dateTimeUtils";
-import TabButton from "@/components/nav/TabButton.vue";
+import TabButton from "@/components/channel/TabButton.vue";
 
 export default defineComponent({
   components: {
@@ -84,7 +84,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="dark:text-gray-200">
     <div v-if="loading">
       Loading...
     </div>

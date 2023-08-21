@@ -10,8 +10,8 @@ describe("Basic event operations", () => {
 
   it("creates, edits and deletes an online event", () => {
     const TEST_TITLE = "Tempe Event Title";
-    const TEST_LINK = "https://www.test.com";
-    const TEST_LINK_2 = "https://www.test2.com";
+    const TEST_LINK = "www.test.com";
+    const TEST_LINK_2 = "www.test2.com";
 
     // Test creating an event
     cy.visit(EVENT_CREATION_FORM);

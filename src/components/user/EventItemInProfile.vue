@@ -89,7 +89,7 @@ export default defineComponent({
       />
     </p>
 
-    <p class="text-sm text-slate-600 hover:no-underline font-medium mt-1">
+    <p class="text-sm text-gray-600 hover:no-underline font-medium mt-1">
       <Tag
         v-for="tag in tags"
         :key="tag"
@@ -99,7 +99,7 @@ export default defineComponent({
         @click="$emit('filterByTag', tag)"
       />
     </p>
-    <p class="text-xs font-medium text-slate-600 no-underline">
+    <p class="text-xs font-medium text-gray-600 no-underline">
       {{ `Posted ${relativeTime} by ${poster}` }}
     </p>
     <div class="text-sm space-x-2 my-2">

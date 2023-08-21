@@ -89,7 +89,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full bg-white dark:bg-black">
+  <div class="w-full bg-white dark:bg-gray-900">
     <div class="flex items-center justify-between px-4 py-3">
       <div class="flex items-center lg:px-0">
         <HamburgerMenuButton
@@ -104,7 +104,7 @@ export default defineComponent({
             to="/"
             class="flex items-center"
           >
-            <ChannelIcon class="mr-1 h-6 w-6 text-blue-600" /><span>gennit</span>
+            <ChannelIcon class="mr-1 h-6 w-6 text-blue-500" /><span>gennit</span>
           </router-link>
 
           <div
@@ -117,7 +117,7 @@ export default defineComponent({
               :is-square="true"
               class="h-6 w-6"
             />
-            <span class="font-bold text-blue-500 dark:text-white">{{
+            <span class="font-bold text-blue-600 dark:text-white">{{
               channelId
             }}</span>
           </div>

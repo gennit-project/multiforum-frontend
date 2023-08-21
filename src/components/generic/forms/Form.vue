@@ -34,7 +34,7 @@ export default defineComponent({
           autocomplete="off"
         >
           <div class="flex justify-between">
-            <h2 class="font-semibold pt-3 text-base leading-7 text-gray-900 dark:text-gray-300">
+            <h2 class="font-semibold pt-3 text-base leading-7 text-gray-900 dark:text-gray-100">
               {{ formTitle }}
             </h2>
             <div class="float-right">

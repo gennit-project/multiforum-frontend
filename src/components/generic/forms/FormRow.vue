@@ -21,7 +21,7 @@ export default defineComponent({
     <label
       v-if="sectionTitle"
       :for="sectionTitle"
-      class="font-medium block text-sm leading-6 text-gray-900 dark:text-gray-300"
+      class="font-medium block text-sm leading-6 text-gray-900 dark:text-gray-200"
     >
       {{ sectionTitle }}<span
         v-if="required"

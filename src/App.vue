@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class=" dark:text-slate-200 relative list-disc">
+  <div class=" dark:text-gray-200 relative list-disc">
     <nav>
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
@@ -98,7 +98,7 @@ export default defineComponent({
 }
 body {
   @media (prefers-color-scheme: dark) {
-    @apply bg-black;
+    @apply bg-gray-800;
     color-scheme: dark;
   }
 
@@ -108,7 +108,7 @@ body {
   }
 
   &.dark {
-    @apply bg-black;
+    @apply bg-gray-800;
     color-scheme: dark;
   }
 

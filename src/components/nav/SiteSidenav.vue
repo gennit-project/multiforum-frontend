@@ -92,27 +92,24 @@ export default defineComponent({
   <div v-if="showDropdown">
     <!-- Overlay (shadow) for the rest of the UI -->
     <div
-      class="fixed inset-0 z-40 bg-black opacity-50"
+      class="fixed inset-0 z-40 bg-gray-900 opacity-50 dark:text-gray-200"
       @click="$emit('close')"
     />
 
     <div
       v-click-outside="outside"
-      class="fixed left-0 top-0 z-50 flex h-full w-[250px] flex-col justify-between overflow-y-auto border bg-white py-2 dark:bg-slate-900"
+      class="fixed left-0 top-0 z-50 flex h-full w-[250px] flex-col justify-between overflow-y-auto border-gray-300 bg-white py-2 dark:border-gray-700 dark:bg-gray-900"
     >
       <div>
         <div class="mt-2 block px-6">
           <div class="flex h-7">
             <button
               type="button"
-              class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
               @click="$emit('close')"
             >
               <span class="sr-only">Close panel</span>
-              <XIcon
-                class="h-6 w-6"
-                aria-hidden="true"
-              />
+              <XIcon class="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -122,19 +119,17 @@ export default defineComponent({
             <li
               v-for="item in navigation"
               :key="item.name"
-              class="px-6"
+              class="px-6 dark:hover:bg-gray-700"
             >
               <router-link
                 :to="item.href"
-                :active="$route.path.includes(item.href)"
                 :data-testid="`nav-link-${item.name}`"
-                active-class="text-blue-600"
-                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100 dark:hover:bg-gray-800 "
                 @click="$emit('close')"
               >
                 <component
                   :is="item.icon"
-                  class="list-item-icon h-6 w-6 shrink-0"
+                  class="list-item-icon h-6 w-6 shrink-0 dark:text-gray-300"
                   aria-hidden="true"
                 />
                 {{ item.name }}
@@ -147,8 +142,7 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}`"
-          active-class="text-blue-600"
-          class="font-semibold group flex items-center gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          class="font-semibold group flex items-center gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
           @click="$emit('close')"
         >
           <Avatar :text="username" />
@@ -156,7 +150,7 @@ export default defineComponent({
         </router-link>
         <button
           v-if="!isAuthenticated"
-          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
           @click="login"
         >
           Log In
@@ -164,8 +158,7 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           to="/logout"
-          active-class="text-blue-600"
-          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:bg-slate-800 dark:hover:text-gray-300"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
           @click="logout"
         >
           Sign Out
@@ -175,20 +168,20 @@ export default defineComponent({
   </div>
 </template>
 
-  <style lang="scss" scoped>
-    nav li:hover,
-    nav li:active {
-      color: #2563eb;
-    }
+<style lang="scss" scoped>
+nav li:hover,
+nav li:active {
+  color: #2563eb;
+}
 
-    .list-item-icon {
-      color: #9ca3af;
-    }
-    .router-link-exact-active > .list-item-icon {
-      color: #2563eb;
-    }
+.list-item-icon {
+  color: #9ca3af;
+}
+.router-link-exact-active > .list-item-icon {
+  color: #2563eb;
+}
 
-    nav li > .router-link-exact-active {
-      color: #2563eb;
-    }
-  </style>
+nav li > .router-link-exact-active {
+  color: #2563eb;
+}
+</style>

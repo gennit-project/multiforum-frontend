@@ -127,13 +127,13 @@ export default defineComponent({
     <div v-if="events.length === 0">
       <p
         v-if="!showMap"
-        class="mt-3 px-4"
+        class="mt-3 px-4 dark:text-gray-200"
       >
         Could not find any events.
       </p>
       <p
         v-else
-        class="p-8"
+        class="p-8 dark:text-gray-200"
       >
         Could not find any events that can be shown on a map.
       </p>
@@ -157,7 +157,7 @@ export default defineComponent({
           event.id === highlightedEventId ||
             (!highlightedEventId &&
               highlightedEventLocationId === getEventLocationId(event))
-            ? 'bg-gray-200 dark:bg-slate-700'
+            ? 'bg-gray-200 dark:bg-gray-700'
             : '',
         ]"
         :show-map="showMap"

@@ -117,7 +117,7 @@ export default defineComponent({
   <v-container class="px-4">
     <div
       v-if="channelId"
-      class="my-4 flex items-center border-b"
+      class="my-4 py-1 space-x-2 flex items-center border-b"
     >
       <Avatar
         :text="channelId"
@@ -165,9 +165,9 @@ export default defineComponent({
           class="mt-6"
         >
           <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b border-gray-800">
+            <div class="flex justify-between border-b border-gray-800 dark:border-gray-300">
               <span
-                class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-100"
               >
                 Tags
               </span>
@@ -183,16 +183,16 @@ export default defineComponent({
               />
             </div>
           </div>
-          <div class="flex justify-between border-b border-gray-800">
+          <div class="flex justify-between border-b border-gray-800 dark:border-gray-300">
             <span
-              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-100"
             >
               Admins
             </span>
           </div>
           <ul
             v-if="channel.Admins.length > 0"
-            class="my-3 text-sm font-bold underline"
+            class="my-3 text-sm font-bold underline text-gray-200"
           >
             <li
               v-for="admin in channel.Admins"
@@ -226,15 +226,15 @@ export default defineComponent({
         class="w-full"
       >
         <template #has-auth>
-          <div class="flex w-full justify-between border-b border-gray-500">
+          <div class="flex w-full justify-between border-b border-gray-300">
             <span
-              class="my-2 mb-2 w-full text-sm font-bold leading-6 text-gray-600 dark:text-gray-300"
+              class="my-2 mb-2 w-full text-sm font-bold leading-6 text-gray-600 dark:text-gray-100"
             >
               Admin Actions
             </span>
           </div>
           <router-link
-            class="my-3 text-sm underline"
+            class="my-3 text-sm underline dark:text-gray-200"
             :to="`/channels/c/${channelId}/edit`"
           >
             Edit

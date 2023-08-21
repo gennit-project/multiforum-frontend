@@ -123,7 +123,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="text-xs text-gray-700 dark:text-slate-200 mt-4 px-4">
+  <div class="text-xs text-gray-700 dark:text-gray-200 mt-4 px-4">
     <p v-if="!eventData.virtualEventUrl && !eventData.address">
       This event won't show in site-wide search results because it doesn't have
       a location or a virtual event URL. It will only appear in channel specific

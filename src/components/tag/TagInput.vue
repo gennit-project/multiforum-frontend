@@ -115,7 +115,8 @@ export default defineComponent({
           flex
           relative
           rounded-md
-          shadow-sm
+          border
+          dark:border-none
         "
       >
         <Tag
@@ -132,7 +133,7 @@ export default defineComponent({
         <input
           v-model="currentInput"
           :data-testid="testId"
-          class="flex-1 block min-w-0 pl-3 pt-2 pb-2 dark:bg-black rounded-lg sm:text-sm  dark:text-gray-100 border-gray-300 dark:border-gray-800"
+          class=" dark:bg-gray-500 dark:border-none placeholder-gray-200 pl-4 dark:text-gray-100 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 w-full"
           :placeholder="channelMode ? 'Add channels to select your intended audience' : 'Add tags'"
           @keydown.enter="(event) => {
             saveTagAndClose(event)
