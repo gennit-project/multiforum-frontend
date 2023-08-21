@@ -467,7 +467,6 @@ export default defineComponent({
                     class="flex select-none items-center bg-gray-100 dark:bg-gray-700 dark:text-gray-200 pl-3 pr-1 text-gray-500 sm:text-sm"
                     >https://</span
                   >
-
                   <input
                     id="virtualEventUrl"
                     data-testid="link-input"
@@ -484,7 +483,6 @@ export default defineComponent({
                     "
                   />
                 </div>
-
                 <ErrorMessage
                   :text="
                     touched &&
@@ -521,7 +519,7 @@ export default defineComponent({
             <FormRow section-title="Details">
               <template #content>
                 <TextEditor
-                  data-testid="description-input"
+                  :test-id="'description-input'"
                   class="mb-3"
                   :disable-auto-focus="true"
                   :initial-value="formValues.description"

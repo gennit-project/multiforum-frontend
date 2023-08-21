@@ -238,16 +238,7 @@ export default defineComponent({
 
 <template>
   <v-container class="max-w-screen-2xl pt-4">
-    <p v-if="eventLoading">
-      Loading...
-    </p>
-    <ErrorBanner
-      v-else-if="eventError"
-      class="mx-auto block"
-      :text="eventError.message"
-    />
     <v-row
-      v-else
       class="p-0"
     >
       <v-col
@@ -259,8 +250,16 @@ export default defineComponent({
         <TimeShortcuts
           :is-list-view="true"
         />
+        <p v-if="eventLoading">
+          Loading...
+        </p>
+        <ErrorBanner
+          v-else-if="eventError"
+          class="mx-auto block"
+          :text="eventError.message"
+        />
         <EventList
-          v-if="!eventLoading && eventResult"
+          v-else-if="!eventLoading && eventResult"
           id="listView"
           :class="[!channelId ? '' : '']"
           class="relative"

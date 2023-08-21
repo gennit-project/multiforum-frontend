@@ -27,7 +27,7 @@ describe("Basic event operations", () => {
 
     cy.get('input[data-testid="end-time-time-input"]').type("09:30");
 
-    cy.get('input[data-testid="link-input"]').find("input").type(TEST_LINK);
+    cy.get('input[data-testid="link-input"]').type(TEST_LINK);
 
     cy.get('div[data-testid="description-input"]')
       .find("textarea")
@@ -35,17 +35,17 @@ describe("Basic event operations", () => {
 
     cy.get("button").contains("Save").click();
     cy.get("h2").contains(TEST_TITLE);
-    cy.get("span").contains(TEST_LINK);
+    cy.get("a").contains(TEST_LINK);
 
     // Test editing an event
     cy.get("button").contains("Edit").click();
-    cy.get('div[data-testid="link-input"]').find("input").focus().clear();
+    cy.get('input[data-testid="link-input"]').focus().clear();
 
-    cy.get('div[data-testid="link-input"]').find("input").type(TEST_LINK_2);
+    cy.get('input[data-testid="link-input"]').type(TEST_LINK_2);
 
     cy.get("button").contains("Save").click();
 
-    cy.get("span").contains(TEST_LINK_2);
+    cy.get("a").contains(TEST_LINK_2);
 
     // Test canceling an event
     cy.get("span").contains("Cancel").click();
