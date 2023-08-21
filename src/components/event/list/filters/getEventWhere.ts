@@ -64,7 +64,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
           title_CONTAINS: searchInput
         },
         {
-          title_CONTAINS: searchInput
+          description_CONTAINS: searchInput
         },
       ],
     });
@@ -134,7 +134,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // gotten into the query params.
     conditions.push({
       EventChannels: { 
-        channelUniqueName_CONTAINS: channelId
+        channelUniqueName: channelId
       },
     });
   } else if (truthyChannels.length > 0) {

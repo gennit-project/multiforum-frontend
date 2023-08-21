@@ -48,6 +48,22 @@ const events: EventCreateInputWithChannels[] = [
       canceled: false,
       startTimeDayOfWeek: "Wednesday",
       startTimeHourOfDay: 20,
+      Tags: {
+        "connectOrCreate": [
+          {
+            "onCreate": {
+              "node": {
+                "text": "newYears"
+              }
+            },
+            "where": {
+              "node": {
+                "text": "newYears"
+              }
+            }
+          }
+        ]
+      },
     },
     channelConnections: ["phx_music"],
   },
@@ -71,6 +87,22 @@ const events: EventCreateInputWithChannels[] = [
       canceled: false,
       startTimeDayOfWeek: "Wednesday",
       startTimeHourOfDay: 20,
+      Tags: {
+        "connectOrCreate": [
+          {
+            "onCreate": {
+              "node": {
+                "text": "trivia"
+              }
+            },
+            "where": {
+              "node": {
+                "text": "trivia"
+              }
+            }
+          }
+        ]
+      },
     },
     channelConnections: ["phx_music"],
   },

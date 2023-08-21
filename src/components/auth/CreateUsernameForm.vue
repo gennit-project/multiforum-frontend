@@ -233,7 +233,7 @@ export default defineComponent({
               aria-hidden="true"
             />
           </div>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-200">
             This username is available
           </p>
         </div>

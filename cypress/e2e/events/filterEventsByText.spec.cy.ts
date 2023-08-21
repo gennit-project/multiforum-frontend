@@ -1,6 +1,6 @@
 import { ONLINE_EVENT_LIST } from "../constants";
 import { deleteAll, seedAll } from "../utils";
-import { eventsForFilteringTests } from "../../support/seedData/eventsForFilteringTests";
+import eventsForFilteringTests from "../../support/seedData/eventsForFilteringTests";
 
 describe("Filter events by text", () => {
   beforeEach(function () {
@@ -13,7 +13,8 @@ describe("Filter events by text", () => {
     const searchTerm = "virtual";
 
     cy.visit(ONLINE_EVENT_LIST);
-    cy.get('div[data-testid="event-filter-search-bar"]')
+    cy.get('button[data-testid="more-filters-button"]').click();
+    cy.get('div[data-testid="event-drawer-search-bar"]')
       .find("input")
       .type(`${searchTerm}{enter}`);
 
@@ -29,7 +30,8 @@ describe("Filter events by text", () => {
     const searchTerm = "trivia";
 
     cy.visit(CHANNEL_VIEW);
-    cy.get('div[data-testid="event-filter-search-bar"]')
+    cy.get('button[data-testid="more-filters-button"]').click();
+    cy.get('div[data-testid="event-drawer-search-bar"]')
       .find("input")
       .type(`${searchTerm}{enter}`);
 

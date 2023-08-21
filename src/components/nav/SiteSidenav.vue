@@ -109,7 +109,10 @@ export default defineComponent({
               @click="$emit('close')"
             >
               <span class="sr-only">Close panel</span>
-              <XIcon class="h-6 w-6" aria-hidden="true" />
+              <XIcon
+                class="h-6 w-6"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
@@ -129,7 +132,7 @@ export default defineComponent({
               >
                 <component
                   :is="item.icon"
-                  class="list-item-icon h-6 w-6 shrink-0 dark:text-gray-300"
+                  class="list-item-icon h-6 w-6 shrink-0 dark:text-blue-500"
                   aria-hidden="true"
                 />
                 {{ item.name }}

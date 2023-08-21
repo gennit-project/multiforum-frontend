@@ -1,8 +1,8 @@
 import { timeShortcutValues } from "../../../src/components/event/list/filters/eventSearchOptions";
 import { DateTime } from "luxon";
-import { EventCreateInput } from "../../../src/__generated__/graphql";
 import { deleteAll } from "../utils";
 import { ONLINE_EVENT_LIST } from "../constants";
+import { EventCreateInputWithChannels } from "../../support/seedData/events";
 
 // For each time shortcut, we want to test that the correct events are shown.
 // First generate test events for each time shortcut.
@@ -93,36 +93,28 @@ const testEventData: TestEventData[] = [
 
 // Map test data to EventCreateInput objects
 const mapTestDataToGraphQLInput = (
-  events: TestEventData[]
-): EventCreateInput[] => {
+  events: TestEventData[],
+): EventCreateInputWithChannels[] => {
   return events.map((event: TestEventData) => {
     return {
-      title: event.name,
-      Channels: {
-        connect: [
-          {
+      eventCreateInput: {
+        title: event.name,
+        startTime: event.start,
+        endTime: event.end,
+        virtualEventUrl: "https://example.com",
+        Poster: {
+          connect: {
             where: {
               node: {
-                uniqueName: "phx_music",
+                username: "cluse",
               },
             },
           },
-        ],
-      },
-      startTime: event.start,
-      endTime: event.end,
-      virtualEventUrl: "https://example.com",
-      Poster: {
-        connect: {
-          where: {
-            node: {
-              username: "cluse",
-            },
-          },
         },
+        cost: "0",
+        canceled: false,
       },
-      cost: "0",
-      canceled: false,
+      channelConnections: ["phx_music"],
     };
   });
 };

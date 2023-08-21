@@ -38,10 +38,10 @@ export default defineComponent({
           />
         </div>
         <div class="ml-3 w-0 flex-1 pt-0.5">
-          <p class="text-sm font-medium text-gray-900">
+          <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
             Success
           </p>
-          <p class="mt-1 text-sm text-gray-500">
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-200">
             Authenticated as <span>{{ user.email }}</span>
           </p>
         </div>

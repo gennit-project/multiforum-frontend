@@ -1,7 +1,7 @@
 import { ONLINE_EVENT_LIST } from "../constants";
 import { deleteAll } from "../utils";
 import { DateTime } from "luxon";
-import { EventCreateInput } from "../../../src/__generated__/graphql";
+import { EventCreateInputWithChannels } from "../../support/seedData/events";
 
 // const timeZone = Cypress.env("TZ");
 // const now = DateTime.now().setZone(timeZone);
@@ -71,37 +71,29 @@ const testEventData: TestEventData[] = [
 // Map test data to EventCreateInput objects
 const mapTestDataToGraphQLInput = (
   events: TestEventData[]
-): EventCreateInput[] => {
+): EventCreateInputWithChannels[] => {
   return events.map((event: TestEventData) => {
     return {
-      title: event.name,
-      Channels: {
-        connect: [
-          {
+      eventCreateInput: {
+        title: event.name,
+        startTime: event.start,
+        startTimeDayOfWeek: event.startTimeDayOfWeek,
+        startTimeHourOfDay: event.startTimeHourOfDay,
+        endTime: event.end,
+        virtualEventUrl: "https://example.com",
+        Poster: {
+          connect: {
             where: {
               node: {
-                uniqueName: "cats",
+                username: "cluse",
               },
             },
           },
-        ],
-      },
-      startTime: event.start,
-      startTimeDayOfWeek: event.startTimeDayOfWeek,
-      startTimeHourOfDay: event.startTimeHourOfDay,
-      endTime: event.end,
-      virtualEventUrl: "https://example.com",
-      Poster: {
-        connect: {
-          where: {
-            node: {
-              username: "cluse",
-            },
-          },
         },
+        cost: "0",
+        canceled: false,
       },
-      cost: "0",
-      canceled: false,
+      channelConnections: ["cats"],
     };
   });
 };
@@ -123,8 +115,6 @@ describe("Filter events by weekdays and times", () => {
   it("in the sitewide online events list, filters events by weekday", () => {
     cy.visit(ONLINE_EVENT_LIST);
     cy.get('button[data-testid="more-filters-button"]').click();
-
-    cy.get('button[data-testid="show-advanced-button"]').click();
 
     // Click on the "Monday" checkbox
     cy.get('input[data-testid="weekday-1-checkbox"]').click();
@@ -161,8 +151,6 @@ describe("Filter events by weekdays and times", () => {
   it("in the sitewide online events list, filters events by time of day", () => {
     cy.visit(ONLINE_EVENT_LIST);
     cy.get('button[data-testid="more-filters-button"]').click();
-
-    cy.get('button[data-testid="show-advanced-button"]').click();
 
     // Click on the "6pm-9pm" checkbox
     cy.get('input[data-testid="timeRange-6pm-9pm"]').click();

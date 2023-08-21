@@ -65,7 +65,7 @@ export default defineComponent({
         event: 'darkMode',
       },
       {
-        label: 'System',
+        label: 'Device Default',
         icon: 'fa-solid fa-desktop',
         event: 'systemMode',
       },
