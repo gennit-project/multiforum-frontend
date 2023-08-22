@@ -80,16 +80,30 @@ export default defineComponent({
     });
 
     const { mutate: downvoteDiscussionChannel } = useMutation(
-      DOWNVOTE_DISCUSSION_CHANNEL,
+      DOWNVOTE_DISCUSSION_CHANNEL, () => {
+        return {
+          variables: {
+            id: discussionChannelId.value || "",
+            displayName: localModProfileNameResult.value?.modProfileName || "",
+          },
+        };
+      }
     );
 
     const { mutate: upvoteDiscussionChannel, onDone: onDoneUpvote } =
-      useMutation(UPVOTE_DISCUSSION_CHANNEL);
+      useMutation(UPVOTE_DISCUSSION_CHANNEL, () => {
+        return {
+          variables: {
+            id: discussionChannelId.value || "",
+            username: localUsernameResult.value?.username || "",
+          },
+        };
+      });
 
     const { mutate: undoUpvoteDiscussionChannel, onDone: onDoneUndoUpvote } =
       useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
         variables: {
-          id: props.discussionChannel.id || "",
+          id: discussionChannelId.value || "",
           username: localUsernameResult.value?.username || "",
         },
       }));
@@ -98,7 +112,7 @@ export default defineComponent({
       UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
       () => ({
         variables: {
-          id: props.discussionChannel.id || "",
+          id: discussionChannelId.value || "",
           displayName: localModProfileNameResult.value?.modProfileName || "",
         },
       }),
@@ -175,7 +189,7 @@ export default defineComponent({
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
       downvoteDiscussionChannel({
-        id: discussionChannelId.value?.id,
+        id: discussionChannelId.value,
         displayName: newModProfileName,
       });
     });
@@ -211,8 +225,14 @@ export default defineComponent({
   },
   methods: {
     async handleCreateModProfileClick() {
-      await this.createModProfile();
+      const result = await this.createModProfile();
 
+      const modProfileName =
+        result.data.updateUsers.users[0].ModerationProfile.displayName;
+
+      modProfileNameVar(modProfileName);
+
+      
       this.showModProfileModal = false;
     },
     async handleClickUp() {
@@ -231,7 +251,7 @@ export default defineComponent({
         }
       } else {
         // Create mod profile, then downvote comment
-        this.$emit("openModProfile");
+        this.showModProfileModal = true;
       }
     },
     async downvote() {

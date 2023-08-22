@@ -52,6 +52,7 @@ export default defineComponent({
   <RequireAuth class="flex flex-row space-x-3">
     <template #has-auth>
       <VoteButton
+        :test-id="'upvote-discussion-button'"
         :count="upvoteCount"
         :active="upvoteActive"
         @vote="clickUp"
@@ -61,6 +62,7 @@ export default defineComponent({
       <VoteButton
         v-if="showDownvote"
         class="ml-2"
+        :test-id="'downvote-discussion-button'"
         :count="downvoteCount"
         :active="downvoteActive"
         @vote="clickDown"
@@ -70,6 +72,7 @@ export default defineComponent({
     </template>
     <template #does-not-have-auth>
       <VoteButton
+        :test-id="'upvote-discussion-button'"
         :count="upvoteCount"
         :active="upvoteActive"
       >
@@ -77,6 +80,7 @@ export default defineComponent({
       </VoteButton>
       <VoteButton
         v-if="showDownvote"
+        :test-id="'downvote-discussion-button'"
         :count="downvoteCount"
         :active="downvoteActive"
       >

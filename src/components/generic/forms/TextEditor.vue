@@ -84,7 +84,10 @@ export default defineComponent({
   <form>
     <TabGroup>
       <TabList class="flex items-center">
-        <Tab v-slot="{ selected }" as="template">
+        <Tab
+          v-slot="{ selected }"
+          as="template"
+        >
           <button
             :class="[
               selected
@@ -96,7 +99,10 @@ export default defineComponent({
             Write
           </button>
         </Tab>
-        <Tab v-slot="{ selected }" as="template">
+        <Tab
+          v-slot="{ selected }"
+          as="template"
+        >
           <button
             :class="[
               selected
@@ -110,10 +116,17 @@ export default defineComponent({
         </Tab>
       </TabList>
       <TabPanels class="mt-2 h-40">
-        <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1" :data-testid="testId">
-          <label for="comment" class="sr-only">Comment</label>
+        <TabPanel
+          class="-m-0.5 rounded-lg px-0.5 py-1"
+          :data-testid="testId"
+        >
+          <label
+            for="comment"
+            class="sr-only"
+          >Comment</label>
           <textarea
             id="texteditor-textarea"
+            ref="editor"
             name="comment"
             rows="7"
             :placeholder="placeholder"

@@ -41,7 +41,7 @@ export default defineComponent({
   >
     <div
       :class="[vertical ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700']"
-      class="my-2 flex h-8 items-center space-x-2 rounded-lg px-3 py-2"
+      class="my-2 flex h-8 items-center space-x-2 rounded-lg  py-2"
     >
       <div class="text-blue-600 dark:text-blue-500">
         <slot />

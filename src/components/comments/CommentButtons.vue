@@ -214,7 +214,7 @@ export default defineComponent({
             />
             <div
               data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:hover:text-white"
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-200 dark:hover:bg-gray-700"
               :class="showReplyEditor ? 'text-black' : ''"
               @click="$emit('toggleShowReplyEditor')"
             >
@@ -230,13 +230,13 @@ export default defineComponent({
               "
               :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
             />
-            <div
+            <button
               data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-200 dark:hover:text-white"
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               <i class="fa-regular fa-comment h-4 w-4" />
               Reply
-            </div>
+            </button>
           </div>
         </template>
       </RequireAuth>

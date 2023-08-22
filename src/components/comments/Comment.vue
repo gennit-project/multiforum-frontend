@@ -197,7 +197,7 @@ export default defineComponent({
       const modProfileName =
         result.data.updateUsers.users[0].ModerationProfile.displayName;
 
-      modProfileNameVar();
+      modProfileNameVar(modProfileName);
       this.$emit("downvoteComment", {
         commentId: this.commentData.id,
         modProfileName,

@@ -125,6 +125,7 @@ export default defineComponent({
       :class="'align-center mt-2 flex justify-between'"
     >
       <router-link
+        data-testid="discussion-detail-back-link"
         :to="`/channels/c/${channelId}/discussions`"
         class="text-xs underline"
       >
