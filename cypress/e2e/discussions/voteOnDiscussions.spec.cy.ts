@@ -8,7 +8,7 @@ describe("Basic discussion operations", () => {
     cy.loginWithCreateEventButton();
   });
 
-  it("can upvote and downvote your own discussion", () => {
+  it("can upvote and downvote discussions", () => {
     const TEST_DISCUSSION = "Test discussion voting";
     const TEST_CHANNEL = "cats";
 
@@ -29,7 +29,7 @@ describe("Basic discussion operations", () => {
 
     // VOTING ON YOUR OWN DISCUSSION
 
-    // If you click that button again, it should have zero upvotes.
+    // If you click that upvote button, it should have zero upvotes.
     cy.get('button[data-testid="upvote-discussion-button"]').click();
     cy.get('button[data-testid="upvote-discussion-button"]').contains("0");
 

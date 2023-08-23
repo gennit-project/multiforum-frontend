@@ -25,5 +25,17 @@ const users: UserCreateInput[] = [
       },
     },
   },
+  {
+    username: "eleanorperaltamontoya",
+    Email: {
+      connect: {
+        where: {
+          node: {
+            address: "eleanorperaltamontoya@gmail.com",
+          },
+        },
+      },
+    },
+  }
 ];
 export default users;

@@ -1,12 +1,13 @@
 import './commands';
 import { EventCreateInputWithChannels } from './seedData/events';
 import { DiscussionCreateInputWithChannels } from './seedData/discussions';
+import { LoginInput } from "../support/commandFunctions/loginWithButtonClick";
 /* eslint-disable @typescript-eslint/no-namespace */
 
 declare global {
     namespace Cypress {
       interface Chainable {
-        loginWithCreateEventButton(): Chainable<Element>;
+        loginWithCreateEventButton(input?: LoginInput): Chainable<Element>;
         seedDiscussions(): Chainable<Element>;
         seedEvents(): Chainable<Element>;
         seedEmails(): Chainable<Element>;

@@ -60,6 +60,7 @@ export default defineComponent({
 <template>
   <div class="flex flex-row space-x-3">
     <VoteButton
+      :test-id="'upvote-comment-button'"
       :count="upvoteCount"
       :active="upvoteActive"
       @click="clickUpvote"
@@ -73,6 +74,7 @@ export default defineComponent({
       </v-tooltip>
     </VoteButton>
     <VoteButton
+      :test-id="'downvote-comment-button'"
       :count="downvoteCount"
       :active="downvoteActive"
       @click="clickDownvote"

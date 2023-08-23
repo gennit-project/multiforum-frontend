@@ -160,6 +160,7 @@ export default defineComponent({
         </button>
         <router-link
           v-if="isAuthenticated"
+          data-testid="sign-out-link"
           to="/logout"
           class="pl-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
           @click="logout"

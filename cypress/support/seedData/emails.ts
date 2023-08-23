@@ -7,6 +7,9 @@ const emails: EmailCreateInput[] = [
   {
     address: "the.rinnovator@gmail.com",
   },
+  {
+    address: "eleanorperaltamontoya@gmail.com"
+  }
 ];
 
 export default emails;

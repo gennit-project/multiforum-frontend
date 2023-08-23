@@ -8,6 +8,7 @@ export default defineComponent({
 </script>
 <template>
   <button
+    data-testid="hamburger-menu-button"
     type="button"
     class="inline-flex items-center justify-center rounded-full p-2 text-gray-400 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white dark:focus:ring-gray-700  hover:dark:text-white"
     aria-controls="mobile-menu"
