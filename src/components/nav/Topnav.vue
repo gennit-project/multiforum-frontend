@@ -75,6 +75,24 @@ export default defineComponent({
       showCreateMenu: ref(false),
     };
   },
+  computed: {
+    shouldShowChannelId() {
+      return this.channelId;
+    },
+    shouldShowRouteInfo() {
+      return (
+        this.route.name === "MapView" || this.route.name === "SearchChannels"
+      );
+    },
+    routeInfoLabel() {
+      if (this.route.name === "MapView") {
+        return "events map";
+      } else if (this.route.name === "SearchChannels") {
+        return "channels";
+      }
+      return "";
+    },
+  },
   methods: {
     getLabel() {
       if (this.route.name === "SitewideSearchDiscussionPreview") {
@@ -82,6 +100,9 @@ export default defineComponent({
       }
       if (this.route.name === "SitewideSearchEventPreview") {
         return "/ online events";
+      }
+      if (this.route.name === "MapEventPreview") {
+        return "/ in-person events";
       }
     },
   },
@@ -100,47 +121,25 @@ export default defineComponent({
         <div
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
-          <router-link
-            to="/"
-            class="flex items-center"
-          >
-            <ChannelIcon class="mr-1 h-6 w-6 text-blue-500" /><span>gennit</span>
+          <router-link to="/" class="flex items-center">
+            <ChannelIcon class="mr-1 h-6 w-6 text-blue-500" /><span
+              >gennit</span
+            >
           </router-link>
 
-          <div
-            v-if="channelId"
-            class="flex items-center gap-1"
-          >
+          <div v-if="shouldShowChannelId" class="flex items-center gap-1">
             <span>/</span>
-            <Avatar
-              :text="channelId"
-              :is-square="true"
-              class="h-6 w-6"
-            />
+            <Avatar :text="channelId" :is-square="true" class="h-6 w-6" />
             <span class="font-bold text-blue-600 dark:text-white">{{
               channelId
             }}</span>
           </div>
-          <div
-            v-else
-            class="flex items-center gap-1"
-          >
+          <div v-else-if="shouldShowRouteInfo" class="flex items-center gap-1">
+            <span>/</span>
+            {{ routeInfoLabel }}
+          </div>
+          <div v-else class="flex items-center gap-1">
             {{ getLabel() }}
-          </div>
-
-          <div
-            v-if="route.name === 'MapView'"
-            class="flex items-center gap-1"
-          >
-            <span>/</span>
-            events map
-          </div>
-          <div
-            v-else-if="route.name === 'SearchChannels'"
-            class="flex items-center gap-1"
-          >
-            <span>/</span>
-            channels
           </div>
         </div>
       </div>
@@ -160,10 +159,7 @@ export default defineComponent({
       <div class="flex items-center space-x-4">
         <CreateAnythingButton />
         <ThemeSwitcher />
-        <div
-          v-if="isAuthenticated && username"
-          class="hidden lg:ml-4 lg:block"
-        >
+        <div v-if="isAuthenticated && username" class="hidden lg:ml-4 lg:block">
           <div class="flex items-center">
             <!-- <NotificationButton/> -->
             <div class="relative flex-shrink-0">
