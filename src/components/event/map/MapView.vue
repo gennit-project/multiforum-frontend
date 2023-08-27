@@ -494,8 +494,8 @@ export default defineComponent({
       >
         <template #leftpane>
           <div
-            class="m-8 h-full overflow-y-auto"
-            style="width: 40vw"
+            class="m-8 h-full"
+            style="width: 35vw"
           >
             <div>
               <EventFilterBar

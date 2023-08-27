@@ -6,13 +6,8 @@ export type LoginInput = {
 };
 
 const login = (input: LoginInput) => {
-  console.log("loginWithCreateEventButton", input);
-
   const username = input?.username || Cypress.env("auth0_username");
   const password = input?.password || Cypress.env("auth0_password");
-
-  console.log("Username:", username);
-  console.log("Password:", password);
 
   cy.visit(ONLINE_EVENT_LIST)
     .get('[data-testid="fake-create-anything-button"]')

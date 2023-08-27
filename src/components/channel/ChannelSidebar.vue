@@ -40,7 +40,6 @@ export default defineComponent({
       if (getChannelLoading.value || getChannelError.value) {
         return null;
       }
-      console.log(getChannelResult.value);
       return getChannelResult.value.channels[0];
     });
 

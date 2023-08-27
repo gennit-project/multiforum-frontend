@@ -35,7 +35,7 @@ export default defineComponent({
   >
     <v-row class="w-full p-0">
       <v-col
-        :cols="mdAndDown ? 12 : 5"
+        :cols="5"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
@@ -45,8 +45,8 @@ export default defineComponent({
         <slot name="leftpane" />
       </v-col>
       <v-col
-        v-if="lgAndUp || (mdAndUp && showRightPaneAtMediumScreenWidth)"
-        :cols="mdAndDown ? 12 : 7"
+        v-if="mdAndUp"
+        :cols="7"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
