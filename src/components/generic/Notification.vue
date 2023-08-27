@@ -55,12 +55,12 @@ export default defineComponent({
                 />
               </div>
               <div class="ml-3 w-0 flex-1 pt-0.5">
-                <p class="font-medium text-sm text-gray-900">
+                <p class="font-medium text-sm text-gray-900 dark:text-gray-200">
                   {{ title }}
                 </p>
                 <p
                   v-if="detail"
-                  class="mt-1 text-sm text-gray-500"
+                  class="mt-1 text-sm text-gray-500 dark:text-gray-200"
                 >
                   {{ detail }}
                 </p>
@@ -68,7 +68,7 @@ export default defineComponent({
               <div class="ml-4 flex flex-shrink-0">
                 <button
                   type="button"
-                  class="inline-flex rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                  class="inline-flex rounded-full text-gray-400 hover:text-gray-500 dark:hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                   @click="$emit('closeNotification')"
                 >
                   <span class="sr-only">Close</span>
