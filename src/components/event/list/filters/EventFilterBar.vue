@@ -445,14 +445,11 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-2">
-    <div
-      v-if="route.name !== 'EventDetail'"
-      class="w-full"
-    >
+    <div v-if="route.name !== 'EventDetail'" class="w-full">
       <div class="mr-6 flex flex-wrap justify-between space-x-4 align-middle">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
-          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white p-3  shadow dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
+          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white p-3 shadow dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
           aria-label="Open event filters"
           data-testid="open-event-filters"
           @click="handleClickMoreFilters"
@@ -501,7 +498,7 @@ export default defineComponent({
         <div class="inline-flex items-center align-middle">
           <button
             data-testid="more-filters-button"
-            class="dark:bg-gray-700 border dark:border-gray-600 dark:hover:bg-gray-600 max-height-3 font-medium inline-flex whitespace-nowrap rounded-md px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-50 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:text-gray-200"
+            class="max-height-3 font-medium hover:bg-gray-50 inline-flex whitespace-nowrap rounded-md border px-3.5 py-2.5 text-xs text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             @click="handleClickMoreFilters"
           >
             <FilterIcon class="-ml-0.5 mr-2 h-4 w-4" />
@@ -520,91 +517,95 @@ export default defineComponent({
         :open-from-left="true"
         @closePreview="drawerIsOpen = false"
       >
-        <SearchBar
-          class="inline-flex w-full align-middle"
-          data-testid="event-drawer-search-bar"
-          :initial-value="filterValues.searchInput"
-          :search-placeholder="'Search text'"
-          :full-width="true"
-          @updateSearchInput="updateSearchInput"
-        />
-        <LocationSearchBar
-          v-if="showLocationSearchBarAndDistanceButtons"
-          class="flex w-full flex-wrap"
-          data-testid="event-drawer-location-search-bar"
-          :search-placeholder="referencePointAddress"
-          :reference-point-address-name="referencePointName"
-          @updateLocationInput="updateLocationInput"
-        />
-        <div v-if="showLocationSearchBarAndDistanceButtons">
-          <div v-if="selectedDistanceUnit === MilesOrKm.KM">
-            <GenericButton
-              v-for="distance in distanceOptionsForKilometers"
-              :key="distance.value"
-              :data-testid="`distance-${distance.value}`"
-              :text="`${distance.label} ${distance.value !== 0 ? 'km' : ''}`"
-              :active="distance.value === filterValues.radius"
-              class="mr-2"
-              @click="updateSelectedDistance(distance)"
-            />
-          </div>
-          <div v-else>
-            <GenericButton
-              v-for="distance in distanceOptionsForMiles"
-              :key="distance.value"
-              :data-testid="`distance-${distance.value}`"
-              :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
-              :active="distance.value === filterValues.radius"
-              class="mr-2"
-              @click="updateSelectedDistance(distance)"
-            />
-          </div>
-        </div>
-
-        <SelectCanceled
-          :show-canceled="filterValues.showCanceledEvents || false"
-          @updateShowCanceled="updateShowCanceled"
-        />
-
-        <SelectFree
-          :show-only-free="filterValues.free || false"
-          @updateShowOnlyFree="updateShowOnlyFree"
-        />
-
-        <hr class="mb-4 mt-6">
-
-        <div id="advancedFilters">
-          <h2
-            class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
-          >
-            Weekdays
-          </h2>
-
-          <div class="flex ">
-            <div class="-my-2 sm:-mx-6 lg:-mx-8">
-              <div class="inline-block py-2 align-middle sm:px-6 lg:px-8">
-                <div class="mb-4">
-                  <WeekdaySelector
-                    :selected-weekdays="filterValues.weekdays"
-                    @updateWeekdays="updateWeekdays"
-                    @reset="resetWeekdays"
-                  />
-                </div>
-              </div>
+        <div class="flex flex-col gap-3">
+          <SearchBar
+            class="inline-flex w-full align-middle"
+            data-testid="event-drawer-search-bar"
+            :initial-value="filterValues.searchInput"
+            :search-placeholder="'Search text'"
+            :full-width="true"
+            @updateSearchInput="updateSearchInput"
+          />
+          <LocationSearchBar
+            v-if="showLocationSearchBarAndDistanceButtons"
+            class="flex w-full flex-wrap"
+            data-testid="event-drawer-location-search-bar"
+            :search-placeholder="referencePointAddress"
+            :reference-point-address-name="referencePointName"
+            @updateLocationInput="updateLocationInput"
+          />
+          <div v-if="showLocationSearchBarAndDistanceButtons">
+            <div
+              v-if="selectedDistanceUnit === MilesOrKm.KM"
+              class="flex flex-wrap gap-x-1 gap-y-3"
+            >
+              <GenericButton
+                v-for="distance in distanceOptionsForKilometers"
+                :key="distance.value"
+                :data-testid="`distance-${distance.value}`"
+                :text="`${distance.label} ${distance.value !== 0 ? 'km' : ''}`"
+                :active="distance.value === filterValues.radius"
+                @click="updateSelectedDistance(distance)"
+              />
+            </div>
+            <div v-else class="flex flex-wrap gap-x-1 gap-y-3">
+              <GenericButton
+                v-for="distance in distanceOptionsForMiles"
+                :key="distance.value"
+                :data-testid="`distance-${distance.value}`"
+                :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
+                :active="distance.value === filterValues.radius"
+                class="mr-2"
+                @click="updateSelectedDistance(distance)"
+              />
             </div>
           </div>
 
-          <h2
-            class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
-          >
-            Time Slots
-          </h2>
-
-          <TimeSelector
-            :selected-hour-ranges="filterValues.hourRanges"
-            @updateHourRanges="updateHourRanges"
-            @reset="resetHourRanges"
+          <SelectCanceled
+            :show-canceled="filterValues.showCanceledEvents || false"
+            @updateShowCanceled="updateShowCanceled"
           />
+
+          <SelectFree
+            :show-only-free="filterValues.free || false"
+            @updateShowOnlyFree="updateShowOnlyFree"
+          />
+
+          <hr class="mb-4 mt-6" />
+
+          <div id="advancedFilters">
+            <h2
+              class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
+            >
+              Weekdays
+            </h2>
+
+            <div class="flex">
+              <div class="-my-2 sm:-mx-6 lg:-mx-8">
+                <div class="inline-block py-2 align-middle sm:px-6 lg:px-8">
+                  <div class="mb-4">
+                    <WeekdaySelector
+                      :selected-weekdays="filterValues.weekdays"
+                      @updateWeekdays="updateWeekdays"
+                      @reset="resetWeekdays"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <h2
+              class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
+            >
+              Time Slots
+            </h2>
+
+            <TimeSelector
+              :selected-hour-ranges="filterValues.hourRanges"
+              @updateHourRanges="updateHourRanges"
+              @reset="resetHourRanges"
+            />
+          </div>
         </div>
       </DrawerFlyout>
     </div>
