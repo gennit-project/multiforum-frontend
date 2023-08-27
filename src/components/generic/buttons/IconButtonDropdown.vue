@@ -1,11 +1,13 @@
 <script lang="ts">
+import { useRouter } from "vue-router";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { defineComponent, PropType } from "vue";
 
 type MenuItemType = {
-  event: string;
+  value: string;
   icon: string;
   label: string;
+  event?: string;
 };
 
 export default defineComponent({
@@ -28,23 +30,20 @@ export default defineComponent({
     },
   },
   setup() {
-    return {};
+    const router = useRouter();
+    return {
+      router,
+    };
   },
 });
 </script>
 <template>
-  <DropdownMenu
-    as="div"
-    class="relative inline-block text-left"
-  >
+  <DropdownMenu as="div" class="relative inline-block text-left">
     <div>
       <MenuButton
-        class="h-10 inline-flex w-full justify-center items-center gap-x-1.5 rounded-full px-2 text-sm font-semibold text-black dark:text-white hover:bg-gray-100 focus:outline-none dark:hover:bg-gray-900"
+        class="font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-full px-2 text-sm text-black hover:bg-gray-100 focus:outline-none dark:text-white dark:hover:bg-gray-900"
       >
-        <i
-          v-if="menuButtonIcon"
-          :class="` ${menuButtonIcon} `"
-        />
+        <i v-if="menuButtonIcon" :class="` ${menuButtonIcon} `" />
         <div v-else>
           <slot />
         </div>
@@ -59,7 +58,7 @@ export default defineComponent({
       leave-to-class="transform opacity-0 scale-95"
     >
       <MenuItems
-        class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white dark:bg-gray-700 dark:text-gray-200 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
       >
         <div class="py-1">
           <MenuItem
@@ -67,7 +66,12 @@ export default defineComponent({
             :key="i"
             v-slot="{ active }"
             class="cursor-pointer"
-            @click="$emit(item.event || 'click', item)"
+            @click="() => {
+              if (item.event) {
+                $emit(item.event)
+              }
+              router.push(item.value)
+            }"
           >
             <span
               :class="[
@@ -77,10 +81,7 @@ export default defineComponent({
                 'block px-4 py-2 text-sm',
               ]"
             >
-              <i
-                v-if="item.icon"
-                :class="item.icon"
-              /> {{ item.label }}
+              <i v-if="item.icon" :class="item.icon" /> {{ item.label }}
             </span>
           </MenuItem>
         </div>

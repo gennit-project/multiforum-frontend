@@ -72,7 +72,7 @@ export default defineComponent({
                 "
               >
                 <div
-                  class="min-h-0 flex-1 flex flex-col py-6  bg-white dark:bg-gray-800 dark:text-gray-200"
+                  class="min-h-0 flex-1 flex flex-col py-2  bg-white dark:bg-gray-800 dark:text-gray-200"
                 >
                   <div class="px-4 sm:px-6">
                     <div class="flex items-start justify-between">

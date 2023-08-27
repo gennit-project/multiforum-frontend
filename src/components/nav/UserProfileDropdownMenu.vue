@@ -25,30 +25,15 @@ export default defineComponent({
     let menuItems = [
       {
         label: "My Profile",
-        value: `/u/${props.username}/comments`,
+        value: `/u/${props.username}`,
       },
       {
         label: "Sign out",
         value: "/logout",
+        event: "logout",
       },
     ];
 
-    if (props.modName) {
-      menuItems = [
-        {
-          label: "My Profile",
-          event: "goToUserProfile",
-        },
-        // {
-        //   label: "My Mod Profile",
-        //   event: "goToModProfile",
-        // },
-        {
-          label: "Sign Out",
-          event: "logout",
-        },
-      ];
-    }
 
     return {
       isAuthenticated,

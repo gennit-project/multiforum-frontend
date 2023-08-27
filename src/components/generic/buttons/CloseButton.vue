@@ -4,7 +4,8 @@
   <button
     type="button"
     class="
-       
+      dark:text-gray-200
+      dark:hover:bg-gray-700
       py-2
       px-4
       border border-gray-300
