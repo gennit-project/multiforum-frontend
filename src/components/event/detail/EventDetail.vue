@@ -104,7 +104,7 @@ export default defineComponent({
     if (typeof eventId.value === "string") {
       discussionChannelId = eventId.value + channelId.value;
     } else {
-      throw new Error("Event ID is not a string.");
+      console.warn("Event ID is not a string: " + eventId.value);
     }
 
     const eventIsInThePast = computed(() => {

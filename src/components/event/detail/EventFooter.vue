@@ -137,6 +137,7 @@ export default defineComponent({
       >
         {{ eventData.Poster.username }}
       </router-link>
+      <span v-else>[Deleted]</span>
       {{
         `${
           eventData.createdAt

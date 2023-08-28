@@ -93,7 +93,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="relative flex-1">
+                  <div class="relative flex-1" data-testid="event-preview">
                     <EventDetail :compact-mode="true" />
                   </div>
                 </div>

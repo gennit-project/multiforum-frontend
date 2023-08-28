@@ -44,5 +44,14 @@ describe("Filter events by text", () => {
 
     // There should be 12 results (all in-person events in the test data).
     cy.get('ul[data-testid="event-list"]').find("li").should("have.length", 15);
+
+    // Click "Selena Night" in the list
+    cy.get('ul[data-testid="event-list"]')
+      .find("span")
+      .contains("Selena Night")
+      .click();
+
+    // Confirm that the preview drawer opens and it has Selena Night
+    cy.get('div[data-testid="event-preview"]').contains("Selena Night");
   });
 });
