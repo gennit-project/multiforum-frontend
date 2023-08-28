@@ -13,7 +13,7 @@ describe("Filter events by text", () => {
     // Go to the map view.
     cy.visit(IN_PERSON_EVENT_LIST);
 
-    // Open the drawer.
+    // Open the "More Filters" drawer.
     cy.get('button[data-testid="more-filters-button"]').click();
 
     // Click the distance filter for 5 miles (8.04672 km).
@@ -32,5 +32,11 @@ describe("Filter events by text", () => {
       .each(($el) => {
         cy.wrap($el).contains("Yucca Tap Room");
       });
+
+    // Open the "More Filters" drawer.
+    cy.get('button[data-testid="more-filters-button"]').click();
+
+    // Click the "Any Distance" button.
+    cy.get('button[data-testid="distance-0"]').click();
   });
 });

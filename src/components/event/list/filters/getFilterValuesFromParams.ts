@@ -224,7 +224,16 @@ const getFilterValuesFromParams = function (
     hasVirtualEventUrl,
   } = cleanedValues;
 
-  const defaultRadius = channelId ? 0 : 160.934; // 100 miles
+  const defaultRadius = 160.934; // 100 miles
+  let selectedRadius = defaultRadius;
+
+  if (channelId) {
+    selectedRadius = 0;
+  }
+
+  if (radius !== undefined) {
+    selectedRadius = radius;
+  }
 
   const filterValues: SearchEventValues = {
     timeShortcut: timeShortcut || timeShortcutValues.NONE,
@@ -267,7 +276,7 @@ const getFilterValuesFromParams = function (
     } 
     const locationParams = {
       locationFilter: LocationFilterTypes.WITHIN_RADIUS,
-      radius: radius || defaultRadius,
+      radius: selectedRadius,
       placeName: placeName || defaultPlace.name,
       placeAddress: placeAddress || defaultPlace.address,
       placeId: placeId || "",

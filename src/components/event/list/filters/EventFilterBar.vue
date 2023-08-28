@@ -426,6 +426,7 @@ export default defineComponent({
         this.updateLocalState({
           locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
         });
+        this.updateFilters({ radius: 0 });
       }
       let d: number = 0;
 

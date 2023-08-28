@@ -240,7 +240,7 @@ export const distanceOptionsForKilometers: Array<DistanceUnit> = [
     value: 100,
   },
   {
-    label: "Any",
+    label: "Any distance",
     value: 0,
   },
 ];
