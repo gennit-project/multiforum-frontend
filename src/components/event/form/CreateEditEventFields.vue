@@ -472,7 +472,7 @@ export default defineComponent({
                     data-testid="link-input"
                     type="text"
                     name="virtualEventUrl"
-                    class="bg-transparent block w-full dark:bg-gray-500 flex-1 border-0 py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    class="bg-transparent block w-full dark:bg-gray-500 flex-1 border-0 py-1.5 pl-1 text-gray-900 dark:text-gray-200 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
                     :value="
                       formValues.virtualEventUrl?.split('https://').join('')
                     "

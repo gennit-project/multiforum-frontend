@@ -39,13 +39,22 @@ describe("Basic event operations", () => {
 
     // Test editing an event
     cy.get("button").contains("Edit").click();
-    cy.get('input[data-testid="link-input"]').focus().clear();
 
+    // Change the link
+    cy.get('input[data-testid="link-input"]').focus().clear();
     cy.get('input[data-testid="link-input"]').type(TEST_LINK_2);
+
+    // Change the start time
+    cy.get('input[data-testid="start-time-date-input"]').type("2023-12-02");
+
+    // Change the end time
+    cy.get('input[data-testid="end-time-date-input"]').type("2023-12-02");
 
     cy.get("button").contains("Save").click();
 
+    // Check that the event has been updated
     cy.get("a").contains(TEST_LINK_2);
+    cy.get("span").contains("December 2 2023");
 
     // Test canceling an event
     cy.get("span").contains("Cancel").click();
