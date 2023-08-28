@@ -54,14 +54,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full h-screen overflow-auto space-y-4 lg:px-8 py-1">
-    <div class="mb-10 flex justify-center rounded-lg">
-      <DiscussionDetailContent
-        v-if="discussionId"
-        :discussion-id="discussionId"
-        :compact-mode="compactMode"
-      />
-    </div>
+  <div class="h-screen w-full space-y-4 overflow-auto py-1 lg:px-4">
+    <DiscussionDetailContent
+      v-if="discussionId"
+      :discussion-id="discussionId"
+      :compact-mode="compactMode"
+    />
   </div>
 </template>
 <style>
