@@ -38,5 +38,11 @@ describe("Filter events by text", () => {
 
     // Click the "Any Distance" button.
     cy.get('button[data-testid="distance-0"]').click();
+
+    // Close the drawer.
+    cy.get('button[data-testid="close-drawer-bottom-button"]').click();
+
+    // There should be 12 results (all in-person events in the test data).
+    cy.get('ul[data-testid="event-list"]').find("li").should("have.length", 15);
   });
 });

@@ -150,6 +150,9 @@ export default defineComponent({
 
     const displayDistance = computed(() => {
       const distance = filterValues.value.radius;
+      if (filterValues.value.radius === 0) {
+        return "Any distance"
+      }
       const unit = selectedDistanceUnit.value;
       if (unit === MilesOrKm.KM) {
         return `${distance} km`;
