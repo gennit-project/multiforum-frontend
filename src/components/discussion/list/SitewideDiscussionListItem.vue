@@ -96,8 +96,7 @@ export default defineComponent({
       if (!this.discussion) {
         return "";
       }
-       return `/discussions/search/${this.discussion.id}`;
-
+      return `/discussions/search/${this.discussion.id}`;
     },
     filteredQuery() {
       const query = { ...this.$route.query };
@@ -107,24 +106,26 @@ export default defineComponent({
         }
       }
       return query;
-    }
+    },
   },
 });
 </script>
 
 <template>
   <li
-    class="relative flex gap-3 space-x-2 pb-2 pt-4"
+    class="relative mt-1 flex gap-3 space-x-2 rounded-md p-4 pb-2"
+    :class="[
+      discussionId === discussionIdInParams
+        ? 'border border-blue-500 bg-gray-100  dark:bg-gray-700'
+        : '',
+    ]"
   >
-    <span class="mt-1 w-6"><span class="flex text-gray-500 dark:text-gray-200 text-sm items-center"><i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}</span>
-      <v-tooltip
-        activator="parent"
-        location="top"
+    <span class="mt-1 w-6"
+      ><span class="flex items-center text-sm text-gray-500 dark:text-gray-200"
+        ><i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}</span
       >
-      
-        <span>{{
-          `Sum of votes across channels, deduplicated by user`
-        }}</span>
+      <v-tooltip activator="parent" location="top">
+        <span>{{ `Sum of votes across channels, deduplicated by user` }}</span>
       </v-tooltip>
     </span>
 
@@ -137,10 +138,7 @@ export default defineComponent({
           :class="discussionIdInParams === discussionId ? 'text-blue-500' : ''"
           class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
         >
-          <HighlightedSearchTerms
-            :text="title"
-            :search-input="searchInput"
-          />
+          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
         </p>
       </router-link>
 
@@ -179,12 +177,9 @@ export default defineComponent({
       </div>
     </div>
     <span class="flex items-center gap-1 text-gray-500 dark:text-gray-100">
-      <i class="fa-regular fa-comment mt-1 h-6 w-6 " />
+      <i class="fa-regular fa-comment mt-1 h-6 w-6" />
       {{ commentCount }}
-      <v-tooltip
-        activator="parent"
-        location="top"
-      >
+      <v-tooltip activator="parent" location="top">
         <span>{{ `Sum of comments across channels` }}</span>
       </v-tooltip>
     </span>

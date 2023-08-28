@@ -236,9 +236,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="w-full">
-    <p v-if="discussionLoading">
-      Loading...
-    </p>
+    <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       v-else-if="discussionError"
       class="max-w-5xl"
@@ -247,7 +245,7 @@ export default defineComponent({
     <p
       v-else-if="
         discussionChannelResult &&
-          discussionChannelResult.discussionChannels.length === 0
+        discussionChannelResult.discussionChannels.length === 0
       "
       class="my-6 px-4"
     >
@@ -278,7 +276,7 @@ export default defineComponent({
             class="justify-self-center"
             :reached-end-of-results="
               discussionChannelResult.discussionChannelsAggregate?.count ===
-                discussionChannelResult.discussionChannels.length
+              discussionChannelResult.discussionChannels.length
             "
             @loadMore="loadMore"
           />

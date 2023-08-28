@@ -186,8 +186,8 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex space-x-1 space-y-3 border-b py-4 dark:border-gray-800"
-    :class="[isActive ? 'text-bold' : '']"
+    class="relative flex space-x-1 space-y-3 p-4 mt-1 rounded-md"
+    :class="[isActive ? 'text-bold border border-blue-500 bg-gray-100  dark:bg-gray-700' : '']"
   >
     <v-row>
       <v-col cols="2">

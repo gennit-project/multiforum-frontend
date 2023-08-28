@@ -13,18 +13,15 @@ describe("Basic event operations", () => {
     const TEST_LINK = "www.test.com";
     const TEST_LINK_2 = "www.test2.com";
 
-    // Test creating an event
+    // Test creating an online event
     cy.visit(EVENT_CREATION_FORM);
     cy.get('input[data-testid="title-input"]').type(TEST_TITLE);
 
     cy.get('input[data-testid="channel-input"]').type("phx_music{enter}");
 
     cy.get('input[data-testid="start-time-date-input"]').type("2023-12-01");
-
     cy.get('input[data-testid="start-time-time-input"]').type("08:30");
-
     cy.get('input[data-testid="end-time-date-input"]').type("2023-12-01");
-
     cy.get('input[data-testid="end-time-time-input"]').type("09:30");
 
     cy.get('input[data-testid="link-input"]').type(TEST_LINK);
@@ -75,10 +72,4 @@ describe("Basic event operations", () => {
     // for the channel view
     cy.url().should("include", "events/search");
   });
-
-  // need to mock this.
-  // cy.get('div[data-testid="location-input"]')
-  //   .find('input')
-  //   .type("Tempe Public Library{downArrow}")
-  //   .type("{enter}");
 });

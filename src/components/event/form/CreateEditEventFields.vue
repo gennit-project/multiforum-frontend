@@ -412,45 +412,44 @@ export default defineComponent({
                   <div class="flex-wrap items-center space-x-2 xl:flex">
                     <input
                       data-testid="start-time-date-input"
-                      class="cursor-pointer dark:border-none rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
                       type="date"
                       placeholder="Date"
                       label="Start"
                       :value="formattedStartTimeDate"
                       @input="handleStartTimeDateChange($event?.target?.value)"
-                    />
+                    >
                     <input
                       data-testid="start-time-time-input"
-                      class="cursor-pointer dark:border-none rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
                       :value="formattedStartTimeTime"
                       @input="handleStartTimeTimeChange($event?.target?.value)"
-                    />
+                    >
                   </div>
                   <span class="px-1">to</span>
-                  <div class="inline-block items-center space-x-2 xl:flex">
+                  <div class="flex-wrap items-center space-x-2 xl:flex">
                     <input
                       data-testid="end-time-date-input"
-                      class="cursor-pointer dark:border-none rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
                       type="date"
                       placeholder="Date and Time"
                       label="Start"
                       :value="formattedEndTimeDate"
                       @input="handleEndTimeDateChange($event?.target?.value)"
-                    />
+                    >
                     <input
                       data-testid="end-time-time-input"
-                      class="cursor-pointer dark:border-none rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
                       :value="formattedEndTimeTime"
                       @input="handleEndTimeTimeChange($event?.target?.value)"
-                    />
+                    >
                   </div>
-
                   <div>
                     {{ duration }}
                   </div>
@@ -461,10 +460,10 @@ export default defineComponent({
             <FormRow section-title="Virtual Event URL">
               <template #content>
                 <div
-                  class="focus-within:ring-indigo-600 flex rounded-md border dark:border-none border-gray-200 dark:border-none shadow-sm ring-1 ring-inset ring-gray-200 focus-within:ring-2 focus-within:ring-inset sm:max-w-md"
+                  class="focus-within:ring-indigo-600 flex rounded-md border border-gray-200 shadow-sm ring-1 ring-inset ring-gray-200 focus-within:ring-2 focus-within:ring-inset dark:border-none dark:border-none sm:max-w-md"
                 >
                   <span
-                    class="flex select-none items-center bg-gray-100 dark:bg-gray-700 dark:text-gray-200 pl-3 pr-1 text-gray-500 sm:text-sm"
+                    class="flex select-none items-center bg-gray-100 pl-3 pr-1 text-gray-500 dark:bg-gray-700 dark:text-gray-200 sm:text-sm"
                     >https://</span
                   >
                   <input
@@ -472,7 +471,7 @@ export default defineComponent({
                     data-testid="link-input"
                     type="text"
                     name="virtualEventUrl"
-                    class="bg-transparent block w-full dark:bg-gray-500 flex-1 border-0 py-1.5 pl-1 text-gray-900 dark:text-gray-200 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    class="bg-transparent block w-full flex-1 border-0 py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 dark:bg-gray-500 dark:text-gray-200 sm:text-sm sm:leading-6"
                     :value="
                       formValues.virtualEventUrl?.split('https://').join('')
                     "
