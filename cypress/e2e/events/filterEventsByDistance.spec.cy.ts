@@ -2,7 +2,7 @@ import { IN_PERSON_EVENT_LIST } from "../constants";
 import { deleteAll, seedAll } from "../utils";
 import eventsForFilteringTests from "../../support/seedData/eventsForFilteringTests";
 
-describe("Filter events by text", () => {
+describe("Filter events by distance", () => {
   beforeEach(function () {
     deleteAll();
     seedAll();

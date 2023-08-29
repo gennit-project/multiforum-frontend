@@ -11,7 +11,7 @@ import { useDisplay } from "vuetify";
 import CloseButton from "../../generic/buttons/CloseButton.vue";
 import { useRoute } from "vue-router";
 import { GET_EVENTS } from "@/graphQLData/event/queries";
-import getEventWhere from "../list/filters/getEventWhere"
+import getEventWhere from "../list/filters/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "../list/filters/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -342,6 +342,8 @@ export default defineComponent({
           });
         };
 
+        const numberOfEvents = markerMap[eventLocationId].numberOfEvents;
+
         const openGenericInfowindow = () => {
           markerMap.infowindow.setContent(`${numberOfEvents} events`);
           markerMap.infowindow.open({
@@ -351,10 +353,24 @@ export default defineComponent({
           });
         };
 
-        const numberOfEvents = markerMap[eventLocationId].numberOfEvents;
+        const eventTitle =
+          markerMap[eventLocationId].events[this.highlightedEventId]?.title;
+        const eventLocation =
+          markerMap[eventLocationId].events[this.highlightedEventId]
+            ?.locationName;
+
         // If the user mouses over a map marker with multiple events,
         // open a generic infowindow.
         if (clickedMapMarker && numberOfEvents > 1) {
+          // Dispatch a custom event to indicate InfoWindow is open
+          // so the Cypress test can wait for it to open
+          window.dispatchEvent(
+            new CustomEvent("GenericInfoWindowOpen", {
+              detail: {
+                numberOfEvents,
+              },
+            }),
+          );
           openGenericInfowindow();
         }
 
@@ -365,6 +381,17 @@ export default defineComponent({
             markerMap[eventLocationId].events,
           )[0];
           this.highlightedEventId = defaultEventId;
+
+          // Dispatch a custom event to indicate InfoWindow is open
+          // so the Cypress test can wait for it to open
+          window.dispatchEvent(
+            new CustomEvent("SpecificInfoWindowOpen", {
+              detail: {
+                eventTitle,
+                eventLocation,
+              },
+            }),
+          );
           openSpecificInfowindow();
         }
 
@@ -372,6 +399,17 @@ export default defineComponent({
         // always open a specific infowindow.
         else if (eventId) {
           this.highlightedEventId = eventId;
+
+          // Dispatch a custom event to indicate InfoWindow is open
+          // so the Cypress test can wait for it to open
+          window.dispatchEvent(
+            new CustomEvent("SpecificInfoWindowOpen", {
+              detail: {
+                eventTitle,
+                eventLocation,
+              },
+            }),
+          );
           openSpecificInfowindow();
         }
 
@@ -484,28 +522,17 @@ export default defineComponent({
 </script>
 <template>
   <div class="h-full">
-    <div
-      v-if="mdAndUp"
-      id="mapViewFullScreen"
-    >
+    <div v-if="mdAndUp" id="mapViewFullScreen">
       <TwoSeparatelyScrollingPanes
         class="mt-3"
         :show-right-pane-at-medium-screen-width="true"
       >
         <template #leftpane>
-          <div
-            class="m-8 h-full"
-            style="width: 35vw"
-          >
+          <div class="m-8 h-full" style="width: 35vw">
             <div>
-              <EventFilterBar
-                class="mt-6"
-                :show-map="true"
-              />
+              <EventFilterBar class="mt-6" :show-map="true" />
               <TimeShortcuts />
-              <div v-if="eventLoading">
-                Loading...
-              </div>
+              <div v-if="eventLoading">Loading...</div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -536,9 +563,7 @@ export default defineComponent({
         <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
-              <div v-if="eventLoading">
-                Loading...
-              </div>
+              <div v-if="eventLoading">Loading...</div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -547,8 +572,8 @@ export default defineComponent({
               <EventMap
                 v-else-if="
                   eventResult &&
-                    eventResult.events &&
-                    eventResult.events.length > 0
+                  eventResult.events &&
+                  eventResult.events.length > 0
                 "
                 :key="eventResult.events.length"
                 class="fixed"
@@ -595,10 +620,7 @@ export default defineComponent({
       </div>
       <div class="h-1/3 w-full">
         <div class="mx-auto">
-          <EventFilterBar
-            class="mt-6 w-full"
-            :show-map="true"
-          />
+          <EventFilterBar class="mt-6 w-full" :show-map="true" />
           <EventList
             key="highlightedEventId"
             :events="eventResult.events"
