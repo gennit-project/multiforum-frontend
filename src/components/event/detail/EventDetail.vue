@@ -220,12 +220,7 @@ export default defineComponent({
         </div>
 
         <div class="mt-1 w-full space-y-2 px-3">
-          <p
-            v-if="eventLoading"
-            class="px-4 lg:px-10"
-          >
-            Loading...
-          </p>
+          <p v-if="eventLoading" class="px-4 lg:px-10">Loading...</p>
           <ErrorBanner
             v-else-if="eventError"
             class="px-4 lg:px-10"
@@ -248,11 +243,22 @@ export default defineComponent({
             <ErrorBanner
               v-if="eventData.canceled"
               data-testid="canceled-event-banner"
-              class="mb-2 mt-2"
+              class="my-2"
               :text="'This event is canceled.'"
             />
-            <EventHeader :event-data="eventData" />
-            <div class="mt-4">
+            <div
+              class="mb-4 dark:text-gray-100 md:flex md:items-center md:justify-between"
+            >
+              <div class="min-w-0 flex-1">
+                <h2
+                  class="text-xl font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight"
+                >
+                  {{ eventData.title }}
+                </h2>
+              </div>
+            </div>
+            <div class="rounded-md border border-blue-500 py-4">
+              <EventHeader :event-data="eventData" />
               <v-md-preview
                 v-if="eventData.description"
                 :text="visibleDescription"
@@ -260,7 +266,7 @@ export default defineComponent({
               <button
                 v-if="
                   eventData?.description &&
-                    eventData.description.split(' ').length > 50
+                  eventData.description.split(' ').length > 50
                 "
                 class="mt-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
                 @click="toggleDescription"

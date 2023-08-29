@@ -84,7 +84,6 @@ export default defineComponent({
   },
   data(props) {
     return {
-      hover: false,
       previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
     };
@@ -235,16 +234,13 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    :class="
-      hover || event.id === route.params.eventId
-        ? 'border-blue-500 px-4'
-        : 'border-blue-200 '
+    :class="event.id === route.params.eventId
+        ? 'border border-blue-500 px-4'
+        : 'border-transparent px-4'
     "
-    class="relative border-l-4 bg-white pb-2 pl-6 pt-3 dark:bg-gray-800"
+    class="rounded-md relative mt-1 bg-white pb-2 pl-6 pt-3 dark:bg-gray-800"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
-    @mouseenter="hover = true"
-    @mouseleave="hover = false"
   >
     <div @click="goToPreviewLink">
       <div class="block">

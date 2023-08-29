@@ -91,17 +91,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="mb-4 px-4 py-4 dark:text-gray-100 md:flex md:items-center md:justify-between"
-  >
-    <div class="min-w-0 flex-1">
-      <h2
-        class="text-xl font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight"
-      >
-        {{ eventData.title }}
-      </h2>
-    </div>
-  </div>
+ 
 
   <div class="px-4 text-sm text-gray-700 dark:text-gray-200">
     <ul class="space-y-2">
