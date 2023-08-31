@@ -250,11 +250,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="max-w-screen-2xl pt-4">
+  <v-container fluid>
     <v-row class="p-0">
       <v-col
+        v-if="!mdAndDown"
         cols="12"
-        :lg="channelId ? 5 : 5"
+        :lg="channelId ? 8 : 8"
+        class="border-l  p-0 border-gray-200 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
+      >
+        <router-view />
+      </v-col>
+      <v-col
+        cols="12"
+        :lg="channelId ? 4 : 4"
         class="scrollable-column shadow-right-lg"
       >
         <DiscussionFilterBar />
@@ -275,14 +283,7 @@ export default defineComponent({
           @openPreview="openPreview"
         />
       </v-col>
-      <v-col
-        v-if="!mdAndDown"
-        cols="12"
-        :lg="channelId ? 7 : 7"
-        class="border-l  p-0 border-gray-200 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
-      >
-        <router-view />
-      </v-col>
+      
       <DrawerFlyout
         v-if="mdAndDown"
         :is-open="previewIsOpen"

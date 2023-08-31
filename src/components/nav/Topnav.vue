@@ -123,7 +123,8 @@ export default defineComponent({
         >
           <router-link to="/" class="flex items-center">
             <ChannelIcon class="mr-1 h-6 w-6 text-blue-500" /><span
-              >gennit</span
+            class="font-bold text-blue-500 dark:text-white"
+              >Topical</span
             >
           </router-link>
 

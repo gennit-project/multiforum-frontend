@@ -84,25 +84,19 @@ export default defineComponent({
   <form>
     <TabGroup>
       <TabList class="flex items-center">
-        <Tab
-          v-slot="{ selected }"
-          as="template"
-        >
+        <Tab v-slot="{ selected }" as="template">
           <button
             :class="[
               selected
                 ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
                 : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
-              'mr-2 font-medium border-transparent rounded-md border px-3 py-1.5 text-sm dark:border-gray-700 dark:hover:text-gray-400',
+              'font-medium border-transparent mr-2 rounded-md border px-3 py-1.5 text-sm dark:border-gray-700 dark:hover:text-gray-400',
             ]"
           >
             Write
           </button>
         </Tab>
-        <Tab
-          v-slot="{ selected }"
-          as="template"
-        >
+        <Tab v-slot="{ selected }" as="template">
           <button
             :class="[
               selected
@@ -116,21 +110,15 @@ export default defineComponent({
         </Tab>
       </TabList>
       <TabPanels class="mt-2 h-40">
-        <TabPanel
-          class="-m-0.5 rounded-lg px-0.5 py-1"
-          :data-testid="testId"
-        >
-          <label
-            for="comment"
-            class="sr-only"
-          >Comment</label>
+        <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1" :data-testid="testId">
+          <label for="comment" class="sr-only">Comment</label>
           <textarea
             id="texteditor-textarea"
             ref="editor"
             name="comment"
             rows="7"
             :placeholder="placeholder"
-            class="focus:border-blue-500 placeholder-gray-400 dark:text-gray-100 focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm shadow-sm dark:border-gray-700 dark:bg-gray-400"
+            class="focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm placeholder-gray-400 shadow-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-400 dark:text-gray-100"
             :value="text"
             @input="updateText($event?.target?.value)"
           />
@@ -138,7 +126,7 @@ export default defineComponent({
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
           <v-md-preview
             :text="text"
-            class="focus:border-blue-500 focus:ring-blue-500 dark:text-gray-100 block w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm dark:border-gray-800 dark:bg-gray-900"
+            class="block w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
           />
         </TabPanel>
       </TabPanels>

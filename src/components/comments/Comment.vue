@@ -19,6 +19,7 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
 import { gql } from "@apollo/client/core";
+import { Gallery } from "vue-preview-imgs";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -28,6 +29,7 @@ export default defineComponent({
     TextEditor,
     WarningModal,
     Avatar,
+    Gallery
   },
   props: {
     commentData: {
@@ -254,6 +256,36 @@ export default defineComponent({
               class="-ml-4 w-full"
             >
               <v-md-preview :text="textCopy" />
+              <Gallery 
+                class="ml-6 mb-6 flex gap-2"
+                :options="{wheelToZoom: true}"
+                :list="[
+                  {
+                    href:
+                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/1/img-2500.jpg',
+                    thumbnail:
+                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/1/img-200.jpg',
+                    width: 1875,
+                    height: 2500,
+                  },
+                  {
+                    href:
+                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg',
+                    thumbnail:
+                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-200.jpg',
+                    width: 1669,
+                    height: 2500,
+                  },
+                  {
+                    href:
+                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-2500.jpg',
+                    thumbnail:
+                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-200.jpg',
+                    width: 2500,
+                    height: 1666,
+                  },
+                ]"
+              />
             </div>
             <TextEditor
               v-if="!readonly && showEditCommentField"

@@ -1713,10 +1713,10 @@
     "@lezer/highlight" "^1.0.0"
     "@lezer/lr" "^1.0.0"
 
-"@lit-labs/react@^1.1.1":
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/@lit-labs/react/-/react-1.2.1.tgz"
-  integrity sha512-DiZdJYFU0tBbdQkfwwRSwYyI/mcWkg3sWesKRsHUd4G+NekTmmeq9fzsurvcKTNVa0comNljwtg4Hvi1ds3V+A==
+"@lit-labs/react@^2.0.1":
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/@lit-labs/react/-/react-2.0.2.tgz"
+  integrity sha512-bRr0uVaLzVMv/r6bNui91rwsY3UuOYDef5wCvfABQ3ipVtArz8TbH2k4Cn8UgLG/9IXO7IhAYt5xwMHaljxCAg==
 
 "@lit-labs/ssr-dom-shim@^1.0.0", "@lit-labs/ssr-dom-shim@^1.1.0":
   version "1.1.1"
@@ -1910,13 +1910,13 @@
   integrity sha512-NkM/hj3Js6yXCU9WxhsyxRUdyqUUUl/BSvIluUMptQteUWGOJaoyP1iMbOMqO544DYMzBfnoCw66ZHkGuTdKgA==
 
 "@shoelace-style/shoelace@^2.6.0":
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/@shoelace-style/shoelace/-/shoelace-2.6.0.tgz#f6c8b749bf43cff1a21a6475122fdea1bc6c8b1f"
-  integrity sha512-Pa5Ll8GkFHtttES1FuFpkJ5pbUdlCAn86LVlU94pRHzqYNI81wQQzckkXPT+8aHCMSlfcr+t9RhaFY62T4iU+w==
+  version "2.8.0"
+  resolved "https://registry.npmjs.org/@shoelace-style/shoelace/-/shoelace-2.8.0.tgz"
+  integrity sha512-WigVUaW+MptefOW4zUlZaq+zn0n2hP+I4/mztoeJii5u3ex1CGexfQGcdw2gx6d7P7LAa6/NW0TlgAELzJQnCA==
   dependencies:
     "@ctrl/tinycolor" "^3.5.0"
     "@floating-ui/dom" "^1.2.1"
-    "@lit-labs/react" "^1.1.1"
+    "@lit-labs/react" "^2.0.1"
     "@shoelace-style/animations" "^1.1.0"
     "@shoelace-style/localize" "^3.1.1"
     composed-offset-position "^0.0.4"
@@ -2032,12 +2032,7 @@
   resolved "https://registry.npmjs.org/@types/minimatch/-/minimatch-5.1.2.tgz"
   integrity sha512-K0VQKziLUWkVKiRVrx4a40iPaxTUefQmjtkQofBkYRcoaaL/8rhwDWww9qWbrgicNOgnpIsMxyNIUM4+n6dUIA==
 
-"@types/node@*", "@types/node@^18.11.15":
-  version "18.16.19"
-  resolved "https://registry.npmjs.org/@types/node/-/node-18.16.19.tgz"
-  integrity sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==
-
-"@types/node@>=6":
+"@types/node@*", "@types/node@>=6":
   version "20.4.0"
   resolved "https://registry.npmjs.org/@types/node/-/node-20.4.0.tgz"
   integrity sha512-jfT7iTf/4kOQ9S7CHV9BIyRaQqHu67mOjsIQBC3BKZvzvUB6zLxEwJ6sBE3ozcvP8kF6Uk5PXN0Q+c0dfhGX0g==
@@ -2046,6 +2041,11 @@
   version "14.18.53"
   resolved "https://registry.npmjs.org/@types/node/-/node-14.18.53.tgz"
   integrity sha512-soGmOpVBUq+gaBMwom1M+krC/NNbWlosh4AtGA03SyWNDiqSKtwp7OulO1M6+mg8YkHMvJ/y0AkCeO8d1hNb7A==
+
+"@types/node@^18.11.15":
+  version "18.16.19"
+  resolved "https://registry.npmjs.org/@types/node/-/node-18.16.19.tgz"
+  integrity sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -5738,7 +5738,7 @@ human-signals@^1.1.1:
 
 husky@^8.0.3:
   version "8.0.3"
-  resolved "https://registry.yarnpkg.com/husky/-/husky-8.0.3.tgz#4936d7212e46d1dea28fef29bb3a108872cd9184"
+  resolved "https://registry.npmjs.org/husky/-/husky-8.0.3.tgz"
   integrity sha512-+dQSyqPh4x1hlO1swXBiNb2HzTDN1I2IGLQx1GrBuiqFJfoMrnZWwVmatvSiO+Iz8fBUnf+lekwNo4c2LlXItg==
 
 iconv-lite@0.4, iconv-lite@^0.4.24:
@@ -7198,6 +7198,11 @@ performance-now@^2.1.0:
   resolved "https://registry.npmjs.org/performance-now/-/performance-now-2.1.0.tgz"
   integrity sha512-7EAHlyLHI56VEIdK57uwHdHKIaAGbnXPiw0yWbarQZOKaKpvUIgW0jWRVLiatnM+XXlSwsanIBH/hzGMJulMow==
 
+photoswipe@^5.3.8:
+  version "5.3.8"
+  resolved "https://registry.npmjs.org/photoswipe/-/photoswipe-5.3.8.tgz"
+  integrity sha512-4vTzOQt8GP4Chsm0s+8j2xDtVHAEN252PxrU12A1zXauNn0zD5HRHgjALKO2GKTyBnTnOrJUOxbV8LTrFIMrYw==
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz"
@@ -8653,6 +8658,14 @@ vue-multiselect@^2.1.6:
   resolved "https://registry.npmjs.org/vue-multiselect/-/vue-multiselect-2.1.7.tgz"
   integrity sha512-KIegcN+Ntwg3cbkY/jhw2s/+XJUM0Lpi/LcKFYCS8PrZHcWBl2iKCVze7ZCnRj3w8H7/lUJ9v7rj9KQiNxApBw==
 
+vue-preview-imgs@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/vue-preview-imgs/-/vue-preview-imgs-2.0.1.tgz#d36489bbbbce34ac7d84e699278d1a00fc9d740d"
+  integrity sha512-QbSLyec9lx7/h7dxjOBgmKNJVzFkd09zElZECJlEpMKHrcOvseeMUE86VQk3pCdgRVVwIYfu2yYWwWPzm89xRA==
+  dependencies:
+    photoswipe "^5.3.8"
+    vue "^3.2.25"
+
 vue-profile-avatar@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/vue-profile-avatar/-/vue-profile-avatar-1.2.0.tgz"
@@ -8694,7 +8707,7 @@ vue3-datepicker@^0.3.4:
   dependencies:
     date-fns "^2.22.1"
 
-vue@^3.2.37, vue@^3.2.41:
+vue@^3.2.25, vue@^3.2.37, vue@^3.2.41:
   version "3.3.4"
   resolved "https://registry.npmjs.org/vue/-/vue-3.3.4.tgz"
   integrity sha512-VTyEYn3yvIeY1Py0WaYGZsXnz3y5UnGi62GjVEqvEGPl6nxbOrCXbVOTQWBEJUqAyTUk2uJ5JLVnYJ6ZzGbrSw==

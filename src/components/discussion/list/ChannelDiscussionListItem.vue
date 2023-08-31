@@ -191,7 +191,7 @@ export default defineComponent({
   >
     <v-row>
       <v-col cols="2">
-        <div class="flex w-full px-2">
+        <div class="flex w-full">
           <DiscussionVotes
             v-if="discussionChannel"
             :discussion="discussion"
@@ -201,7 +201,7 @@ export default defineComponent({
         </div>
       </v-col>
       <v-col :cols="8">
-        <div class="ml-2">
+        <div>
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
             class="hover:text-gray-500"
