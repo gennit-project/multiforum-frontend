@@ -161,15 +161,15 @@ export default defineComponent({
       if (!this.discussion) {
         return "";
       }
-       // Base URL for lgAndUp and other screen sizes
-      let baseLink = '';
+      // Base URL for lgAndUp and other screen sizes
+      let baseLink = "";
 
       if (this.lgAndUp) {
         baseLink = `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussionChannel.discussionId}`;
       } else {
         baseLink = `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
       }
-       return  baseLink;
+      return baseLink;
     },
     filteredQuery() {
       const query = { ...this.$route.query };
@@ -179,24 +179,28 @@ export default defineComponent({
         }
       }
       return query;
-    }
+    },
   },
 });
 </script>
 
 <template>
   <li
-    class="relative flex space-x-1 space-y-3 p-1 mt-1 rounded-md"
-    :class="[isActive ? 'text-bold border border-blue-500 bg-gray-100  dark:bg-gray-700' : '']"
+    class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-1"
+    :class="[
+      isActive
+        ? 'text-bold border border-blue-500 bg-gray-100  dark:bg-gray-700'
+        : '',
+    ]"
   >
     <v-row>
       <v-col cols="2">
-          <DiscussionVotes
-            v-if="discussionChannel"
-            :discussion="discussion"
-            :discussion-channel="discussionChannel"
-            :show-downvote="false"
-          />
+        <DiscussionVotes
+          v-if="discussionChannel"
+          :discussion="discussion"
+          :discussion-channel="discussionChannel"
+          :show-downvote="false"
+        />
       </v-col>
       <v-col :cols="8">
         <div>
@@ -204,14 +208,18 @@ export default defineComponent({
             :to="{ path: detailLink, query: filteredQuery }"
             class="hover:text-gray-500"
           >
-            <p class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100">
+            <p
+              class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100"
+            >
               <HighlightedSearchTerms
                 :text="title"
                 :search-input="searchInput"
               />
             </p>
           </router-link>
-          <div class="flex space-x-1 font-medium my-1 text-xs text-gray-600 hover:no-underline">
+          <div
+            class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
+          >
             <Tag
               v-for="tag in tags"
               :key="tag"
@@ -233,10 +241,7 @@ export default defineComponent({
         {{ commentCount }}
       </v-col>
 
-      <ErrorBanner
-        v-if="errorMessage"
-        :text="errorMessage"
-      />
+      <ErrorBanner v-if="errorMessage" :text="errorMessage" />
     </v-row>
   </li>
 </template>

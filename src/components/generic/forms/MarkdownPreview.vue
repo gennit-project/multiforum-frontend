@@ -3,6 +3,28 @@ import { defineComponent } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import MarkdownIt from "markdown-it";
 import { ref, watchEffect } from "vue";
+import config from '@/config'
+
+
+function linkifyUsernames(markdownString: string) {
+  // Use a regular expression to find "u/[username]" patterns
+  const regex = /u\/([a-zA-Z0-9_\-]+)/g;
+
+  // Replace each match with "[u/username](${config.baseUrl}u/username)"
+  return markdownString.replace(regex, (match, username) => {
+    return `[${match}](${config.baseUrl}u/${username})`;
+  });
+}
+
+function linkifyChannelNames(markdownString: string) {
+  // Use a regular expression to find "c/[channelName]" patterns
+  const regex = /c\/([a-zA-Z0-9_\-]+)/g;
+
+  // Replace each match with "[c/channelName](${config.baseUrl}c/channelName)"
+  return markdownString.replace(regex, (match, channelName) => {
+    return `[${match}](${config.baseUrl}channels/c/${channelName}/discussions)`;
+  });
+}
 
 type GalleryItem = {
   href: string;
@@ -65,7 +87,6 @@ export default defineComponent({
           window.innerWidth,
           window.innerHeight
         );
-        console.log('calculated aspect ratio fit', { width, height })
 
         // Find the image in the embeddedImages array and update its dimensions
         const imageItem = embeddedImages.value.find((item) => item.src === src);
@@ -88,7 +109,6 @@ export default defineComponent({
 
     // Watch for changes in the markdownContent and update embeddedImages accordingly
     watchEffect(() => {
-        console.log(    'i ran')
       const imageUrls = parseMarkdownForImages(props.text);
 
       // Update dimensions for each image
@@ -97,8 +117,12 @@ export default defineComponent({
       });
     });
 
+    const usernamesLinkified = linkifyUsernames(props.text)
+    const linkifiedMarkdown = linkifyChannelNames(usernamesLinkified)
+    
     return {
       embeddedImages,
+      linkifiedMarkdown
     };
   },
   methods: {
@@ -126,7 +150,7 @@ export default defineComponent({
 
 <template>
   <div @click="handleImageClick($event)">
-    <v-md-preview :text="text" />
+    <v-md-preview :text="linkifiedMarkdown" />
   </div>
 </template>
 <style>
