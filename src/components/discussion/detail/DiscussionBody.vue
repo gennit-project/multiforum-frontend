@@ -7,10 +7,12 @@ import Tag from "../../tag/Tag.vue";
 import "md-editor-v3/lib/preview.css";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 export default defineComponent({
   components: {
     Tag,
+    MarkdownPreview,
   },
   props: {
     channelId: {
@@ -109,11 +111,8 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div
-      v-if="discussion?.body"
-      class="-ml-4 max-w-none"
-    >
-      <v-md-preview :text="bodyText" />
+    <div v-if="discussion?.body" class="-ml-4 max-w-none">
+      <MarkdownPreview :text="bodyText" />
     </div>
 
     <button

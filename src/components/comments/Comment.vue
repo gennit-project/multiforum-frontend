@@ -19,7 +19,7 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
 import { gql } from "@apollo/client/core";
-import { Gallery } from "vue-preview-imgs";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -29,7 +29,7 @@ export default defineComponent({
     TextEditor,
     WarningModal,
     Avatar,
-    Gallery
+    MarkdownPreview,
   },
   props: {
     commentData: {
@@ -212,12 +212,9 @@ export default defineComponent({
 <template>
   <div>
     <div class="flex w-full">
-      <div
-        :class="'text-sm'"
-        class="w-full"
-      >
+      <div :class="'text-sm'" class="w-full">
         <div
-          class="my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-500 dark:bg-gray-950"
+          class="dark:bg-gray-950 my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-500"
           data-testid="comment"
         >
           <p class="flex flex-wrap items-center space-x-2">
@@ -234,16 +231,10 @@ export default defineComponent({
             >
               {{ commentData.CommentAuthor.username }}
             </router-link>
-            <span
-              v-else
-              class="font-bold"
-            >[Deleted]</span>
+            <span v-else class="font-bold">[Deleted]</span>
             <span class="mx-2">&middot;</span>
             <span>{{ createdAtFormatted }}</span>
-            <span
-              v-if="commentData.updatedAt"
-              class="mx-2"
-            > &middot; </span>
+            <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
             <span>{{ editedAtFormatted }}</span>
           </p>
 
@@ -255,37 +246,7 @@ export default defineComponent({
               v-if="commentData.text && !showEditCommentField"
               class="-ml-4 w-full"
             >
-              <v-md-preview :text="textCopy" />
-              <Gallery 
-                class="ml-6 mb-6 flex gap-2"
-                :options="{wheelToZoom: true}"
-                :list="[
-                  {
-                    href:
-                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/1/img-2500.jpg',
-                    thumbnail:
-                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/1/img-200.jpg',
-                    width: 1875,
-                    height: 2500,
-                  },
-                  {
-                    href:
-                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-2500.jpg',
-                    thumbnail:
-                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/2/img-200.jpg',
-                    width: 1669,
-                    height: 2500,
-                  },
-                  {
-                    href:
-                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-2500.jpg',
-                    thumbnail:
-                      'https://cdn.photoswipe.com/photoswipe-demo-images/photos/3/img-200.jpg',
-                    width: 2500,
-                    height: 1666,
-                  },
-                ]"
-              />
+              <MarkdownPreview :text="textCopy" />
             </div>
             <TextEditor
               v-if="!readonly && showEditCommentField"

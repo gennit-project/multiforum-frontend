@@ -182,7 +182,7 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="min-w-md space-y-3">
+        <div class="space-y-3">
           <div
             class="rounded-lg border border-blue-500 px-4 pb-2 dark:border-blue-500 dark:bg-gray-950"
           >

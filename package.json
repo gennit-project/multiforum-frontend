@@ -51,6 +51,7 @@
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
     "luxon": "^3.3.0",
+    "markdown-it": "^13.0.1",
     "md-editor-v3": "^4.2.2",
     "prismjs": "^1.29.0",
     "random-word-slugs": "^0.1.6",

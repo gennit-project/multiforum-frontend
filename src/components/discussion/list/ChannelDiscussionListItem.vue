@@ -186,19 +186,17 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex space-x-1 space-y-3 p-4 mt-1 rounded-md"
+    class="relative flex space-x-1 space-y-3 p-1 mt-1 rounded-md"
     :class="[isActive ? 'text-bold border border-blue-500 bg-gray-100  dark:bg-gray-700' : '']"
   >
     <v-row>
       <v-col cols="2">
-        <div class="flex w-full">
           <DiscussionVotes
             v-if="discussionChannel"
             :discussion="discussion"
             :discussion-channel="discussionChannel"
             :show-downvote="false"
           />
-        </div>
       </v-col>
       <v-col :cols="8">
         <div>

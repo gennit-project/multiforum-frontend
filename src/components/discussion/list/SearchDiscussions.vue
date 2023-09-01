@@ -250,49 +250,48 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid>
-    <v-row class="p-0">
-      <v-col
-        v-if="!mdAndDown"
-        cols="12"
-        :lg="channelId ? 8 : 8"
-        class="border-l  p-0 border-gray-200 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
-      >
-        <router-view />
-      </v-col>
-      <v-col
-        cols="12"
-        :lg="channelId ? 4 : 4"
-        class="scrollable-column shadow-right-lg"
-      >
-        <DiscussionFilterBar />
-        <SitewideDiscussionList
-          v-if="!channelId"
-          @filterByTag="handleClickTag"
-          @filterByChannel="handleClickChannel"
-          @openPreview="openPreview"
-        />
-        <ChannelDiscussionList
-          v-else
-          :channel-id="channelId"
-          :search-input="filterValues.searchInput"
-          :selected-tags="filterValues.tags"
-          :selected-channels="filterValues.channels"
-          @filterByTag="handleClickTag"
-          @filterByChannel="handleClickChannel"
-          @openPreview="openPreview"
-        />
-      </v-col>
-      
-      <DrawerFlyout
-        v-if="mdAndDown"
-        :is-open="previewIsOpen"
-        @closePreview="closePreview"
-      >
-        <DiscussionDetail />
-      </DrawerFlyout>
-    </v-row>
-  </v-container>
+  <v-row class="p-0 pt-6">
+    <v-col
+      v-if="!mdAndDown"
+      cols="12"
+      :lg="channelId ? 7 : 8"
+      :class="[!channelId ? 'px-6' : '']"
+      class="dark:bg-gray-950 max-w-6xl border-l border-gray-200 p-0 dark:border-gray-700 dark:text-gray-200"
+    >
+      <router-view />
+    </v-col>
+    <v-col
+      cols="12"
+      :lg="channelId ? 5 : 4"
+      class="scrollable-column shadow-right-lg"
+    >
+      <DiscussionFilterBar />
+      <SitewideDiscussionList
+        v-if="!channelId"
+        @filterByTag="handleClickTag"
+        @filterByChannel="handleClickChannel"
+        @openPreview="openPreview"
+      />
+      <ChannelDiscussionList
+        v-else
+        :channel-id="channelId"
+        :search-input="filterValues.searchInput"
+        :selected-tags="filterValues.tags"
+        :selected-channels="filterValues.channels"
+        @filterByTag="handleClickTag"
+        @filterByChannel="handleClickChannel"
+        @openPreview="openPreview"
+      />
+    </v-col>
+
+    <DrawerFlyout
+      v-if="mdAndDown"
+      :is-open="previewIsOpen"
+      @closePreview="closePreview"
+    >
+      <DiscussionDetail />
+    </DrawerFlyout>
+  </v-row>
 </template>
 
 <style>
