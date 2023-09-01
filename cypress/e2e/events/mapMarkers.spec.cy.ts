@@ -10,14 +10,6 @@ describe("Map markers work", () => {
   });
 
   it("in the sitewide in-person events list, map markers are functional", () => {
-    // Listen for custom events to validate test
-    cy.window().then((win) => {
-      win.addEventListener("SpecificInfoWindowOpen", (event) => {
-        console.log("event detail", event.detail);
-        // Validate that InfoWindow is open
-        //   expect(event.detail).to.equal(/* expected marker info */);
-      });
-    });
     // Go to the map view.
     cy.visit(IN_PERSON_EVENT_LIST);
 

@@ -119,7 +119,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-1 w-full space-y-2 px-3">
+  <div class="mt-1 w-full space-y-2 px-3 ">
     <div
       v-if="route.name === 'DiscussionDetail'"
       :class="'align-center mt-2 flex justify-between'"

@@ -28,7 +28,12 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const showFullText = ref(route.name === "DiscussionDetail");
-    const wordLimit = 100;
+    let wordLimit = 100;
+
+    if (route.name === "DiscussionCommentPermalink") {
+      wordLimit = 10;
+    }
+
 
     const truncateText = (text: string, limit: number) => {
       const words = text.split(" ");

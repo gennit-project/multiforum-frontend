@@ -23,7 +23,7 @@ import EventListView from "@/components/event/list/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import LogoutPage from "@/components/auth/LogoutPage.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
-import CommentPermalink from "@/components/comments/CommentPermalink.vue";
+import PermalinkedComment from "@/components/comments/PermalinkedComment.vue";
 import CommentModHistory from "@/components/comments/CommentModHistory.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
 import DownvotedDiscussions from "@/components/mod/DownvotedDiscussions.vue";
@@ -194,7 +194,7 @@ export const router = createRouter({
                 {
                   name: "DiscussionCommentPermalink",
                   path: "comments/:commentId",
-                  component: CommentPermalink,
+                  component: PermalinkedComment,
                   children: [{
                     name: "DiscussionCommentModHistory",
                     path: "modhistory",

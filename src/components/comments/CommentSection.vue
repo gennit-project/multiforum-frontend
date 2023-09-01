@@ -29,6 +29,7 @@ import {
 } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
+import PermalinkedComment from "./PermalinkedComment.vue";
 
 export default defineComponent({
   components: {
@@ -36,6 +37,7 @@ export default defineComponent({
     ErrorBanner,
     // LoadMore,
     WarningModal,
+    PermalinkedComment,
   },
   inheritAttrs: false,
   props: {
@@ -46,6 +48,17 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+
+    const isPermalinkPage = computed(() => {
+      if (route.params.commentId) {
+        // If the route has a commentId, it means that the user
+        // is viewing a permalink to a comment. In that case,
+        // the permalinked comment should be fetched separately
+        // and displayed at the top of the comment section.
+        return true;
+      }
+      return false;
+    });
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -451,6 +464,7 @@ export default defineComponent({
     const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT);
 
     return {
+      permalinkedCommentId: route.params.commentId,
       commentToEdit,
       commentToDeleteId,
       commentToDeleteReplyCount,
@@ -462,6 +476,7 @@ export default defineComponent({
       downvoteComment,
       editComment,
       editFormValues,
+      isPermalinkPage,
       locked: ref(false),
       loggedInUserModName,
       parentOfCommentToDelete,
@@ -543,11 +558,7 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="discussionChannel.CommentsAggregate?.count === 0">
-      <h2
-        id="comments"
-        ref="commentSectionHeader"
-        class="mb-2 text-lg"
-      >
+      <h2 id="comments" ref="commentSectionHeader" class="mb-2 text-lg">
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
@@ -555,22 +566,20 @@ export default defineComponent({
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      <p v-else>
-        There are no comments yet.
-      </p>
+      <p v-else>There are no comments yet.</p>
     </div>
 
     <div
       v-else-if="
         discussionChannel.CommentsAggregate &&
-          discussionChannel.CommentsAggregate.count > 0
+        discussionChannel.CommentsAggregate.count > 0
       "
     >
       <h2
-        v-if="route.name === 'DiscussionDetail'"
         id="comments"
         ref="commentSectionHeader"
         class="text-lg"
+        v-if="!isPermalinkPage"
       >
         {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
       </h2>
@@ -579,25 +588,46 @@ export default defineComponent({
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
+      <PermalinkedComment
+        v-if="isPermalinkPage"
+        :comment-id="permalinkedCommentId"
+      >
+        <template #comment="{ commentData }">
+          <Comment
+            :compact="true"
+            :comment-data="commentData"
+            :depth="1"
+            :locked="locked"
+            @clickEditComment="handleClickEdit"
+            @deleteComment="handleClickDelete"
+            @downvoteComment="handleDownvoteComment"
+            @createComment="handleClickCreate"
+            @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
+            @updateEditCommentInput="updateEditInputValues"
+            @saveEdit="handleSaveEdit"
+          />
+        </template>
+      </PermalinkedComment>
       <div class="mb-6">
         <div v-if="discussionChannel.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
-        <Comment
-          v-for="comment in discussionChannel.Comments"
-          :key="comment.id"
-          :compact="true"
-          :comment-data="comment"
-          :depth="1"
-          :locked="locked"
-          @clickEditComment="handleClickEdit"
-          @deleteComment="handleClickDelete"
-          @downvoteComment="handleDownvoteComment"
-          @createComment="handleClickCreate"
-          @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
-          @updateEditCommentInput="updateEditInputValues"
-          @saveEdit="handleSaveEdit"
-        />
+        <div :key="comment.id" v-for="comment in discussionChannel.Comments">
+          <Comment
+            v-if="comment.id !== permalinkedCommentId"
+            :compact="true"
+            :comment-data="comment"
+            :depth="1"
+            :locked="locked"
+            @clickEditComment="handleClickEdit"
+            @deleteComment="handleClickDelete"
+            @downvoteComment="handleDownvoteComment"
+            @createComment="handleClickCreate"
+            @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
+            @updateEditCommentInput="updateEditInputValues"
+            @saveEdit="handleSaveEdit"
+          />
+        </div>
       </div>
     </div>
     <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">

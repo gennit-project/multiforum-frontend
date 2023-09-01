@@ -20,6 +20,7 @@ import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
 import { gql } from "@apollo/client/core";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -62,6 +63,14 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const route = useRoute();
+
+    const isHighlighted = computed(() => {
+      return (
+        route.name === "DiscussionCommentPermalink" &&
+        props.commentData?.id === route.params.commentId
+      );
+    });
     const GET_THEME = gql`
       query getTheme {
         theme @client
@@ -142,7 +151,7 @@ export default defineComponent({
       textCopy,
       themeLoading,
       theme,
-
+      isHighlighted,
       scrollElement: document.documentElement,
       id: `comment-preview-${props.commentData.id}`,
     };
@@ -210,11 +219,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div >
     <div class="flex w-full">
       <div :class="'text-sm'" class="w-full">
         <div
-          class="dark:bg-gray-950 my-1 rounded-lg border border-gray-200 px-2 py-2 shadow-sm dark:border-gray-500"
+          :class="[isHighlighted ? 'border border-blue-500': 'border border-gray-200 dark:border-gray-500 dark:bg-gray-950']"
+          class=" my-1 rounded-lg  px-2 py-2 shadow-sm "
           data-testid="comment"
         >
           <p class="flex flex-wrap items-center space-x-2">
@@ -236,6 +246,7 @@ export default defineComponent({
             <span>{{ createdAtFormatted }}</span>
             <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
             <span>{{ editedAtFormatted }}</span>
+            <span v-if="isHighlighted" class="px-2 py-1 bg-blue-500 text-black rounded-lg">Permalinked Comment</span>
           </p>
 
           <div
