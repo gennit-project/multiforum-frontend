@@ -73,8 +73,6 @@ export default defineComponent({
         { name: "Comments", href: "comments", current: true },
         { name: "Discussions", href: "discussions", current: false },
         { name: "Events", href: "events", current: false },
-        // { name: 'Calendar', href: '#', current: false },
-        // { name: 'Recognition', href: '#', current: false },
       ],
       user,
       username,
@@ -160,7 +158,7 @@ export default defineComponent({
 
         <!-- Tabs -->
         <div class="mt-6 sm:mt-2 2xl:mt-5  ">
-          <div class="border-b border-gray-200 bg-gray-100 dark:bg-gray-700 dark:border-gray-800 dark:text-gray-200">
+          <div class="border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-500 dark:text-gray-200">
             <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
               <nav
                 class="-mb-px text-lg max-w-7xl space-x-8"

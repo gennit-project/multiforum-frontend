@@ -30,18 +30,18 @@ export default defineComponent({
     class="link font-medium group inline-flex items-center hover:border-blue-500 hover:text-gray-600 dark:text-gray-200"
     :class="[
       isActive
-        ? `border-blue-500 bg-gray-200 dark:text-gray-100 ${
+        ? `border-blue-500  dark:text-gray-100 ${
           vertical
-            ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 dark:hover:bg-gray-600 border-l-4'
+            ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 border-l-4'
             : 'dark:text-gray-200'
         }  dark:border-blue-600 dark:text-gray-200 `
-        : 'border-transparent text-gray-500 dark:hover:bg-gray-800',
-      vertical ? 'pr-2 px-4 hover:bg-gray-200' : 'border-b-2 ',
+        : 'border-transparent text-gray-500 dark:border-gray-800 ',
+      vertical ? 'pr-2 px-4 hover:bg-gray-200' : 'border-b-2 px-4',
     ]"
   >
     <div
-      :class="[vertical ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700']"
-      class="my-2 flex h-8 items-center space-x-2 rounded-lg  py-2"
+      :class="[vertical ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700 px-4']"
+      class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
     >
       <div class="text-blue-600 dark:text-blue-500">
         <slot />
