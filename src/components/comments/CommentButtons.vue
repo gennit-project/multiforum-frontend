@@ -275,9 +275,6 @@ export default defineComponent({
         </template>
       </RequireAuth>
       <span
-        v-if="
-          route.params.channelId && route.name !== 'DiscussionCommentPermalink'
-        "
         :to="`${route.path}/comments/${commentData.id}`"
         class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="

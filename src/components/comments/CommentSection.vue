@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed, PropType } from "vue";
+import { defineComponent, ref, computed, PropType, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
 // import LoadMore from "../generic/LoadMore.vue";
@@ -30,6 +30,7 @@ import {
 import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
+import { type } from "os";
 
 export default defineComponent({
   components: {
@@ -463,8 +464,20 @@ export default defineComponent({
 
     const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT);
 
+    const permalinkedCommentId = ref(`${route.params.commentId}`)
+
+    watchEffect(() => {
+      // If the permalinked comment changes in the query params,
+      // the permalinked comment ID should update to cause the
+      // comment section to rerender.
+      if (typeof route.params.commentId !== "string") {
+        return;
+      }
+      permalinkedCommentId.value = route.params.commentId;
+    });
+
     return {
-      permalinkedCommentId: route.params.commentId,
+      permalinkedCommentId,
       commentToEdit,
       commentToDeleteId,
       commentToDeleteReplyCount,
@@ -570,6 +583,7 @@ export default defineComponent({
     </div>
 
     <div
+      :key="permalinkedCommentId"
       v-else-if="
         discussionChannel.CommentsAggregate &&
         discussionChannel.CommentsAggregate.count > 0

@@ -35,6 +35,9 @@ const COMMENT_FIELDS = gql`
     ChildCommentsAggregate {
       count
     }
+    ParentComment {
+      id
+    }
     ...CommentVoteFields
   }
   ${AUTHOR_FIELDS}

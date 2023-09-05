@@ -142,6 +142,7 @@ export default defineComponent({
       editorId: "texteditor",
       highlight: ref(false),
       linksInText,
+      permalinkedCommentId: route.params.commentId,
       relativeTime,
       replyCount,
       showEditCommentField: ref(false),
@@ -219,12 +220,16 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div >
+  <div>
     <div class="flex w-full">
       <div :class="'text-sm'" class="w-full">
         <div
-          :class="[isHighlighted ? 'border border-blue-500': 'border border-gray-200 dark:border-gray-500 dark:bg-gray-950']"
-          class=" my-1 rounded-lg  px-2 py-2 shadow-sm "
+          :class="[
+            isHighlighted
+              ? 'border border-blue-500'
+              : 'dark:bg-gray-950 border border-gray-200 dark:border-gray-500',
+          ]"
+          class="my-1 rounded-lg px-2 py-2 shadow-sm"
           data-testid="comment"
         >
           <p class="flex flex-wrap items-center space-x-2">
@@ -246,7 +251,11 @@ export default defineComponent({
             <span>{{ createdAtFormatted }}</span>
             <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
             <span>{{ editedAtFormatted }}</span>
-            <span v-if="isHighlighted" class="px-2 py-1 bg-blue-500 text-black rounded-lg">Permalinked Comment</span>
+            <span
+              v-if="isHighlighted"
+              class="rounded-lg bg-blue-500 px-2 py-1 text-black"
+              >Permalinked Comment</span
+            >
           </p>
 
           <div
@@ -304,21 +313,22 @@ export default defineComponent({
             @mouseenter="highlight = true"
             @mouseleave="highlight = false"
           >
-            <Comment
-              v-for="(childComment, i) in slotProps.comments"
-              :key="i"
-              :compact="true"
-              :comment-data="childComment"
-              :depth="depth + 1"
-              :locked="locked"
-              :parent-comment-id="commentData.id"
-              @clickEditComment="$emit('clickEditComment', $event)"
-              @deleteComment="handleClickDelete"
-              @createComment="$emit('createComment')"
-              @saveEdit="$emit('saveEdit')"
-              @updateCreateReplyCommentInput="updateNewComment"
-              @updateEditCommentInput="updateExistingComment"
-            />
+            <div v-for="(childComment, i) in slotProps.comments" :key="i">
+              <Comment
+                v-if="childComment.id !== permalinkedCommentId"
+                :compact="true"
+                :comment-data="childComment"
+                :depth="depth + 1"
+                :locked="locked"
+                :parent-comment-id="commentData.id"
+                @clickEditComment="$emit('clickEditComment', $event)"
+                @deleteComment="handleClickDelete"
+                @createComment="$emit('createComment')"
+                @saveEdit="$emit('saveEdit')"
+                @updateCreateReplyCommentInput="updateNewComment"
+                @updateEditCommentInput="updateExistingComment"
+              />
+            </div>
           </ChildComments>
         </div>
       </div>
