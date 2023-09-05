@@ -61,6 +61,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    showContextLink: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -145,6 +149,7 @@ export default defineComponent({
       permalinkedCommentId: route.params.commentId,
       relativeTime,
       replyCount,
+      route,
       showEditCommentField: ref(false),
       showModProfileModal: ref(false),
       showReplies: ref(true),
@@ -232,6 +237,18 @@ export default defineComponent({
           class="my-1 rounded-lg px-2 py-2 shadow-sm"
           data-testid="comment"
         >
+          <router-link
+            v-if="showContextLink && parentCommentId"
+            class="text-xs underline"
+            :to="{
+              name: 'DiscussionCommentPermalink',
+              params: {
+                discussionId: route.params.discussionId,
+                commentId: parentCommentId,
+              },
+            }"
+            >View Context</router-link
+          >
           <p class="flex flex-wrap items-center space-x-2">
             <Avatar
               v-if="commentData.CommentAuthor"

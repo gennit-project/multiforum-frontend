@@ -83,25 +83,14 @@ export default defineComponent({
 
 <template>
   <div class="dark:text-gray-200">
-    <div v-if="loading">
-      Loading...
-    </div>
-    <ErrorBanner
-      v-else-if="error"
-      :text="error.message"
-      :error="error"
-    />
-    <div v-else-if="!user">
-      User not found
-    </div>
-    <main v-else>
+    <main>
       <article
         class="relative z-0 flex-1 overflow-y-auto focus:outline-none xl:order-last"
       >
         <div>
           <div>
             <div
-              class="h-32 w-full object-cover lg:h-48 user-background"
+              class="user-background h-32 w-full object-cover lg:h-48"
               alt="background pattern"
             />
           </div>
@@ -115,11 +104,12 @@ export default defineComponent({
                 />
               </div>
               <div
+                v-if="user && username"
                 class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6"
               >
                 <div class="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
                   <h1
-                    class="truncate text-2xl sm:mt-10 mb-2 font-bold text-gray-900 dark:text-gray-200"
+                    class="mb-2 truncate text-2xl font-bold text-gray-900 dark:text-gray-200 sm:mt-10"
                   >
                     {{ username }}
                   </h1>
@@ -127,15 +117,15 @@ export default defineComponent({
                 </div>
               </div>
             </div>
-            <div class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
+            <div v-if="user && username" class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
               <h1
-                class="truncate text-2xl mb-2 sm:mt-10 font-bold dark:text-gray-200"
+                class="mb-2 truncate text-2xl font-bold dark:text-gray-200 sm:mt-10"
               >
                 {{ username }}
               </h1>
               {{ `Joined ${relativeTime(user.createdAt)}` }}
             </div>
-            <ul class="m-4 list-disc">
+            <ul v-if="user" class="m-4 list-disc">
               <li>
                 {{ `${user.CommentsAggregate.count} comments` }}
               </li>
@@ -148,22 +138,19 @@ export default defineComponent({
             </ul>
             <router-link
               v-if="loggedInUserModName"
-              class="underline text-sm text-gray-500"
+              class="text-sm text-gray-500 underline"
               :to="`/mod/${loggedInUserModName}`"
             >
               Go to mod profile
             </router-link>
           </div>
         </div>
-
-        <!-- Tabs -->
-        <div class="mt-6 sm:mt-2 2xl:mt-5  ">
-          <div class="border-b border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-500 dark:text-gray-200">
+        <div class="mt-6 sm:mt-2 2xl:mt-5">
+          <div
+            class="border-b border-gray-200 bg-gray-100 dark:border-gray-800 dark:bg-gray-500 dark:text-gray-200"
+          >
             <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-              <nav
-                class="-mb-px text-lg max-w-7xl space-x-8"
-                aria-label="Tabs"
-              >
+              <nav class="-mb-px max-w-7xl space-x-8 text-lg" aria-label="Tabs">
                 <TabButton
                   v-for="tab in tabs"
                   :key="tab.name"
@@ -174,7 +161,21 @@ export default defineComponent({
               </nav>
             </div>
           </div>
-          <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12 dark:bg-gray-800">
+          <div v-if="loading">
+            Loading...
+          </div>
+          <ErrorBanner
+            v-else-if="error"
+            :text="error.message"
+            :error="error"
+          />
+          <div v-else-if="!user">
+            User not found
+          </div>
+          <div
+            v-else
+            class="mx-auto max-w-5xl px-4 pb-12 dark:bg-gray-800 sm:px-6 lg:px-8"
+          >
             <router-view />
           </div>
         </div>

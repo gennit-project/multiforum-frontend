@@ -54,6 +54,7 @@ export default defineComponent({
       :comment-data="comment"
       :depth="0"
       :show-channel="true"
+      :show-context-link="true"
     />
   </div>
 </template>
