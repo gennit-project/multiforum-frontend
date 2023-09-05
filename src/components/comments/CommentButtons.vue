@@ -275,13 +275,15 @@ export default defineComponent({
         </template>
       </RequireAuth>
       <span
+        v-if="commentData.DiscussionChannel"
         :to="`${route.path}/comments/${commentData.id}`"
         class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="
           $router.push({
             name: 'DiscussionCommentPermalink',
             params: {
-              ...route.params,
+              channelId: commentData.DiscussionChannel?.channelUniqueName,
+              discussionId: commentData.DiscussionChannel?.discussionId,
               commentId: commentData.id,
             },
           })

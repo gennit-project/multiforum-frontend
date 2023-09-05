@@ -52,6 +52,7 @@ export default defineComponent({
       v-else-if="result && result.users.length > 0"
       :key="comment.id"
       :comment-data="comment"
+      :parent-comment-id="comment.ParentComment ? comment.ParentComment.id : null"
       :depth="0"
       :show-channel="true"
       :show-context-link="true"

@@ -237,18 +237,27 @@ export default defineComponent({
           class="my-1 rounded-lg px-2 py-2 shadow-sm"
           data-testid="comment"
         >
-          <router-link
-            v-if="showContextLink && parentCommentId"
-            class="text-xs underline"
-            :to="{
-              name: 'DiscussionCommentPermalink',
-              params: {
-                discussionId: route.params.discussionId,
-                commentId: parentCommentId,
-              },
-            }"
-            >View Context</router-link
+          <div
+            class="mb-2"
+            v-if="
+              showContextLink &&
+              parentCommentId &&
+              commentData.DiscussionChannel
+            "
           >
+            <router-link
+              class="pl-4 text-xs underline"
+              :to="{
+                name: 'DiscussionCommentPermalink',
+                params: {
+                  discussionId: commentData.DiscussionChannel.discussionId,
+                  commentId: parentCommentId,
+                  channelId: commentData.DiscussionChannel.channelUniqueName,
+                },
+              }"
+              >View Context</router-link
+            >
+          </div>
           <p class="flex flex-wrap items-center space-x-2">
             <Avatar
               v-if="commentData.CommentAuthor"

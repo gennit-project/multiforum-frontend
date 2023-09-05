@@ -63,6 +63,9 @@ export const GET_USER_COMMENTS = gql`
         createdAt
         updatedAt
         deleted
+        ParentComment {
+          id
+        }
         CommentAuthor {
           ... on User {
             username
@@ -73,6 +76,8 @@ export const GET_USER_COMMENTS = gql`
           Channel {
             uniqueName
           }
+          discussionId
+          channelUniqueName
         }
         Channel {
           uniqueName

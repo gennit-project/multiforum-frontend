@@ -26,7 +26,6 @@ export default defineComponent({
     const parentCommentId = computed(() => {
       const comment = commentResult.value?.comments[0]
       if (comment && comment.ParentComment) {
-        console.log(comment)
         return comment.ParentComment.id
       }
       return "";
