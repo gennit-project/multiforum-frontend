@@ -21,9 +21,9 @@ export default defineComponent({
     :disabled="disabled"
     :class="[
       disabled
-        ? 'bg-gray-200 cursor-default text-gray-600'
+        ? 'bg-gray-200 cursor-default text-gray-600 dark:text-gray-400'
         : 'text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-white dark:bg-blue-700 dark:hover:bg-blue-600',
-      'dark:bg-opacity-60' // class for controlling the background opacity in dark mode
+      '' // class for controlling the background opacity in dark mode
     ]"
     class="
       ml-3

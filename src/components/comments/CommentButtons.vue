@@ -298,7 +298,7 @@ export default defineComponent({
       >Cancel</span>
       <span
         v-if="showEditCommentField"
-        class="cursor-pointer underline hover:text-black dark:text-gray-500 dark:hover:text-white"
+        class="cursor-pointer underline hover:text-black dark:text-gray-200 dark:hover:text-white"
         @click="
           () => {
             $emit('saveEdit');

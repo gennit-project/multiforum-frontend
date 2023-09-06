@@ -91,8 +91,6 @@ export default defineComponent({
 </script>
 
 <template>
- 
-
   <div class="px-4 text-sm text-gray-700 dark:text-gray-200">
     <ul class="space-y-2">
       <li class="hanging-indent flex items-start">
@@ -125,16 +123,18 @@ export default defineComponent({
         <div class="mr-3 h-5 w-5">
           <LocationIcon />
         </div>
-        <span class="flex">
-          {{ `${eventData.locationName}, ` }}
-          <a
-            class="underline"
-            target="_blank"
-            rel="noreferrer"
-            :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
-          >
-            {{ eventData.address }}
-          </a>
+        <div class="flex">
+          <span>
+            {{ `${eventData.locationName}, ` }}
+            <a
+              class="underline"
+              target="_blank"
+              rel="noreferrer"
+              :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
+            >
+              {{ eventData.address }}
+            </a>
+          </span>
           <span>
             <ClipboardIcon
               class="ml-1 h-4 w-4 cursor-pointer"
@@ -142,7 +142,7 @@ export default defineComponent({
             />
             <v-tooltip activator="parent" location="top"> Copy </v-tooltip>
           </span>
-        </span>
+        </div>
       </li>
       <li
         v-if="!eventData.free && eventData.cost && eventData.cost !== '0'"

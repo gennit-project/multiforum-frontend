@@ -186,7 +186,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-1"
+    class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-2"
     :class="[
       isActive
         ? 'text-bold border border-blue-500 bg-gray-100  dark:bg-gray-700'
@@ -195,12 +195,14 @@ export default defineComponent({
   >
     <v-row>
       <v-col cols="2">
+        <div class="m-1">
         <DiscussionVotes
           v-if="discussionChannel"
           :discussion="discussion"
           :discussion-channel="discussionChannel"
           :show-downvote="false"
         />
+      </div>
       </v-col>
       <v-col :cols="8">
         <div>

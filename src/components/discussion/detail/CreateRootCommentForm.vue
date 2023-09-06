@@ -164,6 +164,8 @@ export default defineComponent({
       return props.discussionChannel.locked;
     });
 
+    const writeReplyStyle =  'block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9'
+
     return {
       discussionChannelIsLocked,
       createComment,
@@ -173,6 +175,7 @@ export default defineComponent({
       showCreateCommentModal: ref(false),
       showRootCommentEditor: ref(false),
       username,
+      writeReplyStyle
     };
   },
   methods: {
@@ -208,7 +211,7 @@ export default defineComponent({
             name="addcomment"
             rows="1"
             placeholder="Write a reply"
-            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9"
+            :class="writeReplyStyle"
             @click="showEditorInCommentSection = true"
           />
         </template>
@@ -218,7 +221,7 @@ export default defineComponent({
             name="addcomment"
             rows="1"
             placeholder="Write a reply"
-            class="block h-10 w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:bg-gray-900"
+            :class="writeReplyStyle"
           />
         </template>
       </RequireAuth>

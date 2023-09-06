@@ -84,7 +84,7 @@ export default defineComponent({
         :count="downvoteCount"
         :active="downvoteActive"
       >
-        <i class="fa-solid fa-arrow-down w-3" />
+        <i class="fa-solid fa-arrow-down mr-2 w-3" />
       </VoteButton>
     </template>
   </RequireAuth>

@@ -255,7 +255,7 @@ export default defineComponent({
       <div>
         <ul
           role="list"
-          class="relative my-2 rounded"
+          class="relative my-2 rounded pr-2"
           data-testid="channel-discussion-list"
         >
           <ChannelDiscussionListItem
