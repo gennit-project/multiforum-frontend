@@ -154,7 +154,11 @@ export const GET_COMMENT_AND_REPLIES = gql`
 `;
 
 export const GET_COMMENT_REPLIES = gql`
-  query getCommentWithReplies($id: ID!) {
+  query getCommentWithReplies(
+    $id: ID!
+    $limit: Int
+    $offset: Int
+  ) {
     comments(
       where: {
         id: $id
@@ -165,7 +169,9 @@ export const GET_COMMENT_REPLIES = gql`
         count
       }
       ...CommentVoteFields
-      ChildComments {
+      ChildComments(
+        options: { limit: $limit, offset: $offset }
+      ) {
         ...CommentFields
       }
     }

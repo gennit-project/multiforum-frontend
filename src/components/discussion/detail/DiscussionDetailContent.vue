@@ -166,7 +166,6 @@ export default defineComponent({
       <v-col
         cols="12"
         :md="route.name === 'DiscussionDetail' ? 9 : 12"
-      
       >
         <div class="space-y-3">
           <div class="mb-3 mt-2 w-full">

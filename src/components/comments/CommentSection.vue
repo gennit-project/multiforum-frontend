@@ -2,7 +2,7 @@
 import { defineComponent, ref, computed, PropType, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
-// import LoadMore from "../generic/LoadMore.vue";
+
 import {
   CommentData,
   CreateEditCommentFormValues,
@@ -30,13 +30,11 @@ import {
 import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
-import { type } from "os";
 
 export default defineComponent({
   components: {
     Comment,
     ErrorBanner,
-    // LoadMore,
     WarningModal,
     PermalinkedComment,
   },
@@ -171,23 +169,6 @@ export default defineComponent({
     } = useMutation(SOFT_DELETE_COMMENT);
 
     const createCommentInput = computed(() => {
-      //   const tagConnections = formValues.value.tags.map(
-      //     (tag: string) => {
-      //       return {
-      //         onCreate: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //         where: {
-      //           node: {
-      //             text: tag,
-      //           },
-      //         },
-      //       };
-      //     }
-      //   );
-
       const input = {
         isRootComment: false,
         DiscussionChannel: {

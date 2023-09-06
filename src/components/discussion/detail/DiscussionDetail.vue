@@ -57,6 +57,7 @@ export default defineComponent({
   <div  class="h-screen w-full flex justify-center space-y-4 overflow-auto py-1 lg:px-4">
     <DiscussionDetailContent
       v-if="discussionId"
+      :key="discussionId"
       :discussion-id="discussionId"
       :compact-mode="compactMode"
     />

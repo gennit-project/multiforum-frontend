@@ -1,64 +1,103 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_COMMENT_REPLIES } from "@/graphQLData/comment/queries";
+import LoadMore from "../generic/LoadMore.vue";
 
 export default defineComponent({
+  components: {
+    LoadMore,
+  },
   props: {
     parentCommentId: {
       type: String,
-      required: true
+      required: true,
     },
   },
 
   setup(props) {
-    // The only reason this component exists is because you can't
-    // conditionally use the useQuery hook. To work around that,
-    // I have placed the useQuery hook in this component, then
-    // this component is conditionally rendered in the Comment component.
-
-    // (Another workaround would by to use the lazy query option.
-    // I may refactor it to use the lazy query.)
-
-    // This query needs to be conditional because we shouldn't
-    // always load all of the replies.
+    const currentOffset = ref(0);
     const {
       result: commentResult,
       error: commentError,
       loading: commentLoading,
-      //   fetchMore,
+      fetchMore,
     } = useQuery(GET_COMMENT_REPLIES, {
       id: props.parentCommentId,
-      // limit: 25,
-      // offset: 0,
+      limit: 5,
+      offset: currentOffset.value,
     });
 
+    const loadMore = () => {
+      currentOffset.value += 2;
+      fetchMore({
+        variables: {
+          offset: currentOffset.value,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+
+          // We need to update the result of GET_COMMENT_REPLIES
+          // to include the new comments.
+          const previousComment = previousResult.comments[0]
+          const prevCommentReplies = previousComment.ChildComments
+          const newCommentReplies = fetchMoreResult.comments[0].ChildComments
+
+          const newComment = {
+            ...previousComment,
+            ChildComments: [...prevCommentReplies, ...newCommentReplies]
+          }
+
+          return {
+            ...previousResult,
+            comments: [newComment],
+          };
+        },
+      });
+    };
+
     const comments = computed(() => {
-        if (commentLoading.value || commentError.value){
-            return []
-        }
-        const parentComment = commentResult.value.comments[0]
-        if (parentComment) {
-            return parentComment.ChildComments
-        }
-        return []
-    })
+      if (commentLoading.value || commentError.value) {
+        return [];
+      }
+      const parentComment = commentResult.value.comments[0];
+      if (parentComment) {
+        return parentComment.ChildComments;
+      }
+      return [];
+    });
+
+    const aggregateCommentCount = computed(() => {
+      if (commentLoading.value || commentError.value) {
+        return 0;
+      }
+      console.log(commentResult.value.ChildCommentsAggregate)
+      if (commentResult.value.ChildCommentsAggregate?.count) {
+        return commentResult.value.ChildCommentsAggregate.count;
+      }
+      return 0;
+    });
+
     return {
+      aggregateCommentCount,
       commentError,
       commentLoading,
-      comments
+      comments,
+      loadMore,
     };
   },
 });
 </script>
 <template>
-  <div v-if="commentLoading">
-    Loading...
-  </div>
+  <div v-if="commentLoading">Loading...</div>
   <div v-else-if="commentError">
     {{ commentError.message }}
   </div>
   <div v-else>
     <slot :comments="comments" />
+    <LoadMore
+      :reached-end-of-results="aggregateCommentCount === comments.length"
+      @loadMore="loadMore"
+    />
   </div>
 </template>
