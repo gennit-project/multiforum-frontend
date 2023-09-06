@@ -184,7 +184,7 @@ export default defineComponent({
       >&#8226;</span>
 
       <router-link
-        v-if="!channelId && channelsExceptCurrent.length > 0"
+        v-if="channelsExceptCurrent.length > 0"
         class="underline font-medium cursor-pointer"
         :to="`/channels/c/${channelsExceptCurrent[0].channelUniqueName}/events/e/${eventId}`"
       >

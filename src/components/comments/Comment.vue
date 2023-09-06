@@ -292,7 +292,7 @@ export default defineComponent({
               v-if="commentData.text && !showEditCommentField"
               class="-ml-4 w-full"
             >
-              <MarkdownPreview :text="textCopy" />
+              <MarkdownPreview :text="textCopy" :key="textCopy"/>
             </div>
             <TextEditor
               v-if="!readonly && showEditCommentField"
