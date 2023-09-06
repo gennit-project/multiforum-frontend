@@ -232,7 +232,7 @@ export default defineComponent({
             />
             <button
               data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-200 dark:hover:bg-gray-700"
+              class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black hover:border-black dark:border-gray-500 dark:text-gray-200 dark:hover:bg-gray-700"
             >
               <i class="fa-regular fa-comment h-4 w-4" />
               Reply

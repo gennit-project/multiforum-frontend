@@ -29,7 +29,7 @@ export default defineComponent({
     });
 
     const loadMore = () => {
-      currentOffset.value += 2;
+      currentOffset.value += 5;
       fetchMore({
         variables: {
           offset: currentOffset.value,
@@ -39,14 +39,14 @@ export default defineComponent({
 
           // We need to update the result of GET_COMMENT_REPLIES
           // to include the new comments.
-          const previousComment = previousResult.comments[0]
-          const prevCommentReplies = previousComment.ChildComments
-          const newCommentReplies = fetchMoreResult.comments[0].ChildComments
+          const previousComment = previousResult.comments[0];
+          const prevCommentReplies = previousComment.ChildComments;
+          const newCommentReplies = fetchMoreResult.comments[0].ChildComments;
 
           const newComment = {
             ...previousComment,
-            ChildComments: [...prevCommentReplies, ...newCommentReplies]
-          }
+            ChildComments: [...prevCommentReplies, ...newCommentReplies],
+          };
 
           return {
             ...previousResult,
@@ -71,11 +71,19 @@ export default defineComponent({
       if (commentLoading.value || commentError.value) {
         return 0;
       }
-      console.log(commentResult.value.ChildCommentsAggregate)
-      if (commentResult.value.ChildCommentsAggregate?.count) {
-        return commentResult.value.ChildCommentsAggregate.count;
+      const comment = commentResult.value.comments[0]
+      if (comment && comment.ChildCommentsAggregate?.count) {
+        return comment.ChildCommentsAggregate.count;
       }
       return 0;
+    });
+
+
+    const reachedEndOfResults = computed(() => {
+      if (commentLoading.value || commentError.value) {
+        return false;
+      }
+      return aggregateCommentCount.value === comments.value.length;
     });
 
     return {
@@ -84,19 +92,21 @@ export default defineComponent({
       commentLoading,
       comments,
       loadMore,
+      reachedEndOfResults,
     };
   },
 });
 </script>
 <template>
-  <div v-if="commentLoading">Loading...</div>
-  <div v-else-if="commentError">
+  <div v-if="commentError">
     {{ commentError.message }}
   </div>
   <div v-else>
+    <div v-if="commentLoading">Loading...</div>
     <slot :comments="comments" />
     <LoadMore
-      :reached-end-of-results="aggregateCommentCount === comments.length"
+      v-if="!reachedEndOfResults"
+      :reached-end-of-results="reachedEndOfResults"
       @loadMore="loadMore"
     />
   </div>

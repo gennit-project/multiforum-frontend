@@ -122,8 +122,8 @@ export default defineComponent({
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
           <router-link to="/" class="flex items-center">
-            <ChannelIcon class="mr-1 h-6 w-6 text-blue-500" /><span
-            class="font-bold text-blue-500 dark:text-white"
+            <ChannelIcon class="mr-1 h-6 w-6 text-blue-600" /><span
+              class="font-bold text-blue-600 dark:text-white"
               >Topical</span
             >
           </router-link>
