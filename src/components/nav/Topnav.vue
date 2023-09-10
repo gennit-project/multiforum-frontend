@@ -13,7 +13,8 @@ import {
 import { useRoute } from "vue-router";
 import CreateAnythingButton from "./CreateAnythingButton.vue";
 import { useRouter } from "vue-router";
-import ArrowUpBoldBox from 'vue-material-design-icons/ArrowUpBoldBox.vue';
+import ArrowUpBoldBox from "vue-material-design-icons/ArrowUpBoldBox.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "TopNav",
@@ -29,6 +30,7 @@ export default defineComponent({
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
     const route = useRoute();
     const router = useRouter();
+    const { smAndDown } = useDisplay();
 
     const { result } = useQuery(GET_LOCAL_USERNAME);
     const username = computed(() => {
@@ -73,6 +75,7 @@ export default defineComponent({
       router,
       username,
       showCreateMenu: ref(false),
+      smAndDown,
     };
   },
   computed: {
@@ -111,7 +114,10 @@ export default defineComponent({
 
 <template>
   <div class="w-full bg-gray-100 dark:bg-gray-900">
-    <div class="flex items-center justify-between px-4 py-3">
+    <div
+      :class="[smAndDown ? 'py-1 px-2' : 'py-3 px-4']"
+      class="flex items-center justify-between"
+    >
       <div class="flex items-center lg:px-0">
         <HamburgerMenuButton
           data-testid="menu-button"
@@ -121,14 +127,13 @@ export default defineComponent({
         <div
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
-          <router-link
-            to="/" 
-            class="flex items-center"
-          >
-            <arrow-up-bold-box :size="38" class="ml-3 mr-2 text-black dark:text-blue-500" />
+          <router-link to="/" class="flex items-center">
+            <arrow-up-bold-box
+              :size="38"
+              class="ml-3 mr-2 text-black dark:text-blue-500"
+            />
             <span class="font-bold text-black dark:text-white">Topical</span>
           </router-link>
-
           <div v-if="shouldShowChannelId" class="flex items-center gap-1">
             <span>/</span>
             <Avatar :text="channelId" :is-square="true" class="h-6 w-6" />
@@ -157,9 +162,8 @@ export default defineComponent({
           Log In
         </button>
       </div>
-
       <div class="flex items-center space-x-4">
-        <CreateAnythingButton />
+        <CreateAnythingButton v-if="!smAndDown" />
         <ThemeSwitcher />
         <div v-if="isAuthenticated && username" class="hidden lg:ml-4 lg:block">
           <div class="flex items-center">

@@ -5,6 +5,7 @@ import ChevronDownIcon from "../icons/ChevronDownIcon.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useRoute, useRouter } from "vue-router";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "CreateAnythingButton",
@@ -26,7 +27,9 @@ export default defineComponent({
       }
       return route.params.channelId;
     });
-    return { channelId, router };
+
+    const { smAndDown } = useDisplay();
+    return { channelId, router, smAndDown };
   },
 });
 </script>

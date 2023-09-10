@@ -8,6 +8,7 @@ import {
   TransitionRoot,
 } from "@headlessui/vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   components: {
@@ -34,8 +35,10 @@ export default defineComponent({
   },
   setup() {
     const cancelButtonRef = ref();
+    const { smAndDown } = useDisplay();
     return {
       cancelButtonRef,
+      smAndDown
     };
   },
 });
@@ -84,7 +87,8 @@ export default defineComponent({
                         <button
                           :ref="cancelButtonRef"
                           type="button"
-                          class="ml-8 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          :class="smAndDown ? 'ml-2' : 'ml-4'"
+                          class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                           @click="$emit('closePreview')"
                         >
                           <span
@@ -102,7 +106,7 @@ export default defineComponent({
                       </div>
                     </div>
                   </div>
-                  <div class="relative flex-1 m-8">
+                  <div class="relative flex-1" :class="[smAndDown ? 'm-2': 'm-4']">
                     <slot />
                   </div>
                 </div>

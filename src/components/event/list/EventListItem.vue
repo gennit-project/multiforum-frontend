@@ -247,7 +247,7 @@ export default defineComponent({
         <div class="py-1">
           <div class="flex">
             <div
-              class="mr-4 flex h-16 w-16 flex-col items-center justify-center rounded-lg pt-3"
+              class="mr-4 flex h-16 w-16 flex-col items-center justify-center rounded-lg"
             >
               <div
                 class="font-semibold text-xs uppercase text-gray-500 dark:text-gray-200"

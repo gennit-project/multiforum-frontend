@@ -561,7 +561,7 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="discussionChannel.CommentsAggregate?.count === 0">
-      <h2 id="comments" ref="commentSectionHeader" class="mb-2 text-lg">
+      <h2 id="comments" ref="commentSectionHeader" class="mb-2 text-md">
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
@@ -582,7 +582,7 @@ export default defineComponent({
         v-if="!isPermalinkPage"
         id="comments"
         ref="commentSectionHeader"
-        class="text-lg"
+        class="text-lg px-1"
       >
         {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
       </h2>

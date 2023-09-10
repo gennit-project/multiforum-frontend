@@ -185,11 +185,11 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-2 lg:px-6 lg:py-4"
+    class="relative mt-1 flex space-x-1 space-y-3 p-4 lg:px-6 lg:py-4"
     :class="[
       isActive
-        ? 'text-bold border border-black bg-gray-100 dark:border-blue-500  dark:bg-gray-700'
-        : '',
+        ? 'text-bold border border-black border rounded-md bg-gray-100 dark:border-blue-500  dark:bg-gray-700'
+        : 'border-b border-gray-200 dark:border-gray-500 ',
     ]"
   >
     <v-row>

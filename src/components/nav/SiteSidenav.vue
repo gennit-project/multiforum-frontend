@@ -11,6 +11,8 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import clickOutside from "vue-click-outside";
 import Avatar from "@/components/user/Avatar.vue";
+import { useDisplay } from "vuetify";
+import CreateAnythingButton from "./CreateAnythingButton.vue";
 
 type NavigationItem = {
   name: string;
@@ -44,6 +46,7 @@ export default defineComponent({
   components: {
     Avatar,
     CalendarIcon,
+    CreateAnythingButton,
     LocationIcon,
     DiscussionIcon,
     ChannelIcon,
@@ -69,6 +72,8 @@ export default defineComponent({
       return "";
     });
 
+    const { smAndDown } = useDisplay();
+
     return {
       isAuthenticated,
       login: () => {
@@ -79,6 +84,7 @@ export default defineComponent({
       },
       navigation,
       username,
+      smAndDown,
     };
   },
   methods: {
@@ -92,7 +98,7 @@ export default defineComponent({
   <div v-if="showDropdown">
     <!-- Overlay (shadow) for the rest of the UI -->
     <div
-      class="fixed inset-0 z-40 opacity-50 dark:text-gray-200 bg-gray-100 dark:bg-gray-900"
+      class="fixed inset-0 z-40 bg-gray-100 opacity-50 dark:bg-gray-900 dark:text-gray-200"
       @click="$emit('close')"
     />
 
@@ -109,25 +115,20 @@ export default defineComponent({
               @click="$emit('close')"
             >
               <span class="sr-only">Close panel</span>
-              <XIcon
-                class="h-6 w-6"
-                aria-hidden="true"
-              />
+              <XIcon class="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
         </div>
-
-        <nav class="mt-16">
+        <div class="flex justify-end">
+          <CreateAnythingButton class="mb-4 px-6" v-if="smAndDown" />
+        </div>
+        <nav class="mt-4">
           <ul role="list">
-            <li
-              v-for="item in navigation"
-              :key="item.name"
-              class="px-6"
-            >
+            <li v-for="item in navigation" :key="item.name" class="px-6">
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
-                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
+                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
                 @click="$emit('close')"
               >
                 <component
@@ -145,7 +146,7 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}`"
-          class="px-6 dark:hover:bg-gray-700 font-semibold group flex items-center gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 "
+          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:bg-gray-800"
           @click="$emit('close')"
         >
           <Avatar :text="username" />
@@ -153,7 +154,7 @@ export default defineComponent({
         </router-link>
         <button
           v-if="!isAuthenticated"
-          class="px-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
+          class="font-semibold group flex gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="login"
         >
           Log In
@@ -162,7 +163,7 @@ export default defineComponent({
           v-if="isAuthenticated"
           data-testid="sign-out-link"
           to="/logout"
-          class="pl-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-6 text-sm leading-6 text-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="logout"
         >
           Sign Out
@@ -174,9 +175,7 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 nav li:hover,
-
 .list-item-icon {
   color: #9ca3af;
 }
-
 </style>

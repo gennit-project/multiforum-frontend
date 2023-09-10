@@ -526,7 +526,7 @@ export default defineComponent({
             class="inline-flex w-full align-middle"
             data-testid="event-drawer-search-bar"
             :initial-value="filterValues.searchInput"
-            :search-placeholder="'Search text'"
+            :search-placeholder="'Search'"
             :full-width="true"
             @updateSearchInput="updateSearchInput"
           />

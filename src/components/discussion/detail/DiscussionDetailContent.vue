@@ -3,8 +3,10 @@ import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID, 
-  GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE } from "@/graphQLData/comment/queries";
+import {
+  GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+  GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE,
+} from "@/graphQLData/comment/queries";
 import { relativeTime } from "../../../dateTimeUtils";
 import { Discussion } from "@/__generated__/graphql";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -72,7 +74,7 @@ export default defineComponent({
       result: getDiscussionChannelResult,
       error: getDiscussionChannelError,
       loading: getDiscussionChannelLoading,
-      fetchMore: fetchMoreComments
+      fetchMore: fetchMoreComments,
     } = useQuery(GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID, {
       discussionId: discussionId,
       channelUniqueName: channelId,
@@ -98,12 +100,10 @@ export default defineComponent({
       return getDiscussionResult.value.discussions[0];
     });
 
-    const { lgAndUp, mdAndUp } = useDisplay();
+    const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
 
     const activeDiscussionChannel = computed<DiscussionChannel>(() => {
-      if (
-       !getDiscussionChannelResult.value
-      ) {
+      if (!getDiscussionChannelResult.value) {
         return null;
       }
       return getDiscussionChannelResult.value.discussionChannels[0];
@@ -117,13 +117,20 @@ export default defineComponent({
     });
 
     const rootCommentCount = computed(() => {
-      if (getDiscussionChannelRootCommentAggregateLoading.value || getDiscussionChannelRootCommentAggregateError.value) {
+      if (
+        getDiscussionChannelRootCommentAggregateLoading.value ||
+        getDiscussionChannelRootCommentAggregateError.value
+      ) {
         return 0;
       }
-      if (!getDiscussionChannelRootCommentAggregateResult.value || !getDiscussionChannelRootCommentAggregateResult.value.discussionChannels) {
+      if (
+        !getDiscussionChannelRootCommentAggregateResult.value ||
+        !getDiscussionChannelRootCommentAggregateResult.value.discussionChannels
+      ) {
         return 0;
       }
-      const discussionChannels = getDiscussionChannelRootCommentAggregateResult.value.discussionChannels;
+      const discussionChannels =
+        getDiscussionChannelRootCommentAggregateResult.value.discussionChannels;
       if (discussionChannels.length === 0) {
         return 0;
       }
@@ -133,7 +140,7 @@ export default defineComponent({
 
     // Needed to update the cached result of the query if the
     // user creates a root comment.
-    const previousOffset = ref(0)
+    const previousOffset = ref(0);
 
     const offset = computed(() => {
       if (!activeDiscussionChannel.value) {
@@ -178,7 +185,8 @@ export default defineComponent({
         return false;
       }
       return (
-        rootCommentCount.value === activeDiscussionChannel.value?.Comments?.length
+        rootCommentCount.value ===
+        activeDiscussionChannel.value?.Comments?.length
       );
     });
 
@@ -200,26 +208,31 @@ export default defineComponent({
       rootCommentCount,
       route,
       router,
+      smAndDown,
     };
   },
 });
 </script>
 
 <template>
-  <div class="mt-1 w-full max-w-5xl space-y-2 px-3">
+  <div
+    :class="!smAndDown ? 'px-4' : 'px-0'"
+    class="mt-1 w-full max-w-5xl space-y-2"
+  >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      :class="'align-center mt-2 flex justify-between'"
+      class="align-center justify-between mt-2 flex w-full"
     >
-      <router-link
-        data-testid="discussion-detail-back-link"
-        :to="`/channels/c/${channelId}/discussions`"
-        class="text-xs underline"
-      >
-        <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
-        {{ `Discussion list in c/${channelId}` }}
-      </router-link>
-      <RequireAuth :full-width="false" class="inline-flex max-w-sm">
+      <div>
+        <router-link
+          data-testid="discussion-detail-back-link"
+          :to="`/channels/c/${channelId}/discussions`"
+        >
+          <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 px-1 pb-1" />
+          <span class="text-xs underline">{{ `List` }}</span>
+        </router-link>
+      </div>
+      <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
         <template #has-auth>
           <CreateButton
             class="ml-2"
@@ -238,20 +251,14 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <v-row
-      v-if="discussion"
-      class="mt-1 flex justify-center"
-    >
-      <v-col
-        cols="12"
-        :md="route.name === 'DiscussionDetail' ? 9 : 12"
-      >
+    <v-row v-if="discussion" class="mt-1 flex justify-center">
+      <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12">
         <div class="space-y-3">
-          <div class="mb-3 mt-2 w-full">
+          <div class="mb-3 w-full">
             <div ref="discussionDetail">
               <div class="min-w-0">
                 <h2
-                  class="text-wrap text-3xl font-bold leading-7 sm:tracking-tight"
+                  class="px-1 text-wrap text-2xl font-bold leading-7 sm:tracking-tight"
                 >
                   {{
                     discussion && discussion.title
@@ -273,10 +280,7 @@ export default defineComponent({
               :channel-id="channelId"
               :compact-mode="compactMode"
             />
-            <DiscussionBody
-              :discussion="discussion"
-              :channel-id="channelId"
-            />
+            <DiscussionBody :discussion="discussion" :channel-id="channelId" />
             <DiscussionVotes
               v-if="channelId && discussionId && activeDiscussionChannel"
               :discussion="discussion"
@@ -287,16 +291,14 @@ export default defineComponent({
         <CreateRootCommentForm
           v-if="
             activeDiscussionChannel &&
-              (route.name === 'DiscussionDetail' || channelId)
+            (route.name === 'DiscussionDetail' || channelId)
           "
           :key="`${channelId}${discussionId}`"
           :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"
           :previous-offset="previousOffset"
         />
-        <div
-          class="my-4 mb-2 rounded-lg py-6"
-        >
+        <div :class="!smAndDown ? 'py-6' : 'py-0'" class="my-4 mb-2 rounded-lg">
           <CommentSection
             v-if="activeDiscussionChannel"
             :key="activeDiscussionChannel.id"

@@ -113,76 +113,79 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex gap-3 space-x-2 rounded-md p-4 pb-2"
+    class="relative flex gap-3 space-x-2 p-4 pb-2 border-b "
     :class="[
       discussionId === discussionIdInParams
-        ? 'border border-black dark:border-blue-500 bg-gray-100  dark:bg-gray-700'
-        : '',
+        ? 'border border-black bg-gray-100 dark:border-blue-500 rounded-md dark:bg-gray-700'
+        : 'border-b border-gray-200 dark:border-gray-500',
     ]"
   >
-    <span class="mt-1 w-6"
-      ><span class="flex items-center text-sm text-gray-500 dark:text-gray-200"
-        ><i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}</span
-      >
-      <v-tooltip activator="parent" location="top">
-        <span>{{ `Sum of votes across channels, deduplicated by user` }}</span>
-      </v-tooltip>
-    </span>
-
-    <div class="w-full">
-      <router-link
-        :to="{ path: previewLink, query: filteredQuery }"
-        @click="$emit('openPreview')"
-      >
-        <p
-          :class="discussionIdInParams === discussionId ? 'text-black' : ''"
-          class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+    <div class="flex w-full justify-between">
+      <div>
+        <router-link
+          :to="{ path: previewLink, query: filteredQuery }"
+          @click="$emit('openPreview')"
         >
-          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-        </p>
-      </router-link>
+          <p
+            :class="discussionIdInParams === discussionId ? 'text-black' : ''"
+            class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+          >
+            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+          </p>
+        </router-link>
 
-      <div
-        class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
-      >
-        <Tag
-          v-for="tag in tags"
-          :key="tag"
-          class="my-1"
-          :active="selectedTags.includes(tag)"
-          :tag="tag"
-          @click="$emit('filterByTag', tag)"
-        />
-      </div>
-
-      <div
-        v-if="discussion && discussion.DiscussionChannels"
-        class="font-medium flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-200"
-      >
-        <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
-        <Tag
-          v-for="dc in discussion.DiscussionChannels"
-          :key="dc.id"
-          :class="[
-            selectedChannels.includes(dc.channelUniqueName)
-              ? 'text-blue-500'
-              : 'hover:text-black dark:text-gray-200 dark:hover:text-gray-100',
-          ]"
-          :channel-mode="true"
-          :tag="dc.channelUniqueName"
-          @click="$emit('filterByChannel', dc.channelUniqueName)"
+        <div
+          class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
         >
-          {{ dc.channelUniqueName }}
-        </Tag>
+          <Tag
+            v-for="tag in tags"
+            :key="tag"
+            class="my-1"
+            :active="selectedTags.includes(tag)"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
+        </div>
+
+        <div
+          v-if="discussion && discussion.DiscussionChannels"
+          class="font-medium flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
+        >
+          <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
+          <Tag
+            v-for="dc in discussion.DiscussionChannels"
+            :key="dc.id"
+            :class="[
+              selectedChannels.includes(dc.channelUniqueName)
+                ? 'text-blue-500'
+                : 'hover:text-black dark:text-gray-200 dark:hover:text-gray-100',
+            ]"
+            :channel-mode="true"
+            :tag="dc.channelUniqueName"
+            @click="$emit('filterByChannel', dc.channelUniqueName)"
+          >
+            {{ dc.channelUniqueName }}
+          </Tag>
+        </div>
       </div>
     </div>
-    <span class="flex items-center gap-1 text-gray-500 dark:text-gray-100">
-      <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-      {{ commentCount }}
-      <v-tooltip activator="parent" location="top">
-        <span>{{ `Sum of comments across channels` }}</span>
-      </v-tooltip>
-    </span>
+    <div>
+      <div class="flex justify-end items-center gap-1 text-gray-500 dark:text-gray-100">
+        <i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}
+        <v-tooltip activator="parent" location="top">
+          <span>{{
+            `Sum of votes across channels, deduplicated by user`
+          }}</span>
+        </v-tooltip>
+      </div>
+      <div class="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-100">
+        <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+        {{ commentCount }}
+        <v-tooltip activator="parent" location="top">
+          <span>{{ `Sum of comments across channels` }}</span>
+        </v-tooltip>
+      </div>
+    </div>
   </li>
 </template>
 <style>

@@ -132,17 +132,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full space-y-2">
-    <div class="flex w-full items-center justify-between">
+  <div class="space-y-2">
+    <div class="flex items-center justify-between mt-1 px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
         :initial-value="filterValues.searchInput"
-        :search-placeholder="'Search text'"
+        :search-placeholder="'Search'"
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
-      <div>
         <FilterChip
           v-if="!channelId"
           class="align-middle"
@@ -176,7 +175,6 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-      </div>
     </div>
   </div>
 </template>

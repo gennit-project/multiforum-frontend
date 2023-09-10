@@ -79,7 +79,7 @@ export default defineComponent({
 
     const previewIsOpen = ref(false);
 
-    const { lgAndDown, lgAndUp, mdAndDown } = useDisplay();
+    const { lgAndDown, lgAndUp, mdAndDown, smAndDown } = useDisplay();
     const createDiscussionPath = channelId.value
       ? `/channels/c/${channelId.value}/discussions/create`
       : "/discussions/create";
@@ -101,6 +101,7 @@ export default defineComponent({
       router,
       setSelectedTags,
       selectedTags,
+      smAndDown,
       tagLabel,
     };
   },
@@ -250,7 +251,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-row class="p-0 pt-6">
+  <v-row :class="!smAndDown ? 'pt-6': 'p-0'">
     <v-col
       v-if="!mdAndDown"
       cols="12"
@@ -262,7 +263,7 @@ export default defineComponent({
     <v-col
       cols="12"
       :lg="channelId ? 5 : 4"
-      class="scrollable-column shadow-right-lg"
+      class="scrollable-column shadow-right-lg md:pr-6"
     >
       <DiscussionFilterBar />
       <SitewideDiscussionList

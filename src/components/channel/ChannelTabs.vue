@@ -64,7 +64,7 @@ export default defineComponent({
   <div>
     <nav
       v-if="vertical"
-      class="flex max-w-7xl flex-col text-lg"
+      class="flex max-w-7xl flex-col text-md"
       aria-label="Tabs"
     >
       <TabButton
@@ -95,7 +95,7 @@ export default defineComponent({
     </nav>
     <nav
       v-else
-      class="max-w-7xl space-x-2 pt-1 text-sm px-4"
+      class="max-w-7xl space-x-2 pt-1 text-sm"
       aria-label="Tabs"
     >
       <TabButton

@@ -102,7 +102,7 @@ export default defineComponent({
               </ChannelSidebar>
             </v-col>
             <v-col
-              class="pt-6"
+              :class="[!smAndDown ? 'pt-6' :'']"
               :cols="channelId && !smAndDown ? 9 : 12"
               :md="channelId && !smAndDown ? 9 : 12"
               :lg="channelId && !smAndDown ? 10 : 12"

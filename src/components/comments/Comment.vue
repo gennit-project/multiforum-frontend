@@ -261,7 +261,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex w-full border-b border-gray-200 dark:border-gray-500">
+    <div class="flex w-full ">
       <div :class="'text-sm'" class="w-full">
         <div
           :class="[
@@ -360,7 +360,7 @@ export default defineComponent({
               />
             </div>
             <CommentButtons
-              :class="[!showEditCommentField ? ' -mt-4':'']"
+              :class="[!showEditCommentField ? ' -mt-6':'']"
               class="ml-2"
               :comment-data="commentData"
               :depth="depth"

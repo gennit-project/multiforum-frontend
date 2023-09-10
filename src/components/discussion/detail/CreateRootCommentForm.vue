@@ -204,7 +204,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-1 flex w-full flex-col space-x-2 px-1 py-4">
+  <div class="mt-1 flex w-full flex-col space-x-2 px-1 pt-4">
     <div class="flex gap-2 min-h-36">
       <Avatar
         v-if="username"
