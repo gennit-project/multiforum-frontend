@@ -116,7 +116,7 @@ export default defineComponent({
     class="relative mt-1 flex gap-3 space-x-2 rounded-md p-4 pb-2"
     :class="[
       discussionId === discussionIdInParams
-        ? 'border border-blue-500 bg-gray-100  dark:bg-gray-700'
+        ? 'border border-black dark:border-blue-500 bg-gray-100  dark:bg-gray-700'
         : '',
     ]"
   >
@@ -135,7 +135,7 @@ export default defineComponent({
         @click="$emit('openPreview')"
       >
         <p
-          :class="discussionIdInParams === discussionId ? 'text-blue-500' : ''"
+          :class="discussionIdInParams === discussionId ? 'text-black' : ''"
           class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
         >
           <HighlightedSearchTerms :text="title" :search-input="searchInput" />

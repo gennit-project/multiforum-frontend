@@ -235,10 +235,10 @@ export default defineComponent({
   <li
     :ref="`#${event.id}`"
     :class="event.id === route.params.eventId
-        ? 'border border-blue-500 px-4'
+        ? 'border border-black dark:border-blue-500 px-4'
         : 'border-transparent px-4'
     "
-    class="rounded-md relative mt-1 bg-white pb-2 pl-6 pt-3 dark:bg-gray-800"
+    class="rounded-md relative mt-1 pb-2 pl-6 pt-3"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
   >

@@ -5,7 +5,6 @@ import {
 } from "@/graphQLData/comment/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { CommentData } from "@/types/commentTypes";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import Avatar from "../../user/Avatar.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
@@ -13,7 +12,8 @@ import TextEditor from "../../generic/forms/TextEditor.vue";
 import CancelButton from "../../generic/buttons/CancelButton.vue";
 import SaveButton from "../../generic/buttons/SaveButton.vue";
 import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
-import { DiscussionChannel } from "@/__generated__/graphql";
+import { Comment, DiscussionChannel } from "@/__generated__/graphql";
+import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
 
 export default defineComponent({
   components: {
@@ -30,6 +30,10 @@ export default defineComponent({
     },
     discussionChannel: {
       type: Object as PropType<DiscussionChannel>,
+      required: true,
+    },
+    offset: {
+      type: Number,
       required: true,
     },
   },
@@ -104,7 +108,7 @@ export default defineComponent({
           // after replying to a comment. For the logic
           // to create a root level comment, see the
           // parent component.
-          const newComment: CommentData =
+          const newComment: Comment =
             result.data?.createComments?.comments[0];
           // Will use readQuery and writeQuery to update the cache
           // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
@@ -117,28 +121,48 @@ export default defineComponent({
             },
           });
 
-          const existingDiscussionChannelData =
+          console.log({
+            readQueryResult,
+            discussionId: props.discussionChannel.discussionId,
+            channelUniqueName: props.discussionChannel.channelUniqueName
+          });
+
+          const existingDiscussionChannelData: DiscussionChannel =
             readQueryResult?.discussionChannels[0];
-          let rootCommentsCopy = [
+
+          let rootCommentsCopy: Comment[] = [
             newComment,
             ...(existingDiscussionChannelData?.Comments || []),
           ];
+
           let existingCommentAggregate =
             existingDiscussionChannelData?.CommentsAggregate
               ? existingDiscussionChannelData.CommentsAggregate
               : null;
           let newCommentAggregate = null;
+
           if (existingCommentAggregate) {
             newCommentAggregate = {
               ...existingCommentAggregate,
               count: existingCommentAggregate.count + 1,
             };
           }
+
+          console.log({
+            readQueryResult,
+            existingDiscussionChannelData,
+            rootCommentsCopy,
+            existingCommentAggregate,
+            newCommentAggregate,
+          });
+
           cache.writeQuery({
             query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
             variables: {
               discussionId: props.discussionChannel.discussionId,
-              channelUniqueName: props.discussionChannel.channelUniqueName
+              channelUniqueName: props.discussionChannel.channelUniqueName,
+              limit: COMMENT_LIMIT,
+              offset: props.offset
             },
             data: {
               ...readQueryResult,

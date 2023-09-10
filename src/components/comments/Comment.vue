@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
 import {
-  CommentData,
   CreateReplyInputData,
   DeleteCommentInputData,
 } from "@/types/commentTypes";
@@ -21,6 +20,7 @@ import { getLinksInText } from "../utils";
 import { gql } from "@apollo/client/core";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import { useRoute } from "vue-router";
+import { Comment } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "CommentComponent",
@@ -34,7 +34,7 @@ export default defineComponent({
   },
   props: {
     commentData: {
-      type: Object as PropType<CommentData>,
+      type: Object as PropType<Comment>,
       required: true,
     },
     compact: {
@@ -226,24 +226,27 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex w-full">
-      <div :class="'text-sm'" class="w-full">
+    <div class="flex w-full border-b border-gray-200 dark:border-gray-500">
+      <div 
+        :class="'text-sm'" 
+        class="w-full "
+      >
         <div
           :class="[
             isHighlighted
               ? 'border border-blue-500'
-              : 'dark:bg-gray-950 border border-gray-200 dark:border-gray-500',
+              : 'dark:bg-gray-950 border-l border-t border-r border-gray-200 dark:border-gray-500',
           ]"
-          class="my-1 rounded-lg px-2 py-2 shadow-sm"
+          class="p-2 shadow-sm"
           data-testid="comment"
         >
           <div
-            class="mb-2"
             v-if="
               showContextLink &&
-              parentCommentId &&
-              commentData.DiscussionChannel
+                parentCommentId &&
+                commentData.DiscussionChannel
             "
+            class="mb-2"
           >
             <router-link
               class="pl-4 text-xs underline"
@@ -255,8 +258,9 @@ export default defineComponent({
                   channelId: commentData.DiscussionChannel.channelUniqueName,
                 },
               }"
-              >View Context</router-link
             >
+              View Context
+            </router-link>
           </div>
           <p class="flex flex-wrap items-center space-x-2">
             <Avatar
@@ -272,7 +276,10 @@ export default defineComponent({
             >
               {{ commentData.CommentAuthor.username }}
             </router-link>
-            <span v-else class="font-bold">[Deleted]</span>
+            <span 
+              v-else
+              class="font-bold"
+            >[Deleted]</span>
             <span class="mx-2">&middot;</span>
             <span>{{ createdAtFormatted }}</span>
             <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
@@ -280,8 +287,8 @@ export default defineComponent({
             <span
               v-if="isHighlighted"
               class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-              >Permalinked Comment</span
-            >
+            >Permalinked Comment
+            </span>
           </p>
 
           <div
@@ -292,18 +299,21 @@ export default defineComponent({
               v-if="commentData.text && !showEditCommentField"
               class="-ml-4 w-full"
             >
-              <MarkdownPreview :text="textCopy" :key="textCopy"/>
+              <MarkdownPreview
+                :key="textCopy || ''"
+                :text="textCopy || ''"
+              />
             </div>
             <TextEditor
               v-if="!readonly && showEditCommentField"
               id="editExistingComment"
               class="mt-3 overflow-y-scroll"
-              :initial-value="commentData.text"
+              :initial-value="commentData.text || ''"
               :editor-id="editorId"
               @update="updateExistingComment($event, depth)"
             />
             <CommentButtons
-              :class="!showEditCommentField ? '-mt-4' : 'mt-2'"
+              :class="!showEditCommentField ? '-mt-4' : ''"
               class="ml-2"
               :comment-data="commentData"
               :depth="depth"
@@ -331,7 +341,7 @@ export default defineComponent({
         <div
           v-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="mt-2 w-full border-l border-gray-300 pl-4 pt-1 dark:border-gray-500"
+          class="w-full border-l border-gray-300 pl-4 dark:border-gray-500"
         >
           <ChildComments
             v-slot="slotProps"
@@ -339,7 +349,10 @@ export default defineComponent({
             @mouseenter="highlight = true"
             @mouseleave="highlight = false"
           >
-            <div v-for="(childComment, i) in slotProps.comments" :key="i">
+            <div 
+              v-for="(childComment, i) in slotProps.comments" 
+              :key="i"
+            >
               <Comment
                 v-if="childComment.id !== permalinkedCommentId"
                 :compact="true"

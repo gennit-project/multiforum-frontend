@@ -189,7 +189,7 @@ export default defineComponent({
     class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-2"
     :class="[
       isActive
-        ? 'text-bold border border-blue-500 bg-gray-100  dark:bg-gray-700'
+        ? 'text-bold border border-black dark:border-blue-500 bg-gray-100  dark:bg-gray-700'
         : '',
     ]"
   >

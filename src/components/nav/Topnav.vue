@@ -2,7 +2,6 @@
 import { defineComponent, computed, ref } from "vue";
 import HamburgerMenuButton from "@/components/nav/MenuButton.vue";
 import UserProfileDropdownMenu from "@/components/nav/UserProfileDropdownMenu.vue";
-import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
@@ -14,6 +13,7 @@ import {
 import { useRoute } from "vue-router";
 import CreateAnythingButton from "./CreateAnythingButton.vue";
 import { useRouter } from "vue-router";
+import ArrowUpBoldBox from 'vue-material-design-icons/ArrowUpBoldBox.vue';
 
 export default defineComponent({
   name: "TopNav",
@@ -23,7 +23,7 @@ export default defineComponent({
     ThemeSwitcher,
     HamburgerMenuButton,
     UserProfileDropdownMenu,
-    ChannelIcon,
+    ArrowUpBoldBox,
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
@@ -122,16 +122,14 @@ export default defineComponent({
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
           <router-link to="/" class="flex items-center">
-            <ChannelIcon class="mr-1 h-6 w-6 text-blue-600" /><span
-              class="font-bold text-blue-600 dark:text-white"
-              >Topical</span
-            >
+            <arrow-up-bold-box class="mr-1 h-6 w-6 text-black dark:text-blue-500"/>
+            <span class="font-bold text-black dark:text-white">Topical</span>
           </router-link>
 
           <div v-if="shouldShowChannelId" class="flex items-center gap-1">
             <span>/</span>
             <Avatar :text="channelId" :is-square="true" class="h-6 w-6" />
-            <span class="font-bold text-blue-600 dark:text-white">{{
+            <span class="font-bold text-gray-800 dark:text-white">{{
               channelId
             }}</span>
           </div>

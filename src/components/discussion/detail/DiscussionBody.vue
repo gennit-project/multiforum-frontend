@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
-import { DiscussionData } from "@/types/discussionTypes";
+import { Discussion } from "@/__generated__/graphql";
 import { useRoute } from "vue-router";
 import Tag from "../../tag/Tag.vue";
 import "md-editor-v3/lib/preview.css";
@@ -20,7 +20,7 @@ export default defineComponent({
       required: true,
     },
     discussion: {
-      type: Object as PropType<DiscussionData | null>,
+      type: Object as PropType<Discussion | null>,
       required: false,
       default: null,
     },
@@ -116,7 +116,10 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion?.body" class="-ml-4 max-w-none">
+    <div
+      v-if="discussion?.body" 
+      class="-ml-4 max-w-none"
+    >
       <MarkdownPreview :text="bodyText" />
     </div>
 

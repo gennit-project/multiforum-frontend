@@ -21,11 +21,11 @@ export default defineComponent({
   props: {
     title: {
       type: String,
-      required: true,
+      requiyellow: true,
     },
     body: {
       type: String,
-      required: true,
+      requiyellow: true,
     },
     open: {
       type: Boolean,
@@ -85,10 +85,10 @@ export default defineComponent({
             >
               <div class="sm:flex sm:items-start">
                 <div
-                  class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 dark:bg-red-transparent sm:mx-0 sm:h-10 sm:w-10"
+                  class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-yellow-100 dark:bg-yellow-transparent sm:mx-0 sm:h-10 sm:w-10"
                 >
                   <ExclamationIcon
-                    class="h-6 w-6 text-red-600 opacity-100"
+                    class="h-6 w-6 text-yellow-600 opacity-100"
                     aria-hidden="true"
                   />
                 </div>
@@ -110,7 +110,7 @@ export default defineComponent({
               <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  class="inline-flex w-full justify-center rounded-full border border-transparent bg-red-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-red-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
+                  class="inline-flex w-full justify-center rounded-full border border-transparent bg-yellow-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm"
                   @click="
                     () => {
                       $emit('close');

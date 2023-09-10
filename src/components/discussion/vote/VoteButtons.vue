@@ -2,12 +2,16 @@
 import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
+import ArrowUpBoldOutline from 'vue-material-design-icons/ArrowUpBoldOutline.vue';
+import ArrowDownBoldOutline from 'vue-material-design-icons/ArrowDownBoldOutline.vue';
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
     RequireAuth,
     VoteButton,
+    ArrowUpBoldOutline,
+    ArrowDownBoldOutline,
   },
   props: {
     downvoteActive: {
@@ -57,7 +61,7 @@ export default defineComponent({
         :active="upvoteActive"
         @vote="clickUp"
       >
-        <i class="fa-solid fa-arrow-up mr-2 w-3" />
+        <arrow-up-bold-outline :size="20" />
       </VoteButton>
       <VoteButton
         v-if="showDownvote"
@@ -67,7 +71,7 @@ export default defineComponent({
         :active="downvoteActive"
         @vote="clickDown"
       >
-        <i class="fa-solid fa-arrow-down mr-2 w-3" />
+        <arrow-down-bold-outline :size="20" />
       </VoteButton>
     </template>
     <template #does-not-have-auth>
@@ -76,7 +80,7 @@ export default defineComponent({
         :count="upvoteCount"
         :active="upvoteActive"
       >
-        <i class="fa-solid fa-arrow-up mr-2 w-3" />
+        <arrow-up-bold-outline :size="20" />
       </VoteButton>
       <VoteButton
         v-if="showDownvote"
@@ -84,7 +88,7 @@ export default defineComponent({
         :count="downvoteCount"
         :active="downvoteActive"
       >
-        <i class="fa-solid fa-arrow-down mr-2 w-3" />
+        <arrow-down-bold-outline :size="20" />
       </VoteButton>
     </template>
   </RequireAuth>

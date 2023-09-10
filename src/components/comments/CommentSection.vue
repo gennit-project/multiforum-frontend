@@ -2,7 +2,7 @@
 import { defineComponent, ref, computed, PropType, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import Comment from "./Comment.vue";
-
+import LoadMore from "../generic/LoadMore.vue";
 import {
   CommentData,
   CreateEditCommentFormValues,
@@ -35,13 +35,18 @@ export default defineComponent({
   components: {
     Comment,
     ErrorBanner,
-    WarningModal,
+    LoadMore,
     PermalinkedComment,
+    WarningModal,
   },
   inheritAttrs: false,
   props: {
     discussionChannel: {
       type: Object as PropType<DiscussionChannel>,
+      required: true,
+    },
+    reachedEndOfResults: {
+      type: Boolean,
       required: true,
     },
   },
@@ -104,10 +109,7 @@ export default defineComponent({
       },
     }));
 
-    const {
-      mutate: deleteComment,
-      // error: deleteCommentError,
-    } = useMutation(DELETE_COMMENT, {
+    const { mutate: deleteComment } = useMutation(DELETE_COMMENT, {
       update: (cache: any) => {
         if (parentOfCommentToDelete.value) {
           // For child comments, update the parent comment's replies
@@ -163,10 +165,7 @@ export default defineComponent({
     // replies. It replaces the text with [deleted]
     // and removes the author name, but leaves the comment
     // so that the replies are still visible.
-    const {
-      mutate: softDeleteComment,
-      // error: deleteCommentError,
-    } = useMutation(SOFT_DELETE_COMMENT);
+    const { mutate: softDeleteComment } = useMutation(SOFT_DELETE_COMMENT);
 
     const createCommentInput = computed(() => {
       const input = {
@@ -190,9 +189,6 @@ export default defineComponent({
           },
         },
         text: createFormValues.value.text || "",
-        // Tags: {
-        //   connectOrCreate: tagConnections,
-        // },
         CommentAuthor: {
           User: {
             connect: {
@@ -445,7 +441,7 @@ export default defineComponent({
 
     const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT);
 
-    const permalinkedCommentId = ref(`${route.params.commentId}`)
+    const permalinkedCommentId = ref(`${route.params.commentId}`);
 
     watchEffect(() => {
       // If the permalinked comment changes in the query params,
@@ -562,19 +558,18 @@ export default defineComponent({
       />
       <p v-else>There are no comments yet.</p>
     </div>
-
     <div
-      :key="permalinkedCommentId"
       v-else-if="
         discussionChannel.CommentsAggregate &&
         discussionChannel.CommentsAggregate.count > 0
       "
+      :key="permalinkedCommentId"
     >
       <h2
+        v-if="!isPermalinkPage"
         id="comments"
         ref="commentSectionHeader"
         class="text-lg"
-        v-if="!isPermalinkPage"
       >
         {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
       </h2>
@@ -607,7 +602,7 @@ export default defineComponent({
         <div v-if="discussionChannel.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
-        <div :key="comment.id" v-for="comment in discussionChannel.Comments">
+        <div v-for="comment in discussionChannel.Comments" :key="comment.id">
           <Comment
             v-if="comment.id !== permalinkedCommentId"
             :compact="true"
@@ -625,13 +620,12 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <!-- <div v-if="comments.length > 0" class="px-4 lg:px-12">
-      <LoadMore
-        class="justify-self-center"
-        :reached-end-of-results="resultCount === comments.length"
-        @loadMore="$emit('loadMore')"
-      />
-    </div> -->
+    <LoadMore
+      v-if="!reachedEndOfResults"
+      class="justify-self-center"
+      :reached-end-of-results="reachedEndOfResults"
+      @loadMore="$emit('loadMore')"
+    />
     <WarningModal
       :title="'Delete Comment'"
       :body="'Are you sure you want to delete this comment?'"

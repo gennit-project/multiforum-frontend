@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
-import { DiscussionData } from "../../../types/discussionTypes";
+import { Discussion } from "@/__generated__/graphql";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
@@ -33,7 +33,7 @@ export default defineComponent({
       required: true,
     },
     discussion: {
-      type: Object as PropType<DiscussionData | null>,
+      type: Object as PropType<Discussion | null>,
       required: false,
       default: null,
     },

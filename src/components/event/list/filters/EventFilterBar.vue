@@ -458,7 +458,7 @@ export default defineComponent({
           data-testid="open-event-filters"
           @click="handleClickMoreFilters"
         >
-          <LocationIcon class="h-6 w-6 text-blue-500" />
+          <LocationIcon class="h-6 w-6 text-black dark:text-blue-500" />
           <h1 class="text-md ml-1 border border-none pb-0">
             {{ referencePointName }}: {{ displayDistance }}
           </h1>

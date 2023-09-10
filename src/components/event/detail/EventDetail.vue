@@ -257,7 +257,7 @@ export default defineComponent({
                 </h2>
               </div>
             </div>
-            <div class="rounded-md border border-blue-500 py-4">
+            <div class="rounded-md border border-black dark:border-blue-500 py-4">
               <EventHeader :event-data="eventData" />
               <v-md-preview
                 v-if="eventData.description"
@@ -268,7 +268,7 @@ export default defineComponent({
                   eventData?.description &&
                   eventData.description.split(' ').length > 50
                 "
-                class="mt-2 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-700"
+                class="mt-2 rounded bg-black px-4 py-2 font-bold text-white hover:bg-blue-700"
                 @click="toggleDescription"
               >
                 {{ showFullDescription ? "Show less" : "Show more" }}

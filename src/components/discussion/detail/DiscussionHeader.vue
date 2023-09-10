@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, PropType, ref } from "vue";
-import { DiscussionData } from "@/types/discussionTypes";
+import { Discussion } from "@/__generated__/graphql";
 import { useMutation } from "@vue/apollo-composable";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { useRoute, useRouter } from "vue-router";
@@ -21,7 +21,7 @@ export default defineComponent({
   },
   props: {
     discussion: {
-      type: Object as PropType<DiscussionData | null>,
+      type: Object as PropType<Discussion | null>,
       required: false,
       default: null,
     },

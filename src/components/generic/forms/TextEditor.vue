@@ -152,6 +152,9 @@ export default defineComponent({
     td {
       background-color: black !important;
     }
+    pre {
+      background-color: white !important;
+    }
   }
 
   div.github-markdown-body {

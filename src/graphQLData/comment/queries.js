@@ -51,7 +51,6 @@ export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
       }
     ) {
       id
-      id
       upvoteCount
       discussionId
       channelUniqueName
@@ -84,8 +83,14 @@ export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
   ${COMMENT_FIELDS}
   ${COMMENT_VOTE_FIELDS}
 `;
+
 export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
-  query getDiscussionChannel($channelUniqueName: String!, $discussionId: ID!) {
+  query getDiscussionChannel(
+    $channelUniqueName: String!, 
+    $discussionId: ID!,
+    $offset: Int,
+    $limit: Int
+  ) {
     discussionChannels(
       where: {
         channelUniqueName: $channelUniqueName
@@ -121,7 +126,8 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
       Comments(
         where: {
           isRootComment: true
-        }
+        },
+        options: { limit: $limit, offset: $offset }
       ) {
         ...CommentFields
         ChildComments {

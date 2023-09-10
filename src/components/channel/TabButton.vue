@@ -34,7 +34,7 @@ export default defineComponent({
           vertical
             ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 border-l-4'
             : 'dark:text-gray-200'
-        }  dark:border-blue-600 dark:text-gray-200 `
+        }  dark:border-black dark:text-gray-200 `
         : 'border-transparent text-gray-500 dark:border-gray-800 ',
       vertical ? 'pr-2 px-4 hover:bg-gray-200 dark:hover:bg-gray-800' : 'border-b-2 px-4',
     ]"
@@ -43,7 +43,7 @@ export default defineComponent({
       :class="[vertical ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700 px-4']"
       class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
     >
-      <div class="text-blue-600 dark:text-blue-500">
+      <div class="text-black dark:text-blue-500">
         <slot />
       </div>
       <span class="text-sm font-bold text-gray-700 dark:text-white">{{
@@ -54,6 +54,6 @@ export default defineComponent({
 </template>
 <style>
 .link.currentPage {
-  @apply border-blue-500 text-blue-600;
+  @apply border-blue-500 text-black;
 }
 </style>
