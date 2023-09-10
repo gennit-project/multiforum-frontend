@@ -30,6 +30,7 @@ import {
 import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
+import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
 
 export default defineComponent({
   components: {
@@ -47,6 +48,10 @@ export default defineComponent({
     },
     reachedEndOfResults: {
       type: Boolean,
+      required: true,
+    },
+    previousOffset: {
+      type: Number,
       required: true,
     },
   },
@@ -238,6 +243,8 @@ export default defineComponent({
               variables: {
                 discussionId: props.discussionChannel.discussionId,
                 channelUniqueName: props.discussionChannel.channelUniqueName,
+                limit: COMMENT_LIMIT,
+                offset: props.previousOffset,
               },
             });
 
@@ -288,6 +295,8 @@ export default defineComponent({
               variables: {
                 discussionId: props.discussionChannel.discussionId,
                 channelUniqueName: props.discussionChannel.channelUniqueName,
+                limit: COMMENT_LIMIT,
+                offset: props.previousOffset,
               },
               data: {
                 ...readQueryResult,
@@ -383,6 +392,8 @@ export default defineComponent({
               variables: {
                 discussionId: props.discussionChannel.discussionId,
                 channelUniqueName: props.discussionChannel.channelUniqueName,
+                limit: COMMENT_LIMIT,
+                offset: props.previousOffset,
               },
             });
 
@@ -408,6 +419,8 @@ export default defineComponent({
               variables: {
                 discussionId: props.discussionChannel.discussionId,
                 channelUniqueName: props.discussionChannel.channelUniqueName,
+                limit: COMMENT_LIMIT,
+                offset: props.previousOffset,
               },
               data: {
                 ...readQueryResult,

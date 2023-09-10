@@ -302,6 +302,7 @@ export default defineComponent({
             :key="activeDiscussionChannel.id"
             :discussion-channel="activeDiscussionChannel"
             :reached-end-of-results="reachedEndOfResults"
+            :previous-offset="previousOffset"
             @loadMore="loadMore"
           />
         </div>
