@@ -121,12 +121,6 @@ export default defineComponent({
             },
           });
 
-          console.log({
-            readQueryResult,
-            discussionId: props.discussionChannel.discussionId,
-            channelUniqueName: props.discussionChannel.channelUniqueName
-          });
-
           const existingDiscussionChannelData: DiscussionChannel =
             readQueryResult?.discussionChannels[0];
 
@@ -147,14 +141,6 @@ export default defineComponent({
               count: existingCommentAggregate.count + 1,
             };
           }
-
-          console.log({
-            readQueryResult,
-            existingDiscussionChannelData,
-            rootCommentsCopy,
-            existingCommentAggregate,
-            newCommentAggregate,
-          });
 
           cache.writeQuery({
             query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,

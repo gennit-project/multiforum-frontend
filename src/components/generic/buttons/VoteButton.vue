@@ -25,7 +25,7 @@ export default defineComponent({
 <template>
   <button
     :data-testid="testId"
-    class="inline-flex max-h-7 cursor-pointer text-gray-400 hover:text-black hover:border-black items-center rounded-md border px-3 py-1"
+    class="inline-flex max-h-7 cursor-pointer text-gray-400 hover:text-black hover:dark:text-blue-500 hover:border-black hover:dark:border-blue-500 items-center rounded-md border px-3 py-1"
     :class="[
       active
         ? 'border-black bg-gray-100 hover:bg-gray-200 dark:border-blue-500 dark:bg-gray-700 dark:hover:bg-blue-900'

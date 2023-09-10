@@ -21,7 +21,7 @@ import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
 
-export const COMMENT_LIMIT = 5;
+export const COMMENT_LIMIT = 25;
 
 export default defineComponent({
   components: {
@@ -90,8 +90,7 @@ export default defineComponent({
 
     const activeDiscussionChannel = computed<DiscussionChannel>(() => {
       if (
-        getDiscussionChannelLoading.value ||
-        getDiscussionChannelError.value
+       !getDiscussionChannelResult.value
       ) {
         return null;
       }
@@ -119,10 +118,6 @@ export default defineComponent({
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
-          console.log({
-            previousResult,
-            fetchMoreResult,
-          })
 
           // We need to update the result of GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID
           // to include the new comments.
@@ -209,7 +204,7 @@ export default defineComponent({
       :text="getDiscussionError.message"
     />
     <v-row
-      v-else
+      v-if="discussion"
       class="mt-1 flex justify-center"
     >
       <v-col
