@@ -117,13 +117,18 @@ export default defineComponent({
     });
 
     const rootCommentCount = computed(() => {
-      if (!getDiscussionChannelRootCommentAggregateLoading.value || getDiscussionChannelRootCommentAggregateError.value) {
+      if (getDiscussionChannelRootCommentAggregateLoading.value || getDiscussionChannelRootCommentAggregateError.value) {
         return 0;
       }
       if (!getDiscussionChannelRootCommentAggregateResult.value || !getDiscussionChannelRootCommentAggregateResult.value.discussionChannels) {
         return 0;
       }
-      return getDiscussionChannelRootCommentAggregateResult.value.discussionChannels[0].CommentsAggregate?.count || 0;
+      const discussionChannels = getDiscussionChannelRootCommentAggregateResult.value.discussionChannels;
+      if (discussionChannels.length === 0) {
+        return 0;
+      }
+      const discussionChannel = discussionChannels[0];
+      return discussionChannel.CommentsAggregate?.count || 0;
     });
 
     const offset = computed(() => {
@@ -185,6 +190,7 @@ export default defineComponent({
       offset,
       reachedEndOfResults,
       relativeTime,
+      rootCommentCount,
       route,
       router,
     };
