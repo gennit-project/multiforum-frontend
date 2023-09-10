@@ -109,14 +109,14 @@ export default defineComponent({
           </button>
         </Tab>
       </TabList>
-      <TabPanels class="mt-2 h-40">
+      <TabPanels class="mt-2 h-50">
         <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1" :data-testid="testId">
           <label for="comment" class="sr-only">Comment</label>
           <textarea
             id="texteditor-textarea"
             ref="editor"
             name="comment"
-            rows="7"
+            rows="10"
             :placeholder="placeholder"
             class="focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm placeholder-gray-400 shadow-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-400 dark:text-gray-100"
             :value="text"

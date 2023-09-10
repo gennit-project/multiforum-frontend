@@ -227,15 +227,12 @@ export default defineComponent({
 <template>
   <div>
     <div class="flex w-full border-b border-gray-200 dark:border-gray-500">
-      <div 
-        :class="'text-sm'" 
-        class="w-full "
-      >
+      <div :class="'text-sm'" class="w-full">
         <div
           :class="[
             isHighlighted
               ? 'border border-blue-500'
-              : 'dark:bg-gray-950 border-l border-t border-r border-gray-200 dark:border-gray-500',
+              : 'dark:bg-gray-950 border-l border-r border-t border-gray-200 dark:border-gray-500',
           ]"
           class="p-2 shadow-sm"
           data-testid="comment"
@@ -243,8 +240,8 @@ export default defineComponent({
           <div
             v-if="
               showContextLink &&
-                parentCommentId &&
-                commentData.DiscussionChannel
+              parentCommentId &&
+              commentData.DiscussionChannel
             "
             class="mb-2"
           >
@@ -276,10 +273,7 @@ export default defineComponent({
             >
               {{ commentData.CommentAuthor.username }}
             </router-link>
-            <span 
-              v-else
-              class="font-bold"
-            >[Deleted]</span>
+            <span v-else class="font-bold">[Deleted]</span>
             <span class="mx-2">&middot;</span>
             <span>{{ createdAtFormatted }}</span>
             <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
@@ -287,7 +281,7 @@ export default defineComponent({
             <span
               v-if="isHighlighted"
               class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-            >Permalinked Comment
+              >Permalinked Comment
             </span>
           </p>
 
@@ -295,25 +289,23 @@ export default defineComponent({
             v-if="!themeLoading"
             class="w-full max-w-none dark:text-gray-200"
           >
-            <div
-              v-if="commentData.text && !showEditCommentField"
-              class="-ml-4 w-full"
-            >
-              <MarkdownPreview
-                :key="textCopy || ''"
-                :text="textCopy || ''"
+            <div class="overflow-auto">
+              <div
+                v-if="commentData.text && !showEditCommentField"
+                class="-ml-4 w-full"
+              >
+                <MarkdownPreview :key="textCopy || ''" :text="textCopy || ''" />
+              </div>
+              <TextEditor
+                v-if="!readonly && showEditCommentField"
+                id="editExistingComment"
+                class="mb-2 mt-3 p-1"
+                :initial-value="commentData.text || ''"
+                :editor-id="editorId"
+                @update="updateExistingComment($event, depth)"
               />
             </div>
-            <TextEditor
-              v-if="!readonly && showEditCommentField"
-              id="editExistingComment"
-              class="mt-3 overflow-y-scroll"
-              :initial-value="commentData.text || ''"
-              :editor-id="editorId"
-              @update="updateExistingComment($event, depth)"
-            />
             <CommentButtons
-              :class="!showEditCommentField ? '-mt-4' : ''"
               class="ml-2"
               :comment-data="commentData"
               :depth="depth"
@@ -349,10 +341,7 @@ export default defineComponent({
             @mouseenter="highlight = true"
             @mouseleave="highlight = false"
           >
-            <div 
-              v-for="(childComment, i) in slotProps.comments" 
-              :key="i"
-            >
+            <div v-for="(childComment, i) in slotProps.comments" :key="i">
               <Comment
                 v-if="childComment.id !== permalinkedCommentId"
                 :compact="true"

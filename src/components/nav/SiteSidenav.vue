@@ -122,12 +122,12 @@ export default defineComponent({
             <li
               v-for="item in navigation"
               :key="item.name"
-              class="px-6 dark:hover:bg-gray-700"
+              class="px-6"
             >
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
-                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100"
+                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800"
                 @click="$emit('close')"
               >
                 <component
@@ -145,7 +145,7 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}`"
-          class="pl-6 dark:hover:bg-gray-700 font-semibold group flex items-center gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
+          class="px-6 dark:hover:bg-gray-700 font-semibold group flex items-center gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 "
           @click="$emit('close')"
         >
           <Avatar :text="username" />
@@ -153,7 +153,7 @@ export default defineComponent({
         </router-link>
         <button
           v-if="!isAuthenticated"
-          class="pl-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
+          class="px-6 dark:hover:bg-gray-700 font-semibold group flex gap-x-3 rounded-md py-2 text-sm leading-6 text-gray-700 dark:text-gray-100  "
           @click="login"
         >
           Log In
@@ -174,18 +174,9 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 nav li:hover,
-nav li:active {
-  color: #2563eb;
-}
 
 .list-item-icon {
   color: #9ca3af;
 }
-.router-link-exact-active > .list-item-icon {
-  color: #2563eb;
-}
 
-nav li > .router-link-exact-active {
-  color: #2563eb;
-}
 </style>

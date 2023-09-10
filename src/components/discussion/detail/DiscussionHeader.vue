@@ -178,12 +178,13 @@ export default defineComponent({
         </template>
       </RequireAuth>
       <router-link
-        v-if="!channelId && discussion"
+        v-if="discussion"
         data-testid="discussion-permalink"
-        class="font-medium cursor-pointer underline"
+        class="font-medium"
         :to="`/channels/c/${discussion.DiscussionChannels[0].channelUniqueName}/discussions/d/${discussion.id}`"
       >
-        Permalink
+        <span> &#8226;</span>
+       <span class="ml-2 cursor-pointer underline">Permalink</span> 
       </router-link>
     </div>
     <WarningModal

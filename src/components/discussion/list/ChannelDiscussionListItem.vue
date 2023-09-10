@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
-import { DiscussionData } from "../../../types/discussionTypes";
-import { DiscussionChannel } from "@/__generated__/graphql";
+import { Discussion, DiscussionChannel } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
@@ -32,7 +31,7 @@ export default defineComponent({
       required: true,
     },
     discussion: {
-      type: Object as PropType<DiscussionData | null>,
+      type: Object as PropType<Discussion | null>,
       required: false,
       default: null,
     },
@@ -186,26 +185,16 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-2"
+    class="relative mt-1 flex space-x-1 space-y-3 rounded-md p-2 lg:px-6 lg:py-4"
     :class="[
       isActive
-        ? 'text-bold border border-black dark:border-blue-500 bg-gray-100  dark:bg-gray-700'
+        ? 'text-bold border border-black bg-gray-100 dark:border-blue-500  dark:bg-gray-700'
         : '',
     ]"
   >
     <v-row>
-      <v-col cols="2">
-        <div class="m-1">
-        <DiscussionVotes
-          v-if="discussionChannel"
-          :discussion="discussion"
-          :discussion-channel="discussionChannel"
-          :show-downvote="false"
-        />
-      </div>
-      </v-col>
-      <v-col :cols="8">
-        <div>
+      <v-col :cols="10">
+        <div class="flex-col gap-2">
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
             class="hover:text-gray-500"
@@ -219,6 +208,7 @@ export default defineComponent({
               />
             </p>
           </router-link>
+          
           <div
             class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
           >
@@ -236,7 +226,14 @@ export default defineComponent({
           >
             {{ `Posted ${relativeTime} by ${authorUsername}` }}
           </p>
+          <DiscussionVotes
+            v-if="discussionChannel"
+            :discussion="discussion"
+            :discussion-channel="discussionChannel"
+            :show-downvote="false"
+          />
         </div>
+        
       </v-col>
       <v-col cols="2" class="dark:text-gray-100">
         <i class="fa-regular fa-comment h-6 w-6" />

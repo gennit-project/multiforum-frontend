@@ -84,6 +84,29 @@ export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
   ${COMMENT_VOTE_FIELDS}
 `;
 
+export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
+  query getDiscussionChannelRootCommentAggregate(
+    $channelUniqueName: String!, 
+    $discussionId: ID!
+  ) {
+    discussionChannels(
+      where: {
+        channelUniqueName: $channelUniqueName
+        discussionId: $discussionId
+      }
+    ) {
+      id
+      CommentsAggregate (
+        where: {
+          isRootComment: true
+        }
+      ) {
+        count
+      }
+    }
+  }
+`;
+
 export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
   query getDiscussionChannel(
     $channelUniqueName: String!, 

@@ -3,7 +3,8 @@ import { defineComponent, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
+import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID, 
+  GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE } from "@/graphQLData/comment/queries";
 import { relativeTime } from "../../../dateTimeUtils";
 import { Discussion } from "@/__generated__/graphql";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -79,6 +80,17 @@ export default defineComponent({
       limit: COMMENT_LIMIT,
     });
 
+    // We get the aggregate count of root comments so that we will know
+    // whether or not to show the "Load More" button at the end of the comments.
+    const {
+      result: getDiscussionChannelRootCommentAggregateResult,
+      error: getDiscussionChannelRootCommentAggregateError,
+      loading: getDiscussionChannelRootCommentAggregateLoading,
+    } = useQuery(GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE, {
+      discussionId: discussionId,
+      channelUniqueName: channelId,
+    });
+
     const discussion = computed<Discussion>(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
         return null;
@@ -102,6 +114,16 @@ export default defineComponent({
         return 0;
       }
       return activeDiscussionChannel.value.CommentsAggregate?.count || 0;
+    });
+
+    const rootCommentCount = computed(() => {
+      if (!getDiscussionChannelRootCommentAggregateLoading.value || getDiscussionChannelRootCommentAggregateError.value) {
+        return 0;
+      }
+      if (!getDiscussionChannelRootCommentAggregateResult.value || !getDiscussionChannelRootCommentAggregateResult.value.discussionChannels) {
+        return 0;
+      }
+      return getDiscussionChannelRootCommentAggregateResult.value.discussionChannels[0].CommentsAggregate?.count || 0;
     });
 
     const offset = computed(() => {
@@ -145,7 +167,7 @@ export default defineComponent({
         return false;
       }
       return (
-        commentCount.value === activeDiscussionChannel.value?.Comments?.length
+        rootCommentCount.value === activeDiscussionChannel.value?.Comments?.length
       );
     });
 
@@ -171,7 +193,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-1 w-full max-w-7xl space-y-2 px-3">
+  <div class="mt-1 w-full max-w-5xl space-y-2 px-3">
     <div
       v-if="route.name === 'DiscussionDetail'"
       :class="'align-center mt-2 flex justify-between'"

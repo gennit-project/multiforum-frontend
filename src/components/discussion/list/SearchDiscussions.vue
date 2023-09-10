@@ -255,8 +255,7 @@ export default defineComponent({
       v-if="!mdAndDown"
       cols="12"
       :lg="channelId ? 7 : 8"
-      :class="[!channelId ? 'px-6' : '']"
-      class="dark:bg-gray-950 max-w-6xl border-l border-gray-200 p-0 dark:border-gray-700 dark:text-gray-200"
+      class="dark:bg-gray-950 border-l border-gray-200 p-0 dark:border-gray-700 dark:text-gray-200"
     >
       <router-view />
     </v-col>
