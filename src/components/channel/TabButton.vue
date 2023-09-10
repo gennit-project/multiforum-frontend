@@ -37,7 +37,7 @@ export default defineComponent({
     class="link font-medium group inline-flex items-center hover:border-blue-500 hover:text-gray-600 dark:text-gray-200"
     :class="[
       isActive
-        ? `border-blue-500  dark:text-gray-100 ${
+        ? `border-black dark:border-blue-500  dark:text-gray-100 ${
           vertical
             ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 border-l-4'
             : 'dark:text-gray-200'
