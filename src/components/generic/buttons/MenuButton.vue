@@ -33,20 +33,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <MenuComponent
-    as="div"
-    class="relative inline-block text-left"
-  >
+  <MenuComponent as="div" class="relative inline-block text-left">
     <div>
       <MenuButton
-        class="inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+        class="focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
       >
         <slot>
           Options
-          <ChevronDownIcon
-            class="-mr-1 ml-2 h-5 w-5"
-            aria-hidden="true"
-          />
+          <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
         </slot>
       </MenuButton>
     </div>
@@ -60,28 +54,41 @@ export default defineComponent({
       leave-to-class="transform opacity-0 scale-95"
     >
       <MenuItems
-        class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md   shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+        class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
       >
         <div class="py-1">
-          <MenuItem
-            v-for="item in items"
-            v-slot="{ active }"
-            :key="item.label"
-          >
+          <MenuItem v-for="item in items" v-slot="{ active }" :key="item.label">
             <router-link
+              v-if="item.value"
               :to="item.value"
               :class="[
-                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
+                active
+                  ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
+                  : 'text-gray-700 dark:text-white',
                 'block px-4 py-2 text-sm',
               ]"
-              @click="() => {
-                if (item.value === '/logout'){
-                  logout();
+              @click="
+                () => {
+                  if (item.value === '/logout') {
+                    logout();
+                  }
                 }
-              }"
+              "
             >
               {{ item.label }}
             </router-link>
+            <div
+              v-else-if="item.event"
+              :class="[
+                active
+                  ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
+                  : 'text-gray-700 dark:text-white',
+                'block cursor-pointer px-4 py-2 text-sm',
+              ]"
+              @click="$emit(item.event)"
+            >
+              {{ item.label }}
+            </div>
           </MenuItem>
         </div>
       </MenuItems>

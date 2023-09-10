@@ -1,7 +1,6 @@
 # gennit-vue
 
 Events, discussions and comments
-Last updated Nov 12, 2022
 
 ## Project setup
 
@@ -43,5 +42,3 @@ Run the back end:
 ```
 node index.js
 ```
-
-Create [test data.](./test-data.md)

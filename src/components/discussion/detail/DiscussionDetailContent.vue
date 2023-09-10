@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
@@ -131,6 +131,10 @@ export default defineComponent({
       return discussionChannel.CommentsAggregate?.count || 0;
     });
 
+    // Needed to update the cached result of the query if the
+    // user creates a root comment.
+    const previousOffset = ref(0)
+
     const offset = computed(() => {
       if (!activeDiscussionChannel.value) {
         return 0;
@@ -145,6 +149,8 @@ export default defineComponent({
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
+
+          previousOffset.value = offset.value;
 
           // We need to update the result of GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID
           // to include the new comments.
@@ -188,6 +194,7 @@ export default defineComponent({
       loadMore,
       mdAndUp,
       offset,
+      previousOffset,
       reachedEndOfResults,
       relativeTime,
       rootCommentCount,
@@ -285,7 +292,7 @@ export default defineComponent({
           :key="`${channelId}${discussionId}`"
           :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"
-          :offset="offset"
+          :previous-offset="previousOffset"
         />
         <div
           class="my-4 mb-2 rounded-lg py-6"

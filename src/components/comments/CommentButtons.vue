@@ -1,38 +1,24 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import RequireAuth from "../auth/RequireAuth.vue";
-import CancelButton from "@/components/generic/buttons/CancelButton.vue";
-import SaveButton from "@/components/generic/buttons/SaveButton.vue";
-import MenuButton from "@/components/generic/buttons/MenuButton.vue";
-import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import { Comment } from "@/__generated__/graphql";
-import {
-  DOWNVOTE_COMMENT,
-  UPVOTE_COMMENT,
-  UNDO_UPVOTE_COMMENT,
-  UNDO_DOWNVOTE_COMMENT,
-} from "@/graphQLData/comment/mutations";
-import ErrorBanner from "../generic/ErrorBanner.vue";
-import Votes from "./Votes.vue";
-import {
-  GET_LOCAL_MOD_PROFILE_NAME,
-  GET_LOCAL_USERNAME,
-} from "@/graphQLData/user/queries";
-import { useQuery, useMutation } from "@vue/apollo-composable";
-import EllipsisVertical from "../icons/EllipsisVertical.vue";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
+import VoteButtons from "./VoteButtons.vue";
+import ReplyButton from "./ReplyButton.vue";
+import SaveButton from "@/components/generic/buttons/SaveButton.vue";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
+import CancelButton from "@/components/generic/buttons/CancelButton.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
-    CancelButton,
-    EllipsisVertical,
-    ErrorBanner,
-    MenuButton,
-    RequireAuth,
+    
+    VoteButtons,
+    ReplyButton,
     SaveButton,
     TextEditor,
-    VotesComponent: Votes,
+    CancelButton,
   },
   props: {
     commentData: {
@@ -68,24 +54,14 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
+  setup() {
     const route = useRoute();
-
-    const { result: localUsernameResult, loading: localUsernameLoading } =
-      useQuery(GET_LOCAL_USERNAME);
 
     const {
       result: localModProfileNameResult,
       loading: localModProfileNameLoading,
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
-
-    const username = computed(() => {
-      if (localUsernameLoading.value) {
-        return "";
-      }
-      return localUsernameResult.value?.username || "";
-    });
 
     const loggedInUserModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
@@ -94,95 +70,7 @@ export default defineComponent({
       return localModProfileNameResult.value.modProfileName;
     });
 
-    const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT, () => ({
-      variables: {
-        id: props.commentData.id,
-        displayName: loggedInUserModName.value,
-      },
-    }));
-
-    const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
-      UPVOTE_COMMENT,
-      () => ({
-        variables: {
-          id: props.commentData.id,
-          username: username.value,
-        },
-      }),
-    );
-
-    const { mutate: undoUpvoteComment, error: undoUpvoteCommentError } =
-      useMutation(UNDO_UPVOTE_COMMENT, () => ({
-        variables: {
-          id: props.commentData.id,
-          username: username.value,
-        },
-      }));
-
-    const { mutate: undoDownvoteComment, error: undoDownvoteCommentError } =
-      useMutation(UNDO_DOWNVOTE_COMMENT, () => ({
-        variables: {
-          id: props.commentData.id,
-          displayName: loggedInUserModName.value,
-        },
-      }));
-
-    const loggedInUserUpvoted = computed(() => {
-      if (
-        localUsernameLoading.value ||
-        !localUsernameResult.value ||
-        !props.commentData.UpvotedByUsers
-      ) {
-        return false;
-      }
-      const match =
-        props.commentData.UpvotedByUsers.filter((user: any) => {
-          return user.username === localUsernameResult.value.username;
-        }).length === 1;
-      return match;
-    });
-
-    const loggedInUserDownvoted = computed(() => {
-      if (
-        localModProfileNameLoading.value ||
-        !localModProfileNameResult.value ||
-        !props.commentData.DownvotedByModerators
-      ) {
-        return false;
-      }
-      const mods = props.commentData.DownvotedByModerators;
-      const loggedInMod = localModProfileNameResult.value.modProfileName;
-      const match =
-        mods.filter((mod: any) => {
-          return mod.displayName === loggedInMod;
-        }).length === 1;
-      return match;
-    });
-
-    const commentMenuItems = computed(() => {
-      const out = [];
-      if (!route.path.includes("modhistory")) {
-        out.push({
-          label: "Mod History",
-          value: route.path.includes("comments")
-            ? `${route.path}/modhistory`
-            : `${route.path}/comments/${props.commentData.id}/modhistory`,
-        });
-      }
-      return out;
-    });
-
     return {
-      commentMenuItems,
-      upvoteComment,
-      upvoteCommentError,
-      undoDownvoteComment,
-      undoDownvoteCommentError,
-      undoUpvoteComment,
-      undoUpvoteCommentError,
-      loggedInUserDownvoted,
-      loggedInUserUpvoted,
-      downvoteComment,
       loggedInUserModName,
       route,
     };
@@ -191,89 +79,38 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex flex-wrap gap-2 items-center text-xs text-gray-400 dark:text-gray-300">
-      <RequireAuth
+    <div
+      class="flex flex-wrap items-center gap-2 text-xs text-gray-400 dark:text-gray-300"
+    >
+      <VoteButtons
         v-if="!locked"
-        :full-width="false"
+        :comment-data="commentData"
+        @openModProfile="$emit('openModProfile')"
+      />
+      <ReplyButton
+        :show-reply-editor="showReplyEditor"
+        :comment-data="commentData"
+        :parent-comment-id="parentCommentId"
+        :depth="depth"
+        @click="$emit('toggleShowReplyEditor')"
+      />
+      <span
+        v-if="showEditCommentField"
+        class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
+        @click="$emit('hideEditCommentField')"
+        >Cancel</span
       >
-        <template #has-auth>
-          <div class="flex items-center">
-            <VotesComponent
-              :downvote-count="
-                commentData.DownvotedByModeratorsAggregate?.count || 0
-              "
-              :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
-              :upvote-active="loggedInUserUpvoted"
-              :downvote-active="loggedInUserDownvoted"
-              :has-mod-profile="!!loggedInUserModName"
-              @downvote="downvoteComment"
-              @upvote="upvoteComment"
-              @openModProfile="$emit('openModProfile')"
-              @undoUpvote="undoUpvoteComment"
-              @undoDownvote="undoDownvoteComment"
-            />
-            <div
-              data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-md border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
-              :class="showReplyEditor ? 'text-black' : ''"
-              @click="$emit('toggleShowReplyEditor')"
-            >
-              <i class="fa-regular fa-comment h-4 w-4" /> Reply
-            </div>
-          </div>
-        </template>
-        <template #does-not-have-auth>
-          <div class="flex">
-            <VotesComponent
-              :downvote-count="
-                commentData.DownvotedByModeratorsAggregate?.count || 0
-              "
-              :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
-            />
-            <button
-              data-testid="reply-comment-button"
-              class="mx-2 cursor-pointer rounded-md border px-2 py-1 hover:text-black hover:border-black dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
-            >
-              <i class="fa-regular fa-comment h-4 w-4" />
-              Reply
-            </button>
-          </div>
-        </template>
-      </RequireAuth>
-      <RequireAuth
-        v-if="commentData.CommentAuthor"
-        class="flex"
-        :full-width="false"
-        :require-ownership="true"
-        :owners="[commentData.CommentAuthor.username]"
+      <span
+        v-if="showEditCommentField"
+        class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
+        @click="
+          () => {
+            $emit('saveEdit');
+            $emit('hideEditCommentField');
+          }
+        "
+        >Save</span
       >
-        <template #has-auth>
-          <span
-            data-testid="delete-comment-button"
-            class="cursor-pointer underline hover:text-black  dark:text-gray-300 dark:hover:text-white"
-            @click="
-              $emit('deleteComment', {
-                commentId: commentData.id,
-                parentCommentId: commentData.ParentComment
-                  ? commentData.ParentComment.id
-                  : '',
-                replyCount,
-              })
-            "
-          >Delete</span>
-          <span
-            v-if="!showEditCommentField"
-            data-testid="edit-comment-button"
-            class="ml-2 cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
-            @click="
-              () => {
-                $emit('clickEditComment', commentData);
-                $emit('showEditCommentField');
-              }
-            "
-          >Edit</span>
-        </template>
-      </RequireAuth>
       <span
         v-if="commentData.DiscussionChannel"
         :to="`${route.path}/comments/${commentData.id}`"
@@ -292,47 +129,21 @@ export default defineComponent({
         Permalink
       </span>
       <span
-        v-if="showEditCommentField"
-        class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
-        @click="$emit('hideEditCommentField')"
-      >Cancel</span>
-      <span
-        v-if="showEditCommentField"
-        class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
-        @click="
-          () => {
-            $emit('saveEdit');
-            $emit('hideEditCommentField');
-          }
-        "
-      >Save</span>
-      <span
         v-if="showReplies && replyCount > 0"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
         @click="$emit('hideReplies')"
-      >{{
-        `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
-      }}</span>
+      >
+        {{ `Hide ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}` }}
+      </span>
       <span
         v-if="!showReplies"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
         @click="$emit('showReplies')"
-      >{{
-        `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}`
-      }}</span>
-      <MenuButton
-        v-if="commentMenuItems.length > 0"
-        :items="commentMenuItems"
       >
-        <EllipsisVertical
-          class="h-4 w-4 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
-        />
-      </MenuButton>
+        {{ `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}` }}
+      </span>
     </div>
-    <div
-      v-if="showReplyEditor"
-      class="mt-1 px-3"
-    >
+    <div v-if="commentData && showReplyEditor" class="mt-1 px-3">
       <TextEditor
         class="my-3"
         :placeholder="'Please be kind'"
@@ -347,7 +158,7 @@ export default defineComponent({
       <div class="flex justify-start space-x-2">
         <CancelButton @click="$emit('hideReplyEditor')" />
         <SaveButton
-          :disabled="commentData.text.length === 0"
+          :disabled="commentData?.text?.length === 0"
           @click.prevent="
             () => {
               $emit('createComment', parentCommentId);
@@ -357,14 +168,6 @@ export default defineComponent({
         />
       </div>
     </div>
-    <ErrorBanner
-      v-if="upvoteCommentError"
-      :text="upvoteCommentError.message"
-    />
-    <ErrorBanner
-      v-if="undoUpvoteCommentError"
-      :text="undoUpvoteCommentError.message"
-    />
   </div>
 </template>
 <style></style>

@@ -32,7 +32,7 @@ export default defineComponent({
       type: Object as PropType<DiscussionChannel>,
       required: true,
     },
-    offset: {
+    previousOffset: {
       type: Number,
       required: true,
     },
@@ -117,7 +117,9 @@ export default defineComponent({
             query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
             variables: {
               discussionId: props.discussionChannel.discussionId,
-              channelUniqueName: props.discussionChannel.channelUniqueName
+              channelUniqueName: props.discussionChannel.channelUniqueName,
+              limit: COMMENT_LIMIT,
+              offset: props.previousOffset
             },
           });
 
@@ -148,7 +150,7 @@ export default defineComponent({
               discussionId: props.discussionChannel.discussionId,
               channelUniqueName: props.discussionChannel.channelUniqueName,
               limit: COMMENT_LIMIT,
-              offset: props.offset
+              offset: props.previousOffset
             },
             data: {
               ...readQueryResult,

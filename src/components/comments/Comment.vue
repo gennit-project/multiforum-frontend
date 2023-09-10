@@ -2,7 +2,6 @@
 import { defineComponent, PropType, ref, computed } from "vue";
 import {
   CreateReplyInputData,
-  DeleteCommentInputData,
 } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { useQuery, useMutation } from "@vue/apollo-composable";
@@ -21,10 +20,21 @@ import { gql } from "@apollo/client/core";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import { useRoute } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
+
+
+type DeleteCommentInputData = {
+  commentId: string;
+  parentCommentId: string;
+  replyCount: number;
+};
 
 export default defineComponent({
   name: "CommentComponent",
   components: {
+    EllipsisHorizontal,
+    MenuButton,
     CommentButtons,
     ChildComments,
     TextEditor,
@@ -141,7 +151,31 @@ export default defineComponent({
       return getLinksInText(props.commentData.text);
     });
 
+    const commentMenuItems = computed(() => {
+      const out = [{
+        label: "Edit",
+        value: "",
+        event: "handleEdit"
+      },
+      {
+        label: "Delete",
+        value: "",
+        event: "handleDelete"
+      }
+    ];
+      if (!route.path.includes("modhistory")) {
+        out.push({
+          label: "Mod History",
+          value: route.path.includes("comments")
+            ? `${route.path}/modhistory`
+            : `${route.path}/comments/${props.commentData.id}/modhistory`,
+          event: ''
+        });
+      }
+      return out;
+    });
     return {
+      commentMenuItems,
       createModProfile,
       editorId: "texteditor",
       highlight: ref(false),
@@ -186,11 +220,12 @@ export default defineComponent({
     createComment(parentCommentId: string) {
       this.$emit("createComment", parentCommentId);
     },
-    handleClickDelete(input: DeleteCommentInputData) {
+    handleDelete(input: DeleteCommentInputData) {
       this.$emit("deleteComment", input);
     },
-    handleClickEdit(commentData: CommentData) {
+    handleEdit(commentData: Comment) {
       this.$emit("clickEditComment", commentData);
+      this.showEditCommentField = true;
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
@@ -259,31 +294,50 @@ export default defineComponent({
               View Context
             </router-link>
           </div>
-          <p class="flex flex-wrap items-center space-x-2">
-            <Avatar
-              v-if="commentData.CommentAuthor"
-              class="ml-2 mt-1"
-              :text="commentData.CommentAuthor.username"
-            />
+          <div class="flex justify-between">
+            <div class="flex flex-wrap items-center space-x-2">
+              <Avatar
+                v-if="commentData.CommentAuthor"
+                class="ml-2 mt-1"
+                :text="commentData.CommentAuthor.username"
+              />
 
-            <router-link
-              v-if="commentData.CommentAuthor"
-              class="mx-1 font-bold hover:underline dark:text-gray-200"
-              :to="`/u/${commentData.CommentAuthor.username}`"
+              <router-link
+                v-if="commentData.CommentAuthor"
+                class="mx-1 font-bold hover:underline dark:text-gray-200"
+                :to="`/u/${commentData.CommentAuthor.username}`"
+              >
+                {{ commentData.CommentAuthor.username }}
+              </router-link>
+              <span v-else class="font-bold">[Deleted]</span>
+              <span class="mx-2">&middot;</span>
+              <span>{{ createdAtFormatted }}</span>
+              <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
+              <span>{{ editedAtFormatted }}</span>
+              <span
+                v-if="isHighlighted"
+                class="rounded-lg bg-blue-500 px-2 py-1 text-black"
+                >Permalinked Comment
+              </span>
+            </div>
+            <MenuButton
+              v-if="commentMenuItems.length > 0"
+              :items="commentMenuItems"
+              @handleEdit="() => handleEdit(commentData)"
+              @handleDelete="() => {
+                const deleteCommentInput = {
+                  commentId: commentData.id,
+                  parentCommentId,
+                  replyCount,
+                };
+                handleDelete(deleteCommentInput);
+              }"
             >
-              {{ commentData.CommentAuthor.username }}
-            </router-link>
-            <span v-else class="font-bold">[Deleted]</span>
-            <span class="mx-2">&middot;</span>
-            <span>{{ createdAtFormatted }}</span>
-            <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
-            <span>{{ editedAtFormatted }}</span>
-            <span
-              v-if="isHighlighted"
-              class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-              >Permalinked Comment
-            </span>
-          </p>
+              <EllipsisHorizontal
+                class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+              />
+            </MenuButton>
+          </div>
 
           <div
             v-if="!themeLoading"
@@ -306,20 +360,19 @@ export default defineComponent({
               />
             </div>
             <CommentButtons
+              :class="[!showEditCommentField ? ' -mt-4':'']"
               class="ml-2"
               :comment-data="commentData"
               :depth="depth"
               :locked="locked"
               :parent-comment-id="parentCommentId"
-              :reply-count="replyCount"
               :show-edit-comment-field="showEditCommentField"
               :show-replies="showReplies"
               :show-reply-editor="showReplyEditor"
-              @clickEditComment="handleClickEdit"
+              @clickEditComment="handleEdit"
               @createComment="createComment"
               @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
               @hideReplyEditor="showReplyEditor = false"
-              @deleteComment="handleClickDelete"
               @hideReplies="showReplies = false"
               @openModProfile="showModProfileModal = true"
               @saveEdit="$emit('saveEdit')"
@@ -350,7 +403,7 @@ export default defineComponent({
                 :locked="locked"
                 :parent-comment-id="commentData.id"
                 @clickEditComment="$emit('clickEditComment', $event)"
-                @deleteComment="handleClickDelete"
+                @deleteComment="handleDelete"
                 @createComment="$emit('createComment')"
                 @saveEdit="$emit('saveEdit')"
                 @updateCreateReplyCommentInput="updateNewComment"
