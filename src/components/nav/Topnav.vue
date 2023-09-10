@@ -121,8 +121,11 @@ export default defineComponent({
         <div
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
-          <router-link to="/" class="flex items-center">
-            <arrow-up-bold-box class="mr-1 h-6 w-6 text-black dark:text-blue-500"/>
+          <router-link
+            to="/" 
+            class="flex items-center"
+          >
+            <arrow-up-bold-box :size="38" class="ml-3 mr-2 text-black dark:text-blue-500" />
             <span class="font-bold text-black dark:text-white">Topical</span>
           </router-link>
 
