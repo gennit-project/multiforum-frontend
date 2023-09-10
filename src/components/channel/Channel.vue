@@ -8,10 +8,12 @@ import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
 import gql from "graphql-tag";
+import Avatar from "@/components/user/Avatar.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
+    Avatar,
     ChannelSidebar,
     ChannelTabs,
   },
@@ -81,7 +83,7 @@ export default defineComponent({
       router,
       showMenu: ref(false),
       smAndDown,
-      theme
+      theme,
     };
   },
   created() {
@@ -95,10 +97,21 @@ export default defineComponent({
 <template>
   <div class="overflow-hidden dark:bg-gray-800">
     <div
-      :class="[theme === 'dark' ? 'channel-background-dark' : 'channel-background']"
-      class=" h-20 w-full object-cover lg:h-28"
+      :class="[
+        theme === 'dark' ? 'channel-background-dark' : 'channel-background',
+      ]"
+      class="h-20 w-full object-cover lg:h-28"
       alt="background pattern"
     />
+    <div class="flex justify-center">
+      <Avatar
+        v-if="smAndDown"
+        class="-mt-12 h-24 w-24 shadow-sm"
+        :text="channelId"
+        :is-square="false"
+        :is-large="true"
+      />
+    </div>
     <div class="dark:bg-gray-950 h-fit">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container fluid class="p-0">

@@ -39,7 +39,7 @@ export default defineComponent({
       return "";
     });
 
-    const { lgAndUp, mdAndUp } = useDisplay();
+    const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
 
     return {
       channelId,
@@ -48,13 +48,14 @@ export default defineComponent({
       mdAndUp,
       relativeTime,
       route,
+      smAndDown
     };
   },
 });
 </script>
 
 <template>
-  <div  class="h-screen w-full flex justify-center space-y-4 overflow-auto py-1 lg:px-4">
+  <div :class="[smAndDown ? '' : 'h-screen']" class="w-full flex justify-center space-y-4 overflow-auto py-1 lg:px-4">
     <DiscussionDetailContent
       v-if="discussionId"
       :key="discussionId"

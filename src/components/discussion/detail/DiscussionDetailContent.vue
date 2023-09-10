@@ -221,7 +221,7 @@ export default defineComponent({
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      class="align-center justify-between mt-2 flex w-full"
+      class="align-center justify-between mt-2 flex w-full mx-1 px-2"
     >
       <div>
         <router-link
@@ -253,7 +253,7 @@ export default defineComponent({
     />
     <v-row v-if="discussion" class="mt-1 flex justify-center">
       <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12">
-        <div class="space-y-3">
+        <div class="space-y-3 px-2">
           <div class="mb-3 w-full">
             <div ref="discussionDetail">
               <div class="min-w-0">
@@ -271,9 +271,9 @@ export default defineComponent({
           </div>
         </div>
 
-        <div class="space-y-3">
+        <div class="space-y-3 px-2">
           <div
-            class="dark:bg-gray-950 rounded-lg border border-black px-4 pb-2 dark:border-blue-500"
+            class="dark:bg-gray-950 rounded-lg border border-black pb-2 px-2 dark:border-blue-500"
           >
             <DiscussionHeader
               :discussion="discussion"
