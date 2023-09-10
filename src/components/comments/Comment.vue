@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed } from "vue";
-import {
-  CreateReplyInputData,
-} from "@/types/commentTypes";
+import { CreateReplyInputData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { relativeTime } from "../../dateTimeUtils";
@@ -22,7 +20,9 @@ import { useRoute } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
+import RightArrowIcon from "../icons/RightArrowIcon.vue";
 
+const MAX_COMMENT_DEPTH = 5;
 
 type DeleteCommentInputData = {
   commentId: string;
@@ -33,14 +33,15 @@ type DeleteCommentInputData = {
 export default defineComponent({
   name: "CommentComponent",
   components: {
-    EllipsisHorizontal,
-    MenuButton,
-    CommentButtons,
+    Avatar,
     ChildComments,
+    CommentButtons,
+    EllipsisHorizontal,
+    MarkdownPreview,
+    MenuButton,
+    RightArrowIcon,
     TextEditor,
     WarningModal,
-    Avatar,
-    MarkdownPreview,
   },
   props: {
     commentData: {
@@ -78,6 +79,7 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const { discussionId, channelId } = route.params;
 
     const isHighlighted = computed(() => {
       return (
@@ -152,34 +154,40 @@ export default defineComponent({
     });
 
     const commentMenuItems = computed(() => {
-      const out = [{
-        label: "Edit",
-        value: "",
-        event: "handleEdit"
-      },
-      {
-        label: "Delete",
-        value: "",
-        event: "handleDelete"
-      }
-    ];
+      const out = [
+        {
+          label: "Edit",
+          value: "",
+          event: "handleEdit",
+        },
+        {
+          label: "Delete",
+          value: "",
+          event: "handleDelete",
+        },
+      ];
       if (!route.path.includes("modhistory")) {
         out.push({
           label: "Mod History",
           value: route.path.includes("comments")
             ? `${route.path}/modhistory`
             : `${route.path}/comments/${props.commentData.id}/modhistory`,
-          event: ''
+          event: "",
         });
       }
       return out;
     });
     return {
+      channelId,
       commentMenuItems,
       createModProfile,
+      discussionId,
       editorId: "texteditor",
       highlight: ref(false),
+      id: `comment-preview-${props.commentData.id}`,
+      isHighlighted,
       linksInText,
+      maxCommentDepth: MAX_COMMENT_DEPTH,
       permalinkedCommentId: route.params.commentId,
       relativeTime,
       replyCount,
@@ -191,9 +199,7 @@ export default defineComponent({
       textCopy,
       themeLoading,
       theme,
-      isHighlighted,
       scrollElement: document.documentElement,
-      id: `comment-preview-${props.commentData.id}`,
     };
   },
   computed: {
@@ -261,7 +267,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex w-full ">
+    <div class="flex w-full">
       <div :class="'text-sm'" class="w-full">
         <div
           :class="[
@@ -324,21 +330,22 @@ export default defineComponent({
               v-if="commentMenuItems.length > 0"
               :items="commentMenuItems"
               @handleEdit="() => handleEdit(commentData)"
-              @handleDelete="() => {
-                const deleteCommentInput = {
-                  commentId: commentData.id,
-                  parentCommentId,
-                  replyCount,
-                };
-                handleDelete(deleteCommentInput);
-              }"
+              @handleDelete="
+                () => {
+                  const deleteCommentInput = {
+                    commentId: commentData.id,
+                    parentCommentId,
+                    replyCount,
+                  };
+                  handleDelete(deleteCommentInput);
+                }
+              "
             >
               <EllipsisHorizontal
                 class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
               />
             </MenuButton>
           </div>
-
           <div
             v-if="!themeLoading"
             class="w-full max-w-none dark:text-gray-200"
@@ -360,7 +367,7 @@ export default defineComponent({
               />
             </div>
             <CommentButtons
-              :class="[!showEditCommentField ? ' -mt-6':'']"
+              :class="[!showEditCommentField ? ' -mt-6' : '']"
               class="ml-2"
               :comment-data="commentData"
               :depth="depth"
@@ -383,8 +390,27 @@ export default defineComponent({
             />
           </div>
         </div>
+        <router-link
+          v-if="
+           (commentData.DiscussionChannel || (discussionId && channelId)) &&
+              replyCount > 0 &&
+              depth + 1 > maxCommentDepth
+          "
+          class="flex w-full cursor-pointer items-center gap-1 border-l border-gray-300 py-2 pl-4 text-gray-400 underline dark:border-gray-500 dark:text-gray-300"
+          :to="{
+            name: 'DiscussionCommentPermalink',
+            params: {
+              discussionId: discussionId || commentData.DiscussionChannel?.discussionId,
+              commentId: commentData.id,
+              channelId: channelId || commentData.DiscussionChannel?.channelUniqueName,
+            },
+          }"
+        >
+          Continue thread
+          <RightArrowIcon class="h-4 w-4" />
+        </router-link>
         <div
-          v-if="replyCount > 0 && showReplies"
+          v-else-if="replyCount > 0 && showReplies"
           id="childComments"
           class="w-full border-l border-gray-300 pl-4 dark:border-gray-500"
         >
