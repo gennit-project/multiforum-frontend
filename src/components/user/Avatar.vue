@@ -68,16 +68,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <img
-    v-if="!isSquare"
-    class="h-8 w-8 rounded-full"
-    :src="identiconData"
-    :alt="text"
-  >
   <img 
-    v-else 
-    :class="[isLarge ? 'h-24 w-24' :'h-10 w-10']"
-    class="rounded-md" 
+    :class="[isLarge ? 'w-full' :'h-8 w-8', isSquare ? 'rounded-md' : 'rounded-full']"
     :src="identiconData" 
     :alt="text"
   >

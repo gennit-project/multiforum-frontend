@@ -114,57 +114,39 @@ export default defineComponent({
 
 <template>
   <div class="h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
-    <div
-      v-if="channelId"
-      class="mt-6 mb-4 flex gap-2 items-center px-4"
-    >
-      <Avatar
-        :text="channelId"
-        :is-square="true"
-      />
+    <div v-if="channelId" class="mb-4 mt-6 items-center gap-2 px-4">
+      <Avatar class="shadow-sm" :text="channelId" :is-square="false" :is-large="true"/>
       <h1
         v-if="channelId"
-        class="my-2 mb-2 flex justify-center border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+        class="mt-4 mb-2 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
         {{ channelId }}
       </h1>
     </div>
 
     <div class="w-full">
-      <p v-if="getChannelLoading">
-        Loading...
-      </p>
+      <p v-if="getChannelLoading">Loading...</p>
       <div v-else-if="getChannelError">
-        <div
-          v-for="(error, i) of getChannelError?.graphQLErrors"
-          :key="i"
-        >
+        <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
           {{ error.message }}
         </div>
       </div>
-      <div v-else-if="!channel" class="px-4">
-        Could not find the channel.
-      </div>
+      <div v-else-if="!channel" class="px-4">Could not find the channel.</div>
       <div v-else-if="channel">
-        <div
-          class="w-full px-4 mb-4"
-        >
+        <div class="mb-4 w-full px-4">
           <div
             v-if="channel.description"
-            class="text-sm  dark:text-gray-200 px-2 my-2"
+            class="my-2 px-2 text-sm dark:text-gray-200"
           >
             {{ channel.description }}
           </div>
-          <p
-            v-else
-            class="text-sm dark:text-gray-200"
-          >
+          <p v-else class="text-sm dark:text-gray-200">
             {{ "This channel has no description." }}
           </p>
         </div>
         <slot />
 
-        <div class="w-full mt-6">
+        <div class="mt-6 w-full">
           <div v-if="channel.Tags.length > 0">
             <div class="flex justify-between border-gray-300">
               <span
@@ -195,27 +177,18 @@ export default defineComponent({
             v-if="channel.Admins.length > 0"
             class="my-3 px-5 text-sm font-bold"
           >
-            <li
-              v-for="admin in channel.Admins"
-              :key="admin.username"
-            >
+            <li v-for="admin in channel.Admins" :key="admin.username">
               <router-link
                 :key="admin.username"
                 :to="`/u/${admin.username}`"
                 class="flex items-center"
               >
-                <Avatar
-                  :text="admin.username"
-                  class="mr-2"
-                />
+                <Avatar :text="admin.username" class="mr-2" />
                 {{ admin.username }}
               </router-link>
             </li>
           </ul>
-          <p
-            v-else
-            class="mx-6 my-3 mb-6 text-sm dark:text-gray-400"
-          >
+          <p v-else class="mx-6 my-3 mb-6 text-sm dark:text-gray-400">
             This channel does not have any admins.
           </p>
         </div>

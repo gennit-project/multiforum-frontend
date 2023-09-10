@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType, computed, ref } from "vue";
 import { Comment } from "@/__generated__/graphql";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
@@ -9,16 +9,17 @@ import ReplyButton from "./ReplyButton.vue";
 import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import CancelButton from "@/components/generic/buttons/CancelButton.vue";
+import EmojiButton from "./EmojiButton.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
-    
-    VoteButtons,
+    CancelButton,
+    EmojiButton,
     ReplyButton,
     SaveButton,
     TextEditor,
-    CancelButton,
+    VoteButtons,
   },
   props: {
     commentData: {
@@ -73,6 +74,7 @@ export default defineComponent({
     return {
       loggedInUserModName,
       route,
+      showEmojiPicker: ref(false),
     };
   },
 });
@@ -86,6 +88,11 @@ export default defineComponent({
         v-if="!locked"
         :comment-data="commentData"
         @openModProfile="$emit('openModProfile')"
+      />
+      <EmojiButton
+        v-if="!locked"
+        :comment-data="commentData"
+        @openEmojiPicker="showEmojiPicker = true"
       />
       <ReplyButton
         :show-reply-editor="showReplyEditor"

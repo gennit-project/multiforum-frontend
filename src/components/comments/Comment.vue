@@ -272,7 +272,7 @@ export default defineComponent({
         <div
           :class="[
             isHighlighted
-              ? 'border border-blue-500'
+              ? 'border border-blue-500 rounded-md'
               : 'dark:bg-gray-950 border-l border-r border-t border-gray-200 dark:border-gray-500',
           ]"
           class="p-2 shadow-sm"
@@ -323,7 +323,7 @@ export default defineComponent({
               <span
                 v-if="isHighlighted"
                 class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-                >Permalinked Comment
+                >Permalinked
               </span>
             </div>
             <MenuButton

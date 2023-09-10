@@ -12,6 +12,10 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    showCount: {
+      type: Boolean,
+      default: true,
+    },
     testId: {
       type: String,
       default: "",
@@ -25,7 +29,7 @@ export default defineComponent({
 <template>
   <button
     :data-testid="testId"
-    class="inline-flex max-h-7 cursor-pointer text-gray-400 hover:text-black hover:dark:text-blue-500 hover:border-black hover:dark:border-blue-500 items-center rounded-full border px-3 py-1"
+    class="inline-flex max-h-7 cursor-pointer text-gray-400 hover:text-black hover:dark:text-blue-500 hover:border-black hover:dark:border-blue-500 items-center rounded-full border px-2 py-1"
     :class="[
       active
         ? 'border-black bg-gray-100 hover:bg-gray-200 dark:border-blue-500 dark:bg-gray-700 dark:hover:bg-blue-900'
@@ -44,6 +48,7 @@ export default defineComponent({
       <slot />
     </span>
     <span
+      v-if="showCount"
       class="mr-1 justify-center"
       :class="
         active

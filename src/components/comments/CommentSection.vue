@@ -561,7 +561,11 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="discussionChannel.CommentsAggregate?.count === 0">
-      <h2 id="comments" ref="commentSectionHeader" class="mb-2 text-md">
+      <h2
+        id="comments"
+        ref="commentSectionHeader"
+        class="mb-2 text-md"
+      >
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
@@ -574,7 +578,7 @@ export default defineComponent({
     <div
       v-else-if="
         discussionChannel.CommentsAggregate &&
-        discussionChannel.CommentsAggregate.count > 0
+          discussionChannel.CommentsAggregate.count > 0
       "
       :key="permalinkedCommentId"
     >
