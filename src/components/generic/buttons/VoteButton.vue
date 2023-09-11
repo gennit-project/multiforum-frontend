@@ -38,7 +38,7 @@ export default defineComponent({
     @click="$emit('vote')"
   >
     <span
-      class="mr-1 justify-center"
+      class="justify-center"
       :class="[
         active
           ? 'text-black dark:text-blue-500'

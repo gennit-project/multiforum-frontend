@@ -177,7 +177,27 @@ export default defineComponent({
       }
       return out;
     });
+    const canShowPermalink =
+      props.commentData.DiscussionChannel || (discussionId && channelId);
+
+    const permalinkObject = computed(() => {
+      if (!canShowPermalink) {
+        return {};
+      }
+      return {
+        name: "DiscussionCommentPermalink",
+        params: {
+          discussionId:
+            discussionId || props.commentData?.DiscussionChannel?.discussionId,
+          commentId: props.commentData.id,
+          channelId:
+            channelId ||
+            props.commentData?.DiscussionChannel?.channelUniqueName,
+        },
+      };
+    });
     return {
+      canShowPermalink,
       channelId,
       commentMenuItems,
       createModProfile,
@@ -189,6 +209,7 @@ export default defineComponent({
       linksInText,
       maxCommentDepth: MAX_COMMENT_DEPTH,
       permalinkedCommentId: route.params.commentId,
+      permalinkObject,
       relativeTime,
       replyCount,
       route,
@@ -272,7 +293,7 @@ export default defineComponent({
         <div
           :class="[
             isHighlighted
-              ? 'border border-blue-500 rounded-md'
+              ? 'rounded-md border border-blue-500'
               : 'dark:bg-gray-950 border-l border-r border-t border-gray-200 dark:border-gray-500',
           ]"
           class="p-2 shadow-sm"
@@ -320,6 +341,13 @@ export default defineComponent({
               <span>{{ createdAtFormatted }}</span>
               <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
               <span>{{ editedAtFormatted }}</span>
+              <router-link
+                v-if="canShowPermalink && !isHighlighted"
+                class="pl-4 underline text-gray-400 dark:text-gray-300"
+                :to="permalinkObject"
+              >
+                Permalink
+              </router-link>
               <span
                 v-if="isHighlighted"
                 class="rounded-lg bg-blue-500 px-2 py-1 text-black"
@@ -392,19 +420,10 @@ export default defineComponent({
         </div>
         <router-link
           v-if="
-           (commentData.DiscussionChannel || (discussionId && channelId)) &&
-              replyCount > 0 &&
-              depth + 1 > maxCommentDepth
+            canShowPermalink && replyCount > 0 && depth + 1 > maxCommentDepth
           "
           class="flex w-full cursor-pointer items-center gap-1 border-l border-gray-300 py-2 pl-4 text-gray-400 underline dark:border-gray-500 dark:text-gray-300"
-          :to="{
-            name: 'DiscussionCommentPermalink',
-            params: {
-              discussionId: discussionId || commentData.DiscussionChannel?.discussionId,
-              commentId: commentData.id,
-              channelId: channelId || commentData.DiscussionChannel?.channelUniqueName,
-            },
-          }"
+          :to="permalinkObject"
         >
           Continue thread
           <RightArrowIcon class="h-4 w-4" />

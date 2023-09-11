@@ -10,12 +10,14 @@ import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import CancelButton from "@/components/generic/buttons/CancelButton.vue";
 import EmojiButton from "./EmojiButton.vue";
+import EmojiPicker from "./EmojiPicker.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
     CancelButton,
     EmojiButton,
+    EmojiPicker,
     ReplyButton,
     SaveButton,
     TextEditor,
@@ -174,6 +176,17 @@ export default defineComponent({
           "
         />
       </div>
+    </div>
+    <div v-if="showEmojiPicker">
+      tnhtnht
+      <EmojiPicker
+        @selectEmoji="
+          (emoji: any) => {
+            console.log(emoji)
+            showEmojiPicker = false;
+          }
+        "
+      />
     </div>
   </div>
 </template>

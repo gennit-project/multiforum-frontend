@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 
 export default defineComponent({
-  name: "VoteComponent",
+  name: "EmojiButton",
   components: {
     VoteButton,
   },
@@ -11,8 +11,8 @@ export default defineComponent({
     return {};
   },
   methods: {
-    handleClick(event: any) {
-      console.log(event)
+    handleClick() {
+      this.$emit('openEmojiPicker')
     },
   },
 });
