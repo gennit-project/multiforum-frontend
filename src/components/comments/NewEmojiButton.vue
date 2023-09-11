@@ -3,7 +3,7 @@ import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 
 export default defineComponent({
-  name: "EmojiButton",
+  name: "NewEmojiButton",
   components: {
     VoteButton,
   },

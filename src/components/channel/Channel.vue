@@ -95,8 +95,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-hidden dark:bg-gray-800">
+  <div class="overflow-hidden  dark:bg-gray-800">
+    <!-- <div
+      v-if="!smAndDown"
+      :class="[
+        theme === 'dark' ? 'channel-background-dark' : 'channel-background',
+      ]"
+      class="h-20 w-full object-cover lg:h-28"
+      alt="background pattern"
+    /> -->
     <div
+      v-if="smAndDown"
       :class="[
         theme === 'dark' ? 'channel-background-dark' : 'channel-background',
       ]"
@@ -108,13 +117,14 @@ export default defineComponent({
         v-if="smAndDown"
         class="-mt-12 h-24 w-24 shadow-sm"
         :text="channelId"
-        :is-square="false"
+        :is-square="true"
         :is-large="true"
       />
     </div>
-    <div class="dark:bg-gray-950 h-fit">
+    <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container fluid class="p-0">
+         
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"
@@ -137,7 +147,9 @@ export default defineComponent({
               :md="channelId && !smAndDown ? 9 : 12"
               :lg="channelId && !smAndDown ? 10 : 12"
             >
-              <router-view />
+           
+            <router-view />
+             
             </v-col>
           </v-row>
         </v-container>

@@ -115,7 +115,7 @@ export default defineComponent({
 <template>
   <div class="h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
     <div v-if="channelId" class="mb-4 mt-6 items-center gap-2 px-4">
-      <Avatar class="shadow-sm" :text="channelId" :is-square="false" :is-large="true"/>
+      <Avatar class="shadow-sm" :text="channelId" :is-square="true" :is-large="true"/>
       <h1
         v-if="channelId"
         class="mt-4 mb-2 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"

@@ -9,15 +9,17 @@ import ReplyButton from "./ReplyButton.vue";
 import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import CancelButton from "@/components/generic/buttons/CancelButton.vue";
-import EmojiButton from "./EmojiButton.vue";
+import NewEmojiButton from "./NewEmojiButton.vue";
 import EmojiPicker from "./EmojiPicker.vue";
+import ExistingEmojiButtons from "./ExistingEmojiButtons.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
     CancelButton,
-    EmojiButton,
     EmojiPicker,
+    ExistingEmojiButtons,
+    NewEmojiButton,
     ReplyButton,
     SaveButton,
     TextEditor,
@@ -91,7 +93,11 @@ export default defineComponent({
         :comment-data="commentData"
         @openModProfile="$emit('openModProfile')"
       />
-      <EmojiButton
+      <ExistingEmojiButtons
+        v-if="!locked"
+        :comment-data="commentData"
+      />
+      <NewEmojiButton
         v-if="!locked"
         :comment-data="commentData"
         @openEmojiPicker="showEmojiPicker = true"

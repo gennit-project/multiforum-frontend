@@ -229,7 +229,7 @@ export default defineComponent({
           :to="`/channels/c/${channelId}/discussions`"
         >
           <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 px-1 pb-1" />
-          <span class="text-xs underline">{{ `List` }}</span>
+          <span class="text-xs underline">{{ `Back to List` }}</span>
         </router-link>
       </div>
       <RequireAuth :full-width="false" class="flex max-w-sm justify-end">

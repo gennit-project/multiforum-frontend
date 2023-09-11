@@ -27,6 +27,7 @@ const COMMENT_FIELDS = gql`
   fragment CommentFields on Comment {
     id
     text
+    emoji
     CommentAuthor {
       ...AuthorFields
     }

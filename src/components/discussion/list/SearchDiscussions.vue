@@ -255,14 +255,14 @@ export default defineComponent({
     <v-col
       v-if="!mdAndDown"
       cols="12"
-      :lg="channelId ? 7 : 8"
+      :lg="channelId ? 7 : 7"
       class="dark:bg-gray-950 border-l border-gray-200 p-0 dark:border-gray-700 dark:text-gray-200"
     >
       <router-view />
     </v-col>
     <v-col
       cols="12"
-      :lg="channelId ? 5 : 4"
+      :lg="channelId ? 5 : 5"
       class="scrollable-column shadow-right-lg md:pr-6"
     >
       <DiscussionFilterBar />
