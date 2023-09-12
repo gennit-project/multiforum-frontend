@@ -95,6 +95,7 @@ export default defineComponent({
       />
       <ExistingEmojiButtons
         v-if="!locked"
+        :key="commentData.emoji"
         :comment-data="commentData"
       />
       <NewEmojiButton
@@ -184,14 +185,9 @@ export default defineComponent({
       </div>
     </div>
     <div v-if="showEmojiPicker">
-      tnhtnht
       <EmojiPicker
-        @selectEmoji="
-          (emoji: any) => {
-            console.log(emoji)
-            showEmojiPicker = false;
-          }
-        "
+        :comment-data="commentData"
+        @selectEmoji="showEmojiPicker = false;"
       />
     </div>
   </div>

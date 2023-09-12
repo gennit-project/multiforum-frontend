@@ -1,10 +1,20 @@
 <script lang="ts">
-import { defineComponent, PropType, computed } from "vue";
+import { computed, defineComponent, PropType } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import { Comment } from "@/__generated__/graphql";
+import { ADD_EMOJI_TO_COMMENT } from "@/graphQLData/comment/mutations";
+import { useMutation, useQuery } from "@vue/apollo-composable";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+
+type EmojiVoteInput = {
+  commentId: string;
+  emojiLabel: string;
+  unicode: string;
+  username: string;
+};
 
 export default defineComponent({
-  name: "NewEmojiButton",
+  name: "ExistingEmojiButton",
   components: {
     VoteButton,
   },
@@ -20,14 +30,36 @@ export default defineComponent({
     if (props.commentData.emoji) {
       emojiObject = JSON.parse(props.commentData.emoji);
     }
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+    const username = computed(() => {
+      return localUsernameResult.value.username;
+    });
+
+    const { mutate: addEmojiToComment } = useMutation(ADD_EMOJI_TO_COMMENT);
 
     return {
+      addEmojiToComment,
       emojiObject,
+      username,
     };
   },
   methods: {
-    handleClick() {
-      this.$emit("openEmojiPicker");
+    isActive(emojiLabel: string) {
+      let active = false;
+
+      // @ts-ignore
+      const variants = this.emojiObject[emojiLabel];
+      for (const unicode in variants) {
+        const usernames = variants[unicode];
+        if (usernames.includes(this.username)) {
+          active = true;
+        }
+      }
+
+      return active;
+    },
+    handleClick(emojiVoteInput: EmojiVoteInput) {
+      this.addEmojiToComment(emojiVoteInput);
     },
     getCount(emojiLabel: string) {
       let sumUsernames = 0;
@@ -84,15 +116,25 @@ export default defineComponent({
 
 <template>
   <div v-for="emojiLabel in Object.keys(emojiObject)" :key="emojiLabel">
-    <v-tooltip location="top" content-class='custom-tooltip'>
+    <v-tooltip location="top" content-class="custom-tooltip">
       <template v-slot:activator="{ props }">
         <VoteButton
           v-bind="props"
           class="space-x-3"
+          :active="isActive(emojiLabel)"
           :test-id="'upvote-comment-button'"
           :show-count="true"
           :count="getCount(emojiLabel)"
-          @click="handleClick"
+          @click="
+            () => {
+              handleClick({
+                commentId: commentData.id,
+                emojiLabel,
+                unicode: getDefaultVariant(emojiLabel),
+                username: username,
+              });
+            }
+          "
         >
           <span
             class="text-lg"
@@ -114,7 +156,7 @@ export default defineComponent({
 </template>
 <style>
 .custom-tooltip {
-    opacity: var(--v-tooltip-opacity, 1) !important;
-    background: var(--v-tooltip-bg, rgba(97, 97, 97, 1)) !important;
-  }
+  opacity: var(--v-tooltip-opacity, 1) !important;
+  background: var(--v-tooltip-bg, rgba(97, 97, 97, 1)) !important;
+}
 </style>

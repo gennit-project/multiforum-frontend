@@ -1,5 +1,24 @@
 import { gql } from "@apollo/client/core";
 
+export const ADD_EMOJI_TO_COMMENT = gql`
+  mutation addEmojiToComment(
+    $commentId: ID!, 
+    $emojiLabel: String!,
+    $unicode: String!,
+    $username: String!
+  ) {
+    addEmojiToComment (
+      commentId: $commentId,
+      emojiLabel: $emojiLabel,
+      unicode: $unicode,
+      username: $username
+    ) {
+      id
+      emoji
+    }
+  }
+`;
+
 export const UNDO_DOWNVOTE_COMMENT = gql`
   mutation undoDownvoteComment($id: ID!, $displayName: String) {
     updateComments(
