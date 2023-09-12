@@ -19,6 +19,23 @@ export const ADD_EMOJI_TO_COMMENT = gql`
   }
 `;
 
+export const REMOVE_EMOJI_FROM_COMMENT = gql`
+  mutation removeEmojiFromComment(
+    $commentId: ID!,
+    $emojiLabel: String!,
+    $username: String!
+  ) {
+    removeEmojiFromComment (
+      commentId: $commentId,
+      emojiLabel: $emojiLabel,
+      username: $username
+    ) {
+      id
+      emoji
+    }
+  }
+`;
+
 export const UNDO_DOWNVOTE_COMMENT = gql`
   mutation undoDownvoteComment($id: ID!, $displayName: String) {
     updateComments(

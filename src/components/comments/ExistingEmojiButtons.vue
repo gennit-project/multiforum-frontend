@@ -2,7 +2,7 @@
 import { computed, defineComponent, PropType } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import { Comment } from "@/__generated__/graphql";
-import { ADD_EMOJI_TO_COMMENT } from "@/graphQLData/comment/mutations";
+import { ADD_EMOJI_TO_COMMENT, REMOVE_EMOJI_FROM_COMMENT } from "@/graphQLData/comment/mutations";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
@@ -36,10 +36,12 @@ export default defineComponent({
     });
 
     const { mutate: addEmojiToComment } = useMutation(ADD_EMOJI_TO_COMMENT);
+    const { mutate: removeEmojiFromComment } = useMutation(REMOVE_EMOJI_FROM_COMMENT);
 
     return {
       addEmojiToComment,
       emojiObject,
+      removeEmojiFromComment,
       username,
     };
   },
@@ -59,6 +61,10 @@ export default defineComponent({
       return active;
     },
     handleClick(emojiVoteInput: EmojiVoteInput) {
+      if (this.isActive(emojiVoteInput.emojiLabel)) {
+        this.removeEmojiFromComment(emojiVoteInput);
+        return;
+      }
       this.addEmojiToComment(emojiVoteInput);
     },
     getCount(emojiLabel: string) {
@@ -79,10 +85,12 @@ export default defineComponent({
       const count = this.getCount(emojiLabel);
       let tooltipText = "";
       let numListedNames = 0;
+      let usernames: string[] = []
+
       for (const unicode in this.emojiObject[emojiLabel]) {
-        const usernames = this.emojiObject[emojiLabel][unicode];
-        tooltipText += usernames.slice(0, 5).join(", ");
-        numListedNames += usernames.length;
+        usernames = usernames.concat(this.emojiObject[emojiLabel][unicode]);
+        tooltipText = usernames.slice(0, 5).join(", ");
+        numListedNames = usernames.length;
 
         // If there's a lot of usernames, we don't want to list
         // all of them.
