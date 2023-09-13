@@ -12,7 +12,7 @@ export default defineComponent({
   },
   methods: {
     handleClick() {
-      this.$emit('openEmojiPicker')
+      this.$emit('toggleEmojiPicker')
     },
   },
 });

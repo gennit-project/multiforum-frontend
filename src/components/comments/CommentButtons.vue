@@ -96,7 +96,7 @@ export default defineComponent({
         :key="commentData.emoji"
         :comment-id="commentData.id"
         :emoji-json="commentData.emoji"
-        @openEmojiPicker="showEmojiPicker = true"
+        @toggleEmojiPicker="showEmojiPicker = !showEmojiPicker"
       />
       <ReplyButton
         :show-reply-editor="showReplyEditor"
@@ -183,6 +183,7 @@ export default defineComponent({
       <EmojiPicker
         :comment-id="commentData.id"
         @emojiClick="showEmojiPicker = false;"
+        @close="showEmojiPicker = false;"
       />
     </div>
   </div>

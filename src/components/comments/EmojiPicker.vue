@@ -5,11 +5,15 @@ import { useMutation, useQuery } from "@vue/apollo-composable";
 import { ADD_EMOJI_TO_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { ADD_EMOJI_TO_DISCUSSION_CHANNEL } from "@/graphQLData/discussion/mutations";
+import clickOutside from "vue-click-outside";
 
 export default defineComponent({
   name: "EmojiPicker",
   components: {
     VuemojiPicker,
+  },
+  directives: {
+    clickOutside,
   },
   props: {
     commentId: {
@@ -47,6 +51,9 @@ export default defineComponent({
     };
   },
   methods: {
+    outside() {
+      this.$emit("close");
+    },
     handleEmojiClick(event: any) {
       const unicode = event.unicode;
       const emojiLabel = event.emoji.annotation;
@@ -77,5 +84,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <VuemojiPicker @emojiClick="handleEmojiClick" />
+  <VuemojiPicker
+    v-click-outside="outside" 
+    @emojiClick="handleEmojiClick"
+  />
 </template>

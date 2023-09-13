@@ -158,6 +158,9 @@ export default defineComponent({
       const defaultVariant = Object.keys(variants)[0];
       return defaultVariant;
     },
+    clickNewEmojiButton() {
+      this.$emit("toggleEmojiPicker");
+    },
   },
 });
 </script>
@@ -202,7 +205,7 @@ export default defineComponent({
         </span>
       </VoteButton>
     </div>
-    <NewEmojiButton @openEmojiPicker="$emit('openEmojiPicker')" />
+    <NewEmojiButton @toggleEmojiPicker="clickNewEmojiButton" />
   </div>
 </template>
 

@@ -171,6 +171,7 @@ export default defineComponent({
         :discussion-channel-id="discussionChannelId"
         :emoji-json="emojiJson"
         @emojiClick="showEmojiPicker = false;"
+        @close="showEmojiPicker = false;"
       />
     </div>
   </div>
