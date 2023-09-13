@@ -158,7 +158,7 @@ export default defineComponent({
         "
       />
     </div>
-    <div class="flex">
+    <div class="flex" v-if="channelId">
       <EmojiButtons
         :key="emojiJson"
         :discussion-channel-id="discussionChannelId"
