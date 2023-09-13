@@ -199,6 +199,7 @@ export const CREATE_COMMENT = gql`
         ParentComment {
           id
         }
+        emoji
         createdAt
         updatedAt
         ChildCommentsAggregate {
@@ -240,6 +241,7 @@ export const CREATE_DISCUSSION_CHANNEL = gql`
         id
         channelUniqueName
         discussionId
+        emoji
         Discussion {
           id
           title
@@ -301,6 +303,7 @@ export const UPDATE_COMMENT = gql`
         }
         createdAt
         updatedAt
+        emoji
         UpvotedByUsers {
           username
         }
