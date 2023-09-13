@@ -270,7 +270,6 @@ export default defineComponent({
             </div>
           </div>
         </div>
-
         <div class="space-y-3 px-2">
           <div
             class="dark:bg-gray-950 rounded-lg border border-black pb-2 px-2 dark:border-blue-500"
@@ -280,7 +279,12 @@ export default defineComponent({
               :channel-id="channelId"
               :compact-mode="compactMode"
             />
-            <DiscussionBody :discussion="discussion" :channel-id="channelId" />
+            <DiscussionBody
+              :discussion="discussion"
+              :channel-id="channelId"
+              :discussion-channel-id="activeDiscussionChannel?.id"
+              :emoji-json="activeDiscussionChannel?.emoji"
+            />
             <DiscussionVotes
               v-if="channelId && discussionId && activeDiscussionChannel"
               :discussion="discussion"

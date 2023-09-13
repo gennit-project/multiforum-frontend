@@ -1,10 +1,10 @@
 <script lang="ts">
-import { PropType, computed, defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { VuemojiPicker } from "vuemoji-picker";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { ADD_EMOJI_TO_COMMENT } from "@/graphQLData/comment/mutations";
-import { Comment } from "@/__generated__/graphql";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { ADD_EMOJI_TO_DISCUSSION_CHANNEL } from "@/graphQLData/discussion/mutations";
 
 export default defineComponent({
   name: "EmojiPicker",
@@ -12,9 +12,20 @@ export default defineComponent({
     VuemojiPicker,
   },
   props: {
-    commentData: {
-      type: Object as PropType<Comment>,
-      required: true,
+    commentId: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    discussionChannelId: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    emojiJson: {
+      type: String,
+      required: false,
+      default: "",
     },
   },
   setup() {
@@ -25,27 +36,41 @@ export default defineComponent({
 
     const { mutate: addEmojiToComment } = useMutation(ADD_EMOJI_TO_COMMENT);
 
+    const { mutate: addEmojiToDiscussionChannel } = useMutation(
+      ADD_EMOJI_TO_DISCUSSION_CHANNEL,
+    );
+
     return {
       addEmojiToComment,
+      addEmojiToDiscussionChannel,
       username,
     };
   },
   methods: {
     handleEmojiClick(event: any) {
-      if (!this.username) {
-        return;
-      }
-      this.$emit("selectEmoji", event);
-
       const unicode = event.unicode;
       const emojiLabel = event.emoji.annotation;
 
-      this.addEmojiToComment({
-        commentId: this.commentData.id,
-        emojiLabel,
-        unicode,
-        username: this.username,
-      });
+      if (this.commentId) {
+        this.addEmojiToComment({
+          commentId: this.commentId,
+          emojiLabel,
+          unicode,
+          username: this.username,
+        });
+        return;
+      }
+
+      if (this.discussionChannelId) {
+        this.addEmojiToDiscussionChannel({
+          discussionChannelId: this.discussionChannelId,
+          emojiLabel,
+          unicode,
+          username: this.username,
+        });
+      }
+
+      this.$emit("emojiClick");
     },
   },
 });

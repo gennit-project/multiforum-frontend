@@ -8,9 +8,13 @@ import "md-editor-v3/lib/preview.css";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import EmojiPicker from '@/components/comments/EmojiPicker.vue'
+import EmojiButtons from "@/components/comments/EmojiButtons.vue";
 
 export default defineComponent({
   components: {
+    EmojiPicker,
+    EmojiButtons,
     Tag,
     MarkdownPreview,
   },
@@ -23,6 +27,16 @@ export default defineComponent({
       type: Object as PropType<Discussion | null>,
       required: false,
       default: null,
+    },
+    discussionChannelId: {
+      type: String,
+      required: false,
+      default: "",
+    },
+    emojiJson: {
+      type: String,
+      required: false,
+      default: "",
     },
   },
   setup(props) {
@@ -96,6 +110,7 @@ export default defineComponent({
       shouldShowMoreButton,
       scrollElement: document.documentElement,
       id: "preview-only",
+      showEmojiPicker: ref(false),
       theme,
     };
   },
@@ -141,6 +156,21 @@ export default defineComponent({
             filterByTag(tag.text);
           }
         "
+      />
+    </div>
+    <div class="flex">
+      <EmojiButtons
+        :key="emojiJson"
+        :discussion-channel-id="discussionChannelId"
+        :emoji-json="emojiJson"
+        @openEmojiPicker="showEmojiPicker = true"
+      />
+    </div>
+    <div v-if="showEmojiPicker">
+      <EmojiPicker
+        :discussion-channel-id="discussionChannelId"
+        :emoji-json="emojiJson"
+        @emojiClick="showEmojiPicker = false;"
       />
     </div>
   </div>

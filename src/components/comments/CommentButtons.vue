@@ -9,17 +9,15 @@ import ReplyButton from "./ReplyButton.vue";
 import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import CancelButton from "@/components/generic/buttons/CancelButton.vue";
-import NewEmojiButton from "./NewEmojiButton.vue";
 import EmojiPicker from "./EmojiPicker.vue";
-import ExistingEmojiButtons from "./ExistingEmojiButtons.vue";
+import EmojiButtons from "./EmojiButtons.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
     CancelButton,
     EmojiPicker,
-    ExistingEmojiButtons,
-    NewEmojiButton,
+    EmojiButtons,
     ReplyButton,
     SaveButton,
     TextEditor,
@@ -86,21 +84,18 @@ export default defineComponent({
 <template>
   <div>
     <div
-      class="flex flex-wrap items-center gap-2 text-xs text-gray-400 dark:text-gray-300"
+      class="flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-300"
     >
       <VoteButtons
         v-if="!locked"
         :comment-data="commentData"
         @openModProfile="$emit('openModProfile')"
       />
-      <ExistingEmojiButtons
+      <EmojiButtons
         v-if="!locked"
         :key="commentData.emoji"
-        :comment-data="commentData"
-      />
-      <NewEmojiButton
-        v-if="!locked"
-        :comment-data="commentData"
+        :comment-id="commentData.id"
+        :emoji-json="commentData.emoji"
         @openEmojiPicker="showEmojiPicker = true"
       />
       <ReplyButton
@@ -186,8 +181,8 @@ export default defineComponent({
     </div>
     <div v-if="showEmojiPicker">
       <EmojiPicker
-        :comment-data="commentData"
-        @selectEmoji="showEmojiPicker = false;"
+        :comment-id="commentData.id"
+        @emojiClick="showEmojiPicker = false;"
       />
     </div>
   </div>

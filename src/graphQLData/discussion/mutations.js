@@ -1,5 +1,41 @@
 import { gql } from "@apollo/client/core";
 
+export const ADD_EMOJI_TO_DISCUSSION_CHANNEL = gql`
+  mutation addEmojiToDiscussionChannel(
+    $discussionChannelId: ID!, 
+    $emojiLabel: String!,
+    $unicode: String!,
+    $username: String!
+  ) {
+    addEmojiToDiscussionChannel (
+      discussionChannelId: $discussionChannelId,
+      emojiLabel: $emojiLabel,
+      unicode: $unicode,
+      username: $username
+    ) {
+      id
+      emoji
+    }
+  }
+`;
+
+export const REMOVE_EMOJI_FROM_DISCUSSION_CHANNEL = gql`
+  mutation removeEmojiFromDiscussionChannel(
+    $discussionChannelId: ID!,
+    $emojiLabel: String!,
+    $username: String!
+  ) {
+    removeEmojiFromDiscussionChannel (
+      discussionChannelId: $discussionChannelId,
+      emojiLabel: $emojiLabel,
+      username: $username
+    ) {
+      id
+      emoji
+    }
+  }
+`;
+
 export const CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
   mutation createDiscussion(
     $discussionCreateInput: DiscussionCreateInput

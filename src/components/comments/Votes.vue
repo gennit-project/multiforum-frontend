@@ -70,7 +70,7 @@ export default defineComponent({
         activator="parent"
         location="top"
       >
-        This comment should be more visible to others
+        Make this comment more visible to others
       </v-tooltip>
     </VoteButton>
     <VoteButton
@@ -84,7 +84,7 @@ export default defineComponent({
         activator="parent"
         location="top"
       >
-        Feedback
+        Give anonymous feedback
       </v-tooltip>
     </VoteButton>
   </div>
