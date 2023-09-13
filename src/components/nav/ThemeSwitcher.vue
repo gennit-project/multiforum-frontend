@@ -58,16 +58,19 @@ export default defineComponent({
         label: 'Light Mode',
         icon: 'fa-regular fa-sun',
         event: 'lightMode',
+        value: '',
       },
       {
         label: 'Dark Mode',
         icon: 'fa-regular fa-moon',
         event: 'darkMode',
+        value: '',
       },
       {
         label: 'Device Default',
         icon: 'fa-solid fa-desktop',
         event: 'systemMode',
+        value: '',
       },
     ]"
     @lightMode="setLightMode"
