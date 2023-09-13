@@ -23,7 +23,8 @@ export default defineComponent({
     class="space-x-3"
     :test-id="'upvote-comment-button'"
     :show-count="false"
-    @click="handleClick"
+    :tooltip-text="'Add reaction...'"
+    @vote="handleClick"
   >
     <i class="fa-regular fa-face-smile" />
   </VoteButton>

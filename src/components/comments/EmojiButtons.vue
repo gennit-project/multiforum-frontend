@@ -164,56 +164,45 @@ export default defineComponent({
 <template>
   <div class="flex flex-wrap gap-1">
     <div v-for="emojiLabel in Object.keys(emojiObject)" :key="emojiLabel">
-      <v-tooltip location="top" content-class="custom-tooltip">
-        <template v-slot:activator="{ props }">
-          <VoteButton
-            v-bind="props"
-            class="space-x-2"
-            :active="isActive(emojiLabel)"
-            :test-id="'upvote-comment-button'"
-            :show-count="true"
-            :count="getCount(emojiLabel)"
-            @click="
-              () => {
-                if (commentId) {
-                  toggleCommentEmoji({
-                    emojiLabel,
-                    unicode: getDefaultVariant(emojiLabel),
-                    username: username,
-                    commentId: commentId,
-                  });
-                }
-                if (discussionChannelId) {
-                  toggleDiscussionChannelEmoji({
-                    discussionChannelId: discussionChannelId,
-                    emojiLabel,
-                    unicode: getDefaultVariant(emojiLabel),
-                    username: username,
-                  });
-                }
-              }
-            "
-          >
-            <span
-              class="text-lg"
-              v-for="unicode in Object.keys(getVariants(emojiLabel))"
-              :key="unicode"
-            >
-              {{ unicode }}
-            </span>
-          </VoteButton>
-        </template>
-        <template v-slot:default>
-          <div class="flex justify-center">
-            <p class="text-6xl">{{ getDefaultVariant(emojiLabel) }}</p>
-          </div>
-          <p class="w-48 text-sm">{{ getTooltipText(emojiLabel) }}</p>
-        </template>
-      </v-tooltip>
+      <VoteButton
+        class="space-x-2"
+        :active="isActive(emojiLabel)"
+        :test-id="'upvote-comment-button'"
+        :show-count="true"
+        :count="getCount(emojiLabel)"
+        :tooltip-unicode="getDefaultVariant(emojiLabel)"
+        :tooltip-text="getTooltipText(emojiLabel)"
+        @vote="
+          () => {
+            if (commentId) {
+              toggleCommentEmoji({
+                emojiLabel,
+                unicode: getDefaultVariant(emojiLabel),
+                username: username,
+                commentId: commentId,
+              });
+            }
+            if (discussionChannelId) {
+              toggleDiscussionChannelEmoji({
+                discussionChannelId: discussionChannelId,
+                emojiLabel,
+                unicode: getDefaultVariant(emojiLabel),
+                username: username,
+              });
+            }
+          }
+        "
+      >
+        <span
+          class="text-lg"
+          v-for="unicode in Object.keys(getVariants(emojiLabel))"
+          :key="unicode"
+        >
+          {{ unicode }}
+        </span>
+      </VoteButton>
     </div>
-    <NewEmojiButton
-      @openEmojiPicker="$emit('openEmojiPicker')"
-    />
+    <NewEmojiButton @openEmojiPicker="$emit('openEmojiPicker')" />
   </div>
 </template>
 

@@ -40,7 +40,7 @@ export default defineComponent({
       <div class="flex items-center">
         <div
           data-testid="reply-comment-button"
-          class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:text-black dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
+          class="mx-2 cursor-pointer rounded-full border-2 dark:bg-gray-600 bg-gray-100 border-gray-100 dark:border-600 px-2 py-1 hover:text-black dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:border-blue-500 dark:hover:text-blue-500"
           :class="showReplyEditor ? 'text-black' : ''"
           @click="$emit('toggleShowReplyEditor')"
         >

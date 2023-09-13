@@ -251,7 +251,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-row :class="!smAndDown ? 'pt-6': 'p-0'">
+  <v-row :class="!smAndDown ? 'pt-6 pl-6': 'p-0'">
     <v-col
       v-if="!mdAndDown"
       cols="12"

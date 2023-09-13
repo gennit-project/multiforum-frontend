@@ -63,29 +63,19 @@ export default defineComponent({
       :test-id="'upvote-comment-button'"
       :count="upvoteCount"
       :active="upvoteActive"
-      @click="clickUpvote"
+      :tooltip-text="upvoteActive ? 'Undo upvote' : 'Make this comment more visible'"
+      @vote="clickUpvote"
     >
-      <i class="fa-solid fa-arrow-up mr-2 w-3" />
-      <v-tooltip
-        activator="parent"
-        location="top"
-      >
-        Make this comment more visible to others
-      </v-tooltip>
+      <i class="fa-solid fa-arrow-up mr-1 w-3" />
     </VoteButton>
     <VoteButton
       :test-id="'downvote-comment-button'"
       :count="downvoteCount"
       :active="downvoteActive"
-      @click="clickDownvote"
+      :tooltip-text="downvoteActive ? 'Undo downvote' : 'Give anonymous feedback'"
+      @vote="clickDownvote"
     >
-      <i class="fa-solid fa-arrow-down mr-2 w-3" />
-      <v-tooltip
-        activator="parent"
-        location="top"
-      >
-        Give anonymous feedback
-      </v-tooltip>
+      <i class="fa-solid fa-arrow-down mr-1 w-3" />
     </VoteButton>
   </div>
 </template>

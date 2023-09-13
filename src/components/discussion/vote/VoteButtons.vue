@@ -2,16 +2,12 @@
 import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
-import ArrowUpBoldOutline from 'vue-material-design-icons/ArrowUpBoldOutline.vue';
-import ArrowDownBoldOutline from 'vue-material-design-icons/ArrowDownBoldOutline.vue';
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
     RequireAuth,
     VoteButton,
-    ArrowUpBoldOutline,
-    ArrowDownBoldOutline,
   },
   props: {
     downvoteActive: {
@@ -55,41 +51,53 @@ export default defineComponent({
 <template>
   <RequireAuth class="flex flex-row space-x-3">
     <template #has-auth>
-      <VoteButton
-        :test-id="'upvote-discussion-button'"
-        :count="upvoteCount"
-        :active="upvoteActive"
-        @vote="clickUp"
-      >
-        <arrow-up-bold-outline :size="20" />
-      </VoteButton>
-      <VoteButton
-        v-if="showDownvote"
-        class="ml-2"
-        :test-id="'downvote-discussion-button'"
-        :count="downvoteCount"
-        :active="downvoteActive"
-        @vote="clickDown"
-      >
-        <arrow-down-bold-outline :size="20" />
-      </VoteButton>
+      <div class="flex gap-1">
+        <VoteButton
+          :test-id="'upvote-discussion-button'"
+          :count="upvoteCount"
+          :active="upvoteActive"
+          :tooltip-text="
+            upvoteActive ? 'Undo upvote' : 'Make this discussion more visible'
+          "
+          @vote="clickUp"
+        >
+          <i class="fa-solid fa-arrow-up mr-1 w-3" />
+        </VoteButton>
+        <VoteButton
+          v-if="showDownvote"
+          class="ml-2"
+          :test-id="'downvote-discussion-button'"
+          :count="downvoteCount"
+          :active="downvoteActive"
+          :tooltip-text="
+            downvoteActive ? 'Undo downvote' : 'Give anonymous feedback'
+          "
+          @vote="clickDown"
+        >
+          <i class="fa-solid fa-arrow-down mr-1 w-3" />
+        </VoteButton>
+      </div>
     </template>
     <template #does-not-have-auth>
-      <VoteButton
-        :test-id="'upvote-discussion-button'"
-        :count="upvoteCount"
-        :active="upvoteActive"
-      >
-        <arrow-up-bold-outline :size="20" />
-      </VoteButton>
-      <VoteButton
-        v-if="showDownvote"
-        :test-id="'downvote-discussion-button'"
-        :count="downvoteCount"
-        :active="downvoteActive"
-      >
-        <arrow-down-bold-outline :size="20" />
-      </VoteButton>
+      <div class="flex gap-1">
+        <VoteButton
+          :test-id="'upvote-discussion-button'"
+          :count="upvoteCount"
+          :active="upvoteActive"
+          :tooltip-text="'Make this discussion more visible to others'"
+        >
+          <i class="fa-solid fa-arrow-up mr-1 w-3" />
+        </VoteButton>
+        <VoteButton
+          v-if="showDownvote"
+          :test-id="'downvote-discussion-button'"
+          :count="downvoteCount"
+          :active="downvoteActive"
+          :tooltip-text="'Give anonymous feedback'"
+        >
+          <i class="fa-solid fa-arrow-down mr-1 w-3" />
+        </VoteButton>
+      </div>
     </template>
   </RequireAuth>
 </template>
