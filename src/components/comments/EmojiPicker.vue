@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, nextTick, onMounted, ref } from "vue";
 import { VuemojiPicker } from "vuemoji-picker";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { ADD_EMOJI_TO_COMMENT } from "@/graphQLData/comment/mutations";
@@ -64,9 +64,33 @@ export default defineComponent({
       return themeResult.value.theme;
     });
 
+    const emojiPickerRef = ref(null);
+    onMounted(() => {
+      const rootElement = emojiPickerRef.value?.$el;
+
+      if (rootElement && rootElement.children.length > 0) {
+        const emojiPickerElement = rootElement.children[0];
+
+        if (emojiPickerElement.shadowRoot) {
+          const inputElement =
+            emojiPickerElement.shadowRoot.querySelector("#search");
+          if (inputElement) {
+            inputElement.focus();
+          } else {
+            console.error("Input element not found in shadow DOM");
+          }
+        } else {
+          console.error("Shadow root not found on emoji-picker element");
+        }
+      } else {
+        console.error("emoji-picker child element not found");
+      }
+    });
+
     return {
       addEmojiToComment,
       addEmojiToDiscussionChannel,
+      emojiPickerRef,
       theme,
       username,
     };
@@ -106,13 +130,14 @@ export default defineComponent({
 
 <template>
   <VuemojiPicker
+    ref="emojiPickerRef"
     v-click-outside="outside"
-    @emojiClick="handleEmojiClick"
-    :pickerStyle="{
-      background: theme === 'dark' ? '#1d2433' : '#fff',
+    :picker-style="{
+      background: theme === 'dark' ? '#171c28' : '#fff',
       inputBorderRadius: '0.25rem',
       borderColor: theme === 'dark' ? '#1d2433' : '#e2e8f0',
       buttonHoverBackground: theme === 'dark' ? '#2d3748' : '#edf2f7',
     }"
+    @emojiClick="handleEmojiClick"
   />
 </template>

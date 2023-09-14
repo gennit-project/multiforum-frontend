@@ -163,7 +163,7 @@ export default defineComponent({
         :key="emojiJson"
         :discussion-channel-id="discussionChannelId"
         :emoji-json="emojiJson"
-        @openEmojiPicker="showEmojiPicker = true"
+        @toggleEmojiPicker="showEmojiPicker = true"
       />
     </div>
     <div v-if="showEmojiPicker">
