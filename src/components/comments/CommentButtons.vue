@@ -96,7 +96,13 @@ export default defineComponent({
         :key="commentData.emoji"
         :comment-id="commentData.id"
         :emoji-json="commentData.emoji"
-        @toggleEmojiPicker="showEmojiPicker = !showEmojiPicker"
+        @toggleEmojiPicker="() => {
+          showEmojiPicker = !showEmojiPicker
+
+          if (showEmojiPicker) {
+            $emit('hideReplyEditor')
+          }
+        }"
       />
       <ReplyButton
         :show-reply-editor="showReplyEditor"
