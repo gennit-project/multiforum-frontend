@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, nextTick, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { VuemojiPicker } from "vuemoji-picker";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { ADD_EMOJI_TO_COMMENT } from "@/graphQLData/comment/mutations";
@@ -129,15 +129,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <VuemojiPicker
-    ref="emojiPickerRef"
-    v-click-outside="outside"
-    :picker-style="{
-      background: theme === 'dark' ? '#171c28' : '#fff',
-      inputBorderRadius: '0.25rem',
-      borderColor: theme === 'dark' ? '#1d2433' : '#e2e8f0',
-      buttonHoverBackground: theme === 'dark' ? '#2d3748' : '#edf2f7',
-    }"
-    @emojiClick="handleEmojiClick"
-  />
+  <div class="w-fit">
+    <VuemojiPicker
+      ref="emojiPickerRef"
+      v-click-outside="outside"
+      :picker-style="{
+        background: theme === 'dark' ? '#171c28' : '#fff',
+        inputBorderRadius: '0.25rem',
+        borderColor: theme === 'dark' ? '#1d2433' : '#e2e8f0',
+        buttonHoverBackground: theme === 'dark' ? '#2d3748' : '#edf2f7',
+      }"
+      @emojiClick="handleEmojiClick"
+    />
+  </div>
 </template>
