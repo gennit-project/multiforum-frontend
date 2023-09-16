@@ -221,7 +221,7 @@ export default defineComponent({
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      class="align-center justify-between mt-2 flex w-full mx-1 px-2"
+      class="align-center mx-1 mt-2 flex w-full justify-between px-2"
     >
       <div>
         <router-link
@@ -258,7 +258,7 @@ export default defineComponent({
             <div ref="discussionDetail">
               <div class="min-w-0">
                 <h2
-                  class="px-1 text-wrap text-2xl font-bold leading-7 sm:tracking-tight"
+                  class="text-wrap px-1 text-2xl font-bold leading-7 sm:tracking-tight"
                 >
                   {{
                     discussion && discussion.title
@@ -272,7 +272,7 @@ export default defineComponent({
         </div>
         <div class="space-y-3 px-2">
           <div
-            class="dark:bg-gray-950 rounded-lg border border-black pb-2 px-2 dark:border-blue-500"
+            class="dark:bg-gray-950 rounded-lg border border-black px-2 pb-2 dark:border-blue-500"
           >
             <DiscussionHeader
               :discussion="discussion"
@@ -284,12 +284,13 @@ export default defineComponent({
               :channel-id="channelId"
               :discussion-channel-id="activeDiscussionChannel?.id"
               :emoji-json="activeDiscussionChannel?.emoji"
-            />
-            <DiscussionVotes
-              v-if="channelId && discussionId && activeDiscussionChannel"
-              :discussion="discussion"
-              :discussion-channel="activeDiscussionChannel"
-            />
+            >
+              <DiscussionVotes
+                v-if="channelId && discussionId && activeDiscussionChannel"
+                :discussion="discussion"
+                :discussion-channel="activeDiscussionChannel"
+              />
+            </DiscussionBody>
           </div>
         </div>
         <CreateRootCommentForm
