@@ -33,6 +33,7 @@ export const GET_USER = gql`
       where: {username: $username}
     ) {
       username
+      commentKarma
       createdAt
       name
       location

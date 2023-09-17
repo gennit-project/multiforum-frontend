@@ -77,7 +77,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
+  <div class="max-h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900 rounded-md">
     <div class="mb-4 mt-6 items-center gap-2 px-4">
       <Avatar
         class="shadow-sm"
@@ -102,6 +102,9 @@ export default defineComponent({
         {{ `Joined ${relativeTime(user.createdAt)}` }}
       </div>
       <ul v-if="user" class="m-4 list-disc">
+        <li>
+            {{ `${user.commentKarma ?? 0 } comment karma` }}
+        </li>
         <li>
           {{ `${user.CommentsAggregate.count} comments` }}
         </li>
