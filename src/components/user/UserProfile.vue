@@ -129,17 +129,9 @@ export default defineComponent({
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container fluid class="p-0">
-          <UserProfileTabs
-            v-if="smAndDown"
-            :vertical="false"
-            class="block border-b border-gray-200 dark:border-gray-600"
-            :route="route"
-          />
           <v-row>
             <v-col v-if="!smAndDown" cols="12" md="3" lg="2">
-              <UserProfileSidebar>
-                <UserProfileTabs :route="route" :vertical="true" />
-              </UserProfileSidebar>
+              <UserProfileSidebar />
             </v-col>
             <v-col
               :class="[!smAndDown ? 'pt-6' : '']"
@@ -147,6 +139,11 @@ export default defineComponent({
               :md="!smAndDown ? 9 : 12"
               :lg="!smAndDown ? 10 : 12"
             >
+              <UserProfileTabs
+                :vertical="false"
+                class="block border-b border-gray-200 dark:border-gray-600"
+                :route="route"
+              />
               <router-view />
             </v-col>
           </v-row>

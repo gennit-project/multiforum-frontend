@@ -89,7 +89,7 @@ export default defineComponent({
       />
     </p>
 
-    <p class="text-sm text-gray-600 hover:no-underline font-medium mt-1">
+    <p class="text-sm text-gray-600 hover:no-underline font-medium mt-1 flex">
       <Tag
         v-for="tag in tags"
         :key="tag"
@@ -99,14 +99,14 @@ export default defineComponent({
         @click="$emit('filterByTag', tag)"
       />
     </p>
-    <p class="text-xs font-medium text-gray-600 no-underline">
+    <p class="text-xs font-medium text-gray-600 dark:text-gray-300 no-underline">
       {{ `Posted ${relativeTime} by ${authorUsername}` }}
     </p>
     <div class="text-sm space-x-2 my-2">
       <router-link
         v-for="(discussionChannel, i) in discussion.DiscussionChannels"
         :key="i"
-        class="underline text-gray-500 hover:text-gray-700"
+        class="underline text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:dark:text-gray-200"
         :to="`/channels/c/${discussionChannel.Channel?.uniqueName}/discussions/d/${discussion.id}`"
       >
         {{ `c/${discussionChannel.Channel?.uniqueName}` }}
