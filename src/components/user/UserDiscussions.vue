@@ -13,6 +13,7 @@ export default defineComponent({
 
   setup() {
     const route = useRoute();
+    console.log('i ran')
 
     const username = computed(() => {
       if (typeof route.params.username === "string") {

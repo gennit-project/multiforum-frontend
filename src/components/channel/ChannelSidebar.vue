@@ -113,7 +113,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
+  <div class="max-h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
     <div v-if="channelId" class="mb-4 mt-6 items-center gap-2 px-4">
       <Avatar class="shadow-sm" :text="channelId" :is-square="true" :is-large="true"/>
       <h1

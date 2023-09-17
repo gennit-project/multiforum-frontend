@@ -248,7 +248,6 @@ export const router = createRouter({
     },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
-    
     { 
       path: "/mod/:modId", 
       component: ModProfile,

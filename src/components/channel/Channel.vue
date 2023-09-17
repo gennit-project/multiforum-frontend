@@ -96,14 +96,6 @@ export default defineComponent({
 
 <template>
   <div class="overflow-hidden  dark:bg-gray-800">
-    <!-- <div
-      v-if="!smAndDown"
-      :class="[
-        theme === 'dark' ? 'channel-background-dark' : 'channel-background',
-      ]"
-      class="h-20 w-full object-cover lg:h-28"
-      alt="background pattern"
-    /> -->
     <div
       v-if="smAndDown"
       :class="[
