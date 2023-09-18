@@ -192,7 +192,10 @@ export default defineComponent({
     >
       There are no results.
     </p>
-    <div v-if="discussions && discussions.length > 0">
+    <div
+      v-if="discussions && discussions.length > 0"
+     
+    >
       <ul
         role="list"
         class="my-6 mr-2"

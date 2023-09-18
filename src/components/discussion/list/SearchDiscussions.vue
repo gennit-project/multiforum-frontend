@@ -251,10 +251,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-row :class="!smAndDown ? 'pt-6 pl-6': 'p-0'">
+  <v-row :class="!smAndDown ? 'pt-6 pl-6': 'p-0'" class="justify-center">
     <v-col
       cols="12"
-      class="scrollable-column shadow-right-lg md:pr-6"
+      class="scrollable-column shadow-right-lg md:pr-6 max-w-7xl"
     >
       <DiscussionFilterBar />
       <SitewideDiscussionList
@@ -275,7 +275,6 @@ export default defineComponent({
       />
     </v-col>
     <DrawerFlyout
-      v-if="mdAndDown"
       :is-open="previewIsOpen"
       @closePreview="closePreview"
     >
