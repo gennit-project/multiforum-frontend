@@ -5,10 +5,12 @@ import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 export default defineComponent({
   components: {
     HighlightedSearchTerms,
+    MarkdownPreview,
     Tag,
   },
   inheritAttrs: false,
@@ -55,9 +57,21 @@ export default defineComponent({
       return count;
     });
 
+    const truncatedBody = computed(() => {
+      if (!props.discussion) {
+        return "";
+      }
+
+      if (props.discussion?.body && props.discussion.body.length > 200) {
+        return props.discussion?.body.slice(0, 500) + "...";
+      }
+      return props.discussion.body;
+    });
+
     return {
       commentCount,
       route,
+      truncatedBody,
     };
   },
 
@@ -113,15 +127,27 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex gap-3 space-x-2 p-4 pb-2 border-b "
+    class="relative flex gap-3 space-x-2 border-b px-6 py-4"
     :class="[
       discussionId === discussionIdInParams
-        ? 'border border-black bg-gray-100 dark:border-blue-500 rounded-md dark:bg-gray-700'
+        ? 'rounded-md border border-black bg-gray-100 dark:border-blue-500 dark:bg-gray-700'
         : 'border-b border-gray-200 dark:border-gray-500',
     ]"
   >
+    <div>
+      <div
+        class="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-100"
+      >
+        <i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}
+        <v-tooltip activator="parent" location="top">
+          <span>{{
+            `Sum of votes across channels, deduplicated by user`
+          }}</span>
+        </v-tooltip>
+      </div>
+    </div>
     <div class="flex w-full justify-between">
-      <div>
+      <div class="w-full">
         <router-link
           :to="{ path: previewLink, query: filteredQuery }"
           @click="$emit('openPreview')"
@@ -152,6 +178,7 @@ export default defineComponent({
           class="font-medium flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
         >
           <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
+
           <Tag
             v-for="dc in discussion.DiscussionChannels"
             :key="dc.id"
@@ -167,23 +194,37 @@ export default defineComponent({
             {{ dc.channelUniqueName }}
           </Tag>
         </div>
-      </div>
-    </div>
-    <div>
-      <div class="flex justify-end items-center gap-1 text-gray-500 dark:text-gray-100">
-        <i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}
-        <v-tooltip activator="parent" location="top">
-          <span>{{
-            `Sum of votes across channels, deduplicated by user`
-          }}</span>
-        </v-tooltip>
-      </div>
-      <div class="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-100">
-        <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-        {{ commentCount }}
-        <v-tooltip activator="parent" location="top">
-          <span>{{ `Sum of comments across channels` }}</span>
-        </v-tooltip>
+        <div class="w-full border-l-2 border-gray-300 dark:bg-gray-700">
+          <router-link
+            v-if="route.name !== 'DiscussionDetail'"
+            class="dark:text-gray-300"
+            :to="{ path: previewLink, query: filteredQuery }"
+            @click="$emit('openPreview')"
+          >
+            <MarkdownPreview
+              v-if="truncatedBody"
+              :text="truncatedBody || ''"
+              :disable-gallery="true"
+              class="-ml-4"
+            />
+          </router-link>
+          <MarkdownPreview
+            v-else
+            :text="truncatedBody || ''"
+            :disable-gallery="true"
+            class="-ml-4"
+          />
+        </div>
+        <div
+          class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
+          @click="$emit('openPreview')"
+        >
+          <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+          {{ commentCount }}
+          <v-tooltip activator="parent" location="top">
+            <span>{{ `Sum of comments across channels` }}</span>
+          </v-tooltip>
+        </div>
       </div>
     </div>
   </li>

@@ -68,6 +68,10 @@ function parseMarkdownForImages(text: string) {
 
 export default defineComponent({
   props: {
+    disableGallery: {
+      type: Boolean,
+      default: false,
+    },
     text: {
       type: String,
       required: true,
@@ -127,6 +131,9 @@ export default defineComponent({
   },
   methods: {
     handleImageClick(event: any) {
+      if (this.disableGallery) {
+        return;
+      }
       if (event.target.tagName === "IMG") {
         const clickedSrc = event.target.src;
 

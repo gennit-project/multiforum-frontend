@@ -97,7 +97,7 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="h-screen overflow-auto"
+    class="overflow-auto"
   >
     <div v-if="discussionLoading">
       Loading...

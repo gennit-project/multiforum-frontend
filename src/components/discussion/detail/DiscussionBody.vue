@@ -135,7 +135,7 @@ export default defineComponent({
       v-if="discussion?.body" 
       class="-ml-4 max-w-none"
     >
-      <MarkdownPreview :text="bodyText" />
+      <MarkdownPreview :text="bodyText" :disable-gallery="route.name !== 'DiscussionDetail'"/>
     </div>
 
     <button

@@ -95,7 +95,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-hidden  dark:bg-gray-800  justify-center">
+  <div class="overflow-hidden dark:bg-black bg-gray-200 justify-center">
     <div
       v-if="smAndDown"
       :class="[
@@ -115,7 +115,7 @@ export default defineComponent({
     </div>
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-        <v-container fluid class="p-0 max-w-7xl">
+        <v-container fluid class="p-0 max-w-7xl bg-white dark:bg-gray-800">
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"

@@ -31,10 +31,12 @@ import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
+import CommentSortButtons from "./CommentSortButtons.vue";
 
 export default defineComponent({
   components: {
     Comment,
+    CommentSortButtons,
     ErrorBanner,
     LoadMore,
     PermalinkedComment,
@@ -615,6 +617,7 @@ export default defineComponent({
           />
         </template>
       </PermalinkedComment>
+      <CommentSortButtons />
       <div class="mb-6">
         <div v-if="discussionChannel.CommentsAggregate?.count === 0">
           This comment section is empty.

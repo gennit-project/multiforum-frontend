@@ -12,6 +12,7 @@ import { useDisplay } from "vuetify";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import { timeAgo } from "@/dateTimeUtils";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 export default defineComponent({
   components: {
@@ -20,6 +21,7 @@ export default defineComponent({
     Tag,
     DiscussionVotes,
     UsernameWithTooltip,
+    MarkdownPreview,
   },
   inheritAttrs: false,
   props: {
@@ -124,6 +126,17 @@ export default defineComponent({
 
     const { lgAndUp } = useDisplay();
 
+    const truncatedBody = computed(() => {
+      if (!props.discussion) {
+        return "";
+      }
+
+      if (props.discussion?.body && props.discussion.body.length > 200) {
+        return props.discussion?.body.slice(0, 500) + "...";
+      }
+      return props.discussion.body;
+    });
+
     return {
       commentCount,
       discussionChannelId,
@@ -140,6 +153,7 @@ export default defineComponent({
       username,
       route,
       timeAgo,
+      truncatedBody,
     };
   },
   data(props) {
@@ -158,7 +172,6 @@ export default defineComponent({
         : "",
       previewIsOpen: false,
       title: props.discussion?.title || "[Deleted]",
-      body: props.discussion?.body || "[Deleted]",
       createdAt: props.discussionChannel.createdAt,
       relativeTime: relativeTime(props.discussionChannel.createdAt),
       tags: props.discussion
@@ -195,16 +208,16 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex  space-y-3 border-b border-gray-200 p-4 dark:border-gray-500 lg:px-6 lg:py-4"
+    class="relative mt-1 flex space-y-3 border-b border-gray-200 py-4 dark:border-gray-500 lg:py-4"
   >
     <v-row>
       <v-col :cols="2">
         <DiscussionVotes
-        v-if="discussionChannel"
-        :discussion="discussion"
-        :discussion-channel="discussionChannel"
-        :show-downvote="false"
-      />
+          v-if="discussionChannel"
+          :discussion="discussion"
+          :discussion-channel="discussionChannel"
+          :show-downvote="false"
+        />
       </v-col>
       <v-col :cols="10">
         <div class="flex-col gap-2">
@@ -221,6 +234,19 @@ export default defineComponent({
               />
             </p>
           </router-link>
+
+          <div
+            v-if="truncatedBody"
+            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700"
+          >
+            <router-link :to="{ path: detailLink, query: filteredQuery }">
+              <MarkdownPreview
+                :text="truncatedBody || ''"
+                :disable-gallery="true"
+                class="-ml-4"
+              />
+            </router-link>
+          </div>
 
           <div
             class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
@@ -249,7 +275,6 @@ export default defineComponent({
           </p>
 
           <div class="mt-2 flex items-center justify-start gap-6">
-            
             <router-link :to="{ path: detailLink, query: filteredQuery }">
               <i class="fa-regular fa-comment h-6 w-6" />
               <span class="text-sm">{{

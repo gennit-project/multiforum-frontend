@@ -97,7 +97,7 @@ export default defineComponent({
                 .length,
             limit: DISCUSSION_PAGE_LIMIT,
             resultsOrder: {
-              upvoteCount: "DESC",
+              weightedVotesCount: "DESC",
             },
           },
         },

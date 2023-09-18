@@ -298,7 +298,7 @@ export default defineComponent({
               ? 'rounded-md border border-blue-500'
               : 'dark:bg-gray-950 border-l border-r border-t border-gray-200 dark:border-gray-500',
           ]"
-          class="p-2 shadow-sm"
+          class="p-3 shadow-sm"
           data-testid="comment"
         >
           <div
