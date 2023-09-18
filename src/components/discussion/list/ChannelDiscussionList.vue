@@ -73,7 +73,7 @@ export default defineComponent({
     );
 
     const discussionWhere = computed<DiscussionWhere>(() => {
-      return getDiscussionWhere(filterValues.value, channelId.value);
+      return getDiscussionWhere(filterValues.value);
     });
 
     const discussionChannelWhere = computed(() => {

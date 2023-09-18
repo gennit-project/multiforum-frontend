@@ -1,4 +1,4 @@
-import { DateTime, Interval } from 'luxon';
+import { DateTime, Interval, Duration } from 'luxon';
 import { DurationObjectUnits } from 'luxon';
 
 const relativeTime = (dateISO: string) => {
@@ -118,6 +118,27 @@ const convertTimeToReadableFormat = (time: string) => {
 }
 
 
+function timeAgo(jsDate: Date) {
+  const then = DateTime.fromJSDate(jsDate);
+  const now = DateTime.now();
+  const diff = now.diff(then);
+
+  if (diff.as('years') >= 1) {
+    return `${Math.floor(diff.as('years'))} years ago`;
+  } else if (diff.as('months') >= 1) {
+    return `${Math.floor(diff.as('months'))} months ago`;
+  } else if (diff.as('days') >= 1) {
+    return `${Math.floor(diff.as('days'))} days ago`;
+  } else if (diff.as('hours') >= 1) {
+    return `${Math.floor(diff.as('hours'))} hours ago`;
+  } else if (diff.as('minutes') >= 1) {
+    return `${Math.floor(diff.as('minutes'))} minutes ago`;
+  } else {
+    return "just now";
+  }
+}
+
+
 export {
   compareDate,
   convertTimeToReadableFormat,
@@ -128,4 +149,5 @@ export {
   durationHoursAndMinutes,
   getDurationObj,
   getReadableTimeFromISO,
+  timeAgo
 };

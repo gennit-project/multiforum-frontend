@@ -10,6 +10,8 @@ import { useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
+import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
+import { timeAgo } from "@/dateTimeUtils";
 
 export default defineComponent({
   components: {
@@ -17,6 +19,7 @@ export default defineComponent({
     HighlightedSearchTerms,
     Tag,
     DiscussionVotes,
+    UsernameWithTooltip,
   },
   inheritAttrs: false,
   props: {
@@ -136,6 +139,7 @@ export default defineComponent({
       upvoteCount,
       username,
       route,
+      timeAgo,
     };
   },
   data(props) {
@@ -143,6 +147,15 @@ export default defineComponent({
       authorUsername: props.discussion?.Author
         ? props.discussion.Author.username
         : "Deleted",
+      authorCommentKarma: props.discussion?.Author
+        ? props.discussion.Author.commentKarma
+        : 0,
+      authorDiscussionKarma: props.discussion?.Author
+        ? props.discussion.Author.discussionKarma
+        : 0,
+      authorAccountCreated: props.discussion?.Author
+        ? props.discussion.Author.createdAt
+        : "",
       previewIsOpen: false,
       title: props.discussion?.title || "[Deleted]",
       body: props.discussion?.body || "[Deleted]",
@@ -185,7 +198,7 @@ export default defineComponent({
     class="relative mt-1 flex space-x-1 space-y-3 p-4 lg:px-6 lg:py-4"
     :class="[
       isActive
-        ? 'text-bold rounded-md border border border-black bg-gray-100 dark:border-blue-500  dark:bg-gray-700'
+        ? 'text-bold rounded-md border border-black bg-gray-100 dark:border-blue-500 dark:bg-gray-700'
         : 'border-b border-gray-200 dark:border-gray-500 ',
     ]"
   >
@@ -221,8 +234,17 @@ export default defineComponent({
           <p
             class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
           >
-            {{ `Posted ${relativeTime} by ${authorUsername}` }}
+            <span class="mr-1"> {{ `Posted ${relativeTime} by` }}</span>
+
+            <UsernameWithTooltip 
+              v-if="authorUsername"
+              :username="authorUsername"
+              :comment-karma="authorCommentKarma ?? 0"
+              :discussion-karma="authorDiscussionKarma ?? 0"
+              :account-created="authorAccountCreated"
+            />
           </p>
+
           <DiscussionVotes
             v-if="discussionChannel"
             :discussion="discussion"

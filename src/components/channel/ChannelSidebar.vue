@@ -9,6 +9,7 @@ import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
 import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
+import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 
 export default defineComponent({
   name: "AboutPage",
@@ -16,6 +17,7 @@ export default defineComponent({
     RequireAuth,
     Tag,
     Avatar,
+    UsernameWithTooltip,
   },
   setup() {
     const route = useRoute();
@@ -113,12 +115,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-h-screen h-full overflow-y-auto bg-gray-100 dark:bg-gray-900">
+  <div class="h-full max-h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
     <div v-if="channelId" class="mb-4 mt-6 items-center gap-2 px-4">
-      <Avatar class="shadow-sm" :text="channelId" :is-square="false" :is-large="true"/>
+      <Avatar
+        class="shadow-sm"
+        :text="channelId"
+        :is-square="true"
+        :is-large="true"
+      />
       <h1
         v-if="channelId"
-        class="mt-4 mb-2 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+        class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
         {{ channelId }}
       </h1>
@@ -184,7 +191,13 @@ export default defineComponent({
                 class="flex items-center"
               >
                 <Avatar :text="admin.username" class="mr-2" />
-                {{ admin.username }}
+                <UsernameWithTooltip
+                  v-if="admin.username"
+                  :username="admin.username"
+                  :comment-karma="admin.commentKarma ?? 0"
+                  :discussion-karma="admin.discussionKarma ?? 0"
+                  :account-created="admin.createdAt ?? ''"
+                />
               </router-link>
             </li>
           </ul>

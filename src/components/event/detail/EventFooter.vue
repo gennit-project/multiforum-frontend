@@ -4,18 +4,20 @@ import { EventData } from "@/types/eventTypes";
 import { useRoute, useRouter } from "vue-router";
 import { DateTime } from "luxon";
 import { relativeTime } from "@/dateTimeUtils";
-import {  useMutation } from "@vue/apollo-composable";
+import { useMutation } from "@vue/apollo-composable";
 import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { EventChannel } from "@/__generated__/graphql";
+import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 
 export default defineComponent({
   components: {
     WarningModal,
     ErrorBanner,
     RequireAuth,
+    UsernameWithTooltip,
   },
   props: {
     eventData: {
@@ -38,7 +40,7 @@ export default defineComponent({
     const confirmCancelIsOpen = ref(false);
 
     const eventId = computed(() => {
-      if (typeof route.params.eventId === "string"){
+      if (typeof route.params.eventId === "string") {
         return route.params.eventId;
       }
       return "";
@@ -63,7 +65,7 @@ export default defineComponent({
             id: eventId.value,
           },
         },
-      }
+      },
     );
 
     const {
@@ -123,7 +125,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="text-xs text-gray-700 dark:text-gray-200 mt-4 px-4">
+  <div class="mt-4 px-4 text-xs text-gray-700 dark:text-gray-200">
     <p v-if="!eventData.virtualEventUrl && !eventData.address">
       This event won't show in site-wide search results because it doesn't have
       a location or a virtual event URL. It will only appear in channel specific
@@ -135,7 +137,15 @@ export default defineComponent({
         class="underline"
         :to="`/u/${eventData.Poster.username}`"
       >
-        {{ eventData.Poster.username }}
+        <UsernameWithTooltip
+          v-if="eventData.Poster.username"
+          :username="eventData.Poster.username"
+          :comment-karma="eventData.Poster.commentKarma ?? 0"
+          :discussion-karma="eventData.Poster.discussionKarma ?? 0"
+          :account-created="eventData.Poster.createdAt"
+        >
+          {{ eventData.Poster.username }}
+        </UsernameWithTooltip>
       </router-link>
       <span v-else>[Deleted]</span>
       {{
@@ -161,31 +171,29 @@ export default defineComponent({
         <template #has-auth>
           <span>&#8226;</span>
           <span
-            class="ml-1 underline font-medium cursor-pointer"
+            class="font-medium ml-1 cursor-pointer underline"
             data-testid="delete-event-button"
             @click="confirmDeleteIsOpen = true"
-          >Delete</span>
-          <span
-            v-if="!compactMode && !eventData.canceled"
-            class="ml-1 mr-1"
-          >&#8226;</span>
+            >Delete</span
+          >
+          <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1"
+            >&#8226;</span
+          >
           <span
             v-if="!eventData.canceled"
-            class="underline font-medium cursor-pointer"
+            class="font-medium cursor-pointer underline"
             data-testid="cancel-event-button"
             @click="confirmCancelIsOpen = true"
-          >Cancel</span>
+            >Cancel</span
+          >
         </template>
       </RequireAuth>
 
-      <span
-        v-if="route.name !== 'EventDetail'"
-        class="ml-1 mr-1"
-      >&#8226;</span>
+      <span v-if="route.name !== 'EventDetail'" class="ml-1 mr-1">&#8226;</span>
 
       <router-link
         v-if="channelsExceptCurrent.length > 0"
-        class="underline font-medium cursor-pointer"
+        class="font-medium cursor-pointer underline"
         :to="`/channels/c/${channelsExceptCurrent[0].channelUniqueName}/events/e/${eventId}`"
       >
         Permalink
@@ -193,7 +201,7 @@ export default defineComponent({
 
       <router-link
         v-if="channelId && route.name !== 'EventDetail'"
-        class="underline font-medium cursor-pointer"
+        class="font-medium cursor-pointer underline"
         :to="`/channels/c/${channelId}/events/e/${eventId}`"
       >
         Permalink
@@ -205,12 +213,12 @@ export default defineComponent({
   </div>
   <ErrorBanner
     v-if="deleteEventError"
-    class="mt-2 mb-2"
+    class="mb-2 mt-2"
     :text="deleteEventError.message"
   />
   <ErrorBanner
     v-if="cancelEventError"
-    class="mt-2 mb-2"
+    class="mb-2 mt-2"
     :text="cancelEventError.message"
   />
   <WarningModal

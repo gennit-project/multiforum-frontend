@@ -11,6 +11,7 @@ import WarningModal from "../../generic/WarningModal.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import Avatar from "@/components/user/Avatar.vue";
 import { useDisplay } from "vuetify";
+import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 
 export default defineComponent({
   components: {
@@ -18,6 +19,7 @@ export default defineComponent({
     RequireAuth,
     WarningModal,
     Avatar,
+    UsernameWithTooltip
   },
   props: {
     discussion: {
@@ -132,14 +134,19 @@ export default defineComponent({
         class="cursor-pointer font-bold text-black hover:underline dark:text-white"
         :to="`/u/${discussion.Author.username}`"
       >
-        {{ discussion.Author.username }}
+        <UsernameWithTooltip
+          v-if="discussion.Author.username"
+          :username="discussion.Author.username"
+          :comment-karma="discussion.Author.commentKarma ?? 0"
+          :discussion-karma="discussion.Author.discussionKarma ?? 0"
+          :account-created="discussion.Author.createdAt"
+        >
+          {{ discussion.Author.username }}
+        </UsernameWithTooltip>
       </router-link>
       <span v-else>[Deleted]</span>
       <div>{{ createdAt }}</div>
-      <span
-        v-if="discussion && discussion.updatedAt"
-        class="mx-2"
-      >
+      <span v-if="discussion && discussion.updatedAt" class="mx-2">
         &#8226;
       </span>
       <div>{{ editedAt }}</div>
@@ -174,7 +181,8 @@ export default defineComponent({
           <span
             class="font-medium ml-1 cursor-pointer underline"
             @click="deleteModalIsOpen = true"
-          >Delete</span>
+            >Delete</span
+          >
         </template>
       </RequireAuth>
       <router-link
@@ -184,7 +192,7 @@ export default defineComponent({
         :to="`/channels/c/${discussion.DiscussionChannels[0].channelUniqueName}/discussions/d/${discussion.id}`"
       >
         <span> &#8226;</span>
-       <span class="ml-2 cursor-pointer underline">Permalink</span> 
+        <span class="ml-2 cursor-pointer underline">Permalink</span>
       </router-link>
     </div>
     <WarningModal

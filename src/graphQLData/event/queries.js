@@ -21,6 +21,9 @@ const EVENT_FIELDS = gql`
     cost
     Poster {
       username
+      createdAt
+      discussionKarma
+      commentKarma
     }
     Tags {
       text

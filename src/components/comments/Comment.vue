@@ -21,6 +21,7 @@ import { Comment } from "@/__generated__/graphql";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
+import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -41,6 +42,7 @@ export default defineComponent({
     MenuButton,
     RightArrowIcon,
     TextEditor,
+    UsernameWithTooltip,
     WarningModal,
   },
   props: {
@@ -321,7 +323,7 @@ export default defineComponent({
               View Context
             </router-link>
           </div>
-          
+
           <div class="flex justify-between">
             <div class="flex flex-wrap items-center space-x-2">
               <Avatar
@@ -334,7 +336,17 @@ export default defineComponent({
                 class="mx-1 font-bold hover:underline dark:text-gray-200"
                 :to="`/u/${commentData.CommentAuthor.username}`"
               >
-                {{ commentData.CommentAuthor.username }}
+                <UsernameWithTooltip
+                  v-if="commentData.CommentAuthor.username"
+                  :username="commentData.CommentAuthor.username"
+                  :comment-karma="commentData.CommentAuthor.commentKarma ?? 0"
+                  :discussion-karma="
+                    commentData.CommentAuthor.discussionKarma ?? 0
+                  "
+                  :account-created="commentData.CommentAuthor.createdAt"
+                >
+                  {{ commentData.CommentAuthor.username }}
+                </UsernameWithTooltip>
               </router-link>
               <span v-else class="font-bold">[Deleted]</span>
               <span class="mx-2">&middot;</span>
@@ -343,7 +355,7 @@ export default defineComponent({
               <span>{{ editedAtFormatted }}</span>
               <router-link
                 v-if="canShowPermalink && !isHighlighted"
-                class="pl-4 underline text-gray-400 dark:text-gray-300"
+                class="pl-4 text-gray-400 underline dark:text-gray-300"
                 :to="permalinkObject"
               >
                 Permalink
@@ -353,7 +365,9 @@ export default defineComponent({
                 class="rounded-lg bg-blue-500 px-2 py-1 text-black"
                 >Permalinked
               </span>
-              <div>Weighted votes count: {{ commentData.weightedVotesCount ?? 0 }}</div>
+              <div>
+                Weighted votes count: {{ commentData.weightedVotesCount ?? 0 }}
+              </div>
             </div>
             <MenuButton
               v-if="commentMenuItems.length > 0"
@@ -384,10 +398,7 @@ export default defineComponent({
                 v-if="commentData.text && !showEditCommentField"
                 class="-ml-4 w-full"
               >
-                <MarkdownPreview
-                  :key="textCopy || ''"
-                  :text="textCopy || ''" 
-                />
+                <MarkdownPreview :key="textCopy || ''" :text="textCopy || ''" />
               </div>
               <TextEditor
                 v-if="!readonly && showEditCommentField"
@@ -444,8 +455,8 @@ export default defineComponent({
             @mouseenter="highlight = true"
             @mouseleave="highlight = false"
           >
-            <div 
-              v-for="(childComment) in slotProps.comments"
+            <div
+              v-for="childComment in slotProps.comments"
               :key="childComment.id"
             >
               <Comment
