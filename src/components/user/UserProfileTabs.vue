@@ -89,9 +89,7 @@ export default defineComponent({
         :to="tab.href"
         :label="tab.name"
         :is-active="route.name.includes(tab.name)"
-      >
-        <CalendarIcon class="h-5 w-5 shrink-0" />
-      </TabButton>
+      />
     </nav>
   </div>
 </template>

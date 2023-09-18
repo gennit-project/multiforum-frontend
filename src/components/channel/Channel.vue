@@ -95,7 +95,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-hidden  dark:bg-gray-800">
+  <div class="overflow-hidden  dark:bg-gray-800  justify-center">
     <div
       v-if="smAndDown"
       :class="[
@@ -115,8 +115,7 @@ export default defineComponent({
     </div>
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-        <v-container fluid class="p-0">
-         
+        <v-container fluid class="p-0 max-w-7xl">
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"
@@ -124,7 +123,7 @@ export default defineComponent({
             :route="route"
           />
           <v-row>
-            <v-col v-if="channelId && !smAndDown" cols="12" md="3" lg="2">
+            <v-col v-if="channelId && !smAndDown" cols="12" md="3">
               <ChannelSidebar :channel-id="channelId">
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"
@@ -136,8 +135,6 @@ export default defineComponent({
             <v-col
               :class="[!smAndDown ? 'pt-6' : '']"
               :cols="channelId && !smAndDown ? 9 : 12"
-              :md="channelId && !smAndDown ? 9 : 12"
-              :lg="channelId && !smAndDown ? 10 : 12"
             >
            
             <router-view />

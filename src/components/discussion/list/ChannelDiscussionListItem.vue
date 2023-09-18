@@ -163,11 +163,8 @@ export default defineComponent({
       // Base URL for lgAndUp and other screen sizes
       let baseLink = "";
 
-      if (this.lgAndUp) {
-        baseLink = `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussionChannel.discussionId}`;
-      } else {
-        baseLink = `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
-      }
+      baseLink = `/channels/c/${this.defaultUniqueName}/discussions/d/${this.discussionChannel.discussionId}`;
+
       return baseLink;
     },
     filteredQuery() {
@@ -188,7 +185,7 @@ export default defineComponent({
     class="relative mt-1 flex space-x-1 space-y-3 p-4 lg:px-6 lg:py-4"
     :class="[
       isActive
-        ? 'text-bold border border-black border rounded-md bg-gray-100 dark:border-blue-500  dark:bg-gray-700'
+        ? 'text-bold rounded-md border border border-black bg-gray-100 dark:border-blue-500  dark:bg-gray-700'
         : 'border-b border-gray-200 dark:border-gray-500 ',
     ]"
   >
@@ -208,7 +205,7 @@ export default defineComponent({
               />
             </p>
           </router-link>
-          
+
           <div
             class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
           >
@@ -233,7 +230,6 @@ export default defineComponent({
             :show-downvote="false"
           />
         </div>
-        
       </v-col>
       <v-col cols="2" class="dark:text-gray-100">
         <i class="fa-regular fa-comment h-6 w-6" />

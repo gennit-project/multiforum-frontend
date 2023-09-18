@@ -94,16 +94,14 @@ export default defineComponent({
         v-if="user && username"
         class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden"
       >
-        <h1
-          class="mb-2 truncate text-2xl font-bold dark:text-gray-200 sm:mt-10"
-        >
-          {{ username }}
-        </h1>
         {{ `Joined ${relativeTime(user.createdAt)}` }}
       </div>
       <ul v-if="user" class="m-4 list-disc">
         <li>
             {{ `${user.commentKarma ?? 0 } comment karma` }}
+        </li>
+        <li>
+          {{ `${user.discussionKarma ?? 0} discussion karma` }}
         </li>
         <li>
           {{ `${user.CommentsAggregate.count} comments` }}

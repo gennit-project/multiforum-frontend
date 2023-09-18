@@ -253,16 +253,7 @@ export default defineComponent({
 <template>
   <v-row :class="!smAndDown ? 'pt-6 pl-6': 'p-0'">
     <v-col
-      v-if="!mdAndDown"
       cols="12"
-      :lg="channelId ? 7 : 7"
-      class="dark:bg-gray-950 border-l border-gray-200 p-0 dark:border-gray-700 dark:text-gray-200"
-    >
-      <router-view />
-    </v-col>
-    <v-col
-      cols="12"
-      :lg="channelId ? 5 : 5"
       class="scrollable-column shadow-right-lg md:pr-6"
     >
       <DiscussionFilterBar />
@@ -283,7 +274,6 @@ export default defineComponent({
         @openPreview="openPreview"
       />
     </v-col>
-
     <DrawerFlyout
       v-if="mdAndDown"
       :is-open="previewIsOpen"

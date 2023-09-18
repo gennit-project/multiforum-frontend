@@ -34,6 +34,7 @@ export const GET_USER = gql`
     ) {
       username
       commentKarma
+      discussionKarma
       createdAt
       name
       location
@@ -64,6 +65,7 @@ export const GET_USER_COMMENTS = gql`
         createdAt
         updatedAt
         deleted
+        weightedVotesCount
         ParentComment {
           id
         }

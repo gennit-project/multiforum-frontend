@@ -109,7 +109,7 @@ export default defineComponent({
         class="underline text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:dark:text-gray-200"
         :to="`/channels/c/${discussionChannel.Channel?.uniqueName}/discussions/d/${discussion.id}`"
       >
-        {{ `c/${discussionChannel.Channel?.uniqueName}` }}
+        View this post in {{ `c/${discussionChannel.Channel?.uniqueName}` }}
       </router-link>
     </div>
   </li>

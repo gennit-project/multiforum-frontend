@@ -28,6 +28,7 @@ const COMMENT_FIELDS = gql`
     id
     text
     emoji
+    weightedVotesCount
     CommentAuthor {
       ...AuthorFields
     }

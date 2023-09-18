@@ -56,7 +56,6 @@ export default defineComponent({
       error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
-      onResult: onGetDiscussionResult,
       fetchMore,
     } = useQuery(GET_SITE_WIDE_DISCUSSION_LIST, {
       searchInput: searchInputComputed,
@@ -121,44 +120,6 @@ export default defineComponent({
         },
       });
     };
-    const sendToPreview = (discussionId: string) => {
-      if (!discussionId) {
-        return;
-      }
-      if (!route.params.discussionId) {
-        if (!channelId.value) {
-          router.push({
-            name: "SitewideSearchDiscussionPreview",
-            params: {
-              discussionId: discussionId,
-            },
-          });
-        } else {
-          router.push({
-            name: "SearchDiscussionPreview",
-            params: {
-              discussionId: discussionId,
-            },
-          });
-        }
-      }
-    };
-
-    onGetDiscussionResult((value) => {
-      // If the preview pane is blank, fill it with the details
-      // of the first result, if there is one.
-      if (
-        !value.data ||
-        value.data.getSiteWideDiscussionList.discussions.length === 0
-      ) {
-        return;
-      }
-      const discussionData =
-        value.data.getSiteWideDiscussionList.discussions[0];
-      const discussionId = discussionData.discussion.id;
-
-      sendToPreview(discussionId);
-    });
 
     return {
       aggregateDiscussionCount,
@@ -170,7 +131,6 @@ export default defineComponent({
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
-      sendToPreview,
       selectedDiscussion: {} as DiscussionData,
     };
   },

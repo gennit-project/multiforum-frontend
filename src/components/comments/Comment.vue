@@ -321,6 +321,7 @@ export default defineComponent({
               View Context
             </router-link>
           </div>
+          
           <div class="flex justify-between">
             <div class="flex flex-wrap items-center space-x-2">
               <Avatar
@@ -328,7 +329,6 @@ export default defineComponent({
                 class="ml-2 mt-1"
                 :text="commentData.CommentAuthor.username"
               />
-
               <router-link
                 v-if="commentData.CommentAuthor"
                 class="mx-1 font-bold hover:underline dark:text-gray-200"
@@ -353,6 +353,7 @@ export default defineComponent({
                 class="rounded-lg bg-blue-500 px-2 py-1 text-black"
                 >Permalinked
               </span>
+              <div>Weighted votes count: {{ commentData.weightedVotesCount ?? 0 }}</div>
             </div>
             <MenuButton
               v-if="commentMenuItems.length > 0"
@@ -383,7 +384,10 @@ export default defineComponent({
                 v-if="commentData.text && !showEditCommentField"
                 class="-ml-4 w-full"
               >
-                <MarkdownPreview :key="textCopy || ''" :text="textCopy || ''" />
+                <MarkdownPreview
+                  :key="textCopy || ''"
+                  :text="textCopy || ''" 
+                />
               </div>
               <TextEditor
                 v-if="!readonly && showEditCommentField"
@@ -395,6 +399,7 @@ export default defineComponent({
               />
             </div>
             <CommentButtons
+              v-if="channelId"
               :class="[!showEditCommentField ? ' -mt-6' : '']"
               class="ml-2"
               :comment-data="commentData"
@@ -439,7 +444,10 @@ export default defineComponent({
             @mouseenter="highlight = true"
             @mouseleave="highlight = false"
           >
-            <div v-for="(childComment, i) in slotProps.comments" :key="i">
+            <div 
+              v-for="(childComment) in slotProps.comments"
+              :key="childComment.id"
+            >
               <Comment
                 v-if="childComment.id !== permalinkedCommentId"
                 :compact="true"

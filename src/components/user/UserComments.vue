@@ -21,41 +21,35 @@ export default defineComponent({
       return "";
     });
 
-    const { result, loading, error } = useQuery(
-      GET_USER_COMMENTS,
-      () => ({
-        username: username.value,
-      })
-    );
+    const { result, loading, error } = useQuery(GET_USER_COMMENTS, () => ({
+      username: username.value,
+    }));
 
     return {
-        loading,
-        error,
-        result
+      loading,
+      error,
+      result,
     };
   },
 });
 </script>
 <template>
   <div>
-    <div v-if="loading">
-      Loading...
+    <div v-if="loading">Loading...</div>
+    <div v-else-if="error">Error</div>
+    <div v-else-if="result && result.users.length === 0">No results</div>
+    <div v-else-if="result && result.users.length > 0">
+      <Comment
+        v-for="comment in result.users[0].Comments"
+        :key="comment.id"
+        :comment-data="comment"
+        :parent-comment-id="
+          comment.ParentComment ? comment.ParentComment.id : null
+        "
+        :depth="0"
+        :show-channel="true"
+        :show-context-link="true"
+      />
     </div>
-    <div v-else-if="error">
-      Error
-    </div>
-    <div v-else-if="result && result.users.length === 0">
-      No results
-    </div>
-    <Comment
-      v-for="comment in result.users[0].Comments"
-      v-else-if="result && result.users.length > 0"
-      :key="comment.id"
-      :comment-data="comment"
-      :parent-comment-id="comment.ParentComment ? comment.ParentComment.id : null"
-      :depth="0"
-      :show-channel="true"
-      :show-context-link="true"
-    />
   </div>
 </template>
