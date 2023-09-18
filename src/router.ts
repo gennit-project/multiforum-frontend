@@ -182,6 +182,16 @@ export const router = createRouter({
               ],
             },
             {
+              name: "NewDiscussions",
+              path: "new",
+              component: SearchDiscussions,
+            },
+            {
+              name: "TopDiscussions",
+              path: "top",
+              component: SearchDiscussions,
+            },
+            {
               name: "CreateDiscussionInChannel",
               path: "create",
               component: CreateDiscussion,

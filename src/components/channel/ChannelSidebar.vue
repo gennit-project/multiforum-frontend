@@ -117,18 +117,18 @@ export default defineComponent({
 <template>
   <div class="h-full max-h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
     <div v-if="channelId" class="mb-4 mt-6 items-center gap-2 px-4">
-      <Avatar
-        class="shadow-sm"
-        :text="channelId"
-        :is-square="true"
-        :is-large="true"
-      />
       <h1
         v-if="channelId"
         class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
         {{ channelId }}
       </h1>
+      <Avatar
+        class="shadow-sm"
+        :text="channelId"
+        :is-square="true"
+        :is-large="true"
+      />
     </div>
 
     <div class="w-full">
@@ -147,9 +147,6 @@ export default defineComponent({
           >
             {{ channel.description }}
           </div>
-          <p v-else class="text-sm dark:text-gray-200">
-            {{ "This channel has no description." }}
-          </p>
         </div>
         <slot />
 

@@ -10,6 +10,7 @@ import SearchBar from "../../generic/SearchBar.vue";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
+import DiscussionSortButtons from "./DiscussionSortButtons.vue";
 
 export default defineComponent({
   name: "DiscussionFilterBar",
@@ -19,6 +20,7 @@ export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
+    DiscussionSortButtons,
     FilterChip,
     SearchBar,
     TagIcon,
@@ -133,7 +135,7 @@ export default defineComponent({
 
 <template>
   <div class="space-y-2">
-    <div class="flex items-center justify-between mt-1 px-1">
+    <div class="mt-1 flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
@@ -142,39 +144,40 @@ export default defineComponent({
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
-        <FilterChip
-          v-if="!channelId"
-          class="align-middle"
-          data-testid="channel-filter-button"
-          :label="channelLabel"
-          :highlighted="channelLabel !== defaultFilterLabels.channels"
-        >
-          <template #icon>
-            <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
-          </template>
-          <template #content>
-            <ChannelPicker
-              :selected-channels="filterValues.channels"
-              @setSelectedChannels="setSelectedChannels"
-            />
-          </template>
-        </FilterChip>
-        <FilterChip
-          class="align-middle"
-          data-testid="tag-filter-button"
-          :label="tagLabel"
-          :highlighted="tagLabel !== defaultFilterLabels.tags"
-        >
-          <template #icon>
-            <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
-          </template>
-          <template #content>
-            <TagPicker
-              :selected-tags="filterValues.tags"
-              @setSelectedTags="setSelectedTags"
-            />
-          </template>
-        </FilterChip>
+      <FilterChip
+        v-if="!channelId"
+        class="align-middle"
+        data-testid="channel-filter-button"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels"
+      >
+        <template #icon>
+          <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
+        </template>
+        <template #content>
+          <ChannelPicker
+            :selected-channels="filterValues.channels"
+            @setSelectedChannels="setSelectedChannels"
+          />
+        </template>
+      </FilterChip>
+      <FilterChip
+        class="align-middle"
+        data-testid="tag-filter-button"
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultFilterLabels.tags"
+      >
+        <template #icon>
+          <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
+        </template>
+        <template #content>
+          <TagPicker
+            :selected-tags="filterValues.tags"
+            @setSelectedTags="setSelectedTags"
+          />
+        </template>
+      </FilterChip>
     </div>
+    <DiscussionSortButtons />
   </div>
 </template>

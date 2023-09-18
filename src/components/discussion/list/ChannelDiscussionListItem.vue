@@ -195,10 +195,18 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-x-1 space-y-3 border-b border-gray-200 p-4 dark:border-gray-500 lg:px-6 lg:py-4"
+    class="relative mt-1 flex  space-y-3 border-b border-gray-200 p-4 dark:border-gray-500 lg:px-6 lg:py-4"
   >
     <v-row>
-      <v-col :cols="12">
+      <v-col :cols="2">
+        <DiscussionVotes
+        v-if="discussionChannel"
+        :discussion="discussion"
+        :discussion-channel="discussionChannel"
+        :show-downvote="false"
+      />
+      </v-col>
+      <v-col :cols="10">
         <div class="flex-col gap-2">
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
@@ -241,12 +249,7 @@ export default defineComponent({
           </p>
 
           <div class="mt-2 flex items-center justify-start gap-6">
-            <DiscussionVotes
-              v-if="discussionChannel"
-              :discussion="discussion"
-              :discussion-channel="discussionChannel"
-              :show-downvote="false"
-            />
+            
             <router-link :to="{ path: detailLink, query: filteredQuery }">
               <i class="fa-regular fa-comment h-6 w-6" />
               <span class="text-sm">{{
