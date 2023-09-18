@@ -98,7 +98,6 @@ export default defineComponent({
         :emoji-json="commentData.emoji"
         @toggleEmojiPicker="() => {
           showEmojiPicker = !showEmojiPicker
-
           if (showEmojiPicker) {
             $emit('hideReplyEditor')
           }

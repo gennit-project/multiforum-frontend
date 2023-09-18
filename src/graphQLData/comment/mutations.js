@@ -2,15 +2,15 @@ import { gql } from "@apollo/client/core";
 
 export const ADD_EMOJI_TO_COMMENT = gql`
   mutation addEmojiToComment(
-    $commentId: ID!, 
-    $emojiLabel: String!,
-    $unicode: String!,
+    $commentId: ID!
+    $emojiLabel: String!
+    $unicode: String!
     $username: String!
   ) {
-    addEmojiToComment (
-      commentId: $commentId,
-      emojiLabel: $emojiLabel,
-      unicode: $unicode,
+    addEmojiToComment(
+      commentId: $commentId
+      emojiLabel: $emojiLabel
+      unicode: $unicode
       username: $username
     ) {
       id
@@ -21,13 +21,13 @@ export const ADD_EMOJI_TO_COMMENT = gql`
 
 export const REMOVE_EMOJI_FROM_COMMENT = gql`
   mutation removeEmojiFromComment(
-    $commentId: ID!,
-    $emojiLabel: String!,
+    $commentId: ID!
+    $emojiLabel: String!
     $username: String!
   ) {
-    removeEmojiFromComment (
-      commentId: $commentId,
-      emojiLabel: $emojiLabel,
+    removeEmojiFromComment(
+      commentId: $commentId
+      emojiLabel: $emojiLabel
       username: $username
     ) {
       id
@@ -71,34 +71,31 @@ export const UNDO_DOWNVOTE_COMMENT = gql`
   }
 `;
 
-export const UNDO_UPVOTE_COMMENT = gql`
-  mutation undoUpvoteComment($id: ID!, $username: String) {
-    updateComments(
-      where: { id: $id }
-      disconnect: {
-        UpvotedByUsers: { where: { node: { username: $username } } }
+export const UPVOTE_COMMENT = gql`
+  mutation upvoteComment($id: ID!, $username: String!) {
+    upvoteComment(commentId: $id, username: $username) {
+      id
+      weightedVotesCount
+      UpvotedByUsers {
+        username
       }
-    ) {
-      comments {
-        id
-        CommentAuthor {
-          ... on User {
-            username
-          }
-        }
-        text
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
+      UpvotedByUsersAggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const UNDO_UPVOTE_COMMENT = gql`
+  mutation undoUpvoteComment($id: ID!, $username: String!) {
+    undoUpvoteComment(commentId: $id, username: $username) {
+      id
+      weightedVotesCount
+      UpvotedByUsers {
+        username
+      }
+      UpvotedByUsersAggregate {
+        count
       }
     }
   }
@@ -113,37 +110,6 @@ export const DOWNVOTE_COMMENT = gql`
           where: { node: { displayName: $displayName } }
         }
       }
-    ) {
-      comments {
-        id
-        CommentAuthor {
-          ... on User {
-            username
-          }
-        }
-        text
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-      }
-    }
-  }
-`;
-
-export const UPVOTE_COMMENT = gql`
-  mutation upvoteComment($id: ID!, $username: String) {
-    updateComments(
-      where: { id: $id }
-      connect: { UpvotedByUsers: { where: { node: { username: $username } } } }
     ) {
       comments {
         id
@@ -264,7 +230,6 @@ export const CREATE_DISCUSSION_CHANNEL = gql`
         DownvotedByModeratorsAggregate {
           count
         }
-        upvoteCount
         Comments {
           id
           text

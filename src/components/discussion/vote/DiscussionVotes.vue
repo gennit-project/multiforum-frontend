@@ -15,7 +15,6 @@ import {
   UNDO_UPVOTE_DISCUSSION_CHANNEL,
   UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/discussion/mutations";
-import { UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT } from "@/graphQLData/discussion/mutations";
 import { modProfileNameVar } from "@/cache";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
@@ -118,23 +117,6 @@ export default defineComponent({
       }),
     );
 
-    const { mutate: updateDiscussionChannelUpvoteCount } = useMutation(
-      UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT,
-      () => ({
-        variables: {
-          id: props.discussionChannel.id || "",
-        },
-      }),
-    );
-
-    onDoneUpvote(() => {
-      updateDiscussionChannelUpvoteCount();
-    });
-
-    onDoneUndoUpvote(() => {
-      updateDiscussionChannelUpvoteCount();
-    });
-
     const loggedInUserUpvoted = computed(() => {
       if (localUsernameLoading.value || !localUsernameResult.value) {
         return false;
@@ -196,7 +178,7 @@ export default defineComponent({
 
     const upvoteCount = computed(() => {
       if (props.discussionChannel) {
-        return props.discussionChannel.upvoteCount;
+        return props.discussionChannel.UpvotedByUsersAggregate?.count || 0;
       }
       return 0;
     });
@@ -215,7 +197,6 @@ export default defineComponent({
         downvoteDiscussionChannel,
         undoUpvoteDiscussionChannel,
         undoDownvoteDiscussionChannel,
-        updateDiscussionChannelUpvoteCount,
       },
       upvoteCount,
       username,
@@ -297,7 +278,7 @@ export default defineComponent({
   <VoteButtons
     class="my-1"
     :downvote-count="downvoteCount"
-    :upvote-count="upvoteCount || 0"
+    :upvote-count="upvoteCount"
     :upvote-active="loggedInUserUpvoted"
     :downvote-active="loggedInUserDownvoted"
     :has-mod-profile="!!loggedInUserModName"

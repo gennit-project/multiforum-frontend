@@ -17,7 +17,6 @@ const createDiscussions = (discussions: DiscussionCreateInputWithChannels[]) => 
               body
               DiscussionChannels {
                 id
-                upvoteCount
                 Channel {
                   uniqueName
                 }

@@ -1,25 +1,8 @@
-import ChannelData from '../channel/channelTypes'
+
 import { TagData } from './tagTypes'
 import UserData from './userTypes'
 import ModeratorData from './userTypes';
-import { DiscussionData } from './discussionTypes'
 
-export type DiscussionChannelData = {
-  id: string
-  createdAt: string
-  discussionId: string
-  upvoteCount: number
-  channelUniqueName: string
-  CommentsAggregate: {
-    count: number
-  }
-  Discussion: DiscussionData;
-  Channel: ChannelData;
-  UpvotedByUsers: [UserData];
-  UpvotedByUsersAggregate: {count};
-  DownvotedByModerators: [ModProfile];
-  DownvotedByModeratorsAggregate: {count};
-}
 
 export type CreateEditCommentFormValues = {
   depth: number

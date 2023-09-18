@@ -50,7 +50,6 @@ export const CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
       body
       DiscussionChannels {
         id
-        upvoteCount
         Channel {
           uniqueName
         }
@@ -85,7 +84,6 @@ export const UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
       body
       DiscussionChannels {
         id
-        upvoteCount
         channelUniqueName
         discussionId
         Channel {
@@ -113,34 +111,16 @@ export const DELETE_DISCUSSION = gql`
   }
 `;
 
-export const UPDATE_DISCUSSION_CHANNEL_UPVOTE_COUNT = gql`
-  mutation updateDiscussionChannelUpvote($id: ID!) {
-    updateDiscussionChannelUpvoteCount(id: $id) {
-      id
-      discussionId
-      channelUniqueName
-      upvoteCount
-    }
-  }
-`;
-
 export const UPVOTE_DISCUSSION_CHANNEL = gql`
   mutation upvoteDiscussionChannel($id: ID!, $username: String!) {
-    updateDiscussionChannels(
-      where: { id: $id }
-      connect: { UpvotedByUsers: { where: { node: { username: $username } } } }
-    ) {
-      discussionChannels {
-        id
-        discussionId
-        channelUniqueName
-        upvoteCount
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
+    upvoteDiscussionChannel(discussionChannelId: $id, username: $username) {
+      id
+      weightedVotesCount
+      UpvotedByUsers {
+        username
+      }
+      UpvotedByUsersAggregate {
+        count
       }
     }
   }
@@ -148,23 +128,14 @@ export const UPVOTE_DISCUSSION_CHANNEL = gql`
 
 export const UNDO_UPVOTE_DISCUSSION_CHANNEL = gql`
   mutation undoUpvoteDiscussionChannel($id: ID!, $username: String!) {
-    updateDiscussionChannels(
-      where: { id: $id }
-      disconnect: {
-        UpvotedByUsers: { where: { node: { username: $username } } }
+    undoUpvoteDiscussionChannel(discussionChannelId: $id, username: $username) {
+      id
+      weightedVotesCount
+      UpvotedByUsers {
+        username
       }
-    ) {
-      discussionChannels {
-        id
-        discussionId
-        channelUniqueName
-        upvoteCount
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
+      UpvotedByUsersAggregate {
+        count
       }
     }
   }
@@ -184,7 +155,6 @@ export const DOWNVOTE_DISCUSSION_CHANNEL = gql`
         id
         discussionId
         channelUniqueName
-        upvoteCount
         DownvotedByModerators {
           displayName
         }
@@ -210,7 +180,6 @@ export const UNDO_DOWNVOTE_DISCUSSION_CHANNEL = gql`
         id
         discussionId
         channelUniqueName
-        upvoteCount
         DownvotedByModerators {
           displayName
         }

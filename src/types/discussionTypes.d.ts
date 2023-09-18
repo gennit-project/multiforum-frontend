@@ -4,27 +4,6 @@ import DiscussionChannelData from './commentTypes';
 import { ChannelData } from './channelTypes';
 import { ModProfile } from '@/components/mod/ModProfile.vue';
 
-export interface DiscussionChannelData {
-    id: string;
-    channelUniqueName: string;
-    Discussion: DiscussionData;
-    createdAt: string;
-    Channel: ChannelData;
-    discussionId: string;
-    CommentsAggregate: {
-        count: number;
-    };
-    upvoteCount;
-    UpvotedByUsers: [UserData];
-    UpvotedByUsersAggregate: {
-        count: number;
-    };
-    DownvotedByModerators: [ModProfile];
-    DownvotedByModeratorsAggregate: {
-        count: number;
-    };
-}
-
 export interface DiscussionData {
     id: string;
     title: string;

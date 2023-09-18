@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client/core';
+import { gql } from "@apollo/client/core";
 
 const AUTHOR_FIELDS = gql`
   fragment AuthorFields on User {
@@ -40,6 +40,9 @@ const COMMENT_FIELDS = gql`
     ChildCommentsAggregate {
       count
     }
+    UpvotedByUsersAggregate {
+      count
+    }
     ParentComment {
       id
     }
@@ -50,13 +53,9 @@ const COMMENT_FIELDS = gql`
 
 export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
   query getDiscussionChannel($id: ID!) {
-    discussionChannels(
-      where: {
-        id: $id
-      }
-    ) {
+    discussionChannels(where: { id: $id }) {
       id
-      upvoteCount
+      weightedVotesCount
       discussionId
       channelUniqueName
       Channel {
@@ -72,11 +71,10 @@ export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
       CommentsAggregate {
         count
       }
-      Comments(
-        where: {
-          isRootComment: true
-        }
-      ) {
+      UpvotedByUsersAggregate {
+        count
+      }
+      Comments(where: { isRootComment: true }) {
         ...CommentFields
         ChildComments {
           ...CommentFields
@@ -91,7 +89,7 @@ export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
 
 export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
   query getDiscussionChannelRootCommentAggregate(
-    $channelUniqueName: String!, 
+    $channelUniqueName: String!
     $discussionId: ID!
   ) {
     discussionChannels(
@@ -101,11 +99,7 @@ export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
       }
     ) {
       id
-      CommentsAggregate (
-        where: {
-          isRootComment: true
-        }
-      ) {
+      CommentsAggregate(where: { isRootComment: true }) {
         count
       }
     }
@@ -114,9 +108,9 @@ export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
 
 export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
   query getDiscussionChannel(
-    $channelUniqueName: String!, 
-    $discussionId: ID!,
-    $offset: Int,
+    $channelUniqueName: String!
+    $discussionId: ID!
+    $offset: Int
     $limit: Int
   ) {
     discussionChannels(
@@ -126,7 +120,7 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
       }
     ) {
       id
-      upvoteCount
+      weightedVotesCount
       discussionId
       channelUniqueName
       emoji
@@ -146,6 +140,9 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
       UpvotedByUsers {
         username
       }
+      UpvotedByUsersAggregate {
+        count
+      }
       DownvotedByModerators {
         displayName
       }
@@ -153,9 +150,7 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
         count
       }
       Comments(
-        where: {
-          isRootComment: true
-        },
+        where: { isRootComment: true }
         options: { limit: $limit, offset: $offset }
       ) {
         ...CommentFields
@@ -172,11 +167,7 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
 
 export const GET_COMMENT_AND_REPLIES = gql`
   query getCommentWithReplies($id: ID!) {
-    comments(
-      where: {
-        id: $id
-      }
-    ) {
+    comments(where: { id: $id }) {
       ...CommentFields
       ChildComments {
         ...CommentFields
@@ -189,24 +180,14 @@ export const GET_COMMENT_AND_REPLIES = gql`
 `;
 
 export const GET_COMMENT_REPLIES = gql`
-  query getCommentWithReplies(
-    $id: ID!
-    $limit: Int
-    $offset: Int
-  ) {
-    comments(
-      where: {
-        id: $id
-      }
-    ) {
+  query getCommentWithReplies($id: ID!, $limit: Int, $offset: Int) {
+    comments(where: { id: $id }) {
       id
       ChildCommentsAggregate {
         count
       }
       ...CommentVoteFields
-      ChildComments(
-        options: { limit: $limit, offset: $offset }
-      ) {
+      ChildComments(options: { limit: $limit, offset: $offset }) {
         ...CommentFields
       }
     }

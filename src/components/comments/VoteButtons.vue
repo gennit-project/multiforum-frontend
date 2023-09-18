@@ -65,6 +65,13 @@ export default defineComponent({
       return match;
     });
 
+    const upvoteCount = computed(() => {
+      if (!props.commentData.UpvotedByUsersAggregate) {
+        return 0;
+      }
+      return props.commentData.UpvotedByUsersAggregate.count;
+    });
+
     const loggedInUserDownvoted = computed(() => {
       if (
         localModProfileNameLoading.value ||
@@ -127,6 +134,7 @@ export default defineComponent({
       undoDownvoteComment,
       undoUpvoteComment,
       downvoteComment,
+      upvoteCount,
       username,
     };
   },
@@ -140,7 +148,7 @@ export default defineComponent({
           :downvote-count="
             commentData.DownvotedByModeratorsAggregate?.count || 0
           "
-          :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
+          :upvote-count="upvoteCount"
           :upvote-active="loggedInUserUpvoted"
           :downvote-active="loggedInUserDownvoted"
           :has-mod-profile="!!loggedInUserModName"

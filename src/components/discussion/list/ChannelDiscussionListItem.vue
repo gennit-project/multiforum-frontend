@@ -110,7 +110,7 @@ export default defineComponent({
 
     const upvoteCount = computed(() => {
       if (props.discussionChannel) {
-        return props.discussionChannel.upvoteCount;
+        return props.discussionChannel.UpvotedByUsersAggregate?.count || 0;
       }
       return 0;
     });

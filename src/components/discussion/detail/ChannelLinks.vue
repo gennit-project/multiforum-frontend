@@ -46,10 +46,10 @@ export default defineComponent({
         },
       );
 
-      if (!activeDiscussionChannel || !activeDiscussionChannel.upvoteCount) {
+      if (!activeDiscussionChannel || !activeDiscussionChannel.UpvotedByUsersAggregate?.count) {
         return 0;
       }
-      return activeDiscussionChannel.upvoteCount;
+      return activeDiscussionChannel.UpvotedByUsersAggregate.count;
     };
 
     const activeDiscussionChannel = computed(() => {
@@ -123,7 +123,7 @@ export default defineComponent({
             :key="dc.id"
             :channel-id="dc.channelUniqueName"
             :comment-count="dc.CommentsAggregate?.count || 0"
-            :upvote-count="dc.upvoteCount || 0"
+            :upvote-count="dc.UpvotedByUsersAggregate?.count || 0"
             :discussion-id="dc.discussionId"
           />
         </ul>

@@ -42,7 +42,7 @@ const DISCUSSION_FIELDS = gql`
       id
       discussionId
       channelUniqueName
-      upvoteCount
+      weightedVotesCount
       UpvotedByUsers {
         username
       }
@@ -85,7 +85,7 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       CommentsAggregate {
         count
       }
-      upvoteCount
+      weightedVotesCount
       createdAt
       Channel {
         uniqueName
@@ -129,7 +129,7 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
             createdAt
             channelUniqueName
             discussionId
-            upvoteCount
+            weightedVotesCount
             UpvotedByUsers {
               username
             }

@@ -121,7 +121,7 @@ export const GET_USER_DISCUSSIONS = gql`
           Channel {
             uniqueName
           }
-          upvoteCount 
+          weightedVotesCount 
           id
           discussionId
           channelUniqueName
@@ -209,7 +209,7 @@ export const USER_LOOKUP = gql`
           id
           discussionId
           channelUniqueName
-          upvoteCount
+          weightedVotesCount
           Discussion {
             id
             title
@@ -277,7 +277,7 @@ export const USER_LOOKUP = gql`
         }
         DiscussionChannels {
           id
-          upvoteCount
+          weightedVotesCount
           discussionId
           channelUniqueName
           CommentsAggregate {
