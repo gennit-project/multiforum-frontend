@@ -49,7 +49,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <RequireAuth class="flex flex-row space-x-3">
+  <RequireAuth :full-width="false">
     <template #has-auth>
       <div class="flex gap-1">
         <VoteButton

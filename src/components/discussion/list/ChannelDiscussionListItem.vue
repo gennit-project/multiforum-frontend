@@ -195,15 +195,10 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-x-1 space-y-3 p-4 lg:px-6 lg:py-4"
-    :class="[
-      isActive
-        ? 'text-bold rounded-md border border-black bg-gray-100 dark:border-blue-500 dark:bg-gray-700'
-        : 'border-b border-gray-200 dark:border-gray-500 ',
-    ]"
+    class="relative mt-1 flex space-x-1 space-y-3 border-b border-gray-200 p-4 dark:border-gray-500 lg:px-6 lg:py-4"
   >
     <v-row>
-      <v-col :cols="10">
+      <v-col :cols="12">
         <div class="flex-col gap-2">
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
@@ -236,7 +231,7 @@ export default defineComponent({
           >
             <span class="mr-1"> {{ `Posted ${relativeTime} by` }}</span>
 
-            <UsernameWithTooltip 
+            <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
               :comment-karma="authorCommentKarma ?? 0"
@@ -245,19 +240,22 @@ export default defineComponent({
             />
           </p>
 
-          <DiscussionVotes
-            v-if="discussionChannel"
-            :discussion="discussion"
-            :discussion-channel="discussionChannel"
-            :show-downvote="false"
-          />
+          <div class="mt-2 flex items-center justify-start gap-6">
+            <DiscussionVotes
+              v-if="discussionChannel"
+              :discussion="discussion"
+              :discussion-channel="discussionChannel"
+              :show-downvote="false"
+            />
+            <router-link :to="{ path: detailLink, query: filteredQuery }">
+              <i class="fa-regular fa-comment h-6 w-6" />
+              <span class="text-sm">{{
+                `${commentCount} comment${commentCount === 1 ? "" : "s"}`
+              }}</span>
+            </router-link>
+          </div>
         </div>
       </v-col>
-      <v-col cols="2" class="dark:text-gray-100">
-        <i class="fa-regular fa-comment h-6 w-6" />
-        {{ commentCount }}
-      </v-col>
-
       <ErrorBanner v-if="errorMessage" :text="errorMessage" />
     </v-row>
   </li>

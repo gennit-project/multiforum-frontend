@@ -93,6 +93,9 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
       UpvotedByUsers {
         username
       }
+      UpvotedByUsersAggregate {
+        count
+      }
       Discussion {
         ...DiscussionFields
       }
