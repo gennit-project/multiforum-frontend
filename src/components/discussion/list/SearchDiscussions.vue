@@ -254,7 +254,7 @@ export default defineComponent({
   <v-row :class="!smAndDown ? 'pt-3 pl-6': 'p-0'" class="justify-center">
     <v-col
       cols="12"
-      class=" bg-white scrollable-column shadow-right-lg md:pr-6 max-w-3xl  dark:bg-gray-800"
+      class=" bg-white scrollable-column shadow-right-lg md:pr-6 max-w-5xl  dark:bg-gray-800"
     >
       <DiscussionFilterBar />
       <SitewideDiscussionList

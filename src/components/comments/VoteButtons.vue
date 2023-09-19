@@ -168,13 +168,6 @@ export default defineComponent({
           "
           :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
         />
-        <button
-          data-testid="reply-comment-button"
-          class="mx-2 cursor-pointer rounded-md border px-2 py-1 hover:border-black hover:text-black dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
-        >
-          <i class="fa-regular fa-comment h-4 w-4" />
-          Reply
-        </button>
       </div>
     </template>
   </RequireAuth>

@@ -217,7 +217,7 @@ export default defineComponent({
 <template>
   <div
     :class="!smAndDown ? 'px-4' : 'px-0'"
-    class="mt-1 w-full max-w-5xl space-y-2"
+    class="mt-1 w-full max-w-7xl space-y-2"
   >
     <div
       v-if="route.name === 'DiscussionDetail'"

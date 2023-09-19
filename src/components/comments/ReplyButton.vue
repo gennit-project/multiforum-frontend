@@ -29,7 +29,9 @@ export default defineComponent({
     },
   },
   setup() {
-    return {};
+    return {
+      buttonClasses: "inline-flex gap-1  max-h-7 cursor-pointer items-center border-gray-600 dark:bg-gray-600 rounded-full border-2 px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
+    };
   },
 });
 </script>
@@ -40,8 +42,7 @@ export default defineComponent({
       <div class="flex items-center">
         <div
           data-testid="reply-comment-button"
-          class="mx-2 cursor-pointer rounded-full border-2 dark:bg-gray-600 bg-gray-100 border-gray-100 dark:border-600 px-2 py-1 hover:text-black dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:border-blue-500 dark:hover:text-blue-500"
-          :class="showReplyEditor ? 'text-black' : ''"
+          :class="[buttonClasses, showReplyEditor ? 'text-black' : '']"
           @click="$emit('toggleShowReplyEditor')"
         >
           <i class="fa-regular fa-comment h-4 w-4" /> Reply
@@ -52,7 +53,7 @@ export default defineComponent({
       <div class="flex items-center">
         <button
           data-testid="reply-comment-button"
-          class="mx-2 cursor-pointer rounded-full border px-2 py-1 hover:border-black hover:text-black dark:border-gray-500 dark:text-gray-300 dark:hover:bg-gray-700"
+          :class="[buttonClasses]"
         >
           <i class="fa-regular fa-comment h-4 w-4" />
           Reply
