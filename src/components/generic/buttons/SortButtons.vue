@@ -11,9 +11,9 @@ const availableSortTypes: Record<string, string> = {
 };
 
 const sortTypeIcons = {
-  HOT: "fire",
-  NEW: "new",
-  TOP: "top",
+  hot: "fa-fire",
+  new: "fa-burst",
+  top: "fa-arrow-up",
 };
 
 const topSortTypes = {
@@ -102,7 +102,7 @@ export default defineComponent({
           value: topSortTypes.TOP_ALL,
         },
       ],
-      sortTypeIcons
+      sortTypeIcons,
     };
   },
   methods: {
@@ -136,22 +136,14 @@ export default defineComponent({
           (!activeSortQuery && sortOption.value === availableSortTypes.HOT)
         "
       >
-        <i
-          :class="[
-            `fa-solid fa-${sortTypeIcons[sortOption.value]}`,
-            sortOption.value === activeSortQuery ||
-            (!activeSortQuery && sortOption.value === availableSortTypes.HOT)
-              ? 'text-black dark:text-blue-500'
-              : 'text-gray-500 dark:text-gray-200',
-          ]"
-        />
-    </TabButton>
+        <i :class="`fa-solid ${sortTypeIcons[sortOption.value]}`"></i>
+      </TabButton>
     </nav>
     <TextButtonDropdown
       v-if="showTopOptions && activeSortQuery === availableSortTypes.TOP"
       :label="
-        topOptions.find((option) => option.value === activeTimeFrameQuery)?.label ||
-        'Today'
+        topOptions.find((option) => option.value === activeTimeFrameQuery)
+          ?.label || 'Today'
       "
       :items="topOptions"
       @clickedItem="handleTopSort"
