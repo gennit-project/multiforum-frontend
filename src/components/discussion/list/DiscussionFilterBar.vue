@@ -10,7 +10,7 @@ import SearchBar from "../../generic/SearchBar.vue";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
-import DiscussionSortButtons from "./DiscussionSortButtons.vue";
+import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 
 export default defineComponent({
   name: "DiscussionFilterBar",
@@ -20,7 +20,7 @@ export default defineComponent({
   components: {
     ChannelIcon,
     ChannelPicker,
-    DiscussionSortButtons,
+    SortButtons,
     FilterChip,
     SearchBar,
     TagIcon,
@@ -178,6 +178,6 @@ export default defineComponent({
         </template>
       </FilterChip>
     </div>
-    <DiscussionSortButtons />
+    <SortButtons />
   </div>
 </template>

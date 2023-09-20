@@ -30,6 +30,7 @@ import '@kangc/v-md-editor/lib/theme/style/github.css';
 
 import { 
   faFaceSmile,
+  faFire,
   faSun,
   faMoon,
   faChevronDown,
@@ -84,6 +85,7 @@ library.add(faMoon);
 library.add(faChevronDown);
 library.add(faDesktop);
 library.add(faTicket);
+library.add(faFire);
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 

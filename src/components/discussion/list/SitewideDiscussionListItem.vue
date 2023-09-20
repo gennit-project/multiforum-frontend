@@ -194,7 +194,7 @@ export default defineComponent({
             {{ dc.channelUniqueName }}
           </Tag>
         </div>
-        <div class="w-full border-l-2 border-gray-300 dark:bg-gray-700">
+        <div class="max-w-2xl border-l-2 border-gray-300 dark:bg-gray-700">
           <router-link
             v-if="route.name !== 'DiscussionDetail'"
             class="dark:text-gray-300"
@@ -215,16 +215,26 @@ export default defineComponent({
             class="-ml-4"
           />
         </div>
-        <div
-          class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
-          @click="$emit('openPreview')"
-        >
-          <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-          {{ commentCount }}
-          <v-tooltip activator="parent" location="top">
+        <v-tooltip>
+          <template #activator="{ props }">
+            <button v-bind="props">
+              <router-link
+                :to="{ path: previewLink, query: filteredQuery }"
+                class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
+                @click="$emit('openPreview')"
+              >
+                <slot>
+                  <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+                  {{ commentCount }}
+                  {{ commentCount === 1 ? "comment" : "comments" }}
+                </slot>
+              </router-link>
+            </button>
+          </template>
+          <template v-slot:default>
             <span>{{ `Sum of comments across channels` }}</span>
-          </v-tooltip>
-        </div>
+          </template>
+        </v-tooltip>
       </div>
     </div>
   </li>
