@@ -129,17 +129,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-fit">
-    <VuemojiPicker
-      ref="emojiPickerRef"
-      v-click-outside="outside"
-      :picker-style="{
-        background: theme === 'dark' ? '#171c28' : '#fff',
-        inputBorderRadius: '0.25rem',
-        borderColor: theme === 'dark' ? '#1d2433' : '#e2e8f0',
-        buttonHoverBackground: theme === 'dark' ? '#2d3748' : '#edf2f7',
-      }"
-      @emojiClick="handleEmojiClick"
-    />
-  </div>
+  <VuemojiPicker
+    ref="emojiPickerRef"
+    :picker-style="{
+      background: theme === 'dark' ? '#171c28' : '#fff',
+      inputBorderRadius: '0.25rem',
+      borderColor: theme === 'dark' ? '#1d2433' : '#e2e8f0',
+      buttonHoverBackground: theme === 'dark' ? '#2d3748' : '#edf2f7',
+    }"
+    @emojiClick="handleEmojiClick"
+  />
 </template>

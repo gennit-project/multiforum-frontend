@@ -9,14 +9,14 @@ import ReplyButton from "./ReplyButton.vue";
 import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import CancelButton from "@/components/generic/buttons/CancelButton.vue";
-import EmojiPicker from "./EmojiPicker.vue";
 import EmojiButtons from "./EmojiButtons.vue";
+import NewEmojiButton from "./NewEmojiButton.vue";
 
 export default defineComponent({
   name: "CommentButtons",
   components: {
+    NewEmojiButton,
     CancelButton,
-    EmojiPicker,
     EmojiButtons,
     ReplyButton,
     SaveButton,
@@ -79,29 +79,29 @@ export default defineComponent({
       showEmojiPicker: ref(false),
     };
   },
+  methods: {
+    toggleEmojiPicker() {
+      this.showEmojiPicker = !this.showEmojiPicker;
+      if (this.showEmojiPicker) {
+        this.$emit("hideReplyEditor");
+      }
+    },
+  },
 });
 </script>
 <template>
   <div>
     <div
-      class="flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-300"
+      class="my-1 flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-300"
     >
       <VoteButtons
         v-if="!locked"
         :comment-data="commentData"
         @openModProfile="$emit('openModProfile')"
       />
-      <EmojiButtons
-        v-if="!locked"
-        :key="commentData.emoji"
+      <NewEmojiButton
+        @toggleEmojiPicker="toggleEmojiPicker"
         :comment-id="commentData.id"
-        :emoji-json="commentData.emoji"
-        @toggleEmojiPicker="() => {
-          showEmojiPicker = !showEmojiPicker
-          if (showEmojiPicker) {
-            $emit('hideReplyEditor')
-          }
-        }"
       />
       <ReplyButton
         :show-reply-editor="showReplyEditor"
@@ -159,6 +159,13 @@ export default defineComponent({
         {{ `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}` }}
       </span>
     </div>
+    <EmojiButtons
+      v-if="!locked"
+      :key="commentData.emoji"
+      :comment-id="commentData.id"
+      :emoji-json="commentData.emoji"
+      @toggleEmojiPicker="toggleEmojiPicker"
+    />
     <div v-if="commentData && showReplyEditor" class="mt-1 px-3">
       <TextEditor
         class="my-3"
@@ -183,13 +190,6 @@ export default defineComponent({
           "
         />
       </div>
-    </div>
-    <div v-if="showEmojiPicker">
-      <EmojiPicker
-        :comment-id="commentData.id"
-        @emojiClick="showEmojiPicker = false;"
-        @close="showEmojiPicker = false;"
-      />
     </div>
   </div>
 </template>

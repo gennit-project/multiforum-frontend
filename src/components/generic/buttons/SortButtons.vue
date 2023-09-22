@@ -42,7 +42,6 @@ export default defineComponent({
 
     const activeSortQuery = computed(() => {
       const sortQuery = route.query.sort;
-      console.log(sortQuery);
       if (sortQuery) {
         return sortQuery as string;
       }

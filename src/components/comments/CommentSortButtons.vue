@@ -10,7 +10,6 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    console.log(route.name);
     return {
       basePath: `/channels/c/${route.params.channelId}/discussions/d/${route.params.discussionId}`,
       route,

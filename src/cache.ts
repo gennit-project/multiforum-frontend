@@ -46,6 +46,9 @@ const cache = new InMemoryCache({
     Comment: {
       keyFields: ["id"],
       fields: {
+        CommentAuthor: {
+          merge: false,
+        },
         DownvotedByModerators: {
           merge(existing, incoming) {
             return incoming;

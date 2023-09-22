@@ -8,15 +8,15 @@ import "md-editor-v3/lib/preview.css";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
-import EmojiPicker from '@/components/comments/EmojiPicker.vue'
 import EmojiButtons from "@/components/comments/EmojiButtons.vue";
+import NewEmojiButton from "@/components/comments/NewEmojiButton.vue";
 
 export default defineComponent({
   components: {
-    EmojiPicker,
     EmojiButtons,
     Tag,
     MarkdownPreview,
+    NewEmojiButton
   },
   props: {
     channelId: {
@@ -158,21 +158,12 @@ export default defineComponent({
         "
       />
     </div>
-    <slot></slot>
+    <slot></slot><NewEmojiButton :discussion-channel-id="discussionChannelId" />
     <div class="flex" v-if="channelId">
       <EmojiButtons
         :key="emojiJson"
         :discussion-channel-id="discussionChannelId"
         :emoji-json="emojiJson"
-        @toggleEmojiPicker="showEmojiPicker = true"
-      />
-    </div>
-    <div v-if="showEmojiPicker">
-      <EmojiPicker
-        :discussion-channel-id="discussionChannelId"
-        :emoji-json="emojiJson"
-        @emojiClick="showEmojiPicker = false;"
-        @close="showEmojiPicker = false;"
       />
     </div>
   </div>

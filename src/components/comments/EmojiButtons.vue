@@ -11,7 +11,6 @@ import {
   ADD_EMOJI_TO_DISCUSSION_CHANNEL,
   REMOVE_EMOJI_FROM_DISCUSSION_CHANNEL,
 } from "@/graphQLData/discussion/mutations";
-import NewEmojiButton from "./NewEmojiButton.vue";
 
 type EmojiVoteInput = {
   commentId?: string;
@@ -24,7 +23,6 @@ type EmojiVoteInput = {
 export default defineComponent({
   name: "EmojiButtons",
   components: {
-    NewEmojiButton,
     VoteButton,
   },
   props: {
@@ -158,9 +156,6 @@ export default defineComponent({
       const defaultVariant = Object.keys(variants)[0];
       return defaultVariant;
     },
-    clickNewEmojiButton() {
-      this.$emit("toggleEmojiPicker");
-    },
   },
 });
 </script>
@@ -205,7 +200,6 @@ export default defineComponent({
         </span>
       </VoteButton>
     </div>
-    <NewEmojiButton @toggleEmojiPicker="clickNewEmojiButton" />
   </div>
 </template>
 
