@@ -16,7 +16,7 @@ export default defineComponent({
     EmojiButtons,
     Tag,
     MarkdownPreview,
-    NewEmojiButton
+    NewEmojiButton,
   },
   props: {
     channelId: {
@@ -47,7 +47,6 @@ export default defineComponent({
     if (route.name === "DiscussionCommentPermalink") {
       wordLimit = 10;
     }
-
 
     const truncateText = (text: string, limit: number) => {
       const words = text.split(" ");
@@ -131,11 +130,11 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div
-      v-if="discussion?.body" 
-      class="-ml-4 max-w-none"
-    >
-      <MarkdownPreview :text="bodyText" :disable-gallery="route.name !== 'DiscussionDetail'"/>
+    <div v-if="discussion?.body" class="-ml-4 -mt-4 max-w-none">
+      <MarkdownPreview
+        :text="bodyText"
+        :disable-gallery="route.name !== 'DiscussionDetail'"
+      />
     </div>
 
     <button
@@ -158,7 +157,10 @@ export default defineComponent({
         "
       />
     </div>
-    <slot></slot><NewEmojiButton :discussion-channel-id="discussionChannelId" />
+    <div class="flex items-center gap-2">
+      <slot></slot
+      ><NewEmojiButton :discussion-channel-id="discussionChannelId" />
+    </div>
     <div class="flex" v-if="channelId">
       <EmojiButtons
         :key="emojiJson"

@@ -54,6 +54,7 @@ export const UNDO_DOWNVOTE_COMMENT = gql`
           }
         }
         text
+        weightedVotesCount
         UpvotedByUsers {
           username
         }
@@ -119,6 +120,7 @@ export const DOWNVOTE_COMMENT = gql`
           }
         }
         text
+        weightedVotesCount
         UpvotedByUsers {
           username
         }
@@ -160,11 +162,15 @@ export const CREATE_COMMENT = gql`
         CommentAuthor {
           ... on User {
             username
+            createdAt
+            discussionKarma
+            commentKarma
           }
         }
         ParentComment {
           id
         }
+        weightedVotesCount
         emoji
         createdAt
         updatedAt
@@ -175,6 +181,7 @@ export const CREATE_COMMENT = gql`
           id
           text
           createdAt
+          weightedVotesCount
           CommentAuthor {
             ... on User {
               username
@@ -246,6 +253,7 @@ export const CREATE_DISCUSSION_CHANNEL = gql`
           }
           createdAt
           updatedAt
+          weightedVotesCount
         }
       }
     }
@@ -269,6 +277,7 @@ export const UPDATE_COMMENT = gql`
         createdAt
         updatedAt
         emoji
+        weightedVotesCount
         UpvotedByUsers {
           username
         }
@@ -303,6 +312,7 @@ export const SOFT_DELETE_COMMENT = gql`
             username
           }
         }
+        weightedVotesCount
         createdAt
         updatedAt
       }

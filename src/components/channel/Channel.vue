@@ -101,13 +101,13 @@ export default defineComponent({
       :class="[
         theme === 'dark' ? 'channel-background-dark' : 'channel-background',
       ]"
-      class="h-20 w-full object-cover lg:h-28"
+      class="h-16 w-full object-cover lg:h-28"
       alt="background pattern"
     />
     <div class="flex justify-center">
       <Avatar
         v-if="smAndDown"
-        class="-mt-12 h-24 w-24 shadow-sm"
+        class="-mt-12 mb-2 h-24 w-24 shadow-sm"
         :text="channelId"
         :is-square="true"
         :is-large="true"
@@ -115,7 +115,7 @@ export default defineComponent({
     </div>
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-        <v-container fluid class="p-0 max-w-7xl bg-white dark:bg-gray-800">
+        <v-container fluid class="max-w-7xl bg-white dark:bg-gray-800">
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"

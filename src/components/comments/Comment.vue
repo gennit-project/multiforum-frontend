@@ -12,7 +12,6 @@ import WarningModal from "../generic/WarningModal.vue";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
 import { gql } from "@apollo/client/core";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
@@ -23,7 +22,6 @@ import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import useClipboard from "vue-clipboard3";
-import Notification from "@/components/generic/Notification.vue";
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -42,11 +40,9 @@ export default defineComponent({
     EllipsisHorizontal,
     MarkdownPreview,
     MenuButton,
-    Notification,
     RightArrowIcon,
     TextEditor,
     UsernameWithTooltip,
-    WarningModal,
   },
   props: {
     commentData: {
@@ -82,7 +78,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
     const { discussionId, channelId } = route.params;
@@ -130,8 +126,6 @@ export default defineComponent({
       error: localUsernameError,
     } = useQuery(GET_LOCAL_USERNAME);
 
-    const showCopiedLinkNotification = ref(false);
-
     const permalinkObject = computed(() => {
       if (!canShowPermalink) {
         return {};
@@ -157,12 +151,12 @@ export default defineComponent({
         }`;
         console.log(permalink);
         await toClipboard(permalink);
-        showCopiedLinkNotification.value = true;
+        emit('showCopiedLinkNotification', true);
       } catch (e: any) {
         throw new Error(e);
       }
       setTimeout(() => {
-        showCopiedLinkNotification.value = false;
+        emit('showCopiedLinkNotification', false);
       }, 2000);
     };
 
@@ -250,9 +244,7 @@ export default defineComponent({
       relativeTime,
       replyCount,
       route,
-      showCopiedLinkNotification,
       showEditCommentField: ref(false),
-      showModProfileModal: ref(false),
       showReplies: ref(true),
       showReplyEditor: ref(false),
       textCopy,
@@ -307,19 +299,6 @@ export default defineComponent({
     },
     updateText(text: string) {
       this.textCopy = text;
-    },
-    async handleCreateModProfileClick() {
-      const result = await this.createModProfile();
-
-      const modProfileName =
-        result.data.updateUsers.users[0].ModerationProfile.displayName;
-
-      modProfileNameVar(modProfileName);
-      this.$emit("downvoteComment", {
-        commentId: this.commentData.id,
-        modProfileName,
-      });
-      this.showModProfileModal = false;
     },
   },
 });
@@ -444,7 +423,7 @@ export default defineComponent({
               </div>
               <CommentButtons
                 v-if="channelId"
-                :class="[!showEditCommentField ? ' -mt-10' : '']"
+                :class="[!showEditCommentField ? ' -mt-8 ml-1' : '']"
                 :comment-data="commentData"
                 :depth="depth"
                 :locked="locked"
@@ -457,7 +436,7 @@ export default defineComponent({
                 @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
                 @hideReplyEditor="showReplyEditor = false"
                 @hideReplies="showReplies = false"
-                @openModProfile="showModProfileModal = true"
+                @openModProfile="$emit('openModProfile')"
                 @saveEdit="$emit('saveEdit')"
                 @showEditCommentField="showEditCommentField = true"
                 @hideEditCommentField="showEditCommentField = false"
@@ -505,24 +484,13 @@ export default defineComponent({
                 @saveEdit="$emit('saveEdit')"
                 @updateCreateReplyCommentInput="updateNewComment"
                 @updateEditCommentInput="updateExistingComment"
+                @showCopiedLinkNotification="$emit('showCopiedLinkNotification', $event)"
+                @openModProfile="$emit('openModProfile')"
               />
             </div>
           </ChildComments>
         </div>
       </div>
     </div>
-    <Notification
-      :show="showCopiedLinkNotification"
-      :title="'Copied to clipboard!'"
-      @closeNotification="showCopiedLinkNotification = false"
-    />
-    <WarningModal
-      :title="'Create Mod Profile'"
-      :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
-      :open="showModProfileModal"
-      :primary-button-text="'Yes, create a mod profile'"
-      @close="showModProfileModal = false"
-      @primaryButtonClick="handleCreateModProfileClick"
-    />
   </div>
 </template>

@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { useAuth0 } from "@auth0/auth0-vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
+import { useAuth0 } from "@auth0/auth0-vue";
 
 export default defineComponent({
   props: {
@@ -24,11 +24,10 @@ export default defineComponent({
     }
   },
   setup() {
-    const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
+    const { loginWithPopup, loginWithRedirect } = useAuth0();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     return {
-      isAuthenticated,
       localUsernameResult,
       login: () => {
         if (window.parent.Cypress) {
@@ -70,7 +69,7 @@ export default defineComponent({
     :class="[!justifyLeft ? 'justify-center' : '', fullWidth ? 'w-full' : '']"
   >
     <div
-      v-if="isAuthenticated && (!requireOwnership || isOwner)"
+      v-if="username && (!requireOwnership || isOwner)"
       class="w-full"
     >
       <slot name="has-auth" />

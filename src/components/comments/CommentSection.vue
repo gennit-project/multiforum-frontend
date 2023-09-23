@@ -32,6 +32,8 @@ import { DiscussionChannel } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue"
+import { modProfileNameVar } from "@/cache";
+import Notification from "@/components/generic/Notification.vue";
 
 export default defineComponent({
   components: {
@@ -41,6 +43,7 @@ export default defineComponent({
     LoadMore,
     PermalinkedComment,
     WarningModal,
+    Notification,
   },
   inheritAttrs: false,
   props: {
@@ -468,6 +471,8 @@ export default defineComponent({
       permalinkedCommentId.value = route.params.commentId;
     });
 
+    const showCopiedLinkNotification = ref(false);
+
     return {
       permalinkedCommentId,
       commentToEdit,
@@ -485,7 +490,9 @@ export default defineComponent({
       locked: ref(false),
       loggedInUserModName,
       parentOfCommentToDelete,
+      showCopiedLinkNotification,
       showDeleteCommentModal: ref(false),
+      showModProfileModal: ref(false),
       route,
       softDeleteComment,
     };
@@ -556,6 +563,19 @@ export default defineComponent({
         id: commentId,
         displayName: modProfileName,
       });
+    },
+    async handleCreateModProfileClick(commentId: string) {
+      const result = await this.createModProfile();
+
+      const modProfileName =
+        result.data.updateUsers.users[0].ModerationProfile.displayName;
+
+      modProfileNameVar(modProfileName);
+      this.$emit("downvoteComment", {
+        commentId,
+        modProfileName,
+      });
+      this.showModProfileModal = false;
     },
   },
 });
@@ -636,6 +656,8 @@ export default defineComponent({
             @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
             @updateEditCommentInput="updateEditInputValues"
             @saveEdit="handleSaveEdit"
+            @showCopiedLinkNotification="showCopiedLinkNotification = $event"
+            @openModProfileModal="showModProfileModal = true"
           />
         </div>
       </div>
@@ -652,6 +674,19 @@ export default defineComponent({
       :open="showDeleteCommentModal"
       @close="showDeleteCommentModal = false"
       @primaryButtonClick="handleDeleteComment"
+    />
+    <Notification
+      :show="showCopiedLinkNotification"
+      :title="'Copied to clipboard!'"
+      @closeNotification="showCopiedLinkNotification = false"
+    />
+    <WarningModal
+      :title="'Create Mod Profile'"
+      :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
+      :open="showModProfileModal"
+      :primary-button-text="'Yes, create a mod profile'"
+      @close="showModProfileModal = false"
+      @primaryButtonClick="handleCreateModProfileClick"
     />
   </div>
 </template>

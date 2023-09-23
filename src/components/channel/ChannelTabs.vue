@@ -101,7 +101,7 @@ export default defineComponent({
       <TabButton
         :to="tabRoutes.discussions"
         :label="'Discussions'"
-        :is-active="$route.path.includes('discussions')"
+        :is-active="route.path.includes('discussions')"
       >
         <DiscussionIcon class="h-5 w-5 shrink-0" />
       </TabButton>

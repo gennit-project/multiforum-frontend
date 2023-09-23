@@ -121,7 +121,7 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div class="mt-2 flex flex-wrap items-center space-x-2 text-sm">
+    <div class="mt-2 flex flex-wrap items-center space-x-2 text-xs">
       <Avatar
         :text="
           discussion && discussion.Author?.username

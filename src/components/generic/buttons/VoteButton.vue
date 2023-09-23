@@ -40,7 +40,7 @@ export default defineComponent({
       <button
         v-bind="props"
         :data-testid="testId"
-        class="inline-flex max-h-7 cursor-pointer items-center rounded-full border-2 px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
+        class="inline-flex max-h-6 cursor-pointer items-center rounded-full border px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
         :class="[
           active
             ? 'border-blue-500 bg-blue-100 text-black dark:text-white dark:border-blue-600 dark:bg-blue-600 dark:hover:bg-blue-600'
