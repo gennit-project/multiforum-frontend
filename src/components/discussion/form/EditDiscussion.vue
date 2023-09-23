@@ -16,7 +16,7 @@ import {
 import { apolloClient } from "@/main";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
-import { DiscussionChannelData } from "@/types/commentTypes";
+import { DiscussionChannel } from "@/__generated__/graphql";
 import {
   DiscussionTagsConnectOrCreateFieldInput,
   DiscussionTagsDisconnectFieldInput,
@@ -85,8 +85,8 @@ export default defineComponent({
             return tag.text;
           }),
           selectedChannels: discussion.value.DiscussionChannels.map(
-            (discussionChannel: DiscussionChannelData) => {
-              return discussionChannel.Channel.uniqueName;
+            (discussionChannel: DiscussionChannel) => {
+              return discussionChannel?.Channel?.uniqueName || ''
             },
           ),
           author: discussion.value.Author.username,
@@ -123,8 +123,8 @@ export default defineComponent({
           return tag.text;
         }),
         selectedChannels: discussion.DiscussionChannels.map(
-          (discussionChannel: DiscussionChannelData) => {
-            return discussionChannel.Channel.uniqueName;
+          (discussionChannel: DiscussionChannel) => {
+            return discussionChannel?.Channel?.uniqueName;
           },
         ),
         author: discussion.Author.username,

@@ -216,7 +216,7 @@ export default defineComponent({
       }
       if (!route.path.includes("modhistory")) {
         out.push({
-          label: "Mod History",
+          label: "Feedback and Mod History",
           value: route.path.includes("comments")
             ? `${route.path}/modhistory`
             : `${route.path}/comments/${props.commentData.id}/modhistory`,

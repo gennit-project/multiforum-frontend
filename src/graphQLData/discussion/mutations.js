@@ -90,9 +90,6 @@ export const UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
           uniqueName
         }
       }
-      Author {
-        username
-      }
       createdAt
       updatedAt
       Tags {
