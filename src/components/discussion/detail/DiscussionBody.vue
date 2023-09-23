@@ -41,19 +41,18 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const showFullText = ref(route.name === "DiscussionDetail");
+    const countWords = (str: string) => {
+      return str.trim().split(/\s+/).length;
+    };
+    const showFullText = ref(
+      route.name === "DiscussionDetail" &&
+        countWords(props.discussion?.body || "") < 100,
+    );
     let wordLimit = 100;
 
     if (route.name === "DiscussionCommentPermalink") {
       wordLimit = 10;
     }
-
-    const truncateText = (text: string, limit: number) => {
-      const words = text.split(" ");
-      return (
-        words.slice(0, limit).join(" ") + (words.length > limit ? "..." : "")
-      );
-    };
 
     const toggleShowFullText = () => {
       showFullText.value = !showFullText.value;
@@ -65,12 +64,15 @@ export default defineComponent({
       }
       if (showFullText.value) {
         return props.discussion.body;
-      } else {
-        const words = props.discussion.body.split(" ");
-        return words.length > wordLimit
-          ? truncateText(props.discussion.body, wordLimit)
-          : props.discussion.body;
       }
+      const words = props.discussion.body.split(" ");
+      if (words.length > wordLimit) {
+        return (
+          words.slice(0, wordLimit).join(" ") +
+          (words.length > wordLimit ? "..." : "")
+        );
+      }
+      return props.discussion.body;
     });
 
     const shouldShowMoreButton = computed(() => {
@@ -130,20 +132,26 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion?.body" class="-ml-4 -mt-4 max-w-none">
+    <div v-if="discussion?.body" class="-mb-10 -ml-4 -mt-4 max-w-none">
       <MarkdownPreview
         :text="bodyText"
         :disable-gallery="route.name !== 'DiscussionDetail'"
       />
     </div>
-
     <button
       v-if="discussion?.body && shouldShowMoreButton"
-      class="text-blue-600"
+      class="mb-4 ml-4 text-sm text-blue-600 hover:underline dark:text-gray-300"
       @click="toggleShowFullText"
     >
       {{ showFullText ? "Show Less" : "Show More" }}
     </button>
+    <div class="ml-4 flex" v-if="channelId">
+      <EmojiButtons
+        :key="emojiJson"
+        :discussion-channel-id="discussionChannelId"
+        :emoji-json="emojiJson"
+      />
+    </div>
     <div class="flex gap-1">
       <Tag
         v-for="tag in discussion?.Tags"
@@ -157,16 +165,9 @@ export default defineComponent({
         "
       />
     </div>
-    <div class="flex items-center gap-2">
+    <div class="ml-4 flex items-center gap-2">
       <slot></slot
       ><NewEmojiButton :discussion-channel-id="discussionChannelId" />
-    </div>
-    <div class="flex" v-if="channelId">
-      <EmojiButtons
-        :key="emojiJson"
-        :discussion-channel-id="discussionChannelId"
-        :emoji-json="emojiJson"
-      />
     </div>
   </div>
 </template>

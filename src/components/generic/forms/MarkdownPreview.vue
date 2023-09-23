@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import MarkdownIt from "markdown-it";
 import { ref, watchEffect } from "vue";
@@ -121,8 +121,11 @@ export default defineComponent({
       });
     });
 
-    const usernamesLinkified = linkifyUsernames(props.text)
-    const linkifiedMarkdown = linkifyChannelNames(usernamesLinkified)
+    
+    const linkifiedMarkdown = computed(()=>{
+      const usernamesLinkified = linkifyUsernames(props.text)
+      return linkifyChannelNames(usernamesLinkified)
+    })
     
     return {
       embeddedImages,

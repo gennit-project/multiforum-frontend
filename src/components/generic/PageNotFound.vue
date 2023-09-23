@@ -1,7 +1,7 @@
 <template>
   <div class="flex justify-center mx-auto m-8">
     <div class="block">
-      <span class="text-md flex text-gray-500">404</span>
+      <span class="text-md flex text-gray-500 dark:text-gray-300">404</span>
       <h1 class="text-xl my-2">
         Page not found
       </h1>
