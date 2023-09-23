@@ -171,8 +171,6 @@ export default defineComponent({
 }
 p, li {
   font-size: 0.9rem;
-  font-weight: 300;
   line-height: 1.3rem;
-  letter-spacing: 0.02rem;
 }
 </style>

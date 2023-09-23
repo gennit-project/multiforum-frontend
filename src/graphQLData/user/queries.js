@@ -111,6 +111,9 @@ export const GET_USER_DISCUSSIONS = gql`
         id
         Author {
           username
+          commentKarma 
+          discussionKarma
+          createdAt
         }
         title
         body
