@@ -44,7 +44,7 @@ export default defineComponent({
       >
         <div
           v-if="show"
-          class="pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
+          class="bg-white dark:bg-gray-700 pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
         >
           <div class="p-4">
             <div class="flex items-start">

@@ -22,6 +22,8 @@ import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
+import useClipboard from "vue-clipboard3";
+import Notification from "@/components/generic/Notification.vue";
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -40,6 +42,7 @@ export default defineComponent({
     EllipsisHorizontal,
     MarkdownPreview,
     MenuButton,
+    Notification,
     RightArrowIcon,
     TextEditor,
     UsernameWithTooltip,
@@ -82,6 +85,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const { discussionId, channelId } = route.params;
+    const { toClipboard } = useClipboard();
 
     const isHighlighted = computed(() => {
       return (
@@ -89,6 +93,7 @@ export default defineComponent({
         props.commentData?.id === route.params.commentId
       );
     });
+
     const GET_THEME = gql`
       query getTheme {
         theme @client
@@ -123,6 +128,20 @@ export default defineComponent({
       loading: localUsernameLoading,
       error: localUsernameError,
     } = useQuery(GET_LOCAL_USERNAME);
+
+    const showCopiedLinkNotification = ref(false);
+
+    const copyLink = async () => {
+      try {
+        await toClipboard(route.fullPath);
+        showCopiedLinkNotification.value = true;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+      setTimeout(() => {
+        showCopiedLinkNotification.value = false;
+      }, 2000);
+    };
 
     const username = computed(() => {
       if (localUsernameLoading.value || localUsernameError.value) {
@@ -167,6 +186,11 @@ export default defineComponent({
           value: "",
           event: "handleDelete",
         },
+        {
+          label: "Copy Link",
+          value: "",
+          event: "copyLink",
+        },
       ];
       if (!route.path.includes("modhistory")) {
         out.push({
@@ -202,6 +226,7 @@ export default defineComponent({
       canShowPermalink,
       channelId,
       commentMenuItems,
+      copyLink,
       createModProfile,
       discussionId,
       editorId: "texteditor",
@@ -215,6 +240,7 @@ export default defineComponent({
       relativeTime,
       replyCount,
       route,
+      showCopiedLinkNotification,
       showEditCommentField: ref(false),
       showModProfileModal: ref(false),
       showReplies: ref(true),
@@ -372,6 +398,7 @@ export default defineComponent({
             <MenuButton
               v-if="commentMenuItems.length > 0"
               :items="commentMenuItems"
+              @copyLink="copyLink"
               @handleEdit="() => handleEdit(commentData)"
               @handleDelete="
                 () => {
@@ -478,6 +505,11 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <Notification
+      :show="showCopiedLinkNotification"
+      :title="'Copied to clipboard!'"
+      @closeNotification="showCopiedLinkNotification = false"
+    />
     <WarningModal
       :title="'Create Mod Profile'"
       :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
