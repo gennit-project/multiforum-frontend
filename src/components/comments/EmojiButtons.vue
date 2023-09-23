@@ -192,7 +192,7 @@ export default defineComponent({
         "
       >
         <span
-          class="text-lg"
+          class="text-md"
           v-for="unicode in Object.keys(getVariants(emojiLabel))"
           :key="unicode"
         >

@@ -251,8 +251,11 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <v-row v-if="discussion" class="mt-1 flex justify-center">
-      <v-col cols="12" :md="route.name === 'DiscussionDetail' ? 9 : 12">
+    <v-row 
+      v-if="discussion" 
+      class="mt-1 flex justify-center"
+    >
+      <v-col >
         <div class="space-y-3 px-2">
           <div class="mb-3 w-full">
             <div ref="discussionDetail">

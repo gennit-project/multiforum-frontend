@@ -156,12 +156,20 @@ export default defineComponent({
 </script>
 
 <template>
-  <div @click="handleImageClick($event)">
-    <v-md-preview :text="linkifiedMarkdown" />
+  <div @click="handleImageClick($event)" class="w-full">
+    <v-md-preview
+      :text="linkifiedMarkdown"
+    />
   </div>
 </template>
 <style>
 .github-markdown-body img {
   cursor: pointer !important;
+}
+p, li {
+  font-size: 0.9rem;
+  font-weight: 300;
+  line-height: 1.3rem;
+  letter-spacing: 0.02rem;
 }
 </style>

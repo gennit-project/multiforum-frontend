@@ -334,7 +334,7 @@ export default defineComponent({
               ? 'rounded-md border border-blue-500'
               : 'dark:bg-gray-950 ',
           ]"
-          class="flex gap-2 p-3 shadow-sm"
+          class="flex px-2 py-1 shadow-sm w-full"
           data-testid="comment"
         >
           <Avatar
@@ -344,14 +344,13 @@ export default defineComponent({
             :text="commentData.CommentAuthor.username"
           />
 
-          <div>
+          <div class="flex-grow">
             <div
               v-if="
                 showContextLink &&
                 parentCommentId &&
                 commentData.DiscussionChannel
               "
-              class="mb-2"
             >
               <router-link
                 class="text-xs underline"
@@ -368,7 +367,7 @@ export default defineComponent({
               </router-link>
             </div>
             <div class="flex justify-between">
-              <div class="ml-1 flex flex-wrap items-center space-x-2">
+              <div class="ml-1 my-2 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300">
                 <router-link
                   v-if="commentData.CommentAuthor"
                   class="mx-1 font-bold hover:underline dark:text-gray-200"
@@ -424,10 +423,10 @@ export default defineComponent({
               v-if="!themeLoading"
               class="w-full max-w-none dark:text-gray-200"
             >
-              <div class="overflow-auto">
+              <div class="overflow-auto w-full">
                 <div
                   v-if="commentData.text && !showEditCommentField"
-                  class="-ml-6 w-full"
+                  class="-ml-6 -mt-3 w-full"
                 >
                   <MarkdownPreview
                     :key="textCopy || ''"
@@ -445,7 +444,7 @@ export default defineComponent({
               </div>
               <CommentButtons
                 v-if="channelId"
-                :class="[!showEditCommentField ? ' -mt-6' : '']"
+                :class="[!showEditCommentField ? ' -mt-10' : '']"
                 :comment-data="commentData"
                 :depth="depth"
                 :locked="locked"

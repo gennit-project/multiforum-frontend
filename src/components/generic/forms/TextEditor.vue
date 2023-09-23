@@ -126,7 +126,7 @@ export default defineComponent({
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
           <v-md-preview
             :text="text"
-            class="block w-full max-w-2xl rounded-lg border-gray-300 text-sm shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
+            class="block w-full max-w-2xl rounded-lg border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
           />
         </TabPanel>
       </TabPanels>
