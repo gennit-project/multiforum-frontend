@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import PrimaryButton from '@/components/generic/buttons/PrimaryButton.vue'
+import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 
 export default defineComponent({
   components: {
@@ -19,24 +19,7 @@ export default defineComponent({
   <PrimaryButton
     label="Save"
     :disabled="disabled"
-    :class="[
-      disabled
-        ? 'bg-gray-200 cursor-default text-gray-600 dark:text-gray-400'
-        : 'text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-white dark:bg-blue-700 dark:hover:bg-blue-600',
-      '' // class for controlling the background opacity in dark mode
-    ]"
-    class="
-      ml-3
-      inline-flex
-      justify-center
-      py-2
-      px-4
-      border border-transparent
-      shadow-sm
-      text-sm
-      font-medium
-      rounded-full
-    "
+    class="border-transparent font-medium ml-3 inline-flex justify-center rounded-full border px-4 py-2 text-sm shadow-sm"
     @keydown.enter.prevent
   />
 </template>
