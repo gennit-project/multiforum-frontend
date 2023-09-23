@@ -27,7 +27,8 @@ export default defineComponent({
     ArrowUpBoldBox,
   },
   setup() {
-    const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
+    const { isAuthenticated, loginWithPopup, loginWithRedirect, error } = useAuth0();
+    console.log(error)
     const route = useRoute();
     const router = useRouter();
     const { smAndDown } = useDisplay();
