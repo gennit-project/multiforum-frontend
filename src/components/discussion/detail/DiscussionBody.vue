@@ -152,7 +152,7 @@ export default defineComponent({
         :emoji-json="emojiJson"
       />
     </div>
-    <div class="flex gap-1">
+    <div class="flex gap-1 ml-4">
       <Tag
         v-for="tag in discussion?.Tags"
         :key="tag.text"

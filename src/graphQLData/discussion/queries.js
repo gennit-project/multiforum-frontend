@@ -126,6 +126,9 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
           body
           Author {
             username
+            commentKarma
+            discussionKarma
+            createdAt
           }
           DiscussionChannels {
             id
