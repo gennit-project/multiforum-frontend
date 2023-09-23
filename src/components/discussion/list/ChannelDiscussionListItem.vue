@@ -220,7 +220,10 @@ export default defineComponent({
         />
       </v-col>
       <v-col :cols="10">
-        <div class="flex-col gap-2">
+        <div
+          v-if="discussion"
+          class="flex-col gap-2"
+        >
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
             class="hover:text-gray-500"
