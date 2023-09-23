@@ -1,7 +1,6 @@
 <script lang="ts">
 import { PropType, computed, defineComponent } from "vue";
 import { Comment } from "@/__generated__/graphql";
-import RequireAuth from "../auth/RequireAuth.vue";
 import Votes from "./Votes.vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import {
@@ -18,7 +17,6 @@ import {
 export default defineComponent({
   name: "VoteComponent",
   components: {
-    RequireAuth,
     VotesComponent: Votes,
   },
   props: {
@@ -141,34 +139,18 @@ export default defineComponent({
 });
 </script>
 <template>
-  <RequireAuth :full-width="false">
-    <template #has-auth>
-      <div class="flex items-center">
-        <VotesComponent
-          :downvote-count="
-            commentData.DownvotedByModeratorsAggregate?.count || 0
-          "
-          :upvote-count="upvoteCount"
-          :upvote-active="loggedInUserUpvoted"
-          :downvote-active="loggedInUserDownvoted"
-          :has-mod-profile="!!loggedInUserModName"
-          @downvote="downvoteComment"
-          @upvote="upvoteComment"
-          @undoUpvote="undoUpvoteComment"
-          @undoDownvote="undoDownvoteComment"
-          @openModProfile="$emit('openModProfile')"
-        />
-      </div>
-    </template>
-    <template #does-not-have-auth>
-      <div class="flex">
-        <VotesComponent
-          :downvote-count="
-            commentData.DownvotedByModeratorsAggregate?.count || 0
-          "
-          :upvote-count="commentData.UpvotedByUsersAggregate?.count || 0"
-        />
-      </div>
-    </template>
-  </RequireAuth>
+  <div class="flex items-center">
+    <VotesComponent
+      :downvote-count="commentData.DownvotedByModeratorsAggregate?.count || 0"
+      :upvote-count="upvoteCount"
+      :upvote-active="loggedInUserUpvoted"
+      :downvote-active="loggedInUserDownvoted"
+      :has-mod-profile="!!loggedInUserModName"
+      @downvote="downvoteComment"
+      @upvote="upvoteComment"
+      @undoUpvote="undoUpvoteComment"
+      @undoDownvote="undoDownvoteComment"
+      @openModProfile="$emit('openModProfile')"
+    />
+  </div>
 </template>

@@ -1,8 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
+import RequireAuth from "../../auth/RequireAuth.vue";
 
 export default defineComponent({
   name: "VoteButton",
+  components: {
+    RequireAuth,
+  },
   props: {
     active: {
       type: Boolean,
@@ -37,24 +41,47 @@ export default defineComponent({
 <template>
   <v-tooltip location="top" content-class="custom-tooltip">
     <template v-slot:activator="{ props }">
-      <button
-        v-bind="props"
-        :data-testid="testId"
-        class="inline-flex max-h-6 cursor-pointer items-center rounded-full border px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
-        :class="[
-          active
-            ? 'border-blue-500 bg-blue-100 text-black dark:text-white dark:border-blue-600 dark:bg-blue-600 dark:hover:bg-blue-600'
-            : ' bg-gray-100 border-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-600  dark:hover:bg-gray-700',
-        ]"
-        @click="$emit('vote')"
-      >
-        <span class="justify-center">
-          <slot />
-        </span>
-        <span v-if="showCount" class="mx-1 justify-center text-xs">{{
-          count
-        }}</span>
-      </button>
+      <RequireAuth :full-width="false">
+        <template #has-auth>
+          <button
+            v-bind="props"
+            :data-testid="testId"
+            class="inline-flex max-h-6 cursor-pointer items-center rounded-full border px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
+            :class="[
+              active
+                ? 'border-blue-500 bg-blue-100 text-black dark:border-blue-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-600'
+                : ' border-gray-100 bg-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-600  dark:hover:bg-gray-700',
+            ]"
+            @click="$emit('vote')"
+          >
+            <span class="justify-center">
+              <slot />
+            </span>
+            <span v-if="showCount" class="mx-1 justify-center text-xs">{{
+              count
+            }}</span>
+          </button>
+        </template>
+        <template #does-not-have-auth>
+          <button
+            v-bind="props"
+            :data-testid="testId"
+            class="inline-flex max-h-6 cursor-pointer items-center rounded-full border px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
+            :class="[
+              active
+                ? 'border-blue-500 bg-blue-100 text-black dark:border-blue-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-600'
+                : ' border-gray-100 bg-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-600  dark:hover:bg-gray-700',
+            ]"
+          >
+            <span class="justify-center">
+              <slot />
+            </span>
+            <span v-if="showCount" class="mx-1 justify-center text-xs">{{
+              count
+            }}</span>
+          </button>
+        </template>
+      </RequireAuth>
     </template>
     <template v-slot:default>
       <div v-if="tooltipUnicode" class="flex justify-center">

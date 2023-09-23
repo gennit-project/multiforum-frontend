@@ -149,7 +149,6 @@ export default defineComponent({
         const permalink = `${basePath}${
           router.resolve(permalinkObject.value).href
         }`;
-        console.log(permalink);
         await toClipboard(permalink);
         emit('showCopiedLinkNotification', true);
       } catch (e: any) {

@@ -28,7 +28,6 @@ export default defineComponent({
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect, error } = useAuth0();
-    console.log(error)
     const route = useRoute();
     const router = useRouter();
     const { smAndDown } = useDisplay();
