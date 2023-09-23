@@ -91,6 +91,13 @@ export default defineComponent({
 </script>
 <template>
   <div>
+    <EmojiButtons
+    v-if="!locked"
+    :key="commentData.emoji"
+    :comment-id="commentData.id"
+    :emoji-json="commentData.emoji"
+    @toggleEmojiPicker="toggleEmojiPicker"
+  />
     <div
       class="my-1 flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-300"
     >
@@ -159,13 +166,7 @@ export default defineComponent({
         {{ `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}` }}
       </span>
     </div>
-    <EmojiButtons
-      v-if="!locked"
-      :key="commentData.emoji"
-      :comment-id="commentData.id"
-      :emoji-json="commentData.emoji"
-      @toggleEmojiPicker="toggleEmojiPicker"
-    />
+   
     <div v-if="commentData && showReplyEditor" class="mt-1 px-3">
       <TextEditor
         class="my-3"

@@ -16,7 +16,7 @@ import { modProfileNameVar } from "@/cache";
 import { getLinksInText } from "../utils";
 import { gql } from "@apollo/client/core";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
@@ -84,6 +84,7 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const router = useRouter();
     const { discussionId, channelId } = route.params;
     const { toClipboard } = useClipboard();
 
@@ -131,9 +132,29 @@ export default defineComponent({
 
     const showCopiedLinkNotification = ref(false);
 
+    const permalinkObject = computed(() => {
+      if (!canShowPermalink) {
+        return {};
+      }
+      return {
+        name: "DiscussionCommentPermalink",
+        params: {
+          discussionId:
+            discussionId || props.commentData?.DiscussionChannel?.discussionId,
+          commentId: props.commentData.id,
+          channelId:
+            channelId ||
+            props.commentData?.DiscussionChannel?.channelUniqueName,
+        },
+      };
+    });
+
     const copyLink = async () => {
       try {
-        await toClipboard(route.fullPath);
+        const basePath = window.location.origin;
+        const permalink = `${basePath}${router.resolve(permalinkObject.value).href}`;
+        console.log(permalink);
+        await toClipboard(permalink);
         showCopiedLinkNotification.value = true;
       } catch (e: any) {
         throw new Error(e);
@@ -174,6 +195,9 @@ export default defineComponent({
       return getLinksInText(props.commentData.text);
     });
 
+    const canShowPermalink =
+      props.commentData.DiscussionChannel || (discussionId && channelId);
+
     const commentMenuItems = computed(() => {
       const out = [
         {
@@ -186,12 +210,15 @@ export default defineComponent({
           value: "",
           event: "handleDelete",
         },
-        {
+        
+      ];
+      if (canShowPermalink) {
+        out.push({
           label: "Copy Link",
           value: "",
           event: "copyLink",
-        },
-      ];
+        });
+      }
       if (!route.path.includes("modhistory")) {
         out.push({
           label: "Mod History",
@@ -203,25 +230,9 @@ export default defineComponent({
       }
       return out;
     });
-    const canShowPermalink =
-      props.commentData.DiscussionChannel || (discussionId && channelId);
+    
 
-    const permalinkObject = computed(() => {
-      if (!canShowPermalink) {
-        return {};
-      }
-      return {
-        name: "DiscussionCommentPermalink",
-        params: {
-          discussionId:
-            discussionId || props.commentData?.DiscussionChannel?.discussionId,
-          commentId: props.commentData.id,
-          channelId:
-            channelId ||
-            props.commentData?.DiscussionChannel?.channelUniqueName,
-        },
-      };
-    });
+    
     return {
       canShowPermalink,
       channelId,
@@ -322,7 +333,7 @@ export default defineComponent({
           :class="[
             isHighlighted
               ? 'rounded-md border border-blue-500'
-              : 'dark:bg-gray-950 border-l border-r border-t border-gray-200 dark:border-gray-500',
+              : 'dark:bg-gray-950 border-l border-r border-gray-200 dark:border-gray-500',
           ]"
           class="p-3 shadow-sm"
           data-testid="comment"
@@ -379,21 +390,11 @@ export default defineComponent({
               <span>{{ createdAtFormatted }}</span>
               <span v-if="commentData.updatedAt" class="mx-2"> &middot; </span>
               <span>{{ editedAtFormatted }}</span>
-              <router-link
-                v-if="canShowPermalink && !isHighlighted"
-                class="pl-4 text-gray-400 underline dark:text-gray-300"
-                :to="permalinkObject"
-              >
-                Permalink
-              </router-link>
               <span
                 v-if="isHighlighted"
                 class="rounded-lg bg-blue-500 px-2 py-1 text-black"
                 >Permalinked
               </span>
-              <div>
-                Weighted votes count: {{ commentData.weightedVotesCount ?? 0 }}
-              </div>
             </div>
             <MenuButton
               v-if="commentMenuItems.length > 0"
