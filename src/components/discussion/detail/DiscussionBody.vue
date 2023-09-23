@@ -41,46 +41,12 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const countWords = (str: string) => {
-      return str.trim().split(/\s+/).length;
-    };
-    const showFullText = ref(
-      route.name === "DiscussionDetail" &&
-        countWords(props.discussion?.body || "") < 100,
-    );
-    let wordLimit = 100;
-
-    if (route.name === "DiscussionCommentPermalink") {
-      wordLimit = 10;
-    }
-
-    const toggleShowFullText = () => {
-      showFullText.value = !showFullText.value;
-    };
 
     const bodyText = computed(() => {
       if (!props.discussion || !props.discussion.body) {
         return "";
       }
-      if (showFullText.value) {
-        return props.discussion.body;
-      }
-      const words = props.discussion.body.split(" ");
-      if (words.length > wordLimit) {
-        return (
-          words.slice(0, wordLimit).join(" ") +
-          (words.length > wordLimit ? "..." : "")
-        );
-      }
       return props.discussion.body;
-    });
-
-    const shouldShowMoreButton = computed(() => {
-      if (!props.discussion || !props.discussion.body) {
-        return false;
-      }
-      const words = props.discussion.body.split(" ");
-      return words.length > wordLimit;
     });
 
     const linksInBody = computed(() => {
@@ -106,9 +72,6 @@ export default defineComponent({
       linksInBody,
       route,
       bodyText,
-      showFullText,
-      toggleShowFullText,
-      shouldShowMoreButton,
       scrollElement: document.documentElement,
       id: "preview-only",
       showEmojiPicker: ref(false),
@@ -118,7 +81,7 @@ export default defineComponent({
   methods: {
     filterByTag(tag: string) {
       this.$router.push({
-        name: "SitewideSearchDiscussionPreview",
+        name: "SearchDiscussionsInChannel",
         params: {
           channelId: this.channelId,
         },
@@ -132,19 +95,13 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="discussion?.body" class="-mb-10 -ml-4 -mt-4 max-w-none">
+    <div v-if="discussion?.body" class="-ml-4 -mt-4 max-w-none">
       <MarkdownPreview
         :text="bodyText"
         :disable-gallery="route.name !== 'DiscussionDetail'"
+        :word-limit="1000"
       />
     </div>
-    <button
-      v-if="discussion?.body && shouldShowMoreButton"
-      class="mb-4 ml-4 text-sm text-blue-600 hover:underline dark:text-gray-300"
-      @click="toggleShowFullText"
-    >
-      {{ showFullText ? "Show Less" : "Show More" }}
-    </button>
     <div class="ml-4 flex" v-if="channelId">
       <EmojiButtons
         :key="emojiJson"
@@ -152,7 +109,7 @@ export default defineComponent({
         :emoji-json="emojiJson"
       />
     </div>
-    <div class="flex gap-1 ml-4">
+    <div class="ml-4 flex gap-1">
       <Tag
         v-for="tag in discussion?.Tags"
         :key="tag.text"

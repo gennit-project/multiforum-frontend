@@ -77,8 +77,6 @@ export default defineComponent({
       return getTagLabel(selectedTags.value);
     });
 
-    const previewIsOpen = ref(false);
-
     const { lgAndDown, lgAndUp, mdAndDown, smAndDown } = useDisplay();
     const createDiscussionPath = channelId.value
       ? `/channels/c/${channelId.value}/discussions/create`
@@ -96,7 +94,6 @@ export default defineComponent({
       lgAndDown,
       lgAndUp,
       mdAndDown,
-      previewIsOpen,
       route,
       router,
       setSelectedTags,
@@ -237,12 +234,6 @@ export default defineComponent({
         this.updateFilters({ channels: [uniqueName] });
       }
     },
-    closePreview() {
-      this.previewIsOpen = false;
-    },
-    openPreview() {
-      this.previewIsOpen = true;
-    },
     setSelectedChannels(channels: Array<string>) {
       this.selectedChannels = channels;
     },
@@ -251,35 +242,28 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-row :class="!smAndDown ? 'pt-3 pl-6': 'px-2'" class="justify-center">
+  <v-row :class="!smAndDown ? 'pl-6 pt-3' : 'px-2'" class="justify-center bg-gray-200">
     <v-col
       cols="12"
-      class=" bg-white scrollable-column shadow-right-lg md:pr-6 max-w-5xl  dark:bg-gray-800"
+      class="shadow-right-lg h-full bg-white max-w-5xl  dark:bg-gray-800 md:pr-6"
     >
       <DiscussionFilterBar />
       <SitewideDiscussionList
         v-if="!channelId"
         @filterByTag="handleClickTag"
         @filterByChannel="handleClickChannel"
-        @openPreview="openPreview"
       />
       <ChannelDiscussionList
         v-else
+        class="scrollable-column "
         :channel-id="channelId"
         :search-input="filterValues.searchInput"
         :selected-tags="filterValues.tags"
         :selected-channels="filterValues.channels"
         @filterByTag="handleClickTag"
         @filterByChannel="handleClickChannel"
-        @openPreview="openPreview"
       />
     </v-col>
-    <DrawerFlyout
-      :is-open="previewIsOpen"
-      @closePreview="closePreview"
-    >
-      <DiscussionDetail />
-    </DrawerFlyout>
   </v-row>
 </template>
 

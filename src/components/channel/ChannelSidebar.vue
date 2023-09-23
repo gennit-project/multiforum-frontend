@@ -115,10 +115,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-full h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900">
-    <div v-if="channelId" class="mb-4 mt-6 items-center gap-2 px-4">
+  <div class="h-screen bg-gray-100 dark:bg-gray-900">
+    <div v-if="channelId" class="mb-4 pt-4 items-center gap-2 px-4">
       <Avatar
-        class="shadow-sm"
+        class="shadow-sm w-24"
         :text="channelId"
         :is-square="true"
         :is-large="true"
@@ -187,7 +187,7 @@ export default defineComponent({
                 :to="`/u/${admin.username}`"
                 class="flex items-center"
               >
-                <Avatar :text="admin.username" class="mr-2" />
+                <Avatar :text="admin.username" class="pr-2" />
                 <UsernameWithTooltip
                   v-if="admin.username"
                   :username="admin.username"

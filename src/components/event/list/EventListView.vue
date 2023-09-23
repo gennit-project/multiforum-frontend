@@ -139,10 +139,9 @@ export default defineComponent({
         });
       } else {
         router.push({
-          name: "SearchEventPreview",
+          name: "SearchEventsInChannel",
           params: {
-            ...route.params,
-            eventId,
+            channelId: channelId.value,
           },
           hash: `#${eventLocationId}`,
           query: { ...route.query },

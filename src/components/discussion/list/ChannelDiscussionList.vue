@@ -131,10 +131,7 @@ export default defineComponent({
           });
         } else {
           router.push({
-            name: "SearchDiscussionPreview",
-            params: {
-              discussionId: discussionId,
-            },
+            name: "SearchDiscussionsInChannel",
           });
         }
       }
@@ -206,16 +203,6 @@ export default defineComponent({
         });
       }
     });
-    if (
-      !this.discussionId &&
-      this.discussionResult &&
-      this.discussionResult.discussions &&
-      this.discussionResult.discussions.length > 0
-    ) {
-      this.sendToPreview(
-        this.discussionResult.discussionChannels[0].discussionId,
-      );
-    }
   },
   methods: {
     filterByTag(tag: string) {
@@ -235,7 +222,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full">
+  <div>
     <p v-if="discussionLoading">Loading...</p>
     <ErrorBanner
       v-else-if="discussionError"

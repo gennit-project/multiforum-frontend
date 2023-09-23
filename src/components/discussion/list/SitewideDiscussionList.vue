@@ -131,12 +131,6 @@ export default defineComponent({
       loadMore,
       reachedEndOfResults,
       refetchDiscussions,
-      selectedDiscussion: {} as DiscussionData,
-    };
-  },
-  data() {
-    return {
-      previewIsOpen: false,
     };
   },
   created() {
@@ -150,11 +144,6 @@ export default defineComponent({
     });
   },
   methods: {
-    openPreview(data: DiscussionData) {
-      this.previewIsOpen = true;
-      this.selectedDiscussion = data;
-      this.$emit("openPreview");
-    },
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
@@ -211,7 +200,6 @@ export default defineComponent({
           :selected-channels="filterValues.channels"
           @filterByTag="filterByTag"
           @filterByChannel="filterByChannel"
-          @openPreview="openPreview"
         />
       </ul>
       <div

@@ -2,10 +2,11 @@
 import { defineComponent, PropType, computed } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
 import { relativeTime } from "../../../dateTimeUtils";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import { router } from "@/router";
 
 export default defineComponent({
   components: {
@@ -57,21 +58,17 @@ export default defineComponent({
       return count;
     });
 
-    const truncatedBody = computed(() => {
+    const submittedToMultipleChannels = computed(() => {
       if (!props.discussion) {
-        return "";
+        return false;
       }
-
-      if (props.discussion?.body && props.discussion.body.length > 200) {
-        return props.discussion?.body.slice(0, 500) + "...";
-      }
-      return props.discussion.body;
+      return props.discussion.DiscussionChannels.length > 1;
     });
 
     return {
       commentCount,
       route,
-      truncatedBody,
+      submittedToMultipleChannels,
     };
   },
 
@@ -105,21 +102,18 @@ export default defineComponent({
         : [],
     };
   },
-  computed: {
-    previewLink() {
+  methods: {
+    getDetailLink(channelId: string) {
       if (!this.discussion) {
         return "";
       }
-      return `/discussions/search/${this.discussion.id}`;
-    },
-    filteredQuery() {
-      const query = { ...this.$route.query };
-      for (let key in query) {
-        if (!query[key]) {
-          delete query[key];
-        }
-      }
-      return query;
+      return router.resolve({
+        name: "DiscussionDetail",
+        params: {
+          discussionId: this.discussion.id,
+          channelId,
+        },
+      }).href;
     },
   },
 });
@@ -128,11 +122,7 @@ export default defineComponent({
 <template>
   <li
     class="relative flex gap-3 space-x-2 border-b px-6 py-4"
-    :class="[
-      discussionId === discussionIdInParams
-        ? 'rounded-md border border-black bg-gray-100 dark:border-blue-500 dark:bg-gray-700'
-        : 'border-b border-gray-200 dark:border-gray-500',
-    ]"
+    :class="['border-b border-gray-200 dark:border-gray-500']"
   >
     <div>
       <div
@@ -148,17 +138,12 @@ export default defineComponent({
     </div>
     <div class="flex w-full justify-between">
       <div class="w-full">
-        <router-link
-          :to="{ path: previewLink, query: filteredQuery }"
-          @click="$emit('openPreview')"
+        <p
+          :class="discussionIdInParams === discussionId ? 'text-black' : ''"
+          class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
         >
-          <p
-            :class="discussionIdInParams === discussionId ? 'text-black' : ''"
-            class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
-          >
-            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-          </p>
-        </router-link>
+          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+        </p>
 
         <div
           class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
@@ -174,67 +159,41 @@ export default defineComponent({
         </div>
 
         <div
-          v-if="discussion && discussion.DiscussionChannels"
-          class="font-medium flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
+          class="font-medium flex flex-wrap items-center gap-1 text-xs mb-2 text-gray-600 no-underline dark:text-gray-300"
         >
           <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
-
-          <Tag
-            v-for="dc in discussion.DiscussionChannels"
-            :key="dc.id"
-            :class="[
-              selectedChannels.includes(dc.channelUniqueName)
-                ? 'text-blue-500'
-                : 'hover:text-black dark:text-gray-200 dark:hover:text-gray-100',
-            ]"
-            :channel-mode="true"
-            :tag="dc.channelUniqueName"
-            @click="$emit('filterByChannel', dc.channelUniqueName)"
-          >
-            {{ dc.channelUniqueName }}
-          </Tag>
         </div>
-        <div class="max-w-2xl border-l-2 border-gray-300 dark:bg-gray-700">
-          <router-link
-            v-if="route.name !== 'DiscussionDetail'"
-            class="dark:text-gray-300"
-            :to="{ path: previewLink, query: filteredQuery }"
-            @click="$emit('openPreview')"
-          >
-            <MarkdownPreview
-              v-if="truncatedBody"
-              :text="truncatedBody || ''"
-              :disable-gallery="true"
-              class="-ml-4"
-            />
-          </router-link>
+        <div
+          v-if="discussion && discussion.body"
+          class="max-w-2xl border-l-2 border-gray-300 dark:bg-gray-700"
+        >
           <MarkdownPreview
-            v-else
-            :text="truncatedBody || ''"
+            :text="discussion.body"
             :disable-gallery="true"
             class="-ml-4"
           />
         </div>
-        <v-tooltip>
-          <template #activator="{ props }">
-            <button v-bind="props">
-              <router-link
-                :to="{ path: previewLink, query: filteredQuery }"
-                class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
-                @click="$emit('openPreview')"
-              >
-                <slot>
-                  <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-                  {{ commentCount }}
-                  {{ commentCount === 1 ? "comment" : "comments" }}
-                </slot>
-              </router-link>
-            </button>
-          </template>
-          <template v-slot:default>
-            <span>{{ `Sum of comments across channels` }}</span>
-          </template>
-        </v-tooltip>
+        <router-link
+          v-if="discussion && !submittedToMultipleChannels"
+          :to="
+            getDetailLink(discussion.DiscussionChannels[0].channelUniqueName)
+          "
+          class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
+        >
+          <button>
+            <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+            {{
+              `${commentCount} ${
+                commentCount === 1 ? "comment" : "comments"
+              } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
+            }}
+          </button>
+        </router-link>
+        <button v-else-if="discussion">
+          <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+          {{ commentCount }}
+          {{ commentCount === 1 ? "comment" : "comments" }}
+        </button>
       </div>
     </div>
   </li>

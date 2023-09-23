@@ -409,6 +409,7 @@ export default defineComponent({
                   <MarkdownPreview
                     :key="textCopy || ''"
                     :text="textCopy || ''"
+                    :word-limit="1000"
                   />
                 </div>
                 <TextEditor

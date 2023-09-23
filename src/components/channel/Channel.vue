@@ -95,7 +95,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-hidden dark:bg-black bg-gray-200 justify-center">
+  <div class="justify-center overflow-hidden bg-gray-200 dark:bg-black">
     <div
       v-if="smAndDown"
       :class="[
@@ -104,9 +104,8 @@ export default defineComponent({
       class="h-16 w-full object-cover lg:h-28"
       alt="background pattern"
     />
-    <div class="flex justify-center">
+    <div class="flex justify-center" v-if="smAndDown">
       <Avatar
-        v-if="smAndDown"
         class="-mt-12 mb-2 h-24 w-24 shadow-sm"
         :text="channelId"
         :is-square="true"
@@ -115,7 +114,7 @@ export default defineComponent({
     </div>
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-        <v-container fluid class="max-w-7xl bg-white dark:bg-gray-800">
+        <v-container fluid class="p-0 max-w-7xl bg-white dark:bg-gray-800">
           <ChannelTabs
             v-if="smAndDown"
             :vertical="false"
@@ -123,7 +122,7 @@ export default defineComponent({
             :route="route"
           />
           <v-row>
-            <v-col v-if="channelId && !smAndDown" cols="12" md="3">
+            <v-col v-if="channelId && !smAndDown" cols="12" md="3" class="p-0">
               <ChannelSidebar :channel-id="channelId">
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"
@@ -136,9 +135,7 @@ export default defineComponent({
               :class="[!smAndDown ? 'pt-6' : '']"
               :cols="channelId && !smAndDown ? 9 : 12"
             >
-           
-            <router-view />
-             
+              <router-view />
             </v-col>
           </v-row>
         </v-container>

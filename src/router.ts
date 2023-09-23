@@ -173,13 +173,6 @@ export const router = createRouter({
               name: "SearchDiscussionsInChannel",
               path: "",
               component: SearchDiscussions,
-              children: [
-                {
-                  name: "SearchDiscussionPreview",
-                  path: "search/:discussionId",
-                  component: DiscussionDetail,
-                },
-              ],
             },
             {
               name: "CreateDiscussionInChannel",
@@ -219,13 +212,6 @@ export const router = createRouter({
               name: "SearchEventsInChannel",
               path: "search",
               component: EventListView,
-              children: [
-                {
-                  name: "SearchEventPreview",
-                  path: ":eventId",
-                  component: EventDetail,
-                },
-              ],
             },
             {
               name: "CreateEventInChannel",

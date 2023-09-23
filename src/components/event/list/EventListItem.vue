@@ -110,8 +110,8 @@ export default defineComponent({
       if (this.$route.name === "SitewideSearchEventPreview") {
         return `/events/list/search/${this.event.id}`;
       }
-      if (this.$route.name === "SearchEventPreview") {
-        return `/channels/c/${this.currentChannelId}/events/search/${this.event.id}`;
+      if (this.$route.name === "SearchEventsInChannel") {
+        return `/channels/c/${this.currentChannelId}/events/`;
       }
       return ``;
     },
@@ -211,8 +211,14 @@ export default defineComponent({
     goToPreviewLink() {
       const existingQuery = this.$route.query;
       this.$router.push({
-        path: this.previewLink,
-        query: existingQuery,
+        name: "SearchEventsInChannel",
+        params: {
+          channelId: this.defaultUniqueName,
+        },
+        query: {
+          ...existingQuery,
+          eventId: this.event.id,
+        },
       });
     },
     updateFilters(params: SearchEventValues) {

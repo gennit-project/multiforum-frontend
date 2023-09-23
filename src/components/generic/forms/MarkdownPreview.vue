@@ -3,8 +3,7 @@ import { computed, defineComponent } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import MarkdownIt from "markdown-it";
 import { ref, watchEffect } from "vue";
-import config from '@/config'
-
+import config from "@/config";
 
 function linkifyUsernames(markdownString: string) {
   // Use a regular expression to find "u/[username]" patterns
@@ -76,10 +75,32 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    wordLimit: {
+      type: Number,
+      default: 100,
+    },
   },
   setup(props) {
     // Define your reactive properties
     const embeddedImages = ref<GalleryItem[]>([]);
+
+    const countWords = (str: string) => {
+      return str.trim().split(/\s+/).length;
+    };
+
+    const showFullText = ref(countWords(props.text) < props.wordLimit);
+
+    const shouldShowMoreButton = computed(() => {
+      if (!props.text) {
+        return false;
+      }
+      const words = props.text.split(" ");
+      return words.length > props.wordLimit;
+    });
+
+    const toggleShowFullText = () => {
+      showFullText.value = !showFullText.value;
+    };
 
     // Define a function to update the dimensions
     const updateImageDimensions = (src: string) => {
@@ -89,7 +110,7 @@ export default defineComponent({
           this.width,
           this.height,
           window.innerWidth,
-          window.innerHeight
+          window.innerHeight,
         );
 
         // Find the image in the embeddedImages array and update its dimensions
@@ -121,15 +142,31 @@ export default defineComponent({
       });
     });
 
-    
-    const linkifiedMarkdown = computed(()=>{
-      const usernamesLinkified = linkifyUsernames(props.text)
-      return linkifyChannelNames(usernamesLinkified)
-    })
-    
+    const linkifiedMarkdown = computed(() => {
+      const usernamesLinkified = linkifyUsernames(props.text);
+      return linkifyChannelNames(usernamesLinkified);
+    });
+
+    const shownText = computed(() => {
+      if (showFullText.value) {
+        return linkifiedMarkdown.value;
+      }
+      const words = linkifiedMarkdown.value.split(" ");
+      if (words.length > props.wordLimit) {
+        return (
+          words.slice(0, props.wordLimit).join(" ") +
+          (words.length > props.wordLimit ? "..." : "")
+        );
+      }
+      return linkifiedMarkdown.value;
+    });
+
     return {
       embeddedImages,
-      linkifiedMarkdown
+      shownText,
+      showFullText,
+      toggleShowFullText,
+      shouldShowMoreButton,
     };
   },
   methods: {
@@ -159,17 +196,28 @@ export default defineComponent({
 </script>
 
 <template>
-  <div @click="handleImageClick($event)" class="w-full">
-    <v-md-preview
-      :text="linkifiedMarkdown"
+  <div
+    class="w-full"
+  >
+    <v-md-preview 
+      :text="shownText" 
+      @click="handleImageClick($event)"
     />
+    <button
+      v-if="shouldShowMoreButton"
+      class="mb-8 ml-8 text-sm text-blue-600 hover:underline dark:text-gray-300"
+      @click="toggleShowFullText"
+    >
+      {{ showFullText ? "Show Less" : "Show More" }}
+    </button>
   </div>
 </template>
 <style>
 .github-markdown-body img {
   cursor: pointer !important;
 }
-p, li {
+p,
+li {
   font-size: 0.9rem;
   line-height: 1.3rem;
 }
