@@ -204,7 +204,11 @@ export default defineComponent({
         });
       }
     });
-    this.refetchDiscussions();
+
+    // If empty, fetch the first page of discussions.
+    if (this.discussionChannelResult?.discussionChannels.length === 0) {
+      this.refetchDiscussions();
+    }
   },
   methods: {
     filterByTag(tag: string) {

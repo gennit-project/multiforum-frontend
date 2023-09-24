@@ -165,44 +165,39 @@ export const router = createRouter({
           component: ChannelAboutPage,
         },
         {
-          name: "Discussions",
-          path: "discussions",
-          component: SearchDiscussions,
+          name: "DiscussionDetail",
+          path: "discussions/d/:discussionId",
+          component: DiscussionDetail,
           children: [
             {
-              name: "SearchDiscussionsInChannel",
-              path: "",
-              component: SearchDiscussions,
-            },
+              name: "DiscussionCommentPermalink",
+              path: "comments/:commentId",
+              component: PermalinkedComment,
+              children: [{
+                name: "DiscussionCommentModHistory",
+                path: "modhistory",
+                component: CommentModHistory
+              }]
+            }
+          ]
+        },
+        {
+          name: "SearchDiscussionsInChannel",
+          path: "discussions",
+          component: SearchDiscussions,
+        },
             {
               name: "CreateDiscussionInChannel",
               path: "create",
               component: CreateDiscussion,
             },
-            {
-              name: "DiscussionDetail",
-              path: "d/:discussionId",
-              component: DiscussionDetail,
-              children: [
-                {
-                  name: "DiscussionCommentPermalink",
-                  path: "comments/:commentId",
-                  component: PermalinkedComment,
-                  children: [{
-                    name: "DiscussionCommentModHistory",
-                    path: "modhistory",
-                    component: CommentModHistory
-                  }]
-                }
-              ]
-            },
+            
             {
               name: "EditDiscussion",
               path: "d/:discussionId/edit",
               component: EditDiscussion,
             },
-          ],
-        },
+        
         {
           name: "Events",
           path: "events",
