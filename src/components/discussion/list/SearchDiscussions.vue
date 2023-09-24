@@ -242,29 +242,27 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-row :class="!smAndDown ? 'pl-6 pt-3' : 'px-2'" class="justify-center bg-gray-200">
-    <v-col
-      cols="12"
-      class="shadow-right-lg h-full bg-white max-w-5xl  dark:bg-gray-800 md:pr-6"
-    >
-      <DiscussionFilterBar />
-      <SitewideDiscussionList
-        v-if="!channelId"
-        @filterByTag="handleClickTag"
-        @filterByChannel="handleClickChannel"
-      />
-      <ChannelDiscussionList
-        v-else
-        class="scrollable-column "
-        :channel-id="channelId"
-        :search-input="filterValues.searchInput"
-        :selected-tags="filterValues.tags"
-        :selected-channels="filterValues.channels"
-        @filterByTag="handleClickTag"
-        @filterByChannel="handleClickChannel"
-      />
-    </v-col>
-  </v-row>
+  <v-container
+    :class="!smAndDown ? 'pl-6 pt-3' : 'px-2'"
+    class="max-w-5xl justify-center bg-white"
+  >
+    <DiscussionFilterBar />
+    <SitewideDiscussionList
+      v-if="!channelId"
+      @filterByTag="handleClickTag"
+      @filterByChannel="handleClickChannel"
+    />
+    <ChannelDiscussionList
+      v-else
+      class="scrollable-column"
+      :channel-id="channelId"
+      :search-input="filterValues.searchInput"
+      :selected-tags="filterValues.tags"
+      :selected-channels="filterValues.channels"
+      @filterByTag="handleClickTag"
+      @filterByChannel="handleClickChannel"
+    />
+  </v-container>
 </template>
 
 <style>

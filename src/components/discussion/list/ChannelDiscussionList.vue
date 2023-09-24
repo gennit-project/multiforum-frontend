@@ -180,6 +180,7 @@ export default defineComponent({
     const { mdAndDown } = useDisplay();
 
     return {
+      channelId: channelId.value,
       createModProfile,
       discussionError,
       discussionLoading,
@@ -236,7 +237,17 @@ export default defineComponent({
       "
       class="my-6 px-4"
     >
-      There are no results.
+      There are no discussions to show. 
+      <router-link
+        v-if="channelId"
+        :to="{
+          name: 'CreateDiscussionInChannel',
+          params: {
+            channelId: channelId,
+          },
+        }"
+        class="text-blue-500 underline"
+      >Create one?</router-link>
     </p>
     <div v-else>
       <div>

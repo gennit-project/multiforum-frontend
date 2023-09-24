@@ -95,7 +95,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="justify-center overflow-hidden bg-gray-200 dark:bg-black">
+  <div class="justify-center overflow-hidden dark:bg-black">
     <div
       v-if="smAndDown"
       :class="[
