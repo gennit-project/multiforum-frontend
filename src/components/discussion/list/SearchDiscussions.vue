@@ -2,7 +2,6 @@
 import { computed, defineComponent, ref } from "vue";
 import ChannelDiscussionList from "./ChannelDiscussionList.vue";
 import SitewideDiscussionList from "./SitewideDiscussionList.vue";
-import DrawerFlyout from "../../generic/DrawerFlyout.vue";
 import { useRoute, useRouter } from "vue-router";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
@@ -11,7 +10,6 @@ import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere"
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
-import DiscussionDetail from "../detail/DiscussionDetail.vue";
 
 interface Ref<T> {
   value: T;
@@ -20,9 +18,7 @@ interface Ref<T> {
 export default defineComponent({
   components: {
     ChannelDiscussionList,
-    DiscussionDetail,
     DiscussionFilterBar,
-    DrawerFlyout,
     SitewideDiscussionList,
   },
   setup() {

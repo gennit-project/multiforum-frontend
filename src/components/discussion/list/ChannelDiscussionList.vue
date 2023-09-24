@@ -204,6 +204,7 @@ export default defineComponent({
         });
       }
     });
+    this.refetchDiscussions();
   },
   methods: {
     filterByTag(tag: string) {
