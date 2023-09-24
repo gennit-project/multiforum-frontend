@@ -3,10 +3,9 @@ import { computed, defineComponent, Ref, ref } from "vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import SitewideDiscussionListItem from "./SitewideDiscussionListItem.vue";
 import LoadMore from "../../generic/LoadMore.vue";
-import { DiscussionData } from "../../../types/discussionTypes";
 import { GET_SITE_WIDE_DISCUSSION_LIST } from "@/graphQLData/discussion/queries";
 import { useQuery } from "@vue/apollo-composable";
-import { useRouter, useRoute } from "vue-router";
+import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 
@@ -25,7 +24,6 @@ export default defineComponent({
   // specifically the comment section data, which is needed to display
   // the vote buttons.
   setup() {
-    const router = useRouter();
     const route = useRoute();
 
     const channelId = computed(() => {
