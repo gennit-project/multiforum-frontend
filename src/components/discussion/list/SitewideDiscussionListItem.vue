@@ -80,22 +80,27 @@ export default defineComponent({
       if (!props.discussion) {
         return [];
       }
-      return props.discussion.DiscussionChannels.map((dc) => {
-        const commentCount = dc.CommentsAggregate?.count || 0;
-        return {
-          label: `${commentCount} ${
-            commentCount === 1 ? "comment" : "comments"
-          } in ${dc.channelUniqueName}`,
-          value: router.resolve({
-            name: "DiscussionDetail",
-            params: {
-              discussionId: props.discussion?.id,
-              channelId: dc.channelUniqueName,
-            },
-          }).href,
-          event: "",
-        };
-      });
+      return props.discussion.DiscussionChannels
+        .map((dc) => {
+          const commentCount = dc.CommentsAggregate?.count || 0;
+          return {
+            label: `${commentCount} ${
+              commentCount === 1 ? "comment" : "comments"
+            } in ${dc.channelUniqueName}`,
+            value: router.resolve({
+              name: "DiscussionDetail",
+              params: {
+                discussionId: props.discussion?.id,
+                channelId: dc.channelUniqueName,
+              },
+            }).href,
+            event: "",
+          };
+        })
+        .sort((a, b) => {
+          return b.label.localeCompare(a.label);
+        });
+       
     });
 
     return {
