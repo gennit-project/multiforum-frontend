@@ -240,7 +240,7 @@ export default defineComponent({
 <template>
   <v-container
     :class="!smAndDown ? 'pl-6 pt-3' : 'px-2'"
-    class="max-w-5xl justify-center bg-white"
+    class="h-screen overflow-auto max-w-5xl justify-center bg-white"
   >
     <DiscussionFilterBar />
     <SitewideDiscussionList

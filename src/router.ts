@@ -167,7 +167,7 @@ export const router = createRouter({
         {
           name: "Discussions",
           path: "discussions",
-          component: DiscussionTab,
+          component: SearchDiscussions,
           children: [
             {
               name: "SearchDiscussionsInChannel",
