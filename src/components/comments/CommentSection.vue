@@ -638,7 +638,7 @@ export default defineComponent({
         </template>
       </PermalinkedComment>
       <SortButtons :show-top-options="false"/>
-      <div class="mb-6">
+      <div class="my-4">
         <div v-if="discussionChannel.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>

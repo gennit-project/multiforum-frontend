@@ -64,6 +64,25 @@ export default defineComponent({
       return "";
     });
 
+    const commentSort = computed(() => {
+      const sort = route.query.sort;
+      if (typeof sort === "string") {
+        if (sort === "new") {
+          return {
+            createdAt: "DESC",
+          };
+        }
+        if (sort === "top") {
+          return {
+            weightedVotesCount: "DESC",
+          };
+        }
+      }
+      return {
+        weightedVotesCount: "DESC",
+      };
+    });
+
     const {
       result: getDiscussionResult,
       error: getDiscussionError,
@@ -80,6 +99,7 @@ export default defineComponent({
       channelUniqueName: channelId,
       offset: 0,
       limit: COMMENT_LIMIT,
+      sort: commentSort,
     });
 
     // We get the aggregate count of root comments so that we will know
@@ -215,9 +235,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div 
-    class="mt-1 pl-4 w-full max-w-7xl space-y-2"
-  >
+  <div class="mt-1 w-full max-w-7xl space-y-2 pl-4">
     <div
       v-if="route.name === 'DiscussionDetail'"
       class="align-center mx-1 mt-2 flex w-full justify-between px-2"
@@ -250,11 +268,8 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <v-row 
-      v-if="discussion" 
-      class="mt-1 flex justify-center"
-    >
-      <v-col >
+    <v-row v-if="discussion" class="mt-1 flex justify-center">
+      <v-col>
         <div class="space-y-3 px-2">
           <div class="mb-3 w-full">
             <div ref="discussionDetail">

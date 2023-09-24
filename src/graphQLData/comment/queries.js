@@ -112,6 +112,7 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
     $discussionId: ID!
     $offset: Int
     $limit: Int
+    $sort: [CommentSort!]
   ) {
     discussionChannels(
       where: {
@@ -151,7 +152,11 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
       }
       Comments(
         where: { isRootComment: true }
-        options: { limit: $limit, offset: $offset }
+        options: { 
+          limit: $limit, 
+          offset: $offset,
+          sort: $sort
+        }
       ) {
         ...CommentFields
         ChildComments {
