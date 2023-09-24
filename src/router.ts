@@ -6,7 +6,7 @@ import EventDetail from "./components/event/detail/EventDetail.vue";
 import SearchEvents from "./components/event/list/SearchEvents.vue";
 import Feed from "./components/feed/Feed.vue";
 import SearchFeeds from "./components/feed/SearchFeeds.vue";
-import DiscussionTab from "@/components/channel/DiscussionTab.vue"
+import DiscussionTab from "@/components/channel/DiscussionTab.vue";
 import EventTab from "@/components/channel/EventTab.vue";
 import DiscussionDetail from "./components/discussion/detail/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/list/SearchDiscussions.vue";
@@ -28,9 +28,9 @@ import CommentModHistory from "@/components/comments/CommentModHistory.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
 import DownvotedDiscussions from "@/components/mod/DownvotedDiscussions.vue";
 import DownvotedComments from "@/components/mod/DownvotedComments.vue";
-import UserComments from "@/components/user/UserComments.vue"
-import UserDiscussions from "@/components/user/UserDiscussions.vue"
-import UserEvents from "@/components/user/UserEvents.vue"
+import UserComments from "@/components/user/UserComments.vue";
+import UserDiscussions from "@/components/user/UserDiscussions.vue";
+import UserEvents from "@/components/user/UserEvents.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -41,28 +41,27 @@ export const router = createRouter({
       component: SearchDiscussions,
     },
     {
-      path: "/u/:username", 
+      path: "/u/:username",
       component: UserProfile,
       name: "UserProfile",
       children: [
         {
           name: "UserAuthoredDiscussions",
           path: "discussions",
-          component: UserDiscussions
+          component: UserDiscussions,
         },
         {
           name: "UserPostedEvents",
           path: "events",
-          component: UserEvents
+          component: UserEvents,
         },
         {
           name: "UserAuthoredComments",
           path: "comments",
           alias: "",
-          component: UserComments
+          component: UserComments,
         },
-
-      ]
+      ],
     },
     {
       path: "/logout",
@@ -173,31 +172,31 @@ export const router = createRouter({
               name: "DiscussionCommentPermalink",
               path: "comments/:commentId",
               component: PermalinkedComment,
-              children: [{
-                name: "DiscussionCommentModHistory",
-                path: "modhistory",
-                component: CommentModHistory
-              }]
-            }
-          ]
+              children: [
+                {
+                  name: "DiscussionCommentModHistory",
+                  path: "modhistory",
+                  component: CommentModHistory,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          name: "CreateDiscussionInChannel",
+          path: "discussions/create",
+          component: CreateDiscussion,
         },
         {
           name: "SearchDiscussionsInChannel",
           path: "discussions",
           component: SearchDiscussions,
         },
-            {
-              name: "CreateDiscussionInChannel",
-              path: "create",
-              component: CreateDiscussion,
-            },
-            
-            {
-              name: "EditDiscussion",
-              path: "d/:discussionId/edit",
-              component: EditDiscussion,
-            },
-        
+        {
+          name: "EditDiscussion",
+          path: "d/:discussionId/edit",
+          component: EditDiscussion,
+        },
         {
           name: "Events",
           path: "events",
@@ -229,21 +228,21 @@ export const router = createRouter({
     },
     { path: "/feeds", component: SearchFeeds },
     { path: "/feeds/:feedId", component: Feed },
-    { 
-      path: "/mod/:modId", 
+    {
+      path: "/mod/:modId",
       component: ModProfile,
       children: [
         {
           name: "ModProfileDownvotedDiscussions",
           path: "downvoted/discussions",
-          component: DownvotedDiscussions
+          component: DownvotedDiscussions,
         },
         {
           name: "ModProfileDownvotedComments",
           path: "",
-          component: DownvotedComments 
-        }
-      ]
+          component: DownvotedComments,
+        },
+      ],
     },
     { path: "/settings", component: SiteSettings },
     {

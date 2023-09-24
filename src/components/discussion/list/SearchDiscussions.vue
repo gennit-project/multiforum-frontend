@@ -240,7 +240,7 @@ export default defineComponent({
 <template>
   <v-container
     :class="!smAndDown ? 'pl-6 pt-3' : 'px-2'"
-    class="h-screen overflow-auto max-w-5xl justify-center bg-white"
+    class="scrollable-column overflow-auto max-w-5xl justify-center bg-white dark:bg-gray-800"
   >
     <DiscussionFilterBar />
     <SitewideDiscussionList
@@ -250,7 +250,6 @@ export default defineComponent({
     />
     <ChannelDiscussionList
       v-else
-      class="scrollable-column"
       :channel-id="channelId"
       :search-input="filterValues.searchInput"
       :selected-tags="filterValues.tags"

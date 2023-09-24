@@ -63,7 +63,7 @@ export default defineComponent({
       :test-id="'upvote-comment-button'"
       :count="upvoteCount"
       :active="upvoteActive"
-      :tooltip-text="upvoteActive ? 'Undo upvote' : 'Make this comment more visible'"
+      :tooltip-text="upvoteActive ? 'Undo upvote' : 'Upvote to make this comment more visible'"
       @vote="clickUpvote"
     >
       <i class="fa-solid fa-arrow-up mr-1 w-3" />

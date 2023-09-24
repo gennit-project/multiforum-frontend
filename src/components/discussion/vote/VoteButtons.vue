@@ -57,7 +57,7 @@ export default defineComponent({
           :count="upvoteCount"
           :active="upvoteActive"
           :tooltip-text="
-            upvoteActive ? 'Undo upvote' : 'Make this discussion more visible'
+            upvoteActive ? 'Undo upvote' : 'Upvote to make this discussion more visible'
           "
           @vote="clickUp"
         >

@@ -116,9 +116,9 @@ export default defineComponent({
 
 <template>
   <div class="h-screen bg-gray-100 dark:bg-gray-900">
-    <div v-if="channelId" class="mb-4 pt-4 items-center gap-2 px-4">
+    <div v-if="channelId" class="pl-4 pt-4 items-center gap-2 px-4">
       <Avatar
-        class="shadow-sm w-24"
+        class="shadow-sm w-24 mt-3"
         :text="channelId"
         :is-square="true"
         :is-large="true"
