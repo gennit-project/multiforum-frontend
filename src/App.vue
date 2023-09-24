@@ -59,8 +59,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-gray-200 dark:bg-black dark:text-gray-200  list-disc h-screen">
-    <nav>
+  <div class="bg-gray-200 dark:bg-black dark:text-gray-200 list-disc">
+    <nav class="mb-2">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
         @toggleDropdown="toggleDropdown"

@@ -2,17 +2,21 @@
 import { defineComponent, PropType, computed } from "vue";
 import { DiscussionData } from "../../../types/discussionTypes";
 import { relativeTime } from "../../../dateTimeUtils";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import { router } from "@/router";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 
 export default defineComponent({
   components: {
+    MenuButton,
     HighlightedSearchTerms,
     MarkdownPreview,
     Tag,
+    ChevronDownIcon,
   },
   inheritAttrs: false,
   props: {
@@ -65,8 +69,39 @@ export default defineComponent({
       return props.discussion.DiscussionChannels.length > 1;
     });
 
+    const channelCount = computed(() => {
+      if (!props.discussion) {
+        return 0;
+      }
+      return props.discussion.DiscussionChannels.length;
+    });
+
+    const discussionDetailOptions = computed(() => {
+      if (!props.discussion) {
+        return [];
+      }
+      return props.discussion.DiscussionChannels.map((dc) => {
+        const commentCount = dc.CommentsAggregate?.count || 0;
+        return {
+          label: `${commentCount} ${
+            commentCount === 1 ? "comment" : "comments"
+          } in ${dc.channelUniqueName}`,
+          value: router.resolve({
+            name: "DiscussionDetail",
+            params: {
+              discussionId: props.discussion?.id,
+              channelId: dc.channelUniqueName,
+            },
+          }).href,
+          event: "",
+        };
+      });
+    });
+
     return {
+      channelCount,
       commentCount,
+      discussionDetailOptions,
       route,
       submittedToMultipleChannels,
     };
@@ -138,13 +173,30 @@ export default defineComponent({
     </div>
     <div class="flex w-full justify-between">
       <div class="w-full">
-        <p
-          :class="discussionIdInParams === discussionId ? 'text-black' : ''"
-          class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+        <router-link
+          v-if="discussion"
+          :to="
+            getDetailLink(discussion.DiscussionChannels[0].channelUniqueName)
+          "
         >
-          <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-        </p>
+          <p
+            :class="discussionIdInParams === discussionId ? 'text-black' : ''"
+            class="text-md mb-2 cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+          >
+            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+          </p>
+        </router-link>
 
+        <div
+          v-if="discussion && discussion.body"
+          class="max-w-2xl border-l-2 border-gray-300 dark:bg-gray-700"
+        >
+          <MarkdownPreview
+            :text="discussion.body"
+            :disable-gallery="true"
+            class="-ml-4"
+          />
+        </div>
         <div
           class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
         >
@@ -159,19 +211,9 @@ export default defineComponent({
         </div>
 
         <div
-          class="font-medium flex flex-wrap items-center gap-1 text-xs mb-2 text-gray-600 no-underline dark:text-gray-300"
+          class="font-medium mb-2 flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
         >
           <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
-        </div>
-        <div
-          v-if="discussion && discussion.body"
-          class="max-w-2xl border-l-2 border-gray-300 dark:bg-gray-700"
-        >
-          <MarkdownPreview
-            :text="discussion.body"
-            :disable-gallery="true"
-            class="-ml-4"
-          />
         </div>
         <router-link
           v-if="discussion && !submittedToMultipleChannels"
@@ -182,18 +224,27 @@ export default defineComponent({
         >
           <button>
             <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+            <span class="underline">{{
+              `View ${commentCount} ${
+                commentCount === 1 ? "comment" : "comments"
+              } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
+            }}</span>
+          </button>
+        </router-link>
+
+        <MenuButton v-else-if="discussion" :items="discussionDetailOptions">
+          <button class="flex items-center rounded-md border py-2 pl-2 pr-4">
+            <i class="fa-regular fa-comment mr-2 h-4 w-4" />
             {{
               `${commentCount} ${
                 commentCount === 1 ? "comment" : "comments"
-              } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
+              } in ${channelCount} ${
+                channelCount === 1 ? "channel" : "channels"
+              }`
             }}
+            <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
           </button>
-        </router-link>
-        <button v-else-if="discussion">
-          <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-          {{ commentCount }}
-          {{ commentCount === 1 ? "comment" : "comments" }}
-        </button>
+        </MenuButton>
       </div>
     </div>
   </li>
