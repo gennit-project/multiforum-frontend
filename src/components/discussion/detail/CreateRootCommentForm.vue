@@ -1,8 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from "vue";
-import {
-  CREATE_COMMENT,
-} from "@/graphQLData/comment/mutations";
+import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
@@ -14,6 +12,8 @@ import SaveButton from "../../generic/buttons/SaveButton.vue";
 import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
 import { Comment, DiscussionChannel } from "@/__generated__/graphql";
 import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
+import { useRoute } from "vue-router";
+import { getCommentSortFromQuery } from "@/components/comments/getCommentSortFromQuery";
 
 export default defineComponent({
   components: {
@@ -38,6 +38,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const route = useRoute();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
@@ -108,19 +109,21 @@ export default defineComponent({
           // after replying to a comment. For the logic
           // to create a root level comment, see the
           // parent component.
-          const newComment: Comment =
-            result.data?.createComments?.comments[0];
+          const newComment: Comment = result.data?.createComments?.comments[0];
           // Will use readQuery and writeQuery to update the cache
           // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
+          const commentSectionQueryVariables = {
+            discussionId: props.discussionChannel.discussionId,
+            channelUniqueName: props.discussionChannel.channelUniqueName,
+            limit: COMMENT_LIMIT,
+            offset: props.previousOffset,
+            sort: getCommentSortFromQuery(route.query),
+          };
+
           const readQueryResult = cache.readQuery({
             query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
-            variables: {
-              discussionId: props.discussionChannel.discussionId,
-              channelUniqueName: props.discussionChannel.channelUniqueName,
-              limit: COMMENT_LIMIT,
-              offset: props.previousOffset
-            },
+            variables: commentSectionQueryVariables,
           });
 
           const existingDiscussionChannelData: DiscussionChannel =
@@ -146,12 +149,7 @@ export default defineComponent({
 
           cache.writeQuery({
             query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
-            variables: {
-              discussionId: props.discussionChannel.discussionId,
-              channelUniqueName: props.discussionChannel.channelUniqueName,
-              limit: COMMENT_LIMIT,
-              offset: props.previousOffset
-            },
+            variables: commentSectionQueryVariables,
             data: {
               ...readQueryResult,
               discussionChannels: [
@@ -176,7 +174,8 @@ export default defineComponent({
       return props.discussionChannel.locked;
     });
 
-    const writeReplyStyle =  'block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9'
+    const writeReplyStyle =
+      "block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9";
 
     return {
       discussionChannelIsLocked,
@@ -187,7 +186,7 @@ export default defineComponent({
       showCreateCommentModal: ref(false),
       showRootCommentEditor: ref(false),
       username,
-      writeReplyStyle
+      writeReplyStyle,
     };
   },
   methods: {
@@ -205,17 +204,10 @@ export default defineComponent({
 </script>
 <template>
   <div class="mt-1 flex w-full flex-col space-x-2 px-1 pt-4">
-    <div class="flex gap-2 min-h-36">
-      <Avatar
-        v-if="username"
-        class="h-5 w-5"
-        :text="username"
-      />
+    <div class="min-h-36 flex gap-2">
+      <Avatar v-if="username" class="h-5 w-5" :text="username" />
 
-      <RequireAuth
-        v-if="!showEditorInCommentSection"
-        class="w-full"
-      >
+      <RequireAuth v-if="!showEditorInCommentSection" class="w-full">
         <template #has-auth>
           <textarea
             id="addComment"
@@ -237,16 +229,13 @@ export default defineComponent({
           />
         </template>
       </RequireAuth>
-      <div
-        v-else
-        class="w-full flex flex-col"
-      >
+      <div v-else class="flex w-full flex-col">
         <TextEditor
           :test-id="'texteditor-textarea'"
           :placeholder="'Please be kind'"
           @update="handleUpdateComment"
         />
-        <div class="flex justify-start mt-3">
+        <div class="mt-3 flex justify-start">
           <CancelButton @click="showEditorInCommentSection = false" />
           <SaveButton
             data-testid="createCommentButton"

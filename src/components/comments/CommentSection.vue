@@ -31,9 +31,10 @@ import type { Ref } from "vue";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
-import SortButtons from "@/components/generic/buttons/SortButtons.vue"
+import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
+import { getCommentSortFromQuery } from "@/components/comments/getCommentSortFromQuery";
 
 export default defineComponent({
   components: {
@@ -222,6 +223,13 @@ export default defineComponent({
       };
       return [input];
     });
+    const commentSectionQueryVariables = {
+      discussionId: props.discussionChannel.discussionId,
+      channelUniqueName: props.discussionChannel.channelUniqueName,
+      limit: COMMENT_LIMIT,
+      offset: props.previousOffset,
+      sort: getCommentSortFromQuery(route.query),
+    };
 
     const { mutate: createComment, error: createCommentError } = useMutation(
       CREATE_COMMENT,
@@ -245,12 +253,7 @@ export default defineComponent({
 
             const readQueryResult = cache.readQuery({
               query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
-              variables: {
-                discussionId: props.discussionChannel.discussionId,
-                channelUniqueName: props.discussionChannel.channelUniqueName,
-                limit: COMMENT_LIMIT,
-                offset: props.previousOffset,
-              },
+              variables: commentSectionQueryVariables,
             });
 
             const existingDiscussionChannelData =
@@ -297,12 +300,7 @@ export default defineComponent({
 
             cache.writeQuery({
               query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
-              variables: {
-                discussionId: props.discussionChannel.discussionId,
-                channelUniqueName: props.discussionChannel.channelUniqueName,
-                limit: COMMENT_LIMIT,
-                offset: props.previousOffset,
-              },
+              variables: commentSectionQueryVariables,
               data: {
                 ...readQueryResult,
                 discussionChannels: [
@@ -316,9 +314,7 @@ export default defineComponent({
                 ],
               },
             });
-          }
-
-          if (createFormValues.value.depth > 2) {
+          } else if (createFormValues.value.depth > 2) {
             // For more deeply nested comments, first
             // check if there are already replies to the parent
             // comment.
@@ -394,12 +390,7 @@ export default defineComponent({
             // Update the total count of comments
             const readDiscussionChannelQueryResult = cache.readQuery({
               query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
-              variables: {
-                discussionId: props.discussionChannel.discussionId,
-                channelUniqueName: props.discussionChannel.channelUniqueName,
-                limit: COMMENT_LIMIT,
-                offset: props.previousOffset,
-              },
+              variables: commentSectionQueryVariables,
             });
 
             const existingDiscussionChannelData =
@@ -421,12 +412,7 @@ export default defineComponent({
 
             cache.writeQuery({
               query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
-              variables: {
-                discussionId: props.discussionChannel.discussionId,
-                channelUniqueName: props.discussionChannel.channelUniqueName,
-                limit: COMMENT_LIMIT,
-                offset: props.previousOffset,
-              },
+              variables: commentSectionQueryVariables,
               data: {
                 ...readQueryResult,
                 discussionChannels: [
@@ -583,11 +569,7 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="discussionChannel.CommentsAggregate?.count === 0">
-      <h2
-        id="comments"
-        ref="commentSectionHeader"
-        class="mb-2 text-md"
-      >
+      <h2 id="comments" ref="commentSectionHeader" class="text-md mb-2">
         {{ `Comments (0)` }}
       </h2>
       <ErrorBanner
@@ -600,7 +582,7 @@ export default defineComponent({
     <div
       v-else-if="
         discussionChannel.CommentsAggregate &&
-          discussionChannel.CommentsAggregate.count > 0
+        discussionChannel.CommentsAggregate.count > 0
       "
       :key="permalinkedCommentId"
     >
@@ -608,7 +590,7 @@ export default defineComponent({
         v-if="!isPermalinkPage"
         id="comments"
         ref="commentSectionHeader"
-        class="text-lg px-1"
+        class="px-1 text-lg"
       >
         {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
       </h2>
@@ -637,8 +619,8 @@ export default defineComponent({
           />
         </template>
       </PermalinkedComment>
-      <SortButtons :show-top-options="false"/>
-      <div class="mb-6">
+      <SortButtons :show-top-options="false" />
+      <div class="my-4">
         <div v-if="discussionChannel.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
