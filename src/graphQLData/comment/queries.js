@@ -51,6 +51,71 @@ const COMMENT_FIELDS = gql`
   ${AUTHOR_FIELDS}
 `;
 
+
+export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
+  query getCommentSection(
+    $channelUniqueName: String!
+    $discussionId: ID!
+    $offset: Int
+    $limit: Int
+    $sort: string
+  ) {
+    getCommentSection(
+      where: {
+        channelUniqueName: $channelUniqueName
+        discussionId: $discussionId
+      }
+    ) {
+      id
+      weightedVotesCount
+      discussionId
+      channelUniqueName
+      emoji
+      Channel {
+        uniqueName
+      }
+      Discussion {
+        id
+        title
+        Author {
+          ...AuthorFields
+        }
+      }
+      CommentsAggregate {
+        count
+      }
+      UpvotedByUsers {
+        username
+      }
+      UpvotedByUsersAggregate {
+        count
+      }
+      DownvotedByModerators {
+        displayName
+      }
+      DownvotedByModeratorsAggregate {
+        count
+      }
+      Comments(
+        where: { isRootComment: true }
+        options: { 
+          limit: $limit, 
+          offset: $offset,
+          sort: $sort
+        }
+      ) {
+        ...CommentFields
+        ChildComments {
+          ...CommentFields
+        }
+      }
+    }
+  }
+  ${AUTHOR_FIELDS}
+  ${COMMENT_FIELDS}
+  ${COMMENT_VOTE_FIELDS}
+`;
+
 export const GET_DISCUSSION_CHANNEL_BY_ID = gql`
   query getDiscussionChannel($id: ID!) {
     discussionChannels(where: { id: $id }) {
@@ -106,69 +171,6 @@ export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
   }
 `;
 
-export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
-  query getDiscussionChannel(
-    $channelUniqueName: String!
-    $discussionId: ID!
-    $offset: Int
-    $limit: Int
-    $sort: [CommentSort!]
-  ) {
-    discussionChannels(
-      where: {
-        channelUniqueName: $channelUniqueName
-        discussionId: $discussionId
-      }
-    ) {
-      id
-      weightedVotesCount
-      discussionId
-      channelUniqueName
-      emoji
-      Channel {
-        uniqueName
-      }
-      Discussion {
-        id
-        title
-        Author {
-          ...AuthorFields
-        }
-      }
-      CommentsAggregate {
-        count
-      }
-      UpvotedByUsers {
-        username
-      }
-      UpvotedByUsersAggregate {
-        count
-      }
-      DownvotedByModerators {
-        displayName
-      }
-      DownvotedByModeratorsAggregate {
-        count
-      }
-      Comments(
-        where: { isRootComment: true }
-        options: { 
-          limit: $limit, 
-          offset: $offset,
-          sort: $sort
-        }
-      ) {
-        ...CommentFields
-        ChildComments {
-          ...CommentFields
-        }
-      }
-    }
-  }
-  ${AUTHOR_FIELDS}
-  ${COMMENT_FIELDS}
-  ${COMMENT_VOTE_FIELDS}
-`;
 
 export const GET_COMMENT_AND_REPLIES = gql`
   query getCommentWithReplies($id: ID!) {
