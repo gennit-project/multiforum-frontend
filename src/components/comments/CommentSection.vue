@@ -49,8 +49,14 @@ export default defineComponent({
   inheritAttrs: false,
   props: {
     discussionChannel: {
+      // This prop is required to create a comment.
+      // But I have made it optional so that content does not move around 
+      // on the screen while the discussionChannel is loading.
       type: Object as PropType<DiscussionChannel>,
-      required: true,
+      required: false,
+      default: () => {
+        return null;
+      },
     },
     loading: {
       type: Boolean,
@@ -147,7 +153,7 @@ export default defineComponent({
           cache.modify({
             id: cache.identify({
               __typename: "DiscussionChannel",
-              id: props.discussionChannel.id,
+              id: props.discussionChannel?.id,
             }),
             fields: {
               Comments(existingComments: any, { readField }: any) {
@@ -163,7 +169,7 @@ export default defineComponent({
         cache.modify({
           id: cache.identify({
             __typename: "DiscussionChannel",
-            id: props.discussionChannel.id,
+            id: props.discussionChannel?.id,
           }),
           fields: {
             CommentsAggregate(existingValue: any) {
@@ -190,7 +196,7 @@ export default defineComponent({
           connect: {
             where: {
               node: {
-                id: props.discussionChannel.id,
+                id: props.discussionChannel?.id,
               },
             },
           },
@@ -229,8 +235,8 @@ export default defineComponent({
       return [input];
     });
     const commentSectionQueryVariables = {
-      discussionId: props.discussionChannel.discussionId,
-      channelUniqueName: props.discussionChannel.channelUniqueName,
+      discussionId: props.discussionChannel?.discussionId,
+      channelUniqueName: props.discussionChannel?.channelUniqueName,
       limit: COMMENT_LIMIT,
       offset: props.previousOffset,
       sort: getCommentSortFromQuery(route.query),
@@ -507,6 +513,10 @@ export default defineComponent({
       this.editFormValues.text = text;
     },
     handleClickCreate() {
+      if (!this.discussionChannel) {
+        console.warn("Need a discussionChannel to create a comment")
+        return
+      }
       // Reply to a comment
       this.createComment();
     },
@@ -524,6 +534,12 @@ export default defineComponent({
       this.editComment();
     },
     handleDeleteComment() {
+      if (!this.commentToDeleteId) {
+        throw new Error("commentId is required to delete a comment");
+      }
+      if (!this.discussionChannel) {
+        throw new Error("discussionChannel is required to delete a comment");
+      }
       if (this.commentToDeleteReplyCount > 0) {
         // Soft delete the comment if there are replies
         // to allow the replies to remain visible
@@ -573,8 +589,8 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <p v-if="loading">Loading...</p>
-    <div v-if="discussionChannel.CommentsAggregate?.count === 0">
+    
+    <div v-if="!discussionChannel || discussionChannel?.CommentsAggregate?.count === 0">
       <h2 id="comments" ref="commentSectionHeader" class="text-md mb-2">
         {{ `Comments (0)` }}
       </h2>
@@ -583,14 +599,10 @@ export default defineComponent({
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      <p v-else>There are no comments yet.</p>
+      <p v-else-if="discussionChannel && loading">There are no comments yet.</p>
     </div>
     <div
-      v-else-if="
-        discussionChannel.CommentsAggregate &&
-        discussionChannel.CommentsAggregate.count > 0
-      "
-      :key="permalinkedCommentId"
+
     >
       <h2
         v-if="!isPermalinkPage"
@@ -598,7 +610,7 @@ export default defineComponent({
         ref="commentSectionHeader"
         class="px-1 text-lg"
       >
-        {{ `Comments (${discussionChannel.CommentsAggregate.count})` }}
+        {{ `Comments (${discussionChannel?.CommentsAggregate?.count})` }}
       </h2>
       <ErrorBanner
         v-if="locked"
@@ -606,6 +618,7 @@ export default defineComponent({
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <PermalinkedComment
+        :key="permalinkedCommentId"
         v-if="isPermalinkPage"
         :comment-id="permalinkedCommentId"
       >
@@ -627,10 +640,11 @@ export default defineComponent({
       </PermalinkedComment>
       <SortButtons :show-top-options="false" />
       <div class="my-4">
-        <div v-if="discussionChannel.CommentsAggregate?.count === 0">
+        <p v-if="loading">Loading...</p>
+        <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
-        <div v-for="comment in discussionChannel.Comments" :key="comment.id">
+        <div v-for="comment in discussionChannel?.Comments || []" :key="comment.id">
           <Comment
             v-if="comment.id !== permalinkedCommentId"
             :compact="true"

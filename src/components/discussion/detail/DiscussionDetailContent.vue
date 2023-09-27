@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
-import {  useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import {
   GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
@@ -71,10 +71,9 @@ export default defineComponent({
       loading: getDiscussionLoading,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
-
     const commentSort = computed(() => {
-      return getCommentSortFromQuery(route.query)
-    })
+      return getCommentSortFromQuery(route.query);
+    });
 
     const {
       result: getDiscussionChannelResult,
@@ -110,10 +109,10 @@ export default defineComponent({
     const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
 
     const activeDiscussionChannel = computed<DiscussionChannel>(() => {
-      if (!getDiscussionChannelResult.value) {
+      if (getDiscussionChannelLoading.value || getDiscussionChannelError.value) {
         return null;
       }
-      return getDiscussionChannelResult.value.getCommentSection
+      return getDiscussionChannelResult.value.getCommentSection;
     });
 
     const commentCount = computed(() => {
@@ -290,17 +289,22 @@ export default defineComponent({
               :discussion-channel-id="activeDiscussionChannel?.id"
               :emoji-json="activeDiscussionChannel?.emoji"
             >
+              <div class="h-12 flex items-center">
               <DiscussionVotes
-                v-if="channelId && discussionId && activeDiscussionChannel"
+                v-if="activeDiscussionChannel"
                 :discussion="discussion"
                 :discussion-channel="activeDiscussionChannel"
               />
+            </div>
             </DiscussionBody>
           </div>
         </div>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
         <CreateRootCommentForm
           v-if="
-            activeDiscussionChannel &&
             (route.name === 'DiscussionDetail' || channelId)
           "
           :key="`${channelId}${discussionId}`"
@@ -310,8 +314,7 @@ export default defineComponent({
         />
         <div :class="!smAndDown ? 'py-6' : 'py-0'" class="my-4 mb-2 rounded-lg">
           <CommentSection
-            v-if="activeDiscussionChannel"
-            :key="activeDiscussionChannel.id"
+            :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
             :reached-end-of-results="reachedEndOfResults"

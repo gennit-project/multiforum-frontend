@@ -30,13 +30,18 @@ export const GET_CHANNELS = gql`
     $eventChannelWhere: EventChannelWhere
     $limit: Int
     $offset: Int
+    $sort: [ChannelSort!]
   ) {
     channelsAggregate(where: $channelWhere) {
       count
     }
     channels(
       where: $channelWhere
-      options: { limit: $limit, offset: $offset }
+      options: { 
+        limit: $limit, 
+        offset: $offset 
+        sort: $sort
+      }
     ) {
       uniqueName
       description

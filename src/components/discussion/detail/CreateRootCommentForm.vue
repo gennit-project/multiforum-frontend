@@ -29,8 +29,14 @@ export default defineComponent({
       required: true,
     },
     discussionChannel: {
+      // It is needed for the comment to be created, but I made it optional
+      // so that this form does not disappear while the discussionChannel is loading,
+      // which happens if the user navigates between hot, top and new comments.
       type: Object as PropType<DiscussionChannel>,
-      required: true,
+      required: false,
+      default: () => {
+        return null;
+      },
     },
     previousOffset: {
       type: Number,
@@ -197,6 +203,10 @@ export default defineComponent({
       this.createFormValues.text = text;
     },
     async handleCreateComment() {
+      if (!this.discussionChannel) {
+        console.warn("Could not create the comment because there is no discussion channel in the create root comment form")
+        return;
+      }
       this.createComment();
     },
   },

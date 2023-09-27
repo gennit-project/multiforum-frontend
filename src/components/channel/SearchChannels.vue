@@ -95,6 +95,9 @@ export default defineComponent({
       },
       limit: 25,
       offset: 0,
+      sort: {
+        createdAt: "ASC",
+      }
     });
 
     if (error.value) {
