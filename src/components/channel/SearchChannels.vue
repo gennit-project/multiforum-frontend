@@ -189,7 +189,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class=" bg-white dark:bg-gray-800">
     <div class="px-4">
       <div class="mx-auto flex max-w-5xl items-center justify-between py-2">
         <SearchBar
