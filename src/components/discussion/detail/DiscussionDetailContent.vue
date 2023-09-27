@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
@@ -75,6 +75,8 @@ export default defineComponent({
       return getCommentSortFromQuery(route.query);
     });
 
+    
+
     const {
       result: getDiscussionChannelResult,
       error: getDiscussionChannelError,
@@ -87,6 +89,18 @@ export default defineComponent({
       limit: COMMENT_LIMIT,
       sort: commentSort,
     });
+
+    watch(commentSort, () => {
+      fetchMoreComments({ variables: { sort: commentSort.value} });
+    });
+
+    const activeDiscussionChannel = computed<DiscussionChannel>(() => {
+      if (getDiscussionChannelLoading.value || getDiscussionChannelError.value) {
+        return null;
+      }
+      return getDiscussionChannelResult.value.getCommentSection;
+    });
+
 
     // We get the aggregate count of root comments so that we will know
     // whether or not to show the "Load More" button at the end of the comments.
@@ -108,13 +122,7 @@ export default defineComponent({
 
     const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
 
-    const activeDiscussionChannel = computed<DiscussionChannel>(() => {
-      if (getDiscussionChannelLoading.value || getDiscussionChannelError.value) {
-        return null;
-      }
-      return getDiscussionChannelResult.value.getCommentSection;
-    });
-
+    
     const commentCount = computed(() => {
       if (!activeDiscussionChannel.value) {
         return 0;

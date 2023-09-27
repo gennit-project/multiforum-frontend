@@ -50,7 +50,7 @@ export default defineComponent({
   props: {
     discussionChannel: {
       // This prop is required to create a comment.
-      // But I have made it optional so that content does not move around 
+      // But I have made it optional so that content does not move around
       // on the screen while the discussionChannel is loading.
       type: Object as PropType<DiscussionChannel>,
       required: false,
@@ -74,6 +74,10 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+
+    const activeSort = computed(() => {
+      return getCommentSortFromQuery(route.query);
+    })
 
     const isPermalinkPage = computed(() => {
       if (route.params.commentId) {
@@ -471,6 +475,7 @@ export default defineComponent({
     const showCopiedLinkNotification = ref(false);
 
     return {
+      activeSort,
       permalinkedCommentId,
       commentToEdit,
       commentToDeleteId,
@@ -514,8 +519,8 @@ export default defineComponent({
     },
     handleClickCreate() {
       if (!this.discussionChannel) {
-        console.warn("Need a discussionChannel to create a comment")
-        return
+        console.warn("Need a discussionChannel to create a comment");
+        return;
       }
       // Reply to a comment
       this.createComment();
@@ -589,8 +594,11 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    
-    <div v-if="!discussionChannel || discussionChannel?.CommentsAggregate?.count === 0">
+    <div
+      v-if="
+        !discussionChannel || discussionChannel?.CommentsAggregate?.count === 0
+      "
+    >
       <h2 id="comments" ref="commentSectionHeader" class="text-md mb-2">
         {{ `Comments (0)` }}
       </h2>
@@ -601,9 +609,7 @@ export default defineComponent({
       />
       <p v-else-if="discussionChannel && loading">There are no comments yet.</p>
     </div>
-    <div
-
-    >
+    <div>
       <h2
         v-if="!isPermalinkPage"
         id="comments"
@@ -644,23 +650,30 @@ export default defineComponent({
         <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
-        <div v-for="comment in discussionChannel?.Comments || []" :key="comment.id">
-          <Comment
-            v-if="comment.id !== permalinkedCommentId"
-            :compact="true"
-            :comment-data="comment"
-            :depth="1"
-            :locked="locked"
-            @clickEditComment="handleClickEdit"
-            @deleteComment="handleClickDelete"
-            @downvoteComment="handleDownvoteComment"
-            @createComment="handleClickCreate"
-            @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
-            @updateEditCommentInput="updateEditInputValues"
-            @saveEdit="handleSaveEdit"
-            @showCopiedLinkNotification="showCopiedLinkNotification = $event"
-            @openModProfileModal="showModProfileModal = true"
-          />
+        <div
+          :key="activeSort"
+        >
+          <div
+            v-for="comment in discussionChannel?.Comments || []"
+            :key="comment.id"
+          >
+            <Comment
+              v-if="comment.id !== permalinkedCommentId"
+              :compact="true"
+              :comment-data="comment"
+              :depth="1"
+              :locked="locked"
+              @clickEditComment="handleClickEdit"
+              @deleteComment="handleClickDelete"
+              @downvoteComment="handleDownvoteComment"
+              @createComment="handleClickCreate"
+              @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
+              @updateEditCommentInput="updateEditInputValues"
+              @saveEdit="handleSaveEdit"
+              @showCopiedLinkNotification="showCopiedLinkNotification = $event"
+              @openModProfileModal="showModProfileModal = true"
+            />
+          </div>
         </div>
       </div>
     </div>
