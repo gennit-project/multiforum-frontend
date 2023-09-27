@@ -1,6 +1,6 @@
 import { LocationQuery } from "vue-router";
 
-const commentSortTypes = {
+export const commentSortTypes = {
   HOT: "HOT",
   NEW: "NEW",
   TOP: "TOP",

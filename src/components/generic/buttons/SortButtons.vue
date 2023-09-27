@@ -65,17 +65,14 @@ export default defineComponent({
       sortOptions: [
         {
           label: "Hot",
-          route: "hot",
           value: availableSortTypes.HOT,
         },
         {
           label: "New",
-          route: "new",
           value: availableSortTypes.NEW,
         },
         {
           label: "Top",
-          route: "top",
           value: availableSortTypes.TOP,
         },
       ],
@@ -126,7 +123,7 @@ export default defineComponent({
         v-for="sortOption in sortOptions"
         :key="sortOption.value"
         :to="
-          router.resolve({ query: { ...route.query, sort: sortOption.route } })
+          router.resolve({ query: { ...route.query, sort: sortOption.value } })
             .href
         "
         :label="sortOption.label"
@@ -142,7 +139,7 @@ export default defineComponent({
       v-if="showTopOptions && activeSortQuery === availableSortTypes.TOP"
       :label="
         topOptions.find((option) => option.value === activeTimeFrameQuery)
-          ?.label || 'Today'
+          ?.value || 'Today'
       "
       :items="topOptions"
       @clickedItem="handleTopSort"

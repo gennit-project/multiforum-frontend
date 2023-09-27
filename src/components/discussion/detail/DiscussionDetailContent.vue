@@ -71,6 +71,11 @@ export default defineComponent({
       loading: getDiscussionLoading,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
+
+    const commentSort = computed(() => {
+      return getCommentSortFromQuery(route.query)
+    })
+
     const {
       result: getDiscussionChannelResult,
       error: getDiscussionChannelError,
@@ -81,7 +86,7 @@ export default defineComponent({
       channelUniqueName: channelId,
       offset: 0,
       limit: COMMENT_LIMIT,
-      sort: getCommentSortFromQuery(route.query),
+      sort: commentSort,
     });
 
     // We get the aggregate count of root comments so that we will know
@@ -108,7 +113,7 @@ export default defineComponent({
       if (!getDiscussionChannelResult.value) {
         return null;
       }
-      return getDiscussionChannelResult.value.discussionChannels[0];
+      return getDiscussionChannelResult.value.getCommentSection
     });
 
     const commentCount = computed(() => {
@@ -199,6 +204,7 @@ export default defineComponent({
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
+      getDiscussionChannelLoading,
       discussion,
       lgAndUp,
       loadMore,
@@ -306,6 +312,7 @@ export default defineComponent({
           <CommentSection
             v-if="activeDiscussionChannel"
             :key="activeDiscussionChannel.id"
+            :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
             :reached-end-of-results="reachedEndOfResults"
             :previous-offset="previousOffset"

@@ -32,11 +32,11 @@ const COMMENT_FIELDS = gql`
     text
     emoji
     weightedVotesCount
+    createdAt
+    updatedAt
     CommentAuthor {
       ...AuthorFields
     }
-    createdAt
-    updatedAt
     ChildCommentsAggregate {
       count
     }
@@ -58,13 +58,14 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
     $discussionId: ID!
     $offset: Int
     $limit: Int
-    $sort: string
+    $sort: String
   ) {
     getCommentSection(
-      where: {
         channelUniqueName: $channelUniqueName
         discussionId: $discussionId
-      }
+        offset: $offset
+        limit: $limit
+        sort: $sort
     ) {
       id
       weightedVotesCount
@@ -96,17 +97,11 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
       DownvotedByModeratorsAggregate {
         count
       }
-      Comments(
-        where: { isRootComment: true }
-        options: { 
-          limit: $limit, 
-          offset: $offset,
-          sort: $sort
-        }
-      ) {
+      Comments {
         ...CommentFields
         ChildComments {
-          ...CommentFields
+          id
+          text
         }
       }
     }

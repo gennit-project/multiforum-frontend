@@ -52,6 +52,11 @@ export default defineComponent({
       type: Object as PropType<DiscussionChannel>,
       required: true,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     reachedEndOfResults: {
       type: Boolean,
       required: true,
@@ -568,6 +573,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
+    <p v-if="loading">Loading...</p>
     <div v-if="discussionChannel.CommentsAggregate?.count === 0">
       <h2 id="comments" ref="commentSectionHeader" class="text-md mb-2">
         {{ `Comments (0)` }}
