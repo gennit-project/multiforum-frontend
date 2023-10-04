@@ -97,7 +97,14 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
         count
       }
       Discussion {
-        ...DiscussionFields
+        id
+        title
+        body
+        createdAt
+        updatedAt
+        Author {
+          ...AuthorFields
+        }
       }
     }
   }
