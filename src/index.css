@@ -9,6 +9,7 @@
 
 body {
     font-family: 'Inter', sans-serif;
+    font-display: swap;
 }
 
 @font-face {
