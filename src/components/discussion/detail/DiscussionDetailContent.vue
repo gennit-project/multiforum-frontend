@@ -23,7 +23,7 @@ import CreateButton from "@/components/generic/buttons/CreateButton.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
-import { getCommentSortFromQuery } from "@/components/comments/getCommentSortFromQuery";
+import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 
 export const COMMENT_LIMIT = 25;
 
@@ -72,7 +72,7 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION, { id: discussionId });
 
     const commentSort = computed(() => {
-      return getCommentSortFromQuery(route.query);
+      return getSortFromQuery(route.query);
     });
 
     

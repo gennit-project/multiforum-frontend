@@ -3,26 +3,51 @@ import { computed, defineComponent } from "vue";
 import TabButton from "@/components/channel/TabButton.vue";
 import { useRoute, useRouter } from "vue-router";
 import TextButtonDropdown from "@/components/generic/buttons/TextButtonDropdown.vue";
+import {
+  getSortFromQuery,
+  getTimeFrameFromQuery,
+  availableSortTypes,
+  sortTypeIcons,
+  topSortTypes,
+  capitalizeCase,
+} from "@/components/comments/getSortFromQuery";
 
-const availableSortTypes: Record<string, string> = {
-  HOT: "hot",
-  NEW: "new",
-  TOP: "top",
-};
-
-const sortTypeIcons = {
-  hot: "fa-fire",
-  new: "fa-burst",
-  top: "fa-arrow-up",
-};
-
-const topSortTypes = {
-  TOP_DAY: "top_day",
-  TOP_WEEK: "top_week",
-  TOP_MONTH: "top_month",
-  TOP_YEAR: "top_year",
-  TOP_ALL: "top_all",
-};
+const topOptions = [
+  {
+    label: "Day",
+    value: topSortTypes.TOP_DAY,
+  },
+  {
+    label: "Week",
+    value: topSortTypes.TOP_WEEK,
+  },
+  {
+    label: "Month",
+    value: topSortTypes.TOP_MONTH,
+  },
+  {
+    label: "Year",
+    value: topSortTypes.TOP_YEAR,
+  },
+  {
+    label: "All Time",
+    value: topSortTypes.TOP_ALL,
+  },
+];
+const sortOptions = [
+  {
+    label: "Hot",
+    value: availableSortTypes.HOT,
+  },
+  {
+    label: "New",
+    value: availableSortTypes.NEW,
+  },
+  {
+    label: "Top",
+    value: availableSortTypes.TOP,
+  },
+];
 
 export default defineComponent({
   name: "SortButtons",
@@ -41,63 +66,27 @@ export default defineComponent({
     const router = useRouter();
 
     const activeSortQuery = computed(() => {
-      const sortQuery = route.query.sort;
-      if (sortQuery) {
-        return sortQuery as string;
-      }
-      return null;
+      return getSortFromQuery(route.query);
     });
 
     const activeTimeFrameQuery = computed(() => {
-      const timeFrameQuery = route.query.timeFrame;
-      if (timeFrameQuery) {
-        return timeFrameQuery as string;
-      }
-      return null;
+      return getTimeFrameFromQuery(route.query);
+    });
+
+    const activeTimeFrameLabel = computed(() => {
+      return capitalizeCase(activeTimeFrameQuery.value);
     });
 
     return {
       activeSortQuery,
+      activeTimeFrameLabel,
       activeTimeFrameQuery,
       availableSortTypes,
+      capitalizeCase,
       route,
       router,
-      sortOptions: [
-        {
-          label: "Hot",
-          value: availableSortTypes.HOT,
-        },
-        {
-          label: "New",
-          value: availableSortTypes.NEW,
-        },
-        {
-          label: "Top",
-          value: availableSortTypes.TOP,
-        },
-      ],
-      topOptions: [
-        {
-          label: "Day",
-          value: topSortTypes.TOP_DAY,
-        },
-        {
-          label: "Week",
-          value: topSortTypes.TOP_WEEK,
-        },
-        {
-          label: "Month",
-          value: topSortTypes.TOP_MONTH,
-        },
-        {
-          label: "Year",
-          value: topSortTypes.TOP_YEAR,
-        },
-        {
-          label: "All Time",
-          value: topSortTypes.TOP_ALL,
-        },
-      ],
+      sortOptions,
+      topOptions,
       sortTypeIcons,
     };
   },
@@ -126,7 +115,7 @@ export default defineComponent({
           router.resolve({ query: { ...route.query, sort: sortOption.value } })
             .href
         "
-        :label="sortOption.label"
+        :label="capitalizeCase(sortOption.label)"
         :is-active="
           sortOption.value === activeSortQuery ||
           (!activeSortQuery && sortOption.value === availableSortTypes.HOT)
@@ -137,10 +126,7 @@ export default defineComponent({
     </nav>
     <TextButtonDropdown
       v-if="showTopOptions && activeSortQuery === availableSortTypes.TOP"
-      :label="
-        topOptions.find((option) => option.value === activeTimeFrameQuery)
-          ?.value || 'Today'
-      "
+      :label="activeTimeFrameLabel"
       :items="topOptions"
       @clickedItem="handleTopSort"
     />

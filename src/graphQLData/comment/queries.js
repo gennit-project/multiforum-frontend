@@ -40,9 +40,6 @@ const COMMENT_FIELDS = gql`
     ChildCommentsAggregate {
       count
     }
-    UpvotedByUsersAggregate {
-      count
-    }
     ParentComment {
       id
     }
@@ -184,11 +181,9 @@ export const GET_COMMENT_AND_REPLIES = gql`
 export const GET_COMMENT_REPLIES = gql`
   query getCommentWithReplies($id: ID!, $limit: Int, $offset: Int) {
     comments(where: { id: $id }) {
-      id
       ChildCommentsAggregate {
         count
       }
-      ...CommentVoteFields
       ChildComments(options: { limit: $limit, offset: $offset }) {
         ...CommentFields
       }

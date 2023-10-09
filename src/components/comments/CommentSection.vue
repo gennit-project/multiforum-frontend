@@ -34,7 +34,7 @@ import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue"
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
-import { getCommentSortFromQuery } from "@/components/comments/getCommentSortFromQuery";
+import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 
 export default defineComponent({
   components: {
@@ -76,7 +76,7 @@ export default defineComponent({
     const route = useRoute();
 
     const activeSort = computed(() => {
-      return getCommentSortFromQuery(route.query);
+      return getSortFromQuery(route.query);
     })
 
     const isPermalinkPage = computed(() => {
@@ -243,7 +243,7 @@ export default defineComponent({
       channelUniqueName: props.discussionChannel?.channelUniqueName,
       limit: COMMENT_LIMIT,
       offset: props.previousOffset,
-      sort: getCommentSortFromQuery(route.query),
+      sort: getSortFromQuery(route.query),
     };
 
     const { mutate: createComment, error: createCommentError } = useMutation(

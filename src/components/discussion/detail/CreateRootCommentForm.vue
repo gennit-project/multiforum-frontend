@@ -13,7 +13,7 @@ import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLDa
 import { Comment, DiscussionChannel } from "@/__generated__/graphql";
 import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
 import { useRoute } from "vue-router";
-import { getCommentSortFromQuery } from "@/components/comments/getCommentSortFromQuery";
+import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 
 export default defineComponent({
   components: {
@@ -124,7 +124,7 @@ export default defineComponent({
             channelUniqueName: props.discussionChannel.channelUniqueName,
             limit: COMMENT_LIMIT,
             offset: props.previousOffset,
-            sort: getCommentSortFromQuery(route.query),
+            sort: getSortFromQuery(route.query),
           };
 
           const readQueryResult = cache.readQuery({

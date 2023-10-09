@@ -164,18 +164,6 @@ export default defineComponent({
     class="relative flex gap-3 space-x-2 border-b px-6 py-4"
     :class="['border-b border-gray-200 dark:border-gray-500']"
   >
-    <div>
-      <div
-        class="flex items-center justify-end gap-1 text-gray-500 dark:text-gray-100"
-      >
-        <i class="fa-solid fa-arrow-up mr-2 w-3" />{{ score }}
-        <v-tooltip activator="parent" location="top">
-          <span>{{
-            `Sum of votes across channels, deduplicated by user`
-          }}</span>
-        </v-tooltip>
-      </div>
-    </div>
     <div class="flex w-full justify-between">
       <div class="w-full">
         <router-link

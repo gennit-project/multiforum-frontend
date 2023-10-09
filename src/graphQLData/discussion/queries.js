@@ -126,41 +126,32 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
     ) {
       aggregateDiscussionCount
       discussions {
-        score
-        discussion {
-          id
-          title
-          body
-          Author {
-            username
-            commentKarma
-            discussionKarma
-            createdAt
-          }
-          DiscussionChannels {
-            id
-            createdAt
-            channelUniqueName
-            discussionId
-            weightedVotesCount
-            UpvotedByUsers {
-              username
-            }
-            Channel {
-              uniqueName
-            }
-            Discussion {
-              id
-            }
-            CommentsAggregate {
-              count
-            }
-          }
+        id
+        title
+        body
+        createdAt
+        updatedAt
+        Author {
+          username
+          commentKarma
+          discussionKarma
           createdAt
-          updatedAt
-          Tags {
-            text
+        }
+        DiscussionChannels {
+          id
+          createdAt
+          channelUniqueName
+          discussionId
+          weightedVotesCount
+          UpvotedByUsers {
+            username
           }
+          CommentsAggregate {
+            count
+          }
+        }
+        Tags {
+          text
         }
       }
     }

@@ -8,6 +8,7 @@ import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
+import { getSortFromQuery, getTimeFrameFromQuery } from "@/components/comments/getSortFromQuery";
 
 const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -49,6 +50,14 @@ export default defineComponent({
       return filterValues.value.searchInput || "";
     });
 
+    const activeSort = computed(() => {
+      return getSortFromQuery(route.query);
+    })
+
+    const activeTimeFrame = computed(() => {
+      return getTimeFrameFromQuery(route.query);
+    })
+
     const {
       result: discussionResult,
       error: discussionError,
@@ -62,18 +71,23 @@ export default defineComponent({
       options: {
         limit: DISCUSSION_PAGE_LIMIT,
         offset: 0,
-        resultsOrder: {
-          weightedVotesCount: "DESC",
-        },
+        sort: activeSort,
+        timeFrame: activeTimeFrame,
       },
       fetchPolicy: "cache-and-network",
     });
 
     const discussions = computed(() => {
+      
       if (!discussionResult.value) {
         return [];
       }
-      return discussionResult.value.getSiteWideDiscussionList.discussions;
+      const { getSiteWideDiscussionList } = discussionResult.value;
+      if (!getSiteWideDiscussionList) {
+        return [];
+      }
+      const { discussions } = getSiteWideDiscussionList;
+      return discussions;
     });
 
     const aggregateDiscussionCount = computed(() => {
@@ -94,9 +108,7 @@ export default defineComponent({
               discussionResult.value.getSiteWideDiscussionList.discussions
                 .length,
             limit: DISCUSSION_PAGE_LIMIT,
-            resultsOrder: {
-              weightedVotesCount: "DESC",
-            },
+            sort: activeSort,
           },
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
@@ -184,9 +196,9 @@ export default defineComponent({
     <div v-if="discussions && discussions.length > 0">
       <ul role="list" class="my-6 mr-2" data-testid="sitewide-discussion-list">
         <SitewideDiscussionListItem
-          v-for="discussion in discussions"
+          v-for="discussion in discussionResult.getSiteWideDiscussionList.discussions"
           :key="discussion.id"
-          :discussion="discussion.discussion"
+          :discussion="discussion"
           :score="discussion.score"
           :search-input="filterValues.searchInput"
           :selected-tags="filterValues.tags"
