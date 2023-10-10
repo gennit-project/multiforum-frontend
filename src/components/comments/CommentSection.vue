@@ -11,7 +11,7 @@ import {
 } from "@/types/commentTypes";
 import {
   GET_COMMENT_REPLIES,
-  GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+  GET_COMMENT_SECTION,
 } from "@/graphQLData/comment/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
@@ -56,6 +56,13 @@ export default defineComponent({
       required: false,
       default: () => {
         return null;
+      },
+    },
+    comments: {
+      type: Array as PropType<CommentData[]>,
+      required: false,
+      default: () => {
+        return [];
       },
     },
     loading: {
@@ -267,7 +274,7 @@ export default defineComponent({
             // in the discussion component.)
 
             const readQueryResult = cache.readQuery({
-              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+              query: GET_COMMENT_SECTION,
               variables: commentSectionQueryVariables,
             });
 
@@ -314,7 +321,7 @@ export default defineComponent({
             });
 
             cache.writeQuery({
-              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+              query: GET_COMMENT_SECTION,
               variables: commentSectionQueryVariables,
               data: {
                 ...readQueryResult,
@@ -404,7 +411,7 @@ export default defineComponent({
 
             // Update the total count of comments
             const readDiscussionChannelQueryResult = cache.readQuery({
-              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+              query: GET_COMMENT_SECTION,
               variables: commentSectionQueryVariables,
             });
 
@@ -426,7 +433,7 @@ export default defineComponent({
             }
 
             cache.writeQuery({
-              query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+              query: GET_COMMENT_SECTION,
               variables: commentSectionQueryVariables,
               data: {
                 ...readQueryResult,
@@ -473,9 +480,13 @@ export default defineComponent({
     });
 
     const showCopiedLinkNotification = ref(false);
+    console.log("props.discussionChannel", props.discussionChannel)
+
+    const aggregateCommentCount = props.discussionChannel?.CommentsAggregate?.count || 0
 
     return {
       activeSort,
+      aggregateCommentCount,
       permalinkedCommentId,
       commentToEdit,
       commentToDeleteId,
@@ -630,6 +641,7 @@ export default defineComponent({
       >
         <template #comment="{ commentData }">
           <Comment
+            :aggregate-comment-count="aggregateCommentCount"
             :compact="true"
             :comment-data="commentData"
             :depth="1"
@@ -654,11 +666,12 @@ export default defineComponent({
           :key="activeSort"
         >
           <div
-            v-for="comment in discussionChannel?.Comments || []"
+            v-for="comment in comments || []"
             :key="comment.id"
           >
             <Comment
               v-if="comment.id !== permalinkedCommentId"
+              :aggregate-comment-count="discussionChannel?.CommentsAggregate?.count || 0"
               :compact="true"
               :comment-data="comment"
               :depth="1"

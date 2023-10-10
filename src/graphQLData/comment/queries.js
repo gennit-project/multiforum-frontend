@@ -48,8 +48,7 @@ const COMMENT_FIELDS = gql`
   ${AUTHOR_FIELDS}
 `;
 
-
-export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
+export const GET_COMMENT_SECTION = gql`
   query getCommentSection(
     $channelUniqueName: String!
     $discussionId: ID!
@@ -58,41 +57,43 @@ export const GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID = gql`
     $sort: String
   ) {
     getCommentSection(
-        channelUniqueName: $channelUniqueName
-        discussionId: $discussionId
-        offset: $offset
-        limit: $limit
-        sort: $sort
+      channelUniqueName: $channelUniqueName
+      discussionId: $discussionId
+      offset: $offset
+      limit: $limit
+      sort: $sort
     ) {
-      id
-      weightedVotesCount
-      discussionId
-      channelUniqueName
-      emoji
-      Channel {
-        uniqueName
-      }
-      Discussion {
+      DiscussionChannel {
         id
-        title
-        Author {
-          ...AuthorFields
+        weightedVotesCount
+        discussionId
+        channelUniqueName
+        emoji
+        Channel {
+          uniqueName
         }
-      }
-      CommentsAggregate {
-        count
-      }
-      UpvotedByUsers {
-        username
-      }
-      UpvotedByUsersAggregate {
-        count
-      }
-      DownvotedByModerators {
-        displayName
-      }
-      DownvotedByModeratorsAggregate {
-        count
+        Discussion {
+          id
+          title
+          Author {
+            ...AuthorFields
+          }
+        }
+        CommentsAggregate {
+          count
+        }
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+        DownvotedByModerators {
+          displayName
+        }
+        DownvotedByModeratorsAggregate {
+          count
+        }
       }
       Comments {
         ...CommentFields
@@ -163,7 +164,6 @@ export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
   }
 `;
 
-
 export const GET_COMMENT_AND_REPLIES = gql`
   query getCommentWithReplies($id: ID!) {
     comments(where: { id: $id }) {
@@ -179,12 +179,15 @@ export const GET_COMMENT_AND_REPLIES = gql`
 `;
 
 export const GET_COMMENT_REPLIES = gql`
-  query getCommentWithReplies($id: ID!, $limit: Int, $offset: Int) {
-    comments(where: { id: $id }) {
-      ChildCommentsAggregate {
-        count
-      }
-      ChildComments(options: { limit: $limit, offset: $offset }) {
+  query getCommentWithReplies($commentId: ID!, $limit: Int, $offset: Int, $sort: SortType) {
+    getCommentReplies (
+      commentId: $commentId
+      limit: $limit
+      offset: $offset
+      sort: $sort
+    ) {
+      aggregateChildCommentCount
+      ChildComments {
         ...CommentFields
       }
     }

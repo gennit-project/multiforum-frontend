@@ -58,6 +58,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    console.log("props", props);
     const route = useRoute();
     const channelIdInParams = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -174,7 +175,7 @@ export default defineComponent({
       title: props.discussion?.title || "[Deleted]",
       createdAt: props.discussionChannel.createdAt,
       relativeTime: relativeTime(props.discussionChannel.createdAt),
-      tags: props.discussion
+      tags: props.discussion?.Tags
         ? props.discussion.Tags.map((tag) => {
             return tag.text;
           })

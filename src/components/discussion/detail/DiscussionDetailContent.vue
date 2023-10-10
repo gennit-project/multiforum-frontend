@@ -4,7 +4,7 @@ import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import {
-  GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+  GET_COMMENT_SECTION,
   GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE,
 } from "@/graphQLData/comment/queries";
 import { relativeTime } from "../../../dateTimeUtils";
@@ -25,7 +25,7 @@ import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 
-export const COMMENT_LIMIT = 25;
+export const COMMENT_LIMIT = 5;
 
 export default defineComponent({
   components: {
@@ -54,6 +54,7 @@ export default defineComponent({
   setup(props) {
     const route = useRoute();
     const router = useRouter();
+    const offset = ref(0);
 
     // Makes the query refetch if the discussionId changes.
     const discussionId = computed(() => props.discussionId);
@@ -75,32 +76,42 @@ export default defineComponent({
       return getSortFromQuery(route.query);
     });
 
-    
-
     const {
       result: getDiscussionChannelResult,
       error: getDiscussionChannelError,
       loading: getDiscussionChannelLoading,
       fetchMore: fetchMoreComments,
-    } = useQuery(GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID, {
+    } = useQuery(GET_COMMENT_SECTION, {
       discussionId: discussionId,
       channelUniqueName: channelId,
-      offset: 0,
+      offset: offset.value,
       limit: COMMENT_LIMIT,
       sort: commentSort,
     });
 
     watch(commentSort, () => {
-      fetchMoreComments({ variables: { sort: commentSort.value} });
+      fetchMoreComments({ variables: { sort: commentSort.value } });
     });
 
     const activeDiscussionChannel = computed<DiscussionChannel>(() => {
-      if (getDiscussionChannelLoading.value || getDiscussionChannelError.value) {
+      if (
+        getDiscussionChannelLoading.value ||
+        getDiscussionChannelError.value
+      ) {
         return null;
       }
-      return getDiscussionChannelResult.value.getCommentSection;
+      return getDiscussionChannelResult.value.getCommentSection.DiscussionChannel;
     });
 
+    const comments = computed(() => {
+      if (
+        getDiscussionChannelLoading.value ||
+        getDiscussionChannelError.value
+      ) {
+        return [];
+      }
+      return getDiscussionChannelResult.value.getCommentSection.Comments;
+    });
 
     // We get the aggregate count of root comments so that we will know
     // whether or not to show the "Load More" button at the end of the comments.
@@ -122,7 +133,6 @@ export default defineComponent({
 
     const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
 
-    
     const commentCount = computed(() => {
       if (!activeDiscussionChannel.value) {
         return 0;
@@ -156,13 +166,6 @@ export default defineComponent({
     // user creates a root comment.
     const previousOffset = ref(0);
 
-    const offset = computed(() => {
-      if (!activeDiscussionChannel.value) {
-        return 0;
-      }
-      return activeDiscussionChannel.value.Comments.length;
-    });
-
     const loadMore = () => {
       fetchMoreComments({
         variables: {
@@ -170,22 +173,20 @@ export default defineComponent({
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
+          console.log("fetchMoreResult", fetchMoreResult);
 
-          previousOffset.value = offset.value;
+          offset.value += COMMENT_LIMIT;
 
-          // We need to update the result of GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID
+          // We need to update the result of GET_COMMENT_SECTION
           // to include the new comments.
           return {
-            ...previousResult,
-            discussionChannels: [
-              {
-                ...previousResult.discussionChannels[0],
-                Comments: [
-                  ...previousResult.discussionChannels[0].Comments,
-                  ...fetchMoreResult.discussionChannels[0].Comments,
-                ],
-              },
-            ],
+            getCommentSection: {
+              ...previousResult.getCommentSection,
+              Comments: [
+                ...previousResult.getCommentSection.Comments,
+                ...fetchMoreResult.getCommentSection.Comments,
+              ],
+            },
           };
         },
       });
@@ -200,7 +201,7 @@ export default defineComponent({
       }
       return (
         rootCommentCount.value ===
-        activeDiscussionChannel.value?.Comments?.length
+        getDiscussionChannelResult.value.getCommentSection.Comments.length
       );
     });
 
@@ -208,6 +209,7 @@ export default defineComponent({
       activeDiscussionChannel,
       channelId,
       commentCount,
+      comments,
       getDiscussionResult,
       getDiscussionError,
       getDiscussionLoading,
@@ -297,13 +299,13 @@ export default defineComponent({
               :discussion-channel-id="activeDiscussionChannel?.id"
               :emoji-json="activeDiscussionChannel?.emoji"
             >
-              <div class="h-12 flex items-center">
-              <DiscussionVotes
-                v-if="activeDiscussionChannel"
-                :discussion="discussion"
-                :discussion-channel="activeDiscussionChannel"
-              />
-            </div>
+              <div class="flex h-12 items-center">
+                <DiscussionVotes
+                  v-if="activeDiscussionChannel"
+                  :discussion="discussion"
+                  :discussion-channel="activeDiscussionChannel"
+                />
+              </div>
             </DiscussionBody>
           </div>
         </div>
@@ -312,9 +314,7 @@ export default defineComponent({
     <v-row>
       <v-col>
         <CreateRootCommentForm
-          v-if="
-            (route.name === 'DiscussionDetail' || channelId)
-          "
+          v-if="route.name === 'DiscussionDetail' || channelId"
           :key="`${channelId}${discussionId}`"
           :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"
@@ -325,6 +325,7 @@ export default defineComponent({
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
+            :comments="comments"
             :reached-end-of-results="reachedEndOfResults"
             :previous-offset="previousOffset"
             @loadMore="loadMore"

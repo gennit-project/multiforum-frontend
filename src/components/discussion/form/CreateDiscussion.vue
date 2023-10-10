@@ -16,7 +16,7 @@ import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 import RequireAuth from "../../auth/RequireAuth.vue";
 import { DiscussionCreateInput } from "@/__generated__/graphql";
 import "md-editor-v3/lib/style.css";
-import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import gql from "graphql-tag";
 
 export default defineComponent({

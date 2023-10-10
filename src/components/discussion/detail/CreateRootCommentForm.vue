@@ -9,7 +9,7 @@ import RequireAuth from "../../auth/RequireAuth.vue";
 import TextEditor from "../../generic/forms/TextEditor.vue";
 import CancelButton from "../../generic/buttons/CancelButton.vue";
 import SaveButton from "../../generic/buttons/SaveButton.vue";
-import { GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID } from "@/graphQLData/comment/queries";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { Comment, DiscussionChannel } from "@/__generated__/graphql";
 import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
 import { useRoute } from "vue-router";
@@ -128,7 +128,7 @@ export default defineComponent({
           };
 
           const readQueryResult = cache.readQuery({
-            query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+            query: GET_COMMENT_SECTION,
             variables: commentSectionQueryVariables,
           });
 
@@ -154,7 +154,7 @@ export default defineComponent({
           }
 
           cache.writeQuery({
-            query: GET_DISCUSSION_CHANNEL_BY_CHANNEL_AND_DISCUSSION_ID,
+            query: GET_COMMENT_SECTION,
             variables: commentSectionQueryVariables,
             data: {
               ...readQueryResult,

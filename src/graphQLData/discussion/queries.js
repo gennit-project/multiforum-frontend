@@ -9,25 +9,7 @@ const AUTHOR_FIELDS = gql`
   }
 `;
 
-const DISCUSSION_CHANNEL_VOTE_FIELDS = gql`
-  fragment DiscussionChannelVoteFields on DiscussionChannel {
-    UpvotedByUsers {
-      username
-    }
-    UpvotedByUsersAggregate {
-      count
-    }
-    DownvotedByModerators {
-      displayName
-    }
-    DownvotedByModeratorsAggregate {
-      count
-    }
-  }
-`;
-
 const DISCUSSION_FIELDS = gql`
-  ${DISCUSSION_CHANNEL_VOTE_FIELDS}
   ${AUTHOR_FIELDS}
   fragment DiscussionFields on Discussion {
     id
@@ -55,7 +37,6 @@ const DISCUSSION_FIELDS = gql`
       CommentsAggregate {
         count
       }
-      ...DiscussionChannelVoteFields
     }
     Tags {
       text
@@ -65,7 +46,7 @@ const DISCUSSION_FIELDS = gql`
 
 // For channel list view
 export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
-  ${DISCUSSION_FIELDS}
+  ${AUTHOR_FIELDS}
   query getDiscussionChannels(
     $where: DiscussionChannelWhere
     $resultsOrder: [DiscussionChannelSort!]
@@ -104,6 +85,9 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
         updatedAt
         Author {
           ...AuthorFields
+        }
+        Tags {
+          text
         }
       }
     }

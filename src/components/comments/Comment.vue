@@ -22,6 +22,7 @@ import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import useClipboard from "vue-clipboard3";
+import { modProfileNameVar } from "@/cache";
 
 const MAX_COMMENT_DEPTH = 5;
 
