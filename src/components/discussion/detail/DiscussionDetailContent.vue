@@ -173,7 +173,6 @@ export default defineComponent({
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
-          console.log("fetchMoreResult", fetchMoreResult);
 
           offset.value += COMMENT_LIMIT;
 

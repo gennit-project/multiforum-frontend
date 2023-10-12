@@ -182,7 +182,7 @@ export default defineComponent({
 
         <div
           v-if="discussion && discussion.body"
-          class="max-w-2xl border-l-2 border-gray-300 dark:bg-gray-700"
+          class="max-w-xl border-l-2 border-gray-300 dark:bg-gray-700"
         >
           <MarkdownPreview
             :text="discussion.body"

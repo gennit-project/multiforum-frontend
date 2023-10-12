@@ -99,7 +99,6 @@ export default defineComponent({
         timeFrame: activeTimeFrame,
       },
     });
-    console.log("discussionChannelResult", discussionChannelResult);
 
     const reachedEndOfResults = ref(false);
 

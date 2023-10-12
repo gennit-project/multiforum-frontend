@@ -150,7 +150,6 @@ export default defineComponent({
 
     const upvoteCount = computed(() => {
       if (props.discussionChannel) {
-        console.log('in upvote count computed', props.discussionChannel)
         return props.discussionChannel.UpvotedByUsersAggregate?.count || 0;
       }
       return 0;

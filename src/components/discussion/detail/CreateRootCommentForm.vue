@@ -133,40 +133,32 @@ export default defineComponent({
           });
 
           const existingDiscussionChannelData: DiscussionChannel =
-            readQueryResult?.discussionChannels[0];
+            readQueryResult?.getCommentSection?.DiscussionChannel;
 
-          let rootCommentsCopy: Comment[] = [
+          let newRootComments: Comment[] = [
             newComment,
-            ...(existingDiscussionChannelData?.Comments || []),
+            ...(readQueryResult?.getCommentSection?.Comments || []),
           ];
 
-          let existingCommentAggregate =
-            existingDiscussionChannelData?.CommentsAggregate
-              ? existingDiscussionChannelData.CommentsAggregate
-              : null;
-          let newCommentAggregate = null;
-
-          if (existingCommentAggregate) {
-            newCommentAggregate = {
-              ...existingCommentAggregate,
-              count: existingCommentAggregate.count + 1,
-            };
-          }
+          const existingCount =
+            existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
           cache.writeQuery({
             query: GET_COMMENT_SECTION,
             variables: commentSectionQueryVariables,
             data: {
               ...readQueryResult,
-              discussionChannels: [
-                {
+              getCommentSection: {
+                ...readQueryResult?.getCommentSection,  
+                DiscussionChannel: {
                   ...existingDiscussionChannelData,
-                  Comments: rootCommentsCopy,
-                  CommentsAggregate: newCommentAggregate
-                    ? newCommentAggregate
-                    : existingCommentAggregate,
+                  CommentsAggregate: {
+                    ...existingDiscussionChannelData?.CommentsAggregate,
+                    count: existingCount + 1,
+                  },
                 },
-              ],
+                Comments: newRootComments,
+              },
             },
           });
         },
@@ -204,7 +196,9 @@ export default defineComponent({
     },
     async handleCreateComment() {
       if (!this.discussionChannel) {
-        console.warn("Could not create the comment because there is no discussion channel in the create root comment form")
+        console.warn(
+          "Could not create the comment because there is no discussion channel in the create root comment form",
+        );
         return;
       }
       this.createComment();

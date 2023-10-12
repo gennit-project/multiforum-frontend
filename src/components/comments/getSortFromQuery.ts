@@ -52,10 +52,6 @@ export const getTimeFrameFromQuery = function (query: LocationQuery): string {
   if (query) {
     if (typeof query.timeFrame === "string") {
       timeFrame = query.timeFrame;
-      console.log({
-        timeFrame,
-        topSortTypes,
-      })
       return timeFrame;
     }
   }

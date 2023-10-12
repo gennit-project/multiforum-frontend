@@ -480,7 +480,6 @@ export default defineComponent({
     });
 
     const showCopiedLinkNotification = ref(false);
-    console.log("props.discussionChannel", props.discussionChannel)
 
     const aggregateCommentCount = props.discussionChannel?.CommentsAggregate?.count || 0
 
