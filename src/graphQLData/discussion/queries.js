@@ -47,47 +47,49 @@ const DISCUSSION_FIELDS = gql`
 // For channel list view
 export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
   ${AUTHOR_FIELDS}
-  query getDiscussionChannels(
-    $where: DiscussionChannelWhere
-    $resultsOrder: [DiscussionChannelSort!]
-    $offset: Int
-    $limit: Int
+  query getDiscussionsInChannel(
+    $channelUniqueName: String!
+    $searchInput: String!
+    $selectedTags: [String!]
+    $options: DiscussionListOptions
   ) {
-    discussionChannelsAggregate(where: $where) {
-      count
-    }
-    discussionChannels(
-      where: $where
-      options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+    getDiscussionsInChannel (
+       channelUniqueName: $channelUniqueName,
+       options: $options,
+       selectedTags: $selectedTags,
+       searchInput: $searchInput
     ) {
-      id
-      discussionId
-      channelUniqueName
-      CommentsAggregate {
-        count
-      }
-      weightedVotesCount
-      createdAt
-      Channel {
-        uniqueName
-      }
-      UpvotedByUsers {
-        username
-      }
-      UpvotedByUsersAggregate {
-        count
-      }
-      Discussion {
+      aggregateDiscussionChannelsCount
+      discussionChannels {
         id
-        title
-        body
-        createdAt
-        updatedAt
-        Author {
-          ...AuthorFields
+        discussionId
+        channelUniqueName
+        CommentsAggregate {
+          count
         }
-        Tags {
-          text
+        weightedVotesCount
+        createdAt
+        Channel {
+          uniqueName
+        }
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
+        }
+        Discussion {
+          id
+          title
+          body
+          createdAt
+          updatedAt
+          Author {
+            ...AuthorFields
+          }
+          Tags {
+            text
+          }
         }
       }
     }

@@ -14,9 +14,11 @@ import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/disc
 import { modProfileNameVar } from "@/cache";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "../../../types/discussionTypes";
-import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 import { useDisplay } from "vuetify";
-import { DiscussionWhere } from "@/__generated__/graphql";
+import {
+  getSortFromQuery,
+  getTimeFrameFromQuery,
+} from "@/components/comments/getSortFromQuery";
 
 const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -72,15 +74,12 @@ export default defineComponent({
       }),
     );
 
-    const discussionWhere = computed<DiscussionWhere>(() => {
-      return getDiscussionWhere(filterValues.value);
+    const activeSort = computed(() => {
+      return getSortFromQuery(route.query);
     });
 
-    const discussionChannelWhere = computed(() => {
-      return {
-        channelUniqueName: channelId.value,
-        Discussion: discussionWhere.value,
-      };
+    const activeTimeFrame = computed(() => {
+      return getTimeFrameFromQuery(route.query);
     });
 
     const {
@@ -88,36 +87,49 @@ export default defineComponent({
       error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
-      onResult: onGetDiscussionResult,
       fetchMore,
     } = useQuery(GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA, {
-      where: discussionChannelWhere,
-      limit: DISCUSSION_PAGE_LIMIT,
-      offset: 0,
-      resultsOrder: {
-        weightedVotesCount: "DESC",
+      channelUniqueName: channelId,
+      searchInput: filterValues.value.searchInput,
+      selectedChannels: filterValues.value.channels,
+      options: {
+        limit: DISCUSSION_PAGE_LIMIT,
+        offset: 0,
+        sort: activeSort,
+        timeFrame: activeTimeFrame,
       },
     });
+    console.log("discussionChannelResult", discussionChannelResult);
 
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
       fetchMore({
         variables: {
-          offset: discussionChannelResult.value.discussionChannels.length,
+          channelUniqueName: channelId.value,
+          searchInput: filterValues.value.searchInput,
+          selectedChannels: filterValues.value.channels,
+          options: {
+            offset:
+              discussionChannelResult.value?.getDiscussionsInChannel
+                ?.discussionChannels?.length || 0,
+            limit: DISCUSSION_PAGE_LIMIT,
+            sort: activeSort.value,
+            timeFrame: activeTimeFrame.value,
+          },
         },
-        updateQuery: (previousResult, { fetchMoreResult }) => {
-          if (!fetchMoreResult) return previousResult;
+        // updateQuery: (previousResult, { fetchMoreResult }) => {
+        //   if (!fetchMoreResult) return previousResult;
 
-          return {
-            discussionChannelsAggregate:
-              fetchMoreResult.discussionChannelsAggregate,
-            discussionChannels: [
-              ...previousResult.discussionChannels,
-              ...fetchMoreResult.discussionChannels,
-            ],
-          };
-        },
+        //   return {
+        //     aggregateDiscussionChannelsCount:
+        //       fetchMoreResult.aggregateDiscussionChannelsCount,
+        //     discussionChannels: [
+        //       ...previousResult.discussionChannels,
+        //       ...fetchMoreResult.discussionChannels,
+        //     ],
+        //   };
+        // },
       });
     };
     const sendToPreview = (discussionId: string) => {
@@ -136,17 +148,6 @@ export default defineComponent({
         }
       }
     };
-
-    onGetDiscussionResult((value) => {
-      // If the preview pane is blank, fill it with the details
-      // of the first result, if there is one.
-      if (!value.data || value.data.discussionChannels.length === 0) {
-        return;
-      }
-      const defaultSelectedDiscussionChannel = value.data.discussionChannels[0];
-
-      sendToPreview(defaultSelectedDiscussionChannel.discussionId);
-    });
 
     const {
       result: localUsernameResult,
@@ -206,7 +207,10 @@ export default defineComponent({
     });
 
     // If empty, fetch the first page of discussions.
-    if (this.discussionChannelResult?.discussionChannels.length === 0) {
+    if (
+      this.discussionChannelResult?.getDiscussionsInChannel.discussionChannels
+        .length === 0
+    ) {
       this.refetchDiscussions();
     }
   },
@@ -238,11 +242,12 @@ export default defineComponent({
     <p
       v-else-if="
         discussionChannelResult &&
-        discussionChannelResult.discussionChannels.length === 0
+        discussionChannelResult.getDiscussionsInChannel.discussionChannels
+          .length === 0
       "
       class="my-6 px-4"
     >
-      There are no discussions to show. 
+      There are no discussions to show.
       <router-link
         v-if="channelId"
         :to="{
@@ -252,7 +257,8 @@ export default defineComponent({
           },
         }"
         class="text-blue-500 underline"
-      >Create one?</router-link>
+        >Create one?</router-link
+      >
     </p>
     <div v-else>
       <div>
@@ -262,7 +268,8 @@ export default defineComponent({
           data-testid="channel-discussion-list"
         >
           <ChannelDiscussionListItem
-            v-for="discussionChannel in discussionChannelResult.discussionChannels"
+            v-for="discussionChannel in discussionChannelResult
+              .getDiscussionsInChannel.discussionChannels"
             :key="discussionChannel.id"
             :discussion="discussionChannel.Discussion"
             :discussion-channel="discussionChannel"
@@ -274,12 +281,19 @@ export default defineComponent({
             @filterByChannel="filterByChannel"
           />
         </ul>
-        <div v-if="discussionChannelResult.discussionChannels.length > 0">
+        <div
+          v-if="
+            discussionChannelResult.getDiscussionsInChannel.discussionChannels
+              .length > 0
+          "
+        >
           <LoadMore
             class="justify-self-center"
             :reached-end-of-results="
-              discussionChannelResult.discussionChannelsAggregate?.count ===
-              discussionChannelResult.discussionChannels.length
+              discussionChannelResult.getDiscussionsInChannel
+                .discussionChannelsAggregate?.count ===
+              discussionChannelResult.getDiscussionsInChannel.discussionChannels
+                .length
             "
             @loadMore="loadMore"
           />

@@ -89,7 +89,7 @@ export default defineComponent({
       }
     );
 
-    const { mutate: upvoteDiscussionChannel, onDone: onDoneUpvote } =
+    const { mutate: upvoteDiscussionChannel } =
       useMutation(UPVOTE_DISCUSSION_CHANNEL, () => {
         return {
           variables: {
@@ -99,7 +99,7 @@ export default defineComponent({
         };
       });
 
-    const { mutate: undoUpvoteDiscussionChannel, onDone: onDoneUndoUpvote } =
+    const { mutate: undoUpvoteDiscussionChannel } =
       useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
         variables: {
           id: discussionChannelId.value || "",
@@ -148,6 +148,14 @@ export default defineComponent({
       return match;
     });
 
+    const upvoteCount = computed(() => {
+      if (props.discussionChannel) {
+        console.log('in upvote count computed', props.discussionChannel)
+        return props.discussionChannel.UpvotedByUsersAggregate?.count || 0;
+      }
+      return 0;
+    });
+
     const downvoteCount = computed(() => {
       if (props.discussionChannel) {
         return props.discussionChannel.DownvotedByModeratorsAggregate?.count;
@@ -174,13 +182,6 @@ export default defineComponent({
         id: discussionChannelId.value,
         displayName: newModProfileName,
       });
-    });
-
-    const upvoteCount = computed(() => {
-      if (props.discussionChannel) {
-        return props.discussionChannel.UpvotedByUsersAggregate?.count || 0;
-      }
-      return 0;
     });
 
     return {

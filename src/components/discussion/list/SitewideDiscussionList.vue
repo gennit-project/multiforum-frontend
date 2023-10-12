@@ -104,11 +104,12 @@ export default defineComponent({
       fetchMore({
         variables: {
           options: {
+            limit: DISCUSSION_PAGE_LIMIT,
             offset:
               discussionResult.value.getSiteWideDiscussionList.discussions
                 .length,
-            limit: DISCUSSION_PAGE_LIMIT,
             sort: activeSort,
+            timeFrame: activeTimeFrame,
           },
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {

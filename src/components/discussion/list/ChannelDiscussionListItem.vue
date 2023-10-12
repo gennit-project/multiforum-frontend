@@ -58,7 +58,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log("props", props);
     const route = useRoute();
     const channelIdInParams = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -111,13 +110,6 @@ export default defineComponent({
       return match;
     });
 
-    const upvoteCount = computed(() => {
-      if (props.discussionChannel) {
-        return props.discussionChannel.UpvotedByUsersAggregate?.count || 0;
-      }
-      return 0;
-    });
-
     const commentCount = computed(() => {
       if (props.discussionChannel) {
         return props.discussionChannel.CommentsAggregate?.count || 0;
@@ -150,7 +142,6 @@ export default defineComponent({
           discussionIdInParams.value === props.discussionChannel.discussionId,
       ),
       loggedInUserUpvoted,
-      upvoteCount,
       username,
       route,
       timeAgo,
