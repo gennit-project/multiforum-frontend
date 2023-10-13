@@ -239,8 +239,8 @@ export default defineComponent({
 
 <template>
   <v-container
-    :class="!smAndDown ? 'pl-6 pt-3' : 'px-2'"
-    class="scrollable-column overflow-auto max-w-5xl justify-center bg-white dark:bg-gray-800"
+    :class="!smAndDown ? 'pl-6' : 'px-2'"
+    class="scrollable-column overflow-auto max-w-4xl justify-center bg-white dark:bg-gray-800"
   >
     <DiscussionFilterBar />
     <SitewideDiscussionList

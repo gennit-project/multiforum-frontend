@@ -84,7 +84,7 @@ export default defineComponent({
 
     const activeSort = computed(() => {
       return getSortFromQuery(route.query);
-    })
+    });
 
     const isPermalinkPage = computed(() => {
       if (route.params.commentId) {
@@ -264,150 +264,80 @@ export default defineComponent({
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
 
-          if (createFormValues.value.depth === 2) {
-            // For second level comments, the cache update logic
-            // is to update the query that gets the discussion channel because
-            // the first two levels of comments are loaded when
-            // the comment section is first loaded.
+          const newCommentParentId = newComment?.ParentComment?.id;
+          if (!newCommentParentId) {
+            throw new Error("newCommentParentId is required");
+          }
 
-            // (For root level comments, cache update logic is
-            // in the discussion component.)
+          // For nested comments, first
+          // check if there are already replies to the parent
+          // comment.
+          const readQueryResult = cache.readQuery({
+            query: GET_COMMENT_REPLIES,
+            variables: {
+              commentId: createFormValues.value.parentCommentId,
+              limit: 5,
+              offset: 0,
+              sort: getSortFromQuery(route.query),
+            },
+          });
 
-            const readQueryResult = cache.readQuery({
-              query: GET_COMMENT_SECTION,
-              variables: commentSectionQueryVariables,
-            });
-
-            const existingDiscussionChannelData =
-              readQueryResult?.discussionChannels[0];
-
-            let existingCommentAggregate =
-              existingDiscussionChannelData?.CommentsAggregate
-                ? existingDiscussionChannelData.CommentsAggregate
-                : null;
-            let newCommentAggregate = null;
-            if (existingCommentAggregate) {
-              newCommentAggregate = {
-                ...existingCommentAggregate,
-                count: existingCommentAggregate.count + 1,
-              };
-            }
-
-            let rootCommentsCopy = [
-              ...(existingDiscussionChannelData.Comments || []),
-            ];
-            rootCommentsCopy = rootCommentsCopy.map((comment: any) => {
-              if (comment.id === createFormValues.value.parentCommentId) {
-                const existingChildCommentAggregate =
-                  comment.ChildCommentsAggregate;
-                let newChildCommentAggregate = null;
-
-                if (existingChildCommentAggregate) {
-                  newChildCommentAggregate = {
-                    ...existingChildCommentAggregate,
-                    count: existingChildCommentAggregate.count + 1,
+          if (!readQueryResult) {
+            // If we have not yet tried to fetch the replies
+            // of the parent comment, it is probably because
+            // the reply count was 0. Changing the count to 1
+            // should cause the replies to refetch.
+            cache.modify({
+              id: cache.identify({
+                __typename: "Comment",
+                id: createFormValues.value.parentCommentId,
+              }),
+              fields: {
+                ChildCommentsAggregate(existingValue: any) {
+                  return {
+                    ...existingValue,
+                    count: existingValue.count + 1,
                   };
-                }
-                let commentCopy = {
-                  ...comment,
-                  ChildComments: [newComment, ...comment.ChildComments],
-                  ChildCommentsAggregate: newChildCommentAggregate
-                    ? newChildCommentAggregate
-                    : existingChildCommentAggregate,
-                };
-                return commentCopy;
-              }
-              return comment;
+                },
+              },
             });
+          }
+
+          if (readQueryResult) {
+            const existingReplies =
+              readQueryResult?.getCommentReplies?.ChildComments;
+
+            // If there are NOT already replies to the parent
+            // comment, edit the aggregate count
+            // of child comments on the parent comment. That should
+            // trigger the GET_COMMENT_REPLIES query to be fetched.
+
+            const existingChildCommentAggregate =
+              readQueryResult?.getCommentReplies?.aggregateChildCommentCount ||
+              0;
+            let newChildCommentAggregate = existingChildCommentAggregate + 1;
+
+            const newGetRepliesData = {
+              ...readQueryResult,
+              getCommentReplies: {
+                ...readQueryResult?.getCommentReplies,
+                ChildComments: [newComment, ...existingReplies],
+                aggregateChildCommentCount: newChildCommentAggregate,
+              },
+            };
+
+            const pageVariables = {
+              commentId: createFormValues.value.parentCommentId,
+              limit: 5,
+              offset: 0,
+              sort: activeSort.value,
+            };
 
             cache.writeQuery({
-              query: GET_COMMENT_SECTION,
-              variables: commentSectionQueryVariables,
-              data: {
-                ...readQueryResult,
-                discussionChannels: [
-                  {
-                    ...existingDiscussionChannelData,
-                    Comments: rootCommentsCopy,
-                    CommentsAggregate: newCommentAggregate
-                      ? newCommentAggregate
-                      : existingCommentAggregate,
-                  },
-                ],
-              },
-            });
-          } else if (createFormValues.value.depth > 2) {
-            // For more deeply nested comments, first
-            // check if there are already replies to the parent
-            // comment.
-            const readQueryResult = cache.readQuery({
               query: GET_COMMENT_REPLIES,
-              variables: {
-                id: createFormValues.value.parentCommentId,
-              },
+              data: newGetRepliesData,
+              variables: pageVariables,
             });
-
-            if (!readQueryResult) {
-              // If we have not yet tried to fetch the replies
-              // of the parent comment, it is probably because
-              // the reply count was 0. Changing the count to 1
-              // should cause the replies to refetch.
-              cache.modify({
-                id: cache.identify({
-                  __typename: "Comment",
-                  id: createFormValues.value.parentCommentId,
-                }),
-                fields: {
-                  ChildCommentsAggregate(existingValue: any) {
-                    return {
-                      ...existingValue,
-                      count: existingValue.count + 1,
-                    };
-                  },
-                },
-              });
-            }
-
-            if (readQueryResult) {
-              const parentComment = readQueryResult?.comments[0];
-
-              const existingReplies = parentComment?.ChildComments;
-
-              // If there are NOT already replies to the parent
-              // comment, edit the aggregate count
-              // of child comments on the parent comment. That should
-              // trigger the GET_COMMENT_REPLIES query to be fetched.
-
-              const existingChildCommentAggregate =
-                parentComment?.ChildCommentsAggregate;
-              let newChildCommentAggregate = null;
-
-              if (existingChildCommentAggregate) {
-                newChildCommentAggregate = {
-                  ...existingChildCommentAggregate,
-                  count: 1,
-                };
-              }
-
-              cache.writeQuery({
-                query: GET_COMMENT_REPLIES,
-                data: {
-                  ...readQueryResult,
-                  comments: [
-                    {
-                      ...parentComment,
-                      ChildComments: [newComment, ...existingReplies],
-                      ChildCommentAggregate: newChildCommentAggregate
-                        ? newChildCommentAggregate
-                        : existingChildCommentAggregate,
-                    },
-                  ],
-                },
-                variables: {
-                  id: createFormValues.value.parentCommentId,
-                },
-              });
-            }
 
             // Update the total count of comments
             const readDiscussionChannelQueryResult = cache.readQuery({
@@ -416,33 +346,24 @@ export default defineComponent({
             });
 
             const existingDiscussionChannelData =
-              readDiscussionChannelQueryResult?.discussionChannels[0];
+              readDiscussionChannelQueryResult?.getCommentSection
+                ?.DiscussionChannel;
 
             let existingCommentAggregate =
-              existingDiscussionChannelData?.CommentsAggregate
-                ? existingDiscussionChannelData.CommentsAggregate
-                : null;
-
-            let newCommentAggregate = null;
-
-            if (existingCommentAggregate) {
-              newCommentAggregate = {
-                ...existingCommentAggregate,
-                count: existingCommentAggregate.count + 1,
-              };
-            }
+              existingDiscussionChannelData?.CommentsAggregate;
 
             cache.writeQuery({
               query: GET_COMMENT_SECTION,
               variables: commentSectionQueryVariables,
               data: {
-                ...readQueryResult,
+                ...readDiscussionChannelQueryResult,
                 discussionChannels: [
                   {
                     ...existingDiscussionChannelData,
-                    CommentsAggregate: newCommentAggregate
-                      ? newCommentAggregate
-                      : existingCommentAggregate,
+                    CommentsAggregate: {
+                      ...existingDiscussionChannelData?.CommentsAggregate,
+                      count: existingCommentAggregate + 1,
+                    },
                   },
                 ],
               },
@@ -481,7 +402,8 @@ export default defineComponent({
 
     const showCopiedLinkNotification = ref(false);
 
-    const aggregateCommentCount = props.discussionChannel?.CommentsAggregate?.count || 0
+    const aggregateCommentCount =
+      props.discussionChannel?.CommentsAggregate?.count || 0;
 
     return {
       activeSort,
@@ -661,16 +583,13 @@ export default defineComponent({
         <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
           This comment section is empty.
         </div>
-        <div
-          :key="activeSort"
-        >
-          <div
-            v-for="comment in comments || []"
-            :key="comment.id"
-          >
+        <div :key="activeSort">
+          <div v-for="comment in comments || []" :key="comment.id">
             <Comment
               v-if="comment.id !== permalinkedCommentId"
-              :aggregate-comment-count="discussionChannel?.CommentsAggregate?.count || 0"
+              :aggregate-comment-count="
+                discussionChannel?.CommentsAggregate?.count || 0
+              "
               :compact="true"
               :comment-data="comment"
               :depth="1"

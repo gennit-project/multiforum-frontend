@@ -162,7 +162,7 @@ export default defineComponent({
 <template>
   <li
     class="relative flex gap-3 space-x-2 border-b px-6 py-4"
-    :class="['border-b border-gray-200 dark:border-gray-500']"
+    :class="['border-b border-gray-200 dark:border-gray-400']"
   >
     <div class="flex w-full justify-between">
       <div class="w-full">

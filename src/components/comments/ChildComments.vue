@@ -33,8 +33,8 @@ export default defineComponent({
     } = useQuery(GET_COMMENT_REPLIES, {
       commentId: props.parentCommentId,
       limit: 5,
-      offset: 0,// currentOffset.value,
-      sort: 'hot'// activeSort.value,
+      offset: 0,
+      sort: activeSort
     });
 
     const loadMore = () => {
