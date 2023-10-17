@@ -117,6 +117,12 @@ const convertTimeToReadableFormat = (time: string) => {
   return humanReadableTime;
 }
 
+const pluralize = (number: number, word: string) => {
+  if (number === 1) {
+    return `${number} ${word}`;
+  }
+  return `${number} ${word}s`;
+}
 
 function timeAgo(jsDate: Date) {
   const then = DateTime.fromJSDate(jsDate);
@@ -124,15 +130,25 @@ function timeAgo(jsDate: Date) {
   const diff = now.diff(then);
 
   if (diff.as('years') >= 1) {
-    return `${Math.floor(diff.as('years'))} years ago`;
+    const number = Math.floor(diff.as('years'))
+    return `${pluralize(number, 'year')} ago`;
+
   } else if (diff.as('months') >= 1) {
-    return `${Math.floor(diff.as('months'))} months ago`;
+    const number = Math.floor(diff.as('months'))
+    return `${pluralize(number, 'month')} ago`;
+
   } else if (diff.as('days') >= 1) {
-    return `${Math.floor(diff.as('days'))} days ago`;
+    const number = Math.floor(diff.as('days'))
+    return `${pluralize(number, 'day')} ago`;
+
   } else if (diff.as('hours') >= 1) {
-    return `${Math.floor(diff.as('hours'))} hours ago`;
+    const number = Math.floor(diff.as('hours'))
+    return `${pluralize(number, 'hour')} ago`;
+
   } else if (diff.as('minutes') >= 1) {
-    return `${Math.floor(diff.as('minutes'))} minutes ago`;
+    const number = Math.floor(diff.as('minutes'))
+    return `${pluralize(number, 'minute')} ago`;
+
   } else {
     return "just now";
   }

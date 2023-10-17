@@ -41,7 +41,10 @@ export default defineComponent({
     <template v-slot:activator="{ props }">
       <button v-bind="props">
         <slot>
-          {{ username }}
+          <router-link
+            :to="`/u/${username}`"
+            class="hover:underline"
+          >{{ username }}</router-link>
         </slot>
       </button>
     </template>

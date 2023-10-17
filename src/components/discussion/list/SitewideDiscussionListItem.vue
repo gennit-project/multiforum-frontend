@@ -9,6 +9,7 @@ import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import { router } from "@/router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
+import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 
 export default defineComponent({
   components: {
@@ -17,6 +18,7 @@ export default defineComponent({
     MarkdownPreview,
     Tag,
     ChevronDownIcon,
+    UsernameWithTooltip
   },
   inheritAttrs: false,
   props: {
@@ -206,7 +208,15 @@ export default defineComponent({
         <div
           class="font-medium mb-2 flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
         >
-          <span>{{ `Posted ${relativeTime} by ${authorUsername}` }}</span>
+          <span>{{ `Posted ${relativeTime} by `}}
+            <UsernameWithTooltip
+              v-if="authorUsername"
+              :username="authorUsername"
+              :comment-karma="discussion?.Author?.commentKarma ?? 0"
+              :discussion-karma="discussion?.Author?.discussionKarma ?? 0"
+              :account-created="discussion?.Author?.createdAt"
+            />
+          </span>
         </div>
         <router-link
           v-if="discussion && !submittedToMultipleChannels"
