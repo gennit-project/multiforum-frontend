@@ -526,21 +526,6 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div
-      v-if="
-        !discussionChannel || discussionChannel?.CommentsAggregate?.count === 0
-      "
-    >
-      <h2 id="comments" ref="commentSectionHeader" class="text-md mb-2">
-        {{ `Comments (0)` }}
-      </h2>
-      <ErrorBanner
-        v-if="locked"
-        class="mr-10 mt-2"
-        :text="'This comment section is locked because the post was removed from the channel.'"
-      />
-      <p v-else-if="discussionChannel && loading">There are no comments yet.</p>
-    </div>
     <div>
       <h2
         v-if="!isPermalinkPage"
@@ -581,7 +566,7 @@ export default defineComponent({
       <div class="my-4">
         <p v-if="loading">Loading...</p>
         <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
-          This comment section is empty.
+          There are no comments yet.
         </div>
         <div :key="activeSort">
           <div v-for="comment in comments || []" :key="comment.id">
