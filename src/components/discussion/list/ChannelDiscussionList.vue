@@ -19,6 +19,7 @@ import {
   getSortFromQuery,
   getTimeFrameFromQuery,
 } from "@/components/comments/getSortFromQuery";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
 
 const DISCUSSION_PAGE_LIMIT = 25;
 
@@ -28,6 +29,7 @@ export default defineComponent({
     ErrorBanner,
     LoadMore,
     WarningModal,
+    RequireAuth,
   },
   inheritAttrs: false,
   props: {
@@ -244,20 +246,32 @@ export default defineComponent({
         discussionChannelResult.getDiscussionsInChannel.discussionChannels
           .length === 0
       "
-      class="my-6 px-4"
+      class="my-6 px-4 flex gap-2 "
     >
-      There are no discussions to show.
-      <router-link
-        v-if="channelId"
-        :to="{
-          name: 'CreateDiscussionInChannel',
-          params: {
-            channelId: channelId,
-          },
-        }"
-        class="text-blue-500 underline"
-        >Create one?</router-link
+      <span 
+      >There are no discussions to show.</span>
+
+      <RequireAuth
+        :full-width="false"
       >
+        <template #has-auth>
+          <router-link
+            v-if="channelId"
+            :to="{
+              name: 'CreateDiscussionInChannel',
+              params: {
+                channelId: channelId,
+              },
+            }"
+            class="text-blue-500 underline"
+            >Create one?</router-link
+          >
+        </template>
+
+        <template #does-not-have-auth>
+          <span class="text-blue-500 underline cursor-pointer">Create one?</span>
+        </template>
+      </RequireAuth>
     </p>
     <div v-else>
       <div>
