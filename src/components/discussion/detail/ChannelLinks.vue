@@ -99,20 +99,7 @@ export default defineComponent({
     </div>
 
 
-    <div v-if="channelId">
-      <h2 class="text-lg">
-        Comments in this Channel
-      </h2>
-      <ul class="list-disc pl-3">
-        <ChannelLink
-          v-if="channelId"
-          :channel-id="channelId"
-          :comment-count="getCommentCount(channelId)"
-          :upvote-count="getVoteCount(channelId)"
-          :discussion-id="activeDiscussionChannel.discussionId"
-        />
-      </ul>
-
+    <div v-if="channelId && channelsExceptActive.length > 0">
       <div>
         <h2 class="mt-4 text-lg">
           Comments in Other Channels
