@@ -1,5 +1,5 @@
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { useDisplay } from "vuetify";
 
 export default defineComponent({
@@ -21,10 +21,42 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
+  setup(props) {
     const { smAndDown } = useDisplay();
 
+    const classes = computed(() => {
+      let classArray = [];
+      if (props.isActive) {
+        classArray.push(
+          ` border-black dark:border-blue-500  dark:text-gray-100`,
+        );
+
+        if (props.vertical) {
+          classArray.push(
+            "pr-2 px-4 border-l-4 bg-gray-100 text-gray-700  dark:bg-gray-700 ",
+          );
+        } else {
+          classArray.push(
+            "border-b-2 dark:text-gray-200 dark:border-blue-500 dark:text-gray-200",
+          );
+        }
+      } else {
+        classArray.push("text-gray-500 dark:border-gray-800");
+
+        if (props.vertical) {
+          classArray.push(
+            "pr-2 px-4 border-l-4 border-transparent hover:bg-gray-200 dark:hover:bg-gray-800",
+          );
+        } else {
+          classArray.push("border-b-2 border-transparent");
+        }
+      }
+
+      return classArray;
+    });
+
     return {
+      classes,
       smAndDown,
     };
   },
@@ -34,20 +66,11 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="border-l-4 link font-medium group inline-flex items-center dark:hover:border-blue-500 hover:text-gray-600 dark:text-gray-200"
-    :class="[
-      isActive
-        ? ` border-black dark:border-blue-500  dark:text-gray-100 ${
-          vertical
-            ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 '
-            : 'dark:text-gray-200'
-        }  dark:border-blue-500 dark:text-gray-200 `
-        : 'border-transparent text-gray-500 dark:border-gray-800 ',
-      vertical ? 'pr-2 px-4 hover:bg-gray-200 dark:hover:bg-gray-800' : 'border-b-2',
-    ]"
+    class="border-transparent link font-medium group inline-flex items-center hover:text-gray-600 dark:text-gray-200 dark:hover:border-blue-500"
+    :class="classes"
   >
     <div
-      :class="[vertical ? '' : 'hover:bg-gray-100 dark:hover:bg-gray-700 px-2']"
+      :class="[vertical ? '' : 'px-2 hover:bg-gray-100 dark:hover:bg-gray-700']"
       class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
     >
       <div class="text-black dark:text-blue-500">
