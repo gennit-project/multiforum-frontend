@@ -34,12 +34,12 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="link font-medium group inline-flex items-center dark:hover:border-blue-500 hover:text-gray-600 dark:text-gray-200"
+    class="border-l-4 link font-medium group inline-flex items-center dark:hover:border-blue-500 hover:text-gray-600 dark:text-gray-200"
     :class="[
       isActive
-        ? `border-black dark:border-blue-500  dark:text-gray-100 ${
+        ? ` border-black dark:border-blue-500  dark:text-gray-100 ${
           vertical
-            ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 border-l-4'
+            ? 'bg-gray-100 text-gray-700  dark:bg-gray-700 '
             : 'dark:text-gray-200'
         }  dark:border-blue-500 dark:text-gray-200 `
         : 'border-transparent text-gray-500 dark:border-gray-800 ',

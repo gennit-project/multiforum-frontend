@@ -122,8 +122,13 @@ export default defineComponent({
             :route="route"
           />
           <v-row>
-            <v-col v-if="channelId && !smAndDown" cols="12" md="3" class="p-0">
-              <ChannelSidebar :channel-id="channelId">
+            <v-col 
+              v-if="channelId && !smAndDown" 
+              cols="12" 
+              md="3" 
+              class="p-0"
+            >
+              <ChannelSidebar :channel-id="channelId" class="h-full">
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"
                   :route="route"
