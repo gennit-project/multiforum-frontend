@@ -270,7 +270,10 @@ export default defineComponent({
           </p>
 
           <div class="mt-2 flex items-center justify-start gap-6">
-            <router-link :to="{ path: detailLink, query: filteredQuery }">
+            <router-link 
+              :to="{ path: detailLink, query: filteredQuery }"
+              class="rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-1 dark:hover:bg-gray-500"
+            >
               <i class="fa-regular fa-comment h-6 w-6" />
               <span class="text-sm">{{
                 `${commentCount} comment${commentCount === 1 ? "" : "s"}`

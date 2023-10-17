@@ -215,9 +215,9 @@ export default defineComponent({
           "
           class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
         >
-          <button>
+          <button class="rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-1 dark:hover:bg-gray-500">
             <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-            <span class="underline">{{
+            <span>{{
               `View ${commentCount} ${
                 commentCount === 1 ? "comment" : "comments"
               } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
@@ -226,7 +226,7 @@ export default defineComponent({
         </router-link>
 
         <MenuButton v-else-if="discussion" :items="discussionDetailOptions">
-          <button class="flex items-center rounded-md border py-2 pl-2 pr-4">
+          <button class="flex items-center rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-2 dark:hover:bg-gray-500 pb-2">
             <i class="fa-regular fa-comment mr-2 h-4 w-4" />
             {{
               `${commentCount} ${
