@@ -95,7 +95,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="justify-center overflow-hidden dark:bg-black">
+  <div class="justify-center h-screen dark:bg-black">
     <div
       v-if="smAndDown"
       :class="[
@@ -112,40 +112,36 @@ export default defineComponent({
         :is-large="true"
       />
     </div>
-    <div class="dark:bg-gray-950">
-      <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-        <v-container fluid class="p-0 max-w-7xl bg-white dark:bg-gray-800">
-          <ChannelTabs
-            v-if="smAndDown"
-            :vertical="false"
-            class="block border-b border-gray-200 dark:border-gray-600"
-            :route="route"
-          />
-          <v-row>
-            <v-col 
-              v-if="channelId && !smAndDown" 
-              cols="12" 
-              md="3" 
-              class="p-0"
+    <article class="relative z-0 flex-1 focus:outline-none xl:order-last bg-black h-screen">
+      <v-container fluid class="h-fit bg-gray-800 max-w-7xl p-0 ">
+        <ChannelTabs
+          v-if="smAndDown"
+          :vertical="false"
+          class="block border-b border-gray-200 dark:border-gray-600"
+          :route="route"
+        />
+        <v-row class="p-0">
+          <v-col v-if="channelId && !smAndDown" cols="12" md="3" class="p-0">
+            <ChannelSidebar
+              :channel-id="channelId"
+              class="fixed h-full w-72 shadow"
             >
-              <ChannelSidebar :channel-id="channelId" class="h-full fixed w-64">
-                <ChannelTabs
-                  v-if="route.name !== 'EditChannel'"
-                  :route="route"
-                  :vertical="true"
-                />
-              </ChannelSidebar>
-            </v-col>
-            <v-col
-              :class="[!smAndDown ? 'pt-6' : '']"
-              :cols="channelId && !smAndDown ? 9 : 12"
-            >
-              <router-view />
-            </v-col>
-          </v-row>
-        </v-container>
-      </article>
-    </div>
+              <ChannelTabs
+                v-if="route.name !== 'EditChannel'"
+                :route="route"
+                :vertical="true"
+              />
+            </ChannelSidebar>
+          </v-col>
+          <v-col
+            :class="[!smAndDown ? 'pt-6' : 'p-0']"
+            :cols="channelId && !smAndDown ? 9 : 12"
+          >
+            <router-view />
+          </v-col>
+        </v-row>
+      </v-container>
+    </article>
   </div>
 </template>
 

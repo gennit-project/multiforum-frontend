@@ -133,7 +133,7 @@ export default defineComponent({
         <input
           v-model="currentInput"
           :data-testid="testId"
-          class=" dark:bg-gray-500 dark:border-none placeholder-gray-400 pl-4 dark:text-gray-100 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 w-full"
+          class=" dark:bg-gray-500 dark:border-none placeholder-gray-400 dark:placeholder-gray-200 pl-4 dark:text-gray-100 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 w-full"
           :placeholder="channelMode ? 'Add channels to select your intended audience' : 'Add tags'"
           @keydown.enter="(event) => {
             saveTagAndClose(event)

@@ -118,7 +118,7 @@ export default defineComponent({
             name="comment"
             rows="10"
             :placeholder="placeholder"
-            class="focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm placeholder-gray-400 shadow-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-400 dark:text-gray-100"
+            class="focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm placeholder-gray-400 dark:placeholder-gray-200 shadow-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-400 dark:text-gray-100"
             :value="text"
             @input="updateText($event?.target?.value)"
           />
