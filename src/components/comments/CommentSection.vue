@@ -533,7 +533,7 @@ export default defineComponent({
         ref="commentSectionHeader"
         class="px-1 text-lg"
       >
-        {{ `Comments (${discussionChannel?.CommentsAggregate?.count})` }}
+        {{ `Comments (${discussionChannel?.CommentsAggregate?.count || 0})` }}
       </h2>
       <ErrorBanner
         v-if="locked"
