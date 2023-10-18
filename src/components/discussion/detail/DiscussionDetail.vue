@@ -51,6 +51,9 @@ export default defineComponent({
       smAndDown
     };
   },
+  created(){
+    window.scrollTo(0,0);
+  }
 });
 </script>
 

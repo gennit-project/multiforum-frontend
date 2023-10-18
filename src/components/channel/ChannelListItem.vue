@@ -48,18 +48,19 @@ export default defineComponent({
     <div
       class="relative col-span-12 flex items-center gap-4 border-gray-200 py-2 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200 lg:col-span-6"
     >
-    <div class="w-24">
-      <Avatar
-        :text="channel.uniqueName"
-        :is-square="true"
-        :is-large="true"
-      />
-    </div>
+   
       <div>
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
           class="mt-1 flex cursor-pointer items-center gap-4"
         >
+        <div class="w-24">
+          <Avatar
+            :text="channel.uniqueName"
+            :is-square="true"
+            :is-large="true"
+          />
+        </div>
           <h3 class="text-xl">
             <HighlightedSearchTerms
               :text="channel.uniqueName"
