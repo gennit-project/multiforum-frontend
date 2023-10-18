@@ -28,7 +28,7 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
-import { DiscussionChannel } from "@/__generated__/graphql";
+import { DiscussionChannel, Comment as CommentType } from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
@@ -161,19 +161,27 @@ export default defineComponent({
           });
         } else {
           // For root comments, update the comment section query result
-          cache.modify({
-            id: cache.identify({
-              __typename: "DiscussionChannel",
-              id: props.discussionChannel?.id,
-            }),
-            fields: {
-              Comments(existingComments: any, { readField }: any) {
-                return existingComments.filter((comment: any) => {
-                  return readField("id", comment) !== commentToDeleteId.value;
-                });
+          const readQueryResult = cache.readQuery({
+            query: GET_COMMENT_SECTION,
+            variables: commentSectionQueryVariables,
+          });
+
+          const filteredRootComments: Comment[] = (
+            readQueryResult?.getCommentSection?.Comments || []
+          ).filter((comment: CommentType) => comment.id !== commentToDeleteId.value);
+
+          cache.writeQuery({
+            query: GET_COMMENT_SECTION,
+            variables: commentSectionQueryVariables,
+            data: {
+              ...readQueryResult,
+              getCommentSection: {
+                ...readQueryResult?.getCommentSection,
+                Comments: filteredRootComments,
               },
             },
           });
+          
         }
         // For both root comments and replies, update the aggregate
         // count of the comment section
@@ -261,6 +269,7 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
+          console.log("create reply comment update cache");
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
 

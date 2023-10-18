@@ -111,10 +111,12 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
+          console.log('create root comment update cache', cache, result)
           // This is the logic for updating the cache
-          // after replying to a comment. For the logic
-          // to create a root level comment, see the
-          // parent component.
+          // after creating a root comment. For the logic for updating
+          // the cache after replying to a comment, see the CommentSection
+          // component.
+
           const newComment: Comment = result.data?.createComments?.comments[0];
           // Will use readQuery and writeQuery to update the cache
           // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
