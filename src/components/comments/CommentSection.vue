@@ -28,7 +28,10 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
-import { DiscussionChannel, Comment as CommentType } from "@/__generated__/graphql";
+import {
+  DiscussionChannel,
+  Comment as CommentType,
+} from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
@@ -142,23 +145,98 @@ export default defineComponent({
       },
     }));
 
+    const getCommentRepliesVariables = {
+      commentId: createFormValues.value.parentCommentId,
+      limit: 5,
+      offset: 0,
+      sort: getSortFromQuery(route.query),
+    };
+
     const { mutate: deleteComment } = useMutation(DELETE_COMMENT, {
       update: (cache: any) => {
         if (parentOfCommentToDelete.value) {
           // For child comments, update the parent comment's replies
-          cache.modify({
-            id: cache.identify({
-              __typename: "Comment",
-              id: parentOfCommentToDelete.value,
-            }),
-            fields: {
-              ChildComments(existingComments: any, { readField }: any) {
-                return existingComments.filter((comment: any) => {
-                  return readField("id", comment) !== commentToDeleteId.value;
-                });
-              },
+
+          // 1. Read the current set of replies to the parent comment.
+          const readQueryResult = cache.readQuery({
+            query: GET_COMMENT_REPLIES,
+            variables: {
+              ...getCommentRepliesVariables,
+              commentId: parentOfCommentToDelete.value,
             },
           });
+
+          console.log('read query result for delete nested comment', readQueryResult)
+          console.log('variables are ', getCommentRepliesVariables)
+
+          if (readQueryResult) {
+            const existingReplies =
+              readQueryResult?.getCommentReplies?.ChildComments;
+
+            // 2. Filter out the deleted reply.
+            const filteredReplies = existingReplies.filter(
+              (reply: CommentData) => reply.id !== commentToDeleteId.value,
+            );
+
+            const existingChildCommentAggregate =
+              readQueryResult?.getCommentReplies?.aggregateChildCommentCount ||
+              0;
+
+            // 3. Decrease the aggregate count.
+            let newChildCommentAggregate = Math.max(
+              0,
+              existingChildCommentAggregate - 1,
+            );
+
+            // Write the updated replies back to the cache.
+            cache.writeQuery({
+              query: GET_COMMENT_REPLIES,
+              data: {
+                ...readQueryResult,
+                getCommentReplies: {
+                  ...readQueryResult.getCommentReplies,
+                  ChildComments: filteredReplies,
+                  aggregateChildCommentCount: newChildCommentAggregate,
+                },
+              },
+              variables: {
+                ...getCommentRepliesVariables,
+                commentId: parentOfCommentToDelete.value,
+              },
+            });
+
+            // 4. Update the total count of comments
+            const readDiscussionChannelQueryResult = cache.readQuery({
+              query: GET_COMMENT_SECTION,
+              variables: commentSectionQueryVariables,
+            });
+
+            const existingDiscussionChannelData =
+              readDiscussionChannelQueryResult?.getCommentSection
+                ?.DiscussionChannel;
+
+            let existingCommentAggregate =
+              existingDiscussionChannelData?.CommentsAggregate?.count || 0;
+
+            // 5. Decrease the total count.
+            cache.writeQuery({
+              query: GET_COMMENT_SECTION,
+              variables: commentSectionQueryVariables,
+              data: {
+                ...readDiscussionChannelQueryResult,
+                getCommentSection: {
+                  ...readDiscussionChannelQueryResult.getCommentSection,
+                  DiscussionChannel: {
+                    ...existingDiscussionChannelData,
+                    CommentsAggregate: {
+                      ...existingDiscussionChannelData.CommentsAggregate,
+                      count: Math.max(0, existingCommentAggregate - 1),
+                    },
+                  },
+                },
+              },
+            });
+          }
         } else {
           // For root comments, update the comment section query result
           const readQueryResult = cache.readQuery({
@@ -168,7 +246,9 @@ export default defineComponent({
 
           const filteredRootComments: Comment[] = (
             readQueryResult?.getCommentSection?.Comments || []
-          ).filter((comment: CommentType) => comment.id !== commentToDeleteId.value);
+          ).filter(
+            (comment: CommentType) => comment.id !== commentToDeleteId.value,
+          );
 
           cache.writeQuery({
             query: GET_COMMENT_SECTION,
@@ -181,7 +261,6 @@ export default defineComponent({
               },
             },
           });
-          
         }
         // For both root comments and replies, update the aggregate
         // count of the comment section
@@ -269,7 +348,9 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
-          console.log("create reply comment update cache");
+          // This contains logic for updating the cache after you reply
+          // to a comment. For the logic for updating a root comment,
+          // see the CreateRootComment form.
           const newComment: CommentData =
             result.data?.createComments?.comments[0];
 
@@ -283,12 +364,7 @@ export default defineComponent({
           // comment.
           const readQueryResult = cache.readQuery({
             query: GET_COMMENT_REPLIES,
-            variables: {
-              commentId: createFormValues.value.parentCommentId,
-              limit: 5,
-              offset: 0,
-              sort: getSortFromQuery(route.query),
-            },
+            variables: getCommentRepliesVariables,
           });
 
           if (!readQueryResult) {
