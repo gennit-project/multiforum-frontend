@@ -55,7 +55,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div :class="[smAndDown ? '' : 'h-screen']" class="w-full flex justify-center space-y-4 overflow-auto py-1 lg:px-4">
+  <div :class="[smAndDown ? '' : '']" class="w-full flex justify-center space-y-4 py-1 lg:px-4">
     <DiscussionDetailContent
       v-if="discussionId"
       :key="discussionId"

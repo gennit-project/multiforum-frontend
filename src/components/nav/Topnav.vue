@@ -113,9 +113,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full bg-gray-100 dark:bg-gray-900">
+  <div class="w-full bg-gray-100 dark:bg-gray-900 fixed top-0 left-0 z-10">
     <div
-      :class="[smAndDown ? 'py-1 px-6' : 'py-3 px-4']"
+      :class="[smAndDown ? 'py-1 px-6' : 'py-2 px-4']"
       class="flex items-center justify-between"
     >
       <div class="flex items-center lg:px-0">

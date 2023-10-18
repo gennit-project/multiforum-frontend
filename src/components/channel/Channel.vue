@@ -128,7 +128,7 @@ export default defineComponent({
               md="3" 
               class="p-0"
             >
-              <ChannelSidebar :channel-id="channelId" class="h-full">
+              <ChannelSidebar :channel-id="channelId" class="h-full fixed w-64">
                 <ChannelTabs
                   v-if="route.name !== 'EditChannel'"
                   :route="route"

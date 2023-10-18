@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="  dark:bg-black bg-gray-200 dark:text-gray-200 list-disc">
+  <div class="  dark:bg-black bg-gray-200 dark:text-gray-200 list-disc mt-14">
     <nav class="mb-2">
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
@@ -93,12 +93,9 @@ export default defineComponent({
 </template>
 
 <style lang="scss">
-.constrain-height {
-  height: calc(100vh);
-}
 body {
   @media (prefers-color-scheme: dark) {
-    @apply bg-gray-800;
+    @apply bg-black;
     color-scheme: dark;
   }
 
@@ -108,7 +105,7 @@ body {
   }
 
   &.dark {
-    @apply bg-gray-800;
+    @apply bg-black;
     color-scheme: dark;
   }
 
