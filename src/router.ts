@@ -194,7 +194,7 @@ export const router = createRouter({
         },
         {
           name: "EditDiscussion",
-          path: "d/:discussionId/edit",
+          path: "discussions/d/:discussionId/edit",
           component: EditDiscussion,
         },
         {
