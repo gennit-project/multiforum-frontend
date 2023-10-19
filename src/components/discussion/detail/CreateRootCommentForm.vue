@@ -111,7 +111,6 @@ export default defineComponent({
           createCommentInput: createCommentInput.value,
         },
         update: (cache: any, result: any) => {
-          console.log('create root comment update cache', cache, result)
           // This is the logic for updating the cache
           // after creating a root comment. For the logic for updating
           // the cache after replying to a comment, see the CommentSection

@@ -166,9 +166,6 @@ export default defineComponent({
             },
           });
 
-          console.log('read query result for delete nested comment', readQueryResult)
-          console.log('variables are ', getCommentRepliesVariables)
-
           if (readQueryResult) {
             const existingReplies =
               readQueryResult?.getCommentReplies?.ChildComments;
@@ -367,7 +364,10 @@ export default defineComponent({
           // comment.
           const readQueryResult = cache.readQuery({
             query: GET_COMMENT_REPLIES,
-            variables: getCommentRepliesVariables,
+            variables: {
+              ...getCommentRepliesVariables,
+              commentId: newCommentParentId,
+            },
           });
 
           if (!readQueryResult) {
@@ -413,24 +413,29 @@ export default defineComponent({
                 aggregateChildCommentCount: newChildCommentAggregate,
               },
             };
-
-            const pageVariables = {
-              commentId: createFormValues.value.parentCommentId,
-              limit: 5,
-              offset: 0,
-              sort: activeSort.value,
-            };
+            
 
             cache.writeQuery({
               query: GET_COMMENT_REPLIES,
               data: newGetRepliesData,
-              variables: pageVariables,
+              variables: {
+                ...getCommentRepliesVariables,
+                commentId: newCommentParentId,
+              },
             });
 
-            // Update the total count of comments
-            const readDiscussionChannelQueryResult = cache.readQuery({
+            
+          } // end of if-statement for if query result exists.
+          // the following runs if there were previously 0 or more than
+          // 0 child comments.
+
+          // Update the total count of comments
+          const readDiscussionChannelQueryResult = cache.readQuery({
               query: GET_COMMENT_SECTION,
-              variables: commentSectionQueryVariables,
+              variables: {
+                ...commentSectionQueryVariables,
+                commentId: newCommentParentId,
+              },
             });
 
             const existingDiscussionChannelData =
@@ -438,25 +443,28 @@ export default defineComponent({
                 ?.DiscussionChannel;
 
             let existingCommentAggregate =
-              existingDiscussionChannelData?.CommentsAggregate;
+              existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
             cache.writeQuery({
               query: GET_COMMENT_SECTION,
-              variables: commentSectionQueryVariables,
+              variables: {
+                ...commentSectionQueryVariables,
+                commentId: newCommentParentId,
+              },
               data: {
                 ...readDiscussionChannelQueryResult,
-                discussionChannels: [
-                  {
+                getCommentSection: {
+                  ...readDiscussionChannelQueryResult.getCommentSection,
+                  DiscussionChannel: {
                     ...existingDiscussionChannelData,
                     CommentsAggregate: {
                       ...existingDiscussionChannelData?.CommentsAggregate,
                       count: existingCommentAggregate + 1,
                     },
                   },
-                ],
+                }
               },
             });
-          }
         },
       }),
     );
