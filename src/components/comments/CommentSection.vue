@@ -221,7 +221,10 @@ export default defineComponent({
             // 5. Decrease the total count.
             cache.writeQuery({
               query: GET_COMMENT_SECTION,
-              variables: commentSectionQueryVariables,
+              variables: {
+                ...commentSectionQueryVariables,
+                commentId: parentOfCommentToDelete.value,
+              },
               data: {
                 ...readDiscussionChannelQueryResult,
                 getCommentSection: {
