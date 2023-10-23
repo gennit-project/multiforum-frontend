@@ -84,16 +84,29 @@ export default defineComponent({
       return getTimeFrameFromQuery(route.query);
     });
 
+    const searchInput = computed(() => {
+      return filterValues.value.searchInput;
+    });
+
+    const selectedTags = computed(() => {
+      return filterValues.value.tags;
+    });
+
+    // $channelUniqueName: String!
+    // $searchInput: String!
+    // $selectedTags: [String!]
+    // $options: DiscussionListOptions
+
     const {
       result: discussionChannelResult,
       error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
-      fetchMore,
+      // fetchMore,
     } = useQuery(GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA, {
       channelUniqueName: channelId,
-      searchInput: filterValues.value.searchInput,
-      selectedChannels: filterValues.value.channels,
+      searchInput,
+      selectedTags,
       options: {
         limit: DISCUSSION_PAGE_LIMIT,
         offset: 0,
@@ -105,20 +118,20 @@ export default defineComponent({
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
-      fetchMore({
-        variables: {
-          channelUniqueName: channelId.value,
-          searchInput: filterValues.value.searchInput,
-          selectedChannels: filterValues.value.channels,
-          options: {
-            offset:
-              discussionChannelResult.value?.getDiscussionsInChannel
-                ?.discussionChannels?.length || 0,
-            limit: DISCUSSION_PAGE_LIMIT,
-            sort: activeSort.value,
-            timeFrame: activeTimeFrame.value,
-          },
-        },
+      // fetchMore({
+      //   variables: {
+      //     channelUniqueName: channelId.value,
+      //     searchInput: filterValues.value.searchInput,
+      //     selectedChannels: filterValues.value.channels,
+      //     options: {
+      //       offset:
+      //         discussionChannelResult.value?.getDiscussionsInChannel
+      //           ?.discussionChannels?.length || 0,
+      //       limit: DISCUSSION_PAGE_LIMIT,
+      //       sort: activeSort.value,
+      //       timeFrame: activeTimeFrame.value,
+      //     },
+      //   },
         // updateQuery: (previousResult, { fetchMoreResult }) => {
         //   if (!fetchMoreResult) return previousResult;
 
@@ -131,25 +144,8 @@ export default defineComponent({
         //     ],
         //   };
         // },
-      });
+      // });
     };
-    const sendToPreview = (discussionId: string) => {
-      if (!route.params.discussionId) {
-        if (!channelId.value) {
-          router.push({
-            name: "SitewideSearchDiscussionPreview",
-            params: {
-              discussionId: discussionId,
-            },
-          });
-        } else {
-          router.push({
-            name: "SearchDiscussionsInChannel",
-          });
-        }
-      }
-    };
-
     const {
       result: localUsernameResult,
       loading: localUsernameLoading,
@@ -192,7 +188,6 @@ export default defineComponent({
       mdAndDown,
       reachedEndOfResults,
       refetchDiscussions,
-      sendToPreview,
       selectedDiscussion: {} as DiscussionData,
       showModProfileModal: ref(false),
     };
