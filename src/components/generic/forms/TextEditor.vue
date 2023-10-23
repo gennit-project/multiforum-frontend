@@ -113,12 +113,11 @@ export default defineComponent({
         <TabPanel class="-m-0.5 rounded-lg px-0.5 py-1" :data-testid="testId">
           <label for="comment" class="sr-only">Comment</label>
           <textarea
-            id="texteditor-textarea"
             ref="editor"
             name="comment"
             rows="10"
             :placeholder="placeholder"
-            class="focus:ring-indigo-500 block w-full rounded-lg border-gray-200 font-mono text-sm placeholder-gray-400 dark:placeholder-gray-200 shadow-sm focus:border-blue-500 dark:border-gray-700 dark:bg-gray-400 dark:text-gray-100"
+            class="block w-full rounded-lg border-gray-200 font-mono text-sm placeholder-gray-400 dark:placeholder-gray-200 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-500 dark:text-gray-100"
             :value="text"
             @input="updateText($event?.target?.value)"
           />
@@ -126,7 +125,7 @@ export default defineComponent({
         <TabPanel class="-m-0.5 rounded-lg p-0.5">
           <v-md-preview
             :text="text"
-            class="block w-full max-w-2xl rounded-lg border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-100"
+            class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-500 dark:text-gray-100"
           />
         </TabPanel>
       </TabPanels>
