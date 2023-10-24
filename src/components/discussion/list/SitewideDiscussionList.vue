@@ -8,9 +8,12 @@ import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
-import { getSortFromQuery, getTimeFrameFromQuery } from "@/components/comments/getSortFromQuery";
+import {
+  getSortFromQuery,
+  getTimeFrameFromQuery,
+} from "@/components/comments/getSortFromQuery";
 
-const DISCUSSION_PAGE_LIMIT = 25;
+const DISCUSSION_PAGE_LIMIT = 15;
 
 export default defineComponent({
   components: {
@@ -52,11 +55,11 @@ export default defineComponent({
 
     const activeSort = computed(() => {
       return getSortFromQuery(route.query);
-    })
+    });
 
     const activeTimeFrame = computed(() => {
       return getTimeFrameFromQuery(route.query);
-    })
+    });
 
     const {
       result: discussionResult,
@@ -78,7 +81,6 @@ export default defineComponent({
     });
 
     const discussions = computed(() => {
-      
       if (!discussionResult.value) {
         return [];
       }
@@ -94,6 +96,12 @@ export default defineComponent({
       if (!discussionResult.value) {
         return 0;
       }
+      console.log("discussionResult.value", discussionResult.value);
+      console.log(
+        "count",
+        discussionResult.value.getSiteWideDiscussionList
+          .aggregateDiscussionCount,
+      );
       return discussionResult.value.getSiteWideDiscussionList
         .aggregateDiscussionCount;
     });
@@ -108,19 +116,20 @@ export default defineComponent({
             offset:
               discussionResult.value.getSiteWideDiscussionList.discussions
                 .length,
-            sort: activeSort,
-            timeFrame: activeTimeFrame,
+            sort: activeSort.value,
+            timeFrame: activeTimeFrame.value,
           },
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
 
+    
+
           return {
-            ...previousResult,
             getSiteWideDiscussionList: {
-              __typename: previousResult.getSiteWideDiscussionList.__typename,
+              ...previousResult.getSiteWideDiscussionList,
               aggregateDiscussionCount:
-                fetchMoreResult.getSiteWideDiscussionList
+                previousResult.getSiteWideDiscussionList
                   .aggregateDiscussionCount,
               discussions: [
                 ...previousResult.getSiteWideDiscussionList.discussions,
@@ -197,7 +206,8 @@ export default defineComponent({
     <div v-if="discussions && discussions.length > 0">
       <ul role="list" class="my-6 mr-2" data-testid="sitewide-discussion-list">
         <SitewideDiscussionListItem
-          v-for="discussion in discussionResult.getSiteWideDiscussionList.discussions"
+          v-for="discussion in discussionResult.getSiteWideDiscussionList
+            .discussions"
           :key="discussion.id"
           :discussion="discussion"
           :score="discussion.score"

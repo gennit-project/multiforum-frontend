@@ -4,7 +4,7 @@ import ChannelDiscussionListItem from "./ChannelDiscussionListItem.vue";
 import LoadMore from "../../generic/LoadMore.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { DiscussionData } from "../../../types/discussionTypes";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import WarningModal from "../../generic/WarningModal.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { generateSlug } from "random-word-slugs";
@@ -21,7 +21,7 @@ import {
 } from "@/components/comments/getSortFromQuery";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 
-const DISCUSSION_PAGE_LIMIT = 5;
+const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
   components: {
