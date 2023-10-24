@@ -21,7 +21,7 @@ import {
 } from "@/components/comments/getSortFromQuery";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 
-const DISCUSSION_PAGE_LIMIT = 25;
+const DISCUSSION_PAGE_LIMIT = 5;
 
 export default defineComponent({
   components: {
@@ -59,7 +59,6 @@ export default defineComponent({
   // comments and votes that are attached to the discussion's submission to a specific
   // channel. In contrast, the sitewide list fetches Discussion resources directly.
   setup() {
-    const router = useRouter();
     const route = useRoute();
 
     const channelId = computed(() => {
@@ -102,7 +101,7 @@ export default defineComponent({
       error: discussionError,
       loading: discussionLoading,
       refetch: refetchDiscussions,
-      // fetchMore,
+      fetchMore,
     } = useQuery(GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA, {
       channelUniqueName: channelId,
       searchInput,
@@ -118,33 +117,33 @@ export default defineComponent({
     const reachedEndOfResults = ref(false);
 
     const loadMore = () => {
-      // fetchMore({
-      //   variables: {
-      //     channelUniqueName: channelId.value,
-      //     searchInput: filterValues.value.searchInput,
-      //     selectedChannels: filterValues.value.channels,
-      //     options: {
-      //       offset:
-      //         discussionChannelResult.value?.getDiscussionsInChannel
-      //           ?.discussionChannels?.length || 0,
-      //       limit: DISCUSSION_PAGE_LIMIT,
-      //       sort: activeSort.value,
-      //       timeFrame: activeTimeFrame.value,
-      //     },
-      //   },
-        // updateQuery: (previousResult, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) return previousResult;
-
-        //   return {
-        //     aggregateDiscussionChannelsCount:
-        //       fetchMoreResult.aggregateDiscussionChannelsCount,
-        //     discussionChannels: [
-        //       ...previousResult.discussionChannels,
-        //       ...fetchMoreResult.discussionChannels,
-        //     ],
-        //   };
-        // },
-      // });
+      fetchMore({
+        variables: {
+          options: {
+            limit: DISCUSSION_PAGE_LIMIT,
+            offset:
+              discussionChannelResult.value?.getDiscussionsInChannel
+                .discussionChannels.length,
+            sort: activeSort.value,
+            timeFrame: activeTimeFrame.value,
+          },
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+          return {
+            getDiscussionsInChannel: {
+              ...previousResult.getDiscussionsInChannel,
+              aggregateDiscussionChannelsCount:
+                fetchMoreResult.getDiscussionsInChannel
+                  .aggregateDiscussionChannelsCount,
+              discussionChannels: [
+                ...previousResult.getDiscussionsInChannel.discussionChannels,
+                ...fetchMoreResult.getDiscussionsInChannel.discussionChannels,
+              ],
+            },
+          };
+        },
+      });
     };
     const {
       result: localUsernameResult,
@@ -241,14 +240,11 @@ export default defineComponent({
         discussionChannelResult.getDiscussionsInChannel.discussionChannels
           .length === 0
       "
-      class="my-6 px-4 flex gap-2 "
+      class="my-6 flex gap-2 px-4"
     >
-      <span 
-      >There are no discussions to show.</span>
+      <span>There are no discussions to show.</span>
 
-      <RequireAuth
-        :full-width="false"
-      >
+      <RequireAuth :full-width="false">
         <template #has-auth>
           <router-link
             v-if="channelId"
@@ -264,7 +260,9 @@ export default defineComponent({
         </template>
 
         <template #does-not-have-auth>
-          <span class="text-blue-500 underline cursor-pointer">Create one?</span>
+          <span class="cursor-pointer text-blue-500 underline"
+            >Create one?</span
+          >
         </template>
       </RequireAuth>
     </p>
@@ -299,7 +297,7 @@ export default defineComponent({
             class="justify-self-center"
             :reached-end-of-results="
               discussionChannelResult.getDiscussionsInChannel
-                .discussionChannelsAggregate?.count ===
+                .aggregateDiscussionChannelsCount ===
               discussionChannelResult.getDiscussionsInChannel.discussionChannels
                 .length
             "
