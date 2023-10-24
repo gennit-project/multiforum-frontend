@@ -30,7 +30,7 @@ export default defineComponent({
   <!-- Global notification live region, render this permanently at the end of the document -->
   <div
     aria-live="assertive"
-    class="pointer-events-none fixed inset-0 flex items-end px-4 py-6 sm:items-start sm:p-6"
+    class="pointer-events-none fixed inset-0 flex items-end px-4 py-6 mt-12 sm:items-start sm:p-6"
   >
     <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
       <!-- Notification panel, dynamically insert this into the live region when it needs to be displayed -->
@@ -44,7 +44,7 @@ export default defineComponent({
       >
         <div
           v-if="show"
-          class="bg-white dark:bg-gray-700 pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5"
+          class="bg-white dark:bg-gray-700 pointer-events-auto w-full max-w-sm overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 z-50"
         >
           <div class="p-4">
             <div class="flex items-start">

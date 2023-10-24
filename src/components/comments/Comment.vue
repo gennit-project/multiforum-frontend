@@ -460,7 +460,7 @@ export default defineComponent({
         <div
           v-else-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="w-full border-l border-gray-300 pl-4 dark:border-gray-500"
+          class="w-full border-gray-300 pl-4 dark:border-gray-600"
         >
           <ChildComments
             v-slot="slotProps"
