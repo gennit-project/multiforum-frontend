@@ -96,12 +96,6 @@ export default defineComponent({
       if (!discussionResult.value) {
         return 0;
       }
-      console.log("discussionResult.value", discussionResult.value);
-      console.log(
-        "count",
-        discussionResult.value.getSiteWideDiscussionList
-          .aggregateDiscussionCount,
-      );
       return discussionResult.value.getSiteWideDiscussionList
         .aggregateDiscussionCount;
     });

@@ -24,6 +24,7 @@ import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
+import { Comment } from "@/__generated__/graphql";
 
 export const COMMENT_LIMIT = 5;
 
@@ -100,7 +101,8 @@ export default defineComponent({
       ) {
         return null;
       }
-      return getDiscussionChannelResult.value.getCommentSection.DiscussionChannel;
+      return getDiscussionChannelResult.value.getCommentSection
+        .DiscussionChannel;
     });
 
     const comments = computed(() => {
@@ -111,6 +113,20 @@ export default defineComponent({
         return [];
       }
       return getDiscussionChannelResult.value.getCommentSection.Comments;
+    });
+
+    const loadedRootCommentCount = computed(() => {
+      if (
+        getDiscussionChannelLoading.value ||
+        getDiscussionChannelError.value
+      ) {
+        return [];
+      }
+
+      let rootComments = comments.value.filter((comment: Comment) => {
+        return comment.ParentComment === null;
+      });
+      return rootComments.length;
     });
 
     // We get the aggregate count of root comments so that we will know
@@ -140,7 +156,7 @@ export default defineComponent({
       return activeDiscussionChannel.value.CommentsAggregate?.count || 0;
     });
 
-    const rootCommentCount = computed(() => {
+    const aggregateRootCommentCount = computed(() => {
       if (
         getDiscussionChannelRootCommentAggregateLoading.value ||
         getDiscussionChannelRootCommentAggregateError.value
@@ -153,6 +169,7 @@ export default defineComponent({
       ) {
         return 0;
       }
+
       const discussionChannels =
         getDiscussionChannelRootCommentAggregateResult.value.discussionChannels;
       if (discussionChannels.length === 0) {
@@ -192,15 +209,9 @@ export default defineComponent({
     };
 
     const reachedEndOfResults = computed(() => {
-      if (
-        getDiscussionChannelLoading.value ||
-        getDiscussionChannelError.value
-      ) {
-        return false;
-      }
       return (
-        rootCommentCount.value ===
-        getDiscussionChannelResult.value.getCommentSection.Comments.length
+        loadedRootCommentCount.value >= aggregateRootCommentCount.value ||
+        loadedRootCommentCount.value >= commentCount.value
       );
     });
 
@@ -215,13 +226,14 @@ export default defineComponent({
       getDiscussionChannelLoading,
       discussion,
       lgAndUp,
+      loadedRootCommentCount,
       loadMore,
       mdAndUp,
       offset,
       previousOffset,
       reachedEndOfResults,
       relativeTime,
-      rootCommentCount,
+      aggregateRootCommentCount,
       route,
       router,
       smAndDown,
