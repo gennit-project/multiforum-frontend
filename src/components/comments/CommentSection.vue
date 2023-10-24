@@ -413,7 +413,6 @@ export default defineComponent({
                 aggregateChildCommentCount: newChildCommentAggregate,
               },
             };
-            
 
             cache.writeQuery({
               query: GET_COMMENT_REPLIES,
@@ -423,48 +422,46 @@ export default defineComponent({
                 commentId: newCommentParentId,
               },
             });
-
-            
           } // end of if-statement for if query result exists.
           // the following runs if there were previously 0 or more than
           // 0 child comments.
 
           // Update the total count of comments
           const readDiscussionChannelQueryResult = cache.readQuery({
-              query: GET_COMMENT_SECTION,
-              variables: {
-                ...commentSectionQueryVariables,
-                commentId: newCommentParentId,
-              },
-            });
+            query: GET_COMMENT_SECTION,
+            variables: {
+              ...commentSectionQueryVariables,
+              commentId: newCommentParentId,
+            },
+          });
 
-            const existingDiscussionChannelData =
-              readDiscussionChannelQueryResult?.getCommentSection
-                ?.DiscussionChannel;
+          const existingDiscussionChannelData =
+            readDiscussionChannelQueryResult?.getCommentSection
+              ?.DiscussionChannel;
 
-            let existingCommentAggregate =
-              existingDiscussionChannelData?.CommentsAggregate?.count || 0;
+          let existingCommentAggregate =
+            existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
-            cache.writeQuery({
-              query: GET_COMMENT_SECTION,
-              variables: {
-                ...commentSectionQueryVariables,
-                commentId: newCommentParentId,
-              },
-              data: {
-                ...readDiscussionChannelQueryResult,
-                getCommentSection: {
-                  ...readDiscussionChannelQueryResult.getCommentSection,
-                  DiscussionChannel: {
-                    ...existingDiscussionChannelData,
-                    CommentsAggregate: {
-                      ...existingDiscussionChannelData?.CommentsAggregate,
-                      count: existingCommentAggregate + 1,
-                    },
+          cache.writeQuery({
+            query: GET_COMMENT_SECTION,
+            variables: {
+              ...commentSectionQueryVariables,
+              commentId: newCommentParentId,
+            },
+            data: {
+              ...readDiscussionChannelQueryResult,
+              getCommentSection: {
+                ...readDiscussionChannelQueryResult.getCommentSection,
+                DiscussionChannel: {
+                  ...existingDiscussionChannelData,
+                  CommentsAggregate: {
+                    ...existingDiscussionChannelData?.CommentsAggregate,
+                    count: existingCommentAggregate + 1,
                   },
-                }
+                },
               },
-            });
+            },
+          });
         },
       }),
     );
@@ -660,7 +657,6 @@ export default defineComponent({
       </PermalinkedComment>
       <SortButtons :show-top-options="false" />
       <div class="my-4">
-        <p v-if="loading">Loading...</p>
         <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
           There are no comments yet.
         </div>
@@ -687,6 +683,7 @@ export default defineComponent({
             />
           </div>
         </div>
+        <div v-if="loading">Loading...</div>
       </div>
     </div>
     <LoadMore

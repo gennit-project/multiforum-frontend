@@ -107,12 +107,11 @@ export default defineComponent({
 
     const comments = computed(() => {
       if (
-        getDiscussionChannelLoading.value ||
         getDiscussionChannelError.value
       ) {
         return [];
       }
-      return getDiscussionChannelResult.value.getCommentSection.Comments;
+      return getDiscussionChannelResult.value?.getCommentSection?.Comments || [];
     });
 
     const loadedRootCommentCount = computed(() => {
@@ -191,11 +190,12 @@ export default defineComponent({
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
 
-          offset.value += COMMENT_LIMIT;
+          offset.value = offset.value + fetchMoreResult.getCommentSection.Comments.length;
 
           // We need to update the result of GET_COMMENT_SECTION
           // to include the new comments.
           return {
+            ...previousResult,
             getCommentSection: {
               ...previousResult.getCommentSection,
               Comments: [
