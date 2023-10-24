@@ -228,7 +228,7 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <p v-if="discussionLoading">Loading...</p>
+    <p v-if="!discussionChannelResult && discussionLoading">Loading...</p>
     <ErrorBanner
       v-else-if="discussionError"
       class="max-w-5xl"
