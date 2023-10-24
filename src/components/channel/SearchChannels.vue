@@ -80,6 +80,8 @@ export default defineComponent({
       };
     });
 
+    const now = new Date().toISOString()
+
     const {
       error: channelError,
       result: channelResult,
@@ -90,7 +92,7 @@ export default defineComponent({
       channelWhere: channelWhere,
       eventChannelWhere: {
         Event: {
-          startTime_GT: new Date().toISOString(),
+          startTime_GT: now,
         },
       },
       limit: 25,
