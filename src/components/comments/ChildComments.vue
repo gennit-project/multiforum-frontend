@@ -6,7 +6,7 @@ import LoadMore from "../generic/LoadMore.vue";
 import { getSortFromQuery } from "./getSortFromQuery";
 import { useRoute } from "vue-router";
 
-const PAGE_LIMIT = 3;
+const PAGE_LIMIT = 5;
 
 export default defineComponent({
   components: {
@@ -20,7 +20,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const currentOffset = ref(0);
     const route = useRoute();
 
     const activeSort = computed(() => {
@@ -50,10 +49,9 @@ export default defineComponent({
     });
 
     const loadMore = () => {
-      currentOffset.value += 5;
       fetchMore({
         variables: {
-          offset: currentOffset.value,
+          offset: commentResult.value?.getCommentReplies.ChildComments.length,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
