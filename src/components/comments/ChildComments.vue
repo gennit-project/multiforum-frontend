@@ -6,6 +6,8 @@ import LoadMore from "../generic/LoadMore.vue";
 import { getSortFromQuery } from "./getSortFromQuery";
 import { useRoute } from "vue-router";
 
+const PAGE_LIMIT = 3;
+
 export default defineComponent({
   components: {
     LoadMore,
@@ -32,9 +34,19 @@ export default defineComponent({
       fetchMore,
     } = useQuery(GET_COMMENT_REPLIES, {
       commentId: props.parentCommentId,
-      limit: 5,
+      limit: PAGE_LIMIT,
       offset: 0,
-      sort: activeSort
+      sort: activeSort,
+    });
+
+    const aggregateChildCommentCount = computed(() => {
+      if (commentLoading.value || commentError.value) {
+        return 0;
+      }
+      if (commentResult.value?.getCommentReplies) {
+        return commentResult.value.getCommentReplies.aggregateChildCommentCount;
+      }
+      return 0;
     });
 
     const loadMore = () => {
@@ -43,32 +55,26 @@ export default defineComponent({
         variables: {
           offset: currentOffset.value,
         },
-        // updateQuery: (previousResult, { fetchMoreResult }) => {
-        //   if (!fetchMoreResult) return previousResult;
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
 
-        //   // We need to update the result of GET_COMMENT_REPLIES
-        //   // to include the new comments.
-        //   const previousComment = previousResult.comments[0];
-        //   const prevCommentReplies = previousComment.ChildComments;
-        //   const newCommentReplies = fetchMoreResult.comments[0].ChildComments;
+          const prevCommentReplies =
+            previousResult.getCommentReplies.ChildComments;
+          const newCommentReplies =
+            fetchMoreResult.getCommentReplies.ChildComments;
 
-        //   const newComment = {
-        //     ...previousComment,
-        //     ChildComments: [...prevCommentReplies, ...newCommentReplies],
-        //   };
-
-        //   return {
-        //     ...previousResult,
-        //     comments: [newComment],
-        //   };
-        // },
+          return {
+            ...previousResult,
+            getCommentReplies: {
+              ...previousResult.getCommentReplies,
+              ChildComments: [...prevCommentReplies, ...newCommentReplies],
+            },
+          };
+        },
       });
     };
 
     const comments = computed(() => {
-      if (commentLoading.value || commentError.value) {
-        return [];
-      }
       if (commentResult.value?.getCommentReplies) {
         return commentResult.value.getCommentReplies.ChildComments || [];
       }
@@ -79,7 +85,10 @@ export default defineComponent({
       if (commentLoading.value || commentError.value) {
         return false;
       }
-      return true; //props.aggregateCommentCount === comments.value.length;
+      return (
+        commentResult.value?.getCommentReplies.ChildComments.length ===
+        aggregateChildCommentCount.value
+      );
     });
 
     return {
@@ -95,17 +104,17 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div v-if="commentLoading">Loading...</div>
-    <div v-else-if="commentError">
+    <div v-if="commentError">
       {{ commentError.message }}
     </div>
     <div v-else>
       <slot :comments="comments" />
-      <LoadMore
-        v-if="!reachedEndOfResults"
-        :reached-end-of-results="reachedEndOfResults"
-        @loadMore="loadMore"
-      />
     </div>
+    <LoadMore
+      v-if="!commentLoading && !reachedEndOfResults"
+      :reached-end-of-results="reachedEndOfResults"
+      @loadMore="loadMore"
+    />
+    <div v-if="commentLoading">Loading...</div>
   </div>
 </template>
