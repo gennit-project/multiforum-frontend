@@ -123,7 +123,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="max-w-4xl justify-center bg-white dark:bg-gray-800">
     <div v-if="events.length === 0">
       <p
         v-if="!showMap"

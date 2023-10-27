@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_COMMENT_REPLIES } from "@/graphQLData/comment/queries";
 import LoadMore from "../generic/LoadMore.vue";

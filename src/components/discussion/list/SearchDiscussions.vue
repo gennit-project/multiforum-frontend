@@ -239,7 +239,6 @@ export default defineComponent({
 
 <template>
   <v-container
-    :class="[!smAndDown ? 'pl-6' : 'px-2']"
     class="max-w-4xl justify-center bg-white dark:bg-gray-800"
   >
     <DiscussionFilterBar />

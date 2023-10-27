@@ -258,7 +258,6 @@ export default defineComponent({
             >Create one?</router-link
           >
         </template>
-
         <template #does-not-have-auth>
           <span class="cursor-pointer text-blue-500 underline"
             >Create one?</span

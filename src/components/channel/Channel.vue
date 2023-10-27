@@ -95,35 +95,44 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex h-screen justify-center dark:bg-black">
-    <div
-      v-if="smAndDown"
-      :class="[
-        theme === 'dark' ? 'channel-background-dark' : 'channel-background',
-      ]"
-      class="h-16 w-full object-cover lg:h-28"
-      alt="background pattern"
-    />
-    <div class="flex justify-center" v-if="smAndDown">
-      <Avatar
-        class="-mt-12 mb-2 h-24 w-24 shadow-sm"
-        :text="channelId"
-        :is-square="true"
-        :is-large="true"
+  <div class="flex h-screen w-full justify-center dark:bg-black">
+    <div v-if="smAndDown" class="w-full">
+      <div
+        :class="[
+          theme === 'dark' ? 'channel-background-dark' : 'channel-background',
+        ]"
+        class="h-16 w-full object-cover"
+        alt="background pattern"
       />
-    </div>
-    <article
-      class="relative z-0 h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-gray-800 xl:order-last"
-    >
-      <v-container fluid class="h-full w-full overflow-auto">
+      <div class="flex justify-center">
+        <Avatar
+          class="-mt-12 mb-2 h-24 w-24 shadow-sm"
+          :text="channelId"
+          :is-square="true"
+          :is-large="true"
+        />
+      </div>
+      <article
+        class="relative z-0 h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-black xl:order-last"
+      >
         <ChannelTabs
           v-if="smAndDown"
           :vertical="false"
-          class="block border-b border-gray-200 dark:border-gray-600"
+          class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
           :route="route"
         />
-        <v-row class="h-full p-0">
-          <v-col v-if="channelId && !smAndDown" cols="12" md="3" class="p-0">
+        <div class="dark:bg-gray-800">
+          <router-view />
+        </div>
+      </article>
+    </div>
+    <article
+      v-else
+      class="relative z-0 overflow-auto h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-gray-800 xl:order-last"
+    >
+      <v-container fluid class="h-full">
+        <v-row class="h-full">
+          <v-col v-if="channelId" cols="3">
             <ChannelSidebar
               :channel-id="channelId"
               class="fixed h-full w-72 shadow"
@@ -135,13 +144,10 @@ export default defineComponent({
               />
             </ChannelSidebar>
           </v-col>
-          <v-col
-            :class="[!smAndDown ? 'pt-6' : 'p-0']"
-            :cols="channelId && !smAndDown ? 9 : 12"
-          >
-            <div class="">
-              <router-view />
-            </div>
+          <v-col :class="['pt-6']" :cols="9">
+            <div class="px-4">
+            <router-view />
+          </div>
           </v-col>
         </v-row>
       </v-container>
