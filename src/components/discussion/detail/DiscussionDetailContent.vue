@@ -283,7 +283,7 @@ export default defineComponent({
             <div ref="discussionDetail">
               <div class="min-w-0">
                 <h2
-                  class="text-wrap px-1 text-2xl font-bold leading-7 sm:tracking-tight"
+                  class="text-wrap px-1 text-2xl font-bold sm:tracking-tight"
                 >
                   {{
                     discussion && discussion.title

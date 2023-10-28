@@ -249,7 +249,7 @@ export default defineComponent({
     :class="event.id === route.params.eventId
         ? 'border border-black dark:border-blue-500'
         : 'border-transparent'"
-    class="rounded-md relative p-6 bg-white dark:bg-gray-700"
+    class="rounded-lg relative p-6 bg-white dark:bg-gray-700"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
   >

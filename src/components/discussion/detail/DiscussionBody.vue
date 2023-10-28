@@ -122,7 +122,7 @@ export default defineComponent({
         "
       />
     </div>
-    <div class="ml-4 flex items-center gap-2">
+    <div class="ml-2 flex items-center gap-2">
       <slot></slot
       ><NewEmojiButton :discussion-channel-id="discussionChannelId" />
     </div>

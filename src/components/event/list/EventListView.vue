@@ -202,7 +202,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="pt-4 flex-col justify-center max-w-4xl bg-gray-100 dark:bg-gray-800 h-full rounded-lg">
+  <v-container class="pt-4 flex-col justify-center max-w-4xl bg-gray-100 dark:bg-black h-full rounded-lg">
     <EventFilterBar :show-distance-filters="false" />
     <TimeShortcuts :is-list-view="true" />
     <p v-if="eventLoading">Loading...</p>

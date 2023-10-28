@@ -58,7 +58,7 @@ export default defineComponent({
 
 
 <template>
-  <div class="flex flex-row space-x-3">
+  <div class="flex flex-row space-x-1">
     <VoteButton
       :test-id="'upvote-comment-button'"
       :count="upvoteCount"
