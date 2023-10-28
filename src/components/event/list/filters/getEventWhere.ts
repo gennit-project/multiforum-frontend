@@ -39,7 +39,12 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   } = filterValues;
   // These conditions will be added to the filter
   // object under an AND operator.
-  let conditions = [];
+  let conditions: EventWhere[] = [{
+    // Only include events that are in at least one channel.
+    "NOT": {
+      "EventChannels_NONE": null
+    }
+  }];
 
   // Free event filter
   if (free) {
@@ -53,7 +58,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   }
 
   if (hasVirtualEventUrl) {
-    conditions.push({ virtualEventUrl_NOT: null });
+    conditions.push({ "NOT": { virtualEventUrl: null } });
   }
 
   // Text search filter

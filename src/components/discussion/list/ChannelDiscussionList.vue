@@ -269,7 +269,7 @@ export default defineComponent({
       <div>
         <ul
           role="list"
-          class="relative rounded px-1 flex flex-col py-2 gap-1"
+          class="relative rounded flex flex-col py-2 gap-1"
           data-testid="channel-discussion-list"
         >
           <ChannelDiscussionListItem

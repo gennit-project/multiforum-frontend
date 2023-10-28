@@ -115,29 +115,31 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-auto max-h-screen bg-gray-100 dark:bg-gray-800 rounded-lg">
+  <div
+    class="pb-8 overflow-auto rounded-lg bg-gray-100 dark:bg-gray-800"
+  >
     <div v-if="channelId" class="items-center gap-2">
       <div
-      :class="[
-        theme === 'dark' ? 'channel-background-dark' : 'channel-background',
-      ]"
-      class="h-36 w-full object-cover"
-      alt="background pattern"
-    />
-    <div class="p-4">
-      <Avatar
-        class="shadow-sm w-24 -mt-24"
-        :text="channelId"
-        :is-square="true"
-        :is-large="true"
+        :class="[
+          theme === 'dark' ? 'channel-background-dark' : 'channel-background',
+        ]"
+        class="h-36 w-full object-cover"
+        alt="background pattern"
       />
-      <h1
-        v-if="channelId"
-        class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
-      >
-        {{ channelId }}
-      </h1>
-    </div>
+      <div class="p-6">
+        <Avatar
+          class="-mt-24 w-24 shadow-sm"
+          :text="channelId"
+          :is-square="true"
+          :is-large="true"
+        />
+        <h1
+          v-if="channelId"
+          class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+        >
+          {{ channelId }}
+        </h1>
+      </div>
     </div>
 
     <div class="w-full">

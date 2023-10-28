@@ -45,7 +45,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log(props.event)
     const route = useRoute();
     const startTimeObj = DateTime.fromISO(props.event.startTime);
 
@@ -248,10 +247,9 @@ export default defineComponent({
   <li
     :ref="`#${event.id}`"
     :class="event.id === route.params.eventId
-        ? 'border border-black dark:border-blue-500 px-4'
-        : 'border-transparent px-4'
-    "
-    class="rounded-md relative mt-1 pb-2 pl-6 pt-3"
+        ? 'border border-black dark:border-blue-500'
+        : 'border-transparent'"
+    class="rounded-md relative p-6 bg-white dark:bg-gray-700"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
   >

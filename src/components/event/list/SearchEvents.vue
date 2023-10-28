@@ -56,7 +56,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="h-full">
     <router-view
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"

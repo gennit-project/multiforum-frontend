@@ -135,7 +135,7 @@ export default defineComponent({
           <v-col v-if="channelId" cols="3">
             <ChannelSidebar
               :channel-id="channelId"
-              class="fixed h-full w-72 shadow"
+              class="fixed w-72 shadow"
             >
               <ChannelTabs
                 v-if="route.name !== 'EditChannel'"

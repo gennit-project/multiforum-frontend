@@ -123,7 +123,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-gray-800">
+  <div>
     <div v-if="events.length === 0">
       <p
         v-if="!showMap"
@@ -141,7 +141,7 @@ export default defineComponent({
     <ul
       v-if="events.length > 0" 
       role="list" 
-      class="mb-4"
+      class="mb-4 flex flex-col gap-2"
       data-testid="event-list"
     >
       <EventListItem

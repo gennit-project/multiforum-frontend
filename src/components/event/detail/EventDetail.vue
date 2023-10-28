@@ -164,7 +164,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen w-full space-y-4 overflow-auto py-1 lg:px-8">
+  <div class="h-screen w-full space-y-4 overflow-auto py-1 lg:px-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
         <div

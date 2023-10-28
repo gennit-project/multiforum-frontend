@@ -98,7 +98,6 @@ export default defineComponent({
   },
   methods: {
     getLabel() {
-      console.log("this.route.name", this.route.name);
       if (this.route.name === "SitewideSearchDiscussionPreview") {
         return "/ discussions";
       }
