@@ -106,7 +106,7 @@ export default defineComponent({
       />
       <div class="flex justify-center">
         <Avatar
-          class="-mt-24 mb-2 h-24 w-24 border-4 border-white shadow-sm dark:border-gray-800"
+          class="-mt-24 mb-2 h-24 w-24 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :is-square="true"
           :is-large="true"
@@ -135,7 +135,7 @@ export default defineComponent({
           <v-col v-if="channelId" cols="3">
             <ChannelSidebar
               :channel-id="channelId"
-              class="fixed w-72 shadow"
+              class="fixed w-72"
             >
               <ChannelTabs
                 v-if="route.name !== 'EditChannel'"

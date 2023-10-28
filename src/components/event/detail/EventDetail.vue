@@ -260,7 +260,7 @@ export default defineComponent({
                 </h2>
               </div>
             </div>
-            <div class="rounded-md border border-black dark:border-blue-500 py-4">
+            <div class="rounded-md bg-white dark:bg-gray-800 py-4">
               <EventHeader :event-data="eventData" />
               <v-md-preview
                 v-if="eventData.description"

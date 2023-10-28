@@ -8,11 +8,15 @@ import HighlightedSearchTerms from "../../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
 import { SearchEventValues } from "@/types/eventTypes";
 import { router } from "@/router";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 
 export default defineComponent({
   components: {
+    ChevronDownIcon,
     Tag,
     HighlightedSearchTerms,
+    MenuButton,
   },
   props: {
     event: {
@@ -83,22 +87,77 @@ export default defineComponent({
       if (!defaultUniqueName.value) {
         return "";
       }
-      return router.resolve ({
+      return router.resolve({
         name: "EventDetail",
         params: {
           channelId: defaultUniqueName.value,
           eventId: props.event.id,
         },
       }).href;
-    })
+    });
+
+    const submittedToMultipleChannels = computed(() => {
+      return props.event.EventChannels.length > 1;
+    });
+
+    const eventDetailOptions = computed(() => {
+      if (!props.event) {
+        return [];
+      }
+      return props.event.EventChannels.map((dc) => {
+        const commentCount = dc.CommentsAggregate?.count || 0;
+        return {
+          label: `${commentCount} ${
+            commentCount === 1 ? "comment" : "comments"
+          } in ${dc.channelUniqueName}`,
+          value: router.resolve({
+            name: "DiscussionDetail",
+            params: {
+              discussionId: props.event?.id,
+              channelId: dc.channelUniqueName,
+            },
+          }).href,
+          event: "",
+        };
+      }).sort((a, b) => {
+        return b.label.localeCompare(a.label);
+      });
+    });
+
+    const commentCount = computed(() => {
+      let count = 0;
+      if (props.event) {
+        const discussionChannels = props.event.EventChannels;
+        if (discussionChannels) {
+          discussionChannels.forEach((ec) => {
+            count += ec.CommentsAggregate?.count || 0;
+          });
+        }
+      }
+      return count;
+    });
+
+    const channelCount = computed(() => {
+      if (props.event) {
+        const discussionChannels = props.event.EventChannels;
+        if (discussionChannels) {
+          return discussionChannels.length;
+        }
+      }
+      return 0;
+    });
 
     return {
+      commentCount,
+      channelCount,
       defaultUniqueName,
+      eventDetailOptions,
       eventIdInParams,
       formattedDate,
       route,
       timeOfDay,
       detailLink,
+      submittedToMultipleChannels,
     };
   },
   data(props) {
@@ -227,6 +286,15 @@ export default defineComponent({
         this.updateFilters({ channels: [uniqueName] });
       }
     },
+    getDetailLink(uniqueName: string) {
+      return router.resolve({
+        name: "EventDetail",
+        params: {
+          channelId: uniqueName,
+          eventId: this.event.id,
+        },
+      }).href;
+    },
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
       // Updating the URL params causes the events
@@ -246,10 +314,12 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    :class="event.id === route.params.eventId
+    :class="
+      event.id === route.params.eventId
         ? 'border border-black dark:border-blue-500'
-        : 'border-transparent'"
-    class="rounded-lg relative p-6 bg-white dark:bg-gray-700"
+        : 'border-transparent'
+    "
+    class="relative rounded-lg bg-white p-6 dark:bg-gray-700"
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
   >
@@ -285,7 +355,7 @@ export default defineComponent({
             <div>
               <p class="space-x-2">
                 <span
-                  class="text-md cursor-pointer truncate font-bold dark:text-gray-100 hover:underline"
+                  class="text-md cursor-pointer truncate font-bold hover:underline dark:text-gray-100"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"
@@ -296,40 +366,18 @@ export default defineComponent({
                 <span
                   v-if="event.canceled"
                   class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
-                >Canceled</span>
+                  >Canceled</span
+                >
               </p>
               <p
                 class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
               >
                 {{ `${event.locationName || ""}` }}
               </p>
-              <p v-if="event.virtualEventUrl">
-                Online event
-              </p>
-              <p
-                v-if="event.free"
-                class="font-medium text-sm text-gray-600"
-              >
+              <p v-if="event.virtualEventUrl">Online event</p>
+              <p v-if="event.free" class="font-medium text-sm text-gray-600">
                 Free
               </p>
-              <div
-                v-if="!isWithinChannel && event.EventChannels.length > 0"
-                class="flex space-x-1 text-sm"
-              >
-                <Tag
-                  v-for="ec in event.EventChannels"
-                  :key="ec.channelUniqueName"
-                  class="my-1"
-                  :active="selectedChannels.includes(ec.channelUniqueName)"
-                  :channel-mode="true"
-                  :tag="ec.channelUniqueName"
-                  @click="
-                    () => {
-                      handleClickChannel(ec.channelUniqueName);
-                    }
-                  "
-                />
-              </div>
               <p
                 class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
               >
@@ -346,6 +394,39 @@ export default defineComponent({
                   "
                 />
               </p>
+
+              <router-link
+                v-if="event && !submittedToMultipleChannels"
+                :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
+                class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
+              >
+                <button
+                  class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+                >
+                  <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+                  <span>{{`View ${commentCount} ${commentCount === 1 ? 'comment' : 'comments' }`}}</span>
+                  <span v-if="!isWithinChannel">{{ `in c/${event.EventChannels[0].channelUniqueName}`}}</span>
+                </button>
+              </router-link>
+
+              <MenuButton v-else-if="event" :items="eventDetailOptions">
+                <button
+                  class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+                >
+                  <i class="fa-regular fa-comment mr-2 h-4 w-4" />
+                  {{
+                    `${commentCount} ${
+                      commentCount === 1 ? "comment" : "comments"
+                    } in ${channelCount} ${
+                      channelCount === 1 ? "channel" : "channels"
+                    }`
+                  }}
+                  <ChevronDownIcon
+                    class="-mr-1 ml-2 h-4 w-4"
+                    aria-hidden="true"
+                  />
+                </button>
+              </MenuButton>
             </div>
           </div>
         </div>
