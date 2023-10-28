@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div class="grid grid-cols-12">
     <div
-      class="relative col-span-12 flex items-center gap-4 border-gray-200 py-2 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200 lg:col-span-6"
+      class="rounded-lg relative col-span-12 flex items-center gap-4 p-4 dark:bg-gray-800 dark:text-gray-200"
     >
    
       <div>
@@ -90,8 +90,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-span-12 flex lg:justify-end gap-6 py-3 lg:col-span-6 text-gray-600 dark:text-gray-300">
+
       <div class="font-normal truncate text-sm">
         <router-link
           class="underline flex items-center gap-1"

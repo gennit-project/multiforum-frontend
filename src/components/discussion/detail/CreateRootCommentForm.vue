@@ -174,7 +174,7 @@ export default defineComponent({
     });
 
     const writeReplyStyle =
-      "block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-500 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9";
+      "block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-600 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9";
 
     return {
       discussionChannelIsLocked,
@@ -208,7 +208,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="mt-1 flex w-full flex-col space-x-2 px-1 pt-4">
+  <div class="flex w-full flex-col space-x-2 px-1 ml-1">
     <div class="min-h-36 flex gap-2">
       <Avatar v-if="username" class="h-5 w-5" :text="username" />
 

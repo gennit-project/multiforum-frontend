@@ -101,19 +101,19 @@ export default defineComponent({
         :class="[
           theme === 'dark' ? 'channel-background-dark' : 'channel-background',
         ]"
-        class="h-16 w-full object-cover"
+        class="h-24 w-full object-cover"
         alt="background pattern"
       />
       <div class="flex justify-center">
         <Avatar
-          class="-mt-12 mb-2 h-24 w-24 shadow-sm"
+          class="-mt-24 mb-2 h-24 w-24 border-4 border-white shadow-sm dark:border-gray-800"
           :text="channelId"
           :is-square="true"
           :is-large="true"
         />
       </div>
       <article
-        class="relative z-0 h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-black xl:order-last"
+        class="rounded-lg relative z-0 h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
           v-if="smAndDown"
@@ -121,14 +121,14 @@ export default defineComponent({
           class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
           :route="route"
         />
-        <div class="dark:bg-gray-800">
+        <div>
           <router-view />
         </div>
       </article>
     </div>
     <article
       v-else
-      class="relative z-0 overflow-auto h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-gray-800 xl:order-last"
+      class="relative z-0 h-full max-w-6xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container fluid class="h-full">
         <v-row class="h-full">
@@ -144,10 +144,10 @@ export default defineComponent({
               />
             </ChannelSidebar>
           </v-col>
-          <v-col :class="['pt-6']" :cols="9">
-            <div class="px-4">
-            <router-view />
-          </div>
+          <v-col :cols="9">
+            <div class="px-4  rounded-lg">
+              <router-view />
+            </div>
           </v-col>
         </v-row>
       </v-container>

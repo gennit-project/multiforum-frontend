@@ -151,12 +151,12 @@ export default defineComponent({
           router.resolve(permalinkObject.value).href
         }`;
         await toClipboard(permalink);
-        emit('showCopiedLinkNotification', true);
+        emit("showCopiedLinkNotification", true);
       } catch (e: any) {
         throw new Error(e);
       }
       setTimeout(() => {
-        emit('showCopiedLinkNotification', false);
+        emit("showCopiedLinkNotification", false);
       }, 2000);
     };
 
@@ -305,7 +305,12 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="flex w-full border-l border-gray-200 dark:border-gray-400">
+    <div
+      :class="[
+        depth > 1 ? 'border-l pl-2 border-gray-300 dark:border-gray-400' : '',
+      ]"
+      class="flex w-full"
+    >
       <div :class="'text-sm'" class="w-full">
         <div
           :class="[
@@ -313,137 +318,144 @@ export default defineComponent({
               ? 'rounded-md border border-blue-500'
               : 'dark:bg-gray-950 ',
           ]"
-          class="flex px-2 py-1 shadow-sm w-full"
+          class="flex w-full py-1"
           data-testid="comment"
         >
-          <Avatar
-            v-if="commentData.CommentAuthor"
-            class="mt-1"
-            :is-square="true"
-            :text="commentData.CommentAuthor.username"
-          />
+          <div class="p-2 w-full flex rounded-lg bg-white dark:bg-gray-700">
+            <Avatar
+              v-if="commentData.CommentAuthor"
+              class="mt-1"
+              :is-square="true"
+              :text="commentData.CommentAuthor.username"
+            />
 
-          <div class="flex-grow">
-            <div
-              v-if="
-                showContextLink &&
-                parentCommentId &&
-                commentData.DiscussionChannel
-              "
-            >
-              <router-link
-                class="text-xs underline"
-                :to="{
-                  name: 'DiscussionCommentPermalink',
-                  params: {
-                    discussionId: commentData.DiscussionChannel.discussionId,
-                    commentId: parentCommentId,
-                    channelId: commentData.DiscussionChannel.channelUniqueName,
-                  },
-                }"
-              >
-                View Context
-              </router-link>
-            </div>
-            <div class="flex justify-between">
-              <div class="ml-1 my-2 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300">
-                <router-link
-                  v-if="commentData.CommentAuthor"
-                  class="mx-1 font-bold hover:underline dark:text-gray-200"
-                  :to="`/u/${commentData.CommentAuthor.username}`"
-                >
-                  <UsernameWithTooltip
-                    v-if="commentData.CommentAuthor.username"
-                    :username="commentData.CommentAuthor.username"
-                    :comment-karma="commentData.CommentAuthor.commentKarma ?? 0"
-                    :discussion-karma="
-                      commentData.CommentAuthor.discussionKarma ?? 0
-                    "
-                    :account-created="commentData.CommentAuthor.createdAt"
-                  >
-                    {{ commentData.CommentAuthor.username }}
-                  </UsernameWithTooltip>
-                </router-link>
-                <span v-else class="font-bold">[Deleted]</span>
-                <span class="mx-2">&middot;</span>
-                <span>{{ createdAtFormatted }}</span>
-                <span v-if="commentData.updatedAt" class="mx-2">
-                  &middot;
-                </span>
-                <span>{{ editedAtFormatted }}</span>
-                <span
-                  v-if="isHighlighted"
-                  class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-                  >Permalinked
-                </span>
-              </div>
-              <MenuButton
-                v-if="commentMenuItems.length > 0"
-                :items="commentMenuItems"
-                @copyLink="copyLink"
-                @handleEdit="() => handleEdit(commentData)"
-                @handleDelete="
-                  () => {
-                    const deleteCommentInput = {
-                      commentId: commentData.id,
-                      parentCommentId,
-                      replyCount,
-                    };
-                    handleDelete(deleteCommentInput);
-                  }
+            <div class="flex-grow">
+              <div
+                v-if="
+                  showContextLink &&
+                  parentCommentId &&
+                  commentData.DiscussionChannel
                 "
               >
-                <EllipsisHorizontal
-                  class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
-                />
-              </MenuButton>
-            </div>
-            <div
-              v-if="!themeLoading"
-              class="w-full max-w-none dark:text-gray-200"
-            >
-              <div class="overflow-auto w-full">
-                <div
-                  v-if="commentData.text && !showEditCommentField"
-                  class="-ml-6 -mt-3 w-full"
+                <router-link
+                  class="text-xs underline"
+                  :to="{
+                    name: 'DiscussionCommentPermalink',
+                    params: {
+                      discussionId: commentData.DiscussionChannel.discussionId,
+                      commentId: parentCommentId,
+                      channelId:
+                        commentData.DiscussionChannel.channelUniqueName,
+                    },
+                  }"
                 >
-                  <MarkdownPreview
-                    :key="textCopy || ''"
-                    :text="textCopy || ''"
-                    :word-limit="1000"
+                  View Context
+                </router-link>
+              </div>
+              <div class="flex justify-between">
+                <div
+                  class="my-2 ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
+                >
+                  <router-link
+                    v-if="commentData.CommentAuthor"
+                    class="mx-1 font-bold hover:underline dark:text-gray-200"
+                    :to="`/u/${commentData.CommentAuthor.username}`"
+                  >
+                    <UsernameWithTooltip
+                      v-if="commentData.CommentAuthor.username"
+                      :username="commentData.CommentAuthor.username"
+                      :comment-karma="
+                        commentData.CommentAuthor.commentKarma ?? 0
+                      "
+                      :discussion-karma="
+                        commentData.CommentAuthor.discussionKarma ?? 0
+                      "
+                      :account-created="commentData.CommentAuthor.createdAt"
+                    >
+                      {{ commentData.CommentAuthor.username }}
+                    </UsernameWithTooltip>
+                  </router-link>
+                  <span v-else class="font-bold">[Deleted]</span>
+                  <span class="mx-2">&middot;</span>
+                  <span>{{ createdAtFormatted }}</span>
+                  <span v-if="commentData.updatedAt" class="mx-2">
+                    &middot;
+                  </span>
+                  <span>{{ editedAtFormatted }}</span>
+                  <span
+                    v-if="isHighlighted"
+                    class="rounded-lg bg-blue-500 px-2 py-1 text-black"
+                    >Permalinked
+                  </span>
+                </div>
+                <MenuButton
+                  v-if="commentMenuItems.length > 0"
+                  :items="commentMenuItems"
+                  @copyLink="copyLink"
+                  @handleEdit="() => handleEdit(commentData)"
+                  @handleDelete="
+                    () => {
+                      const deleteCommentInput = {
+                        commentId: commentData.id,
+                        parentCommentId,
+                        replyCount,
+                      };
+                      handleDelete(deleteCommentInput);
+                    }
+                  "
+                >
+                  <EllipsisHorizontal
+                    class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+                  />
+                </MenuButton>
+              </div>
+              <div
+                v-if="!themeLoading"
+                class="w-full max-w-none dark:text-gray-200"
+              >
+                <div class="w-full overflow-auto">
+                  <div
+                    v-if="commentData.text && !showEditCommentField"
+                    class="-ml-6 -mt-3 w-full"
+                  >
+                    <MarkdownPreview
+                      :key="textCopy || ''"
+                      :text="textCopy || ''"
+                      :word-limit="1000"
+                    />
+                  </div>
+                  <TextEditor
+                    v-if="!readonly && showEditCommentField"
+                    id="editExistingComment"
+                    class="mb-2 mt-3 p-1"
+                    :initial-value="commentData.text || ''"
+                    :editor-id="editorId"
+                    @update="updateExistingComment($event, depth)"
                   />
                 </div>
-                <TextEditor
-                  v-if="!readonly && showEditCommentField"
-                  id="editExistingComment"
-                  class="mb-2 mt-3 p-1"
-                  :initial-value="commentData.text || ''"
-                  :editor-id="editorId"
-                  @update="updateExistingComment($event, depth)"
+                <CommentButtons
+                  v-if="channelId"
+                  :class="[!showEditCommentField ? ' -mt-8 ml-1' : '']"
+                  :comment-data="commentData"
+                  :depth="depth"
+                  :locked="locked"
+                  :parent-comment-id="parentCommentId"
+                  :show-edit-comment-field="showEditCommentField"
+                  :show-replies="showReplies"
+                  :show-reply-editor="showReplyEditor"
+                  @clickEditComment="handleEdit"
+                  @createComment="createComment"
+                  @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
+                  @hideReplyEditor="showReplyEditor = false"
+                  @hideReplies="showReplies = false"
+                  @openModProfile="$emit('openModProfile')"
+                  @saveEdit="$emit('saveEdit')"
+                  @showEditCommentField="showEditCommentField = true"
+                  @hideEditCommentField="showEditCommentField = false"
+                  @showReplies="showReplies = true"
+                  @updateNewComment="updateNewComment"
                 />
               </div>
-              <CommentButtons
-                v-if="channelId"
-                :class="[!showEditCommentField ? ' -mt-8 ml-1' : '']"
-                :comment-data="commentData"
-                :depth="depth"
-                :locked="locked"
-                :parent-comment-id="parentCommentId"
-                :show-edit-comment-field="showEditCommentField"
-                :show-replies="showReplies"
-                :show-reply-editor="showReplyEditor"
-                @clickEditComment="handleEdit"
-                @createComment="createComment"
-                @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
-                @hideReplyEditor="showReplyEditor = false"
-                @hideReplies="showReplies = false"
-                @openModProfile="$emit('openModProfile')"
-                @saveEdit="$emit('saveEdit')"
-                @showEditCommentField="showEditCommentField = true"
-                @hideEditCommentField="showEditCommentField = false"
-                @showReplies="showReplies = true"
-                @updateNewComment="updateNewComment"
-              />
             </div>
           </div>
         </div>
@@ -485,7 +497,9 @@ export default defineComponent({
                 @saveEdit="$emit('saveEdit')"
                 @updateCreateReplyCommentInput="updateNewComment"
                 @updateEditCommentInput="updateExistingComment"
-                @showCopiedLinkNotification="$emit('showCopiedLinkNotification', $event)"
+                @showCopiedLinkNotification="
+                  $emit('showCopiedLinkNotification', $event)
+                "
                 @openModProfile="$emit('openModProfile')"
               />
             </div>

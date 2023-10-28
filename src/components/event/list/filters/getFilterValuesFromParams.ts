@@ -284,7 +284,6 @@ const getFilterValuesFromParams = function (
       longitude: longitude || defaultPlace.longitude,
     }
     const res = {
-      
       ...filterValues,
       ...locationParams,
     }

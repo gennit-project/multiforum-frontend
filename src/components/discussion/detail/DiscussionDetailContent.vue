@@ -243,7 +243,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mt-1 w-full max-w-7xl space-y-2 pl-4">
+  <div class="w-full max-w-7xl space-y-2 py-2 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
     <div
       v-if="route.name === 'DiscussionDetail'"
       class="align-center mx-1 mt-2 flex w-full justify-between px-2"
@@ -297,7 +297,7 @@ export default defineComponent({
         </div>
         <div class="space-y-3 px-2">
           <div
-            class="dark:bg-gray-950 rounded-lg border border-gray-300 px-2 pb-2 dark:border-blue-500"
+            class="dark:bg-gray-950 rounded-lg  bg-white dark:bg-gray-700 px-4 pt-3 pb-2"
           >
             <DiscussionHeader
               :discussion="discussion"
@@ -331,7 +331,7 @@ export default defineComponent({
           :discussion-channel="activeDiscussionChannel"
           :previous-offset="previousOffset"
         />
-        <div :class="!smAndDown ? 'py-6' : 'py-0'" class="my-4 mb-2 rounded-lg">
+        <div  class="ml-2 my-6 mb-2 rounded-lg">
           <CommentSection
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"

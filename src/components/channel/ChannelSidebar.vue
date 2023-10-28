@@ -115,20 +115,29 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-auto max-h-screen bg-gray-100 dark:bg-gray-900">
-    <div v-if="channelId" class="pl-6 pr-8 pt-6 items-center gap-2 px-4">
+  <div class="overflow-auto max-h-screen bg-gray-100 dark:bg-gray-800 rounded-lg">
+    <div v-if="channelId" class="items-center gap-2">
+      <div
+      :class="[
+        theme === 'dark' ? 'channel-background-dark' : 'channel-background',
+      ]"
+      class="h-36 w-full object-cover"
+      alt="background pattern"
+    />
+    <div class="p-4">
       <Avatar
-        class="shadow-sm w-full mt-3"
+        class="shadow-sm w-24 -mt-24"
         :text="channelId"
         :is-square="true"
         :is-large="true"
       />
       <h1
         v-if="channelId"
-        class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+        class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
         {{ channelId }}
       </h1>
+    </div>
     </div>
 
     <div class="w-full">

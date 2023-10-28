@@ -7,6 +7,7 @@ import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "../../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
 import { SearchEventValues } from "@/types/eventTypes";
+import { router } from "@/router";
 
 export default defineComponent({
   components: {
@@ -44,6 +45,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    console.log(props.event)
     const route = useRoute();
     const startTimeObj = DateTime.fromISO(props.event.startTime);
 
@@ -68,11 +70,28 @@ export default defineComponent({
       if (props.currentChannelId) {
         return props.currentChannelId;
       }
-      if (props.event.EventChannels[0]) {
-        return props.event.EventChannels[0].channelUniqueName;
+      if (props.event.EventChannels.length > 0) {
+        const channelUniqueName =
+          props.event.EventChannels[0].channelUniqueName;
+        if (typeof channelUniqueName === "string") {
+          return channelUniqueName;
+        }
       }
       return "";
     });
+
+    const detailLink = computed(() => {
+      if (!defaultUniqueName.value) {
+        return "";
+      }
+      return router.resolve ({
+        name: "EventDetail",
+        params: {
+          channelId: defaultUniqueName.value,
+          eventId: props.event.id,
+        },
+      }).href;
+    })
 
     return {
       defaultUniqueName,
@@ -80,6 +99,7 @@ export default defineComponent({
       formattedDate,
       route,
       timeOfDay,
+      detailLink,
     };
   },
   data(props) {
@@ -208,19 +228,6 @@ export default defineComponent({
         this.updateFilters({ channels: [uniqueName] });
       }
     },
-    goToPreviewLink() {
-      const existingQuery = this.$route.query;
-      this.$router.push({
-        name: "SearchEventsInChannel",
-        params: {
-          channelId: this.defaultUniqueName,
-        },
-        query: {
-          ...existingQuery,
-          eventId: this.event.id,
-        },
-      });
-    },
     updateFilters(params: SearchEventValues) {
       const existingQuery = this.$route.query;
       // Updating the URL params causes the events
@@ -248,7 +255,7 @@ export default defineComponent({
     :data-testid="`event-list-item-${event.title}`"
     @click="$emit('openPreview')"
   >
-    <div @click="goToPreviewLink">
+    <router-link :to="detailLink">
       <div class="block">
         <div class="py-1">
           <div class="flex">
@@ -308,7 +315,7 @@ export default defineComponent({
                 Free
               </p>
               <div
-                v-if="!isWithinChannel"
+                v-if="!isWithinChannel && event.EventChannels.length > 0"
                 class="flex space-x-1 text-sm"
               >
                 <Tag
@@ -345,7 +352,7 @@ export default defineComponent({
           </div>
         </div>
       </div>
-    </div>
+    </router-link>
   </li>
 </template>
 <style>

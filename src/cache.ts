@@ -70,6 +70,9 @@ const cache = new InMemoryCache({
         Channels: {
           merge: false,
         },
+        Poster: {
+          merge: true
+        }
       },
     },
     DiscussionChannel: {

@@ -240,7 +240,7 @@ export default defineComponent({
         discussionChannelResult.getDiscussionsInChannel.discussionChannels
           .length === 0
       "
-      class="my-6 flex gap-2 px-4"
+      class="flex gap-2 px-4"
     >
       <span>There are no discussions to show.</span>
 
@@ -269,7 +269,7 @@ export default defineComponent({
       <div>
         <ul
           role="list"
-          class="relative my-2 rounded px-1"
+          class="relative rounded px-1 flex flex-col py-2 gap-1"
           data-testid="channel-discussion-list"
         >
           <ChannelDiscussionListItem

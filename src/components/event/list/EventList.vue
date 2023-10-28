@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import EventListItem from "./EventListItem.vue";
 import { useRoute, useRouter } from "vue-router";
-import { EventData } from "@/types/eventTypes";
+import { Event } from "@/__generated__/types";
 import LoadMore from "../../generic/LoadMore.vue";
 
 export default defineComponent({
@@ -20,7 +20,7 @@ export default defineComponent({
       default: "",
     },
     events: {
-      type: Array as PropType<EventData[]>,
+      type: Array as PropType<Event[]>,
       default: () => {
         return [];
       },
@@ -75,7 +75,7 @@ export default defineComponent({
     filterByChannel(channel: string) {
       this.$emit("filterByChannel", channel);
     },
-    getEventLocationId(event: EventData) {
+    getEventLocationId(event: Event) {
       if (event.location) {
         return (
           (event.location.latitude.toString() || "") +
@@ -84,7 +84,7 @@ export default defineComponent({
       }
       return "no_location";
     },
-    handleClickEventListItem(event: EventData) {
+    handleClickEventListItem(event: Event) {
       if (this.showMap) {
         this.$emit("openPreview", event.id);
       } else {
@@ -106,7 +106,7 @@ export default defineComponent({
         });
       }
     },
-    onMouseOvenEventListItem(event: EventData) {
+    onMouseOvenEventListItem(event: Event) {
         if (this.showMap) {
           this.$emit(
             'highlightEvent',
@@ -123,7 +123,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-w-4xl justify-center bg-white dark:bg-gray-800">
+  <div class="bg-white dark:bg-gray-800">
     <div v-if="events.length === 0">
       <p
         v-if="!showMap"

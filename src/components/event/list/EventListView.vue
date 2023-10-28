@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import EventList from "./EventList.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify/lib/framework.mjs";
@@ -10,14 +10,12 @@ import getEventWhere from "@/components/event/list/filters/getEventWhere";
 import { SearchEventValues } from "@/types/eventTypes";
 import { getFilterValuesFromParams } from "./filters/getFilterValuesFromParams";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import EventDetail from "../detail/EventDetail.vue";
 import { timeShortcutValues } from "./filters/eventSearchOptions";
 import {
   chronologicalOrder,
   reverseChronologicalOrder,
 } from "./filters/filterStrings";
 import EventFilterBar from "./filters/EventFilterBar.vue";
-import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
 
 export default defineComponent({
@@ -29,13 +27,10 @@ export default defineComponent({
     ErrorBanner,
     EventFilterBar,
     EventList,
-    EventDetail,
-    DrawerFlyout,
     TimeShortcuts,
   },
   setup(props, { emit }) {
     const route = useRoute();
-    const router = useRouter();
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -65,6 +60,7 @@ export default defineComponent({
         channelId: channelId.value,
       });
     });
+    console.log("eventWhere", eventWhere.value);
 
     const {
       error: eventError,
@@ -117,38 +113,9 @@ export default defineComponent({
       }
       selectedEventId.value = value.data.events[0]?.id;
 
-      if (selectedEventId.value && value.data.events.length > 0) {
-        sendToPreview(selectedEventId.value);
-      }
-
       emit("updateLoadedEventCount", value.data.events.length);
       emit("updateResultCount", value.data.eventsAggregate?.count);
     });
-
-    const sendToPreview = (eventId: string, eventLocationId: string = "") => {
-      // if (!route.params.eventId) {
-      if (!channelId.value) {
-        router.push({
-          name: "SitewideSearchEventPreview",
-          params: {
-            ...route.params,
-            eventId,
-          },
-          hash: `#${eventLocationId}`,
-          query: { ...route.query },
-        });
-      } else {
-        router.push({
-          name: "SearchEventsInChannel",
-          params: {
-            channelId: channelId.value,
-          },
-          hash: `#${eventLocationId}`,
-          query: { ...route.query },
-        });
-      }
-      // }
-    };
 
     const previewIsOpen = ref(false);
 
@@ -236,60 +203,31 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="max-w-screen-2xl pt-4">
-    <v-row
-      class="p-0"
-    >
-      <v-col
-        cols="12"
-        :lg="channelId ? 5 : 5"
-        class="scrollable-column shadow-right-lg"
-      >
-        <EventFilterBar :show-distance-filters="false" />
-        <TimeShortcuts
-          :is-list-view="true"
-        />
-        <p v-if="eventLoading">
-          Loading...
-        </p>
-        <ErrorBanner
-          v-else-if="eventError"
-          class="mx-auto block"
-          :text="eventError.message"
-        />
-        <EventList
-          v-else-if="!eventLoading && eventResult"
-          id="listView"
-          :class="[!channelId ? '' : '']"
-          class="relative"
-          :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
-          :events="eventResult.events"
-          :channel-id="channelId"
-          :search-input="filterValues.searchInput"
-          :selected-tags="filterValues.tags"
-          :selected-channels="filterValues.channels"
-          :show-map="false"
-          @filterByTag="filterByTag"
-          @filterByChannel="filterByChannel"
-          @loadMore="loadMore"
-          @openPreview="openPreview"
-        />
-        <DrawerFlyout
-          v-if="eventId"
-          :is-open="previewIsOpen"
-          @closePreview="closePreview"
-        >
-          <EventDetail />
-        </DrawerFlyout>
-      </v-col>
-      <v-col
-        v-if="!mdAndDown"
-        cols="12"
-        :lg="channelId ? 7 : 7"
-        class="border-l border-gray-200 p-0 dark:border-gray-700 dark:bg-gray-950 dark:text-gray-200"
-      >
-        <router-view />
-      </v-col>
-    </v-row>
+  <v-container class="pt-4 flex-col justify-center max-w-4xl">
+    <EventFilterBar :show-distance-filters="false" />
+    <TimeShortcuts :is-list-view="true" />
+    <p v-if="eventLoading">Loading...</p>
+    <ErrorBanner
+      v-else-if="eventError"
+      class="mx-auto block"
+      :text="eventError.message"
+    />
+    <EventList
+      v-else-if="!eventLoading && eventResult"
+      id="listView"
+      :class="[!channelId ? '' : '']"
+      class="relative"
+      :result-count="eventResult ? eventResult.eventsAggregate?.count : 0"
+      :events="eventResult.events"
+      :channel-id="channelId"
+      :search-input="filterValues.searchInput"
+      :selected-tags="filterValues.tags"
+      :selected-channels="filterValues.channels"
+      :show-map="false"
+      @filterByTag="filterByTag"
+      @filterByChannel="filterByChannel"
+      @loadMore="loadMore"
+      @openPreview="openPreview"
+    />
   </v-container>
 </template>

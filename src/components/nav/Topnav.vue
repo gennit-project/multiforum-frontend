@@ -98,10 +98,11 @@ export default defineComponent({
   },
   methods: {
     getLabel() {
+      console.log("this.route.name", this.route.name);
       if (this.route.name === "SitewideSearchDiscussionPreview") {
         return "/ discussions";
       }
-      if (this.route.name === "SitewideSearchEventPreview") {
+      if (this.route.name === "SearchEventsList") {
         return "/ online events";
       }
       if (this.route.name === "MapEventPreview") {
