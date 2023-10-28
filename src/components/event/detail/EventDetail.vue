@@ -155,6 +155,9 @@ export default defineComponent({
       visibleDescription,
     };
   },
+  created(){
+    window.scrollTo(0,0);
+  },
   methods: {
     openLink() {
       window.open(this.eventData.virtualEventUrl, "_blank");

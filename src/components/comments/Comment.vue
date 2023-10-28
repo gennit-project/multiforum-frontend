@@ -338,7 +338,7 @@ export default defineComponent({
                 "
               >
                 <router-link
-                  class="text-xs underline"
+                  class="px-2 text-xs underline"
                   :to="{
                     name: 'DiscussionCommentPermalink',
                     params: {

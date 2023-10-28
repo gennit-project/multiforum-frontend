@@ -128,7 +128,7 @@ export default defineComponent({
       />
       <div class="p-6">
         <Avatar
-          class="-mt-24 w-24 shadow-sm"
+          class="-mt-24 w-24 shadow-sm border-2 dark:border-gray-800"
           :text="channelId"
           :is-square="true"
           :is-large="true"
