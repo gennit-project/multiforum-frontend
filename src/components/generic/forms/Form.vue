@@ -20,24 +20,43 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup() {},
+  setup(props) {
+    console.log("props in form", props);
+  },
 });
 </script>
 
 <template>
   <v-container fluid>
-    <v-row class="justify-center">
-      <v-col cols="12">
-        <form
-          class="xs:px-2 mx-auto max-w-4xl py-3 space-y-3 divide-y divide-gray-200 border-gray-200 bg-white dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
-          autocomplete="off"
+    <form
+      class="rounded-lg space-y-3 divide-y divide-gray-200 border-gray-200 bg-white py-12 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800 sm:px-4"
+      autocomplete="off"
+    > <div class="px-12">
+      <div class="flex justify-between">
+        <h2
+          class="font-semibold pt-3 text-base leading-7 text-gray-900 dark:text-gray-100"
         >
-          <div class="flex justify-between">
-            <h2 class="font-semibold pt-3 text-base leading-7 text-gray-900 dark:text-gray-100">
-              {{ formTitle }}
-            </h2>
-            <div class="float-right">
+          {{ formTitle }}
+        </h2>
+        <div class="float-right">
+          <CancelButton @click.prevent="$router.go(-1)" />
+          <SaveButton
+            :disabled="needsChanges"
+            :loading="loading"
+            @click.prevent="$emit('submit')"
+          />
+        </div>
+      </div>
+      <slot />
+      <FormRow>
+        <template #content>
+          <div class="pb-5 pt-5">
+            <div class="flex justify-end">
               <CancelButton @click.prevent="$router.go(-1)" />
               <SaveButton
                 :disabled="needsChanges"
@@ -45,22 +64,9 @@ export default defineComponent({
               />
             </div>
           </div>
-          <slot />
-          <FormRow>
-            <template #content>
-              <div class="pb-5 pt-5">
-                <div class="flex justify-end">
-                  <CancelButton @click.prevent="$router.go(-1)" />
-                  <SaveButton
-                    :disabled="needsChanges"
-                    @click.prevent="$emit('submit')"
-                  />
-                </div>
-              </div>
-            </template>
-          </FormRow>
-        </form>
-      </v-col>
-    </v-row>
+        </template>
+      </FormRow>
+    </div>
+    </form>
   </v-container>
 </template>

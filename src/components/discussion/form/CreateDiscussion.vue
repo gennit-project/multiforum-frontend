@@ -98,6 +98,8 @@ export default defineComponent({
       return formValues.value.selectedChannels;
     });
 
+    const createDiscussionLoading = ref(false)
+
     const {
       mutate: createDiscussion,
       error: createDiscussionError,
@@ -140,6 +142,7 @@ export default defineComponent({
         });
       },
     }));
+    console.log('create discussion in original mutation ', createDiscussionLoading)
 
     onDone((response: any) => {
       const newDiscussionId =
@@ -150,6 +153,7 @@ export default defineComponent({
         of a channel, redirect to the discussion detail page in
         the channel.
       */
+     createDiscussionLoading.value = false
 
       if (channelId) {
         router.push({
@@ -180,6 +184,7 @@ export default defineComponent({
       channelId,
       createDiscussion,
       createDiscussionError,
+      createDiscussionLoading,
       formValues,
       router,
       username,
@@ -192,6 +197,7 @@ export default defineComponent({
         console.error("No username found");
         return;
       }
+      this.createDiscussionLoading = true;
       this.createDiscussion();
     },
     updateFormValues(data: CreateEditDiscussionFormValues) {
@@ -210,6 +216,7 @@ export default defineComponent({
     <template #has-auth>
       <CreateEditDiscussionFields
         :create-discussion-error="createDiscussionError"
+        :create-discussion-loading="createDiscussionLoading"
         :edit-mode="false"
         :form-values="formValues"
         @submit="submit"

@@ -11,14 +11,21 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
-  setup() {},
+  setup(props) {
+    console.log(props)
+  },
 });
 </script>
 <template>
   <PrimaryButton
     label="Save"
     :disabled="disabled"
+    :loading="loading"
     class="border-transparent font-medium ml-3 inline-flex justify-center rounded-full border px-4 py-2 text-sm shadow-sm"
     @keydown.enter.prevent
   />

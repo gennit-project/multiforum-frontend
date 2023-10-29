@@ -53,8 +53,17 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    createDiscussionLoading: {
+      type: Boolean,
+      default: false,
+    },
+    updateDiscussionLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
+    console.log('create discussion loading is', props.createDiscussionLoading)
     return {
       formTitle: props.editMode ? "Edit Discussion" : "Start Discussion",
       touched: false,
@@ -112,9 +121,9 @@ export default defineComponent({
     </div>
     <TailwindForm
       v-else-if="formValues"
-      class="pt-8"
       :form-title="formTitle"
       :needs-changes="needsChanges"
+      :loading="createDiscussionLoading || updateDiscussionLoading"
       @input="touched = true"
       @submit="$emit('submit')"
     >

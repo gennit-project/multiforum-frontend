@@ -103,7 +103,12 @@ export default defineComponent({
       return [input];
     });
 
-    const { mutate: createComment, error: createCommentError } = useMutation(
+    const createCommentLoading = ref(false)
+    const { 
+      mutate: createComment,
+      error: createCommentError,
+      onDone,
+    } = useMutation(
       CREATE_COMMENT,
       () => ({
         errorPolicy: "all",
@@ -166,6 +171,11 @@ export default defineComponent({
       }),
     );
 
+    onDone(() => {
+      createFormValues.value = createCommentDefaultValues;
+      createCommentLoading.value = false;
+    });
+
     const discussionChannelIsLocked = computed(() => {
       if (!props.discussionChannel) {
         return false;
@@ -180,6 +190,7 @@ export default defineComponent({
       discussionChannelIsLocked,
       createComment,
       createCommentError,
+      createCommentLoading,
       createFormValues,
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
@@ -202,6 +213,7 @@ export default defineComponent({
         );
         return;
       }
+      this.createCommentLoading = true;
       this.createComment();
     },
   },
@@ -245,6 +257,7 @@ export default defineComponent({
           <SaveButton
             data-testid="createCommentButton"
             :disabled="createFormValues.text.length === 0"
+            :loading="createCommentLoading"
             @click.prevent="
               () => {
                 handleCreateComment();

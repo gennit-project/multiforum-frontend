@@ -340,7 +340,10 @@ export default defineComponent({
       sort: getSortFromQuery(route.query),
     };
 
-    const { mutate: createComment, error: createCommentError } = useMutation(
+    const { 
+      mutate: createComment, 
+      error: createCommentError,
+    } = useMutation(
       CREATE_COMMENT,
       () => ({
         errorPolicy: "all",

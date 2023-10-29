@@ -133,7 +133,7 @@ export default defineComponent({
       class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container fluid class="h-full">
-        <v-row class="h-full">
+        <v-row class="h-full flex flex-row">
           <v-col v-if="channelId" cols="3">
             <ChannelSidebar :channel-id="channelId" class="sticky top-0 w-72">
               <ChannelTabs
@@ -145,8 +145,8 @@ export default defineComponent({
               />
             </ChannelSidebar>
           </v-col>
-          <v-col :cols="channelId ? 9 : 12">
-            <div class="rounded-lg px-4">
+          <v-col :cols="9">
+            <div class="rounded-lg pl-4">
               <router-view />
             </div>
           </v-col>
