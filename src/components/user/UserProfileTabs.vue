@@ -54,7 +54,6 @@ export default defineComponent({
     };
   },
   data(props) {
-    console.log(props.user)
     return {
       selectedTab: "about",
       tabs: [

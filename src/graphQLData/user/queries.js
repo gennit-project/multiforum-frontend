@@ -1,17 +1,17 @@
-import { gql } from '@apollo/client/core';
+import { gql } from "@apollo/client/core";
 
 // This gets a reactive variable in the Apollo cache.
 export const GET_LOCAL_USERNAME = gql`
   query getLocalUsername {
     username @client
   }
-`
+`;
 
 export const GET_LOCAL_MOD_PROFILE_NAME = gql`
   query getLocalModProfileName {
     modProfileName @client
   }
-`
+`;
 
 export const GET_USER_INFO_FOR_TAGS = gql`
   query getUser($username: String!) {
@@ -29,9 +29,7 @@ export const GET_USER_INFO_FOR_TAGS = gql`
 
 export const GET_USER = gql`
   query getBasicUserInfo($username: String!) {
-    users(
-      where: {username: $username}
-    ) {
+    users(where: { username: $username }) {
       username
       commentKarma
       discussionKarma
@@ -51,15 +49,14 @@ export const GET_USER = gql`
         count
       }
     }
-}`;
+  }
+`;
 
 export const GET_USER_COMMENTS = gql`
-  query getUserComments($username: String!) {
-    users(
-      where: {username: $username}
-    ) {
+  query getUserComments($username: String!, $offset: Int!, $limit: Int!) {
+    users(where: { username: $username }) {
       username
-      Comments {
+      Comments(options: { limit: $limit, offset: $offset }) {
         id
         text
         createdAt
@@ -99,19 +96,18 @@ export const GET_USER_COMMENTS = gql`
         }
       }
     }
-  }`
+  }
+`;
 
 export const GET_USER_DISCUSSIONS = gql`
   query getUserDiscussions($username: String!) {
-    users(
-      where: {username: $username}
-    ) {
+    users(where: { username: $username }) {
       username
       Discussions {
         id
         Author {
           username
-          commentKarma 
+          commentKarma
           discussionKarma
           createdAt
         }
@@ -124,7 +120,7 @@ export const GET_USER_DISCUSSIONS = gql`
           Channel {
             uniqueName
           }
-          weightedVotesCount 
+          weightedVotesCount
           id
           discussionId
           channelUniqueName
@@ -134,13 +130,12 @@ export const GET_USER_DISCUSSIONS = gql`
         }
       }
     }
-  }`
+  }
+`;
 
 export const GET_USER_EVENTS = gql`
   query getUserEvents($username: String!) {
-    users(
-      where: {username: $username}
-    ) {
+    users(where: { username: $username }) {
       username
       Events {
         id
@@ -170,20 +165,19 @@ export const GET_USER_EVENTS = gql`
         }
       }
     }
-  }`
+  }
+`;
 
 export const DOES_USER_EXIST = gql`
   query doesUserExist($username: String!) {
-    users(where: {
-      username: $username
-    }) {
+    users(where: { username: $username }) {
       username
       Email {
         address
       }
     }
   }
-`
+`;
 
 export const USER_LOOKUP = gql`
   query getUser($username: String!) {
@@ -295,7 +289,8 @@ export const USER_LOOKUP = gql`
         }
       }
     }
-}`;
+  }
+`;
 
 export const GET_USERS = gql`
   query {
