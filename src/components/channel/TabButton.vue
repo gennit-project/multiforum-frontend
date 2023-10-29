@@ -36,12 +36,12 @@ export default defineComponent({
       let classArray = [];
       if (props.isActive) {
         classArray.push(
-          ` border-black dark:border-blue-500  dark:text-gray-100`,
+          ` border-black dark:border-blue-500 dark:text-gray-100`,
         );
 
         if (props.vertical) {
           classArray.push(
-            "pr-2 px-4 border-l-4 bg-gray-100 text-gray-700  dark:bg-gray-700 ",
+            "bg-gray-100 dark:bg-gray-700 pr-2 px-4 border-l-4 bg-gray-100 text-gray-700  dark:bg-gray-700 ",
           );
         } else {
           classArray.push(
@@ -53,7 +53,7 @@ export default defineComponent({
 
         if (props.vertical) {
           classArray.push(
-            "pr-2 px-4 border-l-4 border-transparent hover:bg-gray-200 dark:hover:bg-gray-800",
+            "pr-2 px-4 border-l-4 border-transparent hover:bg-gray-200 dark:hover:bg-gray-700",
           );
         } else {
           classArray.push("border-b-2 border-transparent");

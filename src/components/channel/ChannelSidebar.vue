@@ -116,7 +116,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="pb-8 overflow-auto rounded-lg bg-gray-100 dark:bg-gray-800"
+    class="pb-8 overflow-auto rounded-lg bg-white dark:bg-gray-800"
   >
     <div v-if="channelId" class="items-center gap-2">
       <div

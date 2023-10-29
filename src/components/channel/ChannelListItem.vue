@@ -46,21 +46,28 @@ export default defineComponent({
 <template>
   <div class="grid grid-cols-12">
     <div
-      class="rounded-lg relative col-span-12 flex items-center gap-4 p-4 dark:bg-gray-800 dark:text-gray-200"
+      class="relative col-span-12 flex flex-row gap-4 rounded-lg p-4 dark:bg-gray-800 dark:text-gray-200"
     >
-   
       <div>
+        <router-link
+          :to="`/channels/c/${channel.uniqueName}/discussions`"
+          class="flex cursor-pointer items-center"
+        >
+          <div class="w-24">
+            <Avatar
+              :text="channel.uniqueName"
+              :is-square="true"
+              :is-large="true"
+            />
+          </div>
+        </router-link>
+      </div>
+
+      <div class="flex flex-col gap-2">
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
           class="mt-1 flex cursor-pointer items-center gap-4"
         >
-        <div class="w-24">
-          <Avatar
-            :text="channel.uniqueName"
-            :is-square="true"
-            :is-large="true"
-          />
-        </div>
           <h3 class="text-xl">
             <HighlightedSearchTerms
               :text="channel.uniqueName"
@@ -68,6 +75,32 @@ export default defineComponent({
             />
           </h3>
         </router-link>
+        <div class="flex gap-3">
+          <div class="font-normal truncate text-sm">
+            <router-link
+              class="flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200"
+              :to="`/channels/c/${channel.uniqueName}/discussions`"
+            >
+              <DiscussionIcon class="h-6 w-6" />
+
+              {{ channel.DiscussionChannelsAggregate.count }}
+              {{
+                channel.DiscussionChannelsAggregate.count === "1"
+                  ? "Discussion"
+                  : "Discussions"
+              }}
+            </router-link>
+          </div>
+          <div class="font-normal truncate text-sm">
+            <router-link
+              class="flex items-center gap-1 px-3 py-1 bg-gray-100 rounded-lg hover:bg-gray-200"
+              :to="`/channels/c/${channel.uniqueName}/events/search`"
+            >
+              <CalendarIcon class="h-6 w-6" />
+              {{ channel.EventChannelsAggregate.count }} Upcoming Events
+            </router-link>
+          </div>
+        </div>
         <div class="mt-1">
           <p
             v-if="channel.description"
@@ -89,31 +122,6 @@ export default defineComponent({
             />
           </div>
         </div>
-      </div>
-
-      <div class="font-normal truncate text-sm">
-        <router-link
-          class="underline flex items-center gap-1"
-          :to="`/channels/c/${channel.uniqueName}/discussions`"
-        >
-          <DiscussionIcon class="h-6 w-6" />
-
-          {{ channel.DiscussionChannelsAggregate.count }}
-          {{
-            channel.DiscussionChannelsAggregate.count === "1"
-              ? "Discussion"
-              : "Discussions"
-          }}
-        </router-link>
-      </div>
-      <div class="font-normal truncate text-sm">
-        <router-link
-          class="underline flex items-center gap-1"
-          :to="`/channels/c/${channel.uniqueName}/events/search`"
-        >
-          <CalendarIcon class="h-6 w-6" />
-          {{ channel.EventChannelsAggregate.count }} Upcoming Events
-        </router-link>
       </div>
     </div>
   </div>
