@@ -77,7 +77,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="max-h-screen overflow-y-auto bg-gray-100 dark:bg-gray-900 rounded-md">
+  <div class="max-h-screen sticky top-0 pt-6 bg-gray-100 dark:bg-gray-900 rounded-lg">
     <div class="mb-4 mt-6 items-center gap-2 px-4">
       <Avatar
         class="shadow-sm"
@@ -119,7 +119,7 @@ export default defineComponent({
       <div class="mb-4 w-full px-4">
         <div
           v-if="user.bio"
-          class="my-2 px-2 text-sm dark:text-gray-200"
+          class="px-2 text-sm dark:text-gray-200"
         >
           {{ user.bio }}
         </div>

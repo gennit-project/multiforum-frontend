@@ -103,7 +103,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="max-w-7xl overflow-hidden dark:bg-black">
+  <v-container class="max-w-7xl dark:bg-black">
     <div
       v-if="smAndDown"
       :class="[
@@ -130,8 +130,8 @@ export default defineComponent({
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container fluid class="p-0">
-          <v-row>
-            <v-col v-if="!smAndDown" cols="12" lg="3">
+          <v-row class="flex flex-row gap-3">
+            <v-col v-if="!smAndDown" cols="12" lg="3" class="p-0">
               <UserProfileSidebar />
             </v-col>
             <v-col

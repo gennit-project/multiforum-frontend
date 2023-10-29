@@ -113,7 +113,7 @@ export default defineComponent({
         />
       </div>
       <article
-        class="rounded-lg relative z-0 h-full max-w-7xl flex-1 bg-white focus:outline-none dark:bg-black xl:order-last"
+        class="relative z-0 h-full max-w-7xl flex-1 rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
           v-if="smAndDown"
@@ -129,35 +129,30 @@ export default defineComponent({
       </article>
     </div>
     <article
-  v-else
-  class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
->
-  <v-container fluid class="h-full">
-    <v-row class="h-full">
-      <v-col v-if="channelId" cols="3">
-        <!-- Changed class from fixed to sticky, and added top-0 -->
-        <ChannelSidebar
-          :channel-id="channelId"
-          class="sticky top-0 w-72"
-        >
-          <ChannelTabs
-            v-if="route.name !== 'EditChannel'"
-            :route="route"
-            :vertical="true"
-            :show-counts="true"
-            :channel="channel"
-          />
-        </ChannelSidebar>
-      </v-col>
-      <v-col :cols="channelId ? 9 : 12">
-        <div class="px-4 rounded-lg">
-          <router-view />
-        </div>
-      </v-col>
-    </v-row>
-  </v-container>
-</article>
-
+      v-else
+      class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
+    >
+      <v-container fluid class="h-full">
+        <v-row class="h-full">
+          <v-col v-if="channelId" cols="3">
+            <ChannelSidebar :channel-id="channelId" class="sticky top-0 w-72">
+              <ChannelTabs
+                v-if="route.name !== 'EditChannel'"
+                :route="route"
+                :vertical="true"
+                :show-counts="true"
+                :channel="channel"
+              />
+            </ChannelSidebar>
+          </v-col>
+          <v-col :cols="channelId ? 9 : 12">
+            <div class="rounded-lg px-4">
+              <router-view />
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </article>
   </div>
 </template>
 
