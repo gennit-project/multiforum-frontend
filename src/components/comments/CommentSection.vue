@@ -633,7 +633,10 @@ export default defineComponent({
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       
-      <SortButtons :show-top-options="false" />
+      <SortButtons 
+        v-if="comments.length > 0"
+        :show-top-options="false" 
+      />
       <PermalinkedComment
         class="mt-2"
         :key="permalinkedCommentId"
