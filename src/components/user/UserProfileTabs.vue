@@ -2,14 +2,13 @@
 import { computed, defineComponent, ref, watch } from "vue";
 import TabButton from "@/components/channel/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
-import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import { useRoute } from "vue-router";
+import { User } from "@/__generated__/graphql"
 
 export default defineComponent({
   name: "ChannelTabs",
   components: {
     TabButton,
-    CalendarIcon,
   },
   props: {
     route: {
@@ -17,6 +16,14 @@ export default defineComponent({
       required: true,
     },
     vertical: {
+      type: Boolean,
+      default: false,
+    },
+    user: {
+      type: Object as () => User,
+      required: true,
+    },
+    showCounts: {
       type: Boolean,
       default: false,
     },
@@ -46,13 +53,29 @@ export default defineComponent({
       username,
     };
   },
-  data() {
+  data(props) {
+    console.log(props.user)
     return {
       selectedTab: "about",
       tabs: [
-        { name: "Comments", href: `/u/${this.username}`, current: true },
-        { name: "Discussions", href: `/u/${this.username}/discussions`, current: false },
-        { name: "Events", href: `/u/${this.username}/events`, current: false },
+        { 
+          name: "Comments", 
+          href: `/u/${this.username}`, 
+          current: true,
+          count: props.user?.CommentsAggregate?.count,
+        },
+        { name: 
+          "Discussions", 
+          href: `/u/${this.username}/discussions`, 
+          current: false,
+          count: props.user?.DiscussionsAggregate?.count,
+        },
+        { 
+          name: "Events", 
+          href: `/u/${this.username}/events`, 
+          current: false,
+          count: props.user?.EventsAggregate?.count,
+        },
       ],
     };
   },
@@ -80,6 +103,8 @@ export default defineComponent({
         :label="tab.name"
         :is-active="route.name.includes(tab.name)"
         :vertical="true"
+        :count="tab.count"
+        :show-count="showCounts"
       />
     </nav>
     <nav v-else class="max-w-7xl space-x-2 pt-1 text-sm" aria-label="Tabs">
@@ -89,6 +114,8 @@ export default defineComponent({
         :to="tab.href"
         :label="tab.name"
         :is-active="route.name.includes(tab.name)"
+        :count="tab.count"
+        :show-count="showCounts"
       />
     </nav>
   </div>

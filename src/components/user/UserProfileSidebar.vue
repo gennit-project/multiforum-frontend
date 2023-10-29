@@ -103,15 +103,6 @@ export default defineComponent({
         <li>
           {{ `${user.discussionKarma ?? 0} discussion karma` }}
         </li>
-        <li>
-          {{ `${user.CommentsAggregate.count} comments` }}
-        </li>
-        <li>
-          {{ `${user.DiscussionsAggregate.count} discussions` }}
-        </li>
-        <li>
-          {{ `${user.EventsAggregate.count} events` }}
-        </li>
       </ul>
     </div>
   </div>

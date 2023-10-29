@@ -118,8 +118,10 @@ export default defineComponent({
         <ChannelTabs
           v-if="smAndDown"
           :vertical="false"
+          :show-counts="true"
           class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
           :route="route"
+          :channel="channel"
         />
         <div>
           <router-view />
@@ -141,6 +143,8 @@ export default defineComponent({
                 v-if="route.name !== 'EditChannel'"
                 :route="route"
                 :vertical="true"
+                :show-counts="true"
+                :channel="channel"
               />
             </ChannelSidebar>
           </v-col>

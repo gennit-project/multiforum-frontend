@@ -4,6 +4,10 @@ import { useDisplay } from "vuetify";
 
 export default defineComponent({
   props: {
+    count: {
+      type: Number,
+      default: 0,
+    },
     to: {
       type: String,
       required: true,
@@ -17,6 +21,10 @@ export default defineComponent({
       required: true,
     },
     vertical: {
+      type: Boolean,
+      default: false,
+    },
+    showCount: {
       type: Boolean,
       default: false,
     },
@@ -79,6 +87,10 @@ export default defineComponent({
       <span class="text-sm font-bold text-gray-700 dark:text-white">{{
         label
       }}</span>
+      <span
+        v-if="showCount"
+        class="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full font-bold text-gray-700 dark:text-white"
+      >{{ count }}</span>
     </div>
   </router-link>
 </template>

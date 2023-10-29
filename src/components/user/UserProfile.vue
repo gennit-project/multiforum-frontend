@@ -62,6 +62,16 @@ export default defineComponent({
     const { result, loading, error } = useQuery(GET_USER, () => ({
       username: username.value,
     }));
+    const user = computed(() => {
+      if (loading.value || error.value) {
+        return null;
+      }
+      if (result.value && result.value.users.length > 0) {
+        return result.value.users[0];
+      }
+      return null;
+    });
+
 
     const links = computed(() => {
       return [
@@ -72,15 +82,6 @@ export default defineComponent({
       ];
     });
 
-    const user = computed(() => {
-      if (loading.value || error.value) {
-        return null;
-      }
-      if (result.value && result.value.users.length > 0) {
-        return result.value.users[0];
-      }
-      return null;
-    });
 
     const { smAndDown } = useDisplay();
 
@@ -140,7 +141,10 @@ export default defineComponent({
               :lg="!smAndDown ? 10 : 12"
             >
               <UserProfileTabs
+                v-if="user"
+                :show-counts="true"
                 :vertical="false"
+                :user="user"
                 class="block border-b border-gray-200 dark:border-gray-600"
                 :route="route"
               />

@@ -5,6 +5,7 @@ import { useDisplay } from "vuetify/lib/framework.mjs";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
 import InfoIcon from "@/components/icons/InfoIcon.vue";
+import { Channel } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "ChannelTabs",
@@ -15,11 +16,19 @@ export default defineComponent({
     DiscussionIcon,
   },
   props: {
+    channel: {
+      type: Object as () => Channel,
+      required: true,
+    },
     route: {
       type: Object,
       required: true,
     },
     vertical: {
+      type: Boolean,
+      default: false,
+    },
+    showCounts: {
       type: Boolean,
       default: false,
     },
@@ -64,7 +73,7 @@ export default defineComponent({
   <div>
     <nav
       v-if="vertical"
-      class="flex max-w-7xl flex-col text-md"
+      class="text-md flex max-w-7xl flex-col"
       aria-label="Tabs"
     >
       <TabButton
@@ -72,6 +81,8 @@ export default defineComponent({
         :label="'Discussions'"
         :is-active="$route.path.includes('discussions')"
         :vertical="true"
+        :show-count="showCounts"
+        :count="channel.DiscussionChannelsAggregate?.count || 0"
       >
         <DiscussionIcon class="h-6 w-6 shrink-0" />
       </TabButton>
@@ -80,6 +91,8 @@ export default defineComponent({
         :label="'Events'"
         :is-active="route.name.includes('Event')"
         :vertical="true"
+        :show-count="showCounts"
+        :count="channel.EventChannelsAggregate?.count || 0"
       >
         <CalendarIcon class="h-6 w-6 shrink-0" />
       </TabButton>
@@ -89,19 +102,18 @@ export default defineComponent({
         :label="'About'"
         :is-active="route.name.includes('About')"
         :vertical="true"
+        :show-count="showCounts"
       >
         <InfoIcon class="h-6 w-6 shrink-0" />
       </TabButton>
     </nav>
-    <nav
-      v-else
-      class="max-w-7xl space-x-2 pt-1 text-sm"
-      aria-label="Tabs"
-    >
+    <nav v-else class="max-w-7xl space-x-2 pt-1 text-sm" aria-label="Tabs">
       <TabButton
         :to="tabRoutes.discussions"
         :label="'Discussions'"
         :is-active="route.path.includes('discussions')"
+        :show-count="showCounts"
+        :count="channel.DiscussionChannelsAggregate?.count || 0"
       >
         <DiscussionIcon class="h-5 w-5 shrink-0" />
       </TabButton>
@@ -109,6 +121,8 @@ export default defineComponent({
         :to="tabRoutes.events"
         :label="'Events'"
         :is-active="route.name.includes('Event')"
+        :show-count="showCounts"
+        :count="channel.EventChannelsAggregate?.count || 0"
       >
         <CalendarIcon class="h-5 w-5 shrink-0" />
       </TabButton>
@@ -117,6 +131,7 @@ export default defineComponent({
         :to="tabRoutes.about"
         :label="'About'"
         :is-active="route.name.includes('About')"
+        :show-count="showCounts"
       >
         <InfoIcon class="h-5 w-5 shrink-0" />
       </TabButton>

@@ -21,6 +21,12 @@ export const GET_CHANNEL = gql`
         discussionKarma
         createdAt
       }
+      DiscussionChannelsAggregate {
+        count
+      }
+      EventChannelsAggregate {
+        count
+      }
     }
   }
 `;
