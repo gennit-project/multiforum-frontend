@@ -621,7 +621,6 @@ export default defineComponent({
   <div>
     <div>
       <h2
-        v-if="!isPermalinkPage"
         id="comments"
         ref="commentSectionHeader"
         class="px-1 text-lg"
@@ -633,7 +632,10 @@ export default defineComponent({
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
+      
+      <SortButtons :show-top-options="false" />
       <PermalinkedComment
+        class="mt-2"
         :key="permalinkedCommentId"
         v-if="isPermalinkPage"
         :comment-id="permalinkedCommentId"
@@ -655,7 +657,6 @@ export default defineComponent({
           />
         </template>
       </PermalinkedComment>
-      <SortButtons :show-top-options="false" />
       <div class="my-4">
         <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
           There are no comments yet.
