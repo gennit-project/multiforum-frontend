@@ -103,7 +103,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="max-w-7xl overflow-hidden dark:bg-gray-800">
+  <v-container class="max-w-7xl overflow-hidden  dark:bg-black">
     <div
       v-if="smAndDown"
       :class="[
@@ -139,6 +139,7 @@ export default defineComponent({
               :cols="!smAndDown ? 9 : 12"
               :md="!smAndDown ? 9 : 12"
               :lg="!smAndDown ? 10 : 12"
+              class="bg-gray-100 dark:bg-gray-900 px-4 rounded-lg"
             >
               <UserProfileTabs
                 v-if="user"

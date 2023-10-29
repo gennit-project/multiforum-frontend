@@ -79,7 +79,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative   py-2 cursor-pointer list-none"
+    class="relative bg-white dark:bg-gray-800 p-4 rounded-lg cursor-pointer list-none"
     @click="$emit('openPreview')"
   >
     <p class="text-lg font-bold cursor-pointer">

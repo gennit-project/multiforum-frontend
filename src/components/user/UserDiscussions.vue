@@ -37,7 +37,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="flex flex-col gap-3 py-3">
     <div v-if="loading">
       Loading...
     </div>
