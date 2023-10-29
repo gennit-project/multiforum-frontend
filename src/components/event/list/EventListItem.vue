@@ -405,7 +405,7 @@ export default defineComponent({
                 >
                   <i class="fa-regular fa-comment mt-1 h-6 w-6" />
                   <span>{{`View ${commentCount} ${commentCount === 1 ? 'comment' : 'comments' }`}}</span>
-                  <span v-if="!isWithinChannel">{{ `in c/${event.EventChannels[0].channelUniqueName}`}}</span>
+                  <span v-if="!isWithinChannel">{{ ` in c/${event.EventChannels[0].channelUniqueName}`}}</span>
                 </button>
               </router-link>
 

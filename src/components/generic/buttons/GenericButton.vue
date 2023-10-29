@@ -19,7 +19,7 @@ export default defineComponent({
 <template>
   <button
     :class="{
-      'bg-black dark:bg-blue-500 text-white dark:text-black hover:dark:bg-blue-600 hover:bg-gray-800': active,
+      'bg-white dark:bg-blue-500 text-black dark:text-black hover:dark:bg-blue-600 hover:bg-gray-800': active,
       'text-gray-700 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-600':
         !active,
     }"

@@ -40,7 +40,7 @@ export default defineComponent({
           'p-0',
           lgAndUp ? 'constrain-height' : '',
         ]"
-        class="lg:overflow-y-auto"
+        class="lg:overflow-y-auto flex justify-center"
       >
         <slot name="leftpane" />
       </v-col>
