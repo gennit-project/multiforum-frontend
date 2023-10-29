@@ -131,14 +131,12 @@ export default defineComponent({
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container fluid class="p-0">
           <v-row>
-            <v-col v-if="!smAndDown" cols="12" md="3" lg="2">
+            <v-col v-if="!smAndDown" cols="12" lg="3">
               <UserProfileSidebar />
             </v-col>
             <v-col
               :class="[!smAndDown ? 'pt-6' : '']"
-              :cols="!smAndDown ? 9 : 12"
-              :md="!smAndDown ? 9 : 12"
-              :lg="!smAndDown ? 10 : 12"
+              :cols="!smAndDown ? 8 : 12"
               class="bg-gray-100 dark:bg-gray-900 px-4 rounded-lg"
             >
               <UserProfileTabs
