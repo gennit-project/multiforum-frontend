@@ -63,7 +63,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log('create discussion loading is', props.createDiscussionLoading)
     return {
       formTitle: props.editMode ? "Edit Discussion" : "Start Discussion",
       touched: false,

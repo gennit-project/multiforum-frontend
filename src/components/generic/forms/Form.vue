@@ -25,8 +25,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
-    console.log("props in form", props);
+  setup() {
   },
 });
 </script>

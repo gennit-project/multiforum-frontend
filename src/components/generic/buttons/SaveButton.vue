@@ -16,8 +16,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(props) {
-    console.log(props)
+  setup() {
   },
 });
 </script>

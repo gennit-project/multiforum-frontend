@@ -81,6 +81,8 @@ export default defineComponent({
       ];
     });
 
+    const createChannelLoading = ref(false)
+
     const {
       mutate: createChannel,
       error: createChannelError,
@@ -125,6 +127,7 @@ export default defineComponent({
 
     onDone((response: any) => {
       const newChannelId = response.data.createChannels.channels[0].uniqueName;
+      createChannelLoading.value = false;
 
       router.push({
         name: "SearchDiscussionsInChannel",
@@ -138,6 +141,7 @@ export default defineComponent({
       channelId,
       createChannel,
       createChannelError,
+      createChannelLoading,
       createChannelInput,
       formValues,
       router,
@@ -145,6 +149,7 @@ export default defineComponent({
   },
   methods: {
     async submit() {
+      this.createChannelLoading = true;
       this.createChannel();
     },
     updateFormValues(data: CreateEditChannelFormValues) {
@@ -165,6 +170,7 @@ export default defineComponent({
         :create-channel-error="createChannelError"
         :edit-mode="false"
         :form-values="formValues"
+        :create-channel-loading="createChannelLoading"
         @submit="submit"
         @updateFormValues="updateFormValues"
       />

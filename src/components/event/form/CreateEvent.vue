@@ -108,6 +108,8 @@ export default defineComponent({
       return formValues.value.selectedChannels;
     });
 
+    const createEventLoading = ref(false);
+
     const {
       mutate: createEvent,
       error: createEventError,
@@ -165,6 +167,8 @@ export default defineComponent({
         the channel.
       */
 
+      createEventLoading.value = false;
+
       if (channelId) {
         router.push({
           name: "EventDetail",
@@ -194,6 +198,7 @@ export default defineComponent({
       channelId,
       createEvent,
       createEventError,
+      createEventLoading,
       createEventInput: eventCreateInput,
       formValues,
       router,
@@ -201,6 +206,7 @@ export default defineComponent({
   },
   methods: {
     async submit() {
+      this.createEventLoading = true;
       this.createEvent();
     },
     updateFormValues(data: CreateEditEventFormValues) {
@@ -221,6 +227,7 @@ export default defineComponent({
         :create-event-error="createEventError"
         :edit-mode="false"
         :form-values="formValues"
+        :create-event-loading="createEventLoading"
         @submit="submit"
         @updateFormValues="updateFormValues"
       />

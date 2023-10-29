@@ -39,6 +39,10 @@ export default defineComponent({
         return null;
       },
     },
+    createEventLoading: {
+      type: Boolean,
+      default: false,
+    },
     formValues: {
       type: Object as PropType<CreateEditEventFormValues>,
       required: true,
@@ -378,6 +382,7 @@ export default defineComponent({
           data-testid="event-form"
           :form-title="formTitle"
           :needs-changes="needsChanges"
+          :loading="createEventLoading"
           @input="touched = true"
           @submit="$emit('submit')"
         >
@@ -418,7 +423,7 @@ export default defineComponent({
                       label="Start"
                       :value="formattedStartTimeDate"
                       @input="handleStartTimeDateChange($event?.target?.value)"
-                    >
+                    />
                     <input
                       data-testid="start-time-time-input"
                       class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
@@ -427,7 +432,7 @@ export default defineComponent({
                       label="Start Time"
                       :value="formattedStartTimeTime"
                       @input="handleStartTimeTimeChange($event?.target?.value)"
-                    >
+                    />
                   </div>
                   <span class="px-1">to</span>
                   <div class="flex-wrap items-center space-x-2 xl:flex">
@@ -439,7 +444,7 @@ export default defineComponent({
                       label="Start"
                       :value="formattedEndTimeDate"
                       @input="handleEndTimeDateChange($event?.target?.value)"
-                    >
+                    />
                     <input
                       data-testid="end-time-time-input"
                       class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
@@ -448,7 +453,7 @@ export default defineComponent({
                       label="Start Time"
                       :value="formattedEndTimeTime"
                       @input="handleEndTimeTimeChange($event?.target?.value)"
-                    >
+                    />
                   </div>
                   <div>
                     {{ duration }}

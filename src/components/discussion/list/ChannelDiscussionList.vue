@@ -240,7 +240,7 @@ export default defineComponent({
         discussionChannelResult.getDiscussionsInChannel.discussionChannels
           .length === 0
       "
-      class="flex gap-2 px-4"
+      class="flex gap-2 p-4"
     >
       <span>There are no discussions to show.</span>
 

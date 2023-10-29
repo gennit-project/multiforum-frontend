@@ -6,7 +6,6 @@ import {
   useQuery,
   provideApolloClient,
 } from "@vue/apollo-composable";
-import { DISCUSSION_PAGE_LIMIT } from "@/components/discussion/list/ChannelDiscussionList.vue";
 import { apolloClient } from "@/main";
 import { CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/discussion/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
@@ -16,7 +15,6 @@ import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 import RequireAuth from "../../auth/RequireAuth.vue";
 import { DiscussionCreateInput } from "@/__generated__/graphql";
 import "md-editor-v3/lib/style.css";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import gql from "graphql-tag";
 
 export default defineComponent({
@@ -142,7 +140,6 @@ export default defineComponent({
         });
       },
     }));
-    console.log('create discussion in original mutation ', createDiscussionLoading)
 
     onDone((response: any) => {
       const newDiscussionId =

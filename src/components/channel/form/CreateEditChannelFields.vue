@@ -28,6 +28,10 @@ export default defineComponent({
         return null;
       },
     },
+    createChannelLoading: {
+      type: Boolean,
+      default: false,
+    },
     formValues: {
       type: Object as PropType<CreateEditChannelFormValues | null>,
       required: false,
@@ -76,7 +80,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid>
+  <v-container fluid class="max-w-4xl">
     <div v-if="channelLoading">
       Loading...
     </div>
@@ -92,10 +96,11 @@ export default defineComponent({
       v-else-if="formValues"
       :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
       :needs-changes="needsChanges"
+      :loading="createChannelLoading"
       @input="touched = true"
       @submit="$emit('submit')"
     >
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5 ">
         <div class="space-y-4 mt-5 sm:space-y-5">
           <FormRow
             section-title="Title"
