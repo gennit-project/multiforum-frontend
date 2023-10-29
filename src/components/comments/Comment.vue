@@ -307,7 +307,7 @@ export default defineComponent({
   <div>
     <div
       :class="[
-        depth > 1 ? 'border-l pl-2 border-gray-300 dark:border-gray-400' : '',
+        depth > 1 ? 'border-l pl-4 border-gray-300 dark:border-gray-400' : '',
       ]"
       class="flex w-full"
     >
@@ -472,7 +472,7 @@ export default defineComponent({
         <div
           v-else-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="w-full border-gray-300 pl-4 dark:border-gray-600"
+          class="w-full border-gray-300 dark:border-gray-600"
         >
           <ChildComments
             v-slot="slotProps"
