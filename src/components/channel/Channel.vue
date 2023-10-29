@@ -128,7 +128,7 @@ export default defineComponent({
     </div>
     <article
       v-else
-      class="relative z-0 h-full max-w-6xl flex-1 focus:outline-none xl:order-last"
+      class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container fluid class="h-full">
         <v-row class="h-full">
