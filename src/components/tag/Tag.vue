@@ -47,8 +47,7 @@ export default defineComponent({
       default: "",
     },
   },
-  data(props) {
-    console.log(props);
+  data() {
     return {
       highlightedByMouse: false,
     };

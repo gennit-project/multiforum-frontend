@@ -131,13 +131,13 @@ export default defineComponent({
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
         <v-container fluid class="p-0">
           <v-row class="flex flex-row gap-3">
-            <v-col v-if="!smAndDown" cols="12" lg="3" class="p-0">
+            <v-col v-if="!smAndDown" cols="3"  class="p-0">
               <UserProfileSidebar />
             </v-col>
             <v-col
               :class="[!smAndDown ? 'pt-6' : '']"
               :cols="!smAndDown ? 8 : 12"
-              class="rounded-lg bg-gray-100 px-4 dark:bg-gray-900"
+              class="rounded-lg bg-gray-100 dark:bg-gray-900"
             >
               <CalendarHeatmap
                 :values="[{ date: '2023-9-22', count: 6 }]"
