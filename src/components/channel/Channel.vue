@@ -146,7 +146,7 @@ export default defineComponent({
             </ChannelSidebar>
           </v-col>
           <v-col :cols="9">
-            <div class="rounded-lg pl-4">
+            <div class="rounded-lg md:ml-16 lg:ml-10 xl:ml-0">
               <router-view />
             </div>
           </v-col>
