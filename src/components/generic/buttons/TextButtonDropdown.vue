@@ -75,7 +75,7 @@ export default defineComponent({
             <span
               :class="[
                 active
-                  ? 'bg-gray-100 text-gray-900 dark:hover:bg-gray-500 dark:hover:text-gray-100'
+                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:hover:bg-gray-500 dark:hover:text-gray-100'
                   : 'text-gray-700 dark:text-gray-200',
                 'block px-4 py-2 text-sm',
               ]"

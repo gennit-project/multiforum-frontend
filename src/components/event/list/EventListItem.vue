@@ -47,6 +47,11 @@ export default defineComponent({
       type: Boolean,
       required: true,
     },
+    showDetailLink: {
+      type: Boolean,
+      required: false,
+      default: true
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -374,6 +379,13 @@ export default defineComponent({
               >
                 {{ `${event.locationName || ""}` }}
               </p>
+              <p
+                class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
+              >
+                {{ // start time and end time
+                  `${timeOfDay}`
+                }}
+              </p>
               <p v-if="event.virtualEventUrl">Online event</p>
               <p v-if="event.free" class="font-medium text-sm text-gray-600">
                 Free
@@ -396,7 +408,7 @@ export default defineComponent({
               </p>
 
               <router-link
-                v-if="event && !submittedToMultipleChannels"
+                v-if="showDetailLink && event && !submittedToMultipleChannels"
                 :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
                 class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
               >
@@ -409,7 +421,7 @@ export default defineComponent({
                 </button>
               </router-link>
 
-              <MenuButton v-else-if="event" :items="eventDetailOptions">
+              <MenuButton v-else-if="showDetailLink && event" :items="eventDetailOptions">
                 <button
                   class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
                 >

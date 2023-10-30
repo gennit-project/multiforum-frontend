@@ -90,11 +90,6 @@ export default defineComponent({
         class="py-1"
         role="none"
       >
-        <!--
-                Active: "bg-gray-100", Not Active: ""
-
-                Selected: "font-medium text-gray-900", Not Selected: "text-gray-500"
-              -->
         <a
           id="menu-item-0"
           href="#"

@@ -502,7 +502,7 @@ export default defineComponent({
         <div class="inline-flex items-center align-middle">
           <button
             data-testid="more-filters-button"
-            class="max-height-3 font-medium hover:bg-gray-50 inline-flex whitespace-nowrap rounded-md border px-3.5 py-2.5 text-xs text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            class="bg-white max-height-3 font-medium hover:bg-gray-200 inline-flex whitespace-nowrap rounded-md border px-3.5 py-2.5 text-xs text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             @click="handleClickMoreFilters"
           >
             <FilterIcon class="-ml-0.5 mr-2 h-4 w-4" />

@@ -28,7 +28,7 @@ export default defineComponent({
     :class="[
       disabled
         ? 'cursor-default bg-gray-200 text-gray-300 dark:bg-gray-500 dark:text-gray-400'
-        : ' bg-black text-white dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600',
+        : ' bg-white hover:bg-gray-200 text-black dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600',
       '', // class for controlling the background opacity in dark mode
     ]"
     class="max-height-4 font-medium inline-flex items-center whitespace-nowrap rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"

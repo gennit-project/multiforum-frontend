@@ -40,7 +40,7 @@ export default defineComponent({
       <DropdownMenu as="div" class="relative inline-block text-left">
         <MenuButton
           data-testid="create-anything-button"
-          class="bg-black dark:bg-gray-700 dark:hover:bg-gray-600 text-white font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-md text-sm px-4 hover:bg-gray-800 focus:outline-none dark:text-white"
+          class="bg-white border dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-black font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-md text-sm px-4 hover:bg-gray-200 focus:outline-none dark:text-white"
         >
           + Create
           <ChevronDownIcon

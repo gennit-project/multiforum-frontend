@@ -63,7 +63,7 @@ export default defineComponent({
               :to="item.value"
               :class="[
                 active
-                  ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
+                  ? 'bg-white  text-gray-900 dark:bg-gray-500 dark:text-gray-100'
                   : 'text-gray-700 dark:text-white',
                 'block px-4 py-2 text-sm',
               ]"
@@ -81,7 +81,7 @@ export default defineComponent({
               v-else-if="item.event"
               :class="[
                 active
-                  ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
+                  ? 'bg-white text-gray-900 dark:bg-gray-500 dark:text-gray-100'
                   : 'text-gray-700 dark:text-white',
                 'block cursor-pointer px-4 py-2 text-sm',
               ]"

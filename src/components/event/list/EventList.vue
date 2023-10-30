@@ -153,6 +153,7 @@ export default defineComponent({
         :selected-channels="selectedChannels"
         :search-input="searchInput"
         :current-channel-id="channelId"
+        :show-detail-link="!showMap"
         :class="[
           event.id === highlightedEventId ||
             (!highlightedEventId &&
