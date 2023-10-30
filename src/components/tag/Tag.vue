@@ -47,7 +47,8 @@ export default defineComponent({
       default: "",
     },
   },
-  data() {
+  data(props) {
+    console.log(props);
     return {
       highlightedByMouse: false,
     };
@@ -103,7 +104,7 @@ export default defineComponent({
   >
     <Avatar
       v-if="channelMode && !hideIcon"
-      :class="[clearable ? 'mr-1' : '', titleMode ? 'h-6 w-6' : 'h-5 w-5']"
+      :class="[clearable ? 'mr-1' : '', titleMode ? 'h-6 w-6' : 'h-4 w-4']"
       class="inline-flex"
       :text="tag"
       :is-square="true"

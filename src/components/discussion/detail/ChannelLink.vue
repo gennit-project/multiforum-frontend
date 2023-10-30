@@ -33,7 +33,7 @@ export default defineComponent({
 </script>
 <template>
   <li>
-    <div>
+    <div class="flex items-center">
       <router-link
         :data-testid="`comments-in-${channelId}`"
         class="mr-1 underline"
@@ -47,7 +47,7 @@ export default defineComponent({
       >
         {{ `${commentCount} comments` }}
       </router-link>
-      <span> and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ? 'upvote' : 'upvotes' }} in</span>
+      and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ? 'upvote' : 'upvotes' }} in
       <router-link
         class="flex items-center gap-1"
         :to="{
@@ -59,7 +59,7 @@ export default defineComponent({
         }"
       >
         <TagComponent
-          class="mt-2"
+          class="m-2"
           :tag="channelId"
           :channel-mode="true"
         />
