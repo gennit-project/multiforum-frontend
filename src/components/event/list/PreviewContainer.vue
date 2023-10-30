@@ -67,14 +67,13 @@ export default defineComponent({
                   h-full
                   divide-y divide-gray-200
                   flex flex-col
-                   
                   shadow-xl
                 "
               >
                 <div
-                  class="min-h-0 flex-1 flex flex-col py-2  bg-white dark:bg-gray-800 dark:text-gray-200"
+                  class="min-h-0 flex-1 flex flex-col py-2 px-8 bg-white dark:bg-gray-800 dark:text-gray-200"
                 >
-                  <div class="px-4 sm:px-6">
+                  <div>
                     <div class="flex items-start justify-between">
                       <DialogTitle class="text-lg my-3 font-medium text-gray-900 dark:text-gray-200">
                         {{ header }}

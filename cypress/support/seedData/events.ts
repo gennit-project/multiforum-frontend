@@ -22,7 +22,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -50,7 +50,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -78,7 +78,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -106,7 +106,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -142,7 +142,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -185,7 +185,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -221,7 +221,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -258,7 +258,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -286,7 +286,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -314,7 +314,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -341,7 +341,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },
@@ -368,7 +368,7 @@ const events: EventCreateInputWithChannels[] = [
         connect: {
           where: {
             node: {
-              username: "Alice",
+              username: "alice",
             },
           },
         },

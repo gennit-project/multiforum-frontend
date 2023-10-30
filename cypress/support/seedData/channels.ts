@@ -29,6 +29,20 @@ const channels: ChannelCreateInput[] = [
       ],
     },
   },
+  {
+    uniqueName: "phx_concerts",
+    Admins: {
+      connect: [
+        {
+          where: {
+            node: {
+              username: "alice",
+            },
+          },
+        },
+      ],
+    },
+  },
 ];
 
 export default channels;

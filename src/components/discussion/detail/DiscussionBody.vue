@@ -94,15 +94,15 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
-    <div v-if="discussion?.body" class="-ml-4 -mt-4 max-w-none">
+  <div class="px-2">
+    <div v-if="discussion?.body" class="-ml-8 -mt-4 max-w-none">
       <MarkdownPreview
         :text="bodyText"
         :disable-gallery="route.name !== 'DiscussionDetail'"
         :word-limit="1000"
       />
     </div>
-    <div class="ml-4 flex" v-if="channelId">
+    <div class="flex -mt-2">
       <EmojiButtons
         :key="emojiJson"
         :discussion-channel-id="discussionChannelId"
@@ -122,7 +122,7 @@ export default defineComponent({
         "
       />
     </div>
-    <div class="ml-2 flex items-center gap-2">
+    <div class="flex items-center gap-2">
       <slot></slot
       ><NewEmojiButton :discussion-channel-id="discussionChannelId" />
     </div>

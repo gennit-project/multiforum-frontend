@@ -521,14 +521,14 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="h-full">
+  <div class="h-full bg-gray-100 dark:bg-gray-900">
     <div v-if="mdAndUp" id="mapViewFullScreen">
       <TwoSeparatelyScrollingPanes
         class="mt-3"
         :show-right-pane-at-medium-screen-width="true"
       >
         <template #leftpane>
-          <div class="m-4 rounded-lg p-4 h-fit bg-gray-100 dark:bg-gray-900 flex justify-center" style="width: 35vw">
+          <div class="m-4 rounded-lg p-4 h-fit  flex justify-center" style="width: 35vw">
             <div>
               <EventFilterBar class="mt-6" :show-map="true" />
               <TimeShortcuts />
