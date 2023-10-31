@@ -125,7 +125,7 @@ export default defineComponent({
 
     const showCopiedLinkNotification = ref(false);
 
-    const copyLink = async (event) => {
+    const copyLink = async (event: any) => {
       try {
         const basePath = window.location.origin;
         const permalink = `${basePath}${
@@ -137,7 +137,7 @@ export default defineComponent({
         throw new Error(e);
       }
       setTimeout(() => {
-        emit("showCopiedLinkNotification", false);
+        showCopiedLinkNotification.value = false;
       }, 2000);
     };
 

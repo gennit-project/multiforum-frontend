@@ -11,14 +11,19 @@ import useClipboard from "vue-clipboard3";
 import Notification from "@/components/generic/Notification.vue";
 import { DateTime } from "luxon";
 import { formatDuration, getDurationObj } from "../../../dateTimeUtils";
+import { useRouter } from "vue-router";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 
 export default defineComponent({
   name: "EventHeader",
   components: {
     CalendarIcon,
     ClipboardIcon,
+    EllipsisHorizontal,
     LinkIcon,
     LocationIcon,
+    MenuButton,
     Notification,
   },
   props: {
@@ -30,6 +35,7 @@ export default defineComponent({
   setup(props: any) {
     const route = useRoute();
     const { toClipboard } = useClipboard();
+    const router = useRouter();
 
     const showAddressCopiedNotification = ref(false);
 
@@ -61,12 +67,59 @@ export default defineComponent({
       return "";
     });
 
+    const showCopiedLinkNotification = ref(false);
+
+    const permalinkObject = computed(() => {
+      if (!props.discussion) {
+        return {};
+      }
+      return {
+        name: "DiscussionDetail",
+        params: {
+          discussionId: props.discussion.id,
+          channelId: channelId.value,
+        },
+      };
+    });
+
+    const copyLink = async (event: any) => {
+      try {
+        const basePath = window.location.origin;
+        const permalink = `${basePath}${
+          router.resolve(permalinkObject.value).href
+        }`;
+        await toClipboard(permalink);
+        showCopiedLinkNotification.value = event;
+      } catch (e: any) {
+        throw new Error(e);
+      }
+      setTimeout(() => {
+        showCopiedLinkNotification.value = false;
+      }, 2000);
+    };
+
+    const menuItems = computed(() => {
+      const out = []
+      if (props.eventData) {
+        out.push({
+          label: "Copy Link",
+          value: "",
+          event: "copyLink",
+        });
+      }
+      
+      return out;
+    });
+
     return {
       copyAddress,
+      copyLink,
       eventId,
       channelId,
+      menuItems,
       route,
       showAddressCopiedNotification,
+      showCopiedLinkNotification,
     };
   },
   methods: {
@@ -91,7 +144,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-4 text-sm text-gray-700 dark:text-gray-200">
+  <div
+    class="flex justify-between px-4 text-sm text-gray-700 dark:text-gray-200"
+  >
     <ul class="space-y-2">
       <li class="hanging-indent flex items-start">
         <div class="mr-3 h-5 w-5">
@@ -154,10 +209,24 @@ export default defineComponent({
         <span>{{ eventData.cost }}</span>
       </li>
     </ul>
+    <MenuButton
+      v-if="eventData && menuItems.length > 0"
+      :items="menuItems"
+      @copyLink="copyLink"
+    >
+      <EllipsisHorizontal
+        class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+      />
+    </MenuButton>
     <Notification
       :show="showAddressCopiedNotification"
       :title="'Copied to clipboard!'"
       @closeNotification="showAddressCopiedNotification = false"
+    />
+    <Notification
+      :show="showCopiedLinkNotification"
+      :title="'Copied to clipboard!'"
+      @closeNotification="showCopiedLinkNotification = false"
     />
   </div>
 </template>
