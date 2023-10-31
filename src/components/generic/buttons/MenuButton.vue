@@ -81,7 +81,7 @@ export default defineComponent({
               v-else-if="item.event"
               :class="[
                 active
-                  ? 'bg-white text-gray-900 dark:bg-gray-500 dark:text-gray-100'
+                  ? 'bg-white hover:bg-gray-200 text-gray-900 dark:bg-gray-500 dark:text-gray-100'
                   : 'text-gray-700 dark:text-white',
                 'block cursor-pointer px-4 py-2 text-sm',
               ]"

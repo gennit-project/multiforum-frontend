@@ -8,7 +8,6 @@ import TextEditor from "../generic/forms/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
 import Avatar from "../user/Avatar.vue";
 import CommentButtons from "./CommentButtons.vue";
-import WarningModal from "../generic/WarningModal.vue";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";

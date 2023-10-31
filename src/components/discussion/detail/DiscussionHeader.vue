@@ -1,8 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, PropType, ref } from "vue";
 import { Discussion } from "@/__generated__/graphql";
-import { useMutation } from "@vue/apollo-composable";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { relativeTime } from "@/dateTimeUtils";
 import { DateTime } from "luxon";
@@ -12,14 +11,21 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import Avatar from "@/components/user/Avatar.vue";
 import { useDisplay } from "vuetify";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import useClipboard from "vue-clipboard3";
+import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import Notification from "@/components/generic/Notification.vue";
 
 export default defineComponent({
   components: {
+    EllipsisHorizontal,
     ErrorBanner,
-    RequireAuth,
+    MenuButton,
     WarningModal,
     Avatar,
-    UsernameWithTooltip
+    UsernameWithTooltip,
+    Notification
   },
   props: {
     discussion: {
@@ -38,7 +44,7 @@ export default defineComponent({
       default: null,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
 
@@ -90,22 +96,109 @@ export default defineComponent({
       }
     });
 
+    const defaultChannel = computed(() => {
+      if (!props.discussion) {
+        return "";
+      }
+      const channelInRoute = route.params.channelId;
+
+      if (channelInRoute) {
+        return channelInRoute;
+      }
+      return props.discussion.DiscussionChannels[0].channelUniqueName;
+    });
+
+    const permalinkObject = computed(() => {
+      if (!props.discussion) {
+        return {};
+      }
+      return {
+        name: "DiscussionDetail",
+        params: {
+          discussionId: props.discussion.id,
+          channelId: defaultChannel.value,
+        },
+      };
+    });
+
+    const { toClipboard } = useClipboard();
+
+    const showCopiedLinkNotification = ref(false);
+
+    const copyLink = async (event) => {
+      try {
+        const basePath = window.location.origin;
+        const permalink = `${basePath}${
+          router.resolve(permalinkObject.value).href
+        }`;
+        await toClipboard(permalink);
+        showCopiedLinkNotification.value = event
+      } catch (e: any) {
+        throw new Error(e);
+      }
+      setTimeout(() => {
+        emit("showCopiedLinkNotification", false);
+      }, 2000);
+    };
+
     const deleteModalIsOpen = ref(false);
 
     const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
 
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value.username;
+    });
+
+    const menuItems = computed(() => {
+      const out = []
+      if (props.discussion) {
+        out.push({
+          label: "Copy Link",
+          value: "",
+          event: "copyLink",
+        });
+      }
+
+      if (props.discussion?.Author?.username === username.value) {
+        out.push({
+          label: "Edit",
+          value: "",
+          event: "handleEdit",
+        });
+        out.push({
+          label: "Delete",
+          value: "",
+          event: "handleDelete",
+        });
+      }
+      
+      return out;
+    });
+ 
     return {
+      copyLink,
       createdAt,
       deleteModalIsOpen,
       deleteDiscussion,
       deleteDiscussionError,
       editedAt,
+      menuItems,
       route,
       router,
       lgAndDown,
       lgAndUp,
       mdAndDown,
       mdAndUp,
+      showCopiedLinkNotification,
       xlAndUp,
     };
   },
@@ -121,79 +214,52 @@ export default defineComponent({
 
 <template>
   <div class="mb-4">
-    <div class="mt-2 flex flex-wrap items-center space-x-2 text-xs">
-      <Avatar
-        :text="
-          discussion && discussion.Author?.username
-            ? discussion.Author.username
-            : '[Deleted]'
-        "
-      />
-      <router-link
-        v-if="discussion && discussion.Author"
-        class="cursor-pointer font-bold text-black hover:underline dark:text-white"
-        :to="`/u/${discussion.Author.username}`"
-      >
-        <UsernameWithTooltip
-          v-if="discussion.Author.username"
-          :username="discussion.Author.username"
-          :comment-karma="discussion.Author.commentKarma ?? 0"
-          :discussion-karma="discussion.Author.discussionKarma ?? 0"
-          :account-created="discussion.Author.createdAt"
+    <div class="mt-2 flex justify-between">
+      <div class="flex flex-wrap items-center space-x-2 text-xs">
+        <Avatar
+          :text="
+            discussion && discussion.Author?.username
+              ? discussion.Author.username
+              : '[Deleted]'
+          "
+        />
+        <router-link
+          v-if="discussion && discussion.Author"
+          class="cursor-pointer font-bold text-black hover:underline dark:text-white"
+          :to="`/u/${discussion.Author.username}`"
         >
-          {{ discussion.Author.username }}
-        </UsernameWithTooltip>
-      </router-link>
-      <span v-else>[Deleted]</span>
-      <div>{{ createdAt }}</div>
-      <span v-if="discussion && discussion.updatedAt" class="mx-2">
-        &#8226;
-      </span>
-      <div>{{ editedAt }}</div>
-      <RequireAuth
-        v-if="discussion?.Author?.username && channelId"
-        :full-width="false"
-        class="space-x-2"
-        :require-ownership="true"
-        :owners="[discussion.Author.username]"
-      >
-        <template #has-auth>
-          <span class="mx-2"> &#8226;</span>
-          <router-link
-            class="font-medium ml-1 cursor-pointer underline"
-            :to="`/channels/c/${channelId}/discussions/d/${discussion.id}/edit`"
+          <UsernameWithTooltip
+            v-if="discussion.Author.username"
+            :username="discussion.Author.username"
+            :comment-karma="discussion.Author.commentKarma ?? 0"
+            :discussion-karma="discussion.Author.discussionKarma ?? 0"
+            :account-created="discussion.Author.createdAt"
           >
-            <span>Edit</span>
-          </router-link>
-        </template>
-      </RequireAuth>
-      <RequireAuth
-        v-if="
-          discussion && discussion.Author && route.name === 'DiscussionDetail'
+            {{ discussion.Author.username }}
+          </UsernameWithTooltip>
+        </router-link>
+        <span v-else>[Deleted]</span>
+        <div>{{ createdAt }}</div>
+        <span v-if="discussion && discussion.updatedAt" class="mx-2">
+          &#8226;
+        </span>
+        <div>{{ editedAt }}</div>
+      </div>
+      <MenuButton
+        v-if="discussion && menuItems.length > 0"
+        :items="menuItems"
+        @copyLink="copyLink"
+        @handleEdit="
+          router.push(
+            `/channels/c/${channelId}/discussions/d/${discussion.id}/edit`,
+          )
         "
-        class="space-x-2"
-        :require-ownership="true"
-        :owners="[discussion.Author.username]"
-        :full-width="false"
+        @handleDelete="deleteModalIsOpen = true"
       >
-        <template #has-auth>
-          <span> &#8226;</span>
-          <span
-            class="font-medium ml-1 cursor-pointer underline"
-            @click="deleteModalIsOpen = true"
-            >Delete</span
-          >
-        </template>
-      </RequireAuth>
-      <router-link
-        v-if="discussion"
-        data-testid="discussion-permalink"
-        class="font-medium"
-        :to="`/channels/c/${discussion.DiscussionChannels[0].channelUniqueName}/discussions/d/${discussion.id}`"
-      >
-        <span> &#8226;</span>
-        <span class="ml-2 cursor-pointer underline">Permalink</span>
-      </router-link>
+        <EllipsisHorizontal
+          class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+        />
+      </MenuButton>
     </div>
     <WarningModal
       :title="'Delete Discussion'"
@@ -206,6 +272,11 @@ export default defineComponent({
       v-if="deleteDiscussionError"
       class="mt-2"
       :text="deleteDiscussionError.message"
+    />
+    <Notification
+      :show="showCopiedLinkNotification"
+      :title="'Copied to clipboard!'"
+      @closeNotification="showCopiedLinkNotification = false"
     />
   </div>
 </template>
