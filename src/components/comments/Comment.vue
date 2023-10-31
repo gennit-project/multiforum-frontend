@@ -194,18 +194,22 @@ export default defineComponent({
       props.commentData.DiscussionChannel || (discussionId && channelId);
 
     const commentMenuItems = computed(() => {
-      const out = [
-        {
-          label: "Edit",
-          value: "",
-          event: "handleEdit",
-        },
-        {
-          label: "Delete",
-          value: "",
-          event: "handleDelete",
-        },
-      ];
+      let out: any[] = [];
+
+      if (props.commentData?.CommentAuthor?.username === username.value.username) {
+        out = out.concat([
+          {
+            label: "Edit",
+            value: "",
+            event: "handleEdit",
+          },
+          {
+            label: "Delete",
+            value: "",
+            event: "handleDelete",
+          },
+        ]);
+      }
       if (canShowPermalink) {
         out.push({
           label: "Copy Link",
@@ -306,7 +310,7 @@ export default defineComponent({
   <div>
     <div
       :class="[
-        depth > 1 ? 'border-l pl-4 border-gray-300 dark:border-gray-400' : '',
+        depth > 1 ? 'border-l border-gray-300 pl-4 dark:border-gray-400' : '',
       ]"
       class="flex w-full"
     >
@@ -320,7 +324,7 @@ export default defineComponent({
           class="flex w-full py-1"
           data-testid="comment"
         >
-          <div class="p-2 w-full flex rounded-lg bg-white dark:bg-gray-700">
+          <div class="flex w-full rounded-lg bg-white p-2 dark:bg-gray-700">
             <Avatar
               v-if="commentData.CommentAuthor"
               class="mt-1"
