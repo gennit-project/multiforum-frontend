@@ -63,8 +63,16 @@ export default defineComponent({
       }
       return "";
     });
+
+    const createEventLink = computed(() => {
+      if (channelId.value) {
+        return `/channels/c/${channelId.value}/events/create`
+      }
+      return '/events/create'
+    });
     return {
       channelId,
+      createEventLink,
       router,
     };
   },
@@ -107,40 +115,37 @@ export default defineComponent({
       }
     },
     onMouseOvenEventListItem(event: Event) {
-        if (this.showMap) {
-          this.$emit(
-            'highlightEvent',
-            this.getEventLocationId(event),
-            event.id,
-            event
-          );
-        }
-          
+      if (this.showMap) {
+        this.$emit(
+          "highlightEvent",
+          this.getEventLocationId(event),
+          event.id,
+          event,
+        );
+      }
     },
   },
-  
 });
 </script>
 
 <template>
   <div>
     <div v-if="events.length === 0">
-      <p
-        v-if="!showMap"
-        class="mt-3 px-4 dark:text-gray-200"
-      >
+      <p v-if="!showMap" class="mt-3 px-4 dark:text-gray-200">
         Could not find any events.
+        <router-link
+          :to="createEventLink"
+          class="text-blue-500 underline"
+          >Create one?</router-link
+        >
       </p>
-      <p
-        v-else
-        class="p-8 dark:text-gray-200"
-      >
+      <p v-else class="p-8 dark:text-gray-200">
         Could not find any events that can be shown on a map.
       </p>
     </div>
     <ul
-      v-if="events.length > 0" 
-      role="list" 
+      v-if="events.length > 0"
+      role="list"
       class="mb-4 flex flex-col gap-2"
       data-testid="event-list"
     >
@@ -156,8 +161,8 @@ export default defineComponent({
         :show-detail-link="!showMap"
         :class="[
           event.id === highlightedEventId ||
-            (!highlightedEventId &&
-              highlightedEventLocationId === getEventLocationId(event))
+          (!highlightedEventId &&
+            highlightedEventLocationId === getEventLocationId(event))
             ? 'bg-gray-200 dark:bg-gray-700'
             : '',
         ]"
