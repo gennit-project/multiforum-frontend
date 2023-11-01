@@ -21,32 +21,23 @@ export default defineComponent({
       return "";
     });
 
-    const { result, loading, error } = useQuery(
-      GET_USER_EVENTS,
-      () => ({
-        username: username.value,
-      })
-    );
+    const { result, loading, error } = useQuery(GET_USER_EVENTS, () => ({
+      username: username.value,
+    }));
 
     return {
-        loading,
-        error,
-        result
+      loading,
+      error,
+      result,
     };
   },
 });
 </script>
 <template>
-  <div>
-    <div v-if="loading">
-      Loading...
-    </div>
-    <div v-else-if="error">
-      Error
-    </div>
-    <div v-else-if="result && result.users.length === 0">
-      No results
-    </div>
+  <div class="flex flex-col gap-3 py-3">
+    <div v-if="loading">Loading...</div>
+    <div v-else-if="error">Error</div>
+    <div v-else-if="result && result.users.length === 0">No results</div>
     <EventListItemInProfile
       v-for="event in result.users[0].Events"
       v-else-if="result && result.users.length > 0"

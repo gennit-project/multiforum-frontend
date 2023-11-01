@@ -1,10 +1,10 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { TagData } from "../../types/tagTypes"
+import { TagData } from "../../types/tagTypes";
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
-import { Event } from "@/__generated__/graphql"
+import { Event } from "@/__generated__/graphql";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
 export default defineComponent({
@@ -51,9 +51,7 @@ export default defineComponent({
       title: props.event.title,
       createdAt: props.event.createdAt,
       relativeTime: relativeTime(props.event.createdAt),
-      poster: props.event.Poster
-        ? props.event.Poster.username
-        : "Deleted",
+      poster: props.event.Poster ? props.event.Poster.username : "Deleted",
       // If we are already within the channel, don't show
       // links to cost channels and don't specify which
       // channel the comments are in.
@@ -79,17 +77,14 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative   py-2 list-none"
+    class="relative cursor-pointer list-none rounded-lg bg-white p-4 dark:bg-gray-800"
     @click="$emit('openPreview')"
   >
-    <p class="text-lg font-bold ">
-      <HighlightedSearchTerms
-        :text="title"
-        :search-input="searchInput"
-      />
+    <p class="text-lg font-bold">
+      <HighlightedSearchTerms :text="title" :search-input="searchInput" />
     </p>
 
-    <p class="text-sm text-gray-600 hover:no-underline font-medium mt-1">
+    <p class="text-xs font-medium text-gray-600 dark:text-gray-300 no-underline flex">
       <Tag
         v-for="tag in tags"
         :key="tag"
@@ -99,17 +94,20 @@ export default defineComponent({
         @click="$emit('filterByTag', tag)"
       />
     </p>
-    <p class="text-xs font-medium text-gray-600 no-underline">
+    <p class="text-xs font-medium text-gray-600 dark:text-gray-300 no-underline">
       {{ `Posted ${relativeTime} by ${poster}` }}
     </p>
-    <div class="text-sm space-x-2 my-2">
+    <div
+      v-for="(ec, i) in event.EventChannels"
+      class="my-2 space-x-2 text-sm"
+      :key="i"
+    >
       <router-link
-        v-for="(ec, i) in event.EventChannels"
-        :key="i"
-        class="underline text-gray-500 hover:text-gray-700"
-        :to="`/channels/c/${ec.channelUniqueName}/events/e/${event.id}`"
+        v-if="ec.Channel"
+        class="underline text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:dark:text-gray-200"
+        :to="`/channels/c/${ec.Channel.uniqueName}/events/e/${event.id}`"
       >
-        {{ `c/${ec.channelUniqueName}` }}
+        {{ `c/${ec.Channel.uniqueName}` }}
       </router-link>
     </div>
   </li>
