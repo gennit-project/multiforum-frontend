@@ -99,7 +99,7 @@ export default defineComponent({
     </div>
     <div
       v-else
-      class="divide-y divide-solid dark:bg-gray-950"
+      class="divide-solid dark:bg-gray-950"
     >
       <div
         data-testid="channel-picker"
@@ -116,6 +116,7 @@ export default defineComponent({
           @deselect="deselect"
         />
       </div>
+      <p class="text-xs px-2 dark:text-gray-300">To select multiple items, press Shift</p>
       <div class="h-14">
         <ResetButton @reset="resetChannels" />
       </div>

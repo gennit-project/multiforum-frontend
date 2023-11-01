@@ -83,11 +83,11 @@ export default defineComponent({
       }
       this.currentInput = "";
       this.$emit("setSelectedTags", [...this.tags]);
-      this.showMenu = false;
     },
     setSelectedTags(tags: Array<string>) {
       this.tags = tags;
       this.$emit("setSelectedTags", [...this.tags]);
+      this.showMenu = false;
     },
     deleteTag(index: number) {
       this.tags.splice(index, 1);

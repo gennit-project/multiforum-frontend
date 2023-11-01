@@ -100,7 +100,7 @@ export default defineComponent({
     </div>
     <div
       v-else
-      class="divide-y divide-solid dark:bg-gray-950"
+      class="flex flex-col divide-solid dark:bg-gray-950"
     >
       <div class="tagpicker gap-2">
         <Tag
@@ -112,7 +112,9 @@ export default defineComponent({
           @select="select"
           @deselect="deselect"
         />
+       
       </div>
+      <p class="text-xs px-2 dark:text-gray-300">To select multiple items, press Shift</p>
       <ResetButton @reset="resetTags" />
     </div>
   </div>
