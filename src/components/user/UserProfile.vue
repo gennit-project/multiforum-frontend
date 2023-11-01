@@ -139,11 +139,11 @@ export default defineComponent({
               :cols="!smAndDown ? 8 : 12"
               class="rounded-lg bg-gray-100 dark:bg-gray-900"
             >
-              <CalendarHeatmap
+              <!-- <CalendarHeatmap
                 :values="[{ date: '2023-9-22', count: 6 }]"
                 :end-date="new Date()"
                 :start-date="new Date('2021-9-22')"
-              />
+              /> -->
               <UserProfileTabs
                 v-if="user"
                 :show-counts="true"
