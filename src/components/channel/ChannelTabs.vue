@@ -102,12 +102,16 @@ export default defineComponent({
         :label="'About'"
         :is-active="route.name.includes('About')"
         :vertical="true"
-        :show-count="showCounts"
+        :show-count="false"
       >
         <InfoIcon class="h-6 w-6 shrink-0" />
       </TabButton>
     </nav>
-    <nav v-else class="max-w-7xl space-x-2 pt-1 text-sm" aria-label="Tabs">
+    <nav
+      v-else
+      class="max-w-7xl space-x-2 pt-1 text-sm"
+      aria-label="Tabs"
+    >
       <TabButton
         :to="tabRoutes.discussions"
         :label="'Discussions'"
