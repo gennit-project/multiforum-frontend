@@ -15,14 +15,23 @@ const createDiscussions = (discussions: DiscussionCreateInputWithChannels[]) => 
               id
               title
               body
+              Author {
+                username
+              }
               DiscussionChannels {
                 id
+                createdAt
+                channelUniqueName
+                discussionId
+                UpvotedByUsers {
+                  username
+                }
                 Channel {
                   uniqueName
                 }
-              }
-              Author {
-                username
+                Discussion {
+                  id
+                }
               }
               createdAt
               updatedAt
@@ -49,6 +58,8 @@ const createDiscussions = (discussions: DiscussionCreateInputWithChannels[]) => 
       },
       body: getOperation(discussion),
     });
+
+    const channelConnections = discussion.channelConnections;
   }
 };
 
