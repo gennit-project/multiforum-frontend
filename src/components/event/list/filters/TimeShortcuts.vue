@@ -6,8 +6,9 @@ import LocationFilterTypes from "./locationFilterTypes";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchEventValues } from "@/types/eventTypes";
 import Tag from "@/components/tag/Tag.vue";
+
 export default defineComponent({
-  name: "SearchEvents",
+  name: "TimeShortcuts",
   components: {
     Tag,
   },
@@ -29,7 +30,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        isEventListView: props.isListView,
+        showOnlineOnly: props.isListView,
       })
     );
     return {
@@ -48,7 +49,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          isEventListView: this.isListView,
+          showOnlineOnly: this.isListView,
         });
       }
     });

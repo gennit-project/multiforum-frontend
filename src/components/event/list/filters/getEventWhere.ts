@@ -39,12 +39,16 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   } = filterValues;
   // These conditions will be added to the filter
   // object under an AND operator.
-  let conditions: EventWhere[] = [{
-    // Only include events that are in at least one channel.
-    "NOT": {
-      "EventChannels_NONE": null
-    }
-  }];
+  let conditions: EventWhere[] = []
+  
+  if (!channelId) {
+    // In sitewide view, require at least one channel.
+    conditions.push({
+      NOT: {
+        EventChannels_NONE: null,
+      },
+    });
+  }
 
   // Free event filter
   if (free) {
@@ -74,18 +78,19 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       ],
     });
   }
-
   // Location filter
   switch (locationFilter) {
+   
+
     case LocationFilterTypes.NONE:
       if (showMap) {
-        conditions.push({ location_NOT: null });
+        conditions.push({ NOT: { locationName: null }});
       }
       break;
     case LocationFilterTypes.ONLY_WITH_ADDRESS:
       // Filter by events that have a location
       // with coordinates
-      conditions.push({ location_NOT: null });
+      conditions.push({ NOT: { locationName: null }});
       break;
 
     case LocationFilterTypes.ONLY_VIRTUAL:
@@ -95,7 +100,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
         // to show only virtual events, only include
         // events with both a physical location
         // and a virtual event url
-        conditions.push({ location_NOT: null });
+        conditions.push({ NOT: { location: null }});
       }
       break;
 
@@ -121,7 +126,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       return prev.concat({ text_CONTAINS: curr });
     }, []);
     conditions.push({
-      Tags: {
+      Tags_SOME: {
         OR: matchTags,
       },
     });
@@ -138,7 +143,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // that channel, even if a channel filter has accidentally
     // gotten into the query params.
     conditions.push({
-      EventChannels: { 
+      EventChannels_SOME: { 
         channelUniqueName: channelId
       },
     });
@@ -155,7 +160,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       []
     );
     conditions.push({
-      EventChannels: {
+      EventChannels_SOME: {
         OR: matchChannels,
       },
     });

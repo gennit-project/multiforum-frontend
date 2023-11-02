@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import EventListItem from "./EventListItem.vue";
 import { useRoute, useRouter } from "vue-router";
-import { Event } from "@/__generated__/types";
+import { Event } from "@/__generated__/graphql"
 import LoadMore from "../../generic/LoadMore.vue";
 
 export default defineComponent({
@@ -131,15 +131,22 @@ export default defineComponent({
 <template>
   <div>
     <div v-if="events.length === 0">
-      <p v-if="!showMap" class="mt-3 px-4 dark:text-gray-200">
+      <p
+        v-if="!showMap"
+        class="mt-3 px-4 dark:text-gray-200"
+      >
         Could not find any events.
         <router-link
           :to="createEventLink"
           class="text-blue-500 underline"
-          >Create one?</router-link
         >
+          Create one?
+        </router-link>
       </p>
-      <p v-else class="p-8 dark:text-gray-200">
+      <p
+        v-else
+        class="p-8 dark:text-gray-200"
+      >
         Could not find any events that can be shown on a map.
       </p>
     </div>
@@ -161,8 +168,8 @@ export default defineComponent({
         :show-detail-link="!showMap"
         :class="[
           event.id === highlightedEventId ||
-          (!highlightedEventId &&
-            highlightedEventLocationId === getEventLocationId(event))
+            (!highlightedEventId &&
+              highlightedEventLocationId === getEventLocationId(event))
             ? 'bg-gray-200 dark:bg-gray-700'
             : '',
         ]"

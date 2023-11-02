@@ -85,7 +85,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route: route,
         channelId: channelId.value,
-        isEventListView: false,
+        showOnlineOnly: false,
       }),
     );
 
@@ -236,7 +236,7 @@ export default defineComponent({
       this.filterValues = getFilterValuesFromParams({
         route: this.route,
         channelId: this.channelId,
-        isEventListView: false,
+        showOnlineOnly: false,
       });
     });
   },
@@ -522,17 +522,28 @@ export default defineComponent({
 </script>
 <template>
   <div class="h-full bg-gray-100 dark:bg-gray-900">
-    <div v-if="mdAndUp" id="mapViewFullScreen">
+    <div
+      v-if="mdAndUp"
+      id="mapViewFullScreen"
+    >
       <TwoSeparatelyScrollingPanes
         class="mt-3"
         :show-right-pane-at-medium-screen-width="true"
       >
         <template #leftpane>
-          <div class="m-4 rounded-lg p-4 h-fit  flex justify-center" style="width: 35vw">
+          <div
+            class="m-4 rounded-lg p-4 h-fit  flex justify-center"
+            style="width: 35vw"
+          >
             <div>
-              <EventFilterBar class="mt-6" :show-map="true" />
+              <EventFilterBar
+                class="mt-6"
+                :show-map="true"
+              />
               <TimeShortcuts />
-              <div v-if="eventLoading">Loading...</div>
+              <div v-if="eventLoading">
+                Loading...
+              </div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -563,7 +574,9 @@ export default defineComponent({
         <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
-              <div v-if="eventLoading">Loading...</div>
+              <div v-if="eventLoading">
+                Loading...
+              </div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -572,8 +585,8 @@ export default defineComponent({
               <EventMap
                 v-else-if="
                   eventResult &&
-                  eventResult.events &&
-                  eventResult.events.length > 0
+                    eventResult.events &&
+                    eventResult.events.length > 0
                 "
                 :key="eventResult.events.length"
                 class="fixed"
@@ -620,7 +633,10 @@ export default defineComponent({
       </div>
       <div class="h-1/3 w-full">
         <div class="mx-auto">
-          <EventFilterBar class="mt-6 w-full" :show-map="true" />
+          <EventFilterBar
+            class="mt-6 w-full"
+            :show-map="true"
+          />
           <EventList
             key="highlightedEventId"
             :events="eventResult.events"

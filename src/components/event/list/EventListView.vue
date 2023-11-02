@@ -17,6 +17,8 @@ import {
 } from "./filters/filterStrings";
 import EventFilterBar from "./filters/EventFilterBar.vue";
 import TimeShortcuts from "./filters/TimeShortcuts.vue";
+import OnlineInPersonShortcuts from "./filters/OnlineInPersonShortcuts.vue";
+import LocationFilterTypes from "./filters/locationFilterTypes";
 
 export default defineComponent({
   name: "EventListView",
@@ -27,6 +29,7 @@ export default defineComponent({
     ErrorBanner,
     EventFilterBar,
     EventList,
+    OnlineInPersonShortcuts,
     TimeShortcuts,
   },
   setup(props, { emit }) {
@@ -42,7 +45,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        isEventListView: true,
+        showOnlineOnly: true,
       }),
     );
 
@@ -71,10 +74,12 @@ export default defineComponent({
     } = useQuery(
       GET_EVENTS,
       {
-        limit: 25,
-        offset: 0,
         where: eventWhere,
-        resultsOrder: resultsOrder,
+        options: {
+          limit: 25,
+          offset: 0,
+          sort: resultsOrder
+        }
       },
       {
         fetchPolicy: "network-only",
@@ -123,6 +128,7 @@ export default defineComponent({
       : "/events/create";
 
     const { mdAndDown } = useDisplay();
+    
     return {
       channelId,
       createEventPath,
@@ -147,7 +153,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          isEventListView: true,
+          showOnlineOnly: true,
         });
       }
     });
@@ -197,22 +203,37 @@ export default defineComponent({
       }
       this.updateFilters({ channels: channel });
     },
+    toggleShowOnlineOnly() {
+      if (
+        this.filterValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL
+      ) {
+        this.updateFilters({
+          locationFilter: LocationFilterTypes.NONE,
+        });
+      } else {
+        this.updateFilters({
+          locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
+        });
+      }
+    },
   },
 });
 </script>
 
 <template>
-  <v-container class="pt-4 flex-col justify-center max-w-4xl bg-gray-100 dark:bg-black h-full rounded-lg">
+  <v-container
+    class="h-full max-w-4xl flex-col justify-center rounded-lg bg-gray-100 pt-4 dark:bg-black"
+  >
     <EventFilterBar :show-distance-filters="false" />
     <TimeShortcuts :is-list-view="true" />
-    <p v-if="eventLoading">Loading...</p>
+    <OnlineInPersonShortcuts v-if="channelId" />
     <ErrorBanner
-      v-else-if="eventError"
+      v-if="eventError"
       class="mx-auto block"
       :text="eventError.message"
     />
     <EventList
-      v-else-if="!eventLoading && eventResult"
+      v-if="!eventLoading && !eventError && eventResult"
       id="listView"
       :class="[!channelId ? '' : '']"
       class="relative"

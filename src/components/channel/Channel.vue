@@ -96,7 +96,10 @@ export default defineComponent({
 
 <template>
   <div class="flex h-screen w-full justify-center dark:bg-black">
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <div
         :class="[
           theme === 'dark' ? 'channel-background-dark' : 'channel-background',
@@ -116,7 +119,7 @@ export default defineComponent({
         class="relative z-0 h-full max-w-7xl flex-1 rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
-          v-if="smAndDown"
+          v-if="channel && smAndDown"
           :vertical="false"
           :show-counts="true"
           class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
@@ -132,12 +135,21 @@ export default defineComponent({
       v-else
       class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
-      <v-container fluid class="h-full">
+      <v-container
+        fluid
+        class="h-full"
+      >
         <v-row class="h-full flex flex-row">
-          <v-col v-if="channelId" cols="3">
-            <ChannelSidebar :channel-id="channelId" class="sticky top-0 w-72">
+          <v-col
+            v-if="channelId"
+            cols="3"
+          >
+            <ChannelSidebar
+              :channel-id="channelId"
+              class="sticky top-0 w-72"
+            >
               <ChannelTabs
-                v-if="route.name !== 'EditChannel'"
+                v-if="channel && route.name !== 'EditChannel'"
                 :route="route"
                 :vertical="true"
                 :show-counts="true"

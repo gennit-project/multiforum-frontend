@@ -22,16 +22,16 @@ const defaultPlace = {
 type GetFilterValuesInput = {
   route: any;
   channelId: string;
-  isEventListView?: boolean;
+  showOnlineOnly?: boolean;
 };
 
 const getFilterValuesFromParams = function (
-  input: GetFilterValuesInput
+  input: GetFilterValuesInput,
 ): SearchEventValues {
   // Need to re-clean data when route values change
   // Take the default filter values from the query
   // in the URL if the values exist.
-  const { route, channelId, isEventListView } = input;
+  const { route, channelId, showOnlineOnly } = input;
   const cleanedValues: SearchEventValues = {};
 
   // For the online events list, only include
@@ -248,32 +248,23 @@ const getFilterValuesFromParams = function (
       weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
     resultsOrder: resultsOrder || chronologicalOrder,
     hasVirtualEventUrl: hasVirtualEventUrl || false,
+    locationFilter: locationFilter || LocationFilterTypes.NONE,
   };
 
-  if (isEventListView) {
-    // In the list view, the map is not displayed and we are searching
-    // for virtual events. ONLY_VIRTUAL will filter out events that 
-    // do not have a virtual event URL.
-
-    // If it is a channel view, though, we want to show all events,
-    // even if they are missing a virtual event URL and/or location.
-    if (channelId) {
-      filterValues.locationFilter = LocationFilterTypes.NONE;
-    } else if (isEventListView) {
-      filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
-      filterValues.hasVirtualEventUrl = true;
-    }
+  if (cleanedValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL) {
+    filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
+    filterValues.hasVirtualEventUrl = true;
+  } else if (cleanedValues.locationFilter === LocationFilterTypes.ONLY_WITH_ADDRESS) {
+    filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS;
   }
 
-  if (!isEventListView) {
+  if (!showOnlineOnly) {
     // For map view, if there is a location filter in the query params,
     // use it. Within a channel, don't filter by distance.
     filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS; // Default for map view
 
     if (locationFilter) {
       filterValues.locationFilter = locationFilter;
-    } else if (channelId) {
-      filterValues.locationFilter = LocationFilterTypes.NONE;
     } 
     const locationParams = {
       locationFilter: LocationFilterTypes.WITHIN_RADIUS,
@@ -283,12 +274,12 @@ const getFilterValuesFromParams = function (
       placeId: placeId || "",
       latitude: latitude || defaultPlace.latitude,
       longitude: longitude || defaultPlace.longitude,
-    }
+    };
     const res = {
       ...filterValues,
       ...locationParams,
-    }
-    return res
+    };
+    return res;
   }
   return filterValues;
 };

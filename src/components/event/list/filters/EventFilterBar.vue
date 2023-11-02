@@ -85,7 +85,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        isEventListView: !props.showMap,
+        showOnlineOnly: !props.showMap,
       }),
     );
 
@@ -219,7 +219,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          isEventListView: !this.showMap,
+          showOnlineOnly: !this.showMap,
         });
       }
     });
@@ -449,7 +449,10 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-2">
-    <div v-if="route.name !== 'EventDetail'" class="w-full">
+    <div
+      v-if="route.name !== 'EventDetail'"
+      class="w-full"
+    >
       <div class="mr-6 flex flex-wrap justify-between space-x-4 align-middle">
         <button
           v-if="!channelId && showLocationSearchBarAndDistanceButtons"
@@ -552,7 +555,10 @@ export default defineComponent({
                 @click="updateSelectedDistance(distance)"
               />
             </div>
-            <div v-else class="flex flex-wrap gap-x-1 gap-y-3">
+            <div
+              v-else
+              class="flex flex-wrap gap-x-1 gap-y-3"
+            >
               <GenericButton
                 v-for="distance in distanceOptionsForMiles"
                 :key="distance.value"
@@ -575,7 +581,7 @@ export default defineComponent({
             @updateShowOnlyFree="updateShowOnlyFree"
           />
 
-          <hr class="mb-4 mt-6" />
+          <hr class="mb-4 mt-6">
 
           <div id="advancedFilters">
             <h2

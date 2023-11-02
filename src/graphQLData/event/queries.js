@@ -68,16 +68,14 @@ export const GET_EVENT_IDS_IN_CHANNEL = gql`
 export const GET_EVENTS = gql`
   query getEvents(
     $where: EventWhere
-    $resultsOrder: [EventSort!]
-    $offset: Int
-    $limit: Int
+    $options: EventOptions
   ) {
     eventsAggregate(where: $where) {
       count
     }
     events(
       where: $where
-      options: { sort: $resultsOrder, offset: $offset, limit: $limit }
+      options: $options
     ) {
       id
       title
