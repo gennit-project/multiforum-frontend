@@ -259,8 +259,9 @@ const getFilterValuesFromParams = function (
     // even if they are missing a virtual event URL and/or location.
     if (channelId) {
       filterValues.locationFilter = LocationFilterTypes.NONE;
-    } else {
+    } else if (isEventListView) {
       filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
+      filterValues.hasVirtualEventUrl = true;
     }
   }
 
