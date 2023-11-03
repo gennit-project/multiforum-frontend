@@ -47,7 +47,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex w-full">
+  <div class="flex">
     <label
       for="search"
       class="sr-only"
@@ -62,9 +62,9 @@ export default defineComponent({
         />
       </div>
       <GMapAutocomplete
-        :class="[inTopNav ? 'max-w-sm h-10' : 'rounded-lg h-12 w-full']"
+        :class="[inTopNav ? 'max-w-sm h-10' : 'rounded-md h-12 w-full']"
         autocomplete="false"
-        class="pl-10 pr-3 leading-5 dark:bg-gray-700 dark:text-white placeholder-gray-500 dark:placeholder-gray-200 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
+        class="pl-10 pr-3 leading-5 dark:bg-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-200 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
         :placeholder="referencePointAddressName"
         disable-portal
         @place_changed="updateLocationInput"

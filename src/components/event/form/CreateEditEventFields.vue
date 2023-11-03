@@ -367,12 +367,24 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container fluid class="h-screen overflow-auto">
+  <v-container
+    fluid
+    class="h-screen overflow-auto"
+  >
     <v-row class="justify-center">
-      <v-col cols="12" md="10" lg="10">
-        <div v-if="eventLoading">Loading...</div>
+      <v-col
+        cols="12"
+        md="10"
+        lg="10"
+      >
+        <div v-if="eventLoading">
+          Loading...
+        </div>
         <div v-else-if="getEventError">
-          <div v-for="(error, i) of getEventError?.graphQLErrors" :key="i">
+          <div
+            v-for="(error, i) of getEventError?.graphQLErrors"
+            :key="i"
+          >
             {{ error.message }}
           </div>
         </div>
@@ -387,7 +399,11 @@ export default defineComponent({
           @submit="$emit('submit')"
         >
           <div class="w-full space-y-5">
-            <FormRow section-title="Title" :required="true" class="mt-6">
+            <FormRow
+              section-title="Title"
+              :required="true"
+              class="mt-6"
+            >
               <template #content>
                 <TextInput
                   ref="titleInputRef"
@@ -399,7 +415,10 @@ export default defineComponent({
                 />
               </template>
             </FormRow>
-            <FormRow section-title="Channels" :required="true">
+            <FormRow
+              section-title="Channels"
+              :required="true"
+            >
               <template #content>
                 <TagInput
                   :test-id="'channel-input'"
@@ -413,49 +432,49 @@ export default defineComponent({
             </FormRow>
             <FormRow section-title="Time">
               <template #content>
-                <div class="flex-wrap items-center space-x-2 space-y-2 xl:flex">
-                  <div class="flex-wrap items-center space-x-2 xl:flex">
+                <div class="flex-wrap items-center xl:flex">
+                  <div class="flex flex-wrap items-center gap-2 xl:flex">
                     <input
                       data-testid="start-time-date-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                       type="date"
                       placeholder="Date"
                       label="Start"
                       :value="formattedStartTimeDate"
                       @input="handleStartTimeDateChange($event?.target?.value)"
-                    />
+                    >
                     <input
                       data-testid="start-time-time-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
                       :value="formattedStartTimeTime"
                       @input="handleStartTimeTimeChange($event?.target?.value)"
-                    />
+                    >
                   </div>
                   <span class="px-1">to</span>
-                  <div class="flex-wrap items-center space-x-2 xl:flex">
+                  <div class="flex flex-wrap items-center gap-2 xl:flex">
                     <input
                       data-testid="end-time-date-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                       type="date"
                       placeholder="Date and Time"
                       label="Start"
                       :value="formattedEndTimeDate"
                       @input="handleEndTimeDateChange($event?.target?.value)"
-                    />
+                    >
                     <input
                       data-testid="end-time-time-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-500"
+                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                       type="time"
                       placeholder="Time"
                       label="Start Time"
                       :value="formattedEndTimeTime"
                       @input="handleEndTimeTimeChange($event?.target?.value)"
-                    />
+                    >
                   </div>
-                  <div>
+                  <div class="pl-2">
                     {{ duration }}
                   </div>
                 </div>
@@ -465,18 +484,17 @@ export default defineComponent({
             <FormRow section-title="Virtual Event URL">
               <template #content>
                 <div
-                  class="focus-within:ring-indigo-600 flex rounded-md border border-gray-200 shadow-sm ring-1 ring-inset ring-gray-200 focus-within:ring-2 focus-within:ring-inset dark:border-none dark:border-none sm:max-w-md"
+                  class="focus-within:ring-indigo-600 flex w-full rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset dark:border-none"
                 >
                   <span
-                    class="flex select-none items-center bg-gray-100 pl-3 pr-1 text-gray-500 dark:bg-gray-700 dark:text-gray-200 sm:text-sm"
-                    >https://</span
-                  >
+                    class="flex select-none items-center rounded-l-md bg-gray-100 py-3 pl-3 pr-1 text-gray-500 dark:bg-gray-700 dark:text-gray-200 sm:text-sm"
+                  >https://</span>
                   <input
                     id="virtualEventUrl"
                     data-testid="link-input"
                     type="text"
                     name="virtualEventUrl"
-                    class="bg-transparent block w-full flex-1 border-0 py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 dark:bg-gray-500 dark:text-gray-200 sm:text-sm sm:leading-6"
+                    class="bg-transparent block w-full flex-1 rounded-r-md border-0 py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 dark:bg-gray-600 dark:text-gray-200 sm:text-sm sm:leading-6"
                     :value="
                       formValues.virtualEventUrl?.split('https://').join('')
                     "
@@ -485,14 +503,14 @@ export default defineComponent({
                         virtualEventUrl: `https://${$event.target.value}`,
                       })
                     "
-                  />
+                  >
                 </div>
                 <ErrorMessage
                   :text="
                     touched &&
-                    formValues.virtualEventUrl &&
-                    formValues.virtualEventUrl.length > 0 &&
-                    !urlIsValid
+                      formValues.virtualEventUrl &&
+                      formValues.virtualEventUrl.length > 0 &&
+                      !urlIsValid
                       ? 'Must be a valid URL'
                       : ''
                   "
@@ -501,8 +519,14 @@ export default defineComponent({
             </FormRow>
             <FormRow section-title="Location">
               <template #icon>
-                <LocationIcon :wide="true" class="float-right h-6 w-6" />
-                <v-tooltip activator="parent" location="top">
+                <LocationIcon
+                  :wide="true"
+                  class="float-right h-6 w-6"
+                />
+                <v-tooltip
+                  activator="parent"
+                  location="top"
+                >
                   Location
                 </v-tooltip>
               </template>
