@@ -1,22 +1,14 @@
 <script lang="ts">
-import { defineComponent, PropType, ref, computed } from "vue";
+import { defineComponent, PropType, computed } from "vue";
 import { EventData } from "@/types/eventTypes";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import { relativeTime } from "@/dateTimeUtils";
-import { useMutation } from "@vue/apollo-composable";
-import { DELETE_EVENT, CANCEL_EVENT } from "@/graphQLData/event/mutations";
-import WarningModal from "@/components/generic/WarningModal.vue";
-import ErrorBanner from "@/components/generic/ErrorBanner.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { EventChannel } from "@/__generated__/graphql";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 
 export default defineComponent({
   components: {
-    WarningModal,
-    ErrorBanner,
-    RequireAuth,
     UsernameWithTooltip,
   },
   props: {
@@ -35,9 +27,6 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const router = useRouter();
-    const confirmDeleteIsOpen = ref(false);
-    const confirmCancelIsOpen = ref(false);
 
     const eventId = computed(() => {
       if (typeof route.params.eventId === "string") {
@@ -53,66 +42,11 @@ export default defineComponent({
       return "";
     });
 
-    const { mutate: cancelEvent, error: cancelEventError } = useMutation(
-      CANCEL_EVENT,
-      {
-        variables: {
-          id: eventId.value,
-          updateEventInput: {
-            canceled: true,
-          },
-          eventWhere: {
-            id: eventId.value,
-          },
-        },
-      },
-    );
-
-    const {
-      mutate: deleteEvent,
-      error: deleteEventError,
-      onDone: onDoneDeleting,
-    } = useMutation(DELETE_EVENT, {
-      variables: {
-        id: eventId.value,
-      },
-      update: (cache: any) => {
-        cache.modify({
-          fields: {
-            events(existingEventRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField;
-
-              return existingEventRefs.filter((ref) => {
-                return readField("id", ref) !== eventId.value;
-              });
-            },
-          },
-        });
-      },
-    });
-
-    onDoneDeleting(() => {
-      if (channelId.value) {
-        router.push({
-          name: "SearchEventsInChannel",
-          params: {
-            channelId: channelId.value,
-          },
-        });
-      }
-    });
-
     return {
       channelId,
-      confirmCancelIsOpen,
-      confirmDeleteIsOpen,
       eventId,
       relativeTime,
       route,
-      cancelEvent,
-      cancelEventError,
-      deleteEvent,
-      deleteEventError,
     };
   },
   methods: {
@@ -161,80 +95,9 @@ export default defineComponent({
           ? `Edited ${relativeTime("" + eventData.updatedAt)}`
           : ""
       }}
-
-      <RequireAuth
-        v-if="eventData.Poster && route.name === 'EventDetail'"
-        class="flex inline-flex"
-        :require-ownership="true"
-        :owners="[eventData.Poster.username]"
-      >
-        <template #has-auth>
-          <span>&#8226;</span>
-          <span
-            class="font-medium ml-1 cursor-pointer underline"
-            data-testid="delete-event-button"
-            @click="confirmDeleteIsOpen = true"
-            >Delete</span
-          >
-          <span v-if="!compactMode && !eventData.canceled" class="ml-1 mr-1"
-            >&#8226;</span
-          >
-          <span
-            v-if="!eventData.canceled"
-            class="font-medium cursor-pointer underline"
-            data-testid="cancel-event-button"
-            @click="confirmCancelIsOpen = true"
-            >Cancel</span
-          >
-        </template>
-      </RequireAuth>
-
-      <span v-if="route.name !== 'EventDetail'" class="ml-1 mr-1">&#8226;</span>
-
-      <router-link
-        v-if="channelsExceptCurrent.length > 0"
-        class="font-medium cursor-pointer underline"
-        :to="`/channels/c/${channelsExceptCurrent[0].channelUniqueName}/events/e/${eventId}`"
-      >
-        Permalink
-      </router-link>
-
-      <router-link
-        v-if="channelId && route.name !== 'EventDetail'"
-        class="font-medium cursor-pointer underline"
-        :to="`/channels/c/${channelId}/events/e/${eventId}`"
-      >
-        Permalink
-      </router-link>
     </div>
     <div class="time-zone">
       {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
     </div>
   </div>
-  <ErrorBanner
-    v-if="deleteEventError"
-    class="mb-2 mt-2"
-    :text="deleteEventError.message"
-  />
-  <ErrorBanner
-    v-if="cancelEventError"
-    class="mb-2 mt-2"
-    :text="cancelEventError.message"
-  />
-  <WarningModal
-    :title="'Delete Event'"
-    :body="'Are you sure you want to delete this event?'"
-    :open="confirmDeleteIsOpen"
-    @close="confirmDeleteIsOpen = false"
-    @primaryButtonClick="deleteEvent"
-  />
-  <WarningModal
-    :title="'Cancel Event'"
-    :body="'Are you sure you want to cancel this event?'"
-    :open="confirmCancelIsOpen"
-    :primary-button-text="'Yes, cancel the event'"
-    :secondary-button-text="'No'"
-    @close="confirmCancelIsOpen = false"
-    @primaryButtonClick="cancelEvent"
-  />
 </template>

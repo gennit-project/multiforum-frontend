@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed, ref } from "vue";
 import { useRoute } from "vue-router";
 import { EventData } from "@/types/eventTypes";
-
+import { CANCEL_EVENT } from "@/graphQLData/event/mutations";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
@@ -14,6 +14,11 @@ import { formatDuration, getDurationObj } from "../../../dateTimeUtils";
 import { useRouter } from "vue-router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
+import { useMutation, useQuery } from "@vue/apollo-composable";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { DELETE_EVENT } from "@/graphQLData/event/mutations";
+import WarningModal from "@/components/generic/WarningModal.vue";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 
 export default defineComponent({
   name: "EventHeader",
@@ -25,6 +30,8 @@ export default defineComponent({
     LocationIcon,
     MenuButton,
     Notification,
+    WarningModal,
+    ErrorBanner,
   },
   props: {
     eventData: {
@@ -39,6 +46,47 @@ export default defineComponent({
 
     const showAddressCopiedNotification = ref(false);
 
+    const eventId = computed(() => {
+      if (typeof route.params.eventId === "string") {
+        return route.params.eventId;
+      }
+      return "";
+    });
+
+    const {
+      mutate: deleteEvent,
+      error: deleteEventError,
+      onDone: onDoneDeleting,
+    } = useMutation(DELETE_EVENT, {
+      variables: {
+        id: eventId.value,
+      },
+      update: (cache: any) => {
+        cache.modify({
+          fields: {
+            events(existingEventRefs = [], fieldInfo: any) {
+              const readField = fieldInfo.readField;
+
+              return existingEventRefs.filter((ref) => {
+                return readField("id", ref) !== eventId.value;
+              });
+            },
+          },
+        });
+      },
+    });
+
+    onDoneDeleting(() => {
+      if (channelId.value) {
+        router.push({
+          name: "SearchEventsInChannel",
+          params: {
+            channelId: channelId.value,
+          },
+        });
+      }
+    });
+
     const copyAddress = async () => {
       try {
         await toClipboard(
@@ -52,13 +100,6 @@ export default defineComponent({
         showAddressCopiedNotification.value = false;
       }, 2000);
     };
-
-    const eventId = computed(() => {
-      if (typeof route.params.eventId === "string") {
-        return route.params.eventId;
-      }
-      return "";
-    });
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -98,6 +139,22 @@ export default defineComponent({
       }, 2000);
     };
 
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value.username;
+    });
+
+    console.log("props.event", props.event);
+    console.log("username.value", username.value);
+
     const menuItems = computed(() => {
       const out = []
       if (props.eventData) {
@@ -107,19 +164,62 @@ export default defineComponent({
           event: "copyLink",
         });
       }
+
+      if (props.eventData?.Poster?.username === username.value) {
+        out.push({
+          label: "Edit",
+          value: "",
+          event: "handleEdit",
+        });
+        out.push({
+          label: "Delete",
+          value: "",
+          event: "handleDelete",
+        });
+
+        if (!props.eventData.canceled) {
+          out.push({
+            label: "Cancel",
+            value: "",
+            event: "handleCancel",
+          })
+        }
+      }
       
       return out;
     });
 
+    const { mutate: cancelEvent, error: cancelEventError } = useMutation(
+      CANCEL_EVENT,
+      {
+        variables: {
+          id: eventId.value,
+          updateEventInput: {
+            canceled: true,
+          },
+          eventWhere: {
+            id: eventId.value,
+          },
+        },
+      },
+    );
+
     return {
+      cancelEvent,
+      cancelEventError,
+      confirmCancelIsOpen: ref(false),
+      confirmDeleteIsOpen: ref(false),
       copyAddress,
       copyLink,
       eventId,
       channelId,
       menuItems,
       route,
+      router,
       showAddressCopiedNotification,
       showCopiedLinkNotification,
+      deleteEvent,
+      deleteEventError,
     };
   },
   methods: {
@@ -174,7 +274,10 @@ export default defineComponent({
           {{ eventData.virtualEventUrl }}
         </a>
       </li>
-      <li v-if="eventData.address" class="hanging-indent flex items-start">
+      <li
+        v-if="eventData.address"
+        class="hanging-indent flex items-start"
+      >
         <div class="mr-3 h-5 w-5">
           <LocationIcon />
         </div>
@@ -195,7 +298,10 @@ export default defineComponent({
               class="ml-1 h-4 w-4 cursor-pointer"
               @click="copyAddress"
             />
-            <v-tooltip activator="parent" location="top"> Copy </v-tooltip>
+            <v-tooltip
+              activator="parent"
+              location="top"
+            > Copy </v-tooltip>
           </span>
         </div>
       </li>
@@ -213,6 +319,13 @@ export default defineComponent({
       v-if="eventData && menuItems.length > 0"
       :items="menuItems"
       @copyLink="copyLink"
+      @handleEdit="
+        router.push(
+          `/channels/c/${channelId}/events/e/${eventId}/edit`,
+        )
+      "
+      @handleDelete="confirmDeleteIsOpen = true"
+      @handleCancel="confirmCancelIsOpen = true"
     >
       <EllipsisHorizontal
         class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -227,6 +340,33 @@ export default defineComponent({
       :show="showCopiedLinkNotification"
       :title="'Copied to clipboard!'"
       @closeNotification="showCopiedLinkNotification = false"
+    />
+    <WarningModal
+      :title="'Delete Event'"
+      :body="'Are you sure you want to delete this event?'"
+      :open="confirmDeleteIsOpen"
+      @close="confirmDeleteIsOpen = false"
+      @primaryButtonClick="deleteEvent"
+    />
+    <ErrorBanner
+      v-if="deleteEventError"
+      class="mb-2 mt-2"
+      :text="deleteEventError.message"
+    />
+    <ErrorBanner
+      v-if="cancelEventError"
+      class="mb-2 mt-2"
+      :text="cancelEventError.message"
+    />
+    <WarningModal
+      v-if="confirmCancelIsOpen"
+      :title="'Cancel Event'"
+      :body="'Are you sure you want to cancel this event? This action cannot be undone.'"
+      :open="confirmCancelIsOpen"
+      :primary-button-text="'Yes, cancel the event'"
+      :secondary-button-text="'No'"
+      @close="confirmCancelIsOpen = false"
+      @primaryButtonClick="cancelEvent"
     />
   </div>
 </template>
