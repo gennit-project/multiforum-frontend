@@ -1,6 +1,6 @@
 <script lang="ts">
 // This component uses some code from this CodePen: https://codepen.io/foucauld-gaudin/pen/abzBdRz
-import { defineComponent, PropType, computed } from "vue";
+import { defineComponent, PropType, computed, ref } from "vue";
 import ChannelPicker from "../channel/ChannelPicker.vue";
 import Tag from "@/components/tag/Tag.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
@@ -19,7 +19,7 @@ export default defineComponent({
   props: {
     channelMode: {
       type: Boolean,
-      default: false
+      default: false,
     },
     selectedTags: {
       type: Array as PropType<string[]>,
@@ -49,9 +49,11 @@ export default defineComponent({
       if (!channelsResult.value || !channelsResult.value.channels) {
         return [];
       }
-      return channelsResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+      return channelsResult.value.channels.map(
+        (channel: ChannelData) => channel.uniqueName,
+      );
     });
-    return { channelsLoading, channelsError, validChannels }
+    return { channelsLoading, channelsError, validChannels };
   },
   data() {
     return {
@@ -59,22 +61,47 @@ export default defineComponent({
       currentInput: "",
       set: true,
       showMenu: false,
+      shiftKeyIsPressed: ref(false),
     };
   },
+  mounted() {
+    document.addEventListener("keydown", this.handleKeyDown);
+    document.addEventListener("keyup", this.handleKeyUp);
+  },
+  beforeUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+    document.removeEventListener("keyup", this.handleKeyUp);
+  },
   methods: {
+    close(){
+      if (!this.shiftKeyIsPressed) {
+        this.showMenu = false;
+        this.$emit("close");
+      }
+    },
+    handleKeyDown(event: any) {
+      if (event.shiftKey) {
+        this.shiftKeyIsPressed = true;
+      }
+    },
+    handleKeyUp(event: any) {
+      if (!event.shiftKey) {
+        this.shiftKeyIsPressed = false;
+      }
+    },
     saveTagAndClose(e: any) {
       if (this.channelsLoading || this.channelsError) {
-        return
+        return;
       }
-      e.preventDefault()
+      e.preventDefault();
       if (this.channelMode) {
         // In channel mode, you can't create a new item
         // on key down. You can only select from the list.
         // Therefore, when the user hits enter, check if the
-        // newly typed item is in the list. If it is 
+        // newly typed item is in the list. If it is
         // in the list, proceed. If not, return early.
         if (this.validChannels.indexOf(this.currentInput) === -1) {
-          return
+          return;
         }
       }
       const { tags, currentInput, set } = this;
@@ -83,11 +110,12 @@ export default defineComponent({
       }
       this.currentInput = "";
       this.$emit("setSelectedTags", [...this.tags]);
+      this.close()
     },
     setSelectedTags(tags: Array<string>) {
       this.tags = tags;
       this.$emit("setSelectedTags", [...this.tags]);
-      this.showMenu = false;
+      this.close()
     },
     deleteTag(index: number) {
       this.tags.splice(index, 1);
@@ -107,17 +135,7 @@ export default defineComponent({
   <FloatingDropdown v-model="showMenu">
     <template #button>
       <div
-        class="
-          tag-container
-          mt-1
-          pt-0.5
-          pb-0.5
-          flex
-          relative
-          rounded-md
-          border
-          dark:border-none
-        "
+        class="tag-container relative mt-1 flex rounded-md border pb-0.5 pt-0.5 dark:border-none"
       >
         <Tag
           v-for="(tag, i) of tags"
@@ -133,12 +151,17 @@ export default defineComponent({
         <input
           v-model="currentInput"
           :data-testid="testId"
-          class=" dark:bg-gray-600 dark:border-none placeholder-gray-400 dark:placeholder-gray-200 pl-4 dark:text-gray-100 pt-2.5 pb-2.5 flex-1 block min-w-0 rounded sm:text-sm border-gray-300 focus:ring-indigo-500 focus:border-indigo-500 w-full"
-          :placeholder="channelMode ? 'Add channels to select your intended audience' : 'Add tags'"
-          @keydown.enter="(event) => {
-            saveTagAndClose(event)
-            $emit('close')
-          }"
+          class="focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 flex-1 rounded border-gray-300 pb-2.5 pl-4 pt-2.5 placeholder-gray-400 dark:border-none dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-200 sm:text-sm"
+          :placeholder="
+            channelMode
+              ? 'Add channels to select your intended audience'
+              : 'Add tags'
+          "
+          @keydown.enter="
+            (event) => {
+              saveTagAndClose(event);
+            }
+          "
           @keydown.delete="backspaceDelete"
         >
       </div>

@@ -38,33 +38,11 @@ export default defineComponent({
       return themeResult.value.theme;
     });
 
-    return { 
-      shiftKeyIsPressed: ref(false),
+    return {
       showMenu: ref(false), 
       theme 
     };
   },
-  mounted() {
-    document.addEventListener('keydown', this.handleKeyDown);
-    document.addEventListener('keyup', this.handleKeyUp);
-  },
-  beforeUnmount() {
-    document.removeEventListener('keydown', this.handleKeyDown);
-    document.removeEventListener('keyup', this.handleKeyUp);
-  },
-  methods: {
-    handleKeyDown(event) {
-      if (event.shiftKey) {
-        this.shiftKeyIsPressed = true;
-      }
-    },
-    handleKeyUp(event) {
-      if (!event.shiftKey) {
-        this.shiftKeyIsPressed = false;
-      }
-    }
-  },
-  
 });
 </script>
 
@@ -72,7 +50,7 @@ export default defineComponent({
   <div class="inline-flex">
     <v-menu
       v-model="showMenu"
-      :close-on-content-click="!shiftKeyIsPressed"
+      :close-on-content-click="false"
       location="bottom"
     >
       <template #activator="{ props }">
