@@ -371,7 +371,7 @@ export default defineComponent({
                 }}
               </div>
             </div>
-            <di class="flex-1">
+            <div class="flex-1">
               <p class="space-x-2">
                 <span
                   class="text-md cursor-pointer truncate font-bold hover:underline dark:text-gray-100"
@@ -477,7 +477,7 @@ export default defineComponent({
                   />
                 </button>
               </MenuButton>
-            </di>
+            </div>
           </div>
         </div>
       </div>

@@ -282,7 +282,6 @@ const getFilterValuesFromParams = function (
       ...filterValues,
       ...locationParams,
     };
-    console.log('get filter values from params -res', res)
     return res;
   }
   return filterValues;

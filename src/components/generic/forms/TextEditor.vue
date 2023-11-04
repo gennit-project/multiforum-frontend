@@ -177,6 +177,8 @@ export default defineComponent({
     td {
       background-color: transparent;
     }
+    padding-top: 0.5rem;
+    padding-bottom: 0;
   }
 }
 

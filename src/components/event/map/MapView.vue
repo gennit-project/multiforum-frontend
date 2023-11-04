@@ -101,6 +101,7 @@ export default defineComponent({
         filterValues: filterValues.value,
         showMap: false,
         channelId: channelId.value,
+        onlineOnly: false
       });
     });
 

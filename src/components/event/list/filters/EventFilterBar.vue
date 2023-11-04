@@ -63,7 +63,7 @@ export default defineComponent({
     },
   },
 
-  setup(props) {
+  setup() {
     const defaultFilterLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -81,10 +81,9 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        showOnlineOnly: !props.showMap,
+        showOnlineOnly: false,
       }),
     );
-    console.log('filter values in event filter bar', filterValues.value)
 
     const channelLabel = computed(() => {
       return getChannelLabel(filterValues.value.channels);
@@ -216,7 +215,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          showOnlineOnly: !this.showMap,
+          showOnlineOnly: false
         });
       }
     });
