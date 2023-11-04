@@ -34,6 +34,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const route = useRoute();
+    console.log(route.name)
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -45,7 +46,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        showOnlineOnly: true,
+        showOnlineOnly: false,
       }),
     );
 
@@ -64,6 +65,7 @@ export default defineComponent({
         onlineOnly: !channelId.value || filterValues.value.locationFilter === LocationFilterTypes.ONLY_VIRTUAL,
       });
     });
+    console.log(eventWhere.value)
 
     const {
       error: eventError,

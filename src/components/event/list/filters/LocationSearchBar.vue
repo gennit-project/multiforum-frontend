@@ -73,7 +73,7 @@ export default defineComponent({
   </div>
 </template>
 <style>
-/* Prevent the autocomplete dropdown from rendering behind the popper overly */
+/* Prevent the autocomplete dropdown from rendering behind the popper overlay */
 .hdpi {
   z-index: 10001;
   min-width: 300px;

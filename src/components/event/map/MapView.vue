@@ -537,7 +537,6 @@ export default defineComponent({
           >
             <div>
               <EventFilterBar
-                class="mt-6"
                 :show-map="true"
               />
               <TimeShortcuts />

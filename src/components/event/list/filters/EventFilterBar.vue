@@ -26,8 +26,6 @@ import {
 } from "./eventSearchOptions";
 import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import DrawerFlyout from "@/components/generic/DrawerFlyout.vue";
-import WeekdaySelector from "./WeekdaySelector.vue";
-import TimeSelector from "./TimeSelector.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
@@ -53,8 +51,6 @@ export default defineComponent({
     SelectFree,
     TagIcon,
     TagPicker,
-    TimeSelector,
-    WeekdaySelector,
   },
   props: {
     showMap: {
@@ -580,42 +576,6 @@ export default defineComponent({
             :show-only-free="filterValues.free || false"
             @updateShowOnlyFree="updateShowOnlyFree"
           />
-
-          <hr class="mb-4 mt-6">
-
-          <div id="advancedFilters">
-            <h2
-              class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
-            >
-              Weekdays
-            </h2>
-
-            <div class="flex">
-              <div class="-my-2 sm:-mx-6 lg:-mx-8">
-                <div class="inline-block py-2 align-middle sm:px-6 lg:px-8">
-                  <div class="mb-4">
-                    <WeekdaySelector
-                      :selected-weekdays="filterValues.weekdays"
-                      @updateWeekdays="updateWeekdays"
-                      @reset="resetWeekdays"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <h2
-              class="text-md font-medium mt-4 flex text-gray-900 dark:text-gray-100"
-            >
-              Time Slots
-            </h2>
-
-            <TimeSelector
-              :selected-hour-ranges="filterValues.hourRanges"
-              @updateHourRanges="updateHourRanges"
-              @reset="resetHourRanges"
-            />
-          </div>
         </div>
       </DrawerFlyout>
     </div>

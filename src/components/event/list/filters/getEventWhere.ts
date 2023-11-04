@@ -38,6 +38,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     free,
     hasVirtualEventUrl,
   } = filterValues;
+  console.log("filterValues in event where", filterValues);
   // These conditions will be added to the filter
   // object under an AND operator.
   let conditions: EventWhere[] = []
