@@ -10,12 +10,14 @@ import { SearchEventValues } from "@/types/eventTypes";
 import { router } from "@/router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
+import MarkdownPreview from '@/components/generic/forms/MarkdownPreview.vue'
 
 export default defineComponent({
   components: {
     ChevronDownIcon,
     Tag,
     HighlightedSearchTerms,
+    MarkdownPreview,
     MenuButton,
   },
   props: {
@@ -50,7 +52,7 @@ export default defineComponent({
     showDetailLink: {
       type: Boolean,
       required: false,
-      default: true
+      default: true,
     },
   },
   setup(props) {
@@ -152,6 +154,17 @@ export default defineComponent({
       return 0;
     });
 
+    const truncatedDescription = computed(() => {
+      if (!props.event.description) {
+        return "";
+      }
+
+      if (props.event.description.length > 200) {
+        return props.event.description.slice(0, 500) + "...";
+      }
+      return props.event.description;
+    });
+
     return {
       commentCount,
       channelCount,
@@ -161,6 +174,7 @@ export default defineComponent({
       formattedDate,
       route,
       timeOfDay,
+      truncatedDescription,
       detailLink,
       submittedToMultipleChannels,
     };
@@ -357,7 +371,7 @@ export default defineComponent({
                 }}
               </div>
             </div>
-            <div>
+            <di class="flex-1">
               <p class="space-x-2">
                 <span
                   class="text-md cursor-pointer truncate font-bold hover:underline dark:text-gray-100"
@@ -371,8 +385,7 @@ export default defineComponent({
                 <span
                   v-if="event.canceled"
                   class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
-                  >Canceled</span
-                >
+                >Canceled</span>
               </p>
               <p
                 class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
@@ -382,12 +395,18 @@ export default defineComponent({
               <p
                 class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
               >
-                {{ // start time and end time
+                {{
+                  // start time and end time
                   `${timeOfDay}`
                 }}
               </p>
-              <p v-if="event.virtualEventUrl">Online event</p>
-              <p v-if="event.free" class="font-medium text-sm text-gray-600">
+              <p v-if="event.virtualEventUrl">
+                Online event
+              </p>
+              <p
+                v-if="event.free"
+                class="font-medium text-sm text-gray-600"
+              >
                 Free
               </p>
               <p
@@ -406,6 +425,16 @@ export default defineComponent({
                   "
                 />
               </p>
+              <div
+                v-if="truncatedDescription"
+                class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
+              >
+                <MarkdownPreview
+                  :text="truncatedDescription || ''"
+                  :disable-gallery="true"
+                  class="-ml-4"
+                />
+              </div>
 
               <router-link
                 v-if="showDetailLink && event && !submittedToMultipleChannels"
@@ -416,12 +445,21 @@ export default defineComponent({
                   class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
                 >
                   <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-                  <span>{{`View ${commentCount} ${commentCount === 1 ? 'comment' : 'comments' }`}}</span>
-                  <span v-if="!isWithinChannel">{{ ` in c/${event.EventChannels[0].channelUniqueName}`}}</span>
+                  <span>{{
+                    `View ${commentCount} ${
+                      commentCount === 1 ? "comment" : "comments"
+                    }`
+                  }}</span>
+                  <span v-if="!isWithinChannel">{{
+                    ` in c/${event.EventChannels[0].channelUniqueName}`
+                  }}</span>
                 </button>
               </router-link>
 
-              <MenuButton v-else-if="showDetailLink && event" :items="eventDetailOptions">
+              <MenuButton
+                v-else-if="showDetailLink && event"
+                :items="eventDetailOptions"
+              >
                 <button
                   class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
                 >
@@ -439,7 +477,7 @@ export default defineComponent({
                   />
                 </button>
               </MenuButton>
-            </div>
+            </di>
           </div>
         </div>
       </div>

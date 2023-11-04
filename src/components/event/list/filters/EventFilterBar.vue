@@ -84,6 +84,7 @@ export default defineComponent({
         showOnlineOnly: !props.showMap,
       }),
     );
+    console.log('filter values in event filter bar', filterValues.value)
 
     const channelLabel = computed(() => {
       return getChannelLabel(filterValues.value.channels);

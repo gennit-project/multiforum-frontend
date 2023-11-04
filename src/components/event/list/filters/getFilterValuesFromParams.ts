@@ -258,7 +258,7 @@ const getFilterValuesFromParams = function (
     filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS;
   }
 
-  console.log('show online only in get filter values from params', showOnlineOnly)
+  
 
   if (!showOnlineOnly) {
     // For map view, if there is a location filter in the query params,
@@ -277,10 +277,12 @@ const getFilterValuesFromParams = function (
       latitude: latitude || defaultPlace.latitude,
       longitude: longitude || defaultPlace.longitude,
     };
+    
     const res = {
       ...filterValues,
       ...locationParams,
     };
+    console.log('get filter values from params -res', res)
     return res;
   }
   return filterValues;
