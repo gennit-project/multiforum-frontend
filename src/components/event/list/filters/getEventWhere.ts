@@ -15,13 +15,14 @@ type GetEventWhereInput = {
   filterValues: SearchEventValues;
   showMap: boolean;
   channelId: string;
+  onlineOnly: boolean;
 };
 
 // The purpose of this function is to convert event filter variables
 // into the EventWhere input object as it is defined in the auto-generated GraphQL
 // documentation for querying events.
 const getEventWhere = (input: GetEventWhereInput): EventWhere => {
-  const { filterValues, showMap, channelId } = input;
+  const { filterValues, showMap, channelId, onlineOnly } = input;
   const {
     timeShortcut,
     radius,
@@ -100,7 +101,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
         // to show only virtual events, only include
         // events with both a physical location
         // and a virtual event url
-        conditions.push({ NOT: { location: null }});
+        conditions.push({ location: null });
       }
       break;
 
@@ -118,6 +119,10 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
           },
         });
       }
+  }
+
+  if (onlineOnly) {
+    conditions.push({ locationName: null });
   }
 
   // Tag filter

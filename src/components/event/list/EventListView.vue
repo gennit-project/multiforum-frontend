@@ -61,6 +61,7 @@ export default defineComponent({
         filterValues: filterValues.value,
         showMap: false,
         channelId: channelId.value,
+        onlineOnly: !channelId.value || filterValues.value.locationFilter === LocationFilterTypes.ONLY_VIRTUAL,
       });
     });
 
