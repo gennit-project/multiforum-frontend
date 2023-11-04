@@ -8,7 +8,7 @@ export const GET_CHANNEL_NAMES = gql`
 `;
 
 export const GET_CHANNEL = gql`
-  query getChannel($uniqueName: String!) {
+  query getChannel($uniqueName: String!, $eventChannelWhere: EventChannelWhere) {
     channels(where: { uniqueName: $uniqueName }) {
       uniqueName
       description
@@ -24,7 +24,9 @@ export const GET_CHANNEL = gql`
       DiscussionChannelsAggregate {
         count
       }
-      EventChannelsAggregate {
+      EventChannelsAggregate (
+        where: $eventChannelWhere
+      ) {
         count
       }
     }

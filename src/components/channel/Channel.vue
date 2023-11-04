@@ -51,13 +51,23 @@ export default defineComponent({
       loading: getChannelLoading,
     } = useQuery(GET_CHANNEL, {
       uniqueName: channelId,
+      eventChannelWhere:{
+        "NOT": {
+          "Event": null
+        },
+        "Event": {
+          "canceled": false,
+          "startTime_GT": new Date().toISOString()
+        }
+      }
     });
 
     const channel = computed(() => {
       if (getChannelLoading.value || getChannelError.value) {
         return null;
       }
-      return getChannelResult.value.channels[0];
+      const channel = getChannelResult.value.channels[0];
+      return channel;
     });
 
     const discussionId = computed(() => {

@@ -152,9 +152,6 @@ export default defineComponent({
       return localUsernameResult.value.username;
     });
 
-    console.log("props.event", props.event);
-    console.log("username.value", username.value);
-
     const menuItems = computed(() => {
       const out = []
       if (props.eventData) {
