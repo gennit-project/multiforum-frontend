@@ -6,7 +6,6 @@ import EventDetail from "./components/event/detail/EventDetail.vue";
 import SearchEvents from "./components/event/list/SearchEvents.vue";
 import Feed from "./components/feed/Feed.vue";
 import SearchFeeds from "./components/feed/SearchFeeds.vue";
-import DiscussionTab from "@/components/channel/DiscussionTab.vue";
 import EventTab from "@/components/channel/EventTab.vue";
 import DiscussionDetail from "./components/discussion/detail/DiscussionDetail.vue";
 import SearchDiscussions from "./components/discussion/list/SearchDiscussions.vue";
@@ -31,6 +30,7 @@ import DownvotedComments from "@/components/mod/DownvotedComments.vue";
 import UserComments from "@/components/user/UserComments.vue";
 import UserDiscussions from "@/components/user/UserDiscussions.vue";
 import UserEvents from "@/components/user/UserEvents.vue";
+import Subreddit from "./components/subreddit/Subreddit.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -144,6 +144,11 @@ export const router = createRouter({
       name: "CreateChannel",
       path: "/channels/create",
       component: CreateChannel,
+    },
+    {
+      path: "/subreddits/r/:subredditName",
+      name: "Subreddit",
+      component: Subreddit,
     },
     {
       path: "/channels/c/:channelId",

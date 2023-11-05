@@ -127,25 +127,41 @@ export default defineComponent({
         <div
           class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
         >
-          <router-link to="/" class="flex items-center">
+          <router-link
+            to="/"
+            class="flex items-center"
+          >
             <arrow-up-bold-box
               :size="38"
               class="ml-3 mr-2 text-black dark:text-blue-500"
             />
-            <span class="font-bold text-black dark:text-white">Topical</span>
+            <span class="font-bold text-black dark:text-white">Listical</span>
           </router-link>
-          <div v-if="shouldShowChannelId" class="flex items-center gap-1">
+          <div
+            v-if="shouldShowChannelId"
+            class="flex items-center gap-1"
+          >
             <span>/</span>
-            <Avatar :text="channelId" :is-square="true" class="h-6 w-6" />
+            <Avatar
+              :text="channelId"
+              :is-square="true"
+              class="h-6 w-6"
+            />
             <span class="font-bold text-gray-800 dark:text-white">{{
               channelId
             }}</span>
           </div>
-          <div v-else-if="shouldShowRouteInfo" class="flex items-center gap-1">
+          <div
+            v-else-if="shouldShowRouteInfo"
+            class="flex items-center gap-1"
+          >
             <span>/</span>
             {{ routeInfoLabel }}
           </div>
-          <div v-else class="flex items-center gap-1">
+          <div
+            v-else
+            class="flex items-center gap-1"
+          >
             {{ getLabel() }}
           </div>
         </div>
@@ -165,7 +181,10 @@ export default defineComponent({
       <div class="flex items-center space-x-4">
         <CreateAnythingButton v-if="!smAndDown" />
         <ThemeSwitcher />
-        <div v-if="isAuthenticated && username" class="hidden lg:ml-4 lg:block">
+        <div
+          v-if="isAuthenticated && username"
+          class="hidden lg:ml-4 lg:block"
+        >
           <div class="flex items-center">
             <!-- <NotificationButton/> -->
             <div class="relative flex-shrink-0">

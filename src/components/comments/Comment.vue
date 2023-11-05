@@ -314,7 +314,10 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div :class="'text-sm'" class="w-full">
+      <div
+        :class="'text-sm'"
+        class="w-full"
+      >
         <div
           :class="[
             isHighlighted
@@ -336,8 +339,8 @@ export default defineComponent({
               <div
                 v-if="
                   showContextLink &&
-                  parentCommentId &&
-                  commentData.DiscussionChannel
+                    parentCommentId &&
+                    commentData.DiscussionChannel
                 "
               >
                 <router-link
@@ -378,17 +381,23 @@ export default defineComponent({
                       {{ commentData.CommentAuthor.username }}
                     </UsernameWithTooltip>
                   </router-link>
-                  <span v-else class="font-bold">[Deleted]</span>
+                  <span
+                    v-else
+                    class="font-bold"
+                  >[Deleted]</span>
                   <span class="mx-2">&middot;</span>
                   <span>{{ createdAtFormatted }}</span>
-                  <span v-if="commentData.updatedAt" class="mx-2">
+                  <span
+                    v-if="commentData.updatedAt"
+                    class="mx-2"
+                  >
                     &middot;
                   </span>
                   <span>{{ editedAtFormatted }}</span>
                   <span
                     v-if="isHighlighted"
                     class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-                    >Permalinked
+                  >Permalinked
                   </span>
                 </div>
                 <MenuButton
@@ -419,7 +428,7 @@ export default defineComponent({
                 <div class="w-full overflow-auto">
                   <div
                     v-if="commentData.text && !showEditCommentField"
-                    class="-ml-6 -mt-3 w-full"
+                    class="-ml-6 w-full"
                   >
                     <MarkdownPreview
                       :key="textCopy || ''"
@@ -438,7 +447,7 @@ export default defineComponent({
                 </div>
                 <CommentButtons
                   v-if="channelId"
-                  :class="[!showEditCommentField ? ' -mt-8 ml-1' : '']"
+                  :class="[!showEditCommentField ? 'ml-1' : '']"
                   :comment-data="commentData"
                   :depth="depth"
                   :locked="locked"
