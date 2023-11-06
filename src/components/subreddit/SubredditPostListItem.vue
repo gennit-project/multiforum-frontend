@@ -31,8 +31,8 @@ export default defineComponent({
         return "";
       }
 
-      if (props.post.text && props.post.text.length > 200) {
-        return props.post?.text.slice(0, 500) + "...";
+      if (props.post.text && props.post.text.length > 1000) {
+        return props.post?.text.slice(0, 1000) + "...";
       }
       return props.post.text;
     });
@@ -43,7 +43,6 @@ export default defineComponent({
     const detailLink = `https://www.reddit.com${props.post.permalink}`;
     const usernameLink = `https://www.reddit.com/user/${authorUsername}`;
     const timeAgo = relativeTime(createdAt);
-    console.log("props.post", props.post);
 
     return {
       authorUsername,
@@ -59,12 +58,17 @@ export default defineComponent({
       usernameLink,
     };
   },
+  methods: {
+    isImageUrl(url: string) {
+      return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
+    },
+  }
 });
 </script>
 
 <template>
   <li
-    class="relative mt-1 space-y-3 rounded-lg bg-white p-4 dark:bg-gray-800 lg:py-4"
+    class="relative mt-1 space-y-3 rounded-lg p-4 dark:bg-gray-800 lg:py-4"
   >
     <v-row>
       <v-col :cols="12">
@@ -75,14 +79,14 @@ export default defineComponent({
             class="hover:text-gray-500"
           >
             <p
-              class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100"
+              class="text-md cursor-pointer font-bold hover:text-gray-500"
             >
               {{ title }}
             </p>
           </a>
           <div
             v-if="truncatedBody"
-            class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
+            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700"
           >
             <MarkdownPreview
               :text="truncatedBody || ''"
@@ -91,7 +95,7 @@ export default defineComponent({
             />
           </div>
           <div
-            class="font-medium mt-2 text-xs text-gray-600 no-underline dark:text-gray-300"
+            class="font-medium mt-2 text-xs no-underline"
           >
             <span class="mr-1"> {{ `Posted ${timeAgo} by` }}</span>
             <a
@@ -103,9 +107,17 @@ export default defineComponent({
           </div>
         </div>
       </v-col>
+      <!-- <v-col :cols="3">
+        <img
+          v-if="post.thumbnail"
+          :src="post.thumbnail"
+          :alt="post.title"
+          class="rounded-lg"
+        />
+      </v-col> -->
     </v-row>
     <MediaViewer
-      v-if="post.mediaMetadata || post.url"
+      v-if="post.mediaMetadata || isImageUrl(post.url)"
       :media-metadata="post.mediaMetadata"
       :image-url="post.url"
     />
@@ -113,7 +125,7 @@ export default defineComponent({
       <a
         :href="detailLink"
         target="_blank"
-        class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+        class="rounded-md px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
       >
         <i class="fa-regular fa-comment h-6 w-6" />
         <span class="text-sm">{{
@@ -127,4 +139,5 @@ export default defineComponent({
 .highlighted {
   background-color: #f9f95d;
 }
+
 </style>

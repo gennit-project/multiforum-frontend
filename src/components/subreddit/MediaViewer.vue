@@ -3,6 +3,7 @@ import { defineComponent } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import { ref } from "vue";
 
+
 type GalleryItem = {
   href: string;
   src: string;
@@ -22,6 +23,7 @@ function calculateAspectRatioFit(
 }
 
 export default defineComponent({
+
   props: {
     mediaMetadata: {
       type: Object,
@@ -33,9 +35,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    if (props.mediaMetadata) {
-      console.log("props.mediaMetadata", props.mediaMetadata);
-    }
     // Define your reactive properties
     const embeddedImages = ref<GalleryItem[]>([]);
 
@@ -58,10 +57,6 @@ export default defineComponent({
         embeddedImages.value.push(galleryItem);
       }
     }
-    if (embeddedImages.value.length> 0) {
-        console.log("embeddedImages", embeddedImages.value);
-    }
-    
 
     // // Define a function to update the dimensions
     const updateImageDimensions = (src: string) => {
@@ -100,7 +95,6 @@ export default defineComponent({
   },
   methods: {
     handleClick(event: any) {
-        console.log('event', event.target.src)
       if (event.target.tagName === "IMG") {
         const clickedSrc = event.target.src;
 
@@ -127,7 +121,10 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <v-carousel v-if="!imageUrl">
+    <v-carousel
+      v-if="embeddedImages.length > 0"
+      class="cursor-pointer"
+    >
       <v-carousel-item
         v-for="(image, index) in embeddedImages"
         :key="index"
@@ -136,8 +133,9 @@ export default defineComponent({
         @click="handleClick"
       />
     </v-carousel>
+    
     <img 
-      v-if="imageUrl" 
+      v-else-if="imageUrl" 
       class="cursor-pointer"
       :src="imageUrl" 
       cover 
@@ -145,10 +143,27 @@ export default defineComponent({
     >
   </div>
 </template>
-<style>
+<style lang="scss">
 .github-markdown-body img {
   cursor: pointer !important;
 }
+.v-btn  {
+  color: white !important;
+  background-color: black !important;
+  opacity: 0.6 !important;
+  &:hover {
+    color: white !important;
+  }
+
+  .v-btn__content {
+    color: black !important;
+  }
+
+  .v-icon {
+    color: white !important;
+  }
+}
+
 p,
 li {
   font-size: 0.9rem;

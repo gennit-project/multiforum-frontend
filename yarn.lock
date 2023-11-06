@@ -8689,6 +8689,11 @@ vue3-calendar-heatmap@^2.0.5:
   resolved "https://registry.yarnpkg.com/vue3-calendar-heatmap/-/vue3-calendar-heatmap-2.0.5.tgz#775a8d4e9d7bc62f242d7d6f28a899a3fae2bb82"
   integrity sha512-qvveNQlTS5Aw7AvRLs0zOyu3uP5iGJlXJAnkrkG2ElDdyQ8H1TJhQ8rL702CROjAg16ezIveUY10nCO7lqZ25w==
 
+vue3-carousel@^0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/vue3-carousel/-/vue3-carousel-0.3.1.tgz#d001be7dea416dc2f4e66afc4d56af66696dc117"
+  integrity sha512-86vUkNPBzL2PVuR9w6hUsI90ccFjLp+K8cSFpRTISf+SjUQY3fMHc5CFF5MUL62v1xYYm27zEBmQupO9VQx9Kw==
+
 vue3-datepicker@^0.3.4:
   version "0.3.8"
   resolved "https://registry.yarnpkg.com/vue3-datepicker/-/vue3-datepicker-0.3.8.tgz#b88fd30083d6b38d49821e62cfb6f53c8b98578e"

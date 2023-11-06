@@ -70,8 +70,6 @@ export default defineComponent({
       return sidebar;
     });
 
-    console.log('subreddit sidebar', subredditSidebar.value)
-
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
 
     return {

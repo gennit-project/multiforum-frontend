@@ -75,7 +75,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="pb-8 overflow-auto rounded-lg bg-white dark:bg-gray-800"
+    class="pb-8 overflow-auto rounded-lg dark:bg-gray-800"
   >
     <div
       v-if="subredditName"
