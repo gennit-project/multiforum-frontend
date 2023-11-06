@@ -4,7 +4,6 @@ import { RedditSubmission } from "@/__generated__/graphql";
 import { relativeTime } from "@/dateTimeUtils";
 import { useRoute } from "vue-router";
 import { useDisplay } from "vuetify";
-import { timeAgo } from "@/dateTimeUtils";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import MediaViewer from "./MediaViewer.vue";
 
@@ -44,7 +43,7 @@ export default defineComponent({
     const detailLink = `https://www.reddit.com${props.post.permalink}`;
     const usernameLink = `https://www.reddit.com/user/${authorUsername}`;
     const timeAgo = relativeTime(createdAt);
-    console.log('props.post', props.post)
+    console.log("props.post", props.post);
 
     return {
       authorUsername,
@@ -68,9 +67,13 @@ export default defineComponent({
     class="relative mt-1 space-y-3 rounded-lg bg-white p-4 dark:bg-gray-800 lg:py-4"
   >
     <v-row>
-      <v-col :cols="10">
+      <v-col :cols="12">
         <div class="flex-col gap-2">
-          <a :href="detailLink" target="_blank" class="hover:text-gray-500">
+          <a
+            :href="detailLink"
+            target="_blank"
+            class="hover:text-gray-500"
+          >
             <p
               class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100"
             >
@@ -95,30 +98,10 @@ export default defineComponent({
               class="cursor-pointer underline"
               :href="usernameLink"
               target="_blank"
-              >{{ authorUsername }}
-            </a>
-          </div>
-          <div class="mt-2 flex items-center justify-start gap-6">
-            <a
-              :href="detailLink"
-              target="_blank"
-              class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
-            >
-              <i class="fa-regular fa-comment h-6 w-6" />
-              <span class="text-sm">{{
-                `${commentCount} comment${commentCount === 1 ? "" : "s"}`
-              }}</span>
+            >{{ authorUsername }}
             </a>
           </div>
         </div>
-      </v-col>
-      <v-col v-if="post.thumbnail">
-        <img
-          v-if="post.thumbnail"
-          class="rounded-lg"
-          :src="post.thumbnail"
-          :alt="post.title"
-        />
       </v-col>
     </v-row>
     <MediaViewer
@@ -126,6 +109,18 @@ export default defineComponent({
       :media-metadata="post.mediaMetadata"
       :image-url="post.url"
     />
+    <div class="mt-2 flex items-center justify-start gap-6">
+      <a
+        :href="detailLink"
+        target="_blank"
+        class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+      >
+        <i class="fa-regular fa-comment h-6 w-6" />
+        <span class="text-sm">{{
+          `${commentCount} comment${commentCount === 1 ? "" : "s"}`
+        }}</span>
+      </a>
+    </div>
   </li>
 </template>
 <style>

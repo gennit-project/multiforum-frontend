@@ -33,7 +33,6 @@ export default defineComponent({
     } = useQuery(GET_SUBREDDIT_POSTS, {
       subredditName: subredditName.value,
     });
-    console.log('postResult', postResult.value)
 
     // const reachedEndOfResults = ref(false);
 
@@ -79,8 +78,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="max-w-3xl">
-    <p v-if="!postResult && postLoading">Loading...</p>
+  <div>
+    <p v-if="!postResult && postLoading">
+      Loading...
+    </p>
     <ErrorBanner
       v-else-if="postError"
       class="max-w-5xl"

@@ -39,8 +39,6 @@ export default defineComponent({
       return getSubredditResult.value.getSubredditSidebar;
     });
 
-    console.log('subreddit value in sidebar', subreddit.value)
-
     const { mdAndDown } = useDisplay();
     const GET_THEME = gql`
       query getTheme {

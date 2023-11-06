@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { setGallery, Gallery } from "vue-preview-imgs";
+import { setGallery } from "vue-preview-imgs";
 import { ref } from "vue";
 
 type GalleryItem = {
@@ -22,9 +22,6 @@ function calculateAspectRatioFit(
 }
 
 export default defineComponent({
-  components: {
-    Gallery,
-  },
   props: {
     mediaMetadata: {
       type: Object,
@@ -36,11 +33,13 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log("props.mediaMetadata", props.mediaMetadata);
+    if (props.mediaMetadata) {
+      console.log("props.mediaMetadata", props.mediaMetadata);
+    }
     // Define your reactive properties
     const embeddedImages = ref<GalleryItem[]>([]);
 
-    if (!props.imageUrl && props.mediaMetadata) {
+    if (props.mediaMetadata) {
       for (let imageID in props.mediaMetadata) {
         const imageData = props.mediaMetadata[imageID];
         const largestImage = imageData.s;
@@ -59,7 +58,10 @@ export default defineComponent({
         embeddedImages.value.push(galleryItem);
       }
     }
-    console.log("embeddedImages", embeddedImages.value);
+    if (embeddedImages.value.length> 0) {
+        console.log("embeddedImages", embeddedImages.value);
+    }
+    
 
     // // Define a function to update the dimensions
     const updateImageDimensions = (src: string) => {
@@ -93,13 +95,17 @@ export default defineComponent({
 
     return {
       embeddedImages,
-        updateImageDimensions,
+      updateImageDimensions,
     };
   },
   methods: {
     handleClick(event: any) {
+        console.log('event', event.target.src)
       if (event.target.tagName === "IMG") {
         const clickedSrc = event.target.src;
+
+        // Update the clicked image dimensions
+        this.updateImageDimensions(clickedSrc);
 
         // Find index of clicked image in embeddedImages array
         const clickedIndex = this.embeddedImages.findIndex(
@@ -121,16 +127,22 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <v-carousel>
+    <v-carousel v-if="!imageUrl">
       <v-carousel-item
-        v-for="(item, i) in embeddedImages"
-        :key="i"
-        :src="item.src"
-        @click="handleClick"
+        v-for="(image, index) in embeddedImages"
+        :key="index"
+        :src="image.src"
         cover
+        @click="handleClick"
       />
     </v-carousel>
-    <button>Images</button>
+    <img 
+      v-if="imageUrl" 
+      class="cursor-pointer"
+      :src="imageUrl" 
+      cover 
+      @click="handleClick" 
+    >
   </div>
 </template>
 <style>

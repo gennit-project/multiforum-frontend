@@ -31,6 +31,7 @@ export const GET_SUBREDDIT_POSTS = gql`
       upvoteCount
       mediaMetadata
       url
+      preview
     }
   }
 `;
