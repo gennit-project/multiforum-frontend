@@ -155,19 +155,66 @@ export default defineComponent({
       visibleDescription,
     };
   },
-  created(){
-    window.scrollTo(0,0);
+  created() {
+    window.scrollTo(0, 0);
   },
   methods: {
     openLink() {
       window.open(this.eventData.virtualEventUrl, "_blank");
+    },
+    addToGoogleCalendar() {
+      const googleCalendarDateFormat = "yyyyMMdd'T'HHmmss'Z'";
+      let start = DateTime.fromISO(this.eventData.startTime).toFormat(
+        googleCalendarDateFormat,
+      );
+      let end = DateTime.fromISO(this.eventData.endTime).toFormat(
+        googleCalendarDateFormat,
+      );
+
+      const baseUrl = "https://www.google.com/calendar/render";
+      const location = encodeURIComponent(this.eventData.address);
+      const name = encodeURIComponent(this.eventData.title);
+      const details = encodeURIComponent(this.eventData.description);
+
+      const googleUrl = `${baseUrl}?action=TEMPLATE&text=${name}&dates=${start}/${end}&details=${details}&location=${location}`;
+      window.open(googleUrl, "_blank");
+    },
+    addToiCal() {
+      const data = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "BEGIN:VEVENT",
+        `URL:${document.URL}`,
+        `DTSTART:${this.eventData.startTime.replace(/-|:|\.\d{3}/g, "")}`,
+        `DTEND:${this.eventData.endTime.replace(/-|:|\.\d{3}/g, "")}`,
+        `SUMMARY:${this.eventData.title}`,
+        `DESCRIPTION:${this.eventData.description}`,
+        `LOCATION:${this.eventData.address}`,
+        "END:VEVENT",
+        "END:VCALENDAR",
+      ].join("\n");
+
+      const blob = new Blob([data], { type: "text/calendar;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute("download", "event.ics");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    },
+    addToOutlook() {
+      // For Outlook, you can use the same iCal method, because Outlook supports iCal files.
+      // Alternatively, if you want to create a link to Outlook Calendar's web version, you would construct a URL like the Google Calendar one.
+      this.addToiCal(); // Just for demonstration. You might need a different approach depending on your needs.
     },
   },
 });
 </script>
 
 <template>
-  <div class="h-screen w-full space-y-4 overflow-auto py-1 lg:px-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
+  <div
+    class="h-screen w-full space-y-4 overflow-auto rounded-lg bg-gray-100 py-1 dark:bg-gray-800 lg:px-8"
+  >
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
         <div
@@ -223,7 +270,12 @@ export default defineComponent({
         </div>
 
         <div class="mt-1 w-full space-y-2 px-3">
-          <p v-if="eventLoading" class="px-4 lg:px-10">Loading...</p>
+          <p
+            v-if="eventLoading"
+            class="px-4 lg:px-10"
+          >
+            Loading...
+          </p>
           <ErrorBanner
             v-else-if="eventError"
             class="px-4 lg:px-10"
@@ -260,7 +312,9 @@ export default defineComponent({
                 </h2>
               </div>
             </div>
-            <div class="rounded-md bg-white dark:bg-gray-700 border dark:border-gray-800 py-4">
+            <div
+              class="rounded-md border bg-white py-4 dark:border-gray-800 dark:bg-gray-700"
+            >
               <EventHeader :event-data="eventData" />
               <v-md-preview
                 v-if="eventData.description"
@@ -269,13 +323,42 @@ export default defineComponent({
               <button
                 v-if="
                   eventData?.description &&
-                  eventData.description.split(' ').length > 50
+                    eventData.description.split(' ').length > 50
                 "
                 class="mt-2 rounded bg-black px-4 py-2 font-bold text-white hover:bg-blue-700"
                 @click="toggleDescription"
               >
                 {{ showFullDescription ? "Show less" : "Show more" }}
               </button>
+
+              <div class="px-8">
+                <h2 class="text-md mt-4">
+                  Add to Calendar
+                </h2>
+                <hr>
+                <div class="mt-4 flex">
+                  <div class="flex flex-row gap-2">
+                    <div class="flex justify-start">
+                      <GenericButton
+                        :text="'Google Calendar'"
+                        @click="addToGoogleCalendar"
+                      />
+                    </div>
+                    <div class="flex justify-center">
+                      <GenericButton
+                        :text="'iCal'"
+                        @click="addToiCal"
+                      />
+                    </div>
+                    <div class="flex justify-center">
+                      <GenericButton
+                        :text="'Outlook'"
+                        @click="addToOutlook"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="mx-4 my-2">
               <div class="flex space-x-1">
