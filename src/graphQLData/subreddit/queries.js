@@ -30,6 +30,7 @@ export const GET_SUBREDDIT_POSTS = gql`
       thumbnail
       upvoteCount
       mediaMetadata
+      url
     }
   }
 `;

@@ -9,11 +9,13 @@ import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
 import gql from "graphql-tag";
 import Avatar from "@/components/user/Avatar.vue";
+import SubredditPostList from "@/components/subreddit/SubredditPostList.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
     Avatar,
+    SubredditPostList,
     SubredditSidebar,
     // ChannelTabs,
   },
@@ -163,7 +165,7 @@ export default defineComponent({
           </v-col>
           <v-col :cols="9">
             <div class="rounded-lg md:ml-16 lg:ml-10 xl:ml-0">
-              <router-view />
+              <SubredditPostList />
             </div>
           </v-col>
         </v-row>
