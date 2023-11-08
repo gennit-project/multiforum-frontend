@@ -38,12 +38,15 @@ export default defineComponent({
     `;
 
     const { result } = useQuery(GET_THEME);
+    const fileInput = ref(null);
 
     const theme = computed(() => {
       return result.value?.theme || "light";
     });
+
     return {
       editorId: "texteditor",
+      fileInput,
       showFormatted: ref(false),
       text: ref(props.initialValue),
       theme,
@@ -67,6 +70,30 @@ export default defineComponent({
     });
   },
   methods: {
+    async handleFileChange(event: any) {
+      const selectedFile = event.target.files[0];
+      if (selectedFile) {
+        // Call the uploadFile mutation with the selected file
+        try {
+          const signedUrl = 'URL GOES HERE'
+
+          const response = await fetch(signedUrl, {
+            method: "PUT",
+            body: selectedFile,
+            headers: {
+              "Content-Type": "image/png",
+            },
+          });
+          if (response.ok) {
+            console.log("File uploaded successfully");
+          } else {
+            console.error("Error uploading file");
+          }
+        } catch (error) {
+          console.error("Error uploading file:", error);
+        }
+      }
+    },
     setTab(selected: string) {
       this.selected = selected;
     },
@@ -115,7 +142,7 @@ export default defineComponent({
           </button>
         </Tab>
       </TabList>
-      <TabPanels class="mt-2 h-50">
+      <TabPanels class="h-50 mt-2">
         <TabPanel
           class="-m-0.5 rounded-md px-0.5 py-1"
           :data-testid="testId"
@@ -129,10 +156,15 @@ export default defineComponent({
             name="comment"
             rows="10"
             :placeholder="placeholder"
-            class="block w-full rounded-md border-gray-200 font-mono text-sm placeholder-gray-400 dark:placeholder-gray-200 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100"
+            class="block w-full rounded-md border-gray-200 font-mono text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
             @input="updateText($event?.target?.value)"
           />
+          <input
+            ref="fileInput"
+            type="file"
+            @change="handleFileChange"
+          >
         </TabPanel>
         <TabPanel class="-m-0.5 rounded-md p-0.5">
           <v-md-preview
