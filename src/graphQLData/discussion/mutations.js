@@ -1,16 +1,24 @@
 import { gql } from "@apollo/client/core";
 
+export const CREATE_SIGNED_STORAGE_URL = gql`
+  mutation createSignedURL($filename: String!, $contentType: String!) {
+    createSignedStorageURL(filename: $filename, contentType: $contentType) {
+      url
+    }
+  }
+`;
+
 export const ADD_EMOJI_TO_DISCUSSION_CHANNEL = gql`
   mutation addEmojiToDiscussionChannel(
-    $discussionChannelId: ID!, 
-    $emojiLabel: String!,
-    $unicode: String!,
+    $discussionChannelId: ID!
+    $emojiLabel: String!
+    $unicode: String!
     $username: String!
   ) {
-    addEmojiToDiscussionChannel (
-      discussionChannelId: $discussionChannelId,
-      emojiLabel: $emojiLabel,
-      unicode: $unicode,
+    addEmojiToDiscussionChannel(
+      discussionChannelId: $discussionChannelId
+      emojiLabel: $emojiLabel
+      unicode: $unicode
       username: $username
     ) {
       id
@@ -21,13 +29,13 @@ export const ADD_EMOJI_TO_DISCUSSION_CHANNEL = gql`
 
 export const REMOVE_EMOJI_FROM_DISCUSSION_CHANNEL = gql`
   mutation removeEmojiFromDiscussionChannel(
-    $discussionChannelId: ID!,
-    $emojiLabel: String!,
+    $discussionChannelId: ID!
+    $emojiLabel: String!
     $username: String!
   ) {
-    removeEmojiFromDiscussionChannel (
-      discussionChannelId: $discussionChannelId,
-      emojiLabel: $emojiLabel,
+    removeEmojiFromDiscussionChannel(
+      discussionChannelId: $discussionChannelId
+      emojiLabel: $emojiLabel
       username: $username
     ) {
       id

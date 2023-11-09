@@ -1,8 +1,12 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import { useQuery } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
+import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import config from "@/config";
+import { encodeSpacesInURL } from "@/components/utils";
 
 export default defineComponent({
   components: {
@@ -37,6 +41,20 @@ export default defineComponent({
       }
     `;
 
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
+    const { mutate: createSignedStorageUrl } = useMutation(
+      CREATE_SIGNED_STORAGE_URL,
+    );
+
     const { result } = useQuery(GET_THEME);
     const fileInput = ref(null);
 
@@ -44,12 +62,18 @@ export default defineComponent({
       return result.value?.theme || "light";
     });
 
+    const { googleCloudStorageBucket } = config;
+
     return {
+      createSignedStorageUrl,
       editorId: "texteditor",
+      encodeSpacesInURL,
       fileInput,
+      googleCloudStorageBucket,
       showFormatted: ref(false),
       text: ref(props.initialValue),
       theme,
+      username,
       scrollElement: document.documentElement,
       id: "text-editor",
     };
@@ -74,16 +98,45 @@ export default defineComponent({
       const selectedFile = event.target.files[0];
       if (selectedFile) {
         // Call the uploadFile mutation with the selected file
-        try {
-          const signedUrl = 'URL GOES HERE'
 
-          const response = await fetch(signedUrl, {
+        if (!this.username) {
+          console.error("No username found");
+          return;
+        }
+
+        this.text = this.text + `![${selectedFile.name}](Uploading image...)`;
+
+        try {
+          const filename = `${Date.now()}-${this.username}-${
+            selectedFile.name
+          }`;
+
+          const signedUrlResult = await this.createSignedStorageUrl({
+            filename,
+            contentType: selectedFile.type,
+          });
+
+          const signedStorageURL =
+            signedUrlResult.data?.createSignedStorageURL?.url;
+          console.log("url", signedStorageURL);
+
+          const response = await fetch(signedStorageURL, {
             method: "PUT",
             body: selectedFile,
             headers: {
               "Content-Type": "image/png",
             },
           });
+
+          console.log("response", response);
+
+          const embeddedLink = this.encodeSpacesInURL(
+            `https://storage.googleapis.com/${this.googleCloudStorageBucket}/${filename}`,
+          );
+          console.log("embeddedLink", embeddedLink);
+
+          this.text = this.text.replace("Uploading image...", embeddedLink);
+          this.$emit("update", this.text);
           if (response.ok) {
             console.log("File uploaded successfully");
           } else {
@@ -160,11 +213,19 @@ export default defineComponent({
             :value="text"
             @input="updateText($event?.target?.value)"
           />
-          <input
-            ref="fileInput"
-            type="file"
-            @change="handleFileChange"
+          <label
+            for="fileInput"
+            class="cursor-pointer block mt-2 text-blue-500 hover:underline flex items-center"
           >
+            <i class="fa fa-image mr-2" /> Add Image
+            <input
+              id="fileInput"
+              ref="fileInput"
+              type="file"
+              style="display: none;"
+              @change="handleFileChange"
+            >
+          </label>
         </TabPanel>
         <TabPanel class="-m-0.5 rounded-md p-0.5">
           <v-md-preview
@@ -215,5 +276,10 @@ export default defineComponent({
 }
 
 @media (prefers-color-scheme: light) {
+}
+/* In your CSS file or style block */
+img {
+  object-fit: cover;
+  width: fit-content;
 }
 </style>

@@ -1,6 +1,10 @@
 import { TagData } from "@/types/tagTypes";
 import { gql } from "@apollo/client/core";
 
+export function encodeSpacesInURL(url: string) {
+  return url.split(' ').join('%20');
+}
+
 export const getTagLabel = (selectedTags: Array<string>) => {
   if (selectedTags.length === 0) {
     return "Tags"
