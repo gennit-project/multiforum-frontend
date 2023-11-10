@@ -74,10 +74,6 @@ export default defineComponent({
       // We do these checks:
       // - At least one channel is selected
       // - Title is included
-      // console.log('Debug changes required', {
-      //   title,
-      //   selectedChannels
-      // })
       const needsChanges = !(
         this.formValues.selectedChannels.length > 0 &&
         this.formValues.title.length > 0

@@ -94,57 +94,52 @@ export default defineComponent({
     });
   },
   methods: {
+    async upload(file: any) {
+      // Call the uploadFile mutation with the selected file
+
+      if (!this.username) {
+        console.error("No username found");
+        return;
+      }
+
+      this.text = this.text + `![${file.name}](Uploading image...)`;
+
+      try {
+        const filename = `${Date.now()}-${this.username}-${file.name}`;
+
+        const signedUrlResult = await this.createSignedStorageUrl({
+          filename,
+          contentType: file.type,
+        });
+
+        const signedStorageURL =
+          signedUrlResult.data?.createSignedStorageURL?.url;
+
+        const response = await fetch(signedStorageURL, {
+          method: "PUT",
+          body: file,
+          headers: {
+            "Content-Type": "image/png",
+          },
+        });
+
+        const embeddedLink = this.encodeSpacesInURL(
+          `https://storage.googleapis.com/${this.googleCloudStorageBucket}/${filename}`,
+        );
+
+        this.text = this.text.replace("Uploading image...", embeddedLink);
+        this.$emit("update", this.text);
+        if (!response.ok) {
+          console.error("Error uploading file");
+        }
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    },
     async handleFileChange(event: any) {
       const selectedFile = event.target.files[0];
       if (selectedFile) {
-        // Call the uploadFile mutation with the selected file
-
-        if (!this.username) {
-          console.error("No username found");
-          return;
-        }
-
-        this.text = this.text + `![${selectedFile.name}](Uploading image...)`;
-
-        try {
-          const filename = `${Date.now()}-${this.username}-${
-            selectedFile.name
-          }`;
-
-          const signedUrlResult = await this.createSignedStorageUrl({
-            filename,
-            contentType: selectedFile.type,
-          });
-
-          const signedStorageURL =
-            signedUrlResult.data?.createSignedStorageURL?.url;
-          console.log("url", signedStorageURL);
-
-          const response = await fetch(signedStorageURL, {
-            method: "PUT",
-            body: selectedFile,
-            headers: {
-              "Content-Type": "image/png",
-            },
-          });
-
-          console.log("response", response);
-
-          const embeddedLink = this.encodeSpacesInURL(
-            `https://storage.googleapis.com/${this.googleCloudStorageBucket}/${filename}`,
-          );
-          console.log("embeddedLink", embeddedLink);
-
-          this.text = this.text.replace("Uploading image...", embeddedLink);
-          this.$emit("update", this.text);
-          if (response.ok) {
-            console.log("File uploaded successfully");
-          } else {
-            console.error("Error uploading file");
-          }
-        } catch (error) {
-          console.error("Error uploading file:", error);
-        }
+        this.upload(selectedFile);
       }
     },
     setTab(selected: string) {
@@ -156,6 +151,27 @@ export default defineComponent({
     updateText(text: string) {
       this.text = text;
       this.$emit("update", text);
+    },
+    handleDragOver(event: any) {
+      event.preventDefault();
+    },
+
+    allowDrop(event: any) {
+      event.preventDefault();
+    },
+
+    handleDrop(event: any) {
+      event.preventDefault();
+
+      const { files } = event.dataTransfer;
+
+      if (files.length === 0) {
+        return;
+      }
+
+      // Assuming you want to handle only the first dropped file.
+      const file = files[0];
+      this.upload(file);
     },
   },
 });
@@ -212,17 +228,19 @@ export default defineComponent({
             class="block w-full rounded-md border-gray-200 font-mono text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
             @input="updateText($event?.target?.value)"
+            @dragover="handleDragOver"
+            @drop="handleDrop"
           />
           <label
             for="fileInput"
-            class="cursor-pointer block mt-2 text-blue-500 hover:underline flex items-center"
+            class="mt-2 block flex cursor-pointer items-center text-blue-500 hover:underline"
           >
             <i class="fa fa-image mr-2" /> Add Image
             <input
               id="fileInput"
               ref="fileInput"
               type="file"
-              style="display: none;"
+              style="display: none"
               @change="handleFileChange"
             >
           </label>

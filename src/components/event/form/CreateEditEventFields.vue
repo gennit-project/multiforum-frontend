@@ -139,24 +139,10 @@ export default defineComponent({
       );
     },
     needsChanges() {
-      // We do these checks:
-      // - Title is included
-      // console.log("Debug changes required", {
-      //   title: this.formValues.title,
-      // });
-      // let now = DateTime.now().toISO();
       const needsChanges = !(
-        (
-          this.formValues.selectedChannels.length > 0 &&
-          this.formValues.title.length > 0 &&
-          this.startTime < this.endTime
-        )
-        // && this.startTime > now &&
-        // ((this.address.length > 0 &&
-        //   this.placeId &&
-        //   this.latitude &&
-        //   this.longitude) ||
-        //   this.urlIsValid)
+        this.formValues.selectedChannels.length > 0 &&
+        this.formValues.title.length > 0 &&
+        this.startTime < this.endTime
       );
       return needsChanges;
     },

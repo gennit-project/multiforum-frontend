@@ -106,8 +106,6 @@ loadFonts();
 
 const { environment, graphqlUrlDev, graphqlUrlProd, clientId } = config;
 
-console.log({ environment });
-
 const httpLink = createHttpLink({
   uri: environment === "development" ? graphqlUrlDev : graphqlUrlProd,
 });
@@ -115,12 +113,12 @@ const httpLink = createHttpLink({
 const networkErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.map(({ message, locations, path }) =>
-      console.log(
+      console.error(
         `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
       )
     );
 
-  if (networkError) console.log(`[Network error]: ${networkError}`);
+  if (networkError) console.error(`[Network error]: ${networkError}`);
 });
 
 const logErrorsLink = onError((error) => {
