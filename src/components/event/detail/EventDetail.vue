@@ -54,7 +54,13 @@ export default defineComponent({
       result: eventResult,
       error: eventError,
       loading: eventLoading,
-    } = useQuery(GET_EVENT, { id: eventId });
+    } = useQuery(
+      GET_EVENT,
+      { id: eventId },
+      {
+        fetchPolicy: "network-only",
+      },
+    );
 
     const eventData = computed(() => {
       if (
@@ -135,6 +141,7 @@ export default defineComponent({
       }
       return truncatedDescription.value;
     });
+
     return {
       eventData,
       eventResult,
@@ -313,7 +320,7 @@ export default defineComponent({
               </div>
             </div>
             <div
-              class="rounded-md border bg-white py-4 dark:border-gray-800 dark:bg-gray-700"
+              class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
             >
               <EventHeader :event-data="eventData" />
               <v-md-preview
@@ -331,7 +338,11 @@ export default defineComponent({
                 {{ showFullDescription ? "Show less" : "Show more" }}
               </button>
 
-              <div class="px-8">
+              <div class="p-4">
+                <p v-if="eventData.isHostedByOP">
+                  <span class="font-bold">Hosted by OP</span>
+                </p>
+
                 <h2 class="text-md mt-4">
                   Add to Calendar
                 </h2>

@@ -26,6 +26,7 @@ export interface CreateEditEventFormValues {
   deleted: boolean;
   cost: string;
   free: boolean;
+  isHostedByOP: boolean;
 }
 export interface EventData {
   id: string;

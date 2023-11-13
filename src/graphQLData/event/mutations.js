@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client/core";
+import { EVENT_FIELDS } from "./queries";
 
 export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
   mutation createEvent(
@@ -9,23 +10,7 @@ export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       eventCreateInput: $eventCreateInput
       channelConnections: $channelConnections
     ) {
-      id
-      title
-      description
-      startTime
-      startTimeDayOfWeek
-      startTimeHourOfDay
-      endTime
-      locationName
-      address
-      virtualEventUrl
-      startTimeDayOfWeek
-      canceled
-      location {
-        latitude
-        longitude
-      }
-      cost
+      ...EventFields
       EventChannels {
         id
         Channel {
@@ -35,13 +20,12 @@ export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       Poster {
         username
       }
-      createdAt
-      updatedAt
       Tags {
         text
       }
     }
   }
+  ${EVENT_FIELDS}
 `;
 
 export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
@@ -57,23 +41,7 @@ export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       channelConnections: $channelConnections
       channelDisconnections: $channelDisconnections
     ) {
-      id
-      title
-      description
-      startTime
-      startTimeDayOfWeek
-      startTimeHourOfDay
-      endTime
-      locationName
-      address
-      virtualEventUrl
-      startTimeDayOfWeek
-      canceled
-      location {
-        latitude
-        longitude
-      }
-      cost
+      ...EventFields
       EventChannels {
         id
         channelUniqueName
@@ -85,13 +53,12 @@ export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
       Poster {
         username
       }
-      createdAt
-      updatedAt
       Tags {
         text
       }
     }
   }
+  ${EVENT_FIELDS}
 `;
 
 export const CANCEL_EVENT = gql`

@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client/core";
 
 // Fragment for shared event fields
-const EVENT_FIELDS = gql`
+export const EVENT_FIELDS = gql`
   fragment EventFields on Event {
     id
     title
@@ -16,6 +16,10 @@ const EVENT_FIELDS = gql`
     canceled
     isHostedByOP
     isAllDay
+    createdAt
+    updatedAt
+    placeId
+    isInPrivateResidence
     RecurringEvent {
       id
       repeatEvery {
@@ -33,12 +37,6 @@ const EVENT_FIELDS = gql`
       longitude
     }
     cost
-    Poster {
-      username
-      createdAt
-      discussionKarma
-      commentKarma
-    }
     Tags {
       text
     }
@@ -56,12 +54,14 @@ const EVENT_FIELDS = gql`
 // get event by ID
 export const GET_EVENT = gql`
   query getEvent($id: ID!) {
-    events(where: {id: $id}) {
+    events(where: { id: $id }) {
       ...EventFields
-      createdAt
-      updatedAt
-      placeId
-      isInPrivateResidence
+      Poster {
+        username
+        createdAt
+        discussionKarma
+        commentKarma
+      }
     }
   }
   ${EVENT_FIELDS}
@@ -80,44 +80,22 @@ export const GET_EVENT_IDS_IN_CHANNEL = gql`
 `;
 
 export const GET_EVENTS = gql`
-  query getEvents(
-    $where: EventWhere
-    $options: EventOptions
-  ) {
+  query getEvents($where: EventWhere, $options: EventOptions) {
     eventsAggregate(where: $where) {
       count
     }
-    events(
-      where: $where
-      options: $options
-    ) {
-      id
-      title
-      description
-      startTime
-      endTime
-      locationName
-      address
-      virtualEventUrl
-      startTimeDayOfWeek
-      canceled
-      location {
-        latitude
-        longitude
-      }
+    events(where: $where, options: $options) {
+      ...EventFields
       cost
       Poster {
         username
-      }
-      Tags {
-        text
       }
       EventChannels {
         id
         eventId
         channelUniqueName
-
       }
     }
   }
+  ${EVENT_FIELDS}
 `;

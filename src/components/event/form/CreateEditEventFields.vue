@@ -274,6 +274,11 @@ export default defineComponent({
         });
       }
     },
+    toggleHostedByOPField() {
+      this.$emit("updateFormValues", {
+        isHostedByOP: !this.formValues.isHostedByOP,
+      });
+    },
     togglePrivateResidenceField() {
       this.$emit("updateFormValues", {
         isInPrivateResidence: !this.formValues.isInPrivateResidence,
@@ -570,6 +575,17 @@ export default defineComponent({
                   :placeholder="'Add cost details'"
                   @update="$emit('updateFormValues', { cost: $event })"
                 />
+              </template>
+            </FormRow>
+            <FormRow section-title="Hosting">
+              <template #content>
+                <CheckBox
+                  data-testid="free-input"
+                  class="align-middle"
+                  :checked="formValues.isHostedByOP"
+                  @input="toggleHostedByOPField"
+                />
+                <span class="ml-2 align-middle">I am hosting this event</span>
               </template>
             </FormRow>
           </div>

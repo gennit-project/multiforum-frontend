@@ -10,12 +10,18 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import { TagData } from "@/types/tagTypes";
 import { apolloClient } from "@/main";
-import { EventData, CreateEditEventFormValues } from "@/types/eventTypes";
+import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { DateTime } from "luxon";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import CreateEditEventFields from "./CreateEditEventFields.vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
-import { EventChannel, EventUpdateInput } from "@/__generated__/graphql";
+import {
+  EventChannel,
+  EventUpdateInput,
+  EventTagsConnectOrCreateFieldInput,
+  EventTagsDisconnectFieldInput,
+  Event,
+} from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "EditEvent",
@@ -37,7 +43,7 @@ export default defineComponent({
 
     const eventId: string | string[] = route.params.eventId;
 
-    const dataLoaded = ref(false); 
+    const dataLoaded = ref(false);
 
     const {
       result: getEventResult,
@@ -88,8 +94,9 @@ export default defineComponent({
     });
 
     function getFormValuesFromEventData(
-      event: EventData,
+      event: Event,
     ): CreateEditEventFormValues {
+
       return {
         title: event.title,
         description: event.description || "",
@@ -99,19 +106,20 @@ export default defineComponent({
         selectedChannels: event.EventChannels.map((ec: EventChannel) => {
           return ec.channelUniqueName;
         }),
-        address: event.address,
-        placeId: event.placeId,
-        locationName: event.locationName,
-        isInPrivateResidence: event.isInPrivateResidence,
+        address: event.address || "",
+        placeId: event.placeId || "",
+        locationName: event.locationName || "",
+        isInPrivateResidence: event.isInPrivateResidence || false,
         virtualEventUrl: event.virtualEventUrl || "",
         startTime: event.startTime,
-        startTimeDayOfWeek: event.startTimeDayOfWeek,
-        startTimeHourOfDay: event.startTimeHourOfDay,
+        startTimeDayOfWeek: event.startTimeDayOfWeek || "",
+        startTimeHourOfDay: event.startTimeHourOfDay || 0,
         endTime: event.endTime,
         canceled: event.canceled,
-        deleted: event.deleted,
-        cost: event.cost,
-        free: event.free,
+        deleted: event.deleted || false,
+        cost: event.cost || "",
+        free: event.free || false,
+        isHostedByOP: event.isHostedByOP || false,
       };
     }
 
@@ -150,8 +158,8 @@ export default defineComponent({
     });
 
     const updateEventInput = computed<EventUpdateInput>(() => {
-      const tagConnections = formValues.value.selectedTags.map(
-        (tag: string) => {
+      const tagConnections: EventTagsConnectOrCreateFieldInput[] =
+        formValues.value.selectedTags.map((tag: string) => {
           return {
             onCreate: {
               node: {
@@ -164,22 +172,22 @@ export default defineComponent({
               },
             },
           };
-        },
-      );
-
-      const tagDisconnections = existingTags.value
-        .filter((tag: string) => {
-          return !formValues.value.selectedTags.includes(tag);
-        })
-        .map((tag: string) => {
-          return {
-            where: {
-              node: {
-                text: tag,
-              },
-            },
-          };
         });
+
+      const tagDisconnections: EventTagsDisconnectFieldInput[] =
+        existingTags.value
+          .filter((tag: string) => {
+            return !formValues.value.selectedTags.includes(tag);
+          })
+          .map((tag: string) => {
+            return {
+              where: {
+                node: {
+                  text: tag,
+                },
+              },
+            };
+          });
 
       const getStartTimePieces = () => {
         const startTimeObj = DateTime.fromISO(formValues.value.startTime);
@@ -193,7 +201,7 @@ export default defineComponent({
 
       const startTimePieces = getStartTimePieces();
 
-      let input = {
+      let input: EventUpdateInput = {
         /*
           Using null values by default for required fields such as the
           title prevents the empty string from being created on the back
@@ -210,10 +218,13 @@ export default defineComponent({
         free: formValues.value.free,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
-        Tags: {
-          connectOrCreate: tagConnections,
-          disconnect: tagDisconnections,
-        },
+        isHostedByOP: formValues.value.isHostedByOP || false,
+        Tags: [
+          {
+            connectOrCreate: tagConnections,
+            disconnect: tagDisconnections,
+          },
+        ],
       };
 
       if (formValues.value.latitude && formValues.value.longitude) {
@@ -239,14 +250,6 @@ export default defineComponent({
     } = useMutation(UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS, () => {
       return {
         errorPolicy: "all",
-        variables: {
-          updateEventInput: updateEventInput.value,
-          channelConnections: channelConnections.value,
-          channelDisconnections: channelDisconnections.value,
-          eventWhere: {
-            id: eventId,
-          },
-        },
       };
     });
 
@@ -265,12 +268,15 @@ export default defineComponent({
     });
 
     return {
+      channelConnections,
+      channelDisconnections,
       dataLoaded,
       getEventError,
       getEventLoading,
       getEventResult,
       formValues,
       channelId,
+      eventId,
       ownerList,
       router,
       updateEvent,
@@ -280,7 +286,15 @@ export default defineComponent({
   },
   methods: {
     async submit() {
-      this.updateEvent();
+      const variables = {
+        updateEventInput: this.updateEventInput,
+        channelConnections: this.channelConnections,
+        channelDisconnections: this.channelDisconnections,
+        eventWhere: {
+          id: this.eventId,
+        },
+      }
+      this.updateEvent(variables);
     },
     updateFormValues(data: CreateEditEventFormValues) {
       // Update all form values at once because it makes cleaner
