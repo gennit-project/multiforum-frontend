@@ -14,6 +14,20 @@ const EVENT_FIELDS = gql`
     startTimeDayOfWeek
     startTimeHourOfDay
     canceled
+    isHostedByOP
+    isAllDay
+    RecurringEvent {
+      id
+      repeatEvery {
+        count
+        unit
+      }
+      repeatEnds {
+        type
+        count
+        until
+      }
+    }
     location {
       latitude
       longitude

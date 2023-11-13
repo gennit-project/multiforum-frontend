@@ -205,7 +205,7 @@ export default defineComponent({
     addToOutlook() {
       // For Outlook, you can use the same iCal method, because Outlook supports iCal files.
       // Alternatively, if you want to create a link to Outlook Calendar's web version, you would construct a URL like the Google Calendar one.
-      this.addToiCal(); // Just for demonstration. You might need a different approach depending on your needs.
+      this.addToiCal();
     },
   },
 });

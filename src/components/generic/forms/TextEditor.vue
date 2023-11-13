@@ -155,11 +155,9 @@ export default defineComponent({
     handleDragOver(event: any) {
       event.preventDefault();
     },
-
     allowDrop(event: any) {
       event.preventDefault();
     },
-
     handleDrop(event: any) {
       event.preventDefault();
 
