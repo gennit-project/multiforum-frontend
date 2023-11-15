@@ -10,7 +10,6 @@ import {
 import { relativeTime } from "../../../dateTimeUtils";
 import { Discussion } from "@/__generated__/graphql";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import LeftArrowIcon from "@/components/icons/LeftArrowIcon.vue";
 import { useDisplay } from "vuetify";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
@@ -25,11 +24,13 @@ import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { Comment } from "@/__generated__/graphql";
+import BackLink from "@/components/generic/buttons/BackLink.vue";
 
 export const COMMENT_LIMIT = 5;
 
 export default defineComponent({
   components: {
+    BackLink,
     ChannelLinks,
     CreateRootCommentForm,
     CommentSection,
@@ -37,7 +38,6 @@ export default defineComponent({
     DiscussionHeader,
     DiscussionVotes,
     ErrorBanner,
-    LeftArrowIcon,
     CreateButton,
     PrimaryButton,
     RequireAuth,
@@ -106,12 +106,12 @@ export default defineComponent({
     });
 
     const comments = computed(() => {
-      if (
-        getDiscussionChannelError.value
-      ) {
+      if (getDiscussionChannelError.value) {
         return [];
       }
-      return getDiscussionChannelResult.value?.getCommentSection?.Comments || [];
+      return (
+        getDiscussionChannelResult.value?.getCommentSection?.Comments || []
+      );
     });
 
     const loadedRootCommentCount = computed(() => {
@@ -190,7 +190,8 @@ export default defineComponent({
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
 
-          offset.value = offset.value + fetchMoreResult.getCommentSection.Comments.length;
+          offset.value =
+            offset.value + fetchMoreResult.getCommentSection.Comments.length;
 
           // We need to update the result of GET_COMMENT_SECTION
           // to include the new comments.
@@ -243,21 +244,18 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full max-w-7xl space-y-2 py-2 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
+  <div
+    class="w-full max-w-7xl space-y-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800"
+  >
     <div
       v-if="route.name === 'DiscussionDetail'"
       class="align-center mx-1 mt-2 flex w-full justify-between px-2"
     >
-      <div>
-        <router-link
-          data-testid="discussion-detail-back-link"
-          :to="`/channels/c/${channelId}/discussions`"
-        >
-          <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 px-1 pb-1" />
-          <span class="text-xs underline">{{ `Back to List` }}</span>
-        </router-link>
-      </div>
-      <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
+      <BackLink :link="`/channels/c/${channelId}/discussions`" />
+      <RequireAuth
+        :full-width="false"
+        class="flex max-w-sm justify-end"
+      >
         <template #has-auth>
           <CreateButton
             class="ml-2"
@@ -266,7 +264,10 @@ export default defineComponent({
           />
         </template>
         <template #does-not-have-auth>
-          <PrimaryButton class="ml-2" :label="'New Discussion'" />
+          <PrimaryButton
+            class="ml-2"
+            :label="'New Discussion'"
+          />
         </template>
       </RequireAuth>
     </div>
@@ -276,15 +277,16 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <v-row v-if="discussion" class="mt-1 flex justify-center">
+    <v-row
+      v-if="discussion"
+      class="mt-1 flex justify-center"
+    >
       <v-col>
         <div class="space-y-3 px-2">
           <div class="mb-3 w-full">
             <div ref="discussionDetail">
               <div class="min-w-0">
-                <h2
-                  class="text-wrap px-1 text-2xl font-bold sm:tracking-tight"
-                >
+                <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
                   {{
                     discussion && discussion.title
                       ? discussion.title
@@ -297,7 +299,7 @@ export default defineComponent({
         </div>
         <div class="space-y-3 px-2">
           <div
-            class="dark:bg-gray-950 rounded-lg  bg-white dark:bg-gray-700 px-4 pt-3 pb-2"
+            class="dark:bg-gray-950 rounded-lg bg-white px-4 pb-2 pt-3 dark:bg-gray-700"
           >
             <DiscussionHeader
               :discussion="discussion"
@@ -331,7 +333,7 @@ export default defineComponent({
           :discussion-channel="activeDiscussionChannel"
           :previous-offset="previousOffset"
         />
-        <div  class="ml-2 my-6 mb-2 rounded-lg">
+        <div class="my-6 mb-2 ml-2 rounded-lg">
           <CommentSection
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"

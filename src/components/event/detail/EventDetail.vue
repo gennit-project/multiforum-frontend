@@ -9,7 +9,6 @@ import { relativeTime } from "../../../dateTimeUtils";
 import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
-import LeftArrowIcon from "../../icons/LeftArrowIcon.vue";
 import EventFooter from "./EventFooter.vue";
 import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
@@ -17,18 +16,21 @@ import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
+import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
+import BackLink from "@/components/generic/buttons/BackLink.vue";
 
 export default defineComponent({
   components: {
+    BackLink,
     ErrorBanner,
     EventFooter,
     EventHeader,
-    LeftArrowIcon,
     CreateButton,
     GenericButton,
     RequireAuth,
     PrimaryButton,
     Tag,
+    UsernameWithTooltip,
   },
   props: {
     compactMode: {
@@ -226,15 +228,9 @@ export default defineComponent({
       <div class="w-full">
         <div
           v-if="route.name === 'EventDetail'"
-          :class="'align-center mt-2 flex justify-between px-1'"
+          :class="'align-center mt-2 flex justify-between'"
         >
-          <router-link
-            :to="`/channels/c/${channelId}/events/search`"
-            class="text-xs underline"
-          >
-            <LeftArrowIcon class="mr-1 inline-flex h-4 w-4 pb-1" />
-            {{ `Event list in c/${channelId}` }}
-          </router-link>
+          <BackLink :link="`/channels/c/${channelId}/events/search`" />
           <div
             v-if="channelId && eventData"
             class="mt-4 flex flex-shrink-0 items-center md:ml-4 md:mt-0"
@@ -339,9 +335,21 @@ export default defineComponent({
               </button>
 
               <div class="p-4">
-                <p v-if="eventData.isHostedByOP">
-                  <span class="font-bold">Hosted by OP</span>
-                </p>
+                <router-link
+                  v-if="eventData.isHostedByOP && eventData.Poster"
+                  class="underline"
+                  :to="`/u/${eventData.Poster.username}`"
+                >
+                  <UsernameWithTooltip
+                    v-if="eventData.Poster.username"
+                    :username="eventData.Poster.username"
+                    :comment-karma="eventData.Poster.commentKarma ?? 0"
+                    :discussion-karma="eventData.Poster.discussionKarma ?? 0"
+                    :account-created="eventData.Poster.createdAt"
+                  >
+                    {{ eventData.Poster.username }}
+                  </UsernameWithTooltip>
+                </router-link>
 
                 <h2 class="text-md mt-4">
                   Add to Calendar
