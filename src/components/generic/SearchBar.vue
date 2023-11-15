@@ -87,7 +87,7 @@ export default defineComponent({
           rounded-lg
           leading-5
           w-full
-          dark:bg-gray-500
+          dark:bg-gray-700
           dark:text-white
           placeholder-gray-400
           dark:placeholder-gray-400

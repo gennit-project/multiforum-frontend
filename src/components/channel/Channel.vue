@@ -65,6 +65,9 @@ export default defineComponent({
       return channel;
     });
     
+    
+
+
 
     const discussionId = computed(() => {
       return route.value.params.discussionId;
@@ -145,7 +148,7 @@ export default defineComponent({
         fluid
         class="h-full"
       >
-        <v-row class="h-full flex flex-row">
+        <v-row class="flex h-full flex-row">
           <v-col
             v-if="channelId"
             cols="3"

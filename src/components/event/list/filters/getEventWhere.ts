@@ -40,8 +40,8 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   } = filterValues;
   // These conditions will be added to the filter
   // object under an AND operator.
-  let conditions: EventWhere[] = []
-  
+  let conditions: EventWhere[] = [];
+
   if (!channelId) {
     // In sitewide view, require at least one channel.
     conditions.push({
@@ -63,7 +63,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   }
 
   if (hasVirtualEventUrl) {
-    conditions.push({ "NOT": { virtualEventUrl: null } });
+    conditions.push({ NOT: { virtualEventUrl: null } });
   }
 
   // Text search filter
@@ -71,27 +71,25 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     conditions.push({
       OR: [
         {
-          title_CONTAINS: searchInput
+          title_CONTAINS: searchInput,
         },
         {
-          description_CONTAINS: searchInput
+          description_CONTAINS: searchInput,
         },
       ],
     });
   }
   // Location filter
   switch (locationFilter) {
-   
-
     case LocationFilterTypes.NONE:
       if (showMap) {
-        conditions.push({ NOT: { locationName: null }});
+        conditions.push({ NOT: { locationName: null } });
       }
       break;
     case LocationFilterTypes.ONLY_WITH_ADDRESS:
       // Filter by events that have a location
       // with coordinates
-      conditions.push({ NOT: { locationName: null }});
+      conditions.push({ NOT: { locationName: null } });
       break;
 
     case LocationFilterTypes.ONLY_VIRTUAL:
@@ -122,7 +120,11 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   }
 
   if (onlineOnly) {
-    conditions.push({ locationName: null });
+    conditions.push({
+      NOT: {
+        virtualEventUrl: null,
+      },
+    });
   }
 
   // Tag filter
@@ -148,8 +150,8 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // that channel, even if a channel filter has accidentally
     // gotten into the query params.
     conditions.push({
-      EventChannels_SOME: { 
-        channelUniqueName: channelId
+      EventChannels_SOME: {
+        channelUniqueName: channelId,
       },
     });
   } else if (truthyChannels.length > 0) {
@@ -162,7 +164,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       (prev: any, curr: any) => {
         return prev.concat({ channelUniqueName_CONTAINS: curr });
       },
-      []
+      [],
     );
     conditions.push({
       EventChannels_SOME: {
@@ -281,23 +283,23 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
 
   return {
     AND: (conditions = [
-      // Ignore the typescript warnings. These filters are part 
-      // of the real EventWhere on the backend, but not the 
+      // Ignore the typescript warnings. These filters are part
+      // of the real EventWhere on the backend, but not the
       // auto-generated typescript types that exist only
       // for our convenience on the frontend.
       // @ts-ignore
       ...conditions,
-       // @ts-ignore
+      // @ts-ignore
       // {
       //   EventChannelsAggregate: {
       //     count_GT: 0,
       //   },
       // },
-       // @ts-ignore
+      // @ts-ignore
       {
         startTime_GT: `${beginningOfDateRangeISO}`,
       },
-       // @ts-ignore
+      // @ts-ignore
       {
         startTime_LT: `${endOfDateRangeISO}`,
       },

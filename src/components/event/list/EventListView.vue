@@ -45,7 +45,9 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        showOnlineOnly: false,
+        // in the channel view, we want to show all events.
+        // in the sitewide online event list, only show online events.
+        showOnlineOnly: channelId.value ? false : true,
       }),
     );
 
