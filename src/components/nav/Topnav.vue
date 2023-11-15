@@ -167,7 +167,8 @@ export default defineComponent({
         </div>
       </div>
       <div
-        class="flex items-center justify-end space-x-2 md:flex md:flex-1 lg:w-0"
+        v-if="!smAndDown"
+        class="flex items-center justify-end space-x-2 md:flex md:flex-1"
       >
         <button
           v-if="!isAuthenticated"
@@ -179,7 +180,7 @@ export default defineComponent({
         </button>
       </div>
       <div class="flex items-center space-x-4">
-        <CreateAnythingButton v-if="!smAndDown" />
+        <CreateAnythingButton />
         <ThemeSwitcher />
         <div
           v-if="isAuthenticated && username"
