@@ -39,7 +39,7 @@ export default defineComponent({
   >
     <div>
       <MenuButton
-        class="focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 dark:bg-black"
+        class="focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
       >
         <slot>
           Options
