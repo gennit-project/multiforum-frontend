@@ -337,9 +337,9 @@ export default defineComponent({
               <div class="p-4">
                 <router-link
                   v-if="eventData.isHostedByOP && eventData.Poster"
-                  class="underline"
                   :to="`/u/${eventData.Poster.username}`"
                 >
+                  Hosted by
                   <UsernameWithTooltip
                     v-if="eventData.Poster.username"
                     :username="eventData.Poster.username"
@@ -347,7 +347,9 @@ export default defineComponent({
                     :discussion-karma="eventData.Poster.discussionKarma ?? 0"
                     :account-created="eventData.Poster.createdAt"
                   >
-                    {{ eventData.Poster.username }}
+                    <span class="underline">{{
+                      eventData.Poster.username
+                    }}</span>
                   </UsernameWithTooltip>
                 </router-link>
 
