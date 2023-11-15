@@ -35,14 +35,20 @@ export default defineComponent({
 </script>
 
 <template>
-  <RequireAuth class="align-middle" :full-width="false">
+  <RequireAuth
+    class="align-middle"
+    :full-width="false"
+  >
     <template #has-auth>
-      <DropdownMenu as="div" class="relative inline-block text-left">
+      <DropdownMenu
+        as="div"
+        class="relative inline-block text-left"
+      >
         <MenuButton
           data-testid="create-anything-button"
           class="bg-white border dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-black font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-md text-sm px-4 hover:bg-gray-200 focus:outline-none dark:text-white"
         >
-          + Create
+          Create
           <ChevronDownIcon
             class="-mr-1 ml-1 mt-0.5 h-3 w-3"
             aria-hidden="true"

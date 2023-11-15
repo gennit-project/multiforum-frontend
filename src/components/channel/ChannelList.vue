@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import { ChannelData } from "@/types/channelTypes";
+import { Channel } from "@/__generated__/graphql";
 import ChannelListItem from "@/components/channel/ChannelListItem.vue";
 import LoadMore from "../generic/LoadMore.vue";
 
@@ -11,7 +11,7 @@ export default defineComponent({
   },
   props: {
     channels: {
-      type: Array as PropType<Array<ChannelData>>,
+      type: Array as PropType<Array<Channel>>,
       default: () => {
         return [];
       },

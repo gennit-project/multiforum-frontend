@@ -79,10 +79,10 @@ export default defineComponent({
       } else {
         // for the channel buttons
         if (this.channelMode) {
-          return "bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-500 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:text-white";
+          return "bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500 dark:hover:text-white";
         }
         // for the tag buttons in the filter components
-        return `bg-gray-200 dark:bg-gray-500 hover:bg-gray-300 dark:hover:bg-gray-400 pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
+        return `bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
       }
     },
   },

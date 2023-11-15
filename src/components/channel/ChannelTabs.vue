@@ -4,18 +4,26 @@ import TabButton from "@/components/channel/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
+import CogIcon from "@/components/icons/CogIcon.vue";
 import InfoIcon from "@/components/icons/InfoIcon.vue";
 import { Channel } from "@/__generated__/graphql";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { useQuery } from "@vue/apollo-composable";
 
 export default defineComponent({
   name: "ChannelTabs",
   components: {
+    CogIcon,
     TabButton,
     InfoIcon,
     CalendarIcon,
     DiscussionIcon,
   },
   props: {
+    adminList: {
+      type: Array,
+      default: () => [],
+    },
     channel: {
       type: Object as () => Channel,
       required: true,
@@ -42,16 +50,30 @@ export default defineComponent({
         channelId.value = to.params.channelId;
       },
     );
-    const tabRoutes = computed(() => ({
-      discussions: `/channels/c/${channelId.value}/discussions`,
-      events: `/channels/c/${channelId.value}/events/search`,
-      about: `/channels/c/${channelId.value}/about`,
-    }));
 
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+    const username = computed(() => {
+      return localUsernameResult.value.username;
+    });
+    const tabRoutes = computed(() => {
+      let routes = {
+        discussions: `/channels/c/${channelId.value}/discussions`,
+        events: `/channels/c/${channelId.value}/events/search`,
+        about: `/channels/c/${channelId.value}/about`,
+        settings: `/channels/c/${channelId.value}/edit`,
+      };
+
+      return routes;
+    });
+console.log({
+  username: username.value,
+  adminList: props.adminList,
+})
     return {
       channelId,
       mdAndDown,
       tabRoutes,
+      username,
     };
   },
   data() {
@@ -106,6 +128,16 @@ export default defineComponent({
       >
         <InfoIcon class="h-6 w-6 shrink-0" />
       </TabButton>
+      <TabButton
+        v-if="username && adminList.includes(username)"
+        :to="tabRoutes.settings"
+        :label="'Settings'"
+        :is-active="route.name.includes('Edit')"
+        :vertical="true"
+        :show-count="false"
+      >
+        <CogIcon class="h-6 w-6 shrink-0" />
+      </TabButton>
     </nav>
     <nav
       v-else
@@ -136,6 +168,15 @@ export default defineComponent({
         :label="'About'"
         :is-active="route.name.includes('About')"
         :show-count="showCounts"
+      >
+        <InfoIcon class="h-5 w-5 shrink-0" />
+      </TabButton>
+      <TabButton
+        v-if="username && adminList.includes(username)"
+        :to="tabRoutes.settings"
+        :label="'Settings'"
+        :is-active="route.name.includes('Edit')"
+        :show-count="false"
       >
         <InfoIcon class="h-5 w-5 shrink-0" />
       </TabButton>

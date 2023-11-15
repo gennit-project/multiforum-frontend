@@ -5,7 +5,7 @@ import ChannelList from "./ChannelList.vue";
 import { GET_CHANNELS } from "@/graphQLData/channel/queries";
 import { GET_TAGS } from "@/graphQLData/tag/queries";
 import { TagData } from "@/types/tagTypes.d";
-import { ChannelData } from "@/types/channelTypes.d";
+import { Channel } from "@/__generated__/graphql";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import TagPicker from "@/components/tag/TagPicker.vue";
@@ -174,7 +174,7 @@ export default defineComponent({
     getTagOptionLabels(options: Array<TagData>) {
       return options.map((tag) => tag.text);
     },
-    getChannelOptionLabels(options: Array<ChannelData>) {
+    getChannelOptionLabels(options: Array<Channel>) {
       return options.map((channel) => channel.uniqueName);
     },
     updateSearchResult(input: string) {

@@ -80,7 +80,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid class="max-w-4xl">
+  <v-container
+    fluid
+    class="max-w-4xl"
+  >
     <div v-if="channelLoading">
       Loading...
     </div>
@@ -104,7 +107,7 @@ export default defineComponent({
         <div class="space-y-4 mt-5 sm:space-y-5">
           <FormRow
             section-title="Title"
-            :required="true"
+            :required="!editMode"
           >
             <template #content>
               <TextInput
@@ -115,6 +118,21 @@ export default defineComponent({
                 :placeholder="'Add unique name'"
                 :full-width="true"
                 @update="$emit('updateFormValues', { uniqueName: $event })"
+              />
+            </template>
+          </FormRow>
+          <FormRow
+            section-title="Display Name"
+            :required="false"
+          >
+            <template #content>
+              <TextInput
+                ref="displayNameInputRef"
+                :test-id="'display-name-input'"
+                :value="formValues.displayName"
+                :placeholder="'Add a more human readable display name'"
+                :full-width="true"
+                @update="$emit('updateFormValues', { displayName: $event })"
               />
             </template>
           </FormRow>

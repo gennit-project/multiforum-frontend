@@ -12,6 +12,7 @@ export const GET_CHANNEL = gql`
   query getChannel($uniqueName: String!, $now: DateTime, $cutoffDate: DateTime) {
     channels(where: { uniqueName: $uniqueName }) {
       uniqueName
+      displayName
       description
       Tags {
         text
@@ -69,6 +70,7 @@ export const GET_CHANNELS = gql`
       options: { limit: $limit, offset: $offset, sort: $sort }
     ) {
       uniqueName
+      displayName
       description
       Tags {
         text

@@ -15,6 +15,11 @@ import { CreateEditChannelFormValues } from "@/types/channelTypes";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
+import {
+  ChannelTagsConnectOrCreateFieldInput,
+  ChannelTagsDisconnectFieldInput,
+  ChannelUpdateInput,
+} from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "EditChannel",
@@ -61,6 +66,7 @@ export default defineComponent({
       if (channel.value) {
         return {
           uniqueName: channel.value.uniqueName,
+          displayName: channel.value.displayName,
           description: channel.value.description,
           selectedTags: channel.value.Tags.map((tag: TagData) => {
             return tag.text;
@@ -70,13 +76,14 @@ export default defineComponent({
 
       return {
         uniqueName: "",
+        displayName: "",
         description: "",
         selectedTags: [],
       };
     };
 
     const formValues = ref<CreateEditChannelFormValues>(
-      getDefaultChannelValues()
+      getDefaultChannelValues(),
     );
 
     const username = computed(() => {
@@ -89,21 +96,22 @@ export default defineComponent({
           return admin.username;
         });
       }
-      return []
-    })
+      return [];
+    });
 
-    const dataLoaded = ref(false); 
+    const dataLoaded = ref(false);
 
     onGetChannelResult((value) => {
       if (value.loading) {
         return;
       }
-      
+
       const channel = value.data.channels[0];
 
       formValues.value = {
         uniqueName: channel.uniqueName,
         description: channel.description,
+        displayName: channel.displayName,
         selectedTags: channel.Tags.map((tag: TagData) => {
           return tag.text;
         }),
@@ -113,8 +121,8 @@ export default defineComponent({
     });
 
     const channelUpdateInput = computed(() => {
-      const tagConnections = formValues.value.selectedTags.map(
-        (tag: string) => {
+      const tagConnections: ChannelTagsConnectOrCreateFieldInput[] =
+        formValues.value.selectedTags.map((tag: string) => {
           return {
             onCreate: {
               node: {
@@ -127,53 +135,54 @@ export default defineComponent({
               },
             },
           };
-        }
-      );
-
-      const tagDisconnections = existingTags.value
-        .filter((tag: string) => {
-          return !formValues.value.selectedTags.includes(tag);
-        })
-        .map((tag: string) => {
-          return {
-            where: {
-              node: {
-                text: tag,
-              },
-            },
-          };
         });
 
-      return {
-        description: formValues.value.description,
-        Tags: {
-          connectOrCreate: tagConnections,
-          disconnect: tagDisconnections,
-        },
-        Admins: {
-          connect: {
-            where: {
-              node: {
-                username: username.value,
+      const tagDisconnections: ChannelTagsDisconnectFieldInput[] =
+        existingTags.value
+          .filter((tag: string) => {
+            return !formValues.value.selectedTags.includes(tag);
+          })
+          .map((tag: string) => {
+            return {
+              where: {
+                node: {
+                  text: tag,
+                },
               },
-            },
+            };
+          });
+
+      const result: ChannelUpdateInput = {
+        description: formValues.value.description,
+        displayName: formValues.value.displayName,
+        Tags: [
+          {
+            connectOrCreate: tagConnections,
+            disconnect: tagDisconnections,
           },
-        },
+        ],
+        Admins: [
+          {
+            connect: [
+              {
+                where: {
+                  node: {
+                    username: username.value,
+                  },
+                },
+              },
+            ],
+          },
+        ],
       };
+      return result;
     });
 
     const {
       mutate: updateChannel,
       error: updateChannelError,
       onDone,
-    } = useMutation(UPDATE_CHANNEL, () => ({
-      variables: {
-        where: {
-          uniqueName: channelId,
-        },
-        update: channelUpdateInput.value,
-      },
-    }));
+    } = useMutation(UPDATE_CHANNEL);
 
     onDone((response: any) => {
       const channelId = response.data.updateChannels.channels[0].uniqueName;
@@ -188,6 +197,7 @@ export default defineComponent({
 
     return {
       channelId,
+      channelUpdateInput,
       existingTags,
       formValues,
       dataLoaded,
@@ -202,7 +212,12 @@ export default defineComponent({
   },
   methods: {
     async submit() {
-      this.updateChannel();
+      this.updateChannel({
+        where: {
+          uniqueName: this.channelId,
+        },
+        update: this.channelUpdateInput,
+      });
     },
     updateFormValues(data: CreateEditChannelFormValues) {
       // Update all form values at once because it makes cleaner
@@ -213,6 +228,7 @@ export default defineComponent({
         ...existingValues,
         ...data,
       };
+      console.log("formValues", this.formValues);
     },
   },
 });
@@ -243,5 +259,4 @@ export default defineComponent({
   </RequireAuth>
 </template>
 
-<style>
-</style>
+<style></style>

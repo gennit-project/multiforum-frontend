@@ -3,7 +3,6 @@ import { defineComponent, computed, ref, PropType } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
-import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
 import Avatar from "../user/Avatar.vue";
@@ -25,7 +24,6 @@ const getDateSectionFormat = (date: string) => {
 export default defineComponent({
   name: "AboutPage",
   components: {
-    RequireAuth,
     Tag,
     Avatar,
     UsernameWithTooltip,
@@ -33,11 +31,11 @@ export default defineComponent({
   props: {
     channel: {
       type: Object as PropType<Channel>,
-      default: () => null,
+      required: true,
     },
     eventChannels: {
       type: Array as PropType<Array<EventChannel>>,
-      default: () => [],
+      required: true,
     },
   },
   setup(props) {
@@ -233,11 +231,23 @@ export default defineComponent({
           :is-large="true"
         />
         <h1
-          v-if="channelId"
+          v-if="channelId && !channel?.displayName"
           class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
         >
           {{ channelId }}
         </h1>
+        <div v-if="channel?.displayName">
+          <h1
+            class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+          >
+            {{ channel?.displayName }}
+          </h1>
+          <span
+            class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+          >
+            {{ channelId }}
+          </span>
+        </div>
       </div>
     </div>
 
@@ -450,28 +460,6 @@ export default defineComponent({
           </p>
         </div>
       </div>
-      <RequireAuth
-        :require-ownership="true"
-        :owners="ownerList"
-        :justify-left="true"
-        class="w-full"
-      >
-        <template #has-auth>
-          <div class="flex w-full justify-between border-gray-500">
-            <span
-              class="my-2 mb-2 w-full px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
-            >
-              Admin Actions
-            </span>
-          </div>
-          <router-link
-            class="my-3 px-6 text-sm underline"
-            :to="`/channels/c/${channelId}/edit`"
-          >
-            Edit
-          </router-link>
-        </template>
-      </RequireAuth>
     </div>
   </div>
 </template>

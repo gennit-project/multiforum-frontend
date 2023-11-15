@@ -10,6 +10,7 @@ import { router } from "@/router";
 import gql from "graphql-tag";
 import Avatar from "@/components/user/Avatar.vue";
 import { DateTime } from "luxon";
+import { User } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -64,10 +65,6 @@ export default defineComponent({
       const channel = getChannelResult.value.channels[0];
       return channel;
     });
-    
-    
-
-
 
     const discussionId = computed(() => {
       return route.value.params.discussionId;
@@ -76,9 +73,19 @@ export default defineComponent({
     const eventId = computed(() => {
       return route.value.params.eventId;
     });
+
+    const adminList = computed(() => {
+      if (!channel.value) {
+        return [];
+      }
+      return channel.value.Admins.map((user: User) => {
+        return user.username;
+      });
+    });
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
 
     return {
+      adminList,
       channel,
       channelId,
       discussionId,
@@ -129,9 +136,10 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel && smAndDown"
+          class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
           :vertical="false"
           :show-counts="true"
-          class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
+          :admin-list="adminList"
           :route="route"
           :channel="channel"
         />
@@ -156,15 +164,15 @@ export default defineComponent({
             <ChannelSidebar
               v-if="channel"
               :channel="channel"
-              :event-channels="channel?.EventChannels"
+              :event-channels="channel.EventChannels"
               class="sticky top-0 w-72"
             >
               <ChannelTabs
-                v-if="channel && route.name !== 'EditChannel'"
                 :route="route"
                 :vertical="true"
                 :show-counts="true"
                 :channel="channel"
+                :admin-list="adminList"
               />
             </ChannelSidebar>
           </v-col>
