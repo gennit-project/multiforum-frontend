@@ -211,7 +211,7 @@ export default defineComponent({
       </TabList>
       <TabPanels class="h-50 mt-2">
         <TabPanel
-          class="-m-0.5 rounded-md px-0.5 py-1"
+          class="-m-0.5 rounded-md px-0.5 py-1 h-52"
           :data-testid="testId"
         >
           <label
@@ -221,7 +221,7 @@ export default defineComponent({
           <textarea
             ref="editor"
             name="comment"
-            rows="10"
+            rows="8"
             :placeholder="placeholder"
             class="block w-full rounded-md border-gray-200 font-mono text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
@@ -243,7 +243,7 @@ export default defineComponent({
             >
           </label>
         </TabPanel>
-        <TabPanel class="-m-0.5 rounded-md p-0.5">
+        <TabPanel class="-m-0.5 rounded-md p-0.5 h-52">
           <v-md-preview
             :text="text"
             class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-500 dark:text-gray-100"
