@@ -228,7 +228,6 @@ export default defineComponent({
         ...existingValues,
         ...data,
       };
-      console.log("formValues", this.formValues);
     },
   },
 });

@@ -65,10 +65,6 @@ export default defineComponent({
 
       return routes;
     });
-console.log({
-  username: username.value,
-  adminList: props.adminList,
-})
     return {
       channelId,
       mdAndDown,

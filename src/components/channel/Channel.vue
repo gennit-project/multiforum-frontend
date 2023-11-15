@@ -154,7 +154,7 @@ export default defineComponent({
     >
       <v-container
         fluid
-        class="h-full"
+        class="h-fit"
       >
         <v-row class="flex h-full flex-row">
           <v-col
@@ -165,7 +165,7 @@ export default defineComponent({
               v-if="channel"
               :channel="channel"
               :event-channels="channel.EventChannels"
-              class="sticky top-0 w-72"
+              class="sticky top-0 w-72 overflow-auto"
             >
               <ChannelTabs
                 :route="route"

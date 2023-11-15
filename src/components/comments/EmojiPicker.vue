@@ -74,8 +74,11 @@ export default defineComponent({
         if (emojiPickerElement.shadowRoot) {
           const inputElement =
             emojiPickerElement.shadowRoot.querySelector("#search");
+
           if (inputElement) {
-            inputElement.focus();
+            setTimeout(() => {
+              inputElement.focus();
+            }, 300); // Delay focus to ensure the element is ready
           } else {
             console.error("Input element not found in shadow DOM");
           }
