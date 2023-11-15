@@ -177,7 +177,10 @@ export default defineComponent({
             :class="discussionIdInParams === discussionId ? 'text-black' : ''"
             class="text-md mb-2 cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
           >
-            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+            <HighlightedSearchTerms
+              :text="title"
+              :search-input="searchInput"
+            />
           </p>
         </router-link>
 
@@ -187,7 +190,7 @@ export default defineComponent({
         >
           <MarkdownPreview
             :text="discussion.body"
-            :disable-gallery="true"
+            :disable-gallery="false"
             class="-ml-4"
           />
         </div>
@@ -207,7 +210,7 @@ export default defineComponent({
         <div
           class="font-medium mb-2 flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
         >
-          <span>{{ `Posted ${relativeTime} by `}}
+          <span>{{ `Posted ${relativeTime} by ` }}
             <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
@@ -234,7 +237,10 @@ export default defineComponent({
           </button>
         </router-link>
 
-        <MenuButton v-else-if="discussion" :items="discussionDetailOptions">
+        <MenuButton
+          v-else-if="discussion"
+          :items="discussionDetailOptions"
+        >
           <button class="-ml-1 flex items-center rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-2 dark:hover:bg-gray-500 pb-2">
             <i class="fa-regular fa-comment mr-2 h-4 w-4" />
             {{
@@ -244,7 +250,10 @@ export default defineComponent({
                 channelCount === 1 ? "channel" : "channels"
               }`
             }}
-            <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
+            <ChevronDownIcon
+              class="-mr-1 ml-2 h-4 w-4"
+              aria-hidden="true"
+            />
           </button>
         </MenuButton>
       </div>

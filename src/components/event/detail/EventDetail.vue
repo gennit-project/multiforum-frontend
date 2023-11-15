@@ -16,7 +16,7 @@ import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
-import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 
 export default defineComponent({
@@ -30,7 +30,7 @@ export default defineComponent({
     RequireAuth,
     PrimaryButton,
     Tag,
-    UsernameWithTooltip,
+    MarkdownPreview,
   },
   props: {
     compactMode: {
@@ -319,9 +319,11 @@ export default defineComponent({
               class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
             >
               <EventHeader :event-data="eventData" />
-              <v-md-preview
+              <MarkdownPreview
                 v-if="eventData.description"
                 :text="visibleDescription"
+                :disable-gallery="false"
+                class="-ml-4"
               />
               <button
                 v-if="
@@ -335,24 +337,6 @@ export default defineComponent({
               </button>
 
               <div class="p-4">
-                <router-link
-                  v-if="eventData.isHostedByOP && eventData.Poster"
-                  :to="`/u/${eventData.Poster.username}`"
-                >
-                  Hosted by
-                  <UsernameWithTooltip
-                    v-if="eventData.Poster.username"
-                    :username="eventData.Poster.username"
-                    :comment-karma="eventData.Poster.commentKarma ?? 0"
-                    :discussion-karma="eventData.Poster.discussionKarma ?? 0"
-                    :account-created="eventData.Poster.createdAt"
-                  >
-                    <span class="underline">{{
-                      eventData.Poster.username
-                    }}</span>
-                  </UsernameWithTooltip>
-                </router-link>
-
                 <h2 class="text-md mt-4">
                   Add to Calendar
                 </h2>

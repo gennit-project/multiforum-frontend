@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import { useRoute } from "vue-router";
-import { EventData } from "@/types/eventTypes";
+import { Event } from "@/__generated__/graphql";
 import { CANCEL_EVENT } from "@/graphQLData/event/mutations";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
@@ -19,6 +19,7 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { DELETE_EVENT } from "@/graphQLData/event/mutations";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 
 export default defineComponent({
   name: "EventHeader",
@@ -32,10 +33,11 @@ export default defineComponent({
     Notification,
     WarningModal,
     ErrorBanner,
+    UsernameWithTooltip,
   },
   props: {
     eventData: {
-      type: Object as PropType<EventData>,
+      type: Object as PropType<Event>,
       required: true,
     },
   },
@@ -153,7 +155,7 @@ export default defineComponent({
     });
 
     const menuItems = computed(() => {
-      const out = []
+      const out = [];
       if (props.eventData) {
         out.push({
           label: "Copy Link",
@@ -179,10 +181,10 @@ export default defineComponent({
             label: "Cancel",
             value: "",
             event: "handleCancel",
-          })
+          });
         }
       }
-      
+
       return out;
     });
 
@@ -311,15 +313,33 @@ export default defineComponent({
         </div>
         <span>{{ eventData.cost }}</span>
       </li>
+      <li class="hanging-indent flex items-start">
+        <div class="mr-3 h-5 w-5">
+          <i class="fa-regular fa-user h-5" />
+        </div>
+        <router-link
+          v-if="eventData.isHostedByOP && eventData.Poster"
+          :to="`/u/${eventData.Poster.username}`"
+        >
+          Hosted by
+          <UsernameWithTooltip
+            v-if="eventData.Poster.username"
+            :username="eventData.Poster.username"
+            :comment-karma="eventData.Poster.commentKarma ?? 0"
+            :discussion-karma="eventData.Poster.discussionKarma ?? 0"
+            :account-created="eventData.Poster.createdAt"
+          >
+            <span class="underline">{{ eventData.Poster.username }}</span>
+          </UsernameWithTooltip>
+        </router-link>
+      </li>
     </ul>
     <MenuButton
       v-if="eventData && menuItems.length > 0"
       :items="menuItems"
       @copyLink="copyLink"
       @handleEdit="
-        router.push(
-          `/channels/c/${channelId}/events/e/${eventId}/edit`,
-        )
+        router.push(`/channels/c/${channelId}/events/e/${eventId}/edit`)
       "
       @handleDelete="confirmDeleteIsOpen = true"
       @handleCancel="confirmCancelIsOpen = true"
