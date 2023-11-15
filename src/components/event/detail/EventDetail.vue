@@ -172,7 +172,7 @@ export default defineComponent({
       window.open(this.eventData.virtualEventUrl, "_blank");
     },
     addToGoogleCalendar() {
-      const googleCalendarDateFormat = "yyyyMMdd'T'HHmmss'Z'";
+      const googleCalendarDateFormat = "yyyyMMdd'T'HHmmss"
       let start = DateTime.fromISO(this.eventData.startTime).toFormat(
         googleCalendarDateFormat,
       );
@@ -181,7 +181,7 @@ export default defineComponent({
       );
 
       const baseUrl = "https://www.google.com/calendar/render";
-      const location = encodeURIComponent(this.eventData.address);
+      const location = this.eventData.address ? encodeURIComponent(this.eventData.address) : encodeURIComponent(this.eventData.virtualEventUrl);
       const name = encodeURIComponent(this.eventData.title);
       const details = encodeURIComponent(this.eventData.description);
 
