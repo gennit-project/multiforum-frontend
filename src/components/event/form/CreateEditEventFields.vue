@@ -13,7 +13,8 @@ import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
-import { DateTime, Interval } from "luxon";
+import { DateTime } from "luxon";
+import { getDuration } from "@/components/utils"
 
 export default defineComponent({
   components: {
@@ -112,6 +113,7 @@ export default defineComponent({
       formTitle: props.editMode ? "Edit Event" : "Create Event",
       startTime,
       endTime,
+      getDuration,
       touched: false,
       timeFormat,
       titleInputRef: ref(null),
@@ -240,27 +242,6 @@ export default defineComponent({
 
       this.$emit("updateFormValues", { endTime: mergedValue });
     },
-    getDuration(startTime: string, endTime: string) {
-      if (DateTime.fromISO(startTime) >= DateTime.fromISO(endTime)) {
-        return "";
-      }
-      // Format time as "1h 30m"
-      const obj = Interval.fromDateTimes(
-        DateTime.fromISO(startTime),
-        DateTime.fromISO(endTime),
-      )
-        .toDuration()
-        .shiftTo("hours", "minutes")
-        .toObject();
-
-      if (!obj.hours) {
-        return `${obj.minutes}m`;
-      }
-      if (!obj.minutes) {
-        return `${obj.hours}h`;
-      }
-      return `${obj.hours}h ${obj.minutes}m`;
-    },
     toggleCostField() {
       if (this.formValues?.free) {
         this.$emit("updateFormValues", {
@@ -278,6 +259,35 @@ export default defineComponent({
       this.$emit("updateFormValues", {
         isHostedByOP: !this.formValues.isHostedByOP,
       });
+    },
+    toggleIsAllDayField() {
+      this.$emit("updateFormValues", {
+        isAllDay: !this.formValues.isAllDay,
+      });
+
+      // If it is all day, set the start time
+      // to the beginning of the start date.
+      // Set the end time to the end of the end date.
+      if (this.formValues.isAllDay) {
+        const startTime = DateTime.fromISO(this.formValues.startTime);
+        const endTime = DateTime.fromISO(this.formValues.endTime);
+        const newStartTime = startTime.set({
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        });
+        const newEndTime = endTime.set({
+          hour: 23,
+          minute: 59,
+          second: 59,
+          millisecond: 999,
+        });
+        this.$emit("updateFormValues", {
+          startTime: newStartTime.toISO(),
+          endTime: newEndTime.toISO(),
+        });
+      }
     },
     togglePrivateResidenceField() {
       this.$emit("updateFormValues", {
@@ -423,53 +433,71 @@ export default defineComponent({
             </FormRow>
             <FormRow section-title="Time">
               <template #content>
-                <div class="flex-wrap items-center xl:flex">
-                  <div class="flex flex-wrap items-center gap-2 xl:flex">
-                    <input
-                      data-testid="start-time-date-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                      type="date"
-                      placeholder="Date"
-                      label="Start"
-                      :value="formattedStartTimeDate"
-                      @input="handleStartTimeDateChange($event?.target?.value)"
-                    >
-                    <input
-                      data-testid="start-time-time-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                      type="time"
-                      placeholder="Time"
-                      label="Start Time"
-                      :value="formattedStartTimeTime"
-                      @input="handleStartTimeTimeChange($event?.target?.value)"
-                    >
+                <div class="flex flex-col gap-1">
+                  <div class="flex-wrap items-center xl:flex">
+                    <div class="flex flex-wrap items-center gap-2 xl:flex">
+                      <input
+                        data-testid="start-time-date-input"
+                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
+                        type="date"
+                        placeholder="Date"
+                        label="Start"
+                        :value="formattedStartTimeDate"
+                        @input="
+                          handleStartTimeDateChange($event?.target?.value)
+                        "
+                      >
+                      <input
+                        v-if="!formValues.isAllDay"
+                        data-testid="start-time-time-input"
+                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
+                        type="time"
+                        placeholder="Time"
+                        label="Start Time"
+                        :value="formattedStartTimeTime"
+                        @input="
+                          handleStartTimeTimeChange($event?.target?.value)
+                        "
+                      >
+                    </div>
+                    <span class="px-1">to</span>
+                    <div class="flex flex-wrap items-center gap-2 xl:flex">
+                      <input
+                        data-testid="end-time-date-input"
+                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
+                        type="date"
+                        placeholder="Date and Time"
+                        label="Start"
+                        :value="formattedEndTimeDate"
+                        @input="handleEndTimeDateChange($event?.target?.value)"
+                      >
+                      <input
+                        v-if="!formValues.isAllDay"
+                        data-testid="end-time-time-input"
+                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
+                        type="time"
+                        placeholder="Time"
+                        label="Start Time"
+                        :value="formattedEndTimeTime"
+                        @input="handleEndTimeTimeChange($event?.target?.value)"
+                      >
+                    </div>
+                    <div class="pl-2">
+                      {{ duration }}
+                    </div>
                   </div>
-                  <span class="px-1">to</span>
-                  <div class="flex flex-wrap items-center gap-2 xl:flex">
-                    <input
-                      data-testid="end-time-date-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                      type="date"
-                      placeholder="Date and Time"
-                      label="Start"
-                      :value="formattedEndTimeDate"
-                      @input="handleEndTimeDateChange($event?.target?.value)"
-                    >
-                    <input
-                      data-testid="end-time-time-input"
-                      class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                      type="time"
-                      placeholder="Time"
-                      label="Start Time"
-                      :value="formattedEndTimeTime"
-                      @input="handleEndTimeTimeChange($event?.target?.value)"
-                    >
+
+                  <div class="flex items-center">
+                    <CheckBox
+                      data-testid="free-input"
+                      class="align-middle"
+                      :checked="formValues.isAllDay"
+                      @input="toggleIsAllDayField"
+                    />
+                    <span class="ml-2 align-middle">All day</span>
                   </div>
-                  <div class="pl-2">
-                    {{ duration }}
-                  </div>
+                  <ErrorMessage :text="datePickerErrorMessage" />
                 </div>
-                <ErrorMessage :text="datePickerErrorMessage" />
               </template>
             </FormRow>
             <FormRow section-title="Virtual Event URL">

@@ -88,7 +88,7 @@ export default defineComponent({
       </TabButton>
       <TabButton
         :to="tabRoutes.events"
-        :label="'Events'"
+        :label="'Calendar'"
         :is-active="route.name.includes('Event')"
         :vertical="true"
         :show-count="showCounts"
@@ -123,7 +123,7 @@ export default defineComponent({
       </TabButton>
       <TabButton
         :to="tabRoutes.events"
-        :label="'Events'"
+        :label="'Calendar'"
         :is-active="route.name.includes('Event')"
         :show-count="showCounts"
         :count="channel.EventChannelsAggregate?.count || 0"

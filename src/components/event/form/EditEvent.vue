@@ -120,6 +120,7 @@ export default defineComponent({
         cost: event.cost || "",
         free: event.free || false,
         isHostedByOP: event.isHostedByOP || false,
+        isAllDay: event.isAllDay || false,
       };
     }
 
@@ -219,6 +220,7 @@ export default defineComponent({
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
         isHostedByOP: formValues.value.isHostedByOP || false,
+        isAllDay: formValues.value.isAllDay || false,
         Tags: [
           {
             connectOrCreate: tagConnections,

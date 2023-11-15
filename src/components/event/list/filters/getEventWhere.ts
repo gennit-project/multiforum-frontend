@@ -227,7 +227,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     return startOfThisWeek.plus({ weeks: 1 });
   };
 
-  const defaultStartDateObj = now.startOf("day");
+  const defaultStartDateObj = now.startOf("hour");
   const defaultEndDateRangeObj = defaultStartDateObj.plus({ years: 2 });
   const defaultStartDateISO = defaultStartDateObj.toISO();
   const defaultEndDateRangeISO = defaultEndDateRangeObj.toISO();

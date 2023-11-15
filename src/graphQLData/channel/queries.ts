@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client/core";
+
 export const GET_CHANNEL_NAMES = gql`
   query getChannelNames($channelWhere: ChannelWhere) {
     channels(where: $channelWhere, options: { limit: 50 }) {
@@ -8,7 +9,7 @@ export const GET_CHANNEL_NAMES = gql`
 `;
 
 export const GET_CHANNEL = gql`
-  query getChannel($uniqueName: String!, $eventChannelWhere: EventChannelWhere) {
+  query getChannel($uniqueName: String!, $now: DateTime, $cutoffDate: DateTime) {
     channels(where: { uniqueName: $uniqueName }) {
       uniqueName
       description
@@ -24,10 +25,30 @@ export const GET_CHANNEL = gql`
       DiscussionChannelsAggregate {
         count
       }
-      EventChannelsAggregate (
-        where: $eventChannelWhere
+      EventChannelsAggregate(
+        where: {
+          NOT: { Event: null }
+          Event: { canceled: false, startTime_GT: $now }
+        }
       ) {
         count
+      }
+      EventChannels(
+        options: { limit: 6 }
+        where: {
+          OR: [
+            { Event: { canceled: false, startTime_GT: $now, endTime_LT: $cutoffDate } }
+            { Event: { canceled: false, startTime_LT: $now, endTime_GT: $now } }
+          ]
+        }
+      ) {
+        Event {
+          id
+          title
+          startTime
+          endTime
+          virtualEventUrl
+        }
       }
     }
   }
@@ -45,11 +66,7 @@ export const GET_CHANNELS = gql`
     }
     channels(
       where: $channelWhere
-      options: { 
-        limit: $limit, 
-        offset: $offset 
-        sort: $sort
-      }
+      options: { limit: $limit, offset: $offset, sort: $sort }
     ) {
       uniqueName
       description

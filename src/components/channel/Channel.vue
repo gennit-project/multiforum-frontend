@@ -9,6 +9,7 @@ import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
 import gql from "graphql-tag";
 import Avatar from "@/components/user/Avatar.vue";
+import { DateTime } from "luxon";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -51,15 +52,9 @@ export default defineComponent({
       loading: getChannelLoading,
     } = useQuery(GET_CHANNEL, {
       uniqueName: channelId,
-      eventChannelWhere:{
-        "NOT": {
-          "Event": null
-        },
-        "Event": {
-          "canceled": false,
-          "startTime_GT": new Date().toISOString()
-        }
-      }
+      now: new Date().toISOString(),
+      // cutoff date is one week from today
+      cutoffDate: DateTime.local().plus({ days: 7 }).toISO(),
     });
 
     const channel = computed(() => {
@@ -69,6 +64,7 @@ export default defineComponent({
       const channel = getChannelResult.value.channels[0];
       return channel;
     });
+    
 
     const discussionId = computed(() => {
       return route.value.params.discussionId;
@@ -155,7 +151,9 @@ export default defineComponent({
             cols="3"
           >
             <ChannelSidebar
-              :channel-id="channelId"
+              v-if="channel"
+              :channel="channel"
+              :event-channels="channel?.EventChannels"
               class="sticky top-0 w-72"
             >
               <ChannelTabs

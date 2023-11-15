@@ -1,7 +1,6 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, PropType } from "vue";
 import { useQuery } from "@vue/apollo-composable";
-import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
@@ -10,6 +9,18 @@ import { useDisplay } from "vuetify";
 import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
+import { EventChannel, Event, Channel } from "@/__generated__/graphql";
+import { DateTime } from "luxon";
+
+const getDateSectionFormat = (date: string) => {
+  const dateObj = DateTime.fromISO(date);
+  // The date should be in the format "Thu Nov 9"
+  return dateObj.toLocaleString({
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+};
 
 export default defineComponent({
   name: "AboutPage",
@@ -19,9 +30,25 @@ export default defineComponent({
     Avatar,
     UsernameWithTooltip,
   },
-  setup() {
+  props: {
+    channel: {
+      type: Object as PropType<Channel>,
+      default: () => null,
+    },
+    eventChannels: {
+      type: Array as PropType<Array<EventChannel>>,
+      default: () => [],
+    },
+  },
+  setup(props) {
     const route = useRoute();
     const router = useRouter();
+    const eventChannelsAggregate = computed(() => {
+      if (props.channel) {
+        return props.channel?.EventChannelsAggregate?.count ?? 0;
+      }
+      return 0;
+    });
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -30,31 +57,16 @@ export default defineComponent({
       return "";
     });
 
-    const {
-      error: getChannelError,
-      result: getChannelResult,
-      loading: getChannelLoading,
-    } = useQuery(GET_CHANNEL, {
-      uniqueName: channelId.value,
-    });
-
-    const channel = computed(() => {
-      if (getChannelLoading.value || getChannelError.value) {
-        return null;
-      }
-      return getChannelResult.value.channels[0];
-    });
-
     const tags = computed(() => {
-      if (channel.value) {
-        return channel.value.Tags;
+      if (props.channel) {
+        return props.channel.Tags;
       }
       return [];
     });
 
     const admins = computed(() => {
-      if (channel.value) {
-        return channel.value.Admins;
+      if (props.channel) {
+        return props.channel.Admins;
       }
       return [];
     });
@@ -85,14 +97,87 @@ export default defineComponent({
       }
       return themeResult.value.theme;
     });
+    // console.log('event channels', props.eventChannels)
+
+    let dateObj: any = {
+      happeningNow: [],
+      happeningToday: [],
+      happeningTomorrow: [],
+      afterTomorrow: [],
+    };
+
+    const happeningNow = (e: Event) => {
+      // We consider an event to be happening now if the start time is in the past
+      // and the end time is in the future
+      return (
+        e.startTime < new Date().toISOString() && // start time is in the past
+        e.endTime > new Date().toISOString()
+      ); // end time is in the future
+    };
+
+    const happeningToday = (e: Event) => {
+      const startTime = DateTime.fromISO(e.startTime ?? "");
+      const now = DateTime.now();
+      return (
+        startTime.day === now.day &&
+        startTime.month === now.month &&
+        startTime.year === now.year
+      );
+    };
+
+    const happeningTomorrow = (e: Event) => {
+      const startTime = DateTime.fromISO(e.startTime ?? "");
+      const tomorrow = DateTime.now().startOf("day").plus({ days: 1 });
+      return (
+        startTime.day === tomorrow.day &&
+        startTime.month === tomorrow.month &&
+        startTime.year === tomorrow.year
+      );
+    };
+
+    const afterTomorrow = (e: Event) => {
+      const startTime = DateTime.fromISO(e.startTime ?? "");
+      const tomorrow = DateTime.now().startOf("day").plus({ days: 1 });
+      return startTime > tomorrow;
+    };
+
+    for (let i = 0; i < props.eventChannels.length; i++) {
+      const event = props.eventChannels[i]?.Event;
+
+      if (!event) {
+        continue;
+      }
+
+      if (happeningNow(event)) {
+        dateObj.happeningNow.push(event);
+      } else if (happeningToday(event)) {
+        dateObj.happeningToday.push(event);
+      } else if (happeningTomorrow(event)) {
+        dateObj.happeningTomorrow.push(event);
+      } else if (afterTomorrow(event)) {
+        dateObj.afterTomorrow.push(event);
+      }
+    }
+
+    let dateSectionObj: any = {};
+
+    for (let i = 0; i < dateObj.afterTomorrow.length; i++) {
+      const event = dateObj.afterTomorrow[i];
+      const date = getDateSectionFormat(event.startTime ?? "");
+      if (!dateSectionObj[date]) {
+        dateSectionObj[date] = [];
+      }
+      dateSectionObj[date].push(event);
+    }
 
     return {
       admins,
-      channel,
+      afterTomorrow,
       channelId,
       confirmDeleteIsOpen: ref(false),
-      getChannelLoading,
-      getChannelError,
+      eventChannelsAggregate,
+      dateObj,
+      dateSectionObj,
       mdAndDown,
       ownerList,
       router,
@@ -110,15 +195,29 @@ export default defineComponent({
         },
       });
     },
+    getSidebarLinkText(event: Event) {
+      // If event.isAllDay is true,
+      // simply return event?.title.
+      // Otherwise, state the title in this format:
+      // "10:00 AM · Event Title"
+      if (event.isAllDay) {
+        return event.title ?? "";
+      }
+      const startTime = DateTime.fromISO(event.startTime ?? "");
+      return `${startTime.toLocaleString(DateTime.TIME_SIMPLE)} · ${
+        event.title
+      }`;
+    },
   },
 });
 </script>
 
 <template>
-  <div
-    class="pb-8 overflow-auto rounded-lg bg-white dark:bg-gray-800"
-  >
-    <div v-if="channelId" class="items-center gap-2">
+  <div class="overflow-auto rounded-lg bg-white pb-8 dark:bg-gray-800">
+    <div
+      v-if="channelId"
+      class="items-center gap-2"
+    >
       <div
         :class="[
           theme === 'dark' ? 'channel-background-dark' : 'channel-background',
@@ -128,7 +227,7 @@ export default defineComponent({
       />
       <div class="p-6">
         <Avatar
-          class="-mt-24 w-24 shadow-sm border-2 dark:border-gray-800"
+          class="-mt-24 w-24 border-2 shadow-sm dark:border-gray-800"
           :text="channelId"
           :is-square="true"
           :is-large="true"
@@ -143,14 +242,7 @@ export default defineComponent({
     </div>
 
     <div class="w-full">
-      <p v-if="getChannelLoading">Loading...</p>
-      <div v-else-if="getChannelError">
-        <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
-          {{ error.message }}
-        </div>
-      </div>
-      <div v-else-if="!channel" class="px-4">Could not find the channel.</div>
-      <div v-else-if="channel">
+      <div v-if="channel">
         <div class="mb-4 w-full px-4">
           <div
             v-if="channel.description"
@@ -181,24 +273,165 @@ export default defineComponent({
               />
             </div>
           </div>
+
+          <div
+            v-if="dateObj.happeningNow.length > 0"
+            class="flex flex-col px-6"
+          >
+            <span
+              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
+            >
+              Happening Now
+            </span>
+            <div
+              v-for="event in dateObj.happeningNow"
+              :key="event?.id"
+              class="my-1 mb-2 flex flex-col gap-2 border-l-4 pl-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+            >
+              <router-link
+                :to="`/channels/c/${channelId}/events/e/${event?.id}`"
+                class="flex items-center"
+              >
+                <span
+                  class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                >
+                  {{ event?.title }}
+                </span>
+              </router-link>
+              <a
+                v-if="event?.virtualEventUrl"
+                target="_blank"
+                :href="event?.virtualEventUrl"
+                class="w-fit rounded-sm bg-blue-600 px-4 py-2 text-blue-100"
+              >
+                Go to online event
+                <i class="fa-solid fa-arrow-up-right-from-square" />
+              </a>
+            </div>
+          </div>
+
+          <div
+            v-if="dateObj.happeningToday.length > 0"
+            class="flex flex-col px-6"
+          >
+            <span
+              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
+            >
+              Today
+            </span>
+            <div
+              v-for="event in dateObj.happeningToday"
+              :key="event?.id"
+              class="my-1 mb-2 flex flex-col gap-2 border-l-4 pl-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+            >
+              <router-link
+                :to="`/channels/c/${channelId}/events/e/${event?.id}`"
+                class="flex items-center"
+              >
+                <span
+                  class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                >
+                  {{ getSidebarLinkText(event) }}
+                </span>
+              </router-link>
+            </div>
+          </div>
+
+          <div
+            v-if="dateObj.happeningTomorrow.length > 0"
+            class="flex flex-col px-6"
+          >
+            <span
+              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
+            >
+              Tomorrow
+            </span>
+            <div
+              v-for="event in dateObj.happeningTomorrow"
+              :key="event?.id"
+              class="my-1 mb-2 flex flex-col gap-2 border-l-4 pl-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+            >
+              <router-link
+                :to="`/channels/c/${channelId}/events/e/${event?.id}`"
+                class="flex items-center"
+              >
+                <span
+                  class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                >
+                  {{ getSidebarLinkText(event) }}
+                </span>
+              </router-link>
+            </div>
+          </div>
+
+          <div v-if="dateObj.afterTomorrow.length > 0">
+            <div
+              v-for="(events, date) in dateSectionObj"
+              :key="date"
+              class="flex flex-col px-6"
+            >
+              <span
+                class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
+              >
+                {{ date }}
+              </span>
+              <div
+                v-for="event in events"
+                :key="event?.id"
+                class="my-1 mb-2 flex flex-col gap-2 border-l-4 pl-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+              >
+                <router-link
+                  :to="`/channels/c/${channelId}/events/e/${event?.id}`"
+                  class="flex items-center"
+                >
+                  <span
+                    class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                  >
+                    {{ getSidebarLinkText(event) }}
+                  </span>
+                </router-link>
+              </div>
+            </div>
+          </div>
+
+          <div
+            v-if="
+              eventChannels.length > 0 &&
+                eventChannelsAggregate > eventChannels.length
+            "
+          >
+            <router-link
+              :to="`/channels/c/${channelId}/events/search`"
+              class="flex items-center px-8 underline"
+            >
+              <span class="text-sm font-bold leading-6"> View all events </span>
+            </router-link>
+          </div>
+
           <div class="flex justify-between">
             <span
-              class="my-2 mb-2 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+              class="my-2 mt-6 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
             >
               Admins
             </span>
           </div>
           <ul
             v-if="channel.Admins.length > 0"
-            class="my-3 px-5 text-sm font-bold"
+            class="px-5 text-sm font-bold"
           >
-            <li v-for="admin in channel.Admins" :key="admin.username">
+            <li
+              v-for="admin in channel.Admins"
+              :key="admin.username"
+            >
               <router-link
                 :key="admin.username"
                 :to="`/u/${admin.username}`"
                 class="flex items-center"
               >
-                <Avatar :text="admin.username" class="pr-2" />
+                <Avatar
+                  :text="admin.username"
+                  class="mr-2 h-6 w-6"
+                />
                 <UsernameWithTooltip
                   v-if="admin.username"
                   :username="admin.username"
@@ -209,7 +442,10 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
-          <p v-else class="mx-6 my-3 mb-6 text-sm dark:text-gray-400">
+          <p
+            v-else
+            class="mx-6 my-3 mb-6 text-sm dark:text-gray-400"
+          >
             This channel does not have any admins.
           </p>
         </div>

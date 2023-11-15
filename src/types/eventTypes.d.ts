@@ -27,6 +27,7 @@ export interface CreateEditEventFormValues {
   cost: string;
   free: boolean;
   isHostedByOP: boolean;
+  isAllDay: boolean;
 }
 export interface EventData {
   id: string;

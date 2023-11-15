@@ -35,7 +35,8 @@ import {
   faChevronDown,
   faDesktop,
   faTicket,
-  faImage
+  faImage,
+  faArrowUpRightFromSquare
  } from "@fortawesome/free-solid-svg-icons";
 
  import hljs from 'highlight.js';
@@ -87,6 +88,7 @@ library.add(faDesktop);
 library.add(faTicket);
 library.add(faFire);
 library.add(faImage);
+library.add(faArrowUpRightFromSquare);
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 

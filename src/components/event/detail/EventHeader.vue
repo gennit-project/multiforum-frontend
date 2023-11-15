@@ -10,7 +10,6 @@ import ClipboardIcon from "@/components/icons/ClipboardIcon.vue";
 import useClipboard from "vue-clipboard3";
 import Notification from "@/components/generic/Notification.vue";
 import { DateTime } from "luxon";
-import { formatDuration, getDurationObj } from "../../../dateTimeUtils";
 import { useRouter } from "vue-router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
@@ -20,6 +19,7 @@ import { DELETE_EVENT } from "@/graphQLData/event/mutations";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
+import { getDuration } from "@/components/utils";
 
 export default defineComponent({
   name: "EventHeader",
@@ -212,6 +212,7 @@ export default defineComponent({
       copyLink,
       eventId,
       channelId,
+      getDuration,
       menuItems,
       route,
       router,
@@ -227,17 +228,6 @@ export default defineComponent({
 
       return startTimeObj.toFormat("cccc LLLL d yyyy");
     },
-    getFormattedTimeString(startTime: string, endTime: string) {
-      const eventDurationObj = getDurationObj(startTime, endTime);
-      const formattedDuration = formatDuration(eventDurationObj);
-
-      const startTimeObj = DateTime.fromISO(startTime);
-
-      const formattedStartTimeString = startTimeObj.toLocaleString(
-        DateTime.TIME_SIMPLE,
-      );
-      return `${formattedStartTimeString} for ${formattedDuration}`;
-    },
   },
 });
 </script>
@@ -252,9 +242,11 @@ export default defineComponent({
           <CalendarIcon />
         </div>
         <span>{{
-          `${getFormattedDateString(
-            eventData.startTime,
-          )}, ${getFormattedTimeString(eventData.startTime, eventData.endTime)}`
+          `${getFormattedDateString(eventData.startTime)}, ${
+            eventData.isAllDay
+              ? "all day"
+              : getDuration(eventData.startTime, eventData.endTime)
+          }`
         }}</span>
       </li>
       <li
@@ -313,14 +305,14 @@ export default defineComponent({
         </div>
         <span>{{ eventData.cost }}</span>
       </li>
-      <li class="hanging-indent flex items-start">
+      <li
+        v-if="eventData.isHostedByOP && eventData.Poster"
+        class="hanging-indent flex items-start"
+      >
         <div class="mr-3 h-5 w-5">
           <i class="fa-regular fa-user h-5" />
         </div>
-        <router-link
-          v-if="eventData.isHostedByOP && eventData.Poster"
-          :to="`/u/${eventData.Poster.username}`"
-        >
+        <router-link :to="`/u/${eventData.Poster.username}`">
           Hosted by
           <UsernameWithTooltip
             v-if="eventData.Poster.username"

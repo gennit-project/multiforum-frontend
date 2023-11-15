@@ -34,6 +34,7 @@ export default defineComponent({
       loading: getChannelLoading,
     } = useQuery(GET_CHANNEL, {
       uniqueName: channelId.value,
+      now: new Date().toISOString(),
     });
 
     const channel = computed(() => {
