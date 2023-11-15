@@ -370,7 +370,6 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="h-screen overflow-auto"
   >
     <v-row class="justify-center">
       <v-col

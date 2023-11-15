@@ -13,10 +13,14 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { apolloClient } from "@/main";
 import { getTimePieces } from "@/utils/dateTimeUtils";
 import { DateTime } from "luxon";
-import { EventData } from "@/types/eventTypes";
 import { gql } from "@apollo/client/core";
 import getDefaultEventFormValues from "./defaultEventFormValues";
 import RequireAuth from "../../auth/RequireAuth.vue";
+import {
+  EventCreateInput,
+  EventTagsConnectOrCreateFieldInput,
+  Event,
+} from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "CreateEvent",
@@ -55,15 +59,16 @@ export default defineComponent({
     const startTimePieces = ref(getTimePieces(defaultStartTimeObj));
 
     const eventCreateInput = computed(() => {
-      const tagConnections = formValues.value.selectedTags;
+      const tagConnections: EventTagsConnectOrCreateFieldInput[] =
+        formValues.value.selectedTags;
 
-      let input = {
+      let input: EventCreateInput = {
         /*
           Using null values by default for required fields such as the
           title prevents the empty string from being created on the back
           end if the title is not provided.
         */
-        title: formValues.value.title || null,
+        title: formValues.value.title || "",
         description: formValues.value.description || null,
         startTime: formValues.value.startTime || null,
         startTimeDayOfWeek: startTimePieces.value.startTimeDayOfWeek || null,
@@ -74,6 +79,8 @@ export default defineComponent({
         free: formValues.value.free || false,
         virtualEventUrl: formValues.value.virtualEventUrl || null,
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
+        isAllDay: formValues.value.isAllDay || false,
+        isHostedByOP: formValues.value.isHostedByOP || false,
         Tags: {
           connectOrCreate: tagConnections,
         },
@@ -122,7 +129,7 @@ export default defineComponent({
           channelConnections: channelConnections.value,
         },
         update: (cache: any, result: any) => {
-          const newEvent: EventData =
+          const newEvent: Event =
             result.data?.createEventWithChannelConnections;
 
           cache.modify({

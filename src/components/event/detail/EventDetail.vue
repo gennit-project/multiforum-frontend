@@ -56,13 +56,7 @@ export default defineComponent({
       result: eventResult,
       error: eventError,
       loading: eventLoading,
-    } = useQuery(
-      GET_EVENT,
-      { id: eventId },
-      {
-        fetchPolicy: "network-only",
-      },
-    );
+    } = useQuery(GET_EVENT, { id: eventId });
 
     const eventData = computed(() => {
       if (
@@ -172,7 +166,7 @@ export default defineComponent({
       window.open(this.eventData.virtualEventUrl, "_blank");
     },
     addToGoogleCalendar() {
-      const googleCalendarDateFormat = "yyyyMMdd'T'HHmmss"
+      const googleCalendarDateFormat = "yyyyMMdd'T'HHmmss";
       let start = DateTime.fromISO(this.eventData.startTime).toFormat(
         googleCalendarDateFormat,
       );
@@ -181,7 +175,9 @@ export default defineComponent({
       );
 
       const baseUrl = "https://www.google.com/calendar/render";
-      const location = this.eventData.address ? encodeURIComponent(this.eventData.address) : encodeURIComponent(this.eventData.virtualEventUrl);
+      const location = this.eventData.address
+        ? encodeURIComponent(this.eventData.address)
+        : encodeURIComponent(this.eventData.virtualEventUrl);
       const name = encodeURIComponent(this.eventData.title);
       const details = encodeURIComponent(this.eventData.description);
 
@@ -342,24 +338,24 @@ export default defineComponent({
                 </h2>
                 <hr>
                 <div class="mt-4 flex">
-                  <div class="flex flex-row gap-2">
+                  <div class="flex flex-row gap-2 text-sm">
                     <div class="flex justify-start">
-                      <GenericButton
-                        :text="'Google Calendar'"
+                      <span
+                        class="cursor-pointer underline"
                         @click="addToGoogleCalendar"
-                      />
+                      >Google Calendar</span>
                     </div>
                     <div class="flex justify-center">
-                      <GenericButton
-                        :text="'iCal'"
+                      <span
+                        class="cursor-pointer underline"
                         @click="addToiCal"
-                      />
+                      >iCal</span>
                     </div>
-                    <div class="flex justify-center">
-                      <GenericButton
-                        :text="'Outlook'"
+                    <div class="flex justify-end">
+                      <span
+                        class="cursor-pointer underline"
                         @click="addToOutlook"
-                      />
+                      >Outlook</span>
                     </div>
                   </div>
                 </div>

@@ -13,7 +13,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <p class="h-4 mt-1 mb-1 text-red-500 text-sm rounded">
+  <p class="h-4 mt-1 mb-1 text-red-500 dark:text-red-400 text-sm rounded">
     {{ text }}
   </p>
 </template>

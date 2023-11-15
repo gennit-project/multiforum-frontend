@@ -302,7 +302,7 @@ export default defineComponent({
                 v-if="event?.virtualEventUrl"
                 target="_blank"
                 :href="event?.virtualEventUrl"
-                class="w-fit rounded-sm bg-blue-600 px-4 py-2 text-blue-100"
+                class="w-fit rounded-md bg-blue-600 px-4 py-2 text-blue-100"
               >
                 Go to online event
                 <i class="fa-solid fa-arrow-up-right-from-square" />
