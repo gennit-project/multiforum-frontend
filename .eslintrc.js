@@ -21,6 +21,8 @@ module.exports = {
       "@typescript-eslint/ban-ts-comment": "off",
       "vue/v-on-event-hyphenation": "off",
       "vue/require-explicit-emits": "off",
+      // ban console.log but allow console.error and console.warn
+      "no-console": ["error", { allow: ["error", "warn"] }],
     }
   };
   
