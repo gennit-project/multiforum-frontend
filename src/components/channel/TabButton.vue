@@ -53,7 +53,7 @@ export default defineComponent({
 
         if (props.vertical) {
           classArray.push(
-            "pr-2 px-4 hover:bg-gray-200 dark:hover:bg-gray-700",
+            "pr-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700",
           );
         } else {
           classArray.push("border-b-2 border-transparent");
