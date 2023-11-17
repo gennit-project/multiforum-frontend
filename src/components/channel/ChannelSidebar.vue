@@ -227,7 +227,7 @@ export default defineComponent({
           class="-mt-24 w-24 border-2 shadow-sm dark:border-gray-800"
           :text="channelId"
           :is-square="true"
-          :is-large="true"
+          :is-medium="true"
         />
         <h1
           v-if="channelId && !channel?.displayName"
