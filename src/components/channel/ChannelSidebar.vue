@@ -210,7 +210,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-auto rounded-lg bg-white pb-8 dark:bg-gray-800">
+  <div class="overflow-auto max-h-screen rounded-lg bg-white pb-8 dark:bg-gray-800">
     <div
       v-if="channelId"
       class="items-center gap-2"

@@ -84,6 +84,7 @@ export default defineComponent({
       :class="[
         vertical ? '' : 'px-2 ',
         !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
+        showCount && count ? '': 'pr-4'
       ]"
       class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
     >
