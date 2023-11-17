@@ -10,14 +10,14 @@ import gql from "graphql-tag";
 import { useDisplay } from "vuetify";
 import UserProfileTabs from "./UserProfileTabs.vue";
 import UserProfileSidebar from "./UserProfileSidebar.vue";
-import { CalendarHeatmap } from "vue3-calendar-heatmap";
+// import { CalendarHeatmap } from "vue3-calendar-heatmap";
 
 export default defineComponent({
   components: {
     Avatar,
     UserProfileSidebar,
     UserProfileTabs,
-    CalendarHeatmap,
+    // CalendarHeatmap,
   },
   setup() {
     const route = useRoute();
@@ -112,7 +112,10 @@ export default defineComponent({
       class="h-20 w-full object-cover lg:h-28"
       alt="background pattern"
     />
-    <div v-if="smAndDown" class="flex justify-center">
+    <div
+      v-if="smAndDown"
+      class="flex justify-center"
+    >
       <Avatar
         class="-mt-12 h-24 w-24 shadow-sm"
         :text="username"
@@ -129,9 +132,16 @@ export default defineComponent({
     </div>
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
-        <v-container fluid class="p-0">
+        <v-container
+          fluid
+          class="p-0"
+        >
           <v-row class="flex flex-row gap-3">
-            <v-col v-if="!smAndDown" cols="3"  class="p-0">
+            <v-col
+              v-if="!smAndDown"
+              cols="3"
+              class="p-0"
+            >
               <UserProfileSidebar />
             </v-col>
             <v-col

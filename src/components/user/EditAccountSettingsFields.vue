@@ -8,6 +8,10 @@ import FormRow from "@/components/generic/forms/FormRow.vue";
 import { EditAccountSettingsFormValues } from "@/types/userTypes";
 import { useRoute } from "vue-router";
 import AddImage from "../generic/buttons/AddImage.vue";
+import { getUploadFileName, uploadAndGetEmbeddedLink } from "../utils";
+import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
+import { useMutation, useQuery } from "@vue/apollo-composable";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "EditAccountSettingsFields",
@@ -21,7 +25,7 @@ export default defineComponent({
   props: {
     formValues: {
       type: Object as PropType<EditAccountSettingsFormValues | null>,
-      required: true
+      required: true,
     },
     getUserError: {
       type: Object as PropType<ApolloError | null>,
@@ -48,9 +52,26 @@ export default defineComponent({
       }
       return "";
     });
+    const { mutate: createSignedStorageUrl } = useMutation(
+      CREATE_SIGNED_STORAGE_URL,
+    );
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
     return {
-      touched: false,
+      createSignedStorageUrl,
+      getUploadFileName,
+      uploadAndGetEmbeddedLink,
       titleInputRef: ref(null),
+      touched: false,
+      username,
       usernameInParams,
     };
   },
@@ -62,7 +83,38 @@ export default defineComponent({
     });
   },
   methods: {
-   async handleProfilePicChange(event: any) {
+    async upload(file: any) {
+      // Call the uploadFile mutation with the selected file
+      if (!this.username) {
+        console.error("No username found");
+        return;
+      }
+      try {
+        const filename = this.getUploadFileName({
+          username: this.username,
+          file,
+        });
+
+        const signedUrlResult = await this.createSignedStorageUrl({
+          filename,
+          contentType: file.type,
+        });
+
+        const signedStorageURL =
+          signedUrlResult.data?.createSignedStorageURL?.url;
+
+        const embeddedLink = this.uploadAndGetEmbeddedLink({
+          file,
+          filename,
+          signedStorageURL,
+        });
+
+        return embeddedLink;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    },
+    async handleProfilePicChange(event: any) {
       const selectedFile = event.target.files[0];
 
       if (selectedFile) {
@@ -71,10 +123,10 @@ export default defineComponent({
         if (!embeddedLink) {
           return;
         }
-        this.$emit('updateFormValues', { profilePicURL: embeddedLink })
+        this.$emit("updateFormValues", { profilePicURL: embeddedLink });
       }
     },
-  }
+  },
 });
 </script>
 <template>
@@ -115,7 +167,7 @@ export default defineComponent({
             </template>
           </FormRow>
           <FormRow
-            section-title="Display Name" 
+            section-title="Display Name"
             :required="false"
           >
             <template #content>

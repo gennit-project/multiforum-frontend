@@ -17,7 +17,22 @@ export default defineComponent({
       required: false,
       default: false
     },
+    profilePicURL: {
+      type: String,
+      required: false,
+      default: ""
+    },
     isLarge: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    isMedium: {
+      type: Boolean,
+      required: false,
+      default: false
+    },
+    isSmall: {
       type: Boolean,
       required: false,
       default: false
@@ -69,6 +84,17 @@ export default defineComponent({
 </script>
 <template>
   <img 
+    v-if="profilePicURL" 
+    :src="profilePicURL" 
+    :alt="text" 
+    :class="[
+      isLarge ? 'h-42 w-42' : '',
+      isMedium ? 'h-24 w-24' : '',
+      isSmall ? 'h-8 w-8' : '', 
+      isSquare ? 'rounded-lg' : 'rounded-full']"
+  >
+  <img 
+    v-else
     :class="[isLarge ? 'h-24 w-24' :'h-8 w-8', isSquare ? 'rounded-lg' : 'rounded-full']"
     :src="identiconData" 
     :alt="text"
