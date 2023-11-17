@@ -235,7 +235,7 @@ export default defineComponent({
 
           <div
             v-if="truncatedBody"
-            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700 max-w-lg"
+            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700 max-w-lg max-h-72 overflow-auto"
           >
             <router-link :to="{ path: detailLink, query: filteredQuery }">
               <MarkdownPreview

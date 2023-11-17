@@ -95,7 +95,10 @@ export default defineComponent({
 </script>
 <template>
   <div class="px-2">
-    <div v-if="discussion?.body" class="-ml-8 -mt-4 max-w-none">
+    <div
+      v-if="discussion?.body"
+      class="-ml-8 -mt-4 max-w-none"
+    >
       <MarkdownPreview
         :text="bodyText"
         :disable-gallery="route.name !== 'DiscussionDetail'"
@@ -109,7 +112,7 @@ export default defineComponent({
         :emoji-json="emojiJson"
       />
     </div>
-    <div class="ml-4 flex gap-1">
+    <div class="flex gap-1">
       <Tag
         v-for="tag in discussion?.Tags"
         :key="tag.text"
@@ -123,8 +126,7 @@ export default defineComponent({
       />
     </div>
     <div class="flex items-center gap-2">
-      <slot></slot
-      ><NewEmojiButton :discussion-channel-id="discussionChannelId" />
+      <slot /><NewEmojiButton :discussion-channel-id="discussionChannelId" />
     </div>
   </div>
 </template>
