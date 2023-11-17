@@ -56,7 +56,7 @@ export default defineComponent({
           <Avatar
             :text="channel.uniqueName"
             :is-square="true"
-            :is-large="true"
+            :is-medium="true"
           />
         </div>
       </router-link>
