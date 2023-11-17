@@ -7,10 +7,12 @@ import FormRow from "@/components/generic/forms/FormRow.vue";
 // import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import { EditAccountSettingsFormValues } from "@/types/userTypes";
 import { useRoute } from "vue-router";
+import AddImage from "../generic/buttons/AddImage.vue";
 
 export default defineComponent({
   name: "EditAccountSettingsFields",
   components: {
+    AddImage,
     TextInput,
     FormRow,
     TailwindForm: Form,
@@ -59,6 +61,20 @@ export default defineComponent({
       }
     });
   },
+  methods: {
+   async handleProfilePicChange(event: any) {
+      const selectedFile = event.target.files[0];
+
+      if (selectedFile) {
+        const embeddedLink = await this.upload(selectedFile);
+
+        if (!embeddedLink) {
+          return;
+        }
+        this.$emit('updateFormValues', { profilePicURL: embeddedLink })
+      }
+    },
+  }
 });
 </script>
 <template>
@@ -128,13 +144,7 @@ export default defineComponent({
           </FormRow>
           <FormRow section-title="Profile Picture">
             <template #content>
-              <input
-                id="file"
-                ref="file"
-                type="file"
-                name="file"
-                @change="handleFileUpload()"
-              >
+              <AddImage @change="handleProfilePicChange" />
             </template>
           </FormRow>
         </div>

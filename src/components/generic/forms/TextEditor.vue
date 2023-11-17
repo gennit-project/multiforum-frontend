@@ -6,7 +6,7 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import AddImage from "@/components/generic/buttons/AddImage.vue";
-import { getEmbeddedLink } from "@/components/utils";
+import { uploadAndGetEmbeddedLink, getUploadFileName } from "@/components/utils";
 
 export default defineComponent({
   components: {
@@ -65,7 +65,7 @@ export default defineComponent({
       createSignedStorageUrl,
       editorId: "texteditor",
       embeddedImageLink: ref(""),
-      getEmbeddedLink,
+      uploadAndGetEmbeddedLink,
       showFormatted: ref(false),
       text: ref(props.initialValue),
       theme,
@@ -103,7 +103,6 @@ export default defineComponent({
       this.text = text;
       this.$emit("update", text);
     },
-
     async upload(file: any) {
       // Call the uploadFile mutation with the selected file
       if (!this.username) {
@@ -111,7 +110,10 @@ export default defineComponent({
         return;
       }
       try {
-        const filename = `${Date.now()}-${this.username}-${file.name}`;
+        const filename = getUploadFileName({
+          username: this.username,
+          file,
+        });
 
         const signedUrlResult = await this.createSignedStorageUrl({
           filename,
@@ -121,21 +123,14 @@ export default defineComponent({
         const signedStorageURL =
           signedUrlResult.data?.createSignedStorageURL?.url;
 
-        const response = await fetch(signedStorageURL, {
-          method: "PUT",
-          body: file,
-          headers: {
-            "Content-Type": "image/png",
-          },
+
+        const embeddedLink = this.uploadAndGetEmbeddedLink({
+          file,
+          filename,
+          signedStorageURL,
         });
-
-        const embeddedLink = this.getEmbeddedLink(filename);
-
-        if (response.ok) {
-          return embeddedLink;
-        } else {
-          console.error("Error uploading file");
-        }
+      
+        return embeddedLink;
       } catch (error) {
         console.error("Error uploading file:", error);
       }

@@ -3,15 +3,46 @@ import { gql } from "@apollo/client/core";
 import { DateTime, Interval } from "luxon";
 import config from "@/config";
 
+type UploadFileInput = {
+  file: File;
+  username: string;
+};
+
+type GetEmbeddedLinkInput = {
+  signedStorageURL: string;
+  filename: string;
+  file: File;
+};
+
+export function getUploadFileName(input: UploadFileInput) {
+  const { file, username } = input;
+  return `${Date.now()}-${username}-${file.name}`;
+}
+
 export function encodeSpacesInURL(url: string) {
   return url.split(" ").join("%20");
 }
 
-export function getEmbeddedLink(filename: string) {
+export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
+  const { signedStorageURL, filename, file } = input;
   const { googleCloudStorageBucket } = config;
+
   const embeddedLink = encodeSpacesInURL(
     `https://storage.googleapis.com/${googleCloudStorageBucket}/${filename}`,
   );
+
+  const response = await fetch(signedStorageURL, {
+    method: "PUT",
+    body: file,
+    headers: {
+      "Content-Type": "image/png",
+    },
+  });
+
+  if (!response.ok) {
+    console.error("Error uploading file");
+  }
+
   return embeddedLink;
 }
 
