@@ -150,6 +150,9 @@ export default defineComponent({
   },
   data(props) {
     return {
+      authorDisplayName: props.discussion?.Author
+        ? props.discussion.Author.displayName
+        : "",
       authorUsername: props.discussion?.Author
         ? props.discussion.Author.username
         : "Deleted",
@@ -263,6 +266,7 @@ export default defineComponent({
             <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
+              :display-name="authorDisplayName"
               :comment-karma="authorCommentKarma ?? 0"
               :discussion-karma="authorDiscussionKarma ?? 0"
               :account-created="authorAccountCreated"
@@ -282,7 +286,10 @@ export default defineComponent({
           </div>
         </div>
       </v-col>
-      <ErrorBanner v-if="errorMessage" :text="errorMessage" />
+      <ErrorBanner
+        v-if="errorMessage"
+        :text="errorMessage"
+      />
     </v-row>
   </li>
 </template>

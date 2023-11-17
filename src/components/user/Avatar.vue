@@ -69,7 +69,7 @@ export default defineComponent({
 </script>
 <template>
   <img 
-    :class="[isLarge ? '' :'h-8 w-8', isSquare ? 'rounded-lg' : 'rounded-full']"
+    :class="[isLarge ? 'h-24 w-24' :'h-8 w-8', isSquare ? 'rounded-lg' : 'rounded-full']"
     :src="identiconData" 
     :alt="text"
   >

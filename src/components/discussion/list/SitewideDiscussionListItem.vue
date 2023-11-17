@@ -214,6 +214,7 @@ export default defineComponent({
             <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
+              :display-name="discussion?.Author?.displayName || ''"
               :comment-karma="discussion?.Author?.commentKarma ?? 0"
               :discussion-karma="discussion?.Author?.discussionKarma ?? 0"
               :account-created="discussion?.Author?.createdAt"

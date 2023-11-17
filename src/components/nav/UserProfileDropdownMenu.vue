@@ -28,12 +28,15 @@ export default defineComponent({
         value: `/u/${props.username}`,
       },
       {
+        label: "Account Settings",
+        value: `/u/${props.username}/settings`,
+      },
+      {
         label: "Sign out",
         value: "/logout",
         event: "logout",
       },
     ];
-
 
     return {
       isAuthenticated,
@@ -44,13 +47,13 @@ export default defineComponent({
     };
   },
   methods: {
-    goToModProfile(){
+    goToModProfile() {
       this.$router.push(`/mod/${this.modName}`);
     },
-    goToUserProfile(){
+    goToUserProfile() {
       this.$router.push(`/u/${this.username}/comments`);
-    }
-  }
+    },
+  },
 });
 </script>
 <template>

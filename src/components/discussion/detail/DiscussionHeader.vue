@@ -231,6 +231,7 @@ export default defineComponent({
           <UsernameWithTooltip
             v-if="discussion.Author.username"
             :username="discussion.Author.username"
+            :display-name="discussion.Author.displayName ?? ''"
             :comment-karma="discussion.Author.commentKarma ?? 0"
             :discussion-karma="discussion.Author.discussionKarma ?? 0"
             :account-created="discussion.Author.createdAt"
@@ -240,7 +241,10 @@ export default defineComponent({
         </router-link>
         <span v-else>[Deleted]</span>
         <div>{{ createdAt }}</div>
-        <span v-if="discussion && discussion.updatedAt" class="mx-2">
+        <span
+          v-if="discussion && discussion.updatedAt"
+          class="mx-2"
+        >
           &#8226;
         </span>
         <div>{{ editedAt }}</div>

@@ -1,10 +1,20 @@
 import { TagData } from "@/types/tagTypes";
 import { gql } from "@apollo/client/core";
 import { DateTime, Interval } from "luxon";
+import config from "@/config";
 
 export function encodeSpacesInURL(url: string) {
   return url.split(" ").join("%20");
 }
+
+export function getEmbeddedLink(filename: string) {
+  const { googleCloudStorageBucket } = config;
+  const embeddedLink = encodeSpacesInURL(
+    `https://storage.googleapis.com/${googleCloudStorageBucket}/${filename}`,
+  );
+  return embeddedLink;
+}
+
 export function getDuration(startTime: string, endTime: string) {
   if (DateTime.fromISO(startTime) >= DateTime.fromISO(endTime)) {
     return "";
@@ -31,6 +41,7 @@ export function getDuration(startTime: string, endTime: string) {
   }
   return timeString;
 }
+
 export const getTagLabel = (selectedTags: Array<string>) => {
   if (selectedTags.length === 0) {
     return "Tags";

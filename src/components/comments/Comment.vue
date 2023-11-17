@@ -370,6 +370,7 @@ export default defineComponent({
                     <UsernameWithTooltip
                       v-if="commentData.CommentAuthor.username"
                       :username="commentData.CommentAuthor.username"
+                      :display-name="commentData.CommentAuthor.displayName || ''"
                       :comment-karma="
                         commentData.CommentAuthor.commentKarma ?? 0
                       "
@@ -377,9 +378,7 @@ export default defineComponent({
                         commentData.CommentAuthor.discussionKarma ?? 0
                       "
                       :account-created="commentData.CommentAuthor.createdAt"
-                    >
-                      {{ commentData.CommentAuthor.username }}
-                    </UsernameWithTooltip>
+                    />
                   </router-link>
                   <span
                     v-else

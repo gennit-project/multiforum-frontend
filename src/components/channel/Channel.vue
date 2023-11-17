@@ -150,13 +150,12 @@ export default defineComponent({
     </div>
     <article
       v-else
-      class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
+      class="relative z-0  max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container
         fluid
-        class="h-fit"
       >
-        <v-row class="flex h-full flex-row">
+        <v-row class="flex  flex-row">
           <v-col
             v-if="channelId"
             cols="3"

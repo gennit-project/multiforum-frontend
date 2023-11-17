@@ -115,16 +115,26 @@ export default defineComponent({
               @click="$emit('close')"
             >
               <span class="sr-only">Close panel</span>
-              <XIcon class="h-6 w-6" aria-hidden="true" />
+              <XIcon
+                class="h-6 w-6"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
         <div class="flex justify-end">
-          <CreateAnythingButton class="mb-4 px-6" v-if="smAndDown" />
+          <CreateAnythingButton
+            v-if="smAndDown"
+            class="mb-4 px-6"
+          />
         </div>
         <nav class="mt-4">
           <ul role="list">
-            <li v-for="item in navigation" :key="item.name" class="px-6">
+            <li
+              v-for="item in navigation"
+              :key="item.name"
+              class="px-6"
+            >
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
@@ -151,6 +161,14 @@ export default defineComponent({
         >
           <Avatar :text="username" />
           My Profile
+        </router-link>
+        <router-link
+          v-if="isAuthenticated"
+          :to="`/u/${username}/settings`"
+          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:bg-gray-800"
+          @click="$emit('close')"
+        >
+          Account Settings
         </router-link>
         <button
           v-if="!isAuthenticated"

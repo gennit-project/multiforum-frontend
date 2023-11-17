@@ -218,7 +218,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="h-screen w-full space-y-4 overflow-auto rounded-lg bg-gray-100 py-1 dark:bg-gray-800 lg:px-8"
+    class="w-full space-y-4 overflow-auto rounded-lg bg-gray-100 py-1 dark:bg-gray-800 lg:px-8"
   >
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">

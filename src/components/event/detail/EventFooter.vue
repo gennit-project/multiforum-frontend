@@ -74,6 +74,7 @@ export default defineComponent({
         <UsernameWithTooltip
           v-if="eventData.Poster.username"
           :username="eventData.Poster.username"
+          :display-name="eventData.Poster.displayName || ''"
           :comment-karma="eventData.Poster.commentKarma ?? 0"
           :discussion-karma="eventData.Poster.discussionKarma ?? 0"
           :account-created="eventData.Poster.createdAt"

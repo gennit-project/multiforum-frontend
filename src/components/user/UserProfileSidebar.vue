@@ -2,7 +2,6 @@
 import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
-import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
 import Avatar from "../user/Avatar.vue";
@@ -13,7 +12,6 @@ import { relativeTime } from "@/utils/dateTimeUtils";
 export default defineComponent({
   name: "AboutPage",
   components: {
-    RequireAuth,
     Avatar,
   },
   setup() {
@@ -47,7 +45,11 @@ export default defineComponent({
       return themeResult.value.theme;
     });
 
-    const { result, loading: getUserLoading, error: getUserError } = useQuery(GET_USER, () => ({
+    const {
+      result,
+      loading: getUserLoading,
+      error: getUserError,
+    } = useQuery(GET_USER, () => ({
       username: username.value,
     }));
 
@@ -70,15 +72,15 @@ export default defineComponent({
       theme,
       user,
       username,
-      relativeTime
+      relativeTime,
     };
   },
 });
 </script>
 
 <template>
-  <div class="max-h-screen sticky top-0 pt-6 bg-gray-100 dark:bg-gray-900 rounded-lg">
-    <div class="mb-4 mt-6 items-center gap-2 px-4">
+  <div class="sticky top-0 max-h-screen overflow-auto rounded-lg pt-6">
+    <div class="mb-4 mt-6 flex flex-col gap-2 px-4">
       <Avatar
         class="shadow-sm"
         :text="username"
@@ -86,19 +88,47 @@ export default defineComponent({
         :is-large="true"
       />
       <h1
+        v-if="username && !user?.displayName"
         class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
         {{ username }}
       </h1>
-      <div
-        v-if="user && username"
-        class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden"
+      <h1
+        v-if="user?.displayName"
+        class="mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
-        {{ `Joined ${relativeTime(user.createdAt)}` }}
+        {{ user.displayName }}
+      </h1>
+      <span
+        v-if="user?.displayName"
+        class="text-gray-600 dark:text-gray-400"
+      >
+        {{ `u/${username}` }}
+      </span>
+
+      <div v-if="user">
+        <div class="mb-4 w-full">
+          <div
+            v-if="user.bio"
+            class="text-sm dark:text-gray-200"
+          >
+            {{ user.bio }}
+          </div>
+        </div>
+        <slot />
+        <div
+          v-if="user && username"
+          class="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden"
+        >
+          {{ `Joined ${relativeTime(user.createdAt)}` }}
+        </div>
       </div>
-      <ul v-if="user" class="m-4 list-disc">
+      <ul
+        v-if="user"
+        class="m-4 list-disc"
+      >
         <li>
-            {{ `${user.commentKarma ?? 0 } comment karma` }}
+          {{ `${user.commentKarma ?? 0} comment karma` }}
         </li>
         <li>
           {{ `${user.discussionKarma ?? 0} discussion karma` }}
@@ -106,41 +136,24 @@ export default defineComponent({
       </ul>
     </div>
   </div>
-
   <div class="w-full">
-    <p v-if="getUserLoading">Loading...</p>
+    <p v-if="getUserLoading">
+      Loading...
+    </p>
     <div v-else-if="getUserError">
-      <div v-for="(error, i) of getUserError?.graphQLErrors" :key="i">
+      <div
+        v-for="(error, i) of getUserError?.graphQLErrors"
+        :key="i"
+      >
         {{ error.message }}
       </div>
     </div>
-    <div v-else-if="!user" class="px-4">Could not find the user.</div>
-    <div v-else-if="user">
-      <div class="mb-4 w-full px-4">
-        <div
-          v-if="user.bio"
-          class="px-2 text-sm dark:text-gray-200"
-        >
-          {{ user.bio }}
-        </div>
-      </div>
-      <slot />
-    </div>
-    <RequireAuth
-      :require-ownership="true"
-      :owners="[username]"
-      :justify-left="true"
-      class="w-full"
+    <div
+      v-else-if="!user"
+      class="px-4"
     >
-      <template #has-auth>
-        <router-link
-          class="my-3 px-6 text-sm underline"
-          :to="`/u/${username}/edit`"
-        >
-          Edit Profile
-        </router-link>
-      </template>
-    </RequireAuth>
+      Could not find the user.
+    </div>
   </div>
 </template>
 <style lang="scss" scoped>

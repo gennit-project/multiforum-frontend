@@ -95,7 +95,6 @@ export default defineComponent({
       }
       return themeResult.value.theme;
     });
-    // console.log('event channels', props.eventChannels)
 
     let dateObj: any = {
       happeningNow: [],
@@ -445,6 +444,7 @@ export default defineComponent({
                 <UsernameWithTooltip
                   v-if="admin.username"
                   :username="admin.username"
+                  :display-name="admin.displayName ?? ''"
                   :comment-karma="admin.commentKarma ?? 0"
                   :discussion-karma="admin.discussionKarma ?? 0"
                   :account-created="admin.createdAt ?? ''"

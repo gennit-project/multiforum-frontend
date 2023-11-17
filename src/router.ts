@@ -31,6 +31,7 @@ import UserComments from "@/components/user/UserComments.vue";
 import UserDiscussions from "@/components/user/UserDiscussions.vue";
 import UserEvents from "@/components/user/UserEvents.vue";
 import Subreddit from "./components/subreddit/Subreddit.vue";
+import AccountSettings from "./components/user/AccountSettings.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -61,6 +62,11 @@ export const router = createRouter({
           alias: "",
           component: UserComments,
         },
+        {
+          name: "AccountSettings",
+          path: "settings",
+          component: AccountSettings,
+        }
       ],
     },
     {

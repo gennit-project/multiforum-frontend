@@ -3,13 +3,14 @@ import { computed, defineComponent, ref } from "vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
-import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import config from "@/config";
-import { encodeSpacesInURL } from "@/components/utils";
+import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
+import AddImage from "@/components/generic/buttons/AddImage.vue";
+import { getEmbeddedLink } from "@/components/utils";
 
 export default defineComponent({
   components: {
+    AddImage,
     Tab,
     TabGroup,
     TabList,
@@ -40,6 +41,9 @@ export default defineComponent({
         theme @client
       }
     `;
+    const { mutate: createSignedStorageUrl } = useMutation(
+      CREATE_SIGNED_STORAGE_URL,
+    );
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -51,25 +55,17 @@ export default defineComponent({
       return "";
     });
 
-    const { mutate: createSignedStorageUrl } = useMutation(
-      CREATE_SIGNED_STORAGE_URL,
-    );
-
     const { result } = useQuery(GET_THEME);
-    const fileInput = ref(null);
 
     const theme = computed(() => {
       return result.value?.theme || "light";
     });
 
-    const { googleCloudStorageBucket } = config;
-
     return {
       createSignedStorageUrl,
       editorId: "texteditor",
-      encodeSpacesInURL,
-      fileInput,
-      googleCloudStorageBucket,
+      embeddedImageLink: ref(""),
+      getEmbeddedLink,
       showFormatted: ref(false),
       text: ref(props.initialValue),
       theme,
@@ -94,16 +90,26 @@ export default defineComponent({
     });
   },
   methods: {
+    handleDragOver(event: any) {
+      event.preventDefault();
+    },
+    setTab(selected: string) {
+      this.selected = selected;
+    },
+    toggleShowFormatted() {
+      this.showFormatted = !this.showFormatted;
+    },
+    updateText(text: string) {
+      this.text = text;
+      this.$emit("update", text);
+    },
+
     async upload(file: any) {
       // Call the uploadFile mutation with the selected file
-
       if (!this.username) {
         console.error("No username found");
         return;
       }
-
-      this.text = this.text + `![${file.name}](Uploading image...)`;
-
       try {
         const filename = `${Date.now()}-${this.username}-${file.name}`;
 
@@ -123,42 +129,33 @@ export default defineComponent({
           },
         });
 
-        const embeddedLink = this.encodeSpacesInURL(
-          `https://storage.googleapis.com/${this.googleCloudStorageBucket}/${filename}`,
-        );
+        const embeddedLink = this.getEmbeddedLink(filename);
 
-        this.text = this.text.replace("Uploading image...", embeddedLink);
-        this.$emit("update", this.text);
-        if (!response.ok) {
+        if (response.ok) {
+          return embeddedLink;
+        } else {
           console.error("Error uploading file");
         }
       } catch (error) {
         console.error("Error uploading file:", error);
       }
     },
+    async handleFormStateDuringUpload(file: any) {
+      this.text = this.text + `![${file.name}](Uploading image...)`;
+      const embeddedLink = await this.upload(file);
+      if (!embeddedLink) {
+        return;
+      }
+      this.text = this.text.replace("Uploading image...", embeddedLink);
+      this.$emit("update", this.text);
+    },
     async handleFileChange(event: any) {
       const selectedFile = event.target.files[0];
       if (selectedFile) {
-        this.upload(selectedFile);
+        await this.handleFormStateDuringUpload(selectedFile);
       }
     },
-    setTab(selected: string) {
-      this.selected = selected;
-    },
-    toggleShowFormatted() {
-      this.showFormatted = !this.showFormatted;
-    },
-    updateText(text: string) {
-      this.text = text;
-      this.$emit("update", text);
-    },
-    handleDragOver(event: any) {
-      event.preventDefault();
-    },
-    allowDrop(event: any) {
-      event.preventDefault();
-    },
-    handleDrop(event: any) {
+    async handleDrop(event: any) {
       event.preventDefault();
 
       const { files } = event.dataTransfer;
@@ -169,7 +166,7 @@ export default defineComponent({
 
       // Assuming you want to handle only the first dropped file.
       const file = files[0];
-      this.upload(file);
+      this.handleFormStateDuringUpload(file);
     },
   },
 });
@@ -211,7 +208,7 @@ export default defineComponent({
       </TabList>
       <TabPanels class="h-50 mt-2">
         <TabPanel
-          class="-m-0.5 rounded-md px-0.5 py-1 h-52"
+          class="-m-0.5 h-52 rounded-md px-0.5 py-1"
           :data-testid="testId"
         >
           <label
@@ -229,21 +226,9 @@ export default defineComponent({
             @dragover="handleDragOver"
             @drop="handleDrop"
           />
-          <label
-            for="fileInput"
-            class="mt-2 block flex cursor-pointer items-center text-blue-500 hover:underline"
-          >
-            <i class="fa fa-image mr-2" /> Add Image
-            <input
-              id="fileInput"
-              ref="fileInput"
-              type="file"
-              style="display: none"
-              @change="handleFileChange"
-            >
-          </label>
+          <AddImage @change="handleFileChange" />
         </TabPanel>
-        <TabPanel class="-m-0.5 rounded-md p-0.5 h-52">
+        <TabPanel class="-m-0.5 h-52 rounded-md p-0.5">
           <v-md-preview
             :text="text"
             class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-500 dark:text-gray-100"

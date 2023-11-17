@@ -31,7 +31,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="max-w-4xl">
+  <v-container class="max-w-4xl p-0">
     <form
       class="rounded-lg space-y-3 divide-y divide-gray-200 border-gray-200 bg-white py-12 dark:divide-gray-700 dark:border-gray-700 dark:bg-gray-800"
       autocomplete="off"

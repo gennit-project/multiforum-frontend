@@ -13,6 +13,11 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    displayName: {
+      type: String,
+      required: false,
+      default: "",
+    },
     accountCreated: {
       type: String,
       required: false,
@@ -37,22 +42,62 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-tooltip location="bottom" content-class="custom-tooltip">
-    <template v-slot:activator="{ props }">
+  <v-tooltip
+    location="bottom"
+    content-class="custom-tooltip"
+  >
+    <template #activator="{ props }">
       <button v-bind="props">
         <slot>
           <router-link
             :to="`/u/${username}`"
-            class="hover:underline"
-          >{{ username }}</router-link>
+            class="flex flex-row gap-2 hover:underline"
+          >
+            <span
+              v-if="!displayName"
+              class="font-bold"
+            >{{ username }}</span>
+            <span
+              v-if="displayName"
+              class="font-bold"
+            >{{ displayName }}</span>
+            <span
+              v-if="displayName"
+              class="text-gray-500 dark:text-gray-300"
+            >{{
+              `u/${username}`
+            }}</span>
+          </router-link>
         </slot>
       </button>
     </template>
-    <template v-slot:default>
+    <template #default>
       <div>
-        <Avatar :text="username" />
         <div>
-          <p class="text-md font-bold">{{ username }}</p>
+          <div
+            v-if="!displayName"
+            class="text-md flex flex-col w-full font-bold"
+          >
+            <Avatar
+              :text="username"
+              :is-large="true"
+            />{{ username }}
+          </div>
+          <div
+            v-if="displayName"
+            class="text-md flex flex-col gap-2"
+          >
+            <Avatar
+              :text="username"
+              :is-large="true"
+            />
+            <p class="text-lg font-bold">
+              {{ displayName }}
+            </p>
+            <p class="text-sm text-gray-600 dark:text-white">
+              {{ `u/${username}` }}
+            </p>
+          </div>
           <ul class="text-xs">
             <li>
               {{ `account created ${timeAgo(new Date(accountCreated))}` }}

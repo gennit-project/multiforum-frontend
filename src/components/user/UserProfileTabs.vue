@@ -4,6 +4,16 @@ import TabButton from "@/components/channel/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import { useRoute } from "vue-router";
 import { User } from "@/__generated__/graphql"
+import { useAuth0 } from "@auth0/auth0-vue";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { useQuery } from "@vue/apollo-composable";
+
+type TabData = {
+  name: string;
+  href: string;
+  current: boolean;
+  count?: number;
+}
 
 export default defineComponent({
   name: "ChannelTabs",
@@ -30,10 +40,12 @@ export default defineComponent({
   },
   setup(props) {
     const channelId = ref(props.route.params.channelId);
+    const { isAuthenticated } = useAuth0();
+    
     const { mdAndDown } = useDisplay();
     const route = useRoute();
 
-    const username = computed(() => {
+    const usernameInParams = computed(() => {
       if (typeof route.params.username === "string") {
         return route.params.username;
       }
@@ -47,35 +59,59 @@ export default defineComponent({
       },
     );
 
-    return {
-      channelId,
-      mdAndDown,
-      username,
-    };
-  },
-  data(props) {
-    return {
-      selectedTab: "about",
-      tabs: [
+    const { result } = useQuery(GET_LOCAL_USERNAME);
+    const username = computed(() => {
+      let username = result.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
+    const tabs = computed(() => {
+      let tabList: TabData[] = [
         { 
           name: "Comments", 
-          href: `/u/${this.username}`, 
+          href: `/u/${usernameInParams.value}`, 
           current: true,
           count: props.user?.CommentsAggregate?.count,
         },
         { name: 
           "Discussions", 
-          href: `/u/${this.username}/discussions`, 
+          href: `/u/${usernameInParams.value}/discussions`, 
           current: false,
           count: props.user?.DiscussionsAggregate?.count,
         },
         { 
           name: "Events", 
-          href: `/u/${this.username}/events`, 
+          href: `/u/${usernameInParams.value}/events`, 
           current: false,
           count: props.user?.EventsAggregate?.count,
         },
-      ],
+        
+      ]
+
+      if (isAuthenticated && username.value === usernameInParams.value) {
+        tabList.push({
+          name: "Settings",
+          href: `/u/${usernameInParams.value}/settings`,
+          current: false,
+          count: null
+        })
+      }
+      return tabList
+    })
+
+    return {
+      channelId,
+      mdAndDown,
+      tabs,
+      username: usernameInParams,
+    };
+  },
+  data() {
+    return {
+      selectedTab: "about",
     };
   },
   methods: {
@@ -95,6 +131,7 @@ export default defineComponent({
       class="text-md flex max-w-7xl flex-col"
       aria-label="Tabs"
     >
+      q
       <TabButton
         v-for="tab in tabs"
         :key="tab.name"
@@ -103,10 +140,14 @@ export default defineComponent({
         :is-active="route.name.includes(tab.name)"
         :vertical="true"
         :count="tab.count"
-        :show-count="showCounts"
+        :show-count="showCounts && !!tab.count"
       />
     </nav>
-    <nav v-else class="max-w-7xl space-x-2 pt-1 text-sm" aria-label="Tabs">
+    <nav
+      v-else
+      class="max-w-7xl space-x-2 pt-1 text-sm"
+      aria-label="Tabs"
+    >
       <TabButton
         v-for="tab in tabs"
         :key="tab.name"

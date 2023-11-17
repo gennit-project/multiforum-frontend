@@ -1,13 +1,5 @@
 import { gql } from "@apollo/client/core";
-
-const AUTHOR_FIELDS = gql`
-  fragment AuthorFields on User {
-    username
-    createdAt
-    discussionKarma
-    commentKarma
-  }
-`;
+import { AUTHOR_FIELDS } from "../discussion/queries";
 
 const COMMENT_VOTE_FIELDS = gql`
   fragment CommentVoteFields on Comment {

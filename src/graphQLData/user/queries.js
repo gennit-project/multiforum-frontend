@@ -34,7 +34,8 @@ export const GET_USER = gql`
       commentKarma
       discussionKarma
       createdAt
-      name
+      displayName
+      profilePicURL
       location
       pronouns
       bio
@@ -183,11 +184,12 @@ export const USER_LOOKUP = gql`
   query getUser($username: String!) {
     getUser(username: $username) {
       username
-      name
+      displayName
       location
       pronouns
       bio
       isAdmin
+      profilePicURL
       ModeratorOfChannels {
         url
       }

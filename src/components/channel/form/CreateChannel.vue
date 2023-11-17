@@ -37,6 +37,7 @@ export default defineComponent({
 
     const createChannelDefaultValues: CreateEditChannelFormValues = {
       uniqueName: "",
+      displayName: "",
       description: "",
       selectedTags: [],
     };
@@ -65,6 +66,7 @@ export default defineComponent({
         {
           uniqueName: formValues.value.uniqueName,
           description: formValues.value.description,
+          displayName: formValues.value.displayName,
           Tags: {
             connectOrCreate: tagConnections,
           },

@@ -88,7 +88,7 @@ export default defineComponent({
         label
       }}</span>
       <span
-        v-if="showCount"
+        v-if="showCount && count !== null"
         class="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full font-bold text-gray-700 dark:text-white"
       >{{ count }}</span>
     </div>
