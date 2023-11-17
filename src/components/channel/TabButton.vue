@@ -1,5 +1,5 @@
 <script>
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 export default defineComponent({
@@ -66,6 +66,7 @@ export default defineComponent({
     return {
       classes,
       smAndDown,
+      isHovered: ref(false),
     };
   },
 });
@@ -76,9 +77,14 @@ export default defineComponent({
     :to="to"
     class="border-transparent link font-medium group inline-flex items-center hover:text-gray-600 dark:text-gray-200 dark:hover:border-blue-500"
     :class="classes"
+    @mouseenter="isHovered = true"
+    @mouseleave="isHovered = false"
   >
     <div
-      :class="[vertical ? '' : 'px-2 hover:bg-gray-100 dark:hover:bg-gray-700']"
+      :class="[
+        vertical ? '' : 'px-2 ',
+        !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
+      ]"
       class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
     >
       <div class="text-black dark:text-blue-500">

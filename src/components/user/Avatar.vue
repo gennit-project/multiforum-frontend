@@ -88,14 +88,18 @@ export default defineComponent({
     :src="profilePicURL" 
     :alt="text" 
     :class="[
-      isLarge ? 'h-42 w-42' : '',
+      isLarge ? 'h-72 w-72' : '',
       isMedium ? 'h-24 w-24' : '',
       isSmall ? 'h-8 w-8' : '', 
       isSquare ? 'rounded-lg' : 'rounded-full']"
   >
   <img 
     v-else
-    :class="[isLarge ? 'h-24 w-24' :'h-8 w-8', isSquare ? 'rounded-lg' : 'rounded-full']"
+    :class="[
+      isLarge ? 'h-72 w-72' : '',
+      isMedium ? 'h-24 w-24' : '',
+      isSmall ? 'h-8 w-8' : '', 
+      isSquare ? 'rounded-lg' : 'rounded-full']"
     :src="identiconData" 
     :alt="text"
   >

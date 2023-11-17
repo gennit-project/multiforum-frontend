@@ -18,6 +18,11 @@ export default defineComponent({
       required: false,
       default: "",
     },
+    profilePicURL: {
+      type: String,
+      required: false,
+      default: "",
+    },
     accountCreated: {
       type: String,
       required: false,
@@ -80,16 +85,18 @@ export default defineComponent({
           >
             <Avatar
               :text="username"
-              :is-large="true"
+              :profile-pic-u-r-l="profilePicURL"
+              :is-medium="true"
             />{{ username }}
           </div>
           <div
             v-if="displayName"
-            class="text-md flex flex-col gap-2"
+            class="text-md flex flex-col w-full gap-2"
           >
             <Avatar
               :text="username"
-              :is-large="true"
+              :profile-pic-u-r-l="profilePicURL"
+              :is-medium="true"
             />
             <p class="text-lg font-bold">
               {{ displayName }}

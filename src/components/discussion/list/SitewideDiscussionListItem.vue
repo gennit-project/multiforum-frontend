@@ -186,7 +186,7 @@ export default defineComponent({
 
         <div
           v-if="discussion && discussion.body"
-          class="max-w-xl border-l-2 border-gray-300 dark:bg-gray-700"
+          class="max-w-xl border-l-2 border-gray-300 dark:bg-gray-700 max-h-72 overflow-auto"
         >
           <MarkdownPreview
             :text="discussion.body"
@@ -214,6 +214,7 @@ export default defineComponent({
             <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
+              :profile-pic-u-r-l="discussion?.Author?.profilePicURL || ''"
               :display-name="discussion?.Author?.displayName || ''"
               :comment-karma="discussion?.Author?.commentKarma ?? 0"
               :discussion-karma="discussion?.Author?.discussionKarma ?? 0"

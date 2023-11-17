@@ -1,10 +1,13 @@
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import Avatar from "../user/Avatar.vue";
 import IconButtonDropdown from "../generic/buttons/IconButtonDropdown.vue";
+import { useQuery } from "@vue/apollo-composable";
+import { GET_USER } from "@/graphQLData/user/queries";
 
 export default defineComponent({
+  name: "UserProfileDropdownMenu",
   components: {
     IconButtonDropdown,
     Avatar,
@@ -21,6 +24,24 @@ export default defineComponent({
   },
   setup(props) {
     const { isAuthenticated, logout } = useAuth0();
+    const { result: getUserResult } = useQuery(GET_USER, {
+      username: props.username || "",
+    });
+
+    const user = computed(() => {
+      let user = getUserResult.value?.users[0];
+      if (user) {
+        return user;
+      }
+      return null;
+    });
+
+    const profilePicURL = computed(() => {
+      if (user.value && user.value.profilePicURL) {
+        return user.value.profilePicURL;
+      }
+      return "";
+    });
 
     let menuItems = [
       {
@@ -44,6 +65,7 @@ export default defineComponent({
         logout({ returnTo: "http://localhost:5173/logout" });
       },
       menuItems,
+      profilePicURL,
     };
   },
   methods: {
@@ -63,6 +85,10 @@ export default defineComponent({
     @goToUserProfile="goToUserProfile"
     @goToModProfile="goToModProfile"
   >
-    <Avatar :text="username" />
+    <Avatar
+      :text="username"
+      :profile-pic-u-r-l="profilePicURL"
+      :is-small="true"
+    />
   </IconButtonDropdown>
 </template>

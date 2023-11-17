@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, PropType, computed } from "vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME, GET_USER } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import Avatar from "../../user/Avatar.vue";
@@ -47,10 +47,22 @@ export default defineComponent({
     const route = useRoute();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
+    const { result: getUserResult } = useQuery(GET_USER, {
+      username: localUsernameResult.value?.username || "",
+    });
+
     const username = computed(() => {
       let username = localUsernameResult.value?.username;
       if (username) {
         return username;
+      }
+      return "";
+    });
+
+    const profilePicURL = computed(() => {
+      let profilePicURL = getUserResult.value?.users[0]?.profilePicURL;
+      if (profilePicURL) {
+        return profilePicURL;
       }
       return "";
     });
@@ -103,73 +115,70 @@ export default defineComponent({
       return [input];
     });
 
-    const createCommentLoading = ref(false)
-    const { 
+    const createCommentLoading = ref(false);
+    const {
       mutate: createComment,
       error: createCommentError,
       onDone,
-    } = useMutation(
-      CREATE_COMMENT,
-      () => ({
-        errorPolicy: "all",
-        variables: {
-          createCommentInput: createCommentInput.value,
-        },
-        update: (cache: any, result: any) => {
-          // This is the logic for updating the cache
-          // after creating a root comment. For the logic for updating
-          // the cache after replying to a comment, see the CommentSection
-          // component.
+    } = useMutation(CREATE_COMMENT, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentInput: createCommentInput.value,
+      },
+      update: (cache: any, result: any) => {
+        // This is the logic for updating the cache
+        // after creating a root comment. For the logic for updating
+        // the cache after replying to a comment, see the CommentSection
+        // component.
 
-          const newComment: Comment = result.data?.createComments?.comments[0];
-          // Will use readQuery and writeQuery to update the cache
-          // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+        const newComment: Comment = result.data?.createComments?.comments[0];
+        // Will use readQuery and writeQuery to update the cache
+        // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
-          const commentSectionQueryVariables = {
-            discussionId: props.discussionChannel.discussionId,
-            channelUniqueName: props.discussionChannel.channelUniqueName,
-            limit: COMMENT_LIMIT,
-            offset: props.previousOffset,
-            sort: getSortFromQuery(route.query),
-          };
+        const commentSectionQueryVariables = {
+          discussionId: props.discussionChannel.discussionId,
+          channelUniqueName: props.discussionChannel.channelUniqueName,
+          limit: COMMENT_LIMIT,
+          offset: props.previousOffset,
+          sort: getSortFromQuery(route.query),
+        };
 
-          const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
-            variables: commentSectionQueryVariables,
-          });
+        const readQueryResult = cache.readQuery({
+          query: GET_COMMENT_SECTION,
+          variables: commentSectionQueryVariables,
+        });
 
-          const existingDiscussionChannelData: DiscussionChannel =
-            readQueryResult?.getCommentSection?.DiscussionChannel;
+        const existingDiscussionChannelData: DiscussionChannel =
+          readQueryResult?.getCommentSection?.DiscussionChannel;
 
-          let newRootComments: Comment[] = [
-            newComment,
-            ...(readQueryResult?.getCommentSection?.Comments || []),
-          ];
+        let newRootComments: Comment[] = [
+          newComment,
+          ...(readQueryResult?.getCommentSection?.Comments || []),
+        ];
 
-          const existingCount =
-            existingDiscussionChannelData?.CommentsAggregate?.count || 0;
+        const existingCount =
+          existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
-          cache.writeQuery({
-            query: GET_COMMENT_SECTION,
-            variables: commentSectionQueryVariables,
-            data: {
-              ...readQueryResult,
-              getCommentSection: {
-                ...readQueryResult?.getCommentSection,  
-                DiscussionChannel: {
-                  ...existingDiscussionChannelData,
-                  CommentsAggregate: {
-                    ...existingDiscussionChannelData?.CommentsAggregate,
-                    count: existingCount + 1,
-                  },
+        cache.writeQuery({
+          query: GET_COMMENT_SECTION,
+          variables: commentSectionQueryVariables,
+          data: {
+            ...readQueryResult,
+            getCommentSection: {
+              ...readQueryResult?.getCommentSection,
+              DiscussionChannel: {
+                ...existingDiscussionChannelData,
+                CommentsAggregate: {
+                  ...existingDiscussionChannelData?.CommentsAggregate,
+                  count: existingCount + 1,
                 },
-                Comments: newRootComments,
               },
+              Comments: newRootComments,
             },
-          });
-        },
-      }),
-    );
+          },
+        });
+      },
+    }));
 
     onDone(() => {
       createFormValues.value = createCommentDefaultValues;
@@ -192,6 +201,7 @@ export default defineComponent({
       createCommentError,
       createCommentLoading,
       createFormValues,
+      profilePicURL,
       showEditorInCommentSection: ref(false),
       showCreateCommentModal: ref(false),
       showRootCommentEditor: ref(false),
@@ -220,11 +230,20 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex w-full flex-col space-x-2 px-1 ml-1">
+  <div class="ml-1 flex w-full flex-col space-x-2 px-1">
     <div class="min-h-36 flex gap-2">
-      <Avatar v-if="username" class="h-5 w-5" :text="username" />
+      <Avatar
+        v-if="username"
+        class="h-5 w-5"
+        :text="username"
+        :profile-pic-u-r-l="profilePicURL"
+        :is-small="true"
+      />
 
-      <RequireAuth v-if="!showEditorInCommentSection" class="w-full">
+      <RequireAuth
+        v-if="!showEditorInCommentSection"
+        class="w-full"
+      >
         <template #has-auth>
           <textarea
             id="addComment"
@@ -246,7 +265,10 @@ export default defineComponent({
           />
         </template>
       </RequireAuth>
-      <div v-else class="flex w-full flex-col">
+      <div
+        v-else
+        class="flex w-full flex-col"
+      >
         <TextEditor
           :test-id="'texteditor-textarea'"
           :placeholder="'Please be kind'"

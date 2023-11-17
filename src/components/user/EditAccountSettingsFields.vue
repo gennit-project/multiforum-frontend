@@ -12,11 +12,13 @@ import { getUploadFileName, uploadAndGetEmbeddedLink } from "../utils";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import Avatar from "./Avatar.vue";
 
 export default defineComponent({
   name: "EditAccountSettingsFields",
   components: {
     AddImage,
+    Avatar,
     TextInput,
     FormRow,
     TailwindForm: Form,
@@ -196,6 +198,13 @@ export default defineComponent({
           </FormRow>
           <FormRow section-title="Profile Picture">
             <template #content>
+              <Avatar
+                class="shadow-sm"
+                :profile-pic-u-r-l="formValues.profilePicURL"
+                :text="username"
+                :is-square="false"
+                :is-large="true"
+              />
               <AddImage @change="handleProfilePicChange" />
             </template>
           </FormRow>

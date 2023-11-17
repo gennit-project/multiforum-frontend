@@ -222,6 +222,11 @@ export default defineComponent({
               ? discussion.Author.username
               : '[Deleted]'
           "
+          :profile-pic-u-r-l="
+            discussion && discussion.Author?.profilePicURL
+              ? discussion.Author.profilePicURL
+              : ''"
+          :is-small="true"
         />
         <router-link
           v-if="discussion && discussion.Author"
@@ -231,6 +236,7 @@ export default defineComponent({
           <UsernameWithTooltip
             v-if="discussion.Author.username"
             :username="discussion.Author.username"
+            :profile-pic-u-r-l="discussion.Author.profilePicURL ?? ''"
             :display-name="discussion.Author.displayName ?? ''"
             :comment-karma="discussion.Author.commentKarma ?? 0"
             :discussion-karma="discussion.Author.discussionKarma ?? 0"

@@ -12,7 +12,7 @@ type TabData = {
   name: string;
   href: string;
   current: boolean;
-  count?: number;
+  count?: number | null;
 }
 
 export default defineComponent({

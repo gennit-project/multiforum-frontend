@@ -119,7 +119,7 @@ export default defineComponent({
       <Avatar
         class="-mt-12 h-24 w-24 shadow-sm"
         :text="username"
-        :is-square="true"
+        :profile-pic-u-r-l="user?.profilePicURL"
         :is-large="true"
       />
       <router-link

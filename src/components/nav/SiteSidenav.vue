@@ -8,7 +8,7 @@ import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import UserCircle from "@/components/icons/UserCircle.vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
 import { useQuery } from "@vue/apollo-composable";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME, GET_USER } from "@/graphQLData/user/queries";
 import clickOutside from "vue-click-outside";
 import Avatar from "@/components/user/Avatar.vue";
 import { useDisplay } from "vuetify";
@@ -72,6 +72,18 @@ export default defineComponent({
       return "";
     });
 
+    const { result: userResult } = useQuery(GET_USER, {
+      username: username.value,
+    });
+
+    const profilePicURL = computed(() => {
+      let profilePicURL = userResult.value?.users[0]?.profilePicURL;
+      if (profilePicURL) {
+        return profilePicURL;
+      }
+      return "";
+    });
+
     const { smAndDown } = useDisplay();
 
     return {
@@ -84,6 +96,7 @@ export default defineComponent({
       },
       navigation,
       username,
+      profilePicURL,
       smAndDown,
     };
   },
@@ -154,12 +167,16 @@ export default defineComponent({
       </div>
       <ul class="mb-6">
         <router-link
-          v-if="isAuthenticated"
+          v-if="isAuthenticated && username"
           :to="`/u/${username}`"
           class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:bg-gray-800"
           @click="$emit('close')"
         >
-          <Avatar :text="username" />
+          <Avatar
+            :text="username"
+            :profile-pic-u-r-l="profilePicURL"
+            :is-small="true"
+          />
           My Profile
         </router-link>
         <router-link

@@ -331,8 +331,9 @@ export default defineComponent({
             <Avatar
               v-if="commentData.CommentAuthor"
               class="mt-1"
-              :is-square="true"
+              :is-small="true"
               :text="commentData.CommentAuthor.username"
+              :profile-pic-u-r-l="commentData.CommentAuthor.profilePicURL || ''"
             />
 
             <div class="flex-grow">
@@ -370,6 +371,8 @@ export default defineComponent({
                     <UsernameWithTooltip
                       v-if="commentData.CommentAuthor.username"
                       :username="commentData.CommentAuthor.username"
+                      :profile-pic-u-r-l="
+                        commentData.CommentAuthor.profilePicURL"
                       :display-name="commentData.CommentAuthor.displayName || ''"
                       :comment-karma="
                         commentData.CommentAuthor.commentKarma ?? 0

@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client/core";
+import { AUTHOR_FIELDS } from "../discussion/queries";
 
 // Fragment for shared event fields
 export const EVENT_FIELDS = gql`
@@ -88,7 +89,7 @@ export const GET_EVENTS = gql`
       ...EventFields
       cost
       Poster {
-        username
+        ...AuthorFields
       }
       EventChannels {
         id
@@ -98,4 +99,5 @@ export const GET_EVENTS = gql`
     }
   }
   ${EVENT_FIELDS}
+  ${AUTHOR_FIELDS}
 `;

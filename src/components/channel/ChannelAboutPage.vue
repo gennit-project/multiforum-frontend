@@ -206,6 +206,7 @@ export default defineComponent({
               >
                 <Avatar
                   :text="admin.username"
+                  :profile-pic-u-r-l="admin.profilePicURL"
                   class="mr-2"
                 />
                 {{ admin.username }}

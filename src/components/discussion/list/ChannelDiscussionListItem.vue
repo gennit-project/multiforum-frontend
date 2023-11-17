@@ -165,6 +165,9 @@ export default defineComponent({
       authorAccountCreated: props.discussion?.Author
         ? props.discussion.Author.createdAt
         : "",
+      authorProfilePicURL: props.discussion?.Author
+        ? props.discussion.Author.profilePicURL
+        : "",
       previewIsOpen: false,
       title: props.discussion?.title || "[Deleted]",
       createdAt: props.discussionChannel.createdAt,
@@ -266,7 +269,8 @@ export default defineComponent({
             <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
-              :display-name="authorDisplayName"
+              :profile-pic-u-r-l="authorProfilePicURL ?? ''"
+              :display-name="authorDisplayName ?? ''"
               :comment-karma="authorCommentKarma ?? 0"
               :discussion-karma="authorDiscussionKarma ?? 0"
               :account-created="authorAccountCreated"

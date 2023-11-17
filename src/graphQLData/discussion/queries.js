@@ -4,6 +4,7 @@ export const AUTHOR_FIELDS = gql`
   fragment AuthorFields on User {
     username
     displayName
+    profilePicURL
     createdAt
     discussionKarma
     commentKarma
@@ -119,10 +120,7 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
         createdAt
         updatedAt
         Author {
-          username
-          commentKarma
-          discussionKarma
-          createdAt
+          ...AuthorFields
         }
         DiscussionChannels {
           id
@@ -143,6 +141,7 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
       }
     }
   }
+  ${AUTHOR_FIELDS}
 `;
 
 export const GET_DISCUSSION = gql`
