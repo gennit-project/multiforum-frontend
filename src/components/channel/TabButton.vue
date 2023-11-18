@@ -36,7 +36,7 @@ export default defineComponent({
       let classArray = [];
       if (props.isActive) {
         classArray.push(
-          ` border-black dark:border-blue-500 dark:text-gray-100`,
+          `border-black dark:border-blue-500 dark:text-gray-100`,
         );
 
         if (props.vertical) {
@@ -75,7 +75,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="border-transparent link font-medium group inline-flex items-center hover:text-gray-600 dark:text-gray-200 dark:hover:border-blue-500"
+    class="border-transparent link font-medium group inline-flex items-center hover:text-gray-600 dark:text-gray-200"
     :class="classes"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
