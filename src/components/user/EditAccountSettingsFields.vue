@@ -152,6 +152,7 @@ export default defineComponent({
       v-else-if="formValues"
       :form-title="'Edit Account Settings'"
       :needs-changes="false"
+      :show-cancel-button="false"
       @input="touched = true"
       @submit="$emit('submit')"
     >

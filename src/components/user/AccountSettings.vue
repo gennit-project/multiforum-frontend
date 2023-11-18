@@ -14,11 +14,13 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import { UserUpdateInput } from "@/__generated__/graphql";
 import { EditAccountSettingsFormValues } from "@/types/userTypes";
+import Notification from "../generic/Notification.vue";
 
 export default defineComponent({
   name: "EditAccountSettings",
   components: {
     EditAccountSettingsFields,
+    Notification,
     RequireAuth,
   },
   apollo: {},
@@ -82,6 +84,7 @@ export default defineComponent({
     );
 
     const dataLoaded = ref(false);
+    const showSavedChangesNotification = ref(false);
 
     onGetUserResult((value) => {
       if (value.loading) {
@@ -115,15 +118,11 @@ export default defineComponent({
     } = useMutation(UPDATE_USER);
 
     onDone(() => {
-      router.push({
-        name: "UserProfile",
-        params: {
-          username: username.value,
-        },
-      });
+      showSavedChangesNotification.value = true;
     });
 
     return {
+      user,
       username,
       usernameInParams,
       userUpdateInput,
@@ -134,6 +133,7 @@ export default defineComponent({
       getUserResult,
       refetchUser,
       router,
+      showSavedChangesNotification,
       updateUserError,
       updateUser,
     };
@@ -176,6 +176,11 @@ export default defineComponent({
         :form-values="formValues"
         @submit="submit"
         @updateFormValues="updateFormValues"
+      />
+      <Notification
+        v-if="showSavedChangesNotification"
+        :title="'Your changes have been saved.'"
+        @closeNotification="showSavedChangesNotification = false"
       />
     </template>
     <template #does-not-have-auth>

@@ -24,6 +24,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    showCancelButton: {
+      type: Boolean,
+      default: true,
+    }
   },
   setup() {
   },
@@ -44,7 +48,10 @@ export default defineComponent({
             {{ formTitle }}
           </h2>
           <div class="float-right">
-            <CancelButton @click.prevent="$router.go(-1)" />
+            <CancelButton
+              v-if="!loading && showCancelButton"
+              @click.prevent="$router.go(-1)" 
+            />
             <SaveButton
               :disabled="needsChanges"
               :loading="loading"
