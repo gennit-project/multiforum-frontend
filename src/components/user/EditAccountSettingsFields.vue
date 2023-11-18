@@ -126,6 +126,7 @@ export default defineComponent({
           return;
         }
         this.$emit("updateFormValues", { profilePicURL: embeddedLink });
+        this.$emit("submit")
       }
     },
   },
