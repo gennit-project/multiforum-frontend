@@ -75,7 +75,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="border-transparent link font-medium group inline-flex items-center hover:text-gray-600 dark:text-gray-200"
+    class="border-transparent link font-medium group inline-flex gap-1 items-center hover:text-gray-600 dark:text-gray-200"
     :class="classes"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
@@ -83,7 +83,7 @@ export default defineComponent({
     <div
       :class="[
         vertical ? '' : 'px-2 ',
-        !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
+        !vertical && isHovered ? 'bg-gray-200 dark:bg-gray-700' : '',
         showCount && count ? '': 'pr-4'
       ]"
       class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
@@ -94,11 +94,11 @@ export default defineComponent({
       <span class="text-sm font-bold text-gray-700 dark:text-white">{{
         label
       }}</span>
-      <span
-        v-if="showCount && count !== null"
-        class="text-xs px-3 py-1 bg-gray-200 dark:bg-gray-600 rounded-full font-bold text-gray-700 dark:text-white"
-      >{{ count }}</span>
     </div>
+    <span
+      v-if="showCount && count !== null"
+      class="text-xs px-3 py-1 bg-gray-200  dark:bg-gray-600 rounded-full font-bold text-gray-700 dark:text-white"
+    >{{ count }}</span>
   </router-link>
 </template>
 <style>

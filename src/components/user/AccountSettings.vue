@@ -49,6 +49,7 @@ export default defineComponent({
       result: getUserResult,
       onResult: onGetUserResult,
       loading: getUserLoading,
+      refetch: refetchUser,
     } = useQuery(GET_USER, {
       username: usernameInParams,
     });
@@ -131,6 +132,7 @@ export default defineComponent({
       getUserError,
       getUserLoading,
       getUserResult,
+      refetchUser,
       router,
       updateUserError,
       updateUser,
@@ -144,6 +146,7 @@ export default defineComponent({
         },
         update: this.userUpdateInput,
       });
+      this.refetchUser();
     },
     updateFormValues(data: EditAccountSettingsFormValues) {
       // Update all form values at once because it makes cleaner
