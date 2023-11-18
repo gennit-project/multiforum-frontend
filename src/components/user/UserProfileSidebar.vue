@@ -25,7 +25,7 @@ export default defineComponent({
       return "";
     });
 
-    const { mdAndDown } = useDisplay();
+    const { mdAndDown, lgAndDown } = useDisplay();
     const GET_THEME = gql`
       query getTheme {
         theme @client
@@ -67,6 +67,7 @@ export default defineComponent({
       confirmDeleteIsOpen: ref(false),
       getUserError,
       getUserLoading,
+      lgAndDown,
       mdAndDown,
       router,
       theme,

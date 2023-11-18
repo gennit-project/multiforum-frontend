@@ -35,9 +35,7 @@ export default defineComponent({
     const classes = computed(() => {
       let classArray = [];
       if (props.isActive) {
-        classArray.push(
-          `border-black dark:border-blue-500 dark:text-gray-100`,
-        );
+        classArray.push(`border-black dark:border-blue-500 dark:text-gray-100`);
 
         if (props.vertical) {
           classArray.push(
@@ -52,9 +50,7 @@ export default defineComponent({
         classArray.push("text-gray-500 dark:border-gray-800");
 
         if (props.vertical) {
-          classArray.push(
-            "pr-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700",
-          );
+          classArray.push("pr-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700");
         } else {
           classArray.push("border-b-2 border-transparent");
         }
@@ -75,7 +71,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="border-transparent link font-medium group inline-flex gap-1 items-center hover:text-gray-600 dark:text-gray-200"
+    class="border-transparent link font-medium group inline-flex items-center gap-1 hover:text-gray-600 dark:text-gray-200"
     :class="classes"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
@@ -84,7 +80,7 @@ export default defineComponent({
       :class="[
         vertical ? '' : 'px-2 ',
         !vertical && isHovered ? 'bg-gray-200 dark:bg-gray-700' : '',
-        showCount && count ? '': 'pr-4'
+        showCount && count ? '' : 'pr-4',
       ]"
       class="my-2 flex h-8 items-center space-x-2 rounded-lg py-2"
     >
@@ -94,11 +90,12 @@ export default defineComponent({
       <span class="text-sm font-bold text-gray-700 dark:text-white">{{
         label
       }}</span>
+      <span
+        v-if="showCount && count !== null"
+        class="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-700 dark:bg-gray-600 dark:text-white"
+      >{{ count }}
+      </span>
     </div>
-    <span
-      v-if="showCount && count !== null"
-      class="text-xs px-3 py-1 bg-gray-200  dark:bg-gray-600 rounded-full font-bold text-gray-700 dark:text-white"
-    >{{ count }}</span>
   </router-link>
 </template>
 <style>

@@ -86,7 +86,6 @@ export default defineComponent({
   },
   methods: {
     async upload(file: any) {
-      // Call the uploadFile mutation with the selected file
       if (!this.username) {
         console.error("No username found");
         return;
@@ -97,6 +96,7 @@ export default defineComponent({
           file,
         });
 
+        // Call the uploadFile mutation with the selected file
         const signedUrlResult = await this.createSignedStorageUrl({
           filename,
           contentType: file.type,

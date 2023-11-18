@@ -70,6 +70,7 @@ export const GET_USER_COMMENTS = gql`
         CommentAuthor {
           ... on User {
             username
+            profilePicURL
           }
         }
         DiscussionChannel {

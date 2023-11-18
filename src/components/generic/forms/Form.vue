@@ -60,6 +60,7 @@ export default defineComponent({
                 <CancelButton @click.prevent="$router.go(-1)" />
                 <SaveButton
                   :disabled="needsChanges"
+                  :loading="loading"
                   @click.prevent="$emit('submit')"
                 />
               </div>
