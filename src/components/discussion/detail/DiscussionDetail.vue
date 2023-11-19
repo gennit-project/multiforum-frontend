@@ -60,7 +60,7 @@ export default defineComponent({
 <template>
   <div
     :class="[smAndDown ? '' : '']"
-    class="w-full flex justify-center space-y-4 py-1"
+    class="w-full flex justify-center space-y-4"
   >
     <DiscussionDetailContent
       v-if="discussionId"

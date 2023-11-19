@@ -225,7 +225,7 @@ export default defineComponent({
 
 <template>
   <v-container
-    class="p-8 flex flex-col gap-2 justify-center bg-gray-100 dark:bg-gray-900 rounded-lg"
+    class="p-8 flex flex-col gap-2 justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
   >
     <EventFilterBar :show-distance-filters="false" />
     <TimeShortcuts :is-list-view="true" />

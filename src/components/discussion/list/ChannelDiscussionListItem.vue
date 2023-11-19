@@ -206,7 +206,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-y-3 p-4  bg-white dark:bg-gray-800 rounded-lg lg:py-4"
+    class="relative mt-1 flex space-y-3 p-4  bg-white dark:bg-gray-700 rounded-lg lg:py-4"
   >
     <v-row>
       <v-col :cols="2">
