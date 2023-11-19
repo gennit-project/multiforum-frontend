@@ -96,7 +96,7 @@ export default defineComponent({
     >
       <TabButton
         :to="tabRoutes.discussions"
-        :label="'Posts'"
+        :label="'Discussions'"
         :is-active="$route.path.includes('discussions')"
         :vertical="true"
         :show-count="showCounts"

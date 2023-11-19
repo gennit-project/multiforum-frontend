@@ -89,7 +89,7 @@ export default defineComponent({
       if (this.route.name === "MapView") {
         return "events map";
       } else if (this.route.name === "SearchChannels") {
-        return "channels";
+        return "Forums";
       }
       return "";
     },

@@ -32,11 +32,11 @@ const navigation: NavigationItem[] = [
     icon: LocationIcon,
   },
   {
-    name: "Posts",
+    name: "Discussions",
     href: "/discussions",
     icon: DiscussionIcon,
   },
-  { name: "Channels", href: "/channels", icon: ChannelIcon },
+  { name: "Forums", href: "/channels", icon: ChannelIcon },
 ];
 
 export default defineComponent({

@@ -199,7 +199,7 @@ export default defineComponent({
       <div class="mx-auto  flex max-w-5xl items-center justify-between py-2">
         <SearchBar
           class="mr-2 w-full align-middle"
-          :search-placeholder="'Search channels'"
+          :search-placeholder="'Search forums'"
           @updateSearchInput="updateSearchResult"
         />
         <FilterChip
