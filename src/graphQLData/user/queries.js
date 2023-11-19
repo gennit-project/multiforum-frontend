@@ -161,6 +161,7 @@ export const GET_USER_EVENTS = gql`
         updatedAt
         deleted
         EventChannels {
+          channelUniqueName
           Channel {
             uniqueName
           }

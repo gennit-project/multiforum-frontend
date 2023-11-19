@@ -6,7 +6,10 @@ import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import AddImage from "@/components/generic/buttons/AddImage.vue";
-import { uploadAndGetEmbeddedLink, getUploadFileName } from "@/components/utils";
+import {
+  uploadAndGetEmbeddedLink,
+  getUploadFileName,
+} from "@/components/utils";
 
 export default defineComponent({
   components: {
@@ -18,6 +21,10 @@ export default defineComponent({
     TabPanels,
   },
   props: {
+    allowImageUpload: {
+      type: Boolean,
+      default: true,
+    },
     disableAutoFocus: {
       type: Boolean,
       default: false,
@@ -33,6 +40,10 @@ export default defineComponent({
     placeholder: {
       type: String,
       default: "Write your comment here...",
+    },
+    rows: {
+      type: Number,
+      default: 8,
     },
   },
   setup(props) {
@@ -123,13 +134,12 @@ export default defineComponent({
         const signedStorageURL =
           signedUrlResult.data?.createSignedStorageURL?.url;
 
-
         const embeddedLink = this.uploadAndGetEmbeddedLink({
           file,
           filename,
           signedStorageURL,
         });
-      
+
         return embeddedLink;
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -145,6 +155,9 @@ export default defineComponent({
       this.$emit("update", this.text);
     },
     async handleFileChange(event: any) {
+      if (!this.allowImageUpload) {
+        return;
+      }
       const selectedFile = event.target.files[0];
       if (selectedFile) {
         await this.handleFormStateDuringUpload(selectedFile);
@@ -152,6 +165,9 @@ export default defineComponent({
     },
     async handleDrop(event: any) {
       event.preventDefault();
+      if (!this.allowImageUpload) {
+        return;
+      }
 
       const { files } = event.dataTransfer;
 
@@ -213,7 +229,7 @@ export default defineComponent({
           <textarea
             ref="editor"
             name="comment"
-            rows="8"
+            :rows="rows"
             :placeholder="placeholder"
             class="block w-full rounded-md border-gray-200 font-mono text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-600 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
@@ -221,7 +237,10 @@ export default defineComponent({
             @dragover="handleDragOver"
             @drop="handleDrop"
           />
-          <AddImage @change="handleFileChange" />
+          <AddImage
+            v-if="allowImageUpload"
+            @change="handleFileChange"
+          />
         </TabPanel>
         <TabPanel class="-m-0.5 h-52 rounded-md p-0.5">
           <v-md-preview

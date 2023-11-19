@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
@@ -37,14 +37,19 @@ export default defineComponent({
   setup() {},
   data(props) {
     const route = useRoute();
+    const router = useRouter();
 
     const defaultUniqueName = computed(() => {
-      if (!props.discussion.DiscussionChannels || !props.discussion.DiscussionChannels[0]) {
+      if (
+        !props.discussion.DiscussionChannels ||
+        !props.discussion.DiscussionChannels[0]
+      ) {
         return "";
       }
       return props.discussion.DiscussionChannels[0].Channel?.uniqueName;
     });
     return {
+      router,
       previewIsOpen: false,
       defaultUniqueName, //props.discussion.DiscussionChannels[0].Channel.uniqueName,
       title: props.discussion.title,
@@ -63,33 +68,30 @@ export default defineComponent({
       route,
     };
   },
-  computed: {
-    previewLink() {
-      if (!this.discussion) {
-        return "";
-      }
-      if (this.isWithinChannel) {
-        return `/channels/c/${this.defaultUniqueName}/discussions/search/${this.discussion.id}`;
-      }
-      return `/discussions/search/${this.discussion.id}`;
-    },
-  },
 });
 </script>
 
 <template>
   <li
-    class="relative bg-white dark:bg-gray-800 p-4 rounded-lg cursor-pointer list-none"
-    @click="$emit('openPreview')"
+    class="relative cursor-pointer list-none rounded-lg bg-white p-4 dark:bg-gray-800"
+    @click="
+      () => {
+        if (defaultUniqueName) {
+          router.push(
+            `/channels/c/${defaultUniqueName}/discussions/d/${discussion.id}`,
+          );
+        }
+      }
+    "
   >
-    <p class="text-lg font-bold cursor-pointer">
+    <p class="cursor-pointer text-lg font-bold">
       <HighlightedSearchTerms
         :text="title"
         :search-input="searchInput"
       />
     </p>
 
-    <p class="text-sm text-gray-600 hover:no-underline font-medium mt-1 flex">
+    <p class="font-medium mt-1 flex text-sm text-gray-600 hover:no-underline">
       <Tag
         v-for="tag in tags"
         :key="tag"
@@ -99,14 +101,16 @@ export default defineComponent({
         @click="$emit('filterByTag', tag)"
       />
     </p>
-    <p class="text-xs font-medium text-gray-600 dark:text-gray-300 no-underline">
+    <p
+      class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
+    >
       {{ `Posted ${relativeTime} by ${authorUsername}` }}
     </p>
-    <div class="text-sm space-x-2 my-2">
+    <div class="my-2 space-x-2 text-sm">
       <router-link
         v-for="(discussionChannel, i) in discussion.DiscussionChannels"
         :key="i"
-        class="underline text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:dark:text-gray-200"
+        class="text-gray-500 underline hover:text-gray-700 dark:text-gray-300 hover:dark:text-gray-200"
         :to="`/channels/c/${discussionChannel.Channel?.uniqueName}/discussions/d/${discussion.id}`"
       >
         View this post in {{ `c/${discussionChannel.Channel?.uniqueName}` }}

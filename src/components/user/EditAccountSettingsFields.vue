@@ -4,7 +4,7 @@ import { ApolloError } from "@apollo/client/errors";
 import Form from "@/components/generic/forms/Form.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
-// import TextEditor from "@/components/generic/forms/TextEditor.vue";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import { EditAccountSettingsFormValues } from "@/types/userTypes";
 import { useRoute } from "vue-router";
 import AddImage from "../generic/buttons/AddImage.vue";
@@ -22,7 +22,7 @@ export default defineComponent({
     TextInput,
     FormRow,
     TailwindForm: Form,
-    // TextEditor,
+    TextEditor,
   },
   props: {
     formValues: {
@@ -126,7 +126,7 @@ export default defineComponent({
           return;
         }
         this.$emit("updateFormValues", { profilePicURL: embeddedLink });
-        this.$emit("submit")
+        this.$emit("submit");
       }
     },
   },
@@ -187,13 +187,13 @@ export default defineComponent({
           </FormRow>
           <FormRow section-title="Bio">
             <template #content>
-              <TextInput
-                class="my-3"
-                :test-id="'bio-input'"
-                :value="formValues.bio || ''"
-                :placeholder="'Add bio'"
-                :disable-auto-focus="true"
-                :rows="3"
+              <TextEditor
+                id="editExistingComment"
+                class="mb-2 mt-3 p-1"
+                :initial-value="formValues.bio || ''"
+                :editor-id="'bio-input'"
+                :rows="6"
+                :allow-image-upload="false"
                 @update="$emit('updateFormValues', { bio: $event })"
               />
             </template>

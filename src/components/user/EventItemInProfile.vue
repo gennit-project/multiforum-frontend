@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import { TagData } from "../../types/tagTypes";
 import { relativeTime } from "../../dateTimeUtils";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
 import { Event } from "@/__generated__/graphql";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
@@ -38,6 +38,7 @@ export default defineComponent({
   setup() {},
   data(props) {
     const route = useRoute();
+    const router = useRouter();
 
     const defaultUniqueName = computed(() => {
       if (!props.event.EventChannels || !props.event.EventChannels[0]) {
@@ -46,8 +47,9 @@ export default defineComponent({
       return props.event.EventChannels[0].channelUniqueName;
     });
     return {
+      router,
+      defaultUniqueName,
       previewIsOpen: false,
-      defaultUniqueName, //props.event.DiscussionChannels[0].Channel.uniqueName,
       title: props.event.title,
       createdAt: props.event.createdAt,
       relativeTime: relativeTime(props.event.createdAt),
@@ -61,30 +63,30 @@ export default defineComponent({
       route,
     };
   },
-  computed: {
-    previewLink() {
-      if (!this.event) {
-        return "";
-      }
-      if (this.isWithinChannel) {
-        return `/channels/c/${this.defaultUniqueName}/events/search/${this.event.id}`;
-      }
-      return `/events/search/${this.event.id}`;
-    },
-  },
 });
 </script>
 
 <template>
   <li
     class="relative cursor-pointer list-none rounded-lg bg-white p-4 dark:bg-gray-800"
-    @click="$emit('openPreview')"
+    @click="
+      () => {
+        if (defaultUniqueName) {
+          router.push(`/channels/c/${defaultUniqueName}/events/e/${event.id}`);
+        }
+      }
+    "
   >
     <p class="text-lg font-bold">
-      <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+      <HighlightedSearchTerms
+        :text="title"
+        :search-input="searchInput"
+      />
     </p>
 
-    <p class="text-xs font-medium text-gray-600 dark:text-gray-300 no-underline flex">
+    <p
+      class="font-medium flex text-xs text-gray-600 no-underline dark:text-gray-300"
+    >
       <Tag
         v-for="tag in tags"
         :key="tag"
@@ -94,17 +96,19 @@ export default defineComponent({
         @click="$emit('filterByTag', tag)"
       />
     </p>
-    <p class="text-xs font-medium text-gray-600 dark:text-gray-300 no-underline">
+    <p
+      class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
+    >
       {{ `Posted ${relativeTime} by ${poster}` }}
     </p>
     <div
       v-for="(ec, i) in event.EventChannels"
-      class="my-2 space-x-2 text-sm"
       :key="i"
+      class="my-2 space-x-2 text-sm"
     >
       <router-link
         v-if="ec.Channel"
-        class="underline text-gray-500 dark:text-gray-300 hover:text-gray-700 hover:dark:text-gray-200"
+        class="text-gray-500 underline hover:text-gray-700 dark:text-gray-300 hover:dark:text-gray-200"
         :to="`/channels/c/${ec.Channel.uniqueName}/events/e/${event.id}`"
       >
         {{ `c/${ec.Channel.uniqueName}` }}

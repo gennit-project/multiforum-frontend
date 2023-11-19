@@ -19,6 +19,7 @@ export const GET_CHANNEL = gql`
       }
       Admins {
         username
+        profilePicURL
         commentKarma
         discussionKarma
         createdAt

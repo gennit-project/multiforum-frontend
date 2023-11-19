@@ -64,7 +64,10 @@ export default defineComponent({
           <template #content>
             <div class="pb-5 pt-5">
               <div class="flex justify-end">
-                <CancelButton @click.prevent="$router.go(-1)" />
+                <CancelButton 
+                  v-if="!loading && showCancelButton"
+                  @click.prevent="$router.go(-1)"
+                />
                 <SaveButton
                   :disabled="needsChanges"
                   :loading="loading"

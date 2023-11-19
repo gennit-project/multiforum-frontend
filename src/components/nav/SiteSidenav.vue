@@ -63,6 +63,7 @@ export default defineComponent({
     const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+    
 
     const username = computed(() => {
       let username = localUsernameResult.value?.username;
@@ -72,12 +73,20 @@ export default defineComponent({
       return "";
     });
 
-    const { result: userResult } = useQuery(GET_USER, {
-      username: username.value,
+    const { result: getUserResult } = useQuery(GET_USER, {
+      username: username.value || "",
+    });
+
+    const user = computed(() => {
+      let user = getUserResult.value?.users[0];
+      if (user) {
+        return user;
+      }
+      return null;
     });
 
     const profilePicURL = computed(() => {
-      let profilePicURL = userResult.value?.users[0]?.profilePicURL;
+      let profilePicURL = user.value?.profilePicURL;
       if (profilePicURL) {
         return profilePicURL;
       }
@@ -173,6 +182,7 @@ export default defineComponent({
           @click="$emit('close')"
         >
           <Avatar
+            :key="profilePicURL"
             :text="username"
             :profile-pic-u-r-l="profilePicURL"
             :is-small="true"

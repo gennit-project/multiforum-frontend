@@ -6,18 +6,21 @@ import { ref, watchEffect } from "vue";
 import config from "@/config";
 
 function linkifyUsernames(markdownString: string) {
-  // Use a regular expression to find "u/[username]" patterns
-  const regex = /u\/([a-zA-Z0-9_\-]+)/g;
+  // Use a regular expression to find "u/username" and "@username" patterns
+  const regex = /(?:u\/|@)([a-zA-Z0-9_-]+)/g;
 
-  // Replace each match with "[u/username](${config.baseUrl}u/username)"
+  // Replace each match with "[u/username](${config.baseUrl}u/username)" or "[@username](${config.baseUrl}u/username)"
   return markdownString.replace(regex, (match, username) => {
-    return `[${match}](${config.baseUrl}u/${username})`;
+    // Determine the prefix to use in the link text
+    const prefix = match.startsWith('u/') ? 'u/' : '@';
+    return `[${prefix}${username}](${config.baseUrl}u/${username})`;
   });
 }
 
+
 function linkifyChannelNames(markdownString: string) {
   // Use a regular expression to find "c/[channelName]" patterns
-  const regex = /c\/([a-zA-Z0-9_\-]+)/g;
+  const regex = /c\/([a-zA-Z0-9_-]+)/g;
 
   // Replace each match with "[c/channelName](${config.baseUrl}c/channelName)"
   return markdownString.replace(regex, (match, channelName) => {

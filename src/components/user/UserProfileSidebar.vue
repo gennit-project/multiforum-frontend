@@ -8,11 +8,13 @@ import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 import { GET_USER } from "@/graphQLData/user/queries";
 import { relativeTime } from "@/utils/dateTimeUtils";
+import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
 
 export default defineComponent({
   name: "AboutPage",
   components: {
     Avatar,
+    MarkdownPreview,
   },
   setup() {
     const route = useRoute();
@@ -81,7 +83,7 @@ export default defineComponent({
 
 <template>
   <div class="sticky top-0 max-h-screen overflow-auto rounded-lg pt-6">
-    <div class="mb-4 mt-6 flex flex-col gap-2 px-4">
+    <div class="mb-4 mt-6 flex flex-col gap-2">
       <Avatar
         class="shadow-sm"
         :profile-pic-u-r-l="user?.profilePicURL"
@@ -109,13 +111,13 @@ export default defineComponent({
       </span>
 
       <div v-if="user">
-        <div class="mb-4 w-full">
-          <div
+        <div class="-ml-8 w-full">
+          <MarkdownPreview
             v-if="user.bio"
-            class="text-sm dark:text-gray-200"
-          >
-            {{ user.bio }}
-          </div>
+            :key="user.bio || ''"
+            :text="user.bio"
+            :word-limit="1000"
+          />
         </div>
         <slot />
         <div

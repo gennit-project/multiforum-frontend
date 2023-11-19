@@ -77,6 +77,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    goToPermalinkOnClick: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { emit }) {
     const route = useRoute();
@@ -126,6 +130,9 @@ export default defineComponent({
       error: localUsernameError,
     } = useQuery(GET_LOCAL_USERNAME);
 
+    const canShowPermalink =
+      props.commentData.DiscussionChannel || (discussionId && channelId);
+
     const permalinkObject = computed(() => {
       if (!canShowPermalink) {
         return {};
@@ -143,12 +150,13 @@ export default defineComponent({
       };
     });
 
+    const basePath = window.location.origin;
+    const permalink = `${basePath}${
+      router.resolve(permalinkObject.value).href
+    }`;
+
     const copyLink = async () => {
       try {
-        const basePath = window.location.origin;
-        const permalink = `${basePath}${
-          router.resolve(permalinkObject.value).href
-        }`;
         await toClipboard(permalink);
         emit("showCopiedLinkNotification", true);
       } catch (e: any) {
@@ -190,13 +198,12 @@ export default defineComponent({
       return getLinksInText(props.commentData.text);
     });
 
-    const canShowPermalink =
-      props.commentData.DiscussionChannel || (discussionId && channelId);
-
     const commentMenuItems = computed(() => {
       let out: any[] = [];
 
-      if (props.commentData?.CommentAuthor?.username === username.value.username) {
+      if (
+        props.commentData?.CommentAuthor?.username === username.value.username
+      ) {
         out = out.concat([
           {
             label: "Edit",
@@ -247,6 +254,7 @@ export default defineComponent({
       relativeTime,
       replyCount,
       route,
+      router,
       showEditCommentField: ref(false),
       showReplies: ref(true),
       showReplyEditor: ref(false),
@@ -372,8 +380,11 @@ export default defineComponent({
                       v-if="commentData.CommentAuthor.username"
                       :username="commentData.CommentAuthor.username"
                       :profile-pic-u-r-l="
-                        commentData.CommentAuthor.profilePicURL"
-                      :display-name="commentData.CommentAuthor.displayName || ''"
+                        commentData.CommentAuthor.profilePicURL
+                      "
+                      :display-name="
+                        commentData.CommentAuthor.displayName || ''
+                      "
                       :comment-karma="
                         commentData.CommentAuthor.commentKarma ?? 0
                       "
@@ -431,11 +442,19 @@ export default defineComponent({
                   <div
                     v-if="commentData.text && !showEditCommentField"
                     class="-ml-6 w-full"
+                    :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
                   >
                     <MarkdownPreview
                       :key="textCopy || ''"
                       :text="textCopy || ''"
                       :word-limit="1000"
+                      @click="
+                        () => {
+                          if (goToPermalinkOnClick) {
+                            router.push(permalinkObject);
+                          }
+                        }
+                      "
                     />
                   </div>
                   <TextEditor

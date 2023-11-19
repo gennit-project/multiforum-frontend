@@ -89,8 +89,12 @@ export default defineComponent({
 </script>
 <template>
   <div class="py-3">
-    <div v-if="error">Error</div>
-    <div v-else-if="commentResult && commentResult.users.length === 0">No results</div>
+    <div v-if="error">
+      Error
+    </div>
+    <div v-else-if="commentResult && commentResult.users.length === 0">
+      No results
+    </div>
     <div v-else-if="commentResult && commentResult.users.length > 0">
       <Comment
         v-for="comment in commentResult.users[0].Comments"
@@ -102,9 +106,12 @@ export default defineComponent({
         :depth="0"
         :show-channel="true"
         :show-context-link="true"
+        :go-to-permalink-on-click="true"
       />
     </div>
-    <div v-if="loading">Loading...</div>
+    <div v-if="loading">
+      Loading...
+    </div>
     <div v-if="commentResult?.users[0].Comments.length > 0">
       <LoadMore
         class="justify-self-center"
