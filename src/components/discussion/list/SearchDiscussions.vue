@@ -239,7 +239,7 @@ export default defineComponent({
 
 <template>
   <v-container
-    class="px-10 py-6 justify-center bg-gray-100 dark:bg-gray-900 rounded-lg"
+    class="py-6 justify-center bg-gray-100 dark:bg-gray-900 rounded-lg"
   >
     <DiscussionFilterBar />
     <SitewideDiscussionList
