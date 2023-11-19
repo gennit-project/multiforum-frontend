@@ -14,6 +14,7 @@ import CreateAnythingButton from "./CreateAnythingButton.vue";
 import { useRouter } from "vue-router";
 import ArrowUpBoldBox from "vue-material-design-icons/ArrowUpBoldBox.vue";
 import { useDisplay } from "vuetify";
+import SearchButton from "./SearchButton.vue";
 
 export default defineComponent({
   name: "TopNav",
@@ -23,6 +24,7 @@ export default defineComponent({
     HamburgerMenuButton,
     UserProfileDropdownMenu,
     ArrowUpBoldBox,
+    SearchButton
   },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
@@ -172,7 +174,8 @@ export default defineComponent({
           Log In
         </button>
       </div>
-      <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2">
+        <SearchButton />
         <CreateAnythingButton />
         <ThemeSwitcher />
         <div

@@ -46,9 +46,9 @@ export default defineComponent({
       >
         <MenuButton
           data-testid="create-anything-button"
-          class="font-semibold flex w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+          class="h-8 font-semibold flex w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
         >
-          <span class="flex items-center text-lg">+</span>
+          <span class="flex mb-1 items-center text-lg">+</span>
           <ChevronDownIcon
             class="-mr-1 ml-1 mt-0.5 h-3 w-3"
             aria-hidden="true"
