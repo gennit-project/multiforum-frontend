@@ -96,7 +96,7 @@ export default defineComponent({
     >
       <TabButton
         :to="tabRoutes.discussions"
-        :label="'Discussions'"
+        :label="'Posts'"
         :is-active="$route.path.includes('discussions')"
         :vertical="true"
         :show-count="showCounts"
@@ -142,7 +142,7 @@ export default defineComponent({
     >
       <TabButton
         :to="tabRoutes.discussions"
-        :label="'Discussions'"
+        :label="'Posts'"
         :is-active="route.path.includes('discussions')"
         :show-count="showCounts"
         :count="channel.DiscussionChannelsAggregate?.count || 0"

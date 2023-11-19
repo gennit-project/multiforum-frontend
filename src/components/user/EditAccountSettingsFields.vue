@@ -202,7 +202,7 @@ export default defineComponent({
             <template #content>
               <Avatar
                 class="shadow-sm"
-                :profile-pic-u-r-l="formValues.profilePicURL"
+                :src="formValues.profilePicURL"
                 :text="username"
                 :is-square="false"
                 :is-large="true"

@@ -32,7 +32,7 @@ const navigation: NavigationItem[] = [
     icon: LocationIcon,
   },
   {
-    name: "Discussions",
+    name: "Posts",
     href: "/discussions",
     icon: DiscussionIcon,
   },
@@ -182,9 +182,9 @@ export default defineComponent({
           @click="$emit('close')"
         >
           <Avatar
-            :key="profilePicURL"
+            v-if="profilePicURL"
             :text="username"
-            :profile-pic-u-r-l="profilePicURL"
+            :src="profilePicURL"
             :is-small="true"
           />
           My Profile

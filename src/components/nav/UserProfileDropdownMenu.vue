@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { defineComponent, computed } from "vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import Avatar from "../user/Avatar.vue";
@@ -86,8 +86,9 @@ export default defineComponent({
     @goToModProfile="goToModProfile"
   >
     <Avatar
+      :key="profilePicURL"
       :text="username"
-      :profile-pic-u-r-l="profilePicURL"
+      :src="profilePicURL"
       :is-small="true"
     />
   </IconButtonDropdown>

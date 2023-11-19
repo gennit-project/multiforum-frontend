@@ -4,14 +4,14 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_SUBREDDIT_SIDEBAR } from "@/graphQLData/subreddit/queries";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
-import PhotoAvatar from "../user/PhotoAvatar.vue";
+import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   name: "AboutPage",
   components: {
-    PhotoAvatar,
+    Avatar,
   },
   setup() {
     const route = useRoute();
@@ -91,7 +91,7 @@ export default defineComponent({
         :src="subreddit?.bannerImg"
       >
       <div class="p-6">
-        <PhotoAvatar
+        <Avatar
           v-if="subreddit?.communityIcon"
           :class="subreddit?.bannerImg ? '-mt-20' : ''"
           class="w-24 shadow-sm border-2 dark:border-gray-800"

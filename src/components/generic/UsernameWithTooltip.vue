@@ -18,7 +18,7 @@ export default defineComponent({
       required: false,
       default: "",
     },
-    profilePicURL: {
+    src: {
       type: String,
       required: false,
       default: "",
@@ -85,7 +85,7 @@ export default defineComponent({
           >
             <Avatar
               :text="username"
-              :profile-pic-u-r-l="profilePicURL"
+              :src="src"
               :is-medium="true"
             />{{ username }}
           </div>
@@ -95,7 +95,7 @@ export default defineComponent({
           >
             <Avatar
               :text="username"
-              :profile-pic-u-r-l="profilePicURL"
+              :src="src"
               :is-medium="true"
             />
             <p class="text-lg font-bold">

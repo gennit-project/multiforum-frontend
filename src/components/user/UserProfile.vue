@@ -119,7 +119,7 @@ export default defineComponent({
       <Avatar
         class="-mt-24 mb-4 h-24 w-24 shadow-sm"
         :text="username"
-        :profile-pic-u-r-l="user?.profilePicURL"
+        :src="user?.profilePicURL"
         :is-medium="true"
       />
       <div class="mb-6">

@@ -5,7 +5,6 @@ import UserProfileDropdownMenu from "@/components/nav/UserProfileDropdownMenu.vu
 import ThemeSwitcher from "./ThemeSwitcher.vue";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { useQuery } from "@vue/apollo-composable";
-import Avatar from "@/components/user/Avatar.vue";
 import {
   GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
@@ -19,7 +18,6 @@ import { useDisplay } from "vuetify";
 export default defineComponent({
   name: "TopNav",
   components: {
-    Avatar,
     CreateAnythingButton,
     ThemeSwitcher,
     HamburgerMenuButton,
@@ -113,9 +111,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full bg-gray-100 shadow dark:bg-black z-10">
+  <div class="z-10 w-full bg-gray-100 shadow dark:bg-black">
     <div
-      :class="[smAndDown ? 'py-1 px-6' : 'py-2 px-4']"
+      :class="[smAndDown ? 'px-6 py-1' : 'px-4 py-2']"
       class="flex items-center justify-between"
     >
       <div class="flex items-center lg:px-0">
@@ -141,13 +139,8 @@ export default defineComponent({
             v-if="shouldShowChannelId"
             class="flex items-center gap-1"
           >
-            <span>/</span>
-            <Avatar
-              :text="channelId"
-              :is-square="true"
-              class="h-6 w-6"
-            />
-            <span class="font-bold text-gray-800 dark:text-white">{{
+            <span>•</span>
+            <span class="font-bold text-gray-800 dark:text-gray-300">{{
               channelId
             }}</span>
           </div>
@@ -155,7 +148,7 @@ export default defineComponent({
             v-else-if="shouldShowRouteInfo"
             class="flex items-center gap-1"
           >
-            <span>/</span>
+            <span>•</span>
             {{ routeInfoLabel }}
           </div>
           <div

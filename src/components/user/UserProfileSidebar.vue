@@ -86,7 +86,7 @@ export default defineComponent({
     <div class="mb-4 mt-6 flex flex-col gap-2">
       <Avatar
         class="shadow-sm"
-        :profile-pic-u-r-l="user?.profilePicURL"
+        :src="user?.profilePicURL"
         :text="username"
         :is-square="false"
         :is-large="true"

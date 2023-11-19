@@ -17,7 +17,7 @@ export default defineComponent({
       required: false,
       default: false
     },
-    profilePicURL: {
+    src: {
       type: String,
       required: false,
       default: ""
@@ -84,9 +84,9 @@ export default defineComponent({
 </script>
 <template>
   <img 
-    v-if="profilePicURL" 
-    :src="profilePicURL" 
-    :alt="text" 
+    v-if="src" 
+    :src="src" 
+    :alt="text"
     :class="[
       isLarge ? 'h-72 w-72' : '',
       isMedium ? 'h-24 w-24' : '',

@@ -16,7 +16,6 @@ export const GET_LOCAL_MOD_PROFILE_NAME = gql`
 export const GET_USER_INFO_FOR_TAGS = gql`
   query getUser($username: String!) {
     getUser(username: $username) {
-      isAdmin
       PosterOfChannels {
         url
       }
@@ -39,7 +38,6 @@ export const GET_USER = gql`
       location
       pronouns
       bio
-      isAdmin
       CommentsAggregate {
         count
       }
@@ -190,7 +188,6 @@ export const USER_LOOKUP = gql`
       location
       pronouns
       bio
-      isAdmin
       profilePicURL
       ModeratorOfChannels {
         url
@@ -224,10 +221,6 @@ export const USER_LOOKUP = gql`
           username
         }
         text
-        authorIsAdmin
-        authorIsModerator
-        authorIsPoster
-        authorIsOriginalPoster
         deleted
         createdDate
         editedDate

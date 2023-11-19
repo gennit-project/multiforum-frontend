@@ -71,6 +71,8 @@ export default defineComponent({
           selectedTags: channel.value.Tags.map((tag: TagData) => {
             return tag.text;
           }),
+          channelIconURL: channel.value.channelIconURL,
+          channelBannerURL: channel.value.channelBannerURL,
         };
       }
 
@@ -79,6 +81,8 @@ export default defineComponent({
         displayName: "",
         description: "",
         selectedTags: [],
+        channelIconURL: "",
+        channelBannerURL: "",
       };
     };
 
@@ -115,6 +119,8 @@ export default defineComponent({
         selectedTags: channel.Tags.map((tag: TagData) => {
           return tag.text;
         }),
+        channelIconURL: channel.channelIconURL,
+        channelBannerURL: channel.channelBannerURL,
       };
 
       dataLoaded.value = true;
@@ -155,6 +161,8 @@ export default defineComponent({
       const result: ChannelUpdateInput = {
         description: formValues.value.description,
         displayName: formValues.value.displayName,
+        channelIconURL: formValues.value.channelIconURL,
+        channelBannerURL: formValues.value.channelBannerURL,
         Tags: [
           {
             connectOrCreate: tagConnections,

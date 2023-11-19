@@ -117,16 +117,24 @@ export default defineComponent({
       class="w-full"
     >
       <div
+        v-if="!channel?.channelBannerURL"
         :class="[
           theme === 'dark' ? 'channel-background-dark' : 'channel-background',
         ]"
-        class="h-24 w-full object-cover"
+        class="h-32 w-full object-cover"
         alt="background pattern"
       />
+      <img
+        v-else
+        :src="channel?.channelBannerURL"
+        alt="channel banner"
+        class="max-h-40 w-full"
+      >
       <div class="flex justify-center">
         <Avatar
-          class="-mt-24 mb-2 border-4 border-white dark:border-gray-800"
+          class="-mt-28 mb-2 border-4 border-white dark:border-gray-800"
           :text="channelId"
+          :src="channel?.channelIconURL"
           :is-medium="true"
         />
       </div>
@@ -149,12 +157,10 @@ export default defineComponent({
     </div>
     <article
       v-else
-      class="relative z-0  max-w-7xl flex-1 focus:outline-none xl:order-last"
+      class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
-      <v-container
-        fluid
-      >
-        <v-row class="flex  flex-row">
+      <v-container fluid>
+        <v-row class="flex flex-row">
           <v-col
             v-if="channelId"
             cols="3"
@@ -175,8 +181,10 @@ export default defineComponent({
             </ChannelSidebar>
           </v-col>
           <v-col :cols="9">
-            <div class="rounded-lg md:ml-16 lg:ml-10 xl:ml-0">
-              <router-view />
+            <div class="rounded-lg rounded-t-lg md:ml-16 lg:ml-10 xl:ml-0">
+              <div>
+                <router-view />
+              </div>
             </div>
           </v-col>
         </v-row>

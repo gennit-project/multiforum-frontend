@@ -341,7 +341,7 @@ export default defineComponent({
               class="mt-1"
               :is-small="true"
               :text="commentData.CommentAuthor.username"
-              :profile-pic-u-r-l="commentData.CommentAuthor.profilePicURL || ''"
+              :src="commentData.CommentAuthor.profilePicURL || ''"
             />
 
             <div class="flex-grow">
@@ -379,7 +379,7 @@ export default defineComponent({
                     <UsernameWithTooltip
                       v-if="commentData.CommentAuthor.username"
                       :username="commentData.CommentAuthor.username"
-                      :profile-pic-u-r-l="
+                      :src="
                         commentData.CommentAuthor.profilePicURL
                       "
                       :display-name="

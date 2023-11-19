@@ -236,7 +236,7 @@ export default defineComponent({
         v-if="username"
         class="h-5 w-5"
         :text="username"
-        :profile-pic-u-r-l="profilePicURL"
+        :src="profilePicURL"
         :is-small="true"
       />
 

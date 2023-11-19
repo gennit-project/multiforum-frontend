@@ -14,6 +14,8 @@ export const GET_CHANNEL = gql`
       uniqueName
       displayName
       description
+      channelIconURL
+      channelBannerURL
       Tags {
         text
       }
@@ -72,6 +74,7 @@ export const GET_CHANNELS = gql`
     ) {
       uniqueName
       displayName
+      channelIconURL
       description
       Tags {
         text

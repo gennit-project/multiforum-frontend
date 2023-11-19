@@ -269,7 +269,7 @@ export default defineComponent({
             <UsernameWithTooltip
               v-if="authorUsername"
               :username="authorUsername"
-              :profile-pic-u-r-l="authorProfilePicURL ?? ''"
+              :src="authorProfilePicURL ?? ''"
               :display-name="authorDisplayName ?? ''"
               :comment-karma="authorCommentKarma ?? 0"
               :discussion-karma="authorDiscussionKarma ?? 0"

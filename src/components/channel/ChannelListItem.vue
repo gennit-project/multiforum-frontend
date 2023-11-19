@@ -55,6 +55,7 @@ export default defineComponent({
         <div class="w-24">
           <Avatar
             :text="channel.uniqueName"
+            :src="channel?.channelIconURL"
             :is-square="true"
             :is-medium="true"
           />
@@ -128,8 +129,8 @@ export default defineComponent({
           {{ channel?.DiscussionChannelsAggregate?.count }}
           {{
             channel?.DiscussionChannelsAggregate?.count === 1
-              ? "Discussion"
-              : "Discussions"
+              ? "Post"
+              : "Posts"
           }}
         </router-link>
       </div>

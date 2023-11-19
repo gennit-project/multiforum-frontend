@@ -10,6 +10,7 @@ import gql from "graphql-tag";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import { EventChannel, Event, Channel } from "@/__generated__/graphql";
 import { DateTime } from "luxon";
+import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
 
 const getDateSectionFormat = (date: string) => {
   const dateObj = DateTime.fromISO(date);
@@ -26,6 +27,7 @@ export default defineComponent({
   components: {
     Tag,
     Avatar,
+    MarkdownPreview,
     UsernameWithTooltip,
   },
   props: {
@@ -210,22 +212,32 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="overflow-auto max-h-screen rounded-lg bg-white pb-8 dark:bg-gray-800">
+  <div
+    class="max-h-screen overflow-auto rounded-lg bg-white pb-8 dark:bg-gray-800"
+  >
     <div
       v-if="channelId"
       class="items-center gap-2"
     >
       <div
+        v-if="!channel?.channelBannerURL"
         :class="[
           theme === 'dark' ? 'channel-background-dark' : 'channel-background',
         ]"
         class="h-36 w-full object-cover"
         alt="background pattern"
       />
+      <img
+        v-if="channel?.channelBannerURL"
+        :src="channel?.channelBannerURL"
+        alt="channel banner"
+        class="h-36 w-full rounded-t-lg"
+      >
       <div class="p-6">
         <Avatar
           class="-mt-24 w-24 border-2 shadow-sm dark:border-gray-800"
           :text="channelId"
+          :src="channel?.channelIconURL ?? ''"
           :is-square="true"
           :is-medium="true"
         />
@@ -253,12 +265,11 @@ export default defineComponent({
     <div class="w-full">
       <div v-if="channel">
         <div class="mb-4 w-full px-4">
-          <div
+          <MarkdownPreview
             v-if="channel.description"
-            class="my-2 px-2 text-sm dark:text-gray-200"
-          >
-            {{ channel.description }}
-          </div>
+            :text="channel.description"
+            :word-limit="1000"
+          />
         </div>
         <slot />
 
@@ -439,13 +450,13 @@ export default defineComponent({
               >
                 <Avatar
                   :text="admin.username"
-                  :profile-pic-u-r-l="admin.profilePicURL"
+                  :src="admin.profilePicURL ?? ''"
                   class="mr-2 h-6 w-6"
                 />
                 <UsernameWithTooltip
                   v-if="admin.username"
                   :username="admin.username"
-                  :profile-pic-u-r-l="admin.profilePicURL ?? ''"
+                  :src="admin.profilePicURL ?? ''"
                   :display-name="admin.displayName ?? ''"
                   :comment-karma="admin.commentKarma ?? 0"
                   :discussion-karma="admin.discussionKarma ?? 0"

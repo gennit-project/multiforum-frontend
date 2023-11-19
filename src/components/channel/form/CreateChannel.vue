@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import { ChannelData, CreateEditChannelFormValues } from "@/types/channelTypes";
+import { CreateEditChannelFormValues } from "@/types/channelTypes";
 import { CREATE_CHANNEL } from "@/graphQLData/channel/mutations";
 import { useMutation, provideApolloClient } from "@vue/apollo-composable";
 import { gql } from "@apollo/client/core";
@@ -10,6 +10,11 @@ import { useQuery } from "@vue/apollo-composable";
 import CreateEditChannelFields from "./CreateEditChannelFields.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
+import {
+  Channel,
+  ChannelCreateInput,
+  ChannelTagsConnectOrCreateFieldInput,
+} from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "CreateChannel",
@@ -39,14 +44,16 @@ export default defineComponent({
       uniqueName: "",
       displayName: "",
       description: "",
+      channelIconURL: "",
+      channelBannerURL: "",
       selectedTags: [],
     };
 
     const formValues = ref(createChannelDefaultValues);
 
     const createChannelInput = computed(() => {
-      const tagConnections = formValues.value.selectedTags.map(
-        (tag: string) => {
+      const tagConnections: ChannelTagsConnectOrCreateFieldInput[] =
+        formValues.value.selectedTags.map((tag: string) => {
           return {
             onCreate: {
               node: {
@@ -59,31 +66,35 @@ export default defineComponent({
               },
             },
           };
-        }
-      );
+        });
 
-      return [
+      const result: ChannelCreateInput[] = [
         {
           uniqueName: formValues.value.uniqueName,
           description: formValues.value.description,
           displayName: formValues.value.displayName,
+          channelIconURL: formValues.value.channelIconURL,
+          channelBannerURL: formValues.value.channelBannerURL,
           Tags: {
             connectOrCreate: tagConnections,
           },
           Admins: {
-            connect: {
-              where: {
-                node: {
-                  username: username.value,
+            connect: [
+              {
+                where: {
+                  node: {
+                    username: username.value,
+                  },
                 },
               },
-            },
+            ],
           },
         },
       ];
+      return result;
     });
 
-    const createChannelLoading = ref(false)
+    const createChannelLoading = ref(false);
 
     const {
       mutate: createChannel,
@@ -94,8 +105,7 @@ export default defineComponent({
         createChannelInput: createChannelInput.value,
       },
       update: (cache: any, result: any) => {
-        const newChannel: ChannelData =
-          result.data?.createChannels?.channels[0];
+        const newChannel: Channel = result.data?.createChannels?.channels[0];
 
         cache.modify({
           fields: {
@@ -115,7 +125,7 @@ export default defineComponent({
               if (
                 existingChannelRefs.some(
                   (ref: any) =>
-                    readField("uniqueName", ref) === newChannel.uniqueName
+                    readField("uniqueName", ref) === newChannel.uniqueName,
                 )
               ) {
                 return existingChannelRefs;
@@ -178,7 +188,7 @@ export default defineComponent({
       />
     </template>
     <template #does-not-have-auth>
-      <div class="p-8 flex justify-center">
+      <div class="flex justify-center p-8">
         You don't have permission to see this page
       </div>
     </template>
