@@ -145,7 +145,10 @@ export default defineComponent({
           return;
         }
         this.$emit("updateFormValues", { [fieldName]: embeddedLink });
-        this.$emit("submit");
+
+        if (this.editMode) {
+          this.$emit("submit");
+        }
       }
     },
   },
