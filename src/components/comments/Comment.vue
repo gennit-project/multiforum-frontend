@@ -448,6 +448,7 @@ export default defineComponent({
                       :key="textCopy || ''"
                       :text="textCopy || ''"
                       :word-limit="1000"
+                      :disable-gallery="goToPermalinkOnClick"
                       @click="
                         () => {
                           if (goToPermalinkOnClick) {
