@@ -43,7 +43,7 @@ export default defineComponent({
 
   setup() {
     const defaultFilterLabels = {
-      channels: "Channels",
+      channels: "Forums",
       tags: "Tags",
     };
     const channelId = computed(() => {
@@ -135,7 +135,7 @@ export default defineComponent({
 
 <template>
   <div class="space-y-2">
-    <div class="mt-1 flex items-center justify-between px-1">
+    <div class="flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"

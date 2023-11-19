@@ -1,11 +1,11 @@
 
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { ChannelData } from "@/types/channelTypes";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import Tag from "@/components/tag/Tag.vue";
 import ResetButton from "../generic/buttons/ResetButton.vue";
+import { Channel } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
@@ -23,12 +23,6 @@ export default defineComponent({
         return [];
       },
     },
-    channelOptions: {
-      type: Array as PropType<string[]>,
-      default: () => {
-        return [];
-      },
-    },
   },
   setup() {
     const {
@@ -38,17 +32,22 @@ export default defineComponent({
     } = useQuery(GET_CHANNEL_NAMES);
 
     // We allow the user to select from all existing channels.
-    const channelOptionLabels = computed(() => {
+    const channelOptions = computed(() => {
       if (!channelsResult.value || !channelsResult.value.channels) {
         return [];
       }
-      return channelsResult.value.channels.map((channel: ChannelData) => channel.uniqueName);
+      return channelsResult.value.channels.map((channel: Channel) => {
+        return {
+          label: channel.uniqueName,
+          icon: channel.channelIconURL,
+        }
+      })
     });
 
     return {
       channelsError,
       channelsLoading,
-      channelOptionLabels,
+      channelOptions,
     };
   },
   data(props) {
@@ -106,17 +105,20 @@ export default defineComponent({
         class="channel-picker"
       >
         <Tag
-          v-for="channel in channelOptionLabels"
-          :key="channel"
-          :data-testid="`channel-picker-${channel}`"
-          :active="!!selectedChannelsMap[channel]"
-          :tag="channel"
+          v-for="channel in channelOptions"
+          :key="channel.label"
+          :data-testid="`channel-picker-${channel.label}`"
+          :active="!!selectedChannelsMap[channel.label]"
+          :tag="channel.label"
+          :icon="channel.icon"
           :channel-mode="true"
           @select="select"
           @deselect="deselect"
         />
       </div>
-      <p class="text-xs px-2 dark:text-gray-300">To select multiple items, press Shift</p>
+      <p class="text-xs px-2 dark:text-gray-300">
+        To select multiple items, press Shift
+      </p>
       <div class="h-14">
         <ResetButton @reset="resetChannels" />
       </div>

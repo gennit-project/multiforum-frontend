@@ -95,9 +95,9 @@ export const getLinksInText = (text: string) => {
 
 export const getChannelLabel = (selectedChannels: Array<string>) => {
   if (selectedChannels.length === 0) {
-    return "Channels";
+    return "Forums";
   }
-  return `Channels (${selectedChannels.length})`;
+  return `Forums (${selectedChannels.length})`;
 };
 
 export const updateTagsInCache = (cache: any, updatedTags: Array<TagData>) => {

@@ -46,6 +46,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    icon: {
+      type: String,
+      default: "",
+    },
   },
   data() {
     return {
@@ -98,9 +102,10 @@ export default defineComponent({
   >
     <Avatar
       v-if="channelMode && !hideIcon"
-      :class="[clearable ? 'mr-1' : '', titleMode ? 'h-6 w-6' : 'h-4 w-4']"
+      :class="[clearable ? 'mr-1' : '', 'h-6 w-6']"
       class="inline-flex"
       :text="tag"
+      :src="icon"
       :is-square="true"
     />
     {{ tag }}

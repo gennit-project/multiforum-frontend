@@ -128,8 +128,8 @@ export default defineComponent({
         </div>
         <div
           :class="[
-            user.displayName ? 'text-sm' : 'text-lg',
-            user.displayName
+            user?.displayName ? 'text-sm' : 'text-lg',
+            user?.displayName
               ? 'text-gray-500 dark:text-gray-300'
               : 'text-gray-700 dark:text-gray-200',
           ]"

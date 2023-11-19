@@ -111,10 +111,6 @@ export default defineComponent({
         }
       }
 
-      if (labels.length === 0) {
-        return "More filters";
-      }
-
       if (labels.length === 1) {
         return labels[0];
       }
@@ -147,7 +143,7 @@ export default defineComponent({
     const displayDistance = computed(() => {
       const distance = filterValues.value.radius;
       if (filterValues.value.radius === 0) {
-        return "Any distance"
+        return "Any distance";
       }
       const unit = selectedDistanceUnit.value;
       if (unit === MilesOrKm.KM) {
@@ -215,7 +211,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          showOnlineOnly: false
+          showOnlineOnly: false,
         });
       }
     });
@@ -501,11 +497,10 @@ export default defineComponent({
         <div class="inline-flex items-center align-middle">
           <button
             data-testid="more-filters-button"
-            class="bg-white max-height-3 font-medium hover:bg-gray-200 inline-flex whitespace-nowrap rounded-md border px-3.5 py-2.5 text-xs text-gray-700 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            class="max-height-3 font-medium inline-flex whitespace-nowrap rounded-md border bg-white px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
             @click="handleClickMoreFilters"
           >
-            <FilterIcon class="-ml-0.5 mr-2 h-4 w-4" />
-            More Filters
+            <FilterIcon class="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -561,7 +556,6 @@ export default defineComponent({
                 :data-testid="`distance-${distance.value}`"
                 :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
                 :active="distance.value === filterValues.radius"
-                class="mr-2"
                 @click="updateSelectedDistance(distance)"
               />
             </div>

@@ -249,7 +249,7 @@ export default defineComponent({
 
     <div class="w-full">
       <div v-if="channel">
-        <div class="mb-4 w-full px-4">
+        <div class="mb-4 w-full -ml-2">
           <MarkdownPreview
             v-if="channel.description"
             :text="channel.description"

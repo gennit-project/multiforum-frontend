@@ -123,6 +123,8 @@ export default defineComponent({
       <Avatar
         :text="channelId"
         :is-square="true"
+        :is-small="true"
+        :src="channel?.profilePicURL"
       />
       <h1
         v-if="channelId"
@@ -207,6 +209,7 @@ export default defineComponent({
                 <Avatar
                   :text="admin.username"
                   :src="admin.profilePicURL"
+                  :is-small="true"
                   class="mr-2"
                 />
                 {{ admin.username }}

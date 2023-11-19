@@ -46,13 +46,19 @@ export default defineComponent({
       >
         <MenuButton
           data-testid="create-anything-button"
-          class="bg-white border dark:border-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 text-black font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-md text-sm px-4 hover:bg-gray-200 focus:outline-none dark:text-white"
+          class="font-semibold flex w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
         >
-          Create
+          <span class="flex items-center text-lg">+</span>
           <ChevronDownIcon
             class="-mr-1 ml-1 mt-0.5 h-3 w-3"
             aria-hidden="true"
           />
+          <v-tooltip
+            activator="parent"
+            location="bottom"
+          >
+            Create new...
+          </v-tooltip>
         </MenuButton>
         <transition
           enter-active-class="transition ease-out duration-100"
@@ -138,8 +144,14 @@ export default defineComponent({
       <PrimaryButton
         class="ml-2"
         data-testid="fake-create-anything-button"
-        :label="'+ Create'"
+        :label="'+'"
       />
+      <v-tooltip
+        activator="parent"
+        location="bottom"
+      >
+        Create new...
+      </v-tooltip>
     </template>
   </RequireAuth>
 </template>
