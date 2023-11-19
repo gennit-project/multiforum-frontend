@@ -60,7 +60,7 @@ export default defineComponent({
 
 <template>
   <div class="h-screen overflow-auto dark:bg-black bg-gray-200 dark:text-gray-200 list-disc">
-    <nav class="mb-2">
+    <nav>
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
         @toggleDropdown="toggleDropdown"

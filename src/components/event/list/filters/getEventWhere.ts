@@ -117,6 +117,11 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
           },
         });
       }
+      // if the radius is 0, that means any distance.
+      // just add the location filter.
+      else if (radius === 0) {
+        conditions.push({ NOT: { locationName: null } });
+      }
   }
 
   if (onlineOnly) {
@@ -281,7 +286,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       break;
   }
 
-  return {
+  const result: EventWhere = {
     AND: (conditions = [
       // Ignore the typescript warnings. These filters are part
       // of the real EventWhere on the backend, but not the
@@ -305,5 +310,6 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
       },
     ]),
   };
+  return result
 };
 export default getEventWhere;

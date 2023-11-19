@@ -178,7 +178,7 @@ export default defineComponent({
           alt="channel banner"
           class="h-56 w-full rounded-t-lg"
         >
-        <v-row 
+        <v-row
           class="flex"
           :class="[channel?.channelBannerURL ? '-mt-24' : '']"
         >
