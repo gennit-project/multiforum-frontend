@@ -163,7 +163,7 @@ export default defineComponent({
         :to="tabRoutes.about"
         :label="'About'"
         :is-active="route.name.includes('About')"
-        :show-count="showCounts"
+        :show-count="false"
       >
         <InfoIcon class="h-5 w-5 shrink-0" />
       </TabButton>
