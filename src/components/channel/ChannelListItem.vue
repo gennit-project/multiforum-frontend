@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div class="flex flex-col">
     <div
-      class="h-48 rounded-t-lg bg-white p-8 dark:bg-gray-800 dark:text-gray-200"
+      class="h-48 shadow rounded-t-lg bg-white p-8 dark:bg-gray-800 dark:text-gray-200"
     >
       <div class="flex flex-row items-center gap-3">
         <router-link
@@ -137,7 +137,10 @@ export default defineComponent({
             }}
           </router-link>
         </div>
-        <div class="truncate text-sm font-normal">
+        <div
+          v-if="channel?.EventChannelsAggregate?.count > 0"
+          class="truncate text-sm font-normal"
+        >
           <router-link
             class="flex items-center gap-1 rounded-lg px-4 py-2 hover:bg-gray-700"
             :to="`/channels/c/${channel.uniqueName}/events/search`"

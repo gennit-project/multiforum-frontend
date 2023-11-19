@@ -249,7 +249,7 @@ export default defineComponent({
               `${commentCount} ${
                 commentCount === 1 ? "comment" : "comments"
               } in ${channelCount} ${
-                channelCount === 1 ? "channel" : "channels"
+                channelCount === 1 ? "forum" : "forums"
               }`
             }}
             <ChevronDownIcon

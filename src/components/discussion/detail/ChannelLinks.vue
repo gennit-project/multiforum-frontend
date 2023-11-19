@@ -83,7 +83,7 @@ export default defineComponent({
       class="my-4"
     >
       <h2 class="text-lg">
-        Comments in Channels
+        Comments in Forums
       </h2>
 
       <ul class="list-disc pl-3">
@@ -102,7 +102,7 @@ export default defineComponent({
     <div v-if="channelId && channelsExceptActive.length > 0">
       <div>
         <h2 class="mt-4 text-lg">
-          Comments in Other Channels
+          Comments in Other Forums
         </h2>
         <ul class="list-disc pl-3">
           <ChannelLink
