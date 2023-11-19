@@ -8,9 +8,10 @@ import { useDisplay } from "vuetify";
 import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
-import { EventChannel, Event, Channel } from "@/__generated__/graphql";
+import { Event, Channel } from "@/__generated__/graphql";
 import { DateTime } from "luxon";
 import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
+import { GET_SOONEST_EVENTS_IN_CHANNEL } from "@/graphQLData/channel/queries";
 
 const getDateSectionFormat = (date: string) => {
   const dateObj = DateTime.fromISO(date);
@@ -35,10 +36,6 @@ export default defineComponent({
       type: Object as PropType<Channel>,
       required: true,
     },
-    eventChannels: {
-      type: Array as PropType<Array<EventChannel>>,
-      required: true,
-    },
   },
   setup(props) {
     const route = useRoute();
@@ -55,6 +52,21 @@ export default defineComponent({
         return route.params.channelId;
       }
       return "";
+    });
+    const {
+      error: getEventsError,
+      result: getEventsResult,
+      loading: getEventsLoading,
+    } = useQuery(GET_SOONEST_EVENTS_IN_CHANNEL, {
+      uniqueName: channelId,
+      now: new Date().toISOString(),
+    });
+
+    const soonestEventsInChannel = computed(() => {
+      if (getEventsLoading.value || getEventsError.value) {
+        return [];
+      }
+      return getEventsResult.value.events;
     });
 
     const tags = computed(() => {
@@ -98,13 +110,6 @@ export default defineComponent({
       return themeResult.value.theme;
     });
 
-    let dateObj: any = {
-      happeningNow: [],
-      happeningToday: [],
-      happeningTomorrow: [],
-      afterTomorrow: [],
-    };
-
     const happeningNow = (e: Event) => {
       // We consider an event to be happening now if the start time is in the past
       // and the end time is in the future
@@ -140,34 +145,54 @@ export default defineComponent({
       return startTime > tomorrow;
     };
 
-    for (let i = 0; i < props.eventChannels.length; i++) {
-      const event = props.eventChannels[i]?.Event;
+    let dateObj: any = computed(() => {
+      let res: Record<string, Event[]> = {
+        happeningNow: [],
+        happeningToday: [],
+        happeningTomorrow: [],
+        afterTomorrow: [],
+      };
 
-      if (!event) {
-        continue;
+      if (!soonestEventsInChannel.value) {
+        return res;
       }
 
-      if (happeningNow(event)) {
-        dateObj.happeningNow.push(event);
-      } else if (happeningToday(event)) {
-        dateObj.happeningToday.push(event);
-      } else if (happeningTomorrow(event)) {
-        dateObj.happeningTomorrow.push(event);
-      } else if (afterTomorrow(event)) {
-        dateObj.afterTomorrow.push(event);
-      }
-    }
+      for (let i = 0; i < soonestEventsInChannel.value.length; i++) {
+        const event = soonestEventsInChannel.value[i];
 
-    let dateSectionObj: any = {};
+        if (!event) {
+          continue;
+        }
 
-    for (let i = 0; i < dateObj.afterTomorrow.length; i++) {
-      const event = dateObj.afterTomorrow[i];
-      const date = getDateSectionFormat(event.startTime ?? "");
-      if (!dateSectionObj[date]) {
-        dateSectionObj[date] = [];
+        if (happeningNow(event)) {
+          res.happeningNow.push(event);
+        } else if (happeningToday(event)) {
+          res.happeningToday.push(event);
+        } else if (happeningTomorrow(event)) {
+          res.happeningTomorrow.push(event);
+        } else if (afterTomorrow(event)) {
+          res.afterTomorrow.push(event);
+        }
       }
-      dateSectionObj[date].push(event);
-    }
+
+      return res;
+    });
+
+    const dateSectionObj = computed(() => {
+      let res: any = {};
+
+      for (let i = 0; i < dateObj.value.afterTomorrow.length; i++) {
+        const event = dateObj.value.afterTomorrow[i];
+
+        const date = getDateSectionFormat(event.startTime ?? "");
+        if (!res[date]) {
+          res[date] = [];
+        }
+        res[date].push(event);
+      }
+
+      return res;
+    });
 
     return {
       admins,
@@ -180,6 +205,7 @@ export default defineComponent({
       mdAndDown,
       ownerList,
       router,
+      soonestEventsInChannel,
       tags,
       theme,
     };
@@ -218,7 +244,7 @@ export default defineComponent({
     <div
       v-if="channelId"
       class="items-center gap-2"
-    >     
+    >
       <div class="p-6">
         <Avatar
           class="border-2 shadow-sm dark:border-gray-800"
@@ -249,7 +275,7 @@ export default defineComponent({
 
     <div class="w-full">
       <div v-if="channel">
-        <div class="mb-4 w-full -ml-2">
+        <div class="-ml-2 mb-4 w-full">
           <MarkdownPreview
             v-if="channel.description"
             :text="channel.description"
@@ -401,8 +427,8 @@ export default defineComponent({
 
           <div
             v-if="
-              eventChannels.length > 0 &&
-                eventChannelsAggregate > eventChannels.length
+              soonestEventsInChannel.length > 0 &&
+                eventChannelsAggregate > soonestEventsInChannel.length
             "
           >
             <router-link

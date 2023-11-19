@@ -42,6 +42,7 @@ export default defineComponent({
       for (let imageID in props.mediaMetadata) {
         const imageData = props.mediaMetadata[imageID];
         const largestImage = imageData.s;
+        if (!largestImage) continue;
 
         const galleryItem: GalleryItem = {
           href: largestImage.u,

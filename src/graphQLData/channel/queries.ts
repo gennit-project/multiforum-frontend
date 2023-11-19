@@ -10,7 +10,7 @@ export const GET_CHANNEL_NAMES = gql`
 `;
 
 export const GET_CHANNEL = gql`
-  query getChannel($uniqueName: String!, $now: DateTime, $cutoffDate: DateTime) {
+  query getChannel($uniqueName: String!, $now: DateTime) {
     channels(where: { uniqueName: $uniqueName }) {
       uniqueName
       displayName
@@ -38,26 +38,35 @@ export const GET_CHANNEL = gql`
       ) {
         count
       }
-      EventChannels(
-        options: { limit: 6 }
-        where: {
-          OR: [
-            { Event: { canceled: false, startTime_GT: $now, endTime_LT: $cutoffDate } }
-            { Event: { canceled: false, startTime_LT: $now, endTime_GT: $now } }
-          ]
-        }
-      ) {
-        Event {
-          id
-          title
-          startTime
-          endTime
-          virtualEventUrl
-        }
-      }
     }
   }
 `;
+
+export const GET_SOONEST_EVENTS_IN_CHANNEL = gql`
+  query getEvents($uniqueName: String!, $now: DateTime) {
+    events(
+      options: { limit: 4, sort: [{ startTime: ASC }] }
+      where: {
+        AND: [
+          { EventChannels_SOME: { channelUniqueName: $uniqueName } }
+          {
+            OR: [
+              { canceled: false, startTime_GT: $now }
+              { canceled: false, startTime_LT: $now, endTime_GT: $now }
+            ]
+          }
+        ]
+      }
+    ) {
+      id
+      title
+      startTime
+      endTime
+      virtualEventUrl
+    }
+  }
+`;
+
 export const GET_CHANNELS = gql`
   query getChannels(
     $channelWhere: ChannelWhere

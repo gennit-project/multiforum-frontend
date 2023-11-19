@@ -1,7 +1,3 @@
-import ChannelData from "./channelTypes";
-import UserData from "./userTypes";
-import TagData from "./tagTypes";
-
 export type Point = {
   latitude: number;
   longitude: number;
@@ -29,31 +25,6 @@ export interface CreateEditEventFormValues {
   isHostedByOP: boolean;
   isAllDay: boolean;
 }
-export interface EventData {
-  id: string;
-  title: string;
-  description: string;
-  address?: string;
-  location?: Point;
-  placeId: string;
-  locationName?: string;
-  isInPrivateResidence: boolean;
-  virtualEventUrl?: string;
-  startTime: string;
-  startTimeDayOfWeek: string;
-  startTimeHourOfDay: number;
-  endTime: string;
-  canceled: boolean;
-  deleted: boolean;
-  cost: string;
-  free: boolean;
-  EventChannels: Array[ChannelData];
-  Poster?: UserData;
-  Tags: Array[TagData];
-  updatedAt: string;
-  createdAt: string;
-}
-
 
 export type WeekdayData = {
   number: string;
