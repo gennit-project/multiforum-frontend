@@ -7,7 +7,7 @@ import LoadMore from "../generic/LoadMore.vue";
 export default defineComponent({
   components: {
     ChannelListItem,
-    LoadMore
+    LoadMore,
   },
   props: {
     channels: {
@@ -18,7 +18,7 @@ export default defineComponent({
     },
     resultCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     searchInput: {
       type: String,
@@ -36,7 +36,7 @@ export default defineComponent({
     filterByTag(tag: string) {
       this.$emit("filterByTag", tag);
     },
-  }
+  },
 });
 </script>
 
@@ -44,11 +44,11 @@ export default defineComponent({
   <div class="mx-auto">
     <p
       v-if="channels.length === 0"
-      class="text-sm font-normal mt-2 dark:text-white"
+      class="mt-2 text-sm font-normal dark:text-white"
     >
       There are no results.
     </p>
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid gap-4 md:grid-cols-2">
       <ChannelListItem
         v-for="channel in channels"
         :key="channel.uniqueName"
@@ -58,7 +58,7 @@ export default defineComponent({
         @filterByTag="filterByTag"
       />
     </div>
-    <div class="grid justify-items-stretch m-10">
+    <div class="m-10 grid justify-items-stretch">
       <LoadMore
         class="justify-self-center font-normal"
         :reached-end-of-results="resultCount === channels.length"
