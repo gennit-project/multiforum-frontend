@@ -304,9 +304,7 @@ export default defineComponent({
               class="mb-4 dark:text-gray-100 md:flex md:items-center md:justify-between"
             >
               <div class="min-w-0 flex-1">
-                <h2
-                  class="text-xl font-bold leading-7 sm:truncate sm:text-3xl sm:tracking-tight"
-                >
+                <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
                   {{ eventData.title }}
                 </h2>
               </div>
