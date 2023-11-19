@@ -53,10 +53,22 @@ module.exports = {
         300: '#f4dcb5',
         200: '#f9f1e3',
         100: '#fdfaf5',
+      },
+      green: {
+        900: '#0e1e0e',
+        800: '#1a331a',
+        700: '#235023',
+        600: '#2e6a2e',
+        500: '#3f8f3f',
+        400: '#73ef73',
+        300: '#b5f4b5',
+        200: '#e3f9e3',
+        100: '#f5fdf5',
       }
     },
     fontWeight: {
       bold: '700',
+      normal: '400',
     },
     container: {
       padding: {
@@ -106,14 +118,17 @@ module.exports = {
             h1: {
               textDecoration: 'none',
               wordWrap: 'break-word',
+              fontSize: '3rem',
             },
             h2: {
               textDecoration: 'none',
               wordWrap: 'break-word',
+              fontSize: '2em',
             },
             h3: {
               textDecoration: 'none',
               wordWrap: 'break-word',
+              fontSize: '1.25rem',
             },
             h4: {
               textDecoration: 'none',

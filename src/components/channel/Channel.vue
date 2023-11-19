@@ -130,16 +130,31 @@ export default defineComponent({
         alt="channel banner"
         class="max-h-40 w-full"
       >
-      <div class="flex justify-center">
+      <div class="flex">
         <Avatar
-          class="-mt-28 mb-2 border-4 border-white dark:border-gray-800"
+          class="-mt-28 mb-2 ml-6 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL"
           :is-medium="true"
+          :is-square="true"
         />
+        <div class="-mt-28 ml-6 pt-2">
+          <h1
+            v-if="channel?.displayName"
+            class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+          >
+            {{ channel.displayName }}
+          </h1>
+          <h2
+            v-if="channel?.uniqueName"
+            class="text-sm font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+          >
+            {{ `c/${channel.uniqueName}` }}
+          </h2>
+        </div>
       </div>
       <article
-        class="relative z-0 h-full max-w-7xl flex-1 rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
+        class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
           v-if="channel && smAndDown"
@@ -160,7 +175,16 @@ export default defineComponent({
       class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container fluid>
-        <v-row class="flex flex-row">
+        <img
+          v-if="channel?.channelBannerURL"
+          :src="channel?.channelBannerURL"
+          alt="channel banner"
+          class="h-56 w-full rounded-t-lg"
+        >
+        <v-row 
+          class="flex"
+          :class="[channel?.channelBannerURL ? '-mt-24' : '']"
+        >
           <v-col
             v-if="channelId"
             cols="3"
@@ -169,7 +193,7 @@ export default defineComponent({
               v-if="channel"
               :channel="channel"
               :event-channels="channel.EventChannels"
-              class="sticky top-0 w-72 overflow-auto"
+              class="sticky top-0 overflow-auto"
             >
               <ChannelTabs
                 :route="route"
@@ -181,7 +205,7 @@ export default defineComponent({
             </ChannelSidebar>
           </v-col>
           <v-col :cols="9">
-            <div class="rounded-lg rounded-t-lg md:ml-16 lg:ml-10 xl:ml-0">
+            <div class="rounded-lg rounded-t-lg">
               <div>
                 <router-view />
               </div>

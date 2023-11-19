@@ -6,6 +6,8 @@ export const CREATE_CHANNEL = gql`
       channels {
         uniqueName
         description
+        channelIconURL
+        channelBannerURL
         Admins {
           username
         }
@@ -27,6 +29,8 @@ export const UPDATE_CHANNEL = gql`
       channels {
         uniqueName
         description
+        channelIconURL
+        channelBannerURL
         Admins {
           username
         }

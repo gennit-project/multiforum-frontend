@@ -45,7 +45,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="flex flex-col gap-1 rounded-lg p-4 dark:bg-gray-800 dark:text-gray-200"
+    class="flex flex-col gap-1 rounded-lg p-8 dark:bg-gray-800 dark:text-gray-200"
   >
     <div class="flex flex-row items-center gap-3">
       <router-link
@@ -62,7 +62,7 @@ export default defineComponent({
         </div>
       </router-link>
 
-      <div class="flex flex-col gap-2">
+      <div class="flex flex-col gap-4">
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
           class="mt-1 flex cursor-pointer items-center gap-4"
@@ -78,7 +78,7 @@ export default defineComponent({
           </h3>
           <div v-if="channel?.displayName">
             <h3
-              class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+              class="mb-2 mt-6 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
             >
               <HighlightedSearchTerms
                 :text="channel.displayName"

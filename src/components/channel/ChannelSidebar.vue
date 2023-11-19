@@ -218,28 +218,13 @@ export default defineComponent({
     <div
       v-if="channelId"
       class="items-center gap-2"
-    >
-      <div
-        v-if="!channel?.channelBannerURL"
-        :class="[
-          theme === 'dark' ? 'channel-background-dark' : 'channel-background',
-        ]"
-        class="h-36 w-full object-cover"
-        alt="background pattern"
-      />
-      <img
-        v-if="channel?.channelBannerURL"
-        :src="channel?.channelBannerURL"
-        alt="channel banner"
-        class="h-36 w-full rounded-t-lg"
-      >
+    >     
       <div class="p-6">
         <Avatar
-          class="-mt-24 w-24 border-2 shadow-sm dark:border-gray-800"
+          class="border-2 shadow-sm dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL ?? ''"
           :is-square="true"
-          :is-medium="true"
         />
         <h1
           v-if="channelId && !channel?.displayName"

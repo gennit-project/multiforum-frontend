@@ -20,11 +20,13 @@ import {
   ChannelTagsDisconnectFieldInput,
   ChannelUpdateInput,
 } from "@/__generated__/graphql";
+import Notification from '@/components/generic/Notification.vue'
 
 export default defineComponent({
   name: "EditChannel",
   components: {
     CreateEditChannelFields,
+    Notification,
     RequireAuth,
   },
   apollo: {},
@@ -186,21 +188,16 @@ export default defineComponent({
       return result;
     });
 
+    const showSavedChangesNotification = ref(false);
+
     const {
       mutate: updateChannel,
       error: updateChannelError,
       onDone,
     } = useMutation(UPDATE_CHANNEL);
 
-    onDone((response: any) => {
-      const channelId = response.data.updateChannels.channels[0].uniqueName;
-
-      router.push({
-        name: "SearchDiscussionsInChannel",
-        params: {
-          channelId: channelId,
-        },
-      });
+    onDone(() => {
+      showSavedChangesNotification.value = true;
     });
 
     return {
@@ -216,6 +213,7 @@ export default defineComponent({
       router,
       updateChannelError,
       updateChannel,
+      showSavedChangesNotification
     };
   },
   methods: {
@@ -256,6 +254,11 @@ export default defineComponent({
         :owner-list="ownerList"
         @submit="submit"
         @updateFormValues="updateFormValues"
+      />
+      <Notification
+        v-if="showSavedChangesNotification"
+        :title="'Your changes have been saved.'"
+        @closeNotification="showSavedChangesNotification = false"
       />
     </template>
     <template #does-not-have-auth>
