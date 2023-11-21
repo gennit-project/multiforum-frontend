@@ -266,7 +266,6 @@ const getFilterValuesFromParams = function (
   // For map view, if there is a location filter in the query params,
   // use it. Within a channel, don't filter by distance.
   if (!filterValues.radius){
-    filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS; // Default for map view
     return filterValues;
   }
 

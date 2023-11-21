@@ -56,7 +56,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="h-full">
+  <div
+    class="h-full"
+    :class="channelId ? '' : 'mt-6'"
+  >
     <router-view
       @updateLoadedEventCount="setLoadedEventCount"
       @updateResultCount="setResultCount"
