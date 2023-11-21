@@ -19,7 +19,7 @@ type GetEventWhereInput = {
 };
 
 // The purpose of this function is to convert event filter variables
-// into the EventWhere input object as it is defined in the auto-generated GraphQL
+// into the EventWhere input object, exactly as the EventWhere is defined in the auto-generated GraphQL
 // documentation for querying events.
 const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   const { filterValues, showMap, channelId, onlineOnly } = input;
@@ -54,6 +54,13 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   // Free event filter
   if (free) {
     conditions.push({ free: true });
+  } else {
+    // if free is false, do not filter for { free: false },
+    // because the default value is null instead of false.
+    // It is better to remove it from the list of conditions.
+    conditions = conditions.filter((condition) => {
+      return !condition.free;
+    })
   }
 
   if (!showCanceledEvents) {
@@ -61,6 +68,8 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // If showCanceledEvents is true, we want to
     // show all events, so we don't need to add a filter.
   }
+  
+
 
   if (hasVirtualEventUrl) {
     conditions.push({ NOT: { virtualEventUrl: null } });
@@ -89,6 +98,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     case LocationFilterTypes.ONLY_WITH_ADDRESS:
       // Filter by events that have a location
       // with coordinates
+      
       conditions.push({ NOT: { locationName: null } });
       break;
 

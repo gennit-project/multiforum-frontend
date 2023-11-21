@@ -30,7 +30,7 @@ export default defineComponent({
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        showOnlineOnly: props.isListView,
+        showOnlineOnly: props.isListView && !channelId.value
       })
     );
     return {
@@ -49,7 +49,7 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          showOnlineOnly: this.isListView,
+          showOnlineOnly: this.isListView && !this.channelId
         });
       }
     });

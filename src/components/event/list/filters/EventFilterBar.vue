@@ -225,7 +225,7 @@ export default defineComponent({
     },
     updateFilters(params: any) {
       const isEmpty = (val: any) => {
-        return val === "" || val === "[]";
+        return val === "" || val === "[]" || val === undefined;
       };
       const paramsWithEmptyValues = Object.keys(params).reduce(
         (acc: any, key: string) => {
@@ -401,14 +401,28 @@ export default defineComponent({
       });
     },
     updateShowCanceled(showCanceledEvents: boolean) {
-      this.updateFilters({
-        showCanceledEvents: showCanceledEvents,
-      });
+      if (showCanceledEvents) {
+        this.updateFilters({
+          showCanceledEvents: showCanceledEvents,
+        });
+      } else {
+        // remove the filter from the list of conditions
+        this.updateFilters({
+          showCanceledEvents: undefined,
+        });
+      }
     },
     updateShowOnlyFree(showOnlyFreeEvents: boolean) {
-      this.updateFilters({
-        free: showOnlyFreeEvents,
-      });
+      if (showOnlyFreeEvents) {
+        this.updateFilters({
+          showOnlyFreeEvents: showOnlyFreeEvents,
+        });
+      } else {
+        // remove the filter from the list of conditions
+        this.updateFilters({
+          showOnlyFreeEvents: undefined,
+        });
+      }
     },
     updateSelectedDistance(distance: DistanceUnit) {
       if (distance.value === 0) {

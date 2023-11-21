@@ -239,6 +239,7 @@ export default defineComponent({
 
 <template>
   <v-container
+    :class="[channelId ? '' : 'my-6']"
     class="py-6 justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
   >
     <DiscussionFilterBar />

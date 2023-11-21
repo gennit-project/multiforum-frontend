@@ -118,7 +118,7 @@ const getFilterValuesFromParams = function (
           cleanedValues.showCanceledEvents = false;
         }
         break;
-      case "free":
+      case "showOnlyFreeEvents":
         if (val === "true") {
           cleanedValues.free = true;
         } else if (val === "false") {
@@ -254,37 +254,37 @@ const getFilterValuesFromParams = function (
   if (cleanedValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL) {
     filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
     filterValues.hasVirtualEventUrl = true;
-  } else if (cleanedValues.locationFilter === LocationFilterTypes.ONLY_WITH_ADDRESS) {
+  } else if (
+    cleanedValues.locationFilter === LocationFilterTypes.ONLY_WITH_ADDRESS
+  ) {
     filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS;
   }
 
-  
-
-  if (!showOnlineOnly) {
-    // For map view, if there is a location filter in the query params,
-    // use it. Within a channel, don't filter by distance.
-    filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS; // Default for map view
-
-    if (locationFilter) {
-      filterValues.locationFilter = locationFilter;
-    } 
-    const locationParams = {
-      locationFilter: LocationFilterTypes.WITHIN_RADIUS,
-      radius: selectedRadius,
-      placeName: placeName || defaultPlace.name,
-      placeAddress: placeAddress || defaultPlace.address,
-      placeId: placeId || "",
-      latitude: latitude || defaultPlace.latitude,
-      longitude: longitude || defaultPlace.longitude,
-    };
-    
-    const res = {
-      ...filterValues,
-      ...locationParams,
-    };
-    return res;
+  if (!showOnlineOnly && !locationFilter) {
+    return filterValues;
   }
-  return filterValues;
+  // For map view, if there is a location filter in the query params,
+  // use it. Within a channel, don't filter by distance.
+  if (!filterValues.radius){
+    filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS; // Default for map view
+    return filterValues;
+  }
+
+  const locationParams = {
+    locationFilter: LocationFilterTypes.WITHIN_RADIUS,
+    radius: selectedRadius,
+    placeName: placeName || defaultPlace.name,
+    placeAddress: placeAddress || defaultPlace.address,
+    placeId: placeId || "",
+    latitude: latitude || defaultPlace.latitude,
+    longitude: longitude || defaultPlace.longitude,
+  };
+
+  const res = {
+    ...filterValues,
+    ...locationParams,
+  };
+  return res;
 };
 
 export { getFilterValuesFromParams, defaultPlace };
