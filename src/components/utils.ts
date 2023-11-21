@@ -12,6 +12,7 @@ type GetEmbeddedLinkInput = {
   signedStorageURL: string;
   filename: string;
   file: File;
+  fileType: string;
 };
 
 export function getUploadFileName(input: UploadFileInput) {
@@ -24,7 +25,11 @@ export function encodeSpacesInURL(url: string) {
 }
 
 export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
-  const { signedStorageURL, filename, file } = input;
+  const { 
+    signedStorageURL, 
+    filename, 
+    file,
+  } = input;
   const { googleCloudStorageBucket } = config;
 
   const embeddedLink = encodeSpacesInURL(
@@ -35,7 +40,7 @@ export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
     method: "PUT",
     body: file,
     headers: {
-      "Content-Type": "image/png",
+      "Content-Type": file.type, // Example "image/png",
     },
   });
 
