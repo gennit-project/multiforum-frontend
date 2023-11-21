@@ -93,7 +93,9 @@ export default defineComponent({
       eventChannelWhere: {
         Event: {
           startTime_GT: now,
+          canceled: false
         },
+        
       },
       limit: 25,
       offset: 0,
