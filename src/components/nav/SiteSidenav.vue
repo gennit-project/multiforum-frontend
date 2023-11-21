@@ -101,7 +101,7 @@ export default defineComponent({
         loginWithRedirect();
       },
       logout: () => {
-        logout({ returnTo: "http://localhost:5173/logout" });
+        logout({ returnTo: "http://localhost:5173/" });
       },
       navigation,
       username,

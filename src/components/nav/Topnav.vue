@@ -99,13 +99,13 @@ export default defineComponent({
   methods: {
     getLabel() {
       if (this.route.name === "SitewideSearchDiscussionPreview") {
-        return "/ discussions";
+        return "• discussions";
       }
       if (this.route.name === "SearchEventsList") {
-        return "/ online events";
+        return "• online events";
       }
       if (this.route.name === "MapEventPreview") {
-        return "/ in-person events";
+        return "• in-person events";
       }
     },
   },

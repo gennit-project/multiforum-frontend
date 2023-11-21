@@ -20,7 +20,6 @@ import EditChannel from "@/components/channel/form/EditChannel.vue";
 import MapView from "@/components/event/map/MapView.vue";
 import EventListView from "@/components/event/list/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
-import LogoutPage from "@/components/auth/LogoutPage.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 import PermalinkedComment from "@/components/comments/PermalinkedComment.vue";
 import CommentModHistory from "@/components/comments/CommentModHistory.vue";
@@ -68,10 +67,6 @@ export const router = createRouter({
           component: AccountSettings,
         }
       ],
-    },
-    {
-      path: "/logout",
-      component: LogoutPage,
     },
     {
       path: "/createUsername",

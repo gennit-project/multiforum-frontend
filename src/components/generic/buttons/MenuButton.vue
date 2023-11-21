@@ -3,7 +3,6 @@ import { SelectOptionData } from "@/types/genericFormTypes";
 import { defineComponent, PropType } from "vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
-import { useAuth0 } from "@auth0/auth0-vue";
 
 export default defineComponent({
   components: {
@@ -22,12 +21,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const { logout } = useAuth0();
-    return {
-      logout: () => {
-        logout({ returnTo: "http://localhost:5173/logout" });
-      },
-    };
+    return {}
   },
 });
 </script>
@@ -77,13 +71,6 @@ export default defineComponent({
                   : 'text-gray-700 dark:text-white',
                 'block px-4 py-2 text-sm',
               ]"
-              @click="
-                () => {
-                  if (item.value === '/logout') {
-                    logout();
-                  }
-                }
-              "
             >
               {{ item.label }}
             </router-link>

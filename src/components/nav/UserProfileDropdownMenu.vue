@@ -54,7 +54,7 @@ export default defineComponent({
       },
       {
         label: "Sign out",
-        value: "/logout",
+        value: "",
         event: "logout",
       },
     ];
@@ -62,7 +62,7 @@ export default defineComponent({
     return {
       isAuthenticated,
       logout: () => {
-        logout({ returnTo: "http://localhost:5173/logout" });
+        logout({ returnTo: "http://localhost:5173/" });
       },
       menuItems,
       profilePicURL,
