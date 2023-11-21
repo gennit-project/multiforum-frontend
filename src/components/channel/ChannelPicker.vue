@@ -98,7 +98,7 @@ export default defineComponent({
     </div>
     <div
       v-else
-      class="divide-solid dark:bg-gray-950"
+      class="divide-solid"
     >
       <div
         data-testid="channel-picker"

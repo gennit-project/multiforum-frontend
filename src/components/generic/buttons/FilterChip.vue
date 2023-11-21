@@ -69,9 +69,9 @@ export default defineComponent({
           </button>
         </div>
       </template>
-      <v-card :theme="theme"> 
+      <div class="dark:bg-gray-900 border  bg-white dark:border-gray-900 rounded-lg"> 
         <slot name="content" />
-      </v-card>
+      </div>
     </v-menu>
   </div>
 </template>
