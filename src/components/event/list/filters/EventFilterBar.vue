@@ -263,6 +263,10 @@ export default defineComponent({
       // if the filter is changed, while a cached
       // result is used if the filter has been
       // used before in the same session.
+      console.log({
+        existingQueryCopy,
+        paramsWithoutEmptyValues,
+      })
       this.$router.replace({
         ...this.$route,
         query: {
@@ -474,7 +478,24 @@ export default defineComponent({
         </button>
       </div>
 
-      <div class="flex flex-wrap space-x-2 align-middle">
+      <div class="flex flex-wrap  w-full space-x-2 align-middle">
+        <div class="inline-flex gap-2 flex-1 items-center align-middle">
+          <SearchBar
+            class="inline-flex flex-1 align-middle"
+            data-testid="event-drawer-search-bar"
+            :initial-value="filterValues.searchInput"
+            :search-placeholder="'Search'"
+            :full-width="true"
+            @updateSearchInput="updateSearchInput"
+          />
+          <button
+            data-testid="more-filters-button"
+            class="max-height-3 font-medium inline-flex whitespace-nowrap rounded-md border bg-white px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+            @click="handleClickMoreFilters"
+          >
+            <FilterIcon class="h-4 w-4" />
+          </button>
+        </div>
         <FilterChip
           v-if="!channelId"
           class="items-center align-middle"
@@ -508,15 +529,7 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-        <div class="inline-flex items-center align-middle">
-          <button
-            data-testid="more-filters-button"
-            class="max-height-3 font-medium inline-flex whitespace-nowrap rounded-md border bg-white px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-            @click="handleClickMoreFilters"
-          >
-            <FilterIcon class="h-4 w-4" />
-          </button>
-        </div>
+       
       </div>
     </div>
     <div class="flex justify-center">

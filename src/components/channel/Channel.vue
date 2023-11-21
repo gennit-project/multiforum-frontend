@@ -122,7 +122,7 @@ export default defineComponent({
         v-else
         :src="channel?.channelBannerURL"
         alt="channel banner"
-        class="max-h-40 w-full"
+        class="max-h-48 w-full"
       >
       <div class="flex">
         <Avatar
@@ -173,11 +173,10 @@ export default defineComponent({
           v-if="channel?.channelBannerURL"
           :src="channel?.channelBannerURL"
           alt="channel banner"
-          class="h-56 w-full rounded-t-lg"
+          class="max-h-48 w-full rounded-t-lg"
         >
         <v-row
           class="flex"
-          :class="[channel?.channelBannerURL ? '-mt-24' : '']"
         >
           <v-col
             v-if="channelId"
