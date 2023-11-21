@@ -25,6 +25,7 @@ import { DiscussionChannel } from "@/__generated__/graphql";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
+import PageNotFound from "@/components/generic/PageNotFound.vue";
 
 export const COMMENT_LIMIT = 5;
 
@@ -39,6 +40,7 @@ export default defineComponent({
     DiscussionVotes,
     ErrorBanner,
     CreateButton,
+    PageNotFound,
     PrimaryButton,
     RequireAuth,
   },
@@ -97,12 +99,13 @@ export default defineComponent({
     const activeDiscussionChannel = computed<DiscussionChannel>(() => {
       if (
         getDiscussionChannelLoading.value ||
-        getDiscussionChannelError.value
+        getDiscussionChannelError.value ||
+        !getDiscussionChannelResult.value
       ) {
         return null;
       }
       return getDiscussionChannelResult.value.getCommentSection
-        .DiscussionChannel;
+        ?.DiscussionChannel;
     });
 
     const comments = computed(() => {
@@ -244,7 +247,9 @@ export default defineComponent({
 </script>
 
 <template>
+  <PageNotFound v-if="!activeDiscussionChannel" />
   <div
+    v-else
     class="w-full max-w-7xl space-y-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800"
   >
     <div
