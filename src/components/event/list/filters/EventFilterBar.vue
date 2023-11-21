@@ -248,13 +248,11 @@ export default defineComponent({
 
       const existingQueryCopy = { ...this.$route.query };
 
-      Object.keys(existingQueryCopy).forEach((key: string) => {
-        if (!isEmpty(existingQueryCopy[key])) {
-          if (isEmpty(paramsWithEmptyValues[key])) {
-            // If the newest filter is empty, we want to remove it from
-            // the query params instead of adding a filter with an empty value.
-            delete existingQueryCopy[key];
-          }
+      Object.keys(paramsWithEmptyValues).forEach((key: string) => {
+        if (isEmpty(paramsWithEmptyValues[key])) {
+          // If the newest filter is empty, we want to remove it from
+          // the query params instead of adding a filter with an empty value.
+          delete existingQueryCopy[key];
         }
       });
       // Updating the URL params causes the events
@@ -263,10 +261,6 @@ export default defineComponent({
       // if the filter is changed, while a cached
       // result is used if the filter has been
       // used before in the same session.
-      console.log({
-        existingQueryCopy,
-        paramsWithoutEmptyValues,
-      })
       this.$router.replace({
         ...this.$route,
         query: {
@@ -478,8 +472,8 @@ export default defineComponent({
         </button>
       </div>
 
-      <div class="flex flex-wrap  w-full space-x-2 align-middle">
-        <div class="inline-flex gap-2 flex-1 items-center align-middle">
+      <div class="flex w-full flex-wrap space-x-2 align-middle">
+        <div class="inline-flex flex-1 items-center gap-2 align-middle">
           <SearchBar
             class="inline-flex flex-1 align-middle"
             data-testid="event-drawer-search-bar"
@@ -529,7 +523,6 @@ export default defineComponent({
             />
           </template>
         </FilterChip>
-       
       </div>
     </div>
     <div class="flex justify-center">
