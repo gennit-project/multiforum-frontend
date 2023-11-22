@@ -46,7 +46,7 @@ export default defineComponent({
       >
         <MenuButton
           data-testid="create-anything-button"
-          class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+          class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-600"
           @click="showTooltip = false"
           @mouseover="showTooltip = true"
         >
