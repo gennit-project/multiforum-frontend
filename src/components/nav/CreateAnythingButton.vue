@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import ChevronDownIcon from "../icons/ChevronDownIcon.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
@@ -29,7 +29,7 @@ export default defineComponent({
     });
 
     const { smAndDown } = useDisplay();
-    return { channelId, router, smAndDown };
+    return { channelId, router, smAndDown, showTooltip: ref(false) };
   },
 });
 </script>
@@ -46,16 +46,19 @@ export default defineComponent({
       >
         <MenuButton
           data-testid="create-anything-button"
-          class="h-8 font-semibold flex w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+          class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
+          @click="showTooltip = false"
+          @mouseover="showTooltip = true"
         >
-          <span class="flex mb-1 items-center text-lg">+</span>
+          <span class="mb-1 flex items-center text-lg">+</span>
           <ChevronDownIcon
             class="-mr-1 ml-1 mt-0.5 h-3 w-3"
             aria-hidden="true"
           />
           <v-tooltip
-            activator="parent"
+            v-if="showTooltip"
             location="bottom"
+            activator="parent"
           >
             Create new...
           </v-tooltip>

@@ -68,8 +68,6 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     // If showCanceledEvents is true, we want to
     // show all events, so we don't need to add a filter.
   }
-  
-
 
   if (hasVirtualEventUrl) {
     conditions.push({ NOT: { virtualEventUrl: null } });
