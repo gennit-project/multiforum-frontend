@@ -3,10 +3,12 @@ import { defineComponent, ref, computed } from "vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 import gql from "graphql-tag";
 import { useQuery } from "@vue/apollo-composable";
+import Popper from "vue3-popper";
 
 export default defineComponent({
   components: {
     ChevronDownIcon,
+    Popper,
   },
   props: {
     label: {
@@ -39,8 +41,8 @@ export default defineComponent({
     });
 
     return {
-      showMenu: ref(false), 
-      theme 
+      showMenu: ref(false),
+      theme,
     };
   },
 });
@@ -48,30 +50,29 @@ export default defineComponent({
 
 <template>
   <div class="inline-flex">
-    <v-menu
-      v-model="showMenu"
+    <Popper
       :close-on-content-click="false"
       location="bottom"
     >
-      <template #activator="{ props }">
-        <div v-bind="props">
-          <button
-            :class="[highlighted ? 'border-blue-500 ring-1 ring-blue-500' : '']"
-            class="px-3 bg-white dark:bg-gray-800 max-height-3 font-small mr-2 inline-flex whitespace-nowrap rounded-full px-2 py-2.5 text-xs text-gray-700 hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600"
-          >
-            <slot name="icon" />
+      <button
+        :class="[highlighted ? 'border-blue-500 ring-1 ring-blue-500' : '']"
+        class="max-height-3 font-small mr-2 inline-flex whitespace-nowrap rounded-full bg-white px-2 px-3 py-2.5 text-xs text-gray-700 border hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+      >
+        <slot name="icon" />
 
-            {{ label }}
-            <ChevronDownIcon
-              class="-mr-1 ml-1 mt-0.5 h-3 w-3"
-              aria-hidden="true"
-            />
-          </button>
+        {{ label }}
+        <ChevronDownIcon
+          class="-mr-1 ml-1 mt-0.5 h-3 w-3"
+          aria-hidden="true"
+        />
+      </button>
+      <template #content>
+        <div
+          class="rounded-lg border bg-white border dark:bg-gray-700"
+        >
+          <slot name="content" />
         </div>
       </template>
-      <div class="dark:bg-gray-900 border  bg-white dark:border-gray-900 rounded-lg"> 
-        <slot name="content" />
-      </div>
-    </v-menu>
+    </Popper>
   </div>
 </template>

@@ -133,7 +133,7 @@ export default defineComponent({
                     'block px-4 py-2 text-sm',
                   ]"
                 >
-                  + New Channel
+                  + New Forum
                 </span>
               </MenuItem>
             </div>

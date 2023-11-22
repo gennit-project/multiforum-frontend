@@ -172,7 +172,7 @@ export default defineComponent({
     </div>
     <TailwindForm
       v-else-if="formValues"
-      :form-title="editMode ? 'Edit Channel' : 'Create Channel'"
+      :form-title="editMode ? 'Edit Channel' : 'Create Forum'"
       :needs-changes="needsChanges"
       :loading="createChannelLoading"
       @input="touched = true"
@@ -235,7 +235,7 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow section-title="Channel Icon">
+          <FormRow section-title="Forum Icon">
             <template #content>
               <Avatar
                 class="shadow-sm"
@@ -251,7 +251,7 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow section-title="Channel Banner">
+          <FormRow section-title="Forum Banner">
             <template #content>
               <img
                 v-if="formValues.channelBannerURL"

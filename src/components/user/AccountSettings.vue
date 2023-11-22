@@ -153,6 +153,7 @@ export default defineComponent({
       // so I removed it, and manually do this refetch instead. The ideal solution
       // would be to fix the account creation flow without having to remove the
       // key field configuration from the User type, but I haven't figured that out.
+      // If the account creation process is fixed, this manual refetch can be removed.
       this.refetchUser({
         username: this.username,
       });

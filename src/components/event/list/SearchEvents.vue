@@ -57,13 +57,15 @@ export default defineComponent({
 </script>
 <template>
   <div
-    class="h-full"
+    class="flex h-full justify-center"
     :class="channelId ? '' : 'mt-6'"
   >
-    <router-view
-      @updateLoadedEventCount="setLoadedEventCount"
-      @updateResultCount="setResultCount"
-    />
+    <div :class="channelId ? '' : 'max-w-5xl'">
+      <router-view
+        @updateLoadedEventCount="setLoadedEventCount"
+        @updateResultCount="setResultCount"
+      />
+    </div>
   </div>
 </template>
 
