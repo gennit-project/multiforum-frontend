@@ -140,13 +140,22 @@ export default defineComponent({
   },
   methods: {
     async submit() {
-      this.updateUser({
+      await this.updateUser({
         where: {
           username: this.username,
         },
         update: this.userUpdateInput,
       });
-      this.refetchUser();
+      // Normally I would say that username is a key field in the cache
+      // settings for the User type. This would make it so that when the resource
+      // is updated, the cache is updated as well. However, there was a bug in
+      // the account creation process related to the username field being a key,
+      // so I removed it, and manually do this refetch instead. The ideal solution
+      // would be to fix the account creation flow without having to remove the
+      // key field configuration from the User type, but I haven't figured that out.
+      this.refetchUser({
+        username: this.username,
+      });
     },
     updateFormValues(data: EditAccountSettingsFormValues) {
       // Update all form values at once because it makes cleaner
