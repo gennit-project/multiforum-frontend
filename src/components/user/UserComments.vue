@@ -92,10 +92,10 @@ export default defineComponent({
     <div v-if="error">
       Error
     </div>
-    <div v-else-if="commentResult && commentResult.users.length === 0">
-      No results
+    <div v-else-if="commentResult?.users?.length === 0 || commentResult?.users[0]?.Comments.length === 0">
+      No comments yet
     </div>
-    <div v-else-if="commentResult && commentResult.users.length > 0">
+    <div v-else-if="commentResult && commentResult?.users?.length > 0">
       <Comment
         v-for="comment in commentResult.users[0].Comments"
         :key="comment.id"
@@ -112,7 +112,7 @@ export default defineComponent({
     <div v-if="loading">
       Loading...
     </div>
-    <div v-if="commentResult?.users[0].Comments.length > 0">
+    <div v-if="commentResult?.users[0]?.Comments.length > 0">
       <LoadMore
         class="justify-self-center"
         :reached-end-of-results="

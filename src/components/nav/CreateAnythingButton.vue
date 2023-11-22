@@ -2,7 +2,6 @@
 import { defineComponent, computed, ref } from "vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import ChevronDownIcon from "../icons/ChevronDownIcon.vue";
-import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { useRoute, useRouter } from "vue-router";
 import { useDisplay } from "vuetify";
@@ -12,7 +11,6 @@ export default defineComponent({
   components: {
     MenuButton,
     RequireAuth,
-    PrimaryButton,
     DropdownMenu: Menu,
     MenuItem,
     ChevronDownIcon,
@@ -144,11 +142,12 @@ export default defineComponent({
       </DropdownMenu>
     </template>
     <template #does-not-have-auth>
-      <PrimaryButton
-        class="ml-2"
+      <button
+        class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border bg-white px-4 text-sm text-black hover:bg-gray-200 focus:outline-none dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-600"
         data-testid="fake-create-anything-button"
-        :label="'+'"
-      />
+      >
+        +
+      </button>
       <v-tooltip
         activator="parent"
         location="bottom"

@@ -103,8 +103,7 @@ export default defineComponent({
       usernameVar(userInDatabase);
       modProfileNameVar()
       router.push({
-        name: "UserProfile",
-        params: { username: userInDatabase },
+        name: "SearchDiscussions"
       });
     });
 

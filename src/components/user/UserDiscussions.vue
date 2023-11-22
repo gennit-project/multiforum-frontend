@@ -44,8 +44,8 @@ export default defineComponent({
     <div v-else-if="error">
       Error
     </div>
-    <div v-else-if="result && result.users.length === 0">
-      No results
+    <div v-else-if="result?.users?.length === 0 || result.users[0]?.Discussions?.length === 0">
+      No discussions yet
     </div>
     <DiscussionItemInProfile
       v-for="discussion in result.users[0].Discussions"

@@ -35,9 +35,15 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex flex-col gap-3 py-3">
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">Error</div>
-    <div v-else-if="result && result.users.length === 0">No results</div>
+    <div v-if="loading">
+      Loading...
+    </div>
+    <div v-else-if="error">
+      Error
+    </div>
+    <div v-else-if="result?.users?.length === 0 || result?.users[0]?.Events.length === 0">
+      No events yet
+    </div>
     <EventListItemInProfile
       v-for="event in result.users[0].Events"
       v-else-if="result && result.users.length > 0"

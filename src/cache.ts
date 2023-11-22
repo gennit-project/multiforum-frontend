@@ -61,9 +61,6 @@ const cache = new InMemoryCache({
         },
       },
     },
-    User: {
-      keyFields: ["username"]
-    },
     Event: {
       keyFields: ["id"],
       fields: {

@@ -61,9 +61,13 @@ export default defineComponent({
       return "";
     });
 
-    const { result, loading, error } = useQuery(GET_USER, () => ({
+    const { result, loading, error } = useQuery(GET_USER, {
       username: username.value,
-    }));
+    },{
+      // Prevents 'user not found' if new user looks at their profile
+      // in the first session.
+      fetchPolicy: "network-only",
+    });
     const user = computed(() => {
       if (loading.value || error.value) {
         return null;
