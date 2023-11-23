@@ -330,7 +330,7 @@ export default defineComponent({
       });
     },
     handleClick() {
-      if (this.smAndDown) {
+      if (this.smAndDown || this.currentChannelId) {
         this.$router.push(this.detailLink);
       } else {
         this.$emit("openPreview");

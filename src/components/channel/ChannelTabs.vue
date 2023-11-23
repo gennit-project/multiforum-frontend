@@ -55,6 +55,7 @@ export default defineComponent({
     const username = computed(() => {
       return localUsernameResult.value.username;
     });
+
     const tabRoutes = computed(() => {
       let routes = {
         discussions: `/channels/c/${channelId.value}/discussions`,
@@ -128,7 +129,7 @@ export default defineComponent({
         v-if="username && adminList.includes(username)"
         :to="tabRoutes.settings"
         :label="'Settings'"
-        :is-active="route.name.includes('Edit')"
+        :is-active="route.name.includes('settings')"
         :vertical="true"
         :show-count="false"
       >
@@ -171,7 +172,7 @@ export default defineComponent({
         v-if="username && adminList.includes(username)"
         :to="tabRoutes.settings"
         :label="'Settings'"
-        :is-active="route.name.includes('Edit')"
+        :is-active="route.name.includes('settings')"
         :show-count="false"
       >
         <InfoIcon class="h-5 w-5 shrink-0" />
