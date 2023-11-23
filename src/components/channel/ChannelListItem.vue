@@ -46,7 +46,7 @@ export default defineComponent({
 <template>
   <div class="flex flex-col">
     <div
-      class="h-48 shadow rounded-t-lg bg-white p-8 dark:bg-gray-800 dark:text-gray-200"
+      class="shadow rounded-t-lg bg-white p-8 dark:bg-gray-800 dark:text-gray-200"
     >
       <div class="flex flex-row items-center gap-3">
         <router-link
@@ -70,7 +70,7 @@ export default defineComponent({
           >
             <h3
               v-if="channel.uniqueName && !channel?.displayName"
-              class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+              class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
             >
               <HighlightedSearchTerms
                 :text="channel.uniqueName"
@@ -79,7 +79,7 @@ export default defineComponent({
             </h3>
             <div v-if="channel?.displayName">
               <h3
-                class="mb-2 mt-6 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+                class="mb-2 mt-6 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
               >
                 <HighlightedSearchTerms
                   :text="channel.displayName"
