@@ -10,7 +10,8 @@ import { SearchEventValues } from "@/types/eventTypes";
 import { router } from "@/router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
-import MarkdownPreview from '@/components/generic/forms/MarkdownPreview.vue'
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   components: {
@@ -180,9 +181,11 @@ export default defineComponent({
     };
   },
   data(props) {
+    const { smAndDown } = useDisplay();
     return {
       previewIsOpen: false,
       isWithinChannel: props.currentChannelId ? true : false,
+      smAndDown,
     };
   },
   computed: {
@@ -326,6 +329,13 @@ export default defineComponent({
         },
       });
     },
+    handleClick() {
+      if (this.smAndDown) {
+        this.$router.push(this.detailLink);
+      } else {
+        this.$emit("openPreview");
+      }
+    },
   },
 });
 </script>
@@ -340,9 +350,9 @@ export default defineComponent({
     "
     class="relative rounded-lg bg-white p-6 dark:bg-gray-700"
     :data-testid="`event-list-item-${event.title}`"
-    @click="$emit('openPreview')"
+    @click="handleClick"
   >
-    <router-link :to="detailLink">
+    <div>
       <div class="block">
         <div class="py-1">
           <div class="flex">
@@ -372,6 +382,11 @@ export default defineComponent({
               </div>
             </div>
             <div class="flex-1">
+              <img
+                v-if="smAndDown && event.coverImageURL"
+                :src="event.coverImageURL"
+                class="mb-4 max-h-48 rounded-lg"
+              >
               <p class="space-x-2">
                 <span
                   class="text-md cursor-pointer truncate font-bold hover:underline dark:text-gray-100"
@@ -478,10 +493,20 @@ export default defineComponent({
                 </button>
               </MenuButton>
             </div>
+            <div
+              v-if="!smAndDown"
+              class="mx-4 items-center justify-center rounded-lg"
+            >
+              <img
+                v-if="event.coverImageURL"
+                :src="event.coverImageURL"
+                class="h-36 w-36 rounded-lg"
+              >
+            </div>
           </div>
         </div>
       </div>
-    </router-link>
+    </div>
   </li>
 </template>
 <style>

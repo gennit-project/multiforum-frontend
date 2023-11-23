@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, Ref, computed } from "vue";
 import { useQuery } from "@vue/apollo-composable";
-import { EventData } from "@/types/eventTypes";
 import EventPreview from "../list/EventPreview.vue";
 import EventList from "../list/EventList.vue";
 import EventMap from "./Map.vue";
@@ -24,6 +23,7 @@ import EventFilterBar from "../list/filters/EventFilterBar.vue";
 import TimeShortcuts from "../list/filters/TimeShortcuts.vue";
 import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrollingPanes.vue";
 import gql from "graphql-tag";
+import { Event as EventData } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "MapView",
@@ -533,10 +533,9 @@ export default defineComponent({
       >
         <template #leftpane>
           <div
-            class="m-4 rounded-lg p-4 h-fit  flex justify-center"
-            style="width: 35vw"
+            class="rounded-lg flex justify-center"
           >
-            <div>
+            <div class=" h-screen overflow-auto p-4">
               <EventFilterBar
                 :show-map="true"
               />

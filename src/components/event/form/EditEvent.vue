@@ -121,6 +121,7 @@ export default defineComponent({
         free: event.free || false,
         isHostedByOP: event.isHostedByOP || false,
         isAllDay: event.isAllDay || false,
+        coverImageURL: event.coverImageURL || "",
       };
     }
 
@@ -221,6 +222,7 @@ export default defineComponent({
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
         isHostedByOP: formValues.value.isHostedByOP || false,
         isAllDay: formValues.value.isAllDay || false,
+        coverImageURL: formValues.value.coverImageURL || null,
         Tags: [
           {
             connectOrCreate: tagConnections,

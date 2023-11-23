@@ -5,7 +5,7 @@ import {
   DialogOverlay,
   TransitionChild,
   TransitionRoot,
-  DialogTitle
+  DialogTitle,
 } from "@headlessui/vue";
 import XIcon from "@/components/icons/XmarkIcon.vue";
 
@@ -17,7 +17,7 @@ export default defineComponent({
     DialogTitle,
     TransitionChild,
     TransitionRoot,
-    XIcon
+    XIcon,
   },
   props: {
     isOpen: {
@@ -26,12 +26,12 @@ export default defineComponent({
     },
     header: {
       type: String,
-      default: ""
+      default: "",
     },
     topLayer: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   setup() {},
 });
@@ -51,46 +51,34 @@ export default defineComponent({
       <div class="absolute inset-0 overflow-hidden">
         <DialogOverlay class="absolute inset-0" />
 
-        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+        <div class="fixed inset-y-0 left-0 flex max-w-full">
           <TransitionChild
             as="template"
             enter="transform transition ease-in-out duration-100 sm:duration-100"
-            enter-from="translate-x-full"
+            enter-from="-translate-x-full"
             enter-to="translate-x-0"
             leave="transform transition ease-in-out duration-100 sm:duration-100"
             leave-from="translate-x-0"
-            leave-to="translate-x-full"
+            leave-to="-translate-x-full"
           >
             <div class="w-screen max-w-3xl">
               <div
-                class="
-                  h-full
-                  divide-y divide-gray-200
-                  flex flex-col
-                  shadow-xl
-                "
+                class="flex h-full flex-col divide-y divide-gray-200 shadow-xl"
               >
                 <div
-                  class="min-h-0 flex-1 flex flex-col py-2 px-8 bg-white dark:bg-gray-800 dark:text-gray-200"
+                  class="flex min-h-0 flex-1 flex-col bg-white px-8 py-2 dark:bg-gray-800 dark:text-gray-200"
                 >
                   <div>
                     <div class="flex items-start justify-between">
-                      <DialogTitle class="text-lg my-3 font-medium text-gray-900 dark:text-gray-200">
+                      <DialogTitle
+                        class="font-medium my-3 text-lg text-gray-900 dark:text-gray-200"
+                      >
                         {{ header }}
                       </DialogTitle>
-                      <div class="ml-3 h-7 flex items-center">
+                      <div class="ml-3 flex h-7 items-center">
                         <button
                           type="button"
-                          class="
-                             
-                            rounded-full
-                            text-gray-400
-                            dark:text-gray-200
-                            hover:text-gray-500
-                            focus:outline-none
-                            focus:ring-2
-                            focus:ring-blue-500
-                          "
+                          class="rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-200"
                           @click="$emit('closePreview')"
                         >
                           <span class="sr-only">Close panel</span>

@@ -24,6 +24,7 @@ export interface CreateEditEventFormValues {
   free: boolean;
   isHostedByOP: boolean;
   isAllDay: boolean;
+  coverImageURL?: string;
 }
 
 export type WeekdayData = {

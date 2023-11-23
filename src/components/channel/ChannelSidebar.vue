@@ -433,7 +433,7 @@ export default defineComponent({
           >
             <router-link
               :to="`/channels/c/${channelId}/events/search`"
-              class="flex items-center px-8 underline"
+              class="flex items-center px-6 underline"
             >
               <span class="text-sm font-bold leading-6"> View all events </span>
             </router-link>

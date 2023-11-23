@@ -45,17 +45,17 @@
       <div class="absolute inset-0 overflow-hidden">
         <DialogOverlay class="absolute inset-0" />
   
-        <div class="fixed inset-y-0 right-0 pl-10 max-w-full flex">
+        <div class="fixed inset-y-0 left-0 max-w-full flex">
           <TransitionChild
             as="template"
             enter="transform transition ease-in-out duration-100 sm:duration-100"
-            enter-from="translate-x-full"
+            enter-from="-translate-x-full"
             enter-to="translate-x-0"
             leave="transform transition ease-in-out duration-100 sm:duration-100"
             leave-from="translate-x-0"
-            leave-to="translate-x-full"
+            leave-to="-translate-x-full"
           >
-            <div class="w-screen max-w-xl">
+            <div class="w-screen max-w-2xl">
               <div
                 class="
                     h-full
@@ -93,7 +93,10 @@
                       </div>
                     </div>
                   </div>
-                  <div class="relative flex-1" data-testid="event-preview">
+                  <div
+                    class="relative flex-1"
+                    data-testid="event-preview"
+                  >
                     <EventDetail :compact-mode="true" />
                   </div>
                 </div>

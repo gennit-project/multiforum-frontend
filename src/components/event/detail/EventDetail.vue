@@ -18,6 +18,7 @@ import CreateButton from "@/components/generic/buttons/CreateButton.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
+import ExpandableImage from "@/components/generic/ExpandableImage.vue";
 
 export default defineComponent({
   components: {
@@ -25,6 +26,7 @@ export default defineComponent({
     ErrorBanner,
     EventFooter,
     EventHeader,
+    ExpandableImage,
     CreateButton,
     GenericButton,
     RequireAuth,
@@ -309,6 +311,12 @@ export default defineComponent({
                 </h2>
               </div>
             </div>
+            <ExpandableImage
+              v-if="eventData.coverImageURL"
+              :src="eventData.coverImageURL"
+              :alt="eventData.title"
+              class="rounded-t-lg"
+            />
             <div
               class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
             >

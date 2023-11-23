@@ -33,14 +33,13 @@ export default defineComponent({
     fluid
     class="w-full p-0"
   >
-    <v-row class="w-full p-0">
+    <v-row class="w-full">
       <v-col
         :cols="5"
         :class="[
-          'p-0',
           lgAndUp ? 'constrain-height' : '',
         ]"
-        class="lg:overflow-y-auto flex justify-center"
+        class="w-full"
       >
         <slot name="leftpane" />
       </v-col>

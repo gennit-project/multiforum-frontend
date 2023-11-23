@@ -15,9 +15,17 @@ import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import { DateTime } from "luxon";
 import { getDuration } from "@/components/utils"
+import AddImage from "@/components/generic/buttons/AddImage.vue";
+import { getUploadFileName, uploadAndGetEmbeddedLink } from "@/components/utils";
+import { useMutation, useQuery } from "@vue/apollo-composable";
+import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
+import Avatar from "@/components/user/Avatar.vue";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   components: {
+    AddImage,
+    Avatar,
     CheckBox,
     ErrorBanner,
     ErrorMessage,
@@ -108,9 +116,23 @@ export default defineComponent({
       return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
+    const { mutate: createSignedStorageUrl } = useMutation(
+      CREATE_SIGNED_STORAGE_URL,
+    );
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
     return {
-      // Date format options are in the date-fns documentation https://date-fns.org/v2.29.2/docs/format
+      createSignedStorageUrl,
       formTitle: props.editMode ? "Edit Event" : "Create Event",
+      getUploadFileName,
       startTime,
       endTime,
       getDuration,
@@ -122,6 +144,8 @@ export default defineComponent({
       formattedStartTimeTime,
       formattedEndTimeDate,
       formattedEndTimeTime,
+      uploadAndGetEmbeddedLink,
+      username,
     };
   },
   computed: {
@@ -363,6 +387,50 @@ export default defineComponent({
         longitude: lng(),
       });
     },
+    async upload(file: any) {
+      if (!this.username) {
+        console.error("No username found");
+        return;
+      }
+      try {
+        const filename = this.getUploadFileName({
+          username: this.username,
+          file,
+        });
+
+        // Call the uploadFile mutation with the selected file
+        const signedUrlResult = await this.createSignedStorageUrl({
+          filename,
+          contentType: file.type,
+        });
+
+        const signedStorageURL =
+          signedUrlResult.data?.createSignedStorageURL?.url;
+
+        const embeddedLink = this.uploadAndGetEmbeddedLink({
+          file,
+          filename,
+          signedStorageURL,
+        });
+
+        return embeddedLink;
+      } catch (error) {
+        console.error("Error uploading file:", error);
+      }
+    },
+    async handleCoverImageChange(event: any) {
+      const selectedFile = event.target.files[0];
+
+      if (selectedFile) {
+        const embeddedLink = await this.upload(selectedFile);
+
+        if (!embeddedLink) {
+          return;
+        }
+        this.$emit("updateFormValues", { coverImageURL: embeddedLink });
+        // this.$emit("submit");
+      }
+    },
   },
 });
 </script>
@@ -571,6 +639,28 @@ export default defineComponent({
                   :initial-value="formValues.description"
                   :placeholder="'Add details'"
                   @update="$emit('updateFormValues', { description: $event })"
+                />
+              </template>
+            </FormRow>
+            <FormRow section-title="Cover Image">
+              <template #content>
+                <Avatar
+                  v-if="formValues.coverImageURL"
+                  class="shadow-sm"
+                  :src="formValues.coverImageURL"
+                  :text="formValues.title"
+                  :is-square="true"
+                  :is-large="true"
+                />
+                <div v-else>
+                  <span class="text-sm text-gray-500 dark:text-gray-400">
+                    No cover image uploaded
+                  </span>
+                </div>
+                <AddImage
+                  key="cover-image-url"
+                  :field-name="'coverImageURL'"
+                  @change="handleCoverImageChange" 
                 />
               </template>
             </FormRow>

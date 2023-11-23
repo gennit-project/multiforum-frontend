@@ -17,6 +17,7 @@ export const EVENT_FIELDS = gql`
     canceled
     isHostedByOP
     isAllDay
+    coverImageURL
     createdAt
     updatedAt
     placeId

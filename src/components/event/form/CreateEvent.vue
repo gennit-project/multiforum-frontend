@@ -81,6 +81,7 @@ export default defineComponent({
         isInPrivateResidence: formValues.value.isInPrivateResidence || null,
         isAllDay: formValues.value.isAllDay || false,
         isHostedByOP: formValues.value.isHostedByOP || false,
+        coverImageURL: formValues.value.coverImageURL || null,
         Tags: {
           connectOrCreate: tagConnections,
         },
