@@ -198,7 +198,7 @@ export default defineComponent({
 <template>
   <div class=" bg-gray-200 dark:bg-black">
     <div class="py-6">
-      <div class="mx-auto  flex max-w-5xl items-center justify-between py-2">
+      <div class="mx-auto px-4 flex max-w-5xl items-center justify-between py-2">
         <SearchBar
           class="mr-2 w-full align-middle"
           :search-placeholder="'Search forums'"
