@@ -137,13 +137,13 @@ export default defineComponent({
         <div class="-mt-28 ml-6 pt-2">
           <h1
             v-if="channel?.displayName"
-            class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            class="flex border-gray-700 text-4xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
           >
             {{ channel.displayName }}
           </h1>
           <h2
             v-if="channel?.uniqueName"
-            class="text-sm font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            class="text-lg font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
           >
             {{ `c/${channel.uniqueName}` }}
           </h2>
