@@ -31,8 +31,8 @@ export default defineComponent({
     Avatar,
     MarkdownPreview,
     UsernameWithTooltip,
-    ExpandableImage
-},
+    ExpandableImage,
+  },
   props: {
     channel: {
       type: Object as PropType<Channel>,
@@ -249,9 +249,16 @@ export default defineComponent({
     >
       <div class="p-6">
         <ExpandableImage
+          v-if="channel?.channelIconURL"
           class="border-2 shadow-sm dark:border-gray-800"
           :alt="channelId"
           :src="channel?.channelIconURL ?? ''"
+        />
+        <Avatar
+          class="border-2 shadow-sm dark:border-gray-800"
+          :text="channelId"
+          :src="channel?.channelIconURL ?? ''"
+          :is-square="true"
         />
         <h1
           v-if="channelId && !channel?.displayName"
