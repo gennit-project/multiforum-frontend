@@ -10,6 +10,7 @@ import { router } from "@/router";
 import gql from "graphql-tag";
 import Avatar from "@/components/user/Avatar.vue";
 import { User } from "@/__generated__/graphql";
+import ExpandableImage from "../generic/ExpandableImage.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -17,7 +18,8 @@ export default defineComponent({
     Avatar,
     ChannelSidebar,
     ChannelTabs,
-  },
+    ExpandableImage
+},
   setup() {
     const route = ref(useRoute());
     const GET_THEME = gql`
@@ -118,12 +120,12 @@ export default defineComponent({
         class="h-32 w-full object-cover"
         alt="background pattern"
       />
-      <img
+      <ExpandableImage
         v-else
         :src="channel?.channelBannerURL"
-        alt="channel banner"
+        :alt="'channel banner'"
         class="max-h-48 w-full"
-      >
+      />
       <div class="flex">
         <Avatar
           class="-mt-28 mb-2 ml-6 border-4 border-white dark:border-gray-800"
@@ -169,12 +171,12 @@ export default defineComponent({
       class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container fluid>
-        <img
+        <ExpandableImage
           v-if="channel?.channelBannerURL"
           :src="channel?.channelBannerURL"
-          alt="channel banner"
+          :alt="'channel banner'"
           class="max-h-48 w-full rounded-t-lg"
-        >
+        />
         <v-row
           class="flex"
         >

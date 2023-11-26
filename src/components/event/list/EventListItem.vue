@@ -330,7 +330,7 @@ export default defineComponent({
       });
     },
     handleClick() {
-      if (this.smAndDown || this.currentChannelId) {
+      if (this.smAndDown || this.currentChannelId || this.$route.name === 'SearchEventsList') {
         this.$router.push(this.detailLink);
       } else {
         this.$emit("openPreview");

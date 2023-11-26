@@ -12,6 +12,7 @@ import { Event, Channel } from "@/__generated__/graphql";
 import { DateTime } from "luxon";
 import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
 import { GET_SOONEST_EVENTS_IN_CHANNEL } from "@/graphQLData/channel/queries";
+import ExpandableImage from "../generic/ExpandableImage.vue";
 
 const getDateSectionFormat = (date: string) => {
   const dateObj = DateTime.fromISO(date);
@@ -30,7 +31,8 @@ export default defineComponent({
     Avatar,
     MarkdownPreview,
     UsernameWithTooltip,
-  },
+    ExpandableImage
+},
   props: {
     channel: {
       type: Object as PropType<Channel>,
@@ -246,11 +248,10 @@ export default defineComponent({
       class="items-center gap-2"
     >
       <div class="p-6">
-        <Avatar
+        <ExpandableImage
           class="border-2 shadow-sm dark:border-gray-800"
-          :text="channelId"
+          :alt="channelId"
           :src="channel?.channelIconURL ?? ''"
-          :is-square="true"
         />
         <h1
           v-if="channelId && !channel?.displayName"
