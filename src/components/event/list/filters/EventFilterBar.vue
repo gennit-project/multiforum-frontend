@@ -481,73 +481,74 @@ export default defineComponent({
             :search-placeholder="'Search'"
             :full-width="true"
             @updateSearchInput="updateSearchInput"
-          />
+          >
+            <Popper>
+              <button
+                data-testid="more-filters-button"
+                class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+                @click="handleClickMoreFilters"
+              >
+                <FilterIcon class="h-4 w-4" />
+              </button>
 
-
-
-
-
-
-          <Popper>
-            <button
-              data-testid="more-filters-button"
-              class="max-height-3 font-medium inline-flex whitespace-nowrap rounded-md border bg-white px-3.5 py-2.5 text-xs text-gray-700 hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
-              @click="handleClickMoreFilters"
-            >
-              <FilterIcon class="h-4 w-4" />
-            </button>
-
-            <template #content>
-              <div class="flex flex-col gap-3 bg-white dark:bg-gray-700 border p-4 rounded-lg">
-                <LocationSearchBar
-                  v-if="showLocationSearchBarAndDistanceButtons"
-                  class="flex w-full flex-wrap"
-                  data-testid="event-drawer-location-search-bar"
-                  :search-placeholder="referencePointAddress"
-                  :reference-point-address-name="referencePointName"
-                  @updateLocationInput="updateLocationInput"
-                />
-                <div v-if="showLocationSearchBarAndDistanceButtons">
-                  <div
-                    v-if="selectedDistanceUnit === MilesOrKm.KM"
-                    class="flex flex-wrap gap-x-1 gap-y-3"
-                  >
-                    <GenericButton
-                      v-for="distance in distanceOptionsForKilometers"
-                      :key="distance.value"
-                      :data-testid="`distance-${distance.value}`"
-                      :text="`${distance.label} ${distance.value !== 0 ? 'km' : ''}`"
-                      :active="distance.value === filterValues.radius"
-                      @click="updateSelectedDistance(distance)"
-                    />
+              <template #content>
+                <div
+                  class="flex flex-col gap-3 rounded-lg border bg-white p-4 dark:bg-gray-700"
+                >
+                  <LocationSearchBar
+                    v-if="showLocationSearchBarAndDistanceButtons"
+                    class="flex w-full flex-wrap"
+                    data-testid="event-drawer-location-search-bar"
+                    :search-placeholder="referencePointAddress"
+                    :reference-point-address-name="referencePointName"
+                    @updateLocationInput="updateLocationInput"
+                  />
+                  <div v-if="showLocationSearchBarAndDistanceButtons">
+                    <div
+                      v-if="selectedDistanceUnit === MilesOrKm.KM"
+                      class="flex flex-wrap gap-x-1 gap-y-3"
+                    >
+                      <GenericButton
+                        v-for="distance in distanceOptionsForKilometers"
+                        :key="distance.value"
+                        :data-testid="`distance-${distance.value}`"
+                        :text="`${distance.label} ${
+                          distance.value !== 0 ? 'km' : ''
+                        }`"
+                        :active="distance.value === filterValues.radius"
+                        @click="updateSelectedDistance(distance)"
+                      />
+                    </div>
+                    <div
+                      v-else
+                      class="flex flex-wrap gap-x-1 gap-y-3"
+                    >
+                      <GenericButton
+                        v-for="distance in distanceOptionsForMiles"
+                        :key="distance.value"
+                        :data-testid="`distance-${distance.value}`"
+                        :text="`${distance.label} ${
+                          distance.value !== 0 ? 'mi' : ''
+                        }`"
+                        :active="distance.value === filterValues.radius"
+                        @click="updateSelectedDistance(distance)"
+                      />
+                    </div>
                   </div>
-                  <div
-                    v-else
-                    class="flex flex-wrap gap-x-1 gap-y-3"
-                  >
-                    <GenericButton
-                      v-for="distance in distanceOptionsForMiles"
-                      :key="distance.value"
-                      :data-testid="`distance-${distance.value}`"
-                      :text="`${distance.label} ${distance.value !== 0 ? 'mi' : ''}`"
-                      :active="distance.value === filterValues.radius"
-                      @click="updateSelectedDistance(distance)"
-                    />
-                  </div>
+
+                  <SelectCanceled
+                    :show-canceled="filterValues.showCanceledEvents || false"
+                    @updateShowCanceled="updateShowCanceled"
+                  />
+
+                  <SelectFree
+                    :show-only-free="filterValues.free || false"
+                    @updateShowOnlyFree="updateShowOnlyFree"
+                  />
                 </div>
-      
-                <SelectCanceled
-                  :show-canceled="filterValues.showCanceledEvents || false"
-                  @updateShowCanceled="updateShowCanceled"
-                />
-      
-                <SelectFree
-                  :show-only-free="filterValues.free || false"
-                  @updateShowOnlyFree="updateShowOnlyFree"
-                />
-              </div>
-            </template>
-          </Popper>
+              </template>
+            </Popper>
+          </SearchBar>
         </div>
         <FilterChip
           v-if="!channelId"

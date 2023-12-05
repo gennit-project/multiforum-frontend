@@ -56,7 +56,7 @@ export default defineComponent({
       for="search"
       class="sr-only"
     >Search</label>
-    <div class="relative w-full items-center">
+    <div class="relative w-full items-center flex">
       <div
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
       >
@@ -71,12 +71,16 @@ export default defineComponent({
         type="text"
         @keyup="updateSearchInput"
       >
-      <div
-        class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
-        @click="clear"
-      >
-        <i class="fa-solid fa-xmark h-4 w-4 text-gray-400 dark:text-gray-300" />
-      </div>
+      <slot>
+        <div
+          class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+          @click="clear"
+        >
+          <i
+            class="fa-solid fa-xmark h-4 w-4 text-gray-400 dark:text-gray-300"
+          />
+        </div>
+      </slot>
     </div>
   </div>
 </template>
