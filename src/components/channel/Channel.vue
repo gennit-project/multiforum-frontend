@@ -175,7 +175,7 @@ export default defineComponent({
           v-if="channel?.channelBannerURL"
           :src="channel?.channelBannerURL"
           :alt="'channel banner'"
-          class="max-h-48 w-full rounded-t-lg"
+          class="max-h-48 w-full rounded-t-lg my-2"
         />
         <v-row
           class="flex"
