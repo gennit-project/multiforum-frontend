@@ -107,19 +107,25 @@ export default defineComponent({
       if (typeof route.params.channelId === "string") {
         return route.params.channelId;
       }
+
+      const defaultChannelId = props.eventData?.EventChannels?.[0]?.channelUniqueName;
+
+      if (typeof defaultChannelId === "string") {
+        return defaultChannelId;
+      }
       return "";
     });
 
     const showCopiedLinkNotification = ref(false);
 
     const permalinkObject = computed(() => {
-      if (!props.discussion) {
+      if (!eventId.value) {
         return {};
       }
       return {
-        name: "DiscussionDetail",
+        name: "EventDetail",
         params: {
-          discussionId: props.discussion.id,
+          eventId: eventId.value,
           channelId: channelId.value,
         },
       };
@@ -320,7 +326,7 @@ export default defineComponent({
             :src="eventData.Poster.profilePicURL ?? ''"
             :display-name="eventData.Poster.displayName || ''"
             :comment-karma="eventData.Poster.commentKarma ?? 0"
-            :discussion-karma="eventData.Poster.discussionKarma ?? 0"
+            :event-karma="eventData.Poster.eventKarma ?? 0"
             :account-created="eventData.Poster.createdAt"
           >
             <span class="underline">{{ eventData.Poster.username }}</span>
