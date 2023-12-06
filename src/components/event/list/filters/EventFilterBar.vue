@@ -74,12 +74,15 @@ export default defineComponent({
     });
     const route = useRoute();
     const router = useRouter();
+    const showOnlineOnly = route.name === "SearchEventsList"
+    const showInPersonOnly = route.name === "MapEventPreview"
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
-        showOnlineOnly: false,
+        showOnlineOnly,
+        showInPersonOnly
       }),
     );
 
@@ -211,6 +214,8 @@ export default defineComponent({
       router,
       selectedDistanceUnit,
       showLocationSearchBarAndDistanceButtons,
+      showOnlineOnly,
+      showInPersonOnly,
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeSlotFiltersActive: ref(false),
@@ -223,7 +228,8 @@ export default defineComponent({
         this.filterValues = getFilterValuesFromParams({
           route: this.route,
           channelId: this.channelId,
-          showOnlineOnly: false,
+          showOnlineOnly: this.showOnlineOnly,
+          showInPersonOnly: this.showInPersonOnly
         });
       }
     });

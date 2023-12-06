@@ -89,6 +89,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   // Location filter
   switch (locationFilter) {
    
+   
     case LocationFilterTypes.NONE:
       if (showMap) {
         conditions.push({ NOT: { locationName: null } });

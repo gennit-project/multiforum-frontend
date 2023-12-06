@@ -80,12 +80,15 @@ export default defineComponent({
       }
       return "";
     });
+    const showOnlineOnly = route.name === "SearchEventsList"
+    const showInPersonOnly = route.name === "MapEventPreview"
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams({
         route: route,
         channelId: channelId.value,
-        showOnlineOnly: false,
+        showOnlineOnly,
+        showInPersonOnly
       }),
     );
 
@@ -213,6 +216,8 @@ export default defineComponent({
       resultCount: ref(0),
       showMap: ref(false),
       sendToPreview,
+      showOnlineOnly,
+      showInPersonOnly,
       theme,
     };
   },
@@ -237,7 +242,8 @@ export default defineComponent({
       this.filterValues = getFilterValuesFromParams({
         route: this.route,
         channelId: this.channelId,
-        showOnlineOnly: false,
+        showOnlineOnly: this.showOnlineOnly,
+        showInPersonOnly: this.showInPersonOnly
       });
     });
   },

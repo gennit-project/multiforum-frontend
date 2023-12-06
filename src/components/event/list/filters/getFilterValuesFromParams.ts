@@ -23,6 +23,7 @@ type GetFilterValuesInput = {
   route: any;
   channelId: string;
   showOnlineOnly?: boolean;
+  showInPersonOnly?: boolean;
 };
 
 const getFilterValuesFromParams = function (
@@ -38,6 +39,15 @@ const getFilterValuesFromParams = function (
   // events with a virtual event URL.
   if (route?.name === "SitewideSearchEventPreview") {
     cleanedValues.hasVirtualEventUrl = true;
+  }
+
+
+  if (input.showOnlineOnly) {
+    cleanedValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
+  }
+
+  if (input.showInPersonOnly) {
+    cleanedValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS;
   }
 
   for (const key in route?.query || {}) {
@@ -225,6 +235,9 @@ const getFilterValuesFromParams = function (
     hasVirtualEventUrl,
   } = cleanedValues;
 
+
+
+
   const defaultRadius = 160.934; // 100 miles
   let selectedRadius = defaultRadius;
 
@@ -249,7 +262,6 @@ const getFilterValuesFromParams = function (
       weeklyHourRanges || createDefaultSelectedWeeklyHourRanges(),
     resultsOrder: resultsOrder || chronologicalOrder,
     hasVirtualEventUrl: hasVirtualEventUrl || false,
-    locationFilter: locationFilter || LocationFilterTypes.NONE,
   };
 
   const locationParams = {
