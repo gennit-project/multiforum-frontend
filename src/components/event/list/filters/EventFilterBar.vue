@@ -623,6 +623,7 @@ export default defineComponent({
         </template>
         <template #content>
           <ChannelPicker
+            :description="'Show events from the following forums:'"
             :selected-channels="filterValues.channels"
             @setSelectedChannels="setSelectedChannels"
           />

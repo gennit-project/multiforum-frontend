@@ -23,6 +23,10 @@ export default defineComponent({
         return [];
       },
     },
+    description: {
+      type: String,
+      default: "",
+    },
   },
   setup() {
     const {
@@ -84,7 +88,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="p-3">
     <div v-if="channelsLoading">
       Loading...
     </div>
@@ -100,6 +104,12 @@ export default defineComponent({
       v-else
       class="divide-solid"
     >
+      <div
+        v-if="description"
+        class="text-sm px-2 py-1 dark:text-gray-300"
+      >
+        {{ description }}
+      </div>
       <div
         data-testid="channel-picker"
         class="channel-picker"
