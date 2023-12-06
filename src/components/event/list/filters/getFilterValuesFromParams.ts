@@ -31,7 +31,7 @@ const getFilterValuesFromParams = function (
   // Need to re-clean data when route values change
   // Take the default filter values from the query
   // in the URL if the values exist.
-  const { route, channelId, showOnlineOnly } = input;
+  const { route, channelId } = input;
   const cleanedValues: SearchEventValues = {};
 
   // For the online events list, only include
@@ -51,6 +51,8 @@ const getFilterValuesFromParams = function (
         break;
       case "radius":
         cleanedValues.radius = parseFloat(val);
+        cleanedValues.locationFilter = LocationFilterTypes.WITHIN_RADIUS;
+        console.log("cleanedValues.radius", cleanedValues.radius);
         break;
       case "placeName":
         if (typeof val === "string") {
@@ -251,24 +253,6 @@ const getFilterValuesFromParams = function (
     locationFilter: locationFilter || LocationFilterTypes.NONE,
   };
 
-  if (cleanedValues.locationFilter === LocationFilterTypes.ONLY_VIRTUAL) {
-    filterValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
-    filterValues.hasVirtualEventUrl = true;
-  } else if (
-    cleanedValues.locationFilter === LocationFilterTypes.ONLY_WITH_ADDRESS
-  ) {
-    filterValues.locationFilter = LocationFilterTypes.ONLY_WITH_ADDRESS;
-  }
-
-  if (!showOnlineOnly && !locationFilter) {
-    return filterValues;
-  }
-  // For map view, if there is a location filter in the query params,
-  // use it. Within a channel, don't filter by distance.
-  if (!filterValues.radius){
-    return filterValues;
-  }
-
   const locationParams = {
     locationFilter: LocationFilterTypes.WITHIN_RADIUS,
     radius: selectedRadius,
@@ -279,11 +263,28 @@ const getFilterValuesFromParams = function (
     longitude: longitude || defaultPlace.longitude,
   };
 
-  const res = {
-    ...filterValues,
-    ...locationParams,
-  };
-  return res;
+  switch (locationFilter) {
+    case LocationFilterTypes.WITHIN_RADIUS:
+      return {
+        ...filterValues,
+        ...locationParams,
+      };
+    case LocationFilterTypes.ONLY_VIRTUAL:
+      return {
+        ...filterValues,
+        locationFilter: LocationFilterTypes.ONLY_VIRTUAL,
+      };
+    case LocationFilterTypes.ONLY_WITH_ADDRESS:
+      return {
+        ...filterValues,
+        locationFilter: LocationFilterTypes.ONLY_WITH_ADDRESS,
+      };
+    default:
+      return {
+        ...filterValues,
+        locationFilter: LocationFilterTypes.NONE,
+      };
+  }
 };
 
 export { getFilterValuesFromParams, defaultPlace };
