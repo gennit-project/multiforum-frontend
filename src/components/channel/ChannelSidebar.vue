@@ -255,6 +255,7 @@ export default defineComponent({
           :src="channel?.channelIconURL ?? ''"
         />
         <Avatar
+          v-else
           class="border-2 shadow-sm dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL ?? ''"

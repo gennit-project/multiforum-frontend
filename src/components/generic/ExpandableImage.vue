@@ -90,7 +90,7 @@ export default defineComponent({
   <img
     :src="src"
     :alt="alt"
-    class="cursor-pointer"
+    class="cursor-pointer rounded-lg"
     @click="handleImageClick()"
   >
 </template>
