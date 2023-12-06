@@ -63,7 +63,7 @@ export default defineComponent({
 
   setup() {
     const defaultFilterLabels = {
-      channels: "Channels",
+      channels: "Forums",
       tags: "Tags",
     };
     const channelId = computed(() => {
