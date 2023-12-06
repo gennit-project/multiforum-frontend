@@ -23,6 +23,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    rightSideIsRounded: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const input: Ref<string> = ref(props.initialValue);
@@ -56,7 +60,7 @@ export default defineComponent({
       for="search"
       class="sr-only"
     >Search</label>
-    <div class="relative w-full items-center flex">
+    <div class="relative flex-1 items-center">
       <div
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
       >
@@ -66,7 +70,8 @@ export default defineComponent({
       <input
         v-model="input"
         name="search"
-        class="w-full rounded-full border-gray-200 py-3 pl-10 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+        :class="[rightSideIsRounded ? 'rounded-full' : 'rounded-l-full']"
+        class="w-full flex-1 border-gray-200 py-3 pl-10 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         :placeholder="searchPlaceholder"
         type="text"
         @keyup="updateSearchInput"

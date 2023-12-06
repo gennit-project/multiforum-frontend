@@ -5,7 +5,6 @@ import TagPicker from "@/components/tag/TagPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
-import LocationIcon from "@/components/icons/LocationIcon.vue";
 import SearchBar from "../../../generic/SearchBar.vue";
 import { DistanceUnit, SearchEventValues } from "@/types/eventTypes";
 import {
@@ -43,7 +42,6 @@ export default defineComponent({
     FilterChip,
     FilterIcon,
     GenericButton,
-    LocationIcon,
     LocationSearchBar,
     Popper,
     SearchBar,
@@ -452,138 +450,125 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full space-y-2">
+  <div class="my-2 w-full space-y-2">
     <div
       v-if="route.name !== 'EventDetail'"
       class="w-full"
     >
-      <div class="mr-6 flex flex-wrap justify-between space-x-4 align-middle">
-        <button
-          v-if="!channelId && showLocationSearchBarAndDistanceButtons"
-          class="border-radius my-1 flex items-center whitespace-nowrap rounded-lg bg-white p-3 shadow dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-          aria-label="Open event filters"
-          data-testid="open-event-filters"
-          @click="handleClickMoreFilters"
+      <div class="flex space-x-1 align-middle">
+        <SearchBar
+          class="flex-1"
+          data-testid="event-drawer-search-bar"
+          :initial-value="filterValues.searchInput"
+          :search-placeholder="'Search'"
+          :full-width="true"
+          :right-side-is-rounded="!showLocationSearchBarAndDistanceButtons"
+          @updateSearchInput="updateSearchInput"
         >
-          <LocationIcon class="h-6 w-6 text-black dark:text-blue-500" />
-          <h1 class="text-md ml-1 border border-none pb-0">
-            {{ referencePointName }}: {{ displayDistance }}
-          </h1>
-        </button>
-      </div>
+          <Popper>
+            <button
+              data-testid="more-filters-button"
+              class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+              @click="handleClickMoreFilters"
+            >
+              <FilterIcon class="h-4 w-4" />
+            </button>
 
-      <div class="flex w-full flex-wrap space-x-2 align-middle">
-        <div class="inline-flex flex-1 items-center gap-2 align-middle">
-          <SearchBar
-            class="inline-flex flex-1 align-middle"
-            data-testid="event-drawer-search-bar"
-            :initial-value="filterValues.searchInput"
-            :search-placeholder="'Search'"
-            :full-width="true"
-            @updateSearchInput="updateSearchInput"
-          >
-            <Popper>
-              <button
-                data-testid="more-filters-button"
-                class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
-                @click="handleClickMoreFilters"
+            <template #content>
+              <div
+                class="flex flex-col gap-3 rounded-lg border bg-white p-4 dark:bg-gray-700"
               >
-                <FilterIcon class="h-4 w-4" />
-              </button>
-
-              <template #content>
-                <div
-                  class="flex flex-col gap-3 rounded-lg border bg-white p-4 dark:bg-gray-700"
-                >
-                  <LocationSearchBar
-                    v-if="showLocationSearchBarAndDistanceButtons"
-                    class="flex w-full flex-wrap"
-                    data-testid="event-drawer-location-search-bar"
-                    :search-placeholder="referencePointAddress"
-                    :reference-point-address-name="referencePointName"
-                    @updateLocationInput="updateLocationInput"
-                  />
-                  <div v-if="showLocationSearchBarAndDistanceButtons">
-                    <div
-                      v-if="selectedDistanceUnit === MilesOrKm.KM"
-                      class="flex flex-wrap gap-x-1 gap-y-3"
-                    >
-                      <GenericButton
-                        v-for="distance in distanceOptionsForKilometers"
-                        :key="distance.value"
-                        :data-testid="`distance-${distance.value}`"
-                        :text="`${distance.label} ${
-                          distance.value !== 0 ? 'km' : ''
-                        }`"
-                        :active="distance.value === filterValues.radius"
-                        @click="updateSelectedDistance(distance)"
-                      />
-                    </div>
-                    <div
-                      v-else
-                      class="flex flex-wrap gap-x-1 gap-y-3"
-                    >
-                      <GenericButton
-                        v-for="distance in distanceOptionsForMiles"
-                        :key="distance.value"
-                        :data-testid="`distance-${distance.value}`"
-                        :text="`${distance.label} ${
-                          distance.value !== 0 ? 'mi' : ''
-                        }`"
-                        :active="distance.value === filterValues.radius"
-                        @click="updateSelectedDistance(distance)"
-                      />
-                    </div>
+                <div v-if="showLocationSearchBarAndDistanceButtons">
+                  <div
+                    v-if="selectedDistanceUnit === MilesOrKm.KM"
+                    class="flex flex-wrap gap-x-1 gap-y-3"
+                  >
+                    <GenericButton
+                      v-for="distance in distanceOptionsForKilometers"
+                      :key="distance.value"
+                      :data-testid="`distance-${distance.value}`"
+                      :text="`${distance.label} ${
+                        distance.value !== 0 ? 'km' : ''
+                      }`"
+                      :active="distance.value === filterValues.radius"
+                      @click="updateSelectedDistance(distance)"
+                    />
                   </div>
-
-                  <SelectCanceled
-                    :show-canceled="filterValues.showCanceledEvents || false"
-                    @updateShowCanceled="updateShowCanceled"
-                  />
-
-                  <SelectFree
-                    :show-only-free="filterValues.free || false"
-                    @updateShowOnlyFree="updateShowOnlyFree"
-                  />
+                  <div
+                    v-else
+                    class="flex flex-wrap gap-x-1 gap-y-3"
+                  >
+                    <GenericButton
+                      v-for="distance in distanceOptionsForMiles"
+                      :key="distance.value"
+                      :data-testid="`distance-${distance.value}`"
+                      :text="`${distance.label} ${
+                        distance.value !== 0 ? 'mi' : ''
+                      }`"
+                      :active="distance.value === filterValues.radius"
+                      @click="updateSelectedDistance(distance)"
+                    />
+                  </div>
                 </div>
-              </template>
-            </Popper>
-          </SearchBar>
-        </div>
-        <FilterChip
-          v-if="!channelId"
-          class="items-center align-middle"
-          data-testid="channel-filter-button"
-          :label="channelLabel"
-          :highlighted="channelLabel !== defaultFilterLabels.channels"
-        >
-          <template #icon>
-            <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
-          </template>
-          <template #content>
-            <ChannelPicker
-              :selected-channels="filterValues.channels"
-              @setSelectedChannels="setSelectedChannels"
-            />
-          </template>
-        </FilterChip>
-        <FilterChip
-          class="items-center align-middle"
-          data-testid="tag-filter-button"
-          :label="tagLabel"
-          :highlighted="tagLabel !== defaultFilterLabels.tags"
-        >
-          <template #icon>
-            <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
-          </template>
-          <template #content>
-            <TagPicker
-              :selected-tags="filterValues.tags"
-              @setSelectedTags="setSelectedTags"
-            />
-          </template>
-        </FilterChip>
+
+                <SelectCanceled
+                  :show-canceled="filterValues.showCanceledEvents || false"
+                  @updateShowCanceled="updateShowCanceled"
+                />
+
+                <SelectFree
+                  :show-only-free="filterValues.free || false"
+                  @updateShowOnlyFree="updateShowOnlyFree"
+                />
+              </div>
+            </template>
+          </Popper>
+        </SearchBar>
+        <LocationSearchBar
+          v-if="showLocationSearchBarAndDistanceButtons"
+          class="flex-1"
+          data-testid="event-drawer-location-search-bar"
+          :search-placeholder="referencePointAddress"
+          :reference-point-address-name="referencePointName"
+          :left-side-is-rounded="false"
+          @updateLocationInput="updateLocationInput"
+        />
       </div>
+    </div>
+    <div class="flex justify-end">
+      <FilterChip
+        v-if="!channelId"
+        class="items-center align-middle"
+        data-testid="channel-filter-button"
+        :label="channelLabel"
+        :highlighted="channelLabel !== defaultFilterLabels.channels"
+      >
+        <template #icon>
+          <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
+        </template>
+        <template #content>
+          <ChannelPicker
+            :selected-channels="filterValues.channels"
+            @setSelectedChannels="setSelectedChannels"
+          />
+        </template>
+      </FilterChip>
+      <FilterChip
+        class="items-center align-middle"
+        data-testid="tag-filter-button"
+        :label="tagLabel"
+        :highlighted="tagLabel !== defaultFilterLabels.tags"
+      >
+        <template #icon>
+          <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
+        </template>
+        <template #content>
+          <TagPicker
+            :selected-tags="filterValues.tags"
+            @setSelectedTags="setSelectedTags"
+          />
+        </template>
+      </FilterChip>
     </div>
   </div>
 </template>

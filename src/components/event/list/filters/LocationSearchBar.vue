@@ -29,6 +29,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    leftSideIsRounded: {
+      type: Boolean,
+      default: true,
+    }
   },
   setup() {
     const route = useRoute();
@@ -47,12 +51,12 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex">
+  <div class="flex-1">
     <label
       for="search"
       class="sr-only"
     >Search Location</label>
-    <div class="relative w-full">
+    <div class="relative">
       <div
         class="absolute py-2.5 left-0 pl-3 flex items-center pointer-events-none"
       >
@@ -62,10 +66,10 @@ export default defineComponent({
         />
       </div>
       <GMapAutocomplete
-        :class="[inTopNav ? 'max-w-sm h-10' : 'rounded-md h-12 w-full']"
+        :class="[leftSideIsRounded ? 'rounded-full' : 'rounded-r-full']"
         autocomplete="false"
-        class="pl-10 pr-3 leading-5 dark:bg-gray-600 dark:text-white placeholder-gray-500 dark:placeholder-gray-200 dark:placeholder-gray-400 dark:border-gray-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 border border-gray-300 dark:border-gray-700 text-sm"
-        :placeholder="referencePointAddressName"
+        class="w-full border-gray-200 py-3 pl-10 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+        :placeholder="referencePointAddressName || 'Anywhere'"
         disable-portal
         @place_changed="updateLocationInput"
       />
@@ -76,11 +80,11 @@ export default defineComponent({
 /* Prevent the autocomplete dropdown from rendering behind the popper overlay */
 .hdpi {
   z-index: 10001;
-  min-width: 300px;
+  min-width: 100px;
 }
 
 /* Set minimum width of autocomplete */
 .pac-target-input {
-  min-width: 400px;
+  min-width: 100px;
 }
 </style>

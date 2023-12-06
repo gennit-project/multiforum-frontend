@@ -254,7 +254,7 @@ export default defineComponent({
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      class="align-center mx-1 mt-2 flex w-full justify-between px-2"
+      class="align-center mx-1 mt-2 flex justify-between px-2"
     >
       <BackLink :link="`/channels/c/${channelId}/discussions`" />
       <RequireAuth
@@ -284,7 +284,7 @@ export default defineComponent({
     />
     <v-row
       v-if="discussion"
-      class="mt-1 flex justify-center"
+      class="mt-1 flex justify-center "
     >
       <v-col>
         <div class="space-y-3 px-2">
