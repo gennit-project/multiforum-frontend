@@ -52,7 +52,6 @@ const getFilterValuesFromParams = function (
       case "radius":
         cleanedValues.radius = parseFloat(val);
         cleanedValues.locationFilter = LocationFilterTypes.WITHIN_RADIUS;
-        console.log("cleanedValues.radius", cleanedValues.radius);
         break;
       case "placeName":
         if (typeof val === "string") {

@@ -465,7 +465,10 @@ export default defineComponent({
 
 <template>
   <div class="my-2 w-full space-y-2">
-    <div v-if="route.name !== 'EventDetail'" class="w-full">
+    <div
+      v-if="route.name !== 'EventDetail'"
+      class="w-full"
+    >
       <div class="flex space-x-1 align-middle">
         <SearchBar
           class="flex-1"
@@ -505,7 +508,10 @@ export default defineComponent({
                       @click="updateSelectedDistance(distance)"
                     />
                   </div>
-                  <div v-else class="flex flex-wrap gap-x-1 gap-y-3">
+                  <div
+                    v-else
+                    class="flex flex-wrap gap-x-1 gap-y-3"
+                  >
                     <GenericButton
                       v-for="distance in distanceOptionsForMiles"
                       :key="distance.value"
@@ -570,7 +576,10 @@ export default defineComponent({
                       @click="updateSelectedDistance(distance)"
                     />
                   </div>
-                  <div v-else class="flex flex-wrap gap-x-1 gap-y-3">
+                  <div
+                    v-else
+                    class="flex flex-wrap gap-x-1 gap-y-3"
+                  >
                     <GenericButton
                       v-for="distance in distanceOptionsForMiles"
                       :key="distance.value"
@@ -581,10 +590,6 @@ export default defineComponent({
                       :active="distance.value === filterValues.radius"
                       @click="() => {
                         updateSelectedDistance(distance)
-                        console.log({
-                          distance: distance,
-                          filterValues: filterValues,
-                        })
                       }"
                     />
                   </div>
