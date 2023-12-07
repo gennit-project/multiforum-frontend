@@ -403,6 +403,9 @@ export default defineComponent({
               :channels-except-current="channelsExceptCurrent"
             />
           </div>
+
+          <EventComments />
+          
         </div>
       </div>
     </div>
