@@ -21,6 +21,7 @@ import {
   ChannelUpdateInput,
 } from "@/__generated__/graphql";
 import Notification from '@/components/generic/Notification.vue'
+import LoadingSpinner from "@/components/generic/LoadingSpinner.vue";
 
 export default defineComponent({
   name: "EditChannel",
@@ -28,8 +29,8 @@ export default defineComponent({
     CreateEditChannelFields,
     Notification,
     RequireAuth,
+    LoadingSpinner
   },
-  apollo: {},
   setup() {
     provideApolloClient(apolloClient);
     const route = useRoute();
@@ -239,7 +240,11 @@ export default defineComponent({
 });
 </script>
 <template>
+  <LoadingSpinner
+    v-if="getChannelLoading"
+  />
   <RequireAuth
+    v-else
     :require-ownership="true"
     :owners="ownerList"
   >

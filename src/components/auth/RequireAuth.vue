@@ -3,8 +3,12 @@ import { defineComponent, PropType } from "vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useAuth0 } from "@auth0/auth0-vue";
+import LoadingSpinner from "../generic/LoadingSpinner.vue";
 
 export default defineComponent({
+  components: {
+    LoadingSpinner,
+  },
   props: {
     requireOwnership: {
       type: Boolean,
@@ -24,18 +28,20 @@ export default defineComponent({
     }
   },
   setup() {
-    const { loginWithPopup, loginWithRedirect } = useAuth0();
+    const { loginWithPopup, loginWithRedirect, isLoading } = useAuth0();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
-
-    return {
-      localUsernameResult,
-      login: () => {
+    const login = () => {
         if (window.parent.Cypress) {
           loginWithRedirect();
         } else {
           loginWithPopup();
         }
-      },
+      };
+
+    return {
+      isLoading,
+      localUsernameResult,
+      login
     };
   },
   computed: {
@@ -64,7 +70,9 @@ export default defineComponent({
 });
 </script>
 <template>
+   <LoadingSpinner v-if="isLoading" />
   <div
+    v-else
     class="flex align-middle"
     :class="[!justifyLeft ? 'justify-center' : '', fullWidth ? 'w-full' : '']"
   >

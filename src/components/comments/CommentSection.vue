@@ -28,16 +28,24 @@ import {
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
-import {
-  DiscussionChannel,
-  Comment as CommentType,
-} from "@/__generated__/graphql";
 import PermalinkedComment from "./PermalinkedComment.vue";
-import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
+import {
+    CreateCommentInput,
+    Comment as CommentType,
+} from "@/__generated__/graphql";
+
+type CommentSectionQueryVariablesType = {
+  discussionId?: string;
+  eventId?: string;
+  channelUniqueName: string;
+  limit: number;
+  offset: number;
+  sort: string;
+}
 
 export default defineComponent({
   components: {
@@ -51,15 +59,18 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    discussionChannel: {
-      // This prop is required to create a comment.
-      // But I have made it optional so that content does not move around
-      // on the screen while the discussionChannel is loading.
-      type: Object as PropType<DiscussionChannel>,
+    commentSectionQueryVariables: {
+      required: true,
+      type: Object as PropType<CommentSectionQueryVariablesType>,
+    },
+    createCommentInput: {
+      type: Object as PropType<CreateCommentInput>,
+      required: true,
+    },
+    aggregateCommentCount: {
+      type: Number,
       required: false,
-      default: () => {
-        return null;
-      },
+      default: 0
     },
     comments: {
       type: Array as PropType<CommentData[]>,
@@ -82,7 +93,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const route = useRoute();
 
     const activeSort = computed(() => {
@@ -100,15 +111,8 @@ export default defineComponent({
       return false;
     });
 
-    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
-    const username = computed(() => {
-      let username = localUsernameResult.value?.username;
-      if (username) {
-        return username;
-      }
-      return "";
-    });
+    
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
     const parentOfCommentToDelete = ref("");
@@ -136,6 +140,7 @@ export default defineComponent({
         isRootComment: editFormValues.value?.isRootComment,
       };
     });
+
     const { mutate: editComment } = useMutation(UPDATE_COMMENT, () => ({
       variables: {
         commentWhere: {
@@ -203,81 +208,21 @@ export default defineComponent({
             });
 
             // 4. Update the total count of comments
-            const readDiscussionChannelQueryResult = cache.readQuery({
-              query: GET_COMMENT_SECTION,
-              variables: commentSectionQueryVariables,
-            });
-
-            const existingDiscussionChannelData =
-              readDiscussionChannelQueryResult?.getCommentSection
-                ?.DiscussionChannel;
-
-            let existingCommentAggregate =
-              existingDiscussionChannelData?.CommentsAggregate?.count || 0;
-
-            // 5. Decrease the total count.
-            cache.writeQuery({
-              query: GET_COMMENT_SECTION,
-              variables: {
-                ...commentSectionQueryVariables,
-                commentId: parentOfCommentToDelete.value,
-              },
-              data: {
-                ...readDiscussionChannelQueryResult,
-                getCommentSection: {
-                  ...readDiscussionChannelQueryResult.getCommentSection,
-                  DiscussionChannel: {
-                    ...existingDiscussionChannelData,
-                    CommentsAggregate: {
-                      ...existingDiscussionChannelData.CommentsAggregate,
-                      count: Math.max(0, existingCommentAggregate - 1),
-                    },
-                  },
-                },
-              },
-            });
+            emit('updateTotalCommentCount', {
+              cache,
+              commentToDeleteId: commentToDeleteId.value
+            })
           }
         } else {
           // For root comments, update the comment section query result
-          const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
-            variables: commentSectionQueryVariables,
-          });
-
-          const filteredRootComments: Comment[] = (
-            readQueryResult?.getCommentSection?.Comments || []
-          ).filter(
-            (comment: CommentType) => comment.id !== commentToDeleteId.value,
-          );
-
-          cache.writeQuery({
-            query: GET_COMMENT_SECTION,
-            variables: commentSectionQueryVariables,
-            data: {
-              ...readQueryResult,
-              getCommentSection: {
-                ...readQueryResult?.getCommentSection,
-                Comments: filteredRootComments,
-              },
-            },
-          });
+          emit('updateCommentSectionQueryResult', {
+            cache,
+            parentOfCommentToDelete
+          })
         }
         // For both root comments and replies, update the aggregate
         // count of the comment section
-        cache.modify({
-          id: cache.identify({
-            __typename: "DiscussionChannel",
-            id: props.discussionChannel?.id,
-          }),
-          fields: {
-            CommentsAggregate(existingValue: any) {
-              return {
-                ...existingValue,
-                count: existingValue.count - 1,
-              };
-            },
-          },
-        });
+        emit('updateAggregateCount', cache)
       },
     });
 
@@ -286,60 +231,7 @@ export default defineComponent({
     // and removes the author name, but leaves the comment
     // so that the replies are still visible.
     const { mutate: softDeleteComment } = useMutation(SOFT_DELETE_COMMENT);
-
-    const createCommentInput = computed(() => {
-      const input = {
-        isRootComment: false,
-        DiscussionChannel: {
-          connect: {
-            where: {
-              node: {
-                id: props.discussionChannel?.id,
-              },
-            },
-          },
-        },
-        ParentComment: {
-          connect: {
-            where: {
-              node: {
-                id: createFormValues.value.parentCommentId,
-              },
-            },
-          },
-        },
-        text: createFormValues.value.text || "",
-        CommentAuthor: {
-          User: {
-            connect: {
-              where: {
-                node: {
-                  username: username.value,
-                },
-              },
-            },
-          },
-        },
-        UpvotedByUsers: {
-          connect: {
-            where: {
-              node: {
-                username: username.value,
-              },
-            },
-          },
-        },
-      };
-      return [input];
-    });
-    const commentSectionQueryVariables = {
-      discussionId: props.discussionChannel?.discussionId,
-      channelUniqueName: props.discussionChannel?.channelUniqueName,
-      limit: COMMENT_LIMIT,
-      offset: props.previousOffset,
-      sort: getSortFromQuery(route.query),
-    };
-
+  
     const { 
       mutate: createComment, 
       error: createCommentError,
@@ -348,7 +240,7 @@ export default defineComponent({
       () => ({
         errorPolicy: "all",
         variables: {
-          createCommentInput: createCommentInput.value,
+          createCommentInput: props.createCommentInput,
         },
         update: (cache: any, result: any) => {
           // This contains logic for updating the cache after you reply
@@ -433,7 +325,7 @@ export default defineComponent({
           const readDiscussionChannelQueryResult = cache.readQuery({
             query: GET_COMMENT_SECTION,
             variables: {
-              ...commentSectionQueryVariables,
+              ...props.commentSectionQueryVariables,
               commentId: newCommentParentId,
             },
           });
@@ -448,7 +340,7 @@ export default defineComponent({
           cache.writeQuery({
             query: GET_COMMENT_SECTION,
             variables: {
-              ...commentSectionQueryVariables,
+              ...props.commentSectionQueryVariables,
               commentId: newCommentParentId,
             },
             data: {
@@ -498,19 +390,14 @@ export default defineComponent({
 
     const showCopiedLinkNotification = ref(false);
 
-    const aggregateCommentCount =
-      props.discussionChannel?.CommentsAggregate?.count || 0;
-
     return {
       activeSort,
-      aggregateCommentCount,
       permalinkedCommentId,
       commentToEdit,
       commentToDeleteId,
       commentToDeleteReplyCount,
       createComment,
       createCommentError,
-      createCommentInput,
       createFormValues,
       deleteComment,
       downvoteComment,
@@ -570,9 +457,6 @@ export default defineComponent({
       if (!this.commentToDeleteId) {
         throw new Error("commentId is required to delete a comment");
       }
-      if (!this.discussionChannel) {
-        throw new Error("discussionChannel is required to delete a comment");
-      }
       if (this.commentToDeleteReplyCount > 0) {
         // Soft delete the comment if there are replies
         // to allow the replies to remain visible
@@ -628,14 +512,13 @@ export default defineComponent({
         ref="commentSectionHeader"
         class="px-1 text-lg"
       >
-        {{ `Comments (${discussionChannel?.CommentsAggregate?.count || 0})` }}
+        {{ `Comments (${aggregateCommentCount})` }}
       </h2>
       <ErrorBanner
         v-if="locked"
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      
       <SortButtons 
         v-if="comments.length > 0"
         :show-top-options="false" 
@@ -664,7 +547,7 @@ export default defineComponent({
         </template>
       </PermalinkedComment>
       <div class="my-4">
-        <div v-if="discussionChannel?.CommentsAggregate?.count === 0">
+        <div v-if="aggregateCommentCount === 0">
           There are no comments yet.
         </div>
         <div :key="activeSort">
@@ -672,7 +555,7 @@ export default defineComponent({
             <Comment
               v-if="comment.id !== permalinkedCommentId"
               :aggregate-comment-count="
-                discussionChannel?.CommentsAggregate?.count || 0
+                aggregateCommentCount
               "
               :compact="true"
               :comment-data="comment"

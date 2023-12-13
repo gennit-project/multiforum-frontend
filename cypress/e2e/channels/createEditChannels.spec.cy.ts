@@ -28,7 +28,7 @@ describe("Basic channel operations", () => {
     cy.get("div").contains(TEST_DESCRIPTION);
 
     // Test editing a channel
-    cy.get("a").contains("Edit").click();
+    cy.get("a").contains("Settings").click();
     cy.get('div[data-testid="description-input"]')
       .find("textarea")
       .focus()
