@@ -34,6 +34,7 @@ describe("Basic discussion operations", () => {
     // Add two tags
     cy.get('input[data-testid="tags-input"]').click();
     cy.get(`span[data-testid="tag-picker-${TEST_TAG_1}"]`).click();
+    cy.get('input[data-testid="tags-input"]').click();
     cy.get(`span[data-testid="tag-picker-${TEST_TAG_2}"]`).click();
 
     cy.get("button").contains("Save").click().wait(1000);
@@ -41,7 +42,10 @@ describe("Basic discussion operations", () => {
     cy.get("p").contains(TEST_BODY);
 
     // Test editing a discussion.
-    cy.get("a").contains("Edit").click();
+    cy.get('div[data-testid="discussion-menu-button')
+      .click();
+    // Click on the edit button
+    cy.get("div").contains("Edit").click();
 
     // Change body
     cy.get('div[data-testid="body-input"]')
@@ -69,8 +73,12 @@ describe("Basic discussion operations", () => {
     cy.get("span").should("not.contain", TEST_TAG_1);
 
 
-    cy.get("span").contains("Delete").click();
-    cy.get("button").contains("Delete").click();
+    cy.get('div[data-testid="discussion-menu-button')
+      .click();
+    // Click on the delete button
+    cy.get("div").contains("Delete").click()
+    cy.get("button").contains("Delete").click()
+
     // After deletion, the user should be redirected to the discussion list
     // for the channel view
     cy.url().should("include", `${TEST_CHANNEL}/discussions`);

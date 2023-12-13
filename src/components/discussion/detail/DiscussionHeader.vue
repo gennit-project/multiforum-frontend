@@ -258,6 +258,7 @@ export default defineComponent({
       <MenuButton
         v-if="discussion && menuItems.length > 0"
         :items="menuItems"
+        data-testid="discussion-menu-button"
         @copyLink="copyLink"
         @handleEdit="
           router.push(
