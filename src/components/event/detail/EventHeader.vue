@@ -232,7 +232,7 @@ export default defineComponent({
     getFormattedDateString(startTime: string) {
       const startTimeObj = DateTime.fromISO(startTime);
 
-      return startTimeObj.toFormat("cccc LLLL d yyyy");
+      return startTimeObj.toFormat("cccc LLLL d yyyy h:mm a");
     },
   },
 });

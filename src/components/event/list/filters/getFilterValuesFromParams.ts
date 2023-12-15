@@ -41,7 +41,6 @@ const getFilterValuesFromParams = function (
     cleanedValues.hasVirtualEventUrl = true;
   }
 
-
   if (input.showOnlineOnly) {
     cleanedValues.locationFilter = LocationFilterTypes.ONLY_VIRTUAL;
   }

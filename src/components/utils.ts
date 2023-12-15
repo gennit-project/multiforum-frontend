@@ -52,7 +52,7 @@ export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
 }
 
 export function getDuration(startTime: string, endTime: string) {
-  if (DateTime.fromISO(startTime) >= DateTime.fromISO(endTime)) {
+  if (DateTime.fromISO(startTime) > DateTime.fromISO(endTime)) {
     return "";
   }
   // Format time as "1h 30m"
@@ -74,6 +74,9 @@ export function getDuration(startTime: string, endTime: string) {
   if (obj.minutes) {
     // convert decimal to int
     timeString += `${Math.floor(obj.minutes)}m`;
+  }
+  if (timeString === "") {
+    timeString = "0m";
   }
   return timeString;
 }
