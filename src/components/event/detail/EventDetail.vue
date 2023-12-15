@@ -19,13 +19,17 @@ import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import ExpandableImage from "@/components/generic/ExpandableImage.vue";
+import EventCommentsWrapper from "./EventCommentsWrapper.vue";
+import EventRootCommentFormWrapper from "./EventRootCommentFormWrapper.vue";
 
 export default defineComponent({
   components: {
     BackLink,
     ErrorBanner,
+    EventCommentsWrapper,
     EventFooter,
     EventHeader,
+    EventRootCommentFormWrapper,
     ExpandableImage,
     CreateButton,
     GenericButton,
@@ -403,9 +407,33 @@ export default defineComponent({
               :channels-except-current="channelsExceptCurrent"
             />
           </div>
-
-          <EventComments />
-          
+          <!-- <EventRootCommentFormWrapper
+            :key="`${channelId}${discussionId}`"
+            :channel-id="channelId"
+            :discussion-channel="activeDiscussionChannel"
+            :previous-offset="previousOffset"
+          />
+          <div class="my-6 mb-2 ml-2 rounded-lg">
+            <EventCommentsWrapper
+              :key="activeDiscussionChannel?.id"
+              :loading="getDiscussionChannelLoading"
+              :discussion-channel="activeDiscussionChannel"
+              :comments="comments"
+              :reached-end-of-results="reachedEndOfResults"
+              :previous-offset="previousOffset"
+              @loadMore="loadMore"
+            />
+          </div>
+          <ChannelLinks
+            v-if="discussion && discussion.DiscussionChannels"
+            class="my-4"
+            :discussion-channels="discussion.DiscussionChannels"
+            :channel-id="
+              activeDiscussionChannel
+                ? activeDiscussionChannel.channelUniqueName
+                : ''
+            "
+          /> -->
         </div>
       </div>
     </div>

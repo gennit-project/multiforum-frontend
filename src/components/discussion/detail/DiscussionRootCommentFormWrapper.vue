@@ -1,32 +1,34 @@
 <script lang="ts">
+import CreateRootCommentForm from "@/components/comments/CreateRootCommentForm.vue";
+import { Comment, DiscussionChannel } from "@/__generated__/graphql";
 import { defineComponent, ref, PropType, computed } from "vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import { GET_LOCAL_USERNAME, GET_USER } from "@/graphQLData/user/queries";
-import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
-import Avatar from "../../user/Avatar.vue";
-import RequireAuth from "../../auth/RequireAuth.vue";
-import TextEditor from "../../generic/forms/TextEditor.vue";
-import CancelButton from "../../generic/buttons/CancelButton.vue";
-import SaveButton from "../../generic/buttons/SaveButton.vue";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-import { Comment, DiscussionChannel } from "@/__generated__/graphql";
 import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
-import { useRoute } from "vue-router";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
+import { useRoute } from "vue-router";
+
+// The purpose of this component is to wrap the CreateRootCommentForm component
+// and put the discussion-specific logic in here. This is because the CreateRootCommentForm
+// component is used to put comments on events as well, and we don't want to duplicate
+// what is the same between them.
 
 export default defineComponent({
+  name: "DiscussionRootCommentFormWrapper",
   components: {
-    CancelButton,
-    Avatar,
-    RequireAuth,
-    SaveButton,
-    TextEditor,
+    CreateRootCommentForm,
   },
   props: {
-    channelId: {
+    link: {
       type: String,
-      required: true,
+      default: "",
+    },
+    dataTestid: {
+      type: String,
+      default: "",
     },
     discussionChannel: {
       // It is needed for the comment to be created, but I made it optional
@@ -45,28 +47,6 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
-    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
-
-    const { result: getUserResult } = useQuery(GET_USER, {
-      username: localUsernameResult.value?.username || "",
-    });
-
-    const username = computed(() => {
-      let username = localUsernameResult.value?.username;
-      if (username) {
-        return username;
-      }
-      return "";
-    });
-
-    const profilePicURL = computed(() => {
-      let profilePicURL = getUserResult.value?.users[0]?.profilePicURL;
-      if (profilePicURL) {
-        return profilePicURL;
-      }
-      return "";
-    });
-
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: true,
@@ -76,6 +56,17 @@ export default defineComponent({
     const createFormValues = ref<CreateEditCommentFormValues>(
       createCommentDefaultValues,
     );
+
+    // eslint-disable-next-line no-undef
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
 
     const createCommentInput = computed(() => {
       let input = {
@@ -192,30 +183,15 @@ export default defineComponent({
       return props.discussionChannel.locked;
     });
 
-    const writeReplyStyle =
-      "block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-600 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9";
-
     return {
       discussionChannelIsLocked,
       createComment,
       createCommentError,
       createCommentLoading,
       createFormValues,
-      profilePicURL,
-      showEditorInCommentSection: ref(false),
-      showCreateCommentModal: ref(false),
-      showRootCommentEditor: ref(false),
-      username,
-      writeReplyStyle,
     };
   },
   methods: {
-    handleUpdateComment(event: any) {
-      this.createFormValues.text = event;
-    },
-    updateCreateInputValuesForRootComment(text: string) {
-      this.createFormValues.text = text;
-    },
     async handleCreateComment() {
       if (!this.discussionChannel) {
         console.warn(
@@ -226,69 +202,25 @@ export default defineComponent({
       this.createCommentLoading = true;
       this.createComment();
     },
+    handleUpdateComment(event: any) {
+      this.createFormValues.text = event;
+    },
+    updateCreateInputValuesForRootComment(text: string) {
+      this.createFormValues.text = text;
+    },
   },
 });
 </script>
-<template>
-  <div class="ml-1 flex w-full flex-col space-x-2 px-1">
-    <div class="min-h-36 flex gap-2">
-      <Avatar
-        v-if="username"
-        class="h-5 w-5"
-        :text="username"
-        :src="profilePicURL"
-        :is-small="true"
-      />
 
-      <RequireAuth
-        v-if="!showEditorInCommentSection"
-        class="w-full"
-      >
-        <template #has-auth>
-          <textarea
-            id="addComment"
-            data-testid="addComment"
-            name="addcomment"
-            rows="1"
-            placeholder="Write a reply"
-            :class="writeReplyStyle"
-            @click="showEditorInCommentSection = true"
-          />
-        </template>
-        <template #does-not-have-auth>
-          <textarea
-            id="addCommentLoginPrompt"
-            name="addcomment"
-            rows="1"
-            placeholder="Write a reply"
-            :class="writeReplyStyle"
-          />
-        </template>
-      </RequireAuth>
-      <div
-        v-else
-        class="flex w-full flex-col"
-      >
-        <TextEditor
-          :test-id="'texteditor-textarea'"
-          :placeholder="'Please be kind'"
-          @update="handleUpdateComment"
-        />
-        <div class="mt-3 flex justify-start">
-          <CancelButton @click="showEditorInCommentSection = false" />
-          <SaveButton
-            data-testid="createCommentButton"
-            :disabled="createFormValues.text.length === 0"
-            :loading="createCommentLoading"
-            @click.prevent="
-              () => {
-                handleCreateComment();
-                showEditorInCommentSection = false;
-              }
-            "
-          />
-        </div>
-      </div>
-    </div>
+<template>
+  <div>
+    <CreateRootCommentForm
+      v-if="discussionChannel"
+      :key="`${discussionChannel.channelUniqueName}${discussionChannel.discussionId}`"
+      :create-form-values="createFormValues"
+      :create-comment-loading="createCommentLoading"
+      @handleCreateComment="handleCreateComment"
+      @handleUpdateComment="handleUpdateComment"
+    />
   </div>
 </template>

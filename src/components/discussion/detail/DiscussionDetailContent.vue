@@ -15,7 +15,7 @@ import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
 import DiscussionCommentsWrapper from "../../comments/DiscussionCommentsWrapper.vue";
 import ChannelLinks from "./ChannelLinks.vue";
-import CreateRootCommentForm from "@/components/discussion/detail/CreateRootCommentForm.vue";
+import DiscussionRootCommentFormWrapper from "./DiscussionRootCommentFormWrapper.vue"
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
@@ -33,7 +33,7 @@ export default defineComponent({
   components: {
     BackLink,
     ChannelLinks,
-    CreateRootCommentForm,
+    DiscussionRootCommentFormWrapper,
     DiscussionCommentsWrapper,
     DiscussionBody,
     DiscussionHeader,
@@ -334,8 +334,7 @@ export default defineComponent({
     </v-row>
     <v-row>
       <v-col>
-        <CreateRootCommentForm
-          v-if="route.name === 'DiscussionDetail' || channelId"
+        <DiscussionRootCommentFormWrapper
           :key="`${channelId}${discussionId}`"
           :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"

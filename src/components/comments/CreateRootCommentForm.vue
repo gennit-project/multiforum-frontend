@@ -1,0 +1,129 @@
+<script lang="ts">
+import { defineComponent, ref, PropType, computed } from "vue";
+import { GET_LOCAL_USERNAME, GET_USER } from "@/graphQLData/user/queries";
+import { useQuery } from "@vue/apollo-composable";
+import Avatar from "@/components/user/Avatar.vue";
+import RequireAuth from "@/components/auth/RequireAuth.vue";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
+import CancelButton from "@/components/generic/buttons/CancelButton.vue";
+import SaveButton from "@/components/generic/buttons/SaveButton.vue";
+import { CreateEditCommentFormValues } from "@/types/commentTypes";
+
+export default defineComponent({
+  components: {
+    CancelButton,
+    Avatar,
+    RequireAuth,
+    SaveButton,
+    TextEditor,
+  },
+  props: {
+    createCommentLoading: {
+      type: Boolean,
+      required: true,
+    },
+    createFormValues: {
+      type: Object as PropType<CreateEditCommentFormValues>,
+      required: true,
+    },
+  },
+  setup() {
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const { result: getUserResult } = useQuery(GET_USER, {
+      username: localUsernameResult.value?.username || "",
+    });
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
+    const profilePicURL = computed(() => {
+      let profilePicURL = getUserResult.value?.users[0]?.profilePicURL;
+      if (profilePicURL) {
+        return profilePicURL;
+      }
+      return "";
+    });
+
+    const writeReplyStyle =
+      "block h-10 w-full max-w-2xl rounded-lg border-gray-300 dark:bg-gray-600 text-sm shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-800 dark:placeholder-gray-400 dark:focus:ring-gray-9";
+
+    return {
+      profilePicURL,
+      showEditorInCommentSection: ref(false),
+      showCreateCommentModal: ref(false),
+      showRootCommentEditor: ref(false),
+      username,
+      writeReplyStyle,
+    };
+  },
+});
+</script>
+<template>
+  <div class="ml-1 flex w-full flex-col space-x-2 px-1">
+    <div class="min-h-36 flex gap-2">
+      <Avatar
+        v-if="username"
+        class="h-5 w-5"
+        :text="username"
+        :src="profilePicURL"
+        :is-small="true"
+      />
+
+      <RequireAuth
+        v-if="!showEditorInCommentSection"
+        class="w-full"
+      >
+        <template #has-auth>
+          <textarea
+            id="addComment"
+            data-testid="addComment"
+            name="addcomment"
+            rows="1"
+            placeholder="Write a reply"
+            :class="writeReplyStyle"
+            @click="showEditorInCommentSection = true"
+          />
+        </template>
+        <template #does-not-have-auth>
+          <textarea
+            id="addCommentLoginPrompt"
+            name="addcomment"
+            rows="1"
+            placeholder="Write a reply"
+            :class="writeReplyStyle"
+          />
+        </template>
+      </RequireAuth>
+      <div
+        v-else
+        class="flex w-full flex-col"
+      >
+        <TextEditor
+          :test-id="'texteditor-textarea'"
+          :placeholder="'Please be kind'"
+          @update="$emit('handleUpdateComment', $event)"
+        />
+        <div class="mt-3 flex justify-start">
+          <CancelButton @click="showEditorInCommentSection = false" />
+          <SaveButton
+            data-testid="createCommentButton"
+            :disabled="createFormValues.text.length === 0"
+            :loading="createCommentLoading"
+            @click.prevent="
+              () => {
+                $emit('handleCreateComment')
+                showEditorInCommentSection = false;
+              }
+            "
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

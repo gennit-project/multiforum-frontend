@@ -9,7 +9,6 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_EVENT } from "@/graphQLData/event/queries";
 import {
   GET_COMMENT_SECTION,
-  GET_EVENT_CHANNEL_ROOT_COMMENT_AGGREGATE,
 } from "@/graphQLData/comment/queries";
 import { relativeTime } from "../../../dateTimeUtils";
 import { Event } from "@/__generated__/graphql";
@@ -231,7 +230,7 @@ const {
 </script>
 <template>
     <v-row>
-        <v-col>
+        <!-- <v-col>
           <CreateRootCommentForm
             v-if="route.name === 'EventDetail' || channelId"
             :key="`${channelId}${eventId}`"
@@ -260,7 +259,7 @@ const {
                 : ''
             "
           />
-        </v-col>
+        </v-col> -->
       </v-row>
 </template>
 
