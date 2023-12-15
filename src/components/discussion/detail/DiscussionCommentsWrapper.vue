@@ -12,13 +12,13 @@ import {
   CommentCreateInput,
   Comment as CommentType,
 } from "@/__generated__/graphql";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { COMMENT_LIMIT } from "@/components/discussion/detail/DiscussionDetailContent.vue";
 import { useRoute } from "vue-router";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import {
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
+import { GET_DISCUSSION_COMMENTS } from "@/graphQLData/comment/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import CommentSection from "@/components/comments/CommentSection.vue";
@@ -49,6 +49,13 @@ export default defineComponent({
         return null;
       },
     },
+    comments: {
+      type: Array as PropType<CommentType[]>,
+      required: false,
+      default: () => {
+        return [];
+      },
+    },
     loading: {
       type: Boolean,
       required: false,
@@ -64,6 +71,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    console.log(props.comments)
     const route = useRoute();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -156,7 +164,7 @@ export default defineComponent({
     updateCommentSectionQueryResult(input: CommentSectionQueryUpdateInput) {
       const { cache, commentToDeleteId } = input;
       const readQueryResult = cache.readQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_DISCUSSION_COMMENTS,
         variables: this.commentSectionQueryVariables,
       });
 
@@ -167,7 +175,7 @@ export default defineComponent({
       );
 
       cache.writeQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_DISCUSSION_COMMENTS,
         variables: this.commentSectionQueryVariables,
         data: {
           ...readQueryResult,
@@ -201,7 +209,7 @@ export default defineComponent({
       } = input;
 
       const readDiscussionChannelQueryResult = cache.readQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_DISCUSSION_COMMENTS,
         variables: this.commentSectionQueryVariables,
       });
 
@@ -213,7 +221,7 @@ export default defineComponent({
         existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
       cache.writeQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_DISCUSSION_COMMENTS,
         variables: {
           ...this.commentSectionQueryVariables,
           commentId: parentOfCommentToDelete.value,
@@ -240,6 +248,7 @@ export default defineComponent({
 <template>
   <CommentSection
     :aggregate-comment-count="aggregateCommentCount" 
+    :comments="comments"
     :loading="loading"
     :reached-end-of-results="reachedEndOfResults" 
     :comment-section-query-variables="commentSectionQueryVariables"

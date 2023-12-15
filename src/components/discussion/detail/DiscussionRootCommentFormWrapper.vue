@@ -5,7 +5,7 @@ import { defineComponent, ref, PropType, computed } from "vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import { GET_DISCUSSION_COMMENTS } from "@/graphQLData/comment/queries";
 import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
@@ -135,7 +135,7 @@ export default defineComponent({
         };
 
         const readQueryResult = cache.readQuery({
-          query: GET_COMMENT_SECTION,
+          query: GET_DISCUSSION_COMMENTS,
           variables: commentSectionQueryVariables,
         });
 
@@ -151,7 +151,7 @@ export default defineComponent({
           existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
         cache.writeQuery({
-          query: GET_COMMENT_SECTION,
+          query: GET_DISCUSSION_COMMENTS,
           variables: commentSectionQueryVariables,
           data: {
             ...readQueryResult,

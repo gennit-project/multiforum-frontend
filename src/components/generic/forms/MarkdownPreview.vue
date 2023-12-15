@@ -220,8 +220,9 @@ export default defineComponent({
   cursor: pointer !important;
 }
 p,
-li {
-  font-size: 0.9rem;
-  line-height: 1.3rem;
+ul,
+li, li > li {
+  font-size: 0.9 !important;
+  line-height: 1.3rem !important;
 }
 </style>

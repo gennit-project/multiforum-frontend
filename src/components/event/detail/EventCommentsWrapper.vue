@@ -12,26 +12,25 @@ import {
   CommentCreateInput,
   Comment as CommentType,
 } from "@/__generated__/graphql";
-import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
 import { COMMENT_LIMIT } from "@/components/event/detail/EventRootCommentFormWrapper.vue";
 import { useRoute } from "vue-router";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
-import {
-  GET_LOCAL_USERNAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import CommentSection from "@/components/comments/CommentSection.vue";
+import { GET_EVENT_COMMENTS } from "@/graphQLData/comment/queries";
+import { GET_EVENT } from "@/graphQLData/event/queries";
 
 type CommentSectionQueryUpdateInput = {
   cache: any;
   commentToDeleteId: string;
-}
+};
 
 type UpdateTotalCommentCountInput = {
   cache: any;
-  parentOfCommentToDelete: any
-}
+  parentOfCommentToDelete: any;
+};
 
 export default defineComponent({
   name: "EventCommentsWrapper",
@@ -47,6 +46,13 @@ export default defineComponent({
       required: false,
       default: () => {
         return null;
+      },
+    },
+    comments: {
+      type: Array as PropType<CommentType[]>,
+      required: false,
+      default: () => {
+        return [];
       },
     },
     loading: {
@@ -75,8 +81,8 @@ export default defineComponent({
       return "";
     });
     const aggregateCommentCount = computed(() => {
-      return props.event?.CommentsAggregate?.count || 0
-    })
+      return props.event?.CommentsAggregate?.count || 0;
+    });
 
     const commentSectionQueryVariables = {
       eventId: props.event?.id,
@@ -95,7 +101,6 @@ export default defineComponent({
     );
 
     const createCommentInput = computed(() => {
-
       const input: CommentCreateInput = {
         isRootComment: false,
         Event: {
@@ -129,13 +134,15 @@ export default defineComponent({
           },
         },
         UpvotedByUsers: {
-          connect: [{
-            where: {
-              node: {
-                username: username.value,
+          connect: [
+            {
+              where: {
+                node: {
+                  username: username.value,
+                },
               },
             },
-          }],
+          ],
         },
       };
       return input;
@@ -145,7 +152,7 @@ export default defineComponent({
       aggregateCommentCount,
       commentSectionQueryVariables,
       createCommentInput,
-      createFormValues
+      createFormValues,
     };
   },
   methods: {
@@ -155,23 +162,21 @@ export default defineComponent({
     updateCommentSectionQueryResult(input: CommentSectionQueryUpdateInput) {
       const { cache, commentToDeleteId } = input;
       const readQueryResult = cache.readQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_EVENT_COMMENTS,
         variables: this.commentSectionQueryVariables,
       });
 
       const filteredRootComments: Comment[] = (
-        readQueryResult?.getCommentSection?.Comments || []
-      ).filter(
-        (comment: CommentType) => comment.id !== commentToDeleteId,
-      );
+        readQueryResult?.getEventComments?.Comments || []
+      ).filter((comment: CommentType) => comment.id !== commentToDeleteId);
 
       cache.writeQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_EVENT_COMMENTS,
         variables: this.commentSectionQueryVariables,
         data: {
           ...readQueryResult,
-          getCommentSection: {
-            ...readQueryResult?.getCommentSection,
+          getEventComments: {
+            ...readQueryResult?.getEventComments,
             Comments: filteredRootComments,
           },
         },
@@ -194,60 +199,54 @@ export default defineComponent({
       });
     },
     updateTotalCommentCount(input: UpdateTotalCommentCountInput) {
-      const {
-        cache,
-        parentOfCommentToDelete
-      } = input;
+      const { cache } = input;
 
-      const readEventChannelQueryResult = cache.readQuery({
-        query: GET_COMMENT_SECTION,
-        variables: this.commentSectionQueryVariables,
+      const readEventQueryResult = cache.readQuery({
+        query: GET_EVENT,
+        variables: {
+          id: this.event?.id,
+        },
       });
 
-      const existingEventChannelData =
-        readEventChannelQueryResult?.getCommentSection
-          ?.EventChannel;
+      const existingEventData = readEventQueryResult?.getEvent;
 
       let existingCommentAggregate =
-        existingEventChannelData?.CommentsAggregate?.count || 0;
+        existingEventData?.CommentsAggregate?.count || 0;
 
       cache.writeQuery({
-        query: GET_COMMENT_SECTION,
+        query: GET_EVENT,
         variables: {
-          ...this.commentSectionQueryVariables,
-          commentId: parentOfCommentToDelete.value,
+          id: this.event?.id,
         },
         data: {
-          ...readEventChannelQueryResult,
-          getCommentSection: {
-            ...readEventChannelQueryResult.getCommentSection,
-            EventChannel: {
-              ...existingEventChannelData,
-              CommentsAggregate: {
-                ...existingEventChannelData.CommentsAggregate,
-                count: Math.max(0, existingCommentAggregate - 1),
-              },
+          ...readEventQueryResult,
+          getEvent: {
+            ...existingEventData.getEvent,
+
+            CommentsAggregate: {
+              ...existingEventData?.CommentsAggregate,
+              count: Math.max(0, existingCommentAggregate - 1),
             },
           },
         },
       });
-    }
+    },
   },
 });
 </script>
 
 <template>
   <CommentSection
-    :aggregate-comment-count="aggregateCommentCount" 
+    :aggregate-comment-count="aggregateCommentCount"
     :loading="loading"
-    :reached-end-of-results="reachedEndOfResults" 
+    :reached-end-of-results="reachedEndOfResults"
     :comment-section-query-variables="commentSectionQueryVariables"
-    :create-form-values="createFormValues" 
+    :create-form-values="createFormValues"
     :create-comment-input="createCommentInput"
     :previous-offset="previousOffset"
     @updateTotalCommentCount="updateTotalCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"
     @updateAggregateCount="updateAggregateCount"
-    @updateCreateReplyCommentInput="updateCreateReplyCommentInput" 
+    @updateCreateReplyCommentInput="updateCreateReplyCommentInput"
   />
 </template>

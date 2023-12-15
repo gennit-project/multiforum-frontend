@@ -1,9 +1,11 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
 import Tag from "@/components/tag/Tag.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
 import { GET_EVENT } from "@/graphQLData/event/queries";
+import { GET_EVENT_COMMENTS } from "@/graphQLData/comment/queries";
+import { GET_EVENT_ROOT_COMMENT_AGGREGATE } from "@/graphQLData/comment/queries";
 import { Event, EventChannel } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { DateTime } from "luxon";
@@ -20,11 +22,16 @@ import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import ExpandableImage from "@/components/generic/ExpandableImage.vue";
 import EventCommentsWrapper from "./EventCommentsWrapper.vue";
-import EventRootCommentFormWrapper from "./EventRootCommentFormWrapper.vue";
+import EventRootCommentFormWrapper, {
+  COMMENT_LIMIT,
+} from "./EventRootCommentFormWrapper.vue";
+import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
+import ChannelLinks from "@/components/discussion/detail/ChannelLinks.vue";
 
 export default defineComponent({
   components: {
     BackLink,
+    ChannelLinks,
     ErrorBanner,
     EventCommentsWrapper,
     EventFooter,
@@ -46,6 +53,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const offset = ref(0);
     const showFullDescription = ref(route.name === "EventDetail");
 
     const eventId = computed(() => {
@@ -58,13 +66,14 @@ export default defineComponent({
       return "";
     });
 
+    // Fetch the event.
     const {
       result: eventResult,
       error: eventError,
       loading: eventLoading,
     } = useQuery(GET_EVENT, { id: eventId });
 
-    const eventData = computed(() => {
+    const event = computed(() => {
       if (
         !eventResult.value ||
         !eventResult.value.events ||
@@ -75,15 +84,131 @@ export default defineComponent({
       return eventResult.value.events[0];
     });
 
+    const commentSort = computed(() => {
+      return getSortFromQuery(route.query);
+    });
+
+    // Fetch the event comments.
+    const {
+      result: getEventCommentsResult,
+      error: getEventCommentsError,
+      loading: getEventCommentsLoading,
+      fetchMore: fetchMoreComments,
+    } = useQuery(GET_EVENT_COMMENTS, {
+      discussionId: eventId.value,
+      offset: offset.value,
+      limit: COMMENT_LIMIT,
+      sort: commentSort,
+    });
+
+    watch(commentSort, () => {
+      fetchMoreComments({ variables: { sort: commentSort.value } });
+    });
+
+    const comments = computed(() => {
+      if (!getEventCommentsResult.value) {
+        return [];
+      }
+      return getEventCommentsResult.value?.getEventComments?.Comments || [];
+    });
+
+    // Get the aggregate count of root comments so that we will know
+    // whether or not to show the "Load More" button at the end of the comments.
+    const {
+      result: getEventRootCommentAggregateResult,
+      error: getEventRootCommentAggregateError,
+      loading: getEventRootCommentAggregateLoading,
+    } = useQuery(GET_EVENT_ROOT_COMMENT_AGGREGATE, {
+      eventId: eventId.value,
+    });
+
+    const loadedRootCommentCount = computed(() => {
+      if (eventLoading.value || eventError.value) {
+        return [];
+      }
+
+      let rootComments = comments.value.filter((comment: Comment) => {
+        return comment.isRootComment;
+      });
+      return rootComments.length;
+    });
+
+    const commentCount = computed(() => {
+      if (!event.value) {
+        return 0;
+      }
+      return event.value.CommentsAggregate?.count || 0;
+    });
+
+    const aggregateRootCommentCount = computed(() => {
+      if (
+        getEventRootCommentAggregateLoading.value ||
+        getEventRootCommentAggregateError.value
+      ) {
+        return 0;
+      }
+      if (
+        !getEventRootCommentAggregateResult.value ||
+        !getEventRootCommentAggregateResult.value.events
+      ) {
+        return 0;
+      }
+
+      const events = getEventRootCommentAggregateResult.value.events;
+      if (events.length === 0) {
+        return 0;
+      }
+      const event = events[0];
+      return event.CommentsAggregate?.count || 0;
+    });
+
+    // Needed to update the cached result of the query if the
+    // user creates a root comment.
+    const previousOffset = ref(0);
+
+    const loadMore = () => {
+      fetchMoreComments({
+        variables: {
+          offset: offset.value,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+
+          offset.value =
+            offset.value + fetchMoreResult.getEventComments.Comments.length;
+
+          // We need to update the result of GET_DISCUSSION_COMMENTS
+          // to include the new comments.
+          return {
+            ...previousResult,
+            getEventComments: {
+              ...previousResult.getEventComments,
+              Comments: [
+                ...previousResult.getEventComments.Comments,
+                ...fetchMoreResult.getEventComments.Comments,
+              ],
+            },
+          };
+        },
+      });
+    };
+
+    const reachedEndOfResults = computed(() => {
+      return (
+        loadedRootCommentCount.value >= aggregateRootCommentCount.value ||
+        loadedRootCommentCount.value >= commentCount.value
+      );
+    });
+
     const truncatedDescription = computed(() => {
-      if (!eventData.value || !eventData.value.description) {
+      if (!event.value || !event.value.description) {
         return "";
       }
 
-      const words = eventData.value.description.split(" ");
+      const words = event.value.description.split(" ");
       return words.length > 50
         ? words.slice(0, 50).join(" ") + "..."
-        : eventData.value.description;
+        : event.value.description;
     });
 
     const toggleDescription = () => {
@@ -102,60 +227,52 @@ export default defineComponent({
       return channelsExceptCurrent;
     });
 
-    // Each event can have multiple comment sections
-    // because there's a different comment section for each
-    // channel that the event is in.
-    // The idea is to show the comments that correspond
-    // to the channel in the current URL.
-    let discussionChannelId: string = "";
-
-    if (typeof eventId.value === "string") {
-      discussionChannelId = eventId.value + channelId.value;
-    } else {
-      console.warn("Event ID is not a string: " + eventId.value);
-    }
-
     const eventIsInThePast = computed(() => {
-      if (!eventData.value) {
+      if (!event.value) {
         return false;
       }
       return (
-        DateTime.fromISO(eventData.value.startTime) <
+        DateTime.fromISO(event.value.startTime) <
         DateTime.fromISO(new Date().toISOString())
       );
     });
 
     const locationText = computed(() => {
-      if (!eventData.value || !eventData.value.address) {
+      if (!event.value || !event.value.address) {
         return "";
       }
-      if (eventData.value.locationName) {
-        return `${eventData.value.locationName}, ${eventData.value.address}`;
+      if (event.value.locationName) {
+        return `${event.value.locationName}, ${event.value.address}`;
       }
-      return eventData.value.address;
+      return event.value.address;
     });
 
     const { mdAndUp } = useDisplay();
 
     const visibleDescription = computed(() => {
       if (showFullDescription.value) {
-        return eventData.value?.description;
+        return event.value?.description;
       }
       return truncatedDescription.value;
     });
 
     return {
-      eventData,
+      comments,
+      event,
       eventResult,
       eventError,
       eventIsInThePast,
       eventLoading,
+      getEventCommentsError,
+      getEventCommentsLoading,
       eventId,
       channelId,
       channelsExceptCurrent,
-      discussionChannelId,
+      loadMore,
       locationText,
       mdAndUp,
+      previousOffset,
+      reachedEndOfResults,
       relativeTime,
       route,
       showFullDescription,
@@ -169,23 +286,23 @@ export default defineComponent({
   },
   methods: {
     openLink() {
-      window.open(this.eventData.virtualEventUrl, "_blank");
+      window.open(this.event.virtualEventUrl, "_blank");
     },
     addToGoogleCalendar() {
       const googleCalendarDateFormat = "yyyyMMdd'T'HHmmss";
-      let start = DateTime.fromISO(this.eventData.startTime).toFormat(
+      let start = DateTime.fromISO(this.event.startTime).toFormat(
         googleCalendarDateFormat,
       );
-      let end = DateTime.fromISO(this.eventData.endTime).toFormat(
+      let end = DateTime.fromISO(this.event.endTime).toFormat(
         googleCalendarDateFormat,
       );
 
       const baseUrl = "https://www.google.com/calendar/render";
-      const location = this.eventData.address
-        ? encodeURIComponent(this.eventData.address)
-        : encodeURIComponent(this.eventData.virtualEventUrl);
-      const name = encodeURIComponent(this.eventData.title);
-      const details = encodeURIComponent(this.eventData.description);
+      const location = this.event.address
+        ? encodeURIComponent(this.event.address)
+        : encodeURIComponent(this.event.virtualEventUrl);
+      const name = encodeURIComponent(this.event.title);
+      const details = encodeURIComponent(this.event.description);
 
       const googleUrl = `${baseUrl}?action=TEMPLATE&text=${name}&dates=${start}/${end}&details=${details}&location=${location}`;
       window.open(googleUrl, "_blank");
@@ -196,11 +313,11 @@ export default defineComponent({
         "VERSION:2.0",
         "BEGIN:VEVENT",
         `URL:${document.URL}`,
-        `DTSTART:${this.eventData.startTime.replace(/-|:|\.\d{3}/g, "")}`,
-        `DTEND:${this.eventData.endTime.replace(/-|:|\.\d{3}/g, "")}`,
-        `SUMMARY:${this.eventData.title}`,
-        `DESCRIPTION:${this.eventData.description}`,
-        `LOCATION:${this.eventData.address}`,
+        `DTSTART:${this.event.startTime.replace(/-|:|\.\d{3}/g, "")}`,
+        `DTEND:${this.event.endTime.replace(/-|:|\.\d{3}/g, "")}`,
+        `SUMMARY:${this.event.title}`,
+        `DESCRIPTION:${this.event.description}`,
+        `LOCATION:${this.event.address}`,
         "END:VEVENT",
         "END:VCALENDAR",
       ].join("\n");
@@ -236,13 +353,13 @@ export default defineComponent({
             :text="eventError.message"
           />
 
-          <div v-else-if="!eventData">
+          <div v-else-if="!event">
             <p>Could not find the event.</p>
           </div>
 
           <div
-            v-else-if="eventResult && eventResult.events && eventData"
-            class="dark:bg-dark-700 mx-auto max-w-2xl pt-4 flex flex-col gap-4"
+            v-else-if="eventResult && eventResult.events && event"
+            class="dark:bg-dark-700 mx-auto flex max-w-2xl flex-col gap-4 pt-4"
           >
             <ErrorBanner
               v-if="eventIsInThePast"
@@ -250,25 +367,25 @@ export default defineComponent({
               :text="'This event is in the past.'"
             />
             <ErrorBanner
-              v-if="eventData.canceled"
+              v-if="event.canceled"
               data-testid="canceled-event-banner"
               class="my-2"
               :text="'This event is canceled.'"
             />
             <div
               v-if="route.name === 'EventDetail'"
-              :class="'align-center mt-2 flex gap-4 justify-between'"
+              :class="'align-center mt-2 flex justify-between gap-4'"
             >
               <BackLink :link="`/channels/c/${channelId}/events/search`" />
               <div
-                v-if="channelId && eventData"
+                v-if="channelId && event"
                 class="mt-4 flex flex-shrink-0 items-center md:ml-4 md:mt-0"
               >
                 <RequireAuth
-                  v-if="eventData.Poster"
+                  v-if="event.Poster"
                   class="flex inline-flex"
                   :require-ownership="true"
-                  :owners="[eventData.Poster.username]"
+                  :owners="[event.Poster.username]"
                 >
                   <template #has-auth>
                     <router-link
@@ -305,30 +422,29 @@ export default defineComponent({
             >
               <div class="min-w-0 flex-1">
                 <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-                  {{ eventData.title }}
+                  {{ event.title }}
                 </h2>
               </div>
             </div>
             <ExpandableImage
-              v-if="eventData.coverImageURL"
-              :src="eventData.coverImageURL"
-              :alt="eventData.title"
+              v-if="event.coverImageURL"
+              :src="event.coverImageURL"
+              :alt="event.title"
               class="rounded-t-lg"
             />
             <div
               class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
             >
-              <EventHeader :event-data="eventData" />
+              <EventHeader :event-data="event" />
               <MarkdownPreview
-                v-if="eventData.description"
+                v-if="event.description"
                 :text="visibleDescription"
                 :disable-gallery="false"
                 class="-ml-4"
               />
               <button
                 v-if="
-                  eventData?.description &&
-                  eventData.description.split(' ').length > 50
+                  event?.description && event.description.split(' ').length > 50
                 "
                 class="mt-2 rounded bg-black px-4 py-2 font-bold text-white hover:bg-blue-700"
                 @click="toggleDescription"
@@ -367,7 +483,7 @@ export default defineComponent({
             <div class="mx-4 my-2">
               <div class="flex space-x-1">
                 <Tag
-                  v-for="tag in eventData.Tags"
+                  v-for="tag in event.Tags"
                   :key="tag.text"
                   class="mt-2"
                   :tag="tag.text"
@@ -396,21 +512,20 @@ export default defineComponent({
               </div>
             </div>
             <EventFooter
-              :event-data="eventData"
+              :event-data="event"
               :channels-except-current="channelsExceptCurrent"
             />
           </div>
-          <!-- <EventRootCommentFormWrapper
-            :key="`${channelId}${discussionId}`"
-            :channel-id="channelId"
-            :discussion-channel="activeDiscussionChannel"
+          <EventRootCommentFormWrapper
+            :key="`${eventId}`"
+            :event="event"
             :previous-offset="previousOffset"
           />
           <div class="my-6 mb-2 ml-2 rounded-lg">
             <EventCommentsWrapper
-              :key="activeDiscussionChannel?.id"
-              :loading="getDiscussionChannelLoading"
-              :discussion-channel="activeDiscussionChannel"
+              :key="event?.id"
+              :loading="getEventCommentsLoading"
+              :event="event"
               :comments="comments"
               :reached-end-of-results="reachedEndOfResults"
               :previous-offset="previousOffset"
@@ -418,15 +533,11 @@ export default defineComponent({
             />
           </div>
           <ChannelLinks
-            v-if="discussion && discussion.DiscussionChannels"
+            v-if="event && event.EventChannels"
             class="my-4"
-            :discussion-channels="discussion.DiscussionChannels"
-            :channel-id="
-              activeDiscussionChannel
-                ? activeDiscussionChannel.channelUniqueName
-                : ''
-            "
-          /> -->
+            :event-channels="event.EventChannels"
+            :channel-id="channelId"
+          />
         </div>
       </div>
     </div>

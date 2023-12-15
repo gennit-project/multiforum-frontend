@@ -40,7 +40,7 @@ const COMMENT_FIELDS = gql`
   ${AUTHOR_FIELDS}
 `;
 
-export const GET_COMMENT_SECTION = gql`
+export const GET_DISCUSSION_COMMENTS = gql`
   query getCommentSection(
     $channelUniqueName: String!
     $discussionId: ID!
@@ -86,6 +86,58 @@ export const GET_COMMENT_SECTION = gql`
         DownvotedByModeratorsAggregate {
           count
         }
+      }
+      Comments {
+        ...CommentFields
+        ChildComments {
+          id
+          text
+        }
+      }
+    }
+  }
+  ${AUTHOR_FIELDS}
+  ${COMMENT_FIELDS}
+  ${COMMENT_VOTE_FIELDS}
+`;
+
+export const GET_EVENT_COMMENTS = gql`
+  query getEventComments(
+    $eventId: ID!
+    $offset: Int
+    $limit: Int
+    $sort: String
+  ) {
+    getEventComments(
+      eventId: $eventId
+      offset: $offset
+      limit: $limit
+      sort: $sort
+    ) {
+      Event {
+        id
+        title
+        description
+        startTime
+        endTime
+        locationName
+        address
+        virtualEventUrl
+        startTimeDayOfWeek
+        startTimeHourOfDay
+        canceled
+        isHostedByOP
+        isAllDay
+        coverImageURL
+        createdAt
+        updatedAt
+        placeId
+        isInPrivateResidence
+        location {
+          latitude
+          longitude
+        }
+        cost
       }
       Comments {
         ...CommentFields
@@ -148,6 +200,17 @@ export const GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE = gql`
         discussionId: $discussionId
       }
     ) {
+      id
+      CommentsAggregate(where: { isRootComment: true }) {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_EVENT_ROOT_COMMENT_AGGREGATE = gql`
+  query getEventRootCommentAggregate($eventId: ID!) {
+    events(where: { id: $eventId }) {
       id
       CommentsAggregate(where: { isRootComment: true }) {
         count

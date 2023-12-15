@@ -42,6 +42,9 @@ export const EVENT_FIELDS = gql`
     Tags {
       text
     }
+    CommentsAggregate {
+      count
+    }
     EventChannels {
       id
       eventId
@@ -91,6 +94,9 @@ export const GET_EVENTS = gql`
       cost
       Poster {
         ...AuthorFields
+      }
+      CommentsAggregate {
+        count
       }
       EventChannels {
         id

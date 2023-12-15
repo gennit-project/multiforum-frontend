@@ -4,7 +4,7 @@ import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import {
-  GET_COMMENT_SECTION,
+  GET_DISCUSSION_COMMENTS,
   GET_DISCUSSION_CHANNEL_ROOT_COMMENT_AGGREGATE,
 } from "@/graphQLData/comment/queries";
 import { relativeTime } from "../../../dateTimeUtils";
@@ -84,7 +84,7 @@ export default defineComponent({
       error: getDiscussionChannelError,
       loading: getDiscussionChannelLoading,
       fetchMore: fetchMoreComments,
-    } = useQuery(GET_COMMENT_SECTION, {
+    } = useQuery(GET_DISCUSSION_COMMENTS, {
       discussionId: discussionId,
       channelUniqueName: channelId,
       offset: offset.value,
@@ -196,7 +196,7 @@ export default defineComponent({
           offset.value =
             offset.value + fetchMoreResult.getCommentSection.Comments.length;
 
-          // We need to update the result of GET_COMMENT_SECTION
+          // We need to update the result of GET_DISCUSSION_COMMENTS
           // to include the new comments.
           return {
             ...previousResult,
@@ -256,7 +256,7 @@ export default defineComponent({
   />
   <div
     v-else
-    class="w-full max-w-7xl space-y-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800"
+    class="w-full max-w-7xl space-y-2 rounded-lg bg-white px-4 py-2 dark:bg-gray-800"
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
@@ -285,29 +285,30 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <v-row v-if="discussion" class="mt-1 flex justify-center">
+    <div>
+      <div class="w-full mt-3 px-3">
+        <div ref="discussionDetail">
+          <div class="min-w-0">
+            <h2
+              class="text-wrap px-1 text-2xl font-bold sm:tracking-tight"
+            >
+              {{
+                discussion && discussion.title
+                  ? discussion.title
+                  : "[Deleted]"
+              }}
+            </h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <v-row v-if="discussion" class="flex justify-center">
       <v-col>
         <div class="space-y-3 px-2">
           <div
-            class="dark:bg-gray-950 rounded-lg bg-white px-4 pb-2 pt-3 dark:bg-gray-700"
+            class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:bg-gray-700"
           >
-            <div class="space-y-3 px-2">
-              <div class="mb-3 w-full">
-                <div ref="discussionDetail">
-                  <div class="min-w-0">
-                    <h2
-                      class="text-wrap px-1 text-2xl font-bold sm:tracking-tight"
-                    >
-                      {{
-                        discussion && discussion.title
-                          ? discussion.title
-                          : "[Deleted]"
-                      }}
-                    </h2>
-                  </div>
-                </div>
-              </div>
-            </div>
+            
             <DiscussionHeader
               :discussion="discussion"
               :channel-id="channelId"

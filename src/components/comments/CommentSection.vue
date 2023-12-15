@@ -11,7 +11,7 @@ import {
 } from "@/types/commentTypes";
 import {
   GET_COMMENT_REPLIES,
-  GET_COMMENT_SECTION,
+  GET_DISCUSSION_COMMENTS,
 } from "@/graphQLData/comment/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
@@ -316,7 +316,7 @@ export default defineComponent({
 
           // Update the total count of comments
           const readDiscussionChannelQueryResult = cache.readQuery({
-            query: GET_COMMENT_SECTION,
+            query: GET_DISCUSSION_COMMENTS,
             variables: {
               ...props.commentSectionQueryVariables,
               commentId: newCommentParentId,
@@ -331,7 +331,7 @@ export default defineComponent({
             existingDiscussionChannelData?.CommentsAggregate?.count || 0;
 
           cache.writeQuery({
-            query: GET_COMMENT_SECTION,
+            query: GET_DISCUSSION_COMMENTS,
             variables: {
               ...props.commentSectionQueryVariables,
               commentId: newCommentParentId,
@@ -498,7 +498,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="bg-white dark:bg-gray-700 px-4 py-6 rounded-lg">
+  <div class="bg-white dark:bg-gray-800">
     <div>
       <h2
         id="comments"
