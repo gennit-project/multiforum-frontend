@@ -19,14 +19,13 @@ describe("Basic root comment operations", () => {
     // Click on the first discussion
     cy.get("span").contains("Example topic 1").click();
 
-    // From the preview, go to the discussion detail page
-    cy.get("a[data-testid='comments-in-cats']").click();
-
     // Click the 'write a reply' textarea
     cy.get("textarea[data-testid='addComment']").click();
 
     // Type a comment
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_1);
+    cy.get("textarea[data-testid='texteditor-textarea']").type(
+      TEST_COMMENT_TEXT_1,
+    );
 
     // Save the comment
     cy.get("button").contains("Save").click();
@@ -43,7 +42,9 @@ describe("Basic root comment operations", () => {
 
     // Type a first reply to the root comment
     const TEST_COMMENT_TEXT_2 = "Test comment 2";
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_2);
+    cy.get("textarea[data-testid='texteditor-textarea']").type(
+      TEST_COMMENT_TEXT_2,
+    );
 
     // Save the comment
     cy.get("button").contains("Save").click();
@@ -56,7 +57,9 @@ describe("Basic root comment operations", () => {
       .find('div[data-testid="reply-comment-button"]')
       .click();
     const TEST_COMMENT_TEXT_3 = "Test comment 3";
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_3);
+    cy.get("textarea[data-testid='texteditor-textarea']").type(
+      TEST_COMMENT_TEXT_3,
+    );
 
     // Save the comment
     cy.get("button").contains("Save").click();
@@ -70,7 +73,9 @@ describe("Basic root comment operations", () => {
 
     // Type a first reply to the second-level comment
     const TEST_COMMENT_TEXT_4 = "Test comment 4";
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_4);
+    cy.get("textarea[data-testid='texteditor-textarea']").type(
+      TEST_COMMENT_TEXT_4,
+    );
 
     // Save the comment
     cy.get("button").contains("Save").click();
@@ -84,7 +89,9 @@ describe("Basic root comment operations", () => {
     cy.contains("[data-testid='comment']", TEST_COMMENT_TEXT_3)
       .find('div[data-testid="reply-comment-button"]')
       .click();
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT_5);
+    cy.get("textarea[data-testid='texteditor-textarea']").type(
+      TEST_COMMENT_TEXT_5,
+    );
 
     // Save the comment
     cy.get("button").contains("Save").click();
