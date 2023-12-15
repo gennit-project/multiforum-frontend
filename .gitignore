@@ -9,7 +9,6 @@ data
 .env.local
 .env.*.local
 cypress.env.json
-cypress.config.ts
 
 # Log files
 npm-debug.log*
