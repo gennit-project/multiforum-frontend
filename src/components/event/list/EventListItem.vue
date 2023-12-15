@@ -389,7 +389,7 @@ export default defineComponent({
               >
               <p class="space-x-2">
                 <span
-                  class="text-md cursor-pointer font-bold hover:underline dark:text-gray-100"
+                  class="text-lg cursor-pointer font-bold hover:underline dark:text-gray-100"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"

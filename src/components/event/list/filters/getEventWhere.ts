@@ -45,8 +45,10 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
   if (!channelId) {
     // In sitewide view, require at least one channel.
     conditions.push({
-      NOT: {
-        EventChannels_NONE: null,
+      EventChannels_SOME: {
+        NOT: {
+          channelUniqueName: null,
+        }
       },
     });
   }
