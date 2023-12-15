@@ -240,7 +240,7 @@ export default defineComponent({
 <template>
   <v-container
     :class="[channelId ? '' : 'my-6 max-w-4xl']"
-    class="py-6 justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+    class="sm:py-4 lg:py-10 sm:px-4 lg:px-10 justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
   >
     <DiscussionFilterBar />
     <SitewideDiscussionList

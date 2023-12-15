@@ -206,95 +206,83 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 flex space-y-3 p-4  bg-white dark:bg-gray-700 rounded-lg lg:py-4"
+    class="relative mt-1 flex space-y-3 rounded-lg bg-white p-4 dark:bg-gray-700 lg:py-4"
   >
-    <v-row>
-      <v-col :cols="2">
-        <DiscussionVotes
-          v-if="discussionChannel"
-          :discussion="discussion"
-          :discussion-channel="discussionChannel"
-          :show-downvote="false"
-        />
-      </v-col>
-      <v-col :cols="10">
-        <div
-          v-if="discussion"
-          class="flex-col gap-2"
+    <div class="flex flex-row justify-center gap-4">
+      <DiscussionVotes
+        v-if="discussionChannel"
+        :discussion="discussion"
+        :discussion-channel="discussionChannel"
+        :show-downvote="false"
+      />
+
+      <div v-if="discussion" class="flex-col gap-2">
+        <router-link
+          :to="{ path: detailLink, query: filteredQuery }"
+          class="hover:text-gray-500"
         >
+          <p
+            class="cursor-pointer text-lg font-bold hover:text-gray-500 dark:text-gray-100"
+          >
+            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
+          </p>
+        </router-link>
+
+        <div
+          v-if="truncatedBody"
+          class="my-2 max-h-72 max-w-lg overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
+        >
+          <router-link :to="{ path: detailLink, query: filteredQuery }">
+            <MarkdownPreview
+              :text="truncatedBody || ''"
+              :disable-gallery="true"
+              class="-ml-4"
+            />
+          </router-link>
+        </div>
+
+        <div
+          class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
+        >
+          <Tag
+            v-for="tag in tags"
+            :key="tag"
+            class="my-1"
+            :active="selectedTags.includes(tag)"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
+        </div>
+        <p
+          class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
+        >
+          <span class="mr-1"> {{ `Posted ${relativeTime} by` }}</span>
+
+          <UsernameWithTooltip
+            v-if="authorUsername"
+            :username="authorUsername"
+            :src="authorProfilePicURL ?? ''"
+            :display-name="authorDisplayName ?? ''"
+            :comment-karma="authorCommentKarma ?? 0"
+            :discussion-karma="authorDiscussionKarma ?? 0"
+            :account-created="authorAccountCreated"
+          />
+        </p>
+
+        <div class="mt-2 flex items-center justify-start gap-6">
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
-            class="hover:text-gray-500"
+            class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
           >
-            <p
-              class="text-lg cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100"
-            >
-              <HighlightedSearchTerms
-                :text="title"
-                :search-input="searchInput"
-              />
-            </p>
+            <i class="fa-regular fa-comment h-6 w-6" />
+            <span class="text-sm">{{
+              `${commentCount} comment${commentCount === 1 ? "" : "s"}`
+            }}</span>
           </router-link>
-
-          <div
-            v-if="truncatedBody"
-            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700 max-w-lg max-h-72 overflow-auto"
-          >
-            <router-link :to="{ path: detailLink, query: filteredQuery }">
-              <MarkdownPreview
-                :text="truncatedBody || ''"
-                :disable-gallery="true"
-                class="-ml-4"
-              />
-            </router-link>
-          </div>
-
-          <div
-            class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
-          >
-            <Tag
-              v-for="tag in tags"
-              :key="tag"
-              class="my-1"
-              :active="selectedTags.includes(tag)"
-              :tag="tag"
-              @click="$emit('filterByTag', tag)"
-            />
-          </div>
-          <p
-            class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
-          >
-            <span class="mr-1"> {{ `Posted ${relativeTime} by` }}</span>
-
-            <UsernameWithTooltip
-              v-if="authorUsername"
-              :username="authorUsername"
-              :src="authorProfilePicURL ?? ''"
-              :display-name="authorDisplayName ?? ''"
-              :comment-karma="authorCommentKarma ?? 0"
-              :discussion-karma="authorDiscussionKarma ?? 0"
-              :account-created="authorAccountCreated"
-            />
-          </p>
-
-          <div class="mt-2 flex items-center justify-start gap-6">
-            <router-link 
-              :to="{ path: detailLink, query: filteredQuery }"
-              class="rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-1 dark:hover:bg-gray-500"
-            >
-              <i class="fa-regular fa-comment h-6 w-6" />
-              <span class="text-sm">{{
-                `${commentCount} comment${commentCount === 1 ? "" : "s"}`
-              }}</span>
-            </router-link>
-          </div>
         </div>
-      </v-col>
-      <ErrorBanner
-        v-if="errorMessage"
-        :text="errorMessage"
-      />
-    </v-row>
+      </div>
+    </div>
+    <ErrorBanner v-if="errorMessage" :text="errorMessage" />
   </li>
 </template>
 <style>
