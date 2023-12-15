@@ -498,7 +498,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="bg-white dark:bg-gray-700 px-4 py-6 rounded-lg">
     <div>
       <h2
         id="comments"

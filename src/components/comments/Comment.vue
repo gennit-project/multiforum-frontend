@@ -326,7 +326,7 @@ export default defineComponent({
           class="flex w-full"
           data-testid="comment"
         >
-          <div class="flex w-full rounded-lg">
+          <div class="flex w-full rounded-lg pr-6">
             <Avatar
               v-if="commentData.CommentAuthor"
               class="z-10"
@@ -460,7 +460,7 @@ export default defineComponent({
                   />
                 </div>
                 <CommentButtons
-                  class="py-1"
+                  class="py-1 mb-2"
                   v-if="channelId"
                   :class="[!showEditCommentField ? 'ml-1' : '']"
                   :comment-data="commentData"

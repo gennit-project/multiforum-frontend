@@ -227,7 +227,7 @@ export default defineComponent({
             class="hover:text-gray-500"
           >
             <p
-              class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100"
+              class="text-lg cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100"
             >
               <HighlightedSearchTerms
                 :text="title"

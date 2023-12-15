@@ -286,7 +286,7 @@ export default defineComponent({
     </div>
     <slot />
 
-    <div class="w-full px-8">
+    <div class="w-full px-10">
       <div v-if="channel">
         <div class="-ml-2 mb-4 w-full">
           <MarkdownPreview

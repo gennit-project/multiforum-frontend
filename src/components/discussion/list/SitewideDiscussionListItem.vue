@@ -175,7 +175,7 @@ export default defineComponent({
         >
           <p
             :class="discussionIdInParams === discussionId ? 'text-black' : ''"
-            class="text-md mb-2 cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+            class="text-lg mb-2 cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
           >
             <HighlightedSearchTerms
               :text="title"

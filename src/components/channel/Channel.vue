@@ -110,7 +110,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex h-screen w-full justify-center dark:bg-black">
+  <div class="flex h-screen justify-center dark:bg-black">
     <div
       v-if="smAndDown"
       class="w-full"
@@ -168,7 +168,7 @@ export default defineComponent({
     </div>
     <article
       v-else
-      class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
+      class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
     >
       <v-container fluid>
         <ExpandableImage
