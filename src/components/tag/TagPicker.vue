@@ -80,7 +80,10 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="min-w-md">
+  <div
+    class="min-w-md"
+    data-testid="tag-picker"
+  >
     <div
       v-if="tagsLoading"
       class="px-4 lg:px-12"
@@ -112,9 +115,10 @@ export default defineComponent({
           @select="select"
           @deselect="deselect"
         />
-       
       </div>
-      <p class="text-xs px-2 dark:text-gray-300">To select multiple items, press Shift</p>
+      <p class="text-xs px-2 dark:text-gray-300">
+        To select multiple items, press Shift
+      </p>
       <ResetButton @reset="resetTags" />
     </div>
   </div>

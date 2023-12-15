@@ -15,7 +15,7 @@ describe("Filter events by text", () => {
     cy.visit(ONLINE_EVENT_LIST);
     cy.get('button[data-testid="more-filters-button"]').click();
     cy.get('div[data-testid="event-drawer-search-bar"]')
-      .find("input")
+      .find('input[data-testid="search-bar"]')
       .type(`${searchTerm}{enter}`);
 
     // should have one result
@@ -26,13 +26,14 @@ describe("Filter events by text", () => {
   });
 
   it("in a channel view, filters events by text", () => {
-    const CHANNEL_VIEW = "http://localhost:5173/channels/c/phx_music/events/search/"
+    const CHANNEL_VIEW =
+      "http://localhost:5173/channels/c/phx_music/events/search/";
     const searchTerm = "trivia";
 
     cy.visit(CHANNEL_VIEW);
     cy.get('button[data-testid="more-filters-button"]').click();
     cy.get('div[data-testid="event-drawer-search-bar"]')
-      .find("input")
+      .find('input[data-testid="search-bar"]')
       .type(`${searchTerm}{enter}`);
 
     // should have one result

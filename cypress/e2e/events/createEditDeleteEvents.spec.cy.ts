@@ -26,8 +26,9 @@ describe("Basic event operations", () => {
 
     cy.get('input[data-testid="link-input"]').type(TEST_LINK);
 
-    cy.get('textarea[data-testid="description-input"]')
-      .type("Test description");
+    cy.get('textarea[data-testid="description-input"]').type(
+      "Test description",
+    );
 
     cy.get("button").contains("Save").click();
     cy.get("h2").contains(TEST_TITLE);
@@ -60,12 +61,16 @@ describe("Basic event operations", () => {
     cy.get("span").contains("8:45");
 
     // Test canceling an event
-    cy.get("span").contains("Cancel").click();
+    cy.get('div[data-testid="event-menu-button').find("button").click();
+    // Click on the edit button
+    cy.get("div").contains("Cancel").click();
     cy.get("button").contains("Yes").click();
     cy.get("p[data-testid='canceled-event-banner']").should("exist");
 
     // Test deleting an event
-    cy.get("span").contains("Delete").click();
+    cy.get('div[data-testid="event-menu-button').find("button").click();
+
+    cy.get("div").contains("Delete").click();
     cy.get("button").contains("Delete").click();
     // After deletion, the user should be redirected to the online event list
     // for the channel view

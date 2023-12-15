@@ -336,6 +336,7 @@ export default defineComponent({
     </ul>
     <MenuButton
       v-if="eventData && menuItems.length > 0"
+      data-testid="event-menu-button"
       :items="menuItems"
       @copyLink="copyLink"
       @handleEdit="

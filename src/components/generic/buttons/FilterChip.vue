@@ -55,6 +55,7 @@ export default defineComponent({
       location="bottom"
     >
       <button
+        id="filter-button"
         :class="[highlighted ? 'border-blue-500 ring-1 ring-blue-500' : '']"
         class="max-height-3 font-small mr-2 inline-flex whitespace-nowrap rounded-full bg-white px-2 px-3 py-2.5 text-xs text-gray-700 border hover:bg-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
       >

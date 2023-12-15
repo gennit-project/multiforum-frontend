@@ -24,8 +24,7 @@ describe("Basic discussion operations", () => {
     cy.get('input[data-testid="title-input"]').type(TEST_DISCUSSION);
 
     // Add body
-    cy.get('div[data-testid="body-input"]')
-      .find("textarea")
+    cy.get('textarea[data-testid="body-input"]')
       .type(TEST_BODY);
 
     // Add channel
@@ -48,8 +47,7 @@ describe("Basic discussion operations", () => {
     cy.get("div").contains("Edit").click();
 
     // Change body
-    cy.get('div[data-testid="body-input"]')
-      .find("textarea")
+    cy.get('textarea[data-testid="body-input"]')
       .focus()
       .clear()
       .type(TEST_BODY_2);

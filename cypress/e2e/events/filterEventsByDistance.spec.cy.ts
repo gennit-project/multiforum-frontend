@@ -19,8 +19,8 @@ describe("Filter events by distance", () => {
     // Click the distance filter for 5 miles (8.04672 km).
     cy.get('button[data-testid="distance-8.04672"]').click();
 
-    // Close the drawer.
-    cy.get('button[data-testid="close-drawer-bottom-button"]').click();
+    // Click the "More Filters" button to close the popover.
+    cy.get('button[data-testid="more-filters-button"]').click();
 
     // Should have three result, all in Yucca Tap Room,
     // which is within 5 miles of Tempe, AZ, the default location.
@@ -39,11 +39,11 @@ describe("Filter events by distance", () => {
     // Click the "Any Distance" button.
     cy.get('button[data-testid="distance-0"]').click();
 
-    // Close the drawer.
-    cy.get('button[data-testid="close-drawer-bottom-button"]').click();
+    // Click the "More Filters" button to close the popover.
+    cy.get('button[data-testid="more-filters-button"]').click();
 
     // There should be 12 results (all in-person events in the test data).
-    cy.get('ul[data-testid="event-list"]').find("li").should("have.length", 15);
+    cy.get('ul[data-testid="event-list"]').find("li").should("have.length", 12);
 
     // Click "Selena Night" in the list
     cy.get('ul[data-testid="event-list"]')
