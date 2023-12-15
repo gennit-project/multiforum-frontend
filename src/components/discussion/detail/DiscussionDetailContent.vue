@@ -286,16 +286,12 @@ export default defineComponent({
       :text="getDiscussionError.message"
     />
     <div>
-      <div class="w-full mt-3 px-3">
+      <div class="mt-3 w-full px-3">
         <div ref="discussionDetail">
           <div class="min-w-0">
-            <h2
-              class="text-wrap px-1 text-2xl font-bold sm:tracking-tight"
-            >
+            <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
               {{
-                discussion && discussion.title
-                  ? discussion.title
-                  : "[Deleted]"
+                discussion && discussion.title ? discussion.title : "[Deleted]"
               }}
             </h2>
           </div>
@@ -306,9 +302,8 @@ export default defineComponent({
       <v-col>
         <div class="space-y-3 px-2">
           <div
-            class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:bg-gray-700"
+            class="dark:bg-gray-950 rounded-lg border dark:border-gray-700 px-4 pb-2 dark:bg-gray-700"
           >
-            
             <DiscussionHeader
               :discussion="discussion"
               :channel-id="channelId"

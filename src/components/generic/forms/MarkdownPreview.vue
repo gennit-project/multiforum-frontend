@@ -221,8 +221,31 @@ export default defineComponent({
 }
 p,
 ul,
-li, li > li {
-  font-size: 0.9 !important;
+li
+{
+  font-size: 0.9rem !important;
   line-height: 1.3rem !important;
 }
+
+p {
+  margin-bottom: 0.5rem !important;
+}
+
+ul {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+li {
+  margin-bottom: 0.5rem !important;
+}
+
+/* p within nested list should have no margin */
+
+ul p,
+ol p {
+  margin-bottom: 0 !important;
+  margin-top: 0 !important;
+}
+
 </style>
