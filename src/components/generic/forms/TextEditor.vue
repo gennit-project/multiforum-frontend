@@ -35,7 +35,7 @@ export default defineComponent({
     },
     testId: {
       type: String,
-      default: "",
+      default: "texteditor-textarea",
     },
     placeholder: {
       type: String,
@@ -219,8 +219,7 @@ export default defineComponent({
       </TabList>
       <TabPanels class="h-50 mt-2">
         <TabPanel
-          class="-m-0.5 h-52 rounded-md px-0.5 py-1"
-          :data-testid="testId"
+          class="-m-0.5 h-52 rounded-md px-0.5 py-1" 
         >
           <label
             for="comment"
@@ -228,6 +227,7 @@ export default defineComponent({
           >Comment</label>
           <textarea
             ref="editor"
+            :data-testid="testId"
             name="comment"
             :rows="rows"
             :placeholder="placeholder"

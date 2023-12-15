@@ -224,15 +224,6 @@ export default defineComponent({
           event: "copyLink",
         });
       }
-      // if (!route.path.includes("modhistory")) {
-      //   out.push({
-      //     label: "Feedback and Mod History",
-      //     value: route.path.includes("comments")
-      //       ? `${route.path}/modhistory`
-      //       : `${route.path}/comments/${props.commentData.id}/modhistory`,
-      //     event: "",
-      //   });
-      // }
       return out;
     });
 
@@ -415,6 +406,7 @@ export default defineComponent({
                 </div>
                 <MenuButton
                   v-if="commentMenuItems.length > 0"
+                  id="commentMenu"
                   :items="commentMenuItems"
                   @copyLink="copyLink"
                   @handleEdit="() => handleEdit(commentData)"

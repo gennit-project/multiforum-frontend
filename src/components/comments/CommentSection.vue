@@ -181,17 +181,19 @@ export default defineComponent({
               existingChildCommentAggregate - 1,
             );
 
-            // Write the updated replies back to the cache.
-            cache.writeQuery({
-              query: GET_COMMENT_REPLIES,
-              data: {
+            const writeQueryData = {
                 ...readQueryResult,
                 getCommentReplies: {
                   ...readQueryResult.getCommentReplies,
                   ChildComments: filteredReplies,
                   aggregateChildCommentCount: newChildCommentAggregate,
                 },
-              },
+              }
+
+            // Write the updated replies back to the cache.
+            cache.writeQuery({
+              query: GET_COMMENT_REPLIES,
+              data: writeQueryData,
               variables: {
                 ...getCommentRepliesVariables,
                 commentId: parentOfCommentToDelete.value,
@@ -208,7 +210,7 @@ export default defineComponent({
           // For root comments, update the comment section query result
           emit('updateCommentSectionQueryResult', {
             cache,
-            parentOfCommentToDelete
+            commentToDeleteId: commentToDeleteId.value
           })
         }
         // For both root comments and replies, update the aggregate
@@ -432,6 +434,8 @@ export default defineComponent({
       this.commentToEdit = commentData;
     },
     handleClickDelete(input: DeleteCommentInputData) {
+      // When the user first clicks delete, show the confirmation modal
+      // and set the ID of the comment that will be deleted when confirmed.
       const { commentId, parentCommentId, replyCount } = input;
       this.showDeleteCommentModal = true;
       this.commentToDeleteId = commentId;
@@ -442,6 +446,7 @@ export default defineComponent({
       this.editComment();
     },
     handleDeleteComment() {
+      // This is the function that actually deletes the comment.
       if (!this.commentToDeleteId) {
         throw new Error("commentId is required to delete a comment");
       }
