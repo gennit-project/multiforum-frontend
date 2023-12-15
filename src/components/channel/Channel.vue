@@ -18,8 +18,8 @@ export default defineComponent({
     Avatar,
     ChannelSidebar,
     ChannelTabs,
-    ExpandableImage
-},
+    ExpandableImage,
+  },
   setup() {
     const route = ref(useRoute());
     const GET_THEME = gql`
@@ -54,7 +54,7 @@ export default defineComponent({
       loading: getChannelLoading,
     } = useQuery(GET_CHANNEL, {
       uniqueName: channelId,
-      now: new Date().toISOString()
+      now: new Date().toISOString(),
     });
 
     const channel = computed(() => {
@@ -175,11 +175,16 @@ export default defineComponent({
           v-if="channel?.channelBannerURL"
           :src="channel?.channelBannerURL"
           :alt="'channel banner'"
-          class="max-h-48 w-full rounded-t-lg my-2"
+          class="my-2 max-h-48 w-full rounded-t-lg"
         />
-        <v-row
-          class="flex"
-        >
+        <v-row class="flex">
+          <v-col :cols="mdAndDown ? 8 : 9">
+            <div class="rounded-lg rounded-t-lg">
+              <div>
+                <router-view />
+              </div>
+            </div>
+          </v-col>
           <v-col
             v-if="channelId"
             :cols="mdAndDown ? 4 : 3"
@@ -197,13 +202,6 @@ export default defineComponent({
                 :admin-list="adminList"
               />
             </ChannelSidebar>
-          </v-col>
-          <v-col :cols="mdAndDown ? 8 : 9">
-            <div class="rounded-lg rounded-t-lg">
-              <div>
-                <router-view />
-              </div>
-            </div>
           </v-col>
         </v-row>
       </v-container>
