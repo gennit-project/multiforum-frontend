@@ -178,7 +178,7 @@ export default defineComponent({
           class="my-2 max-h-48 w-full rounded-t-lg"
         />
         <v-row class="flex">
-          <v-col :cols="mdAndDown ? 8 : 9">
+          <v-col :cols="8">
             <div class="rounded-lg rounded-t-lg">
               <div>
                 <router-view />
@@ -187,7 +187,7 @@ export default defineComponent({
           </v-col>
           <v-col
             v-if="channelId"
-            :cols="mdAndDown ? 4 : 3"
+            :cols="4"
           >
             <ChannelSidebar
               v-if="channel"

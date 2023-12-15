@@ -13,7 +13,7 @@ import {
   Comment as CommentType,
 } from "@/__generated__/graphql";
 import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
-import { COMMENT_LIMIT } from "../discussion/detail/DiscussionDetailContent.vue";
+import { COMMENT_LIMIT } from "@/components/discussion/detail/DiscussionDetailContent.vue";
 import { useRoute } from "vue-router";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import {

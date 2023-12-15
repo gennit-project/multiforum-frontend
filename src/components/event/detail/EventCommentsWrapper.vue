@@ -1,268 +1,253 @@
-
-
-
 <script lang="ts">
-import { defineComponent } from "vue";
-import VoteButton from "@/components/generic/buttons/VoteButton.vue";
-import { computed, ref, watch } from "vue";
-import { useQuery } from "@vue/apollo-composable";
-import { GET_EVENT } from "@/graphQLData/event/queries";
+// The CommentSection component has all the comment related
+// logic that can be reused for both event comments and
+// event comments.
+
+// The purpose of this component is to separate out the event
+// specific logic from the logic that can be reused in the
+// context of an event's comments.
+import { defineComponent, computed, PropType, ref } from "vue";
 import {
-  GET_COMMENT_SECTION,
-} from "@/graphQLData/comment/queries";
-import { relativeTime } from "../../../dateTimeUtils";
-import { Event } from "@/__generated__/graphql";
-import { useDisplay } from "vuetify";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import "md-editor-v3/lib/style.css";
-import { EventChannel } from "@/__generated__/graphql";
+  Event,
+  CommentCreateInput,
+  Comment as CommentType,
+} from "@/__generated__/graphql";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import { COMMENT_LIMIT } from "@/components/event/detail/EventRootCommentFormWrapper.vue";
+import { useRoute } from "vue-router";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
-import { Comment } from "@/__generated__/graphql";
+import {
+  GET_LOCAL_USERNAME,
+} from "@/graphQLData/user/queries";
+import { useQuery } from "@vue/apollo-composable";
+import { CreateEditCommentFormValues } from "@/types/commentTypes";
+import CommentSection from "@/components/comments/CommentSection.vue";
+
+type CommentSectionQueryUpdateInput = {
+  cache: any;
+  commentToDeleteId: string;
+}
+
+type UpdateTotalCommentCountInput = {
+  cache: any;
+  parentOfCommentToDelete: any
+}
 
 export default defineComponent({
-  name: "VoteComponent",
+  name: "EventCommentsWrapper",
   components: {
-    RequireAuth,
-    VoteButton,
+    CommentSection,
   },
   props: {
-    downvoteActive: {
+    event: {
+      // This prop is required to create a comment.
+      // But I have made it optional so that content does not move around
+      // on the screen while the eventChannel is loading.
+      type: Object as PropType<Event>,
+      required: false,
+      default: () => {
+        return null;
+      },
+    },
+    loading: {
       type: Boolean,
+      required: false,
       default: false,
     },
-    upvoteActive: {
+    reachedEndOfResults: {
       type: Boolean,
-      default: false,
+      required: true,
     },
-    downvoteCount: {
+    previousOffset: {
       type: Number,
-      default: 0,
-    },
-    upvoteCount: {
-      type: Number,
-      default: 0,
-    },
-    hasModProfile: {
-      type: Boolean,
-      default: false,
-    },
-    showDownvote: {
-      type: Boolean,
-      default: true,
+      required: true,
     },
   },
-  setup() {
+  setup(props) {
+    const route = useRoute();
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
-const {
-    result: getEventResult,
-    error: getEventError,
-    loading: getEventLoading,
-  } = useQuery(GET_EVENT, { id: eventId });
-
-  const commentSort = computed(() => {
-    return getSortFromQuery(route.query);
-  });
-
-  const {
-    result: getEventChannelResult,
-    error: getEventChannelError,
-    loading: getEventChannelLoading,
-    fetchMore: fetchMoreComments,
-  } = useQuery(GET_COMMENT_SECTION, {
-    eventId: eventId,
-    channelUniqueName: channelId,
-    offset: offset.value,
-    limit: COMMENT_LIMIT,
-    sort: commentSort,
-  });
-
-  watch(commentSort, () => {
-    fetchMoreComments({ variables: { sort: commentSort.value } });
-  });
-
-  const activeEventChannel = computed<EventChannel>(() => {
-    if (
-      getEventChannelLoading.value ||
-      getEventChannelError.value ||
-      !getEventChannelResult.value
-    ) {
-      return null;
-    }
-    return getEventChannelResult.value.getCommentSection
-      ?.EventChannel;
-  });
-
-  const comments = computed(() => {
-    if (getEventChannelError.value) {
-      return [];
-    }
-    return (
-      getEventChannelResult.value?.getCommentSection?.Comments || []
-    );
-  });
-
-  const loadedRootCommentCount = computed(() => {
-    if (
-      getEventChannelLoading.value ||
-      getEventChannelError.value
-    ) {
-      return [];
-    }
-
-    let rootComments = comments.value.filter((comment: Comment) => {
-      return comment.ParentComment === null;
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
     });
-    return rootComments.length;
-  });
+    const aggregateCommentCount = computed(() => {
+      return props.event?.CommentsAggregate?.count || 0
+    })
 
-  // We get the aggregate count of root comments so that we will know
-  // whether or not to show the "Load More" button at the end of the comments.
-  const {
-    result: getEventChannelRootCommentAggregateResult,
-    error: getEventChannelRootCommentAggregateError,
-    loading: getEventChannelRootCommentAggregateLoading,
-  } = useQuery(GET_EVENT_CHANNEL_ROOT_COMMENT_AGGREGATE, {
-    eventId: eventId,
-    channelUniqueName: channelId,
-  });
-
-  const event = computed<Event>(() => {
-    if (getEventLoading.value || getEventError.value) {
-      return null;
-    }
-    return getEventResult.value.events[0];
-  });
-
-  const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
-
-  const commentCount = computed(() => {
-    if (!activeEventChannel.value) {
-      return 0;
-    }
-    return activeEventChannel.value.CommentsAggregate?.count || 0;
-  });
-
-  const aggregateRootCommentCount = computed(() => {
-    if (
-      getEventChannelRootCommentAggregateLoading.value ||
-      getEventChannelRootCommentAggregateError.value
-    ) {
-      return 0;
-    }
-    if (
-      !getEventChannelRootCommentAggregateResult.value ||
-      !getEventChannelRootCommentAggregateResult.value.eventChannels
-    ) {
-      return 0;
-    }
-
-    const eventChannels =
-      getEventChannelRootCommentAggregateResult.value.eventChannels;
-    if (eventChannels.length === 0) {
-      return 0;
-    }
-    const eventChannel = eventChannels[0];
-    return eventChannel.CommentsAggregate?.count || 0;
-  });
-
-  // Needed to update the cached result of the query if the
-  // user creates a root comment.
-  const previousOffset = ref(0);
-
-  const loadMore = () => {
-    fetchMoreComments({
-      variables: {
-        offset: offset.value,
-      },
-      updateQuery: (previousResult, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return previousResult;
-
-        offset.value =
-          offset.value + fetchMoreResult.getCommentSection.Comments.length;
-
-        // We need to update the result of GET_COMMENT_SECTION
-        // to include the new comments.
-        return {
-          ...previousResult,
-          getCommentSection: {
-            ...previousResult.getCommentSection,
-            Comments: [
-              ...previousResult.getCommentSection.Comments,
-              ...fetchMoreResult.getCommentSection.Comments,
-            ],
-          },
-        };
-      },
-    });
-  };
-
-  const reachedEndOfResults = computed(() => {
-    return (
-      loadedRootCommentCount.value >= aggregateRootCommentCount.value ||
-      loadedRootCommentCount.value >= commentCount.value
-    );
-  });
-    return {
-        channelId,
-        eventId,
-        lgAndUp,
-        mdAndUp,
-        relativeTime,
-        route,
-        smAndDown,
-        activeEventChannel,
-        comments,
-        commentCount,
-        event,
-        getEventChannelError,
-        getEventChannelLoading,
-        getEventError,
-        getEventLoading,
-        getEventChannelRootCommentAggregateError,
-        getEventChannelRootCommentAggregateLoading,
-        getEventChannelRootCommentAggregateResult,
-        previousOffset,
-        reachedEndOfResults,
-        loadMore,
+    const commentSectionQueryVariables = {
+      eventId: props.event?.id,
+      limit: COMMENT_LIMIT,
+      offset: props.previousOffset,
+      sort: getSortFromQuery(route.query),
     };
+    const createCommentDefaultValues: CreateEditCommentFormValues = {
+      text: "",
+      isRootComment: false,
+      depth: 1,
+    };
+
+    const createFormValues = ref<CreateEditCommentFormValues>(
+      createCommentDefaultValues,
+    );
+
+    const createCommentInput = computed(() => {
+
+      const input: CommentCreateInput = {
+        isRootComment: false,
+        Event: {
+          connect: {
+            where: {
+              node: {
+                id: props.event?.id,
+              },
+            },
+          },
+        },
+        ParentComment: {
+          connect: {
+            where: {
+              node: {
+                id: createFormValues.value.parentCommentId,
+              },
+            },
+          },
+        },
+        text: createFormValues.value.text || "",
+        CommentAuthor: {
+          User: {
+            connect: {
+              where: {
+                node: {
+                  username: username.value,
+                },
+              },
+            },
+          },
+        },
+        UpvotedByUsers: {
+          connect: [{
+            where: {
+              node: {
+                username: username.value,
+              },
+            },
+          }],
+        },
+      };
+      return input;
+    });
+
+    return {
+      aggregateCommentCount,
+      commentSectionQueryVariables,
+      createCommentInput,
+      createFormValues
+    };
+  },
+  methods: {
+    updateCreateReplyCommentInput(event: CreateEditCommentFormValues) {
+      this.createFormValues = event;
+    },
+    updateCommentSectionQueryResult(input: CommentSectionQueryUpdateInput) {
+      const { cache, commentToDeleteId } = input;
+      const readQueryResult = cache.readQuery({
+        query: GET_COMMENT_SECTION,
+        variables: this.commentSectionQueryVariables,
+      });
+
+      const filteredRootComments: Comment[] = (
+        readQueryResult?.getCommentSection?.Comments || []
+      ).filter(
+        (comment: CommentType) => comment.id !== commentToDeleteId,
+      );
+
+      cache.writeQuery({
+        query: GET_COMMENT_SECTION,
+        variables: this.commentSectionQueryVariables,
+        data: {
+          ...readQueryResult,
+          getCommentSection: {
+            ...readQueryResult?.getCommentSection,
+            Comments: filteredRootComments,
+          },
+        },
+      });
+    },
+    updateAggregateCount(cache: any) {
+      cache.modify({
+        id: cache.identify({
+          __typename: "Event",
+          id: this.event?.id,
+        }),
+        fields: {
+          CommentsAggregate(existingValue: any) {
+            return {
+              ...existingValue,
+              count: existingValue.count - 1,
+            };
+          },
+        },
+      });
+    },
+    updateTotalCommentCount(input: UpdateTotalCommentCountInput) {
+      const {
+        cache,
+        parentOfCommentToDelete
+      } = input;
+
+      const readEventChannelQueryResult = cache.readQuery({
+        query: GET_COMMENT_SECTION,
+        variables: this.commentSectionQueryVariables,
+      });
+
+      const existingEventChannelData =
+        readEventChannelQueryResult?.getCommentSection
+          ?.EventChannel;
+
+      let existingCommentAggregate =
+        existingEventChannelData?.CommentsAggregate?.count || 0;
+
+      cache.writeQuery({
+        query: GET_COMMENT_SECTION,
+        variables: {
+          ...this.commentSectionQueryVariables,
+          commentId: parentOfCommentToDelete.value,
+        },
+        data: {
+          ...readEventChannelQueryResult,
+          getCommentSection: {
+            ...readEventChannelQueryResult.getCommentSection,
+            EventChannel: {
+              ...existingEventChannelData,
+              CommentsAggregate: {
+                ...existingEventChannelData.CommentsAggregate,
+                count: Math.max(0, existingCommentAggregate - 1),
+              },
+            },
+          },
+        },
+      });
+    }
   },
 });
 </script>
+
 <template>
-    <v-row>
-        <!-- <v-col>
-          <CreateRootCommentForm
-            v-if="route.name === 'EventDetail' || channelId"
-            :key="`${channelId}${eventId}`"
-            :channel-id="channelId"
-            :event-channel="activeEventChannel"
-            :previous-offset="previousOffset"
-          />
-          <div class="my-6 mb-2 ml-2 rounded-lg">
-            <CommentSection
-              :key="activeEventChannel?.id"
-              :loading="getEventChannelLoading"
-              :event-channel="activeEventChannel"
-              :comments="comments"
-              :reached-end-of-results="reachedEndOfResults"
-              :previous-offset="previousOffset"
-              @loadMore="loadMore"
-            />
-          </div>
-          <ChannelLinks
-            v-if="event && event.EventChannels"
-            class="my-4"
-            :event-channels="event.EventChannels"
-            :channel-id="
-              activeEventChannel
-                ? activeEventChannel.channelUniqueName
-                : ''
-            "
-          />
-        </v-col> -->
-      </v-row>
+  <CommentSection
+    :aggregate-comment-count="aggregateCommentCount" 
+    :loading="loading"
+    :reached-end-of-results="reachedEndOfResults" 
+    :comment-section-query-variables="commentSectionQueryVariables"
+    :create-form-values="createFormValues" 
+    :create-comment-input="createCommentInput"
+    :previous-offset="previousOffset"
+    @updateTotalCommentCount="updateTotalCommentCount"
+    @updateCommentSectionQueryResult="updateCommentSectionQueryResult"
+    @updateAggregateCount="updateAggregateCount"
+    @updateCreateReplyCommentInput="updateCreateReplyCommentInput" 
+  />
 </template>
-
-<style scoped></style>
-
-

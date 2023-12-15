@@ -30,7 +30,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      buttonClasses: "inline-flex gap-1  max-h-6 cursor-pointer items-center border-gray-100 dark:border-gray-600  bg-gray-100 hover:border-gray-400 dark:bg-gray-600 rounded-full border px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
+      buttonClasses: "inline-flex gap-1  max-h-6 cursor-pointer items-center border-gray-100 dark:border-gray-600  bg-gray-100 hover:border-gray-400 dark:bg-gray-700 rounded-full border px-2 py-1 hover:dark:border-blue-500 hover:dark:text-blue-500"
     };
   },
 });

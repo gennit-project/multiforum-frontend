@@ -1,9 +1,20 @@
 <script lang="ts">
-import { defineComponent } from "vue";
 import CreateRootCommentForm from "@/components/comments/CreateRootCommentForm.vue";
+import { Comment, EventChannel } from "@/__generated__/graphql";
+import { defineComponent, ref, PropType, computed } from "vue";
+import { CREATE_EVENT_COMMENT } from "@/graphQLData/comment/mutations";
+import { useMutation, useQuery } from "@vue/apollo-composable";
+import { CreateEditCommentFormValues } from "@/types/commentTypes";
+import { GET_COMMENT_SECTION } from "@/graphQLData/comment/queries";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
+import { useRoute } from "vue-router";
+
+export const COMMENT_LIMIT = 5;
+
 // The purpose of this component is to wrap the CreateRootCommentForm component
 // and put the event-specific logic in here. This is because the CreateRootCommentForm
-// component is used to put comments on discussions as well, and we don't want to duplicate
+// component is used to put comments on events as well, and we don't want to duplicate
 // what is the same between them.
 
 export default defineComponent({
@@ -20,19 +31,195 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    event: {
+      // It is needed for the comment to be created, but I made it optional
+      // so that this form does not disappear while the event is loading,
+      // which happens if the user navigates between hot, top and new comments.
+      type: Object as PropType<EventChannel>,
+      required: false,
+      default: () => {
+        return null;
+      },
+    },
+    previousOffset: {
+      type: Number,
+      required: true,
+    },
   },
-  setup() {},
+  setup(props) {
+    const route = useRoute();
+    const createCommentDefaultValues: CreateEditCommentFormValues = {
+      text: "",
+      isRootComment: true,
+      depth: 1,
+    };
+
+    const createFormValues = ref<CreateEditCommentFormValues>(
+      createCommentDefaultValues,
+    );
+
+    // eslint-disable-next-line no-undef
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
+    const createCommentInput = computed(() => {
+      let input = {
+        isRootComment: true,
+        text: createFormValues.value.text || "",
+        CommentAuthor: {
+          User: {
+            connect: {
+              where: {
+                node: {
+                  username: username.value,
+                },
+              },
+            },
+          },
+        },
+        EventChannel: {
+          connect: {
+            where: {
+              node: {
+                id: props.event.id,
+              },
+            },
+          },
+        },
+        UpvotedByUsers: {
+          connect: {
+            where: {
+              node: {
+                username: username.value,
+              },
+            },
+          },
+        },
+      };
+
+      return [input];
+    });
+
+    const createCommentLoading = ref(false);
+    const {
+      mutate: createComment,
+      error: createCommentError,
+      onDone,
+    } = useMutation(CREATE_COMMENT, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentInput: createCommentInput.value,
+      },
+      update: (cache: any, result: any) => {
+        // This is the logic for updating the cache
+        // after creating a root comment. For the logic for updating
+        // the cache after replying to a comment, see the CommentSection
+        // component.
+
+        const newComment: Comment = result.data?.createComments?.comments[0];
+        // Will use readQuery and writeQuery to update the cache
+        // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+        const eventCommentsQueryVariables = {
+          eventId: props.event.id,
+          limit: COMMENT_LIMIT,
+          offset: props.previousOffset,
+          sort: getSortFromQuery(route.query),
+        };
+
+        const readQueryResult = cache.readQuery({
+          query: GET_COMMENT_SECTION,
+          variables: eventCommentsQueryVariables,
+        });
+
+        const existingEventChannelData: EventChannel =
+          readQueryResult?.getCommentSection?.EventChannel;
+
+        let newRootComments: Comment[] = [
+          newComment,
+          ...(readQueryResult?.getCommentSection?.Comments || []),
+        ];
+
+        const existingCount =
+          existingEventChannelData?.CommentsAggregate?.count || 0;
+
+        cache.writeQuery({
+          query: GET_COMMENT_SECTION,
+          variables: eventCommentsQueryVariables,
+          data: {
+            ...readQueryResult,
+            getCommentSection: {
+              ...readQueryResult?.getCommentSection,
+              EventChannel: {
+                ...existingEventChannelData,
+                CommentsAggregate: {
+                  ...existingEventChannelData?.CommentsAggregate,
+                  count: existingCount + 1,
+                },
+              },
+              Comments: newRootComments,
+            },
+          },
+        });
+      },
+    }));
+
+    onDone(() => {
+      createFormValues.value = createCommentDefaultValues;
+      createCommentLoading.value = false;
+    });
+
+    const eventChannelIsLocked = computed(() => {
+      if (!props.event) {
+        return false;
+      }
+      return props.event.locked;
+    });
+
+    return {
+      eventChannelIsLocked,
+      createComment,
+      createCommentError,
+      createCommentLoading,
+      createFormValues,
+    };
+  },
+  methods: {
+    async handleCreateComment() {
+      if (!this.eventChannel) {
+        console.warn(
+          "Could not create the comment because there is no event channel in the create root comment form",
+        );
+        return;
+      }
+      this.createCommentLoading = true;
+      this.createComment();
+    },
+    handleUpdateComment(event: any) {
+      this.createFormValues.text = event;
+    },
+    updateCreateInputValuesForRootComment(text: string) {
+      this.createFormValues.text = text;
+    },
+  },
 });
 </script>
 
 <template>
-    <div>
-        <!-- <CreateRootCommentForm 
-            :key="`${channelId}${discussionId}`"
-            :channel-id="channelId"
-            :discussion-channel="activeDiscussionChannel"
-            :previous-offset="previousOffset"
-        /> -->
-    </div>
-   
+  <div>
+    <CreateRootCommentForm
+      v-if="event"
+      :create-form-values="createFormValues"
+      :create-comment-loading="createCommentLoading"
+      @handleCreateComment="handleCreateComment"
+      @handleUpdateComment="handleUpdateComment"
+    />
+  </div>
 </template>

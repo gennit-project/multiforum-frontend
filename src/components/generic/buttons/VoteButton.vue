@@ -50,7 +50,7 @@ export default defineComponent({
             :class="[
               active
                 ? 'border-blue-500 bg-blue-100 text-black dark:border-blue-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-600'
-                : ' border-gray-100 bg-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-600  dark:hover:bg-gray-700',
+                : ' border-gray-100 bg-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700  dark:hover:bg-gray-700',
             ]"
             @click="$emit('vote')"
           >
@@ -70,7 +70,7 @@ export default defineComponent({
             :class="[
               active
                 ? 'border-blue-500 bg-blue-100 text-black dark:border-blue-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-600'
-                : ' border-gray-100 bg-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-600  dark:hover:bg-gray-700',
+                : ' border-gray-100 bg-gray-100 hover:border-gray-400 hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700  dark:hover:bg-gray-700',
             ]"
           >
             <span class="justify-center">

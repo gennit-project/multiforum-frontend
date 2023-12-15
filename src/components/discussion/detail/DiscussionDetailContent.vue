@@ -13,9 +13,9 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
-import DiscussionCommentsWrapper from "../../comments/DiscussionCommentsWrapper.vue";
+import DiscussionCommentsWrapper from "@/components/discussion/detail/DiscussionCommentsWrapper.vue";
 import ChannelLinks from "./ChannelLinks.vue";
-import DiscussionRootCommentFormWrapper from "./DiscussionRootCommentFormWrapper.vue"
+import DiscussionRootCommentFormWrapper from "./DiscussionRootCommentFormWrapper.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
@@ -247,7 +247,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <PageNotFound v-if="!getDiscussionLoading && !getDiscussionChannelLoading && !activeDiscussionChannel" />
+  <PageNotFound
+    v-if="
+      !getDiscussionLoading &&
+      !getDiscussionChannelLoading &&
+      !activeDiscussionChannel
+    "
+  />
   <div
     v-else
     class="w-full max-w-7xl space-y-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800"
@@ -256,14 +262,11 @@ export default defineComponent({
       v-if="route.name === 'DiscussionDetail'"
       class="align-center mx-1 mt-2 flex justify-between px-2"
     >
-      <BackLink 
+      <BackLink
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
       />
-      <RequireAuth
-        :full-width="false"
-        class="flex max-w-sm justify-end"
-      >
+      <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
         <template #has-auth>
           <CreateButton
             class="ml-2"
@@ -272,10 +275,7 @@ export default defineComponent({
           />
         </template>
         <template #does-not-have-auth>
-          <PrimaryButton
-            class="ml-2"
-            :label="'New Discussion'"
-          />
+          <PrimaryButton class="ml-2" :label="'New Discussion'" />
         </template>
       </RequireAuth>
     </div>
@@ -285,30 +285,29 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <v-row
-      v-if="discussion"
-      class="mt-1 flex justify-center "
-    >
+    <v-row v-if="discussion" class="mt-1 flex justify-center">
       <v-col>
-        <div class="space-y-3 px-2">
-          <div class="mb-3 w-full">
-            <div ref="discussionDetail">
-              <div class="min-w-0">
-                <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-                  {{
-                    discussion && discussion.title
-                      ? discussion.title
-                      : "[Deleted]"
-                  }}
-                </h2>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="space-y-3 px-2">
           <div
             class="dark:bg-gray-950 rounded-lg bg-white px-4 pb-2 pt-3 dark:bg-gray-700"
           >
+            <div class="space-y-3 px-2">
+              <div class="mb-3 w-full">
+                <div ref="discussionDetail">
+                  <div class="min-w-0">
+                    <h2
+                      class="text-wrap px-1 text-2xl font-bold sm:tracking-tight"
+                    >
+                      {{
+                        discussion && discussion.title
+                          ? discussion.title
+                          : "[Deleted]"
+                      }}
+                    </h2>
+                  </div>
+                </div>
+              </div>
+            </div>
             <DiscussionHeader
               :discussion="discussion"
               :channel-id="channelId"

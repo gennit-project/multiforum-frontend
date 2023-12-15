@@ -309,7 +309,7 @@ export default defineComponent({
   <div>
     <div
       :class="[
-        depth > 1 ? 'border-l border-gray-300 pl-4 dark:border-gray-400' : '',
+        depth > 1 ? 'border-l border-gray-300 pl-4 dark:border-gray-500' : '',
       ]"
       class="flex w-full"
     >
@@ -323,19 +323,19 @@ export default defineComponent({
               ? 'rounded-md border border-blue-500'
               : 'dark:bg-gray-950 ',
           ]"
-          class="flex w-full py-1"
+          class="flex w-full"
           data-testid="comment"
         >
-          <div class="flex w-full rounded-lg bg-white p-2 dark:bg-gray-700">
+          <div class="flex w-full rounded-lg">
             <Avatar
               v-if="commentData.CommentAuthor"
-              class="mt-1"
+              class="z-10"
               :is-small="true"
               :text="commentData.CommentAuthor.username"
               :src="commentData.CommentAuthor.profilePicURL || ''"
             />
 
-            <div class="flex-grow">
+            <div class="flex-grow border-l border-gray-300 dark:border-gray-500 pl-4 -ml-4">
               <div
                 v-if="
                   showContextLink &&
@@ -360,7 +360,7 @@ export default defineComponent({
               </div>
               <div class="flex justify-between">
                 <div
-                  class="my-2 ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
+                  class="ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
                 >
                   <router-link
                     v-if="commentData.CommentAuthor"
@@ -460,6 +460,7 @@ export default defineComponent({
                   />
                 </div>
                 <CommentButtons
+                  class="py-1"
                   v-if="channelId"
                   :class="[!showEditCommentField ? 'ml-1' : '']"
                   :comment-data="commentData"
@@ -489,7 +490,7 @@ export default defineComponent({
           v-if="
             canShowPermalink && replyCount > 0 && depth + 1 > maxCommentDepth
           "
-          class="flex w-full cursor-pointer items-center gap-1 border-l border-gray-300 py-2 pl-4 text-gray-400 underline dark:border-gray-500 dark:text-gray-300"
+          class="flex w-full cursor-pointer items-center gap-1 border-gray-300 pl-4 text-gray-400 underline dark:border-gray-500 dark:text-gray-300"
           :to="permalinkObject"
         >
           Continue thread
@@ -498,7 +499,7 @@ export default defineComponent({
         <div
           v-else-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="w-full border-gray-300 dark:border-gray-600"
+          class="w-full border-gray-300 dark:border-gray-600 ml-4"
         >
           <ChildComments
             v-slot="slotProps"

@@ -167,9 +167,8 @@ export default defineComponent({
       </span>
     </div>
 
-    <div v-if="commentData && showReplyEditor" class="mt-1 px-3">
+    <div v-if="commentData && showReplyEditor" class="mt-1 px-3 w-full dark:bg-gray-700 my-2 py-4">
       <TextEditor
-        class="my-3"
         :placeholder="'Please be kind'"
         @update="
           $emit('updateNewComment', {
@@ -179,7 +178,7 @@ export default defineComponent({
           })
         "
       />
-      <div class="flex justify-start space-x-2">
+      <div class="flex justify-start space-x-2 mt-4">
         <CancelButton @click="$emit('hideReplyEditor')" />
         <SaveButton
           :disabled="commentData?.text?.length === 0"

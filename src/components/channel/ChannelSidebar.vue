@@ -247,7 +247,7 @@ export default defineComponent({
       v-if="channelId"
       class="items-center gap-2"
     >
-      <div class="p-6">
+      <div class="px-6 py-3 lg:px-10 lg:pt-10">
         <div class="w-40">
           <ExpandableImage
             v-if="channel?.channelIconURL"
@@ -261,7 +261,7 @@ export default defineComponent({
             class="border-2 shadow-sm dark:border-gray-800"
             :text="channelId"
             :src="channel?.channelIconURL ?? ''"
-            :is-square="false"
+            :is-square="true"
           />
         </div>
         <h1
@@ -284,8 +284,9 @@ export default defineComponent({
         </div>
       </div>
     </div>
+    <slot />
 
-    <div class="w-full">
+    <div class="w-full px-8">
       <div v-if="channel">
         <div class="-ml-2 mb-4 w-full">
           <MarkdownPreview
@@ -294,7 +295,7 @@ export default defineComponent({
             :word-limit="1000"
           />
         </div>
-        <slot />
+        
 
         <div class="mt-6 w-full">
           <div v-if="channel.Tags.length > 0">
@@ -306,7 +307,7 @@ export default defineComponent({
               </span>
             </div>
 
-            <div class="mb-6 mt-2 flex flex-wrap px-6">
+            <div class="mb-6 mt-2 flex flex-wrap">
               <Tag
                 v-for="tag in channel.Tags"
                 :key="tag.text"
@@ -319,7 +320,7 @@ export default defineComponent({
 
           <div
             v-if="dateObj.happeningNow.length > 0"
-            class="flex flex-col px-6"
+            class="flex flex-col"
           >
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
@@ -355,7 +356,7 @@ export default defineComponent({
 
           <div
             v-if="dateObj.happeningToday.length > 0"
-            class="flex flex-col px-6"
+            class="flex flex-col"
           >
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
@@ -382,7 +383,7 @@ export default defineComponent({
 
           <div
             v-if="dateObj.happeningTomorrow.length > 0"
-            class="flex flex-col px-6"
+            class="flex flex-col"
           >
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
@@ -411,7 +412,7 @@ export default defineComponent({
             <div
               v-for="(events, date) in dateSectionObj"
               :key="date"
-              class="flex flex-col px-6"
+              class="flex flex-col"
             >
               <span
                 class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
@@ -445,7 +446,7 @@ export default defineComponent({
           >
             <router-link
               :to="`/channels/c/${channelId}/events/search`"
-              class="flex items-center px-6 underline"
+              class="flex items-center underline"
             >
               <span class="text-sm font-bold leading-6"> View all events </span>
             </router-link>
@@ -453,7 +454,7 @@ export default defineComponent({
 
           <div class="flex justify-between">
             <span
-              class="my-2 mt-6 px-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
+              class="my-2 mt-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
             >
               Admins
             </span>

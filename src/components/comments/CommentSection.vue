@@ -40,7 +40,7 @@ import {
 type CommentSectionQueryVariablesType = {
   discussionId?: string;
   eventId?: string;
-  channelUniqueName: string;
+  channelUniqueName?: string;
   limit: number;
   offset: number;
   sort: string;

@@ -228,59 +228,8 @@ export default defineComponent({
   >
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
-        <div
-          v-if="route.name === 'EventDetail'"
-          :class="'align-center mt-2 flex justify-between'"
-        >
-          <BackLink :link="`/channels/c/${channelId}/events/search`" />
-          <div
-            v-if="channelId && eventData"
-            class="mt-4 flex flex-shrink-0 items-center md:ml-4 md:mt-0"
-          >
-            <RequireAuth
-              v-if="eventData.Poster"
-              class="flex inline-flex"
-              :require-ownership="true"
-              :owners="[eventData.Poster.username]"
-            >
-              <template #has-auth>
-                <router-link
-                  :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-                >
-                  <GenericButton
-                    :text="'Edit'"
-                    data-testid="edit-event-button"
-                  />
-                </router-link>
-              </template>
-            </RequireAuth>
-            <RequireAuth class="flex inline-flex">
-              <template #has-auth>
-                <CreateButton
-                  class="ml-2"
-                  data-testid="real-create-event-button"
-                  :to="`/channels/c/${channelId}/events/create`"
-                  :label="'Create Event'"
-                />
-              </template>
-              <template #does-not-have-auth>
-                <PrimaryButton
-                  data-testid="fake-create-event-button"
-                  class="ml-2"
-                  :label="'Create Event'"
-                />
-              </template>
-            </RequireAuth>
-          </div>
-        </div>
-
         <div class="mt-1 w-full space-y-2 px-3">
-          <p
-            v-if="eventLoading"
-            class="px-4 lg:px-10"
-          >
-            Loading...
-          </p>
+          <p v-if="eventLoading" class="px-4 lg:px-10">Loading...</p>
           <ErrorBanner
             v-else-if="eventError"
             class="px-4 lg:px-10"
@@ -293,7 +242,7 @@ export default defineComponent({
 
           <div
             v-else-if="eventResult && eventResult.events && eventData"
-            class="dark:bg-dark-700 mx-auto max-w-2xl pt-4"
+            class="dark:bg-dark-700 mx-auto max-w-2xl pt-4 flex flex-col gap-4"
           >
             <ErrorBanner
               v-if="eventIsInThePast"
@@ -307,7 +256,52 @@ export default defineComponent({
               :text="'This event is canceled.'"
             />
             <div
-              class="mb-4 dark:text-gray-100 md:flex md:items-center md:justify-between"
+              v-if="route.name === 'EventDetail'"
+              :class="'align-center mt-2 flex gap-4 justify-between'"
+            >
+              <BackLink :link="`/channels/c/${channelId}/events/search`" />
+              <div
+                v-if="channelId && eventData"
+                class="mt-4 flex flex-shrink-0 items-center md:ml-4 md:mt-0"
+              >
+                <RequireAuth
+                  v-if="eventData.Poster"
+                  class="flex inline-flex"
+                  :require-ownership="true"
+                  :owners="[eventData.Poster.username]"
+                >
+                  <template #has-auth>
+                    <router-link
+                      :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
+                    >
+                      <GenericButton
+                        :text="'Edit'"
+                        data-testid="edit-event-button"
+                      />
+                    </router-link>
+                  </template>
+                </RequireAuth>
+                <RequireAuth class="flex inline-flex">
+                  <template #has-auth>
+                    <CreateButton
+                      class="ml-2"
+                      data-testid="real-create-event-button"
+                      :to="`/channels/c/${channelId}/events/create`"
+                      :label="'Create Event'"
+                    />
+                  </template>
+                  <template #does-not-have-auth>
+                    <PrimaryButton
+                      data-testid="fake-create-event-button"
+                      class="ml-2"
+                      :label="'Create Event'"
+                    />
+                  </template>
+                </RequireAuth>
+              </div>
+            </div>
+            <div
+              class="dark:text-gray-100 md:flex md:items-center md:justify-between"
             >
               <div class="min-w-0 flex-1">
                 <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
@@ -334,7 +328,7 @@ export default defineComponent({
               <button
                 v-if="
                   eventData?.description &&
-                    eventData.description.split(' ').length > 50
+                  eventData.description.split(' ').length > 50
                 "
                 class="mt-2 rounded bg-black px-4 py-2 font-bold text-white hover:bg-blue-700"
                 @click="toggleDescription"
@@ -343,29 +337,28 @@ export default defineComponent({
               </button>
 
               <div class="p-4">
-                <h2 class="text-md mt-4">
-                  Add to Calendar
-                </h2>
-                <hr>
+                <h2 class="text-md mt-4">Add to Calendar</h2>
+                <hr />
                 <div class="mt-4 flex">
                   <div class="flex flex-row gap-2 text-sm">
                     <div class="flex justify-start">
                       <span
                         class="cursor-pointer underline"
                         @click="addToGoogleCalendar"
-                      >Google Calendar</span>
+                        >Google Calendar</span
+                      >
                     </div>
                     <div class="flex justify-center">
-                      <span
-                        class="cursor-pointer underline"
-                        @click="addToiCal"
-                      >iCal</span>
+                      <span class="cursor-pointer underline" @click="addToiCal"
+                        >iCal</span
+                      >
                     </div>
                     <div class="flex justify-end">
                       <span
                         class="cursor-pointer underline"
                         @click="addToOutlook"
-                      >Outlook</span>
+                        >Outlook</span
+                      >
                     </div>
                   </div>
                 </div>
