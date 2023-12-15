@@ -161,11 +161,14 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex flex-wrap gap-1">
-    <div v-for="emojiLabel in Object.keys(emojiObject)" :key="emojiLabel">
+    <div
+      v-for="emojiLabel in Object.keys(emojiObject)"
+      :key="emojiLabel"
+    >
       <VoteButton
         class="space-x-2"
         :active="isActive(emojiLabel)"
-        :test-id="'upvote-comment-button'"
+        :test-id="'upvote-emoji-button'"
         :show-count="true"
         :count="getCount(emojiLabel)"
         :tooltip-unicode="getDefaultVariant(emojiLabel)"
@@ -192,9 +195,9 @@ export default defineComponent({
         "
       >
         <span
-          class="text-md"
           v-for="unicode in Object.keys(getVariants(emojiLabel))"
           :key="unicode"
+          class="text-md"
         >
           {{ unicode }}
         </span>

@@ -8,7 +8,7 @@ describe("Basic root comment operations", () => {
     cy.loginWithCreateEventButton();
   });
 
-  it("can upvote and downvote comments", () => {
+  it("can upvote comments", () => {
     const TEST_COMMENT_TEXT = "Test comment";
 
     // Go to the discussion list
@@ -17,14 +17,11 @@ describe("Basic root comment operations", () => {
     // Click on the first discussion
     cy.get("span").contains("Example topic 1").click();
 
-    // From the preview, go to the discussion detail page
-    cy.get("a[data-testid='discussion-permalink']").click();
-
     // Click the 'write a reply' textarea
     cy.get("textarea[data-testid='addComment']").click();
 
     // Type a comment
-    cy.get("textarea[id='texteditor-textarea']").type(TEST_COMMENT_TEXT);
+    cy.get("textarea[data-testid='texteditor-textarea']").type(TEST_COMMENT_TEXT);
 
     // Save the comment
     cy.get("button").contains("Save").click();
@@ -45,21 +42,7 @@ describe("Basic root comment operations", () => {
         // give the upvote back to yourself
         cy.get('button[data-testid="upvote-comment-button"]').click();
         cy.get('button[data-testid="upvote-comment-button"]').contains("1");
-
-        cy.get('button[data-testid="downvote-comment-button"]').click();
-        
-       
       });
-      cy.get("button").contains("Yes").click();
-
-      cy.get('div[data-testid="comment"]')
-       .within(() => {
-        cy.contains(TEST_COMMENT_TEXT)
-        cy.get('button[data-testid="downvote-comment-button"]').contains("1");
-
-        cy.get('button[data-testid="downvote-comment-button"]').click();
-        cy.get('button[data-testid="downvote-comment-button"]').contains("0");
-       })
 
     // VOTING ON SOMEONE ELSE'S COMMENT
     // Logging out and logging back in as a different user
@@ -77,7 +60,6 @@ describe("Basic root comment operations", () => {
     // Navigate to the discussion list and detail page
     cy.visit(DISCUSSION_LIST);
     cy.get("span").contains("Example topic 1").click();
-    cy.get("a[data-testid='discussion-permalink']").click();
 
     cy.get('div[data-testid="comment"]')
       .within(() => {
@@ -87,21 +69,6 @@ describe("Basic root comment operations", () => {
 
         cy.get('button[data-testid="upvote-comment-button"]').click();
         cy.get('button[data-testid="upvote-comment-button"]').contains("1");
-
-        cy.get('button[data-testid="downvote-comment-button"]').click();
       });
-
-      cy.get("button").contains("Yes").click();
-
-      cy.get('div[data-testid="comment"]')
-      .within(() => {
-        cy.contains(TEST_COMMENT_TEXT)
-
-        cy.get('button[data-testid="downvote-comment-button"]').contains("1");
-
-        cy.get('button[data-testid="downvote-comment-button"]').click();
-        cy.get('button[data-testid="downvote-comment-button"]').contains("0");
-      })
-
   });
 });

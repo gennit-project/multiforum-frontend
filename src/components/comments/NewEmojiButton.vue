@@ -48,7 +48,7 @@ export default defineComponent({
       <template #button>
         <VoteButton
           class="space-x-3"
-          :test-id="'upvote-comment-button'"
+          :test-id="'emoji-button'"
           :show-count="false"
           :tooltip-text="'Add reaction...'"
           @vote="handleClick"
