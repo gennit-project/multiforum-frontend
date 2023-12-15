@@ -14,7 +14,7 @@ import { useDisplay } from "vuetify";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
 import DiscussionCommentsWrapper from "@/components/discussion/detail/DiscussionCommentsWrapper.vue";
-import ChannelLinks from "./ChannelLinks.vue";
+import DiscussionChannelLinks from "./DiscussionChannelLinks.vue";
 import DiscussionRootCommentFormWrapper from "./DiscussionRootCommentFormWrapper.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
@@ -32,7 +32,7 @@ export const COMMENT_LIMIT = 5;
 export default defineComponent({
   components: {
     BackLink,
-    ChannelLinks,
+    DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
     DiscussionCommentsWrapper,
     DiscussionBody,
@@ -346,7 +346,7 @@ export default defineComponent({
             @loadMore="loadMore"
           />
         </div>
-        <ChannelLinks
+        <DiscussionChannelLinks
           v-if="discussion && discussion.DiscussionChannels"
           class="my-4"
           :discussion-channels="discussion.DiscussionChannels"

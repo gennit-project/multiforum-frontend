@@ -1,12 +1,13 @@
 <script lang="ts">
 import { defineComponent, computed, PropType } from "vue";
-import ChannelLink from "./ChannelLink.vue";
+import DiscussionChannelLink from "./DiscussionChannelLink.vue";
 import { useRoute } from "vue-router";
 import { DiscussionChannel } from "@/__generated__/graphql";
 
 export default defineComponent({
+  name: "DiscussionChannelLinks",
   components: {
-    ChannelLink,
+    DiscussionChannelLink,
   },
   props: {
     channelId: {
@@ -87,7 +88,7 @@ export default defineComponent({
       </h2>
 
       <ul class="list-disc pl-3">
-        <ChannelLink
+        <DiscussionChannelLink
           v-for="discussionChannel in discussionChannels"
           :key="discussionChannel.id"
           :channel-id="discussionChannel.channelUniqueName"
@@ -105,7 +106,7 @@ export default defineComponent({
           Comments in Other Forums
         </h2>
         <ul class="list-disc pl-3">
-          <ChannelLink
+          <DiscussionChannelLink
             v-for="dc in channelsExceptActive"
             :key="dc.id"
             :channel-id="dc.channelUniqueName"

@@ -106,7 +106,7 @@ export const GET_EVENT_COMMENTS = gql`
     $eventId: ID!
     $offset: Int
     $limit: Int
-    $sort: String
+    $sort: SortType
   ) {
     getEventComments(
       eventId: $eventId

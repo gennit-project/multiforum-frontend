@@ -80,16 +80,25 @@ export default defineComponent({
       }
       return "";
     });
+
+    const eventId = computed(() => {
+      return props.event?.id;
+    });
+
+
     const aggregateCommentCount = computed(() => {
       return props.event?.CommentsAggregate?.count || 0;
     });
 
-    const commentSectionQueryVariables = {
-      eventId: props.event?.id,
-      limit: COMMENT_LIMIT,
-      offset: props.previousOffset,
-      sort: getSortFromQuery(route.query),
-    };
+    const commentSectionQueryVariables = computed(() => {
+      return {
+        eventId: eventId.value,
+        limit: COMMENT_LIMIT,
+        offset: props.previousOffset,
+        sort: getSortFromQuery(route.query),
+      }
+    });
+    console.log(commentSectionQueryVariables)
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: false,
@@ -163,7 +172,7 @@ export default defineComponent({
       const { cache, commentToDeleteId } = input;
       const readQueryResult = cache.readQuery({
         query: GET_EVENT_COMMENTS,
-        variables: this.commentSectionQueryVariables,
+        variables: this.commentSectionQueryVariables.value
       });
 
       const filteredRootComments: Comment[] = (

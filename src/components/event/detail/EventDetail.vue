@@ -26,12 +26,12 @@ import EventRootCommentFormWrapper, {
   COMMENT_LIMIT,
 } from "./EventRootCommentFormWrapper.vue";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
-import ChannelLinks from "@/components/discussion/detail/ChannelLinks.vue";
+import EventChannelLinks from "./EventChannelLinks.vue";
 
 export default defineComponent({
   components: {
     BackLink,
-    ChannelLinks,
+    EventChannelLinks,
     ErrorBanner,
     EventCommentsWrapper,
     EventFooter,
@@ -95,7 +95,7 @@ export default defineComponent({
       loading: getEventCommentsLoading,
       fetchMore: fetchMoreComments,
     } = useQuery(GET_EVENT_COMMENTS, {
-      discussionId: eventId.value,
+      eventId: eventId.value,
       offset: offset.value,
       limit: COMMENT_LIMIT,
       sort: commentSort,
@@ -177,7 +177,7 @@ export default defineComponent({
           offset.value =
             offset.value + fetchMoreResult.getEventComments.Comments.length;
 
-          // We need to update the result of GET_DISCUSSION_COMMENTS
+          // We need to update the result of GET_EVENT_COMMENTS
           // to include the new comments.
           return {
             ...previousResult,
@@ -515,29 +515,31 @@ export default defineComponent({
               :event-data="event"
               :channels-except-current="channelsExceptCurrent"
             />
+            <div>
+              <EventRootCommentFormWrapper
+                :key="`${eventId}`"
+                :event="event"
+                :previous-offset="previousOffset"
+              />
+              <div class="my-6 mb-2 ml-2 rounded-lg">
+                <EventCommentsWrapper
+                  :key="event?.id"
+                  :loading="getEventCommentsLoading"
+                  :event="event"
+                  :comments="comments"
+                  :reached-end-of-results="reachedEndOfResults"
+                  :previous-offset="previousOffset"
+                  @loadMore="loadMore"
+                />
+              </div>
+              <EventChannelLinks
+                v-if="event && event.EventChannels"
+                class="my-4"
+                :event-channels="event.EventChannels"
+                :channel-id="channelId"
+              />
+            </div>
           </div>
-          <EventRootCommentFormWrapper
-            :key="`${eventId}`"
-            :event="event"
-            :previous-offset="previousOffset"
-          />
-          <div class="my-6 mb-2 ml-2 rounded-lg">
-            <EventCommentsWrapper
-              :key="event?.id"
-              :loading="getEventCommentsLoading"
-              :event="event"
-              :comments="comments"
-              :reached-end-of-results="reachedEndOfResults"
-              :previous-offset="previousOffset"
-              @loadMore="loadMore"
-            />
-          </div>
-          <ChannelLinks
-            v-if="event && event.EventChannels"
-            class="my-4"
-            :event-channels="event.EventChannels"
-            :channel-id="channelId"
-          />
         </div>
       </div>
     </div>
