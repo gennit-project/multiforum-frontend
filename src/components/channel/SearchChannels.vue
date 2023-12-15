@@ -56,6 +56,9 @@ export default defineComponent({
     };
 
     const channelWhere = computed(() => {
+      if (selectedTags.value.length === 0 && searchInput.value === "") {
+        return {};
+      }
       const tagSearch = {
         Tags: {
           OR: selectedTags.value.map((tag: string) => {
@@ -75,12 +78,24 @@ export default defineComponent({
         ],
       };
 
+      if (selectedTags.value.length === 0) {
+        return {
+          OR: [textSearch],
+        };
+      }
+
+      if (searchInput.value === "") {
+        return {
+          OR: [tagSearch],
+        };
+      }
+
       return {
         AND: [tagSearch, textSearch],
       };
     });
 
-    const now = new Date().toISOString()
+    const now = new Date().toISOString();
 
     const {
       error: channelError,
@@ -93,15 +108,14 @@ export default defineComponent({
       eventChannelWhere: {
         Event: {
           startTime_GT: now,
-          canceled: false
+          canceled: false,
         },
-        
       },
       limit: 25,
       offset: 0,
       sort: {
         createdAt: "ASC",
-      }
+      },
     });
 
     if (error.value) {
@@ -196,9 +210,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class=" bg-gray-200 dark:bg-black">
+  <div class="bg-gray-200 dark:bg-black">
     <div class="py-6">
-      <div class="mx-auto px-4 flex max-w-5xl items-center justify-between py-2">
+      <div
+        class="mx-auto flex max-w-5xl items-center justify-between px-4 py-2"
+      >
         <SearchBar
           class="mr-2 w-full align-middle"
           :search-placeholder="'Search forums'"
@@ -226,7 +242,7 @@ export default defineComponent({
       />
       <ChannelList
         v-if="channelResult && channelResult.channels"
-        class="mx-auto max-w-5xl rounded-lg flex-1 text-xl font-bold bg-gray-100 dark:bg-gray-900 p-6"
+        class="mx-auto max-w-5xl flex-1 rounded-lg bg-gray-100 p-6 text-xl font-bold dark:bg-gray-900"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate?.count || 0"
         :search-input="searchInput"

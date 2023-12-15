@@ -26,8 +26,7 @@ describe("Basic event operations", () => {
 
     cy.get('input[data-testid="link-input"]').type(TEST_LINK);
 
-    cy.get('div[data-testid="description-input"]')
-      .find("textarea")
+    cy.get('textarea[data-testid="description-input"]')
       .type("Test description");
 
     cy.get("button").contains("Save").click();

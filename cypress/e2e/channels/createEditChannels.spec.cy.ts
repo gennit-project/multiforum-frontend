@@ -17,8 +17,7 @@ describe("Basic channel operations", () => {
     // Test creating a channel
     cy.visit(CHANNEL_CREATION_FORM);
    
-    cy.get('div[data-testid="description-input"]')
-      .find("textarea")
+    cy.get('textarea[data-testid="description-input"]')
       .type(TEST_DESCRIPTION, { force: true })
 
     cy.get('input[data-testid="title-input"]').type(TEST_CHANNEL);
@@ -29,8 +28,7 @@ describe("Basic channel operations", () => {
 
     // Test editing a channel
     cy.get("a").contains("Settings").click();
-    cy.get('div[data-testid="description-input"]')
-      .find("textarea")
+    cy.get('textarea[data-testid="description-input"]')
       .focus()
       .clear()
       .type(TEST_DESCRIPTION_2);
