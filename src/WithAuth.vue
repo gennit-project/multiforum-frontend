@@ -45,6 +45,9 @@ export default defineComponent({
       useQuery(GET_LOCAL_USERNAME);
 
     const hasEmailButNotUsername = computed(() => {
+      if (isLoading) {
+        return false;
+      }
       if (!isAuthenticated) {
         return false;
       }
