@@ -33,6 +33,9 @@ export default defineComponent({
     ]"
     class="max-height-4 font-medium inline-flex items-center whitespace-nowrap rounded-md px-4 py-2 text-sm focus:outline-none focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100"
   >
-    <LoadingSpinner class="ml-2" v-if="loading"/><slot />{{ label }}
+    <LoadingSpinner
+      v-if="loading"
+      class="mx-2"
+    /><slot />{{ label }}
   </button>
 </template>

@@ -26,6 +26,10 @@ export default defineComponent({
       type: Object as PropType<CreateEditCommentFormValues>,
       required: true,
     },
+    commentEditorOpen: {
+      type: Boolean,
+      required: true,
+    }
   },
   setup() {
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
@@ -76,7 +80,7 @@ export default defineComponent({
       />
 
       <RequireAuth
-        v-if="!showEditorInCommentSection"
+        v-if="!commentEditorOpen"
         class="w-full"
       >
         <template #has-auth>
@@ -87,7 +91,7 @@ export default defineComponent({
             rows="1"
             placeholder="Write a reply"
             :class="writeReplyStyle"
-            @click="showEditorInCommentSection = true"
+            @click="$emit('openCommentEditor')"
           />
         </template>
         <template #does-not-have-auth>
@@ -110,16 +114,12 @@ export default defineComponent({
           @update="$emit('handleUpdateComment', $event)"
         />
         <div class="mt-3 flex justify-start">
-          <CancelButton @click="showEditorInCommentSection = false" />
+          <CancelButton @click="$emit('closeCommentEditor')" />
           <SaveButton
             data-testid="createCommentButton"
             :disabled="createFormValues.text.length === 0"
             :loading="createCommentLoading"
-            @click.prevent="
-              () => {
-                $emit('handleCreateComment')
-              }
-            "
+            @click.prevent="$emit('handleCreateComment')"
           />
         </div>
       </div>

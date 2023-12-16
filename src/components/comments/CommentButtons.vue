@@ -111,8 +111,8 @@ export default defineComponent({
         @openModProfile="$emit('openModProfile')"
       />
       <NewEmojiButton
-        @toggleEmojiPicker="toggleEmojiPicker"
         :comment-id="commentData.id"
+        @toggleEmojiPicker="toggleEmojiPicker"
       />
       <ReplyButton
         :show-reply-editor="!!replyFormOpenAtCommentID"
@@ -124,19 +124,22 @@ export default defineComponent({
       <span
         v-if="showEditCommentField"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
-        @click="$emit('hideEditCommentField')"
-        >Cancel</span
-      >
+        @click="$emit('hideEditCommentEditor')"
+      >Cancel</span>
       <span
-        v-if="showEditCommentField"
+        v-if="showEditCommentField && !commentInProcess"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
         @click="
           () => {
             $emit('saveEdit');
+            $emit('startCommentSave');
           }
         "
-        >Save</span
-      >
+      >Save</span>
+      <span
+        v-if="showEditCommentField && commentInProcess"
+        class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
+      >Saving...</span>
       <span
         v-if="commentData.DiscussionChannel"
         :to="`${route.path}/comments/${commentData.id}`"

@@ -78,6 +78,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    editFormOpenAtCommentID: {
+      type: String,
+      default: '',
+    },
     showChannel: {
       type: Boolean,
       default: false,
@@ -255,7 +259,6 @@ export default defineComponent({
       replyCount,
       route,
       router,
-      showEditCommentField: ref(false),
       showReplies: ref(true),
       textCopy,
       themeLoading,
@@ -291,7 +294,7 @@ export default defineComponent({
     },
     handleEdit(commentData: Comment) {
       this.$emit("clickEditComment", commentData);
-      this.showEditCommentField = true;
+      this.$emit("openEditCommentEditor", commentData.id)
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
@@ -439,7 +442,7 @@ export default defineComponent({
               >
                 <div class="w-full overflow-auto">
                   <div
-                    v-if="commentData.text && !showEditCommentField"
+                    v-if="commentData.text && editFormOpenAtCommentID !== commentData.id"
                     class="-ml-6 w-full"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
                   >
@@ -458,7 +461,7 @@ export default defineComponent({
                     />
                   </div>
                   <TextEditor
-                    v-if="!readonly && showEditCommentField"
+                    v-if="!readonly && editFormOpenAtCommentID === commentData.id"
                     id="editExistingComment"
                     class="mb-2 mt-3 p-1"
                     :initial-value="commentData.text || ''"
@@ -469,12 +472,12 @@ export default defineComponent({
                 <CommentButtons
                   v-if="channelId"
                   class="py-1 mb-2"
-                  :class="[!showEditCommentField ? 'ml-1' : '']"
+                  :class="[editFormOpenAtCommentID === commentData.id ? 'ml-1' : '']"
                   :comment-data="commentData"
                   :depth="depth"
                   :locked="locked"
                   :parent-comment-id="parentCommentId"
-                  :show-edit-comment-field="showEditCommentField"
+                  :show-edit-comment-field="editFormOpenAtCommentID === commentData.id"
                   :show-replies="showReplies"
                   :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
                   :comment-in-process="commentInProcess"
@@ -483,11 +486,11 @@ export default defineComponent({
                   @createComment="createComment"
                   @openReplyEditor="$emit('openReplyEditor', commentData.id)"
                   @hideReplyEditor="$emit('hideReplyEditor')"
+                  @openEditCommentEditor="$emit('openEditCommentEditor', commentData.id)"
+                  @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                   @hideReplies="showReplies = false"
                   @openModProfile="$emit('openModProfile')"
                   @saveEdit="$emit('saveEdit')"
-                  @showEditCommentField="showEditCommentField = true"
-                  @hideEditCommentField="showEditCommentField = false"
                   @showReplies="showReplies = true"
                   @updateNewComment="updateNewComment"
                 />
@@ -529,6 +532,7 @@ export default defineComponent({
                 :locked="locked"
                 :parent-comment-id="commentData.id"
                 :comment-in-process="commentInProcess"
+                :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
                 :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
                 @startCommentSave="$emit('startCommentSave')"
                 @clickEditComment="$emit('clickEditComment', $event)"
@@ -542,6 +546,10 @@ export default defineComponent({
                 "
                 @openModProfile="$emit('openModProfile')"
                 @scrollToTop="$emit('scrollToTop')"
+                @openReplyEditor="($event: string) => $emit('openReplyEditor', $event)"
+                @hideReplyEditor="$emit('hideReplyEditor')"
+                @openEditCommentEditor="$emit('openEditCommentEditor', childComment.id)"
+                @hideEditCommentEditor="$emit('hideEditCommentEditor')"
               />
             </div>
           </ChildComments>

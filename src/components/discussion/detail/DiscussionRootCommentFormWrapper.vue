@@ -107,6 +107,7 @@ export default defineComponent({
     });
 
     const createCommentLoading = ref(false);
+    const commentEditorOpen = ref(false);
 
     const {
       mutate: createComment,
@@ -175,6 +176,7 @@ export default defineComponent({
     onDone(() => {
       createFormValues.value = createCommentDefaultValues;
       createCommentLoading.value = false;
+      commentEditorOpen.value = false;
     });
 
     const discussionChannelIsLocked = computed(() => {
@@ -186,6 +188,7 @@ export default defineComponent({
 
     return {
       discussionChannelIsLocked,
+      commentEditorOpen,
       createComment,
       createCommentError,
       createCommentLoading,
@@ -217,6 +220,9 @@ export default defineComponent({
   <CreateRootCommentForm
     :create-form-values="createFormValues"
     :create-comment-loading="createCommentLoading"
+    :comment-editor-open="commentEditorOpen"
+    @open-comment-editor="commentEditorOpen = true"
+    @close-comment-editor="commentEditorOpen = false"
     @handleCreateComment="handleCreateComment"
     @handleUpdateComment="handleUpdateComment"
   />

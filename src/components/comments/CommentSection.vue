@@ -129,7 +129,7 @@ export default defineComponent({
       };
     });
 
-    const { mutate: editComment } = useMutation(UPDATE_COMMENT, () => ({
+    const { mutate: editComment, onDone: onDoneUpdatingComment } = useMutation(UPDATE_COMMENT, () => ({
       variables: {
         commentWhere: {
           id: commentToEdit.value?.id || "",
@@ -319,9 +319,16 @@ export default defineComponent({
     // also allowing us to keep track of which comment has an open editor.
     const replyFormOpenAtCommentID = ref('')
 
+    const editFormOpenAtCommentID = ref('')
+
     onDoneCreatingComment(() => {
       commentInProcess.value = false;
       replyFormOpenAtCommentID.value = '';
+    });
+
+    onDoneUpdatingComment(() => {
+      commentInProcess.value = false;
+      editFormOpenAtCommentID.value = '';
     });
 
     const {
@@ -366,6 +373,7 @@ export default defineComponent({
       downvoteComment,
       editComment,
       editFormValues,
+      editFormOpenAtCommentID,
       isPermalinkPage,
       locked: ref(false),
       loggedInUserModName,
@@ -474,11 +482,16 @@ export default defineComponent({
       commentSectionHeader.scrollIntoView();
     },
     openReplyEditor(commentId: string) {
-      console.log('i ran', commentId)
       this.replyFormOpenAtCommentID = commentId
     },
     hideReplyEditor() {
       this.replyFormOpenAtCommentID = ''
+    },
+    openEditCommentEditor(commentId: string) {
+      this.editFormOpenAtCommentID = commentId
+    },
+    hideEditCommentEditor() {
+      this.editFormOpenAtCommentID = ''
     },
   },
 });
@@ -518,9 +531,12 @@ export default defineComponent({
             :locked="locked"
             :comment-in-process="commentInProcess"
             :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+            :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
             @startCommentSave="commentInProcess = true"
             @openReplyEditor="openReplyEditor"
             @hideReplyEditor="hideReplyEditor"
+            @openEditCommentEditor="openEditCommentEditor"
+            @hideEditCommentEditor="hideEditCommentEditor"
             @clickEditComment="handleClickEdit"
             @deleteComment="handleClickDelete"
             @downvoteComment="handleDownvoteComment"
@@ -550,9 +566,12 @@ export default defineComponent({
               :locked="locked"
               :comment-in-process="commentInProcess"
               :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+              :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
               @startCommentSave="commentInProcess = true"
               @openReplyEditor="openReplyEditor"
               @hideReplyEditor="hideReplyEditor"
+              @openEditCommentEditor="openEditCommentEditor"
+              @hideEditCommentEditor="hideEditCommentEditor"
               @clickEditComment="handleClickEdit"
               @deleteComment="handleClickDelete"
               @downvoteComment="handleDownvoteComment"
