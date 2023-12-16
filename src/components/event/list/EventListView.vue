@@ -131,7 +131,6 @@ export default defineComponent({
       : "/events/create";
 
     const { mdAndDown } = useDisplay();
-    console.log('event result', eventResult?.value?.events)
     
     return {
       channelId,

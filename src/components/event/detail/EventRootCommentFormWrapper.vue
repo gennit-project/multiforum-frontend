@@ -160,7 +160,6 @@ export default defineComponent({
             id: props.event.id,
           },
         });
-        console.log("read query result from GET_EVENT", readEventQueryResult);
 
         const existingEventData: Event =
           readEventQueryResult?.events[0] || null;

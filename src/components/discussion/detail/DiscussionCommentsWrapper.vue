@@ -26,11 +26,6 @@ type CommentSectionQueryUpdateInput = {
   commentToDeleteId: string;
 };
 
-type UpdateTotalCommentCountInput = {
-  cache: any;
-  parentOfCommentToDelete: any;
-};
-
 export default defineComponent({
   name: "DiscussionCommentsWrapper",
   components: {
@@ -69,7 +64,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log(props.comments);
     const route = useRoute();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 

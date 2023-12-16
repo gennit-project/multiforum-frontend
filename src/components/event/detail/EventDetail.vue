@@ -106,7 +106,6 @@ export default defineComponent({
     });
 
     const comments = computed(() => {
-      console.log('getEventCommentsResult', getEventCommentsResult.value)
       if (!getEventCommentsResult.value?.getEventComments?.Comments) {
         return [];
       }
@@ -256,7 +255,6 @@ export default defineComponent({
       }
       return truncatedDescription.value;
     });
-    console.log('comments in event detail', comments.value)
 
     return {
       comments,
@@ -348,7 +346,12 @@ export default defineComponent({
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
         <div class="mt-1 w-full space-y-2 px-3">
-          <p v-if="eventLoading" class="px-4 lg:px-10">Loading...</p>
+          <p
+            v-if="eventLoading"
+            class="px-4 lg:px-10"
+          >
+            Loading...
+          </p>
           <ErrorBanner
             v-else-if="eventError"
             class="px-4 lg:px-10"
@@ -455,28 +458,29 @@ export default defineComponent({
               </button>
 
               <div class="p-4">
-                <h2 class="text-md mt-4">Add to Calendar</h2>
-                <hr />
+                <h2 class="text-md mt-4">
+                  Add to Calendar
+                </h2>
+                <hr>
                 <div class="mt-4 flex">
                   <div class="flex flex-row gap-2 text-sm">
                     <div class="flex justify-start">
                       <span
                         class="cursor-pointer underline"
                         @click="addToGoogleCalendar"
-                        >Google Calendar</span
-                      >
+                      >Google Calendar</span>
                     </div>
                     <div class="flex justify-center">
-                      <span class="cursor-pointer underline" @click="addToiCal"
-                        >iCal</span
-                      >
+                      <span
+                        class="cursor-pointer underline"
+                        @click="addToiCal"
+                      >iCal</span>
                     </div>
                     <div class="flex justify-end">
                       <span
                         class="cursor-pointer underline"
                         @click="addToOutlook"
-                        >Outlook</span
-                      >
+                      >Outlook</span>
                     </div>
                   </div>
                 </div>

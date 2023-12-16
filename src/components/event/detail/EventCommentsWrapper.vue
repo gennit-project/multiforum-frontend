@@ -27,11 +27,6 @@ type CommentSectionQueryUpdateInput = {
   commentToDeleteId: string;
 };
 
-type UpdateTotalCommentCountInput = {
-  cache: any;
-  parentOfCommentToDelete: any;
-};
-
 export default defineComponent({
   name: "EventCommentsWrapper",
   components: {
@@ -97,7 +92,6 @@ export default defineComponent({
         sort: getSortFromQuery(route.query),
       };
     });
-    console.log(commentSectionQueryVariables.value);
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: false,
@@ -191,7 +185,6 @@ export default defineComponent({
       });
     },
     decrementAggregateCount(cache: any) {
-      console.log("i ran");
       cache.modify({
         id: cache.identify({
           __typename: "Event",
@@ -216,7 +209,6 @@ export default defineComponent({
       });
 
       const existingEventData = readEventQueryResult?.getEvent;
-      console.log("existing event data", existingEventData);
 
       let existingCommentAggregate =
         existingEventData?.CommentsAggregate?.count || 0;
@@ -247,7 +239,6 @@ export default defineComponent({
       });
 
       const existingEventData = readEventQueryResult?.getEvent;
-      console.log("existing event data", existingEventData);
 
       let existingCommentAggregate =
         existingEventData?.CommentsAggregate?.count || 0;

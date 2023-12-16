@@ -54,8 +54,7 @@ export default defineComponent({
       default: "",
     },
   },
-  setup(props) {
-    console.log('props', props.events)
+  setup() {
     const route = useRoute();
     const router = useRouter();
     const channelId = computed(() => {
