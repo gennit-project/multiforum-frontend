@@ -75,7 +75,10 @@ export default defineComponent({
       return "";
     });
     const aggregateCommentCount = computed(() => {
-      return props.discussionChannel?.CommentsAggregate?.count || 0;
+      if (props.loading && props.discussionChannel?.CommentsAggregate?.count === 0) {
+        return 0;
+      }
+      return props.discussionChannel?.CommentsAggregate?.count;
     });
 
     const commentSectionQueryVariables = {

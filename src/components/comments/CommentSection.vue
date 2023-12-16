@@ -9,9 +9,7 @@ import {
   CreateReplyInputData,
   DeleteCommentInputData,
 } from "@/types/commentTypes";
-import {
-  GET_COMMENT_REPLIES,
-} from "@/graphQLData/comment/queries";
+import { GET_COMMENT_REPLIES } from "@/graphQLData/comment/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
   DELETE_COMMENT,
@@ -22,18 +20,17 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import {
-  GET_LOCAL_MOD_PROFILE_NAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
+import LoadingSpinner from "@/components/generic/LoadingSpinner.vue";
 import {
-    CommentCreateInput,
-    Comment as CommentType,
+  CommentCreateInput,
+  Comment as CommentType,
 } from "@/__generated__/graphql";
 
 type CommentSectionQueryVariablesType = {
@@ -43,13 +40,14 @@ type CommentSectionQueryVariablesType = {
   limit: number;
   offset: number;
   sort: string;
-}
+};
 
 export default defineComponent({
   components: {
     Comment,
     SortButtons,
     ErrorBanner,
+    LoadingSpinner,
     LoadMore,
     PermalinkedComment,
     WarningModal,
@@ -72,7 +70,7 @@ export default defineComponent({
     aggregateCommentCount: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
     comments: {
       type: Array as PropType<CommentType[]>,
@@ -112,7 +110,7 @@ export default defineComponent({
       }
       return false;
     });
-    
+
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
     const parentOfCommentToDelete = ref("");
@@ -181,13 +179,13 @@ export default defineComponent({
             );
 
             const writeQueryData = {
-                ...readQueryResult,
-                getCommentReplies: {
-                  ...readQueryResult.getCommentReplies,
-                  ChildComments: filteredReplies,
-                  aggregateChildCommentCount: newChildCommentAggregate,
-                },
-              }
+              ...readQueryResult,
+              getCommentReplies: {
+                ...readQueryResult.getCommentReplies,
+                ChildComments: filteredReplies,
+                aggregateChildCommentCount: newChildCommentAggregate,
+              },
+            };
 
             // Write the updated replies back to the cache.
             cache.writeQuery({
@@ -200,18 +198,18 @@ export default defineComponent({
             });
 
             // 4. Update the total count of comments
-            emit('decrementCommentCount',  cache)
+            emit("decrementCommentCount", cache);
           }
         } else {
           // For root comments, update the comment section query result
-          emit('updateCommentSectionQueryResult', {
+          emit("updateCommentSectionQueryResult", {
             cache,
-            commentToDeleteId: commentToDeleteId.value
-          })
+            commentToDeleteId: commentToDeleteId.value,
+          });
         }
         // For both root comments and replies, update the aggregate
         // count of the comment section
-        emit('decrementCommentCount', cache)
+        emit("decrementCommentCount", cache);
       },
     });
 
@@ -220,11 +218,8 @@ export default defineComponent({
     // and removes the author name, but leaves the comment
     // so that the replies are still visible.
     const { mutate: softDeleteComment } = useMutation(SOFT_DELETE_COMMENT);
-  
-    const { 
-      mutate: createComment, 
-      error: createCommentError,
-    } = useMutation(
+
+    const { mutate: createComment, error: createCommentError } = useMutation(
       CREATE_COMMENT,
       () => ({
         errorPolicy: "all",
@@ -311,7 +306,7 @@ export default defineComponent({
           // 0 child comments.
 
           // Update the total count of comments
-          emit('incrementCommentCount', cache)
+          emit("incrementCommentCount", cache);
         },
       }),
     );
@@ -459,7 +454,8 @@ export default defineComponent({
     scrollToTop() {
       // This is used to scroll to the top of the comment section
       // when the user clicks "Continue Thread."
-      const commentSectionHeader = this.$refs.commentSectionHeader as HTMLElement;
+      const commentSectionHeader = this.$refs
+        .commentSectionHeader as HTMLElement;
       commentSectionHeader.scrollIntoView();
     },
   },
@@ -480,9 +476,10 @@ export default defineComponent({
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      <SortButtons 
-        v-if="comments.length > 0"
-        :show-top-options="false" 
+      <SortButtons :show-top-options="false" />
+      <LoadingSpinner
+        v-if="loading"
+        class="ml-2"
       />
       <PermalinkedComment
         v-if="isPermalinkPage"
@@ -519,9 +516,7 @@ export default defineComponent({
           >
             <Comment
               v-if="comment.id !== permalinkedCommentId"
-              :aggregate-comment-count="
-                aggregateCommentCount
-              "
+              :aggregate-comment-count="aggregateCommentCount"
               :compact="true"
               :comment-data="comment"
               :depth="1"

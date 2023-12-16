@@ -214,14 +214,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
-    <CreateRootCommentForm
-      v-if="discussionChannel"
-      :key="`${discussionChannel.channelUniqueName}${discussionChannel.discussionId}`"
-      :create-form-values="createFormValues"
-      :create-comment-loading="createCommentLoading"
-      @handleCreateComment="handleCreateComment"
-      @handleUpdateComment="handleUpdateComment"
-    />
-  </div>
+  <CreateRootCommentForm
+    :create-form-values="createFormValues"
+    :create-comment-loading="createCommentLoading"
+    @handleCreateComment="handleCreateComment"
+    @handleUpdateComment="handleUpdateComment"
+  />
 </template>
