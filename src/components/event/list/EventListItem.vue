@@ -135,12 +135,7 @@ export default defineComponent({
     const commentCount = computed(() => {
       let count = 0;
       if (props.event) {
-        const discussionChannels = props.event.EventChannels;
-        if (discussionChannels) {
-          discussionChannels.forEach((ec) => {
-            count += ec.CommentsAggregate?.count || 0;
-          });
-        }
+        return props.event.CommentsAggregate?.count;
       }
       return count;
     });

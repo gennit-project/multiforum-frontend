@@ -163,7 +163,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="rounded-lg relative flex gap-3 space-x-2 px-6 py-4 bg-white dark:bg-gray-800"
+    class="rounded-lg relative flex gap-3 space-x-2 px-6 py-4 bg-white dark:bg-gray-700"
   >
     <div class="flex w-full justify-between">
       <div class="w-full">
