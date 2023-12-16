@@ -252,7 +252,6 @@ export default defineComponent({
       textCopy,
       themeLoading,
       theme,
-      scrollElement: document.documentElement,
     };
   },
   computed: {
@@ -460,8 +459,8 @@ export default defineComponent({
                   />
                 </div>
                 <CommentButtons
-                  class="py-1 mb-2"
                   v-if="channelId"
+                  class="py-1 mb-2"
                   :class="[!showEditCommentField ? 'ml-1' : '']"
                   :comment-data="commentData"
                   :depth="depth"
@@ -492,6 +491,7 @@ export default defineComponent({
           "
           class="flex w-full cursor-pointer items-center gap-1 border-gray-300 pl-4 text-gray-400 underline dark:border-gray-500 dark:text-gray-300"
           :to="permalinkObject"
+          @click.prevent="$emit('scrollToTop')"
         >
           Continue thread
           <RightArrowIcon class="h-4 w-4" />
@@ -528,6 +528,7 @@ export default defineComponent({
                   $emit('showCopiedLinkNotification', $event)
                 "
                 @openModProfile="$emit('openModProfile')"
+                @scrollToTop="$emit('scrollToTop')"
               />
             </div>
           </ChildComments>

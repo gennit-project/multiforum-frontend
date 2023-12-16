@@ -64,7 +64,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log('prev offset in discussion comments wrapper', props.previousOffset)
     const route = useRoute();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -78,7 +77,6 @@ export default defineComponent({
     const aggregateCommentCount = computed(() => {
       return props.discussionChannel?.CommentsAggregate?.count || 0;
     });
-    console.log('aggregate comment count', aggregateCommentCount.value)
 
     const commentSectionQueryVariables = {
       discussionId: props.discussionChannel?.discussionId,

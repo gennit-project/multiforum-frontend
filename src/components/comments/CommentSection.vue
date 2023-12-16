@@ -11,7 +11,6 @@ import {
 } from "@/types/commentTypes";
 import {
   GET_COMMENT_REPLIES,
-  GET_DISCUSSION_COMMENTS,
 } from "@/graphQLData/comment/queries";
 import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
@@ -457,6 +456,12 @@ export default defineComponent({
       });
       this.showModProfileModal = false;
     },
+    scrollToTop() {
+      // This is used to scroll to the top of the comment section
+      // when the user clicks "Continue Thread."
+      const commentSectionHeader = this.$refs.commentSectionHeader as HTMLElement;
+      commentSectionHeader.scrollIntoView();
+    },
   },
 });
 </script>
@@ -499,6 +504,7 @@ export default defineComponent({
             @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
             @updateEditCommentInput="updateEditInputValues"
             @saveEdit="handleSaveEdit"
+            @scrollToTop="scrollToTop"
           />
         </template>
       </PermalinkedComment>
@@ -529,6 +535,7 @@ export default defineComponent({
               @saveEdit="handleSaveEdit"
               @showCopiedLinkNotification="showCopiedLinkNotification = $event"
               @openModProfileModal="showModProfileModal = true"
+              @scrollToTop="scrollToTop"
             />
           </div>
         </div>

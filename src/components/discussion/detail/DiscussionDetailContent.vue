@@ -186,7 +186,6 @@ export default defineComponent({
     const previousOffset = ref(0);
 
     const loadMore = () => {
-      console.log("load more" , offset.value);
       fetchMoreComments({
         variables: {
           offset: getDiscussionChannelResult.value?.getCommentSection?.Comments.length || 0,
@@ -251,8 +250,8 @@ export default defineComponent({
   <PageNotFound
     v-if="
       !getDiscussionLoading &&
-      !getDiscussionChannelLoading &&
-      !activeDiscussionChannel
+        !getDiscussionChannelLoading &&
+        !activeDiscussionChannel
     "
   />
   <div
@@ -267,7 +266,10 @@ export default defineComponent({
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
       />
-      <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
+      <RequireAuth
+        :full-width="false"
+        class="flex max-w-sm justify-end"
+      >
         <template #has-auth>
           <CreateButton
             class="ml-2"
@@ -276,7 +278,10 @@ export default defineComponent({
           />
         </template>
         <template #does-not-have-auth>
-          <PrimaryButton class="ml-2" :label="'New Discussion'" />
+          <PrimaryButton
+            class="ml-2"
+            :label="'New Discussion'"
+          />
         </template>
       </RequireAuth>
     </div>
@@ -299,7 +304,10 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <v-row v-if="discussion" class="flex justify-center">
+    <v-row
+      v-if="discussion"
+      class="flex justify-center"
+    >
       <v-col>
         <div class="space-y-3 px-2">
           <div
