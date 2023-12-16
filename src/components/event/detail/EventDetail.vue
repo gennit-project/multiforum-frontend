@@ -423,6 +423,7 @@ export default defineComponent({
               </div>
             </div>
             <div
+              v-if="!eventLoading && event"
               class="dark:text-gray-100 md:flex md:items-center md:justify-between"
             >
               <div class="min-w-0 flex-1">

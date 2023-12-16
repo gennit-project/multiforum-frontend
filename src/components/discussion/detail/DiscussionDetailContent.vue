@@ -291,7 +291,7 @@ export default defineComponent({
       class="mt-2"
       :text="getDiscussionError.message"
     />
-    <div>
+    <div v-if="!getDiscussionLoading">
       <div class="mt-3 w-full px-3">
         <div ref="discussionDetail">
           <div class="min-w-0">
