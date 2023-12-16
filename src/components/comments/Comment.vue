@@ -263,7 +263,7 @@ export default defineComponent({
         this.commentData.createdAt,
       )}${
         this.showChannel
-          ? " in c/" + this.commentData.DiscussionChannel.Channel.uniqueName
+          ? " in c/" + (this.commentData.DiscussionChannel?.channelUniqueName || this.commentData.Event?.EventChannels[0]?.channelUniqueName || "")
           : ""
       }`;
     },
