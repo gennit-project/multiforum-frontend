@@ -191,7 +191,8 @@ export default defineComponent({
         },
       });
     },
-    updateAggregateCount(cache: any) {
+    decrementAggregateCount(cache: any) {
+      console.log('i ran')
       cache.modify({
         id: cache.identify({
           __typename: "Event",
@@ -256,7 +257,7 @@ export default defineComponent({
     :previous-offset="previousOffset"
     @updateTotalCommentCount="updateTotalCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"
-    @updateAggregateCount="updateAggregateCount"
+    @updateAggregateCount="decrementAggregateCount"
     @updateCreateReplyCommentInput="updateCreateReplyCommentInput"
   />
 </template>

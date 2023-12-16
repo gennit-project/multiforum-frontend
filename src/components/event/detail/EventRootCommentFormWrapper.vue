@@ -160,10 +160,10 @@ export default defineComponent({
             id: props.event.id,
           },
         });
-        console.log("read query result", readEventQueryResult);
+        console.log("read query result from GET_EVENT", readEventQueryResult);
 
         const existingEventData: Event =
-          readEventQueryResult?.getEvent?.event || null;
+          readEventQueryResult?.events[0] || null;
 
         const existingCount = existingEventData?.CommentsAggregate?.count || 0;
 
@@ -174,13 +174,13 @@ export default defineComponent({
           },
           data: {
             ...readEventQueryResult,
-            getEvent: {
+            events: [{
               ...existingEventData,
               CommentsAggregate: {
                 ...existingEventData?.CommentsAggregate,
                 count: existingCount + 1,
               },
-            },
+            }]
           },
         });
       },
