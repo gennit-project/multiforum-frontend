@@ -1,6 +1,6 @@
 <script lang="ts">
 import CreateRootCommentForm from "@/components/comments/CreateRootCommentForm.vue";
-import { Comment, EventChannel } from "@/__generated__/graphql";
+import { Comment, Event } from "@/__generated__/graphql";
 import { defineComponent, ref, PropType, computed } from "vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
@@ -9,6 +9,7 @@ import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { useRoute } from "vue-router";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_EVENT_COMMENTS } from "@/graphQLData/comment/queries";
+import { GET_EVENT } from "@/graphQLData/event/queries";
 
 export const COMMENT_LIMIT = 5;
 
@@ -27,7 +28,7 @@ export default defineComponent({
       // It is needed for the comment to be created, but I made it optional
       // so that this form does not disappear while the event is loading,
       // which happens if the user navigates between hot, top and new comments.
-      type: Object as PropType<EventChannel>,
+      type: Object as PropType<Event>,
       required: false,
       default: () => {
         return null;
@@ -126,37 +127,59 @@ export default defineComponent({
           sort: getSortFromQuery(route.query),
         };
 
-        const readQueryResult = cache.readQuery({
+        // update the root comments that we got from GET_EVENT_COMMENTS.
+        const readEventCommentsQueryResult = cache.readQuery({
           query: GET_EVENT_COMMENTS,
           variables: eventCommentsQueryVariables,
         });
 
-        const existingEventChannelData: EventChannel =
-          readQueryResult?.getEventComments?.EventChannel;
+        const existingEventCommentsData =
+          readEventCommentsQueryResult?.getEventComments || null;
 
         let newRootComments: Comment[] = [
           newComment,
-          ...(readQueryResult?.getEventComments?.Comments || []),
+          ...(existingEventCommentsData?.Comments || []),
         ];
-
-        const existingCount =
-          existingEventChannelData?.CommentsAggregate?.count || 0;
 
         cache.writeQuery({
           query: GET_EVENT_COMMENTS,
           variables: eventCommentsQueryVariables,
           data: {
-            ...readQueryResult,
+            ...readEventCommentsQueryResult,
             getEventComments: {
-              ...readQueryResult?.getEventComments,
-              Event: {
-                ...existingEventChannelData,
-                CommentsAggregate: {
-                  ...existingEventChannelData?.CommentsAggregate,
-                  count: existingCount + 1,
-                },
-              },
+              ...existingEventCommentsData,
               Comments: newRootComments,
+            },
+          },
+        });
+
+        // update the aggregate count which we got from GET_EVENT.
+        const readEventQueryResult = cache.readQuery({
+          query: GET_EVENT,
+          variables: {
+            id: props.event.id,
+          },
+        });
+        console.log("read query result", readEventQueryResult);
+
+        const existingEventData: Event =
+          readEventQueryResult?.getEvent?.event || null;
+
+        const existingCount = existingEventData?.CommentsAggregate?.count || 0;
+
+        cache.writeQuery({
+          query: GET_EVENT,
+          variables: {
+            id: props.event.id,
+          },
+          data: {
+            ...readEventQueryResult,
+            getEvent: {
+              ...existingEventData,
+              CommentsAggregate: {
+                ...existingEventData?.CommentsAggregate,
+                count: existingCount + 1,
+              },
             },
           },
         });

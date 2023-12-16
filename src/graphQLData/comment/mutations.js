@@ -162,8 +162,10 @@ export const CREATE_COMMENT = gql`
         CommentAuthor {
           ... on User {
             username
+            displayName
             createdAt
             discussionKarma
+            profilePicURL
             commentKarma
           }
         }

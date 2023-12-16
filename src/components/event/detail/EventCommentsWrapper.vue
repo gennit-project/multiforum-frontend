@@ -218,6 +218,7 @@ export default defineComponent({
       });
 
       const existingEventData = readEventQueryResult?.getEvent;
+      console.log('existing event data',existingEventData)
 
       let existingCommentAggregate =
         existingEventData?.CommentsAggregate?.count || 0;
@@ -230,8 +231,7 @@ export default defineComponent({
         data: {
           ...readEventQueryResult,
           getEvent: {
-            ...existingEventData.getEvent,
-
+            ...existingEventData,
             CommentsAggregate: {
               ...existingEventData?.CommentsAggregate,
               count: Math.max(0, existingCommentAggregate - 1),
