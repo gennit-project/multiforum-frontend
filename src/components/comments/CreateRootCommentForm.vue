@@ -118,7 +118,6 @@ export default defineComponent({
             @click.prevent="
               () => {
                 $emit('handleCreateComment')
-                showEditorInCommentSection = false;
               }
             "
           />

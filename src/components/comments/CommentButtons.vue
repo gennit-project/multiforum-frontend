@@ -52,9 +52,13 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    showReplyEditor: {
+    commentInProcess: {
       type: Boolean,
       default: false,
+    },
+    replyFormOpenAtCommentID: {
+      type: String,
+      default: "",
     },
   },
   setup() {
@@ -111,11 +115,11 @@ export default defineComponent({
         :comment-id="commentData.id"
       />
       <ReplyButton
-        :show-reply-editor="showReplyEditor"
+        :show-reply-editor="!!replyFormOpenAtCommentID"
         :comment-data="commentData"
         :parent-comment-id="parentCommentId"
         :depth="depth"
-        @click="$emit('toggleShowReplyEditor')"
+        @click="$emit('openReplyEditor', commentData.id)"
       />
       <span
         v-if="showEditCommentField"
@@ -129,7 +133,6 @@ export default defineComponent({
         @click="
           () => {
             $emit('saveEdit');
-            $emit('hideEditCommentField');
           }
         "
         >Save</span
@@ -167,7 +170,10 @@ export default defineComponent({
       </span>
     </div>
 
-    <div v-if="commentData && showReplyEditor" class="mt-1 px-3 w-full dark:bg-gray-700 my-2 py-4">
+    <div
+      v-if="commentData && replyFormOpenAtCommentID === commentData.id"
+      class="my-2 mt-1 w-full px-3 py-4 dark:bg-gray-700"
+    >
       <TextEditor
         :placeholder="'Please be kind'"
         @update="
@@ -178,14 +184,15 @@ export default defineComponent({
           })
         "
       />
-      <div class="flex justify-start space-x-2 mt-4">
+      <div class="mt-4 flex justify-start space-x-2">
         <CancelButton @click="$emit('hideReplyEditor')" />
         <SaveButton
+          :loading="commentInProcess"
           :disabled="commentData?.text?.length === 0"
           @click.prevent="
             () => {
               $emit('createComment', parentCommentId);
-              $emit('hideReplyEditor');
+              $emit('startCommentSave');
             }
           "
         />

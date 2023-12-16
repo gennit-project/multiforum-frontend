@@ -219,7 +219,7 @@ export default defineComponent({
     // so that the replies are still visible.
     const { mutate: softDeleteComment } = useMutation(SOFT_DELETE_COMMENT);
 
-    const { mutate: createComment, error: createCommentError } = useMutation(
+    const { mutate: createComment, error: createCommentError, onDone: onDoneCreatingComment } = useMutation(
       CREATE_COMMENT,
       () => ({
         errorPolicy: "all",
@@ -311,6 +311,19 @@ export default defineComponent({
       }),
     );
 
+    const commentInProcess = ref(false)
+
+    // Holds the ID of the comment with an open reply form.
+    // Allows us to hold open/close state at the comment section level
+    // because the async mutation is at this level, while
+    // also allowing us to keep track of which comment has an open editor.
+    const replyFormOpenAtCommentID = ref('')
+
+    onDoneCreatingComment(() => {
+      commentInProcess.value = false;
+      replyFormOpenAtCommentID.value = '';
+    });
+
     const {
       result: localModProfileNameResult,
       loading: localModProfileNameLoading,
@@ -343,6 +356,7 @@ export default defineComponent({
     return {
       activeSort,
       permalinkedCommentId,
+      commentInProcess,
       commentToEdit,
       commentToDeleteId,
       commentToDeleteReplyCount,
@@ -356,6 +370,7 @@ export default defineComponent({
       locked: ref(false),
       loggedInUserModName,
       parentOfCommentToDelete,
+      replyFormOpenAtCommentID,
       showCopiedLinkNotification,
       showDeleteCommentModal: ref(false),
       showModProfileModal: ref(false),
@@ -458,6 +473,13 @@ export default defineComponent({
         .commentSectionHeader as HTMLElement;
       commentSectionHeader.scrollIntoView();
     },
+    openReplyEditor(commentId: string) {
+      console.log('i ran', commentId)
+      this.replyFormOpenAtCommentID = commentId
+    },
+    hideReplyEditor() {
+      this.replyFormOpenAtCommentID = ''
+    },
   },
 });
 </script>
@@ -494,6 +516,11 @@ export default defineComponent({
             :comment-data="commentData"
             :depth="1"
             :locked="locked"
+            :comment-in-process="commentInProcess"
+            :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+            @startCommentSave="commentInProcess = true"
+            @openReplyEditor="openReplyEditor"
+            @hideReplyEditor="hideReplyEditor"
             @clickEditComment="handleClickEdit"
             @deleteComment="handleClickDelete"
             @downvoteComment="handleDownvoteComment"
@@ -521,6 +548,11 @@ export default defineComponent({
               :comment-data="comment"
               :depth="1"
               :locked="locked"
+              :comment-in-process="commentInProcess"
+              :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+              @startCommentSave="commentInProcess = true"
+              @openReplyEditor="openReplyEditor"
+              @hideReplyEditor="hideReplyEditor"
               @clickEditComment="handleClickEdit"
               @deleteComment="handleClickDelete"
               @downvoteComment="handleDownvoteComment"
@@ -533,9 +565,6 @@ export default defineComponent({
               @scrollToTop="scrollToTop"
             />
           </div>
-        </div>
-        <div v-if="loading">
-          Loading...
         </div>
       </div>
     </div>

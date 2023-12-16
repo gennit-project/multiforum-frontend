@@ -69,6 +69,15 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    commentInProcess: {
+      // Used to show loading state in save comment button.
+      type: Boolean,
+      default: false,
+    },
+    replyFormOpenAtCommentID: {
+      type: String,
+      default: '',
+    },
     showChannel: {
       type: Boolean,
       default: false,
@@ -248,7 +257,6 @@ export default defineComponent({
       router,
       showEditCommentField: ref(false),
       showReplies: ref(true),
-      showReplyEditor: ref(false),
       textCopy,
       themeLoading,
       theme,
@@ -468,11 +476,13 @@ export default defineComponent({
                   :parent-comment-id="parentCommentId"
                   :show-edit-comment-field="showEditCommentField"
                   :show-replies="showReplies"
-                  :show-reply-editor="showReplyEditor"
+                  :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+                  :comment-in-process="commentInProcess"
+                  @startCommentSave="$emit('startCommentSave')"
                   @clickEditComment="handleEdit"
                   @createComment="createComment"
-                  @toggleShowReplyEditor="showReplyEditor = !showReplyEditor"
-                  @hideReplyEditor="showReplyEditor = false"
+                  @openReplyEditor="$emit('openReplyEditor', commentData.id)"
+                  @hideReplyEditor="$emit('hideReplyEditor')"
                   @hideReplies="showReplies = false"
                   @openModProfile="$emit('openModProfile')"
                   @saveEdit="$emit('saveEdit')"
@@ -518,6 +528,9 @@ export default defineComponent({
                 :depth="depth + 1"
                 :locked="locked"
                 :parent-comment-id="commentData.id"
+                :comment-in-process="commentInProcess"
+                :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+                @startCommentSave="$emit('startCommentSave')"
                 @clickEditComment="$emit('clickEditComment', $event)"
                 @deleteComment="handleDelete"
                 @createComment="$emit('createComment')"
