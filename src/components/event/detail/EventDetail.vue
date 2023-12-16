@@ -169,7 +169,7 @@ export default defineComponent({
     const loadMore = () => {
       fetchMoreComments({
         variables: {
-          offset: offset.value,
+          offset: getEventCommentsResult.value?.getEventComments?.Comments?.length || 0
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;

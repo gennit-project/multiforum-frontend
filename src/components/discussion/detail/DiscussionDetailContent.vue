@@ -189,7 +189,7 @@ export default defineComponent({
       console.log("load more" , offset.value);
       fetchMoreComments({
         variables: {
-          offset: offset.value + getDiscussionChannelResult.value?.getCommentSection?.Comments.length || 0,
+          offset: getDiscussionChannelResult.value?.getCommentSection?.Comments.length || 0,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
