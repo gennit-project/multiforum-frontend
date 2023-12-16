@@ -107,6 +107,7 @@ export default defineComponent({
     });
 
     const createCommentLoading = ref(false);
+
     const {
       mutate: createComment,
       error: createCommentError,

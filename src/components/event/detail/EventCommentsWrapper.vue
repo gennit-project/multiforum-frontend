@@ -98,7 +98,7 @@ export default defineComponent({
         sort: getSortFromQuery(route.query),
       }
     });
-    console.log(commentSectionQueryVariables)
+    console.log(commentSectionQueryVariables.value)
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: false,
@@ -247,6 +247,7 @@ export default defineComponent({
 <template>
   <CommentSection
     :aggregate-comment-count="aggregateCommentCount"
+    :comments="comments"
     :loading="loading"
     :reached-end-of-results="reachedEndOfResults"
     :comment-section-query-variables="commentSectionQueryVariables"

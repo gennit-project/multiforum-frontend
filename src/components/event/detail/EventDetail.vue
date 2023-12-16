@@ -106,10 +106,11 @@ export default defineComponent({
     });
 
     const comments = computed(() => {
-      if (!getEventCommentsResult.value) {
+      console.log('getEventCommentsResult', getEventCommentsResult.value)
+      if (!getEventCommentsResult.value?.getEventComments?.Comments) {
         return [];
       }
-      return getEventCommentsResult.value?.getEventComments?.Comments || [];
+      return getEventCommentsResult.value.getEventComments.Comments;
     });
 
     // Get the aggregate count of root comments so that we will know
@@ -255,6 +256,7 @@ export default defineComponent({
       }
       return truncatedDescription.value;
     });
+    console.log('comments in event detail', comments.value)
 
     return {
       comments,

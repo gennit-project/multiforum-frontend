@@ -185,9 +185,9 @@ export default defineComponent({
   },
   methods: {
     async handleCreateComment() {
-      if (!this.eventChannel) {
+      if (!this.event) {
         console.warn(
-          "Could not create the comment because there is no event channel in the create root comment form",
+          "Could not create the comment because there is no event in the create root comment form",
         );
         return;
       }
