@@ -85,7 +85,6 @@ export default defineComponent({
       return props.event?.id;
     });
 
-
     const aggregateCommentCount = computed(() => {
       return props.event?.CommentsAggregate?.count || 0;
     });
@@ -96,9 +95,9 @@ export default defineComponent({
         limit: COMMENT_LIMIT,
         offset: props.previousOffset,
         sort: getSortFromQuery(route.query),
-      }
+      };
     });
-    console.log(commentSectionQueryVariables.value)
+    console.log(commentSectionQueryVariables.value);
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: false,
@@ -172,7 +171,7 @@ export default defineComponent({
       const { cache, commentToDeleteId } = input;
       const readQueryResult = cache.readQuery({
         query: GET_EVENT_COMMENTS,
-        variables: this.commentSectionQueryVariables.value
+        variables: this.commentSectionQueryVariables.value,
       });
 
       const filteredRootComments: Comment[] = (
@@ -192,7 +191,7 @@ export default defineComponent({
       });
     },
     decrementAggregateCount(cache: any) {
-      console.log('i ran')
+      console.log("i ran");
       cache.modify({
         id: cache.identify({
           __typename: "Event",
@@ -208,9 +207,7 @@ export default defineComponent({
         },
       });
     },
-    updateTotalCommentCount(input: UpdateTotalCommentCountInput) {
-      const { cache } = input;
-
+    incrementCommentCount(cache: any) {
       const readEventQueryResult = cache.readQuery({
         query: GET_EVENT,
         variables: {
@@ -219,7 +216,38 @@ export default defineComponent({
       });
 
       const existingEventData = readEventQueryResult?.getEvent;
-      console.log('existing event data',existingEventData)
+      console.log("existing event data", existingEventData);
+
+      let existingCommentAggregate =
+        existingEventData?.CommentsAggregate?.count || 0;
+
+      cache.writeQuery({
+        query: GET_EVENT,
+        variables: {
+          id: this.event?.id,
+        },
+        data: {
+          ...readEventQueryResult,
+          getEvent: {
+            ...existingEventData,
+            CommentsAggregate: {
+              ...existingEventData?.CommentsAggregate,
+              count: Math.max(0, existingCommentAggregate + 1),
+            },
+          },
+        },
+      });
+    },
+    decrementCommentCount(cache: any) {
+      const readEventQueryResult = cache.readQuery({
+        query: GET_EVENT,
+        variables: {
+          id: this.event?.id,
+        },
+      });
+
+      const existingEventData = readEventQueryResult?.getEvent;
+      console.log("existing event data", existingEventData);
 
       let existingCommentAggregate =
         existingEventData?.CommentsAggregate?.count || 0;
@@ -255,9 +283,9 @@ export default defineComponent({
     :create-form-values="createFormValues"
     :create-comment-input="createCommentInput"
     :previous-offset="previousOffset"
-    @updateTotalCommentCount="updateTotalCommentCount"
+    @decrementCommentCount="decrementCommentCount"
+    @incrementCommentCount="incrementCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"
-    @updateAggregateCount="decrementAggregateCount"
     @updateCreateReplyCommentInput="updateCreateReplyCommentInput"
   />
 </template>

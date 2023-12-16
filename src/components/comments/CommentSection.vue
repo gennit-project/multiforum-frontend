@@ -201,10 +201,7 @@ export default defineComponent({
             });
 
             // 4. Update the total count of comments
-            emit('updateTotalCommentCount', {
-              cache,
-              commentToDeleteId: commentToDeleteId.value
-            })
+            emit('decrementCommentCount',  cache)
           }
         } else {
           // For root comments, update the comment section query result
@@ -215,7 +212,7 @@ export default defineComponent({
         }
         // For both root comments and replies, update the aggregate
         // count of the comment section
-        emit('updateAggregateCount', cache)
+        emit('decrementCommentCount', cache)
       },
     });
 
@@ -315,41 +312,7 @@ export default defineComponent({
           // 0 child comments.
 
           // Update the total count of comments
-          const readDiscussionChannelQueryResult = cache.readQuery({
-            query: GET_DISCUSSION_COMMENTS,
-            variables: {
-              ...props.commentSectionQueryVariables,
-              commentId: newCommentParentId,
-            },
-          });
-
-          const existingDiscussionChannelData =
-            readDiscussionChannelQueryResult?.getCommentSection
-              ?.DiscussionChannel;
-
-          let existingCommentAggregate =
-            existingDiscussionChannelData?.CommentsAggregate?.count || 0;
-
-          cache.writeQuery({
-            query: GET_DISCUSSION_COMMENTS,
-            variables: {
-              ...props.commentSectionQueryVariables,
-              commentId: newCommentParentId,
-            },
-            data: {
-              ...readDiscussionChannelQueryResult,
-              getCommentSection: {
-                ...readDiscussionChannelQueryResult.getCommentSection,
-                DiscussionChannel: {
-                  ...existingDiscussionChannelData,
-                  CommentsAggregate: {
-                    ...existingDiscussionChannelData?.CommentsAggregate,
-                    count: existingCommentAggregate + 1,
-                  },
-                },
-              },
-            },
-          });
+          emit('incrementCommentCount', cache)
         },
       }),
     );

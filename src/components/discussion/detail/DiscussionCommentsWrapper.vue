@@ -15,9 +15,7 @@ import {
 import { COMMENT_LIMIT } from "@/components/discussion/detail/DiscussionDetailContent.vue";
 import { useRoute } from "vue-router";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
-import {
-  GET_LOCAL_USERNAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { GET_DISCUSSION_COMMENTS } from "@/graphQLData/comment/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
@@ -26,12 +24,12 @@ import CommentSection from "@/components/comments/CommentSection.vue";
 type CommentSectionQueryUpdateInput = {
   cache: any;
   commentToDeleteId: string;
-}
+};
 
 type UpdateTotalCommentCountInput = {
   cache: any;
-  parentOfCommentToDelete: any
-}
+  parentOfCommentToDelete: any;
+};
 
 export default defineComponent({
   name: "DiscussionCommentsWrapper",
@@ -71,7 +69,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log(props.comments)
+    console.log(props.comments);
     const route = useRoute();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -83,8 +81,8 @@ export default defineComponent({
       return "";
     });
     const aggregateCommentCount = computed(() => {
-      return props.discussionChannel?.CommentsAggregate?.count || 0
-    })
+      return props.discussionChannel?.CommentsAggregate?.count || 0;
+    });
 
     const commentSectionQueryVariables = {
       discussionId: props.discussionChannel?.discussionId,
@@ -104,7 +102,6 @@ export default defineComponent({
     );
 
     const createCommentInput = computed(() => {
-
       const input: CommentCreateInput = {
         isRootComment: false,
         DiscussionChannel: {
@@ -138,13 +135,15 @@ export default defineComponent({
           },
         },
         UpvotedByUsers: {
-          connect: [{
-            where: {
-              node: {
-                username: username.value,
+          connect: [
+            {
+              where: {
+                node: {
+                  username: username.value,
+                },
               },
             },
-          }],
+          ],
         },
       };
       return input;
@@ -154,7 +153,7 @@ export default defineComponent({
       aggregateCommentCount,
       commentSectionQueryVariables,
       createCommentInput,
-      createFormValues
+      createFormValues,
     };
   },
   methods: {
@@ -170,9 +169,7 @@ export default defineComponent({
 
       const filteredRootComments: Comment[] = (
         readQueryResult?.getCommentSection?.Comments || []
-      ).filter(
-        (comment: CommentType) => comment.id !== commentToDeleteId,
-      );
+      ).filter((comment: CommentType) => comment.id !== commentToDeleteId);
 
       cache.writeQuery({
         query: GET_DISCUSSION_COMMENTS,
@@ -202,20 +199,16 @@ export default defineComponent({
         },
       });
     },
-    updateTotalCommentCount(input: UpdateTotalCommentCountInput) {
-      const {
-        cache,
-        parentOfCommentToDelete
-      } = input;
-
+    incrementCommentCount(cache: any) {
       const readDiscussionChannelQueryResult = cache.readQuery({
         query: GET_DISCUSSION_COMMENTS,
-        variables: this.commentSectionQueryVariables,
+        variables: {
+          ...this.commentSectionQueryVariables,
+        },
       });
 
       const existingDiscussionChannelData =
-        readDiscussionChannelQueryResult?.getCommentSection
-          ?.DiscussionChannel;
+        readDiscussionChannelQueryResult?.getCommentSection?.DiscussionChannel;
 
       let existingCommentAggregate =
         existingDiscussionChannelData?.CommentsAggregate?.count || 0;
@@ -224,7 +217,38 @@ export default defineComponent({
         query: GET_DISCUSSION_COMMENTS,
         variables: {
           ...this.commentSectionQueryVariables,
-          commentId: parentOfCommentToDelete.value,
+        },
+        data: {
+          ...readDiscussionChannelQueryResult,
+          getCommentSection: {
+            ...readDiscussionChannelQueryResult.getCommentSection,
+            DiscussionChannel: {
+              ...existingDiscussionChannelData,
+              CommentsAggregate: {
+                ...existingDiscussionChannelData?.CommentsAggregate,
+                count: existingCommentAggregate + 1,
+              },
+            },
+          },
+        },
+      });
+    },
+    decrementCommentCount(cache: any) {
+      const readDiscussionChannelQueryResult = cache.readQuery({
+        query: GET_DISCUSSION_COMMENTS,
+        variables: this.commentSectionQueryVariables,
+      });
+
+      const existingDiscussionChannelData =
+        readDiscussionChannelQueryResult?.getCommentSection?.DiscussionChannel;
+
+      let existingCommentAggregate =
+        existingDiscussionChannelData?.CommentsAggregate?.count || 0;
+
+      cache.writeQuery({
+        query: GET_DISCUSSION_COMMENTS,
+        variables: {
+          ...this.commentSectionQueryVariables,
         },
         data: {
           ...readDiscussionChannelQueryResult,
@@ -240,24 +264,24 @@ export default defineComponent({
           },
         },
       });
-    }
+    },
   },
 });
 </script>
 
 <template>
   <CommentSection
-    :aggregate-comment-count="aggregateCommentCount" 
+    :aggregate-comment-count="aggregateCommentCount"
     :comments="comments"
     :loading="loading"
-    :reached-end-of-results="reachedEndOfResults" 
+    :reached-end-of-results="reachedEndOfResults"
     :comment-section-query-variables="commentSectionQueryVariables"
-    :create-form-values="createFormValues" 
+    :create-form-values="createFormValues"
     :create-comment-input="createCommentInput"
     :previous-offset="previousOffset"
-    @updateTotalCommentCount="updateTotalCommentCount"
+    @decrementCommentCount="decrementCommentCount"
+    @incrementCommentCount="incrementCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"
-    @updateAggregateCount="updateAggregateCount"
-    @updateCreateReplyCommentInput="updateCreateReplyCommentInput" 
+    @updateCreateReplyCommentInput="updateCreateReplyCommentInput"
   />
 </template>
