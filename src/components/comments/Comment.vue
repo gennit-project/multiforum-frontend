@@ -368,7 +368,7 @@ export default defineComponent({
                   View Context
                 </router-link>
               </div>
-              <div class="flex justify-between">
+              <div class="flex">
                 <div
                   class="ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
                 >
@@ -443,7 +443,7 @@ export default defineComponent({
                 <div class="w-full overflow-auto">
                   <div
                     v-if="commentData.text && editFormOpenAtCommentID !== commentData.id"
-                    class="-ml-6 w-full"
+                    class="-ml-6"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
                   >
                     <MarkdownPreview
@@ -471,7 +471,7 @@ export default defineComponent({
                 </div>
                 <CommentButtons
                   v-if="channelId"
-                  class="py-1 mb-2"
+                  class="py-1 mb-2 ml-1"
                   :class="[editFormOpenAtCommentID === commentData.id ? 'ml-1' : '']"
                   :comment-data="commentData"
                   :depth="depth"
