@@ -340,11 +340,12 @@ export default defineComponent({
       <v-col>
         <DiscussionRootCommentFormWrapper
           :key="`${channelId}${discussionId}`"
+          class="pr-3"
           :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"
           :previous-offset="previousOffset"
         />
-        <div class="my-6 mb-2 ml-2 rounded-lg">
+        <div class="my-6 mx-2 rounded-lg">
           <DiscussionCommentsWrapper
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"
