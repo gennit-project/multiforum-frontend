@@ -256,11 +256,11 @@ export default defineComponent({
   />
   <div
     v-else
-    class="w-full max-w-7xl space-y-2 rounded-lg bg-white px-4 py-2 dark:bg-gray-800"
+    class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 sm:px-2 md:px-4 lg:px-6 dark:bg-gray-800"
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      class="align-center mx-1 mt-2 flex justify-between px-2"
+      class="align-center mx-1 mt-2 flex justify-between px-4 "
     >
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
@@ -288,11 +288,11 @@ export default defineComponent({
 
     <ErrorBanner
       v-if="getDiscussionError"
-      class="mt-2"
+      class="mt-2 px-4 "
       :text="getDiscussionError.message"
     />
     <div v-if="!getDiscussionLoading">
-      <div class="mt-3 w-full px-3">
+      <div class="mt-3 w-full px-4">
         <div ref="discussionDetail">
           <div class="min-w-0">
             <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
@@ -336,37 +336,35 @@ export default defineComponent({
         </div>
       </v-col>
     </v-row>
-    <v-row>
-      <v-col>
-        <DiscussionRootCommentFormWrapper
-          :key="`${channelId}${discussionId}`"
-          class="pr-3"
-          :channel-id="channelId"
+    <div>
+      <DiscussionRootCommentFormWrapper
+        :key="`${channelId}${discussionId}`"
+        class="pr-3"
+        :channel-id="channelId"
+        :discussion-channel="activeDiscussionChannel"
+        :previous-offset="previousOffset"
+      />
+      <div class="my-6 mx-2 rounded-lg">
+        <DiscussionCommentsWrapper
+          :key="activeDiscussionChannel?.id"
+          :loading="getDiscussionChannelLoading"
           :discussion-channel="activeDiscussionChannel"
+          :comments="comments"
+          :reached-end-of-results="reachedEndOfResults"
           :previous-offset="previousOffset"
+          @loadMore="loadMore"
         />
-        <div class="my-6 mx-2 rounded-lg">
-          <DiscussionCommentsWrapper
-            :key="activeDiscussionChannel?.id"
-            :loading="getDiscussionChannelLoading"
-            :discussion-channel="activeDiscussionChannel"
-            :comments="comments"
-            :reached-end-of-results="reachedEndOfResults"
-            :previous-offset="previousOffset"
-            @loadMore="loadMore"
-          />
-        </div>
-        <DiscussionChannelLinks
-          v-if="discussion && discussion.DiscussionChannels"
-          class="my-4"
-          :discussion-channels="discussion.DiscussionChannels"
-          :channel-id="
-            activeDiscussionChannel
-              ? activeDiscussionChannel.channelUniqueName
-              : ''
-          "
-        />
-      </v-col>
-    </v-row>
+      </div>
+      <DiscussionChannelLinks
+        v-if="discussion && discussion.DiscussionChannels"
+        class="my-4"
+        :discussion-channels="discussion.DiscussionChannels"
+        :channel-id="
+          activeDiscussionChannel
+            ? activeDiscussionChannel.channelUniqueName
+            : ''
+        "
+      />
+    </div>
   </div>
 </template>

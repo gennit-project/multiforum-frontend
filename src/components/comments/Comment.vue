@@ -336,7 +336,7 @@ export default defineComponent({
           class="flex w-full"
           data-testid="comment"
         >
-          <div class="flex w-full rounded-lg pr-6">
+          <div class="flex w-full rounded-lg">
             <Avatar
               v-if="commentData.CommentAuthor"
               class="z-10"
@@ -438,7 +438,7 @@ export default defineComponent({
               </div>
               <div
                 v-if="!themeLoading"
-                class="w-full max-w-none dark:text-gray-200"
+                class="w-full dark:text-gray-200"
               >
                 <div class="w-full overflow-auto">
                   <div
