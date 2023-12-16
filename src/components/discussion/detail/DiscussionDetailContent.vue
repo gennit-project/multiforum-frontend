@@ -186,9 +186,10 @@ export default defineComponent({
     const previousOffset = ref(0);
 
     const loadMore = () => {
+      console.log("load more" , offset.value);
       fetchMoreComments({
         variables: {
-          offset: offset.value,
+          offset: offset.value + getDiscussionChannelResult.value?.getCommentSection?.Comments.length || 0,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;

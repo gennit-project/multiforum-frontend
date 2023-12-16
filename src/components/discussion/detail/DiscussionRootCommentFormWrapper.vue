@@ -46,6 +46,7 @@ export default defineComponent({
     },
   },
   setup(props) {
+    console.log('offset', props.previousOffset)
     const route = useRoute();
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
