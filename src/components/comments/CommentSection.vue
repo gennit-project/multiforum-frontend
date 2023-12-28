@@ -24,7 +24,6 @@ import ErrorBanner from "../generic/ErrorBanner.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
-  GET_LOCAL_USERNAME,
   GET_LOCAL_MOD_PROFILE_NAME,
 } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
@@ -34,7 +33,7 @@ import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import {
-    CreateCommentInput,
+    CommentCreateInput,
     Comment as CommentType,
 } from "@/__generated__/graphql";
 
@@ -63,8 +62,12 @@ export default defineComponent({
       required: true,
       type: Object as PropType<CommentSectionQueryVariablesType>,
     },
+    createFormValues: {
+      type: Object as PropType<CreateEditCommentFormValues>,
+      required: true,
+    },
     createCommentInput: {
-      type: Object as PropType<CreateCommentInput>,
+      type: Object as PropType<CommentCreateInput>,
       required: true,
     },
     aggregateCommentCount: {
@@ -73,7 +76,7 @@ export default defineComponent({
       default: 0
     },
     comments: {
-      type: Array as PropType<CommentData[]>,
+      type: Array as PropType<CommentType[]>,
       required: false,
       default: () => {
         return [];
@@ -110,8 +113,6 @@ export default defineComponent({
       }
       return false;
     });
-
-
     
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
@@ -123,16 +124,6 @@ export default defineComponent({
       isRootComment: true, // changes to false for 2nd level comments and below
       depth: 1,
     });
-
-    const createCommentDefaultValues: CreateEditCommentFormValues = {
-      text: "",
-      isRootComment: false,
-      depth: 1,
-    };
-
-    const createFormValues = ref<CreateEditCommentFormValues>(
-      createCommentDefaultValues,
-    );
 
     const updateCommentInput = computed(() => {
       return {
@@ -151,7 +142,7 @@ export default defineComponent({
     }));
 
     const getCommentRepliesVariables = {
-      commentId: createFormValues.value.parentCommentId,
+      commentId: props.createFormValues.parentCommentId,
       limit: 5,
       offset: 0,
       sort: getSortFromQuery(route.query),
@@ -273,7 +264,7 @@ export default defineComponent({
             cache.modify({
               id: cache.identify({
                 __typename: "Comment",
-                id: createFormValues.value.parentCommentId,
+                id: props.createFormValues.parentCommentId,
               }),
               fields: {
                 ChildCommentsAggregate(existingValue: any) {
@@ -398,7 +389,6 @@ export default defineComponent({
       commentToDeleteReplyCount,
       createComment,
       createCommentError,
-      createFormValues,
       deleteComment,
       downvoteComment,
       editComment,
@@ -421,23 +411,21 @@ export default defineComponent({
       if (!parentCommentId) {
         throw new Error("parentCommentId is required to reply to a comment");
       }
-      this.createFormValues = {
+      const updatedCreateFormValues = {
         ...this.createFormValues,
         text,
         parentCommentId,
         depth,
       };
+      this.$emit("updateCreateReplyCommentInput", updatedCreateFormValues);
     },
     updateEditInputValues(text: string, isRootComment: boolean) {
       this.editFormValues.isRootComment = isRootComment;
       this.editFormValues.text = text;
     },
     handleClickCreate() {
-      if (!this.discussionChannel) {
-        console.warn("Need a discussionChannel to create a comment");
-        return;
-      }
-      // Reply to a comment
+      // Reply to a comment. Root comment creation
+      // is handled in the parent component.
       this.createComment();
     },
     handleClickEdit(commentData: CommentData) {
@@ -524,9 +512,9 @@ export default defineComponent({
         :show-top-options="false" 
       />
       <PermalinkedComment
-        class="mt-2"
-        :key="permalinkedCommentId"
         v-if="isPermalinkPage"
+        :key="permalinkedCommentId"
+        class="mt-2"
         :comment-id="permalinkedCommentId"
       >
         <template #comment="{ commentData }">
@@ -551,7 +539,10 @@ export default defineComponent({
           There are no comments yet.
         </div>
         <div :key="activeSort">
-          <div v-for="comment in comments || []" :key="comment.id">
+          <div
+            v-for="comment in comments || []"
+            :key="comment.id"
+          >
             <Comment
               v-if="comment.id !== permalinkedCommentId"
               :aggregate-comment-count="
@@ -573,7 +564,9 @@ export default defineComponent({
             />
           </div>
         </div>
-        <div v-if="loading">Loading...</div>
+        <div v-if="loading">
+          Loading...
+        </div>
       </div>
     </div>
     <LoadMore

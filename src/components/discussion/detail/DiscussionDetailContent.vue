@@ -13,7 +13,7 @@ import ErrorBanner from "../../generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
-import CommentSection from "../../comments/CommentSection.vue";
+import DiscussionCommentsWrapper from "../../comments/DiscussionCommentsWrapper.vue";
 import ChannelLinks from "./ChannelLinks.vue";
 import CreateRootCommentForm from "@/components/discussion/detail/CreateRootCommentForm.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
@@ -34,7 +34,7 @@ export default defineComponent({
     BackLink,
     ChannelLinks,
     CreateRootCommentForm,
-    CommentSection,
+    DiscussionCommentsWrapper,
     DiscussionBody,
     DiscussionHeader,
     DiscussionVotes,
@@ -339,7 +339,7 @@ export default defineComponent({
           :previous-offset="previousOffset"
         />
         <div class="my-6 mb-2 ml-2 rounded-lg">
-          <CommentSection
+          <DiscussionCommentsWrapper
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
