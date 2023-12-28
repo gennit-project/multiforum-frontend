@@ -256,7 +256,10 @@ export default defineComponent({
       v-if="route.name === 'DiscussionDetail'"
       class="align-center mx-1 mt-2 flex justify-between px-2"
     >
-      <BackLink :link="`/channels/c/${channelId}/discussions`" />
+      <BackLink 
+        :link="`/channels/c/${channelId}/discussions`"
+        :data-testid="'discussion-detail-back-link'"
+      />
       <RequireAuth
         :full-width="false"
         class="flex max-w-sm justify-end"

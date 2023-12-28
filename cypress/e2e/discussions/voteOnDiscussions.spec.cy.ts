@@ -60,9 +60,6 @@ describe("Basic discussion operations", () => {
     // is authored by cluse.
     cy.get("a").contains("Example topic 1").click();
 
-    // Click the link that says "0 comments" to go to the detail page.
-    cy.get("a").contains("0 comments").click();
-
     // In the test data, that discussion starts with one vote.
     cy.get('button[data-testid="upvote-discussion-button"]').contains("1");
 

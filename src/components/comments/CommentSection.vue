@@ -535,7 +535,7 @@ export default defineComponent({
         </template>
       </PermalinkedComment>
       <div class="my-4">
-        <div v-if="aggregateCommentCount === 0">
+        <div v-if="!loading && aggregateCommentCount === 0">
           There are no comments yet.
         </div>
         <div :key="activeSort">
