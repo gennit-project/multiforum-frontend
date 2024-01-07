@@ -6,6 +6,7 @@ import { ApolloClient, createHttpLink } from "@apollo/client/core";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { createApolloProvider } from "@vue/apollo-option";
 import { onError } from "@apollo/client/link/error";
+import { setContext } from "@apollo/client/link/context";
 import { logErrorMessages } from "@vue/apollo-util";
 import VueGoogleMaps from "@fawmi/vue-google-maps";
 import config from "./config";
@@ -112,6 +113,18 @@ const httpLink = createHttpLink({
   uri: environment === "development" ? graphqlUrlDev : graphqlUrlProd,
 });
 
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("token");
+  console.log('sending token', token)
+
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
+
 const networkErrorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors)
     graphQLErrors.map(({ message, locations, path }) =>
@@ -132,7 +145,7 @@ const logErrorsLink = onError((error) => {
 // Create the apollo client
 export const apolloClient = new ApolloClient({
   cache,
-  link: logErrorsLink.concat(networkErrorLink).concat(httpLink),
+  link: authLink.concat(logErrorsLink).concat(networkErrorLink).concat(httpLink),
 });
 
 const apolloProvider = createApolloProvider({

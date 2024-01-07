@@ -16,14 +16,16 @@ import {
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 
 export default defineComponent({
   name: "CreateEditChannelFields",
   components: {
     AddImage,
     Avatar,
-    TextInput,
+    ErrorBanner,
     FormRow,
+    TextInput,
     TailwindForm: Form,
     TextEditor,
     TagInput,
@@ -155,35 +157,35 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container
-    fluid
-    class="max-w-4xl"
-  >
-    <div v-if="channelLoading">
-      Loading...
-    </div>
-    <div v-else-if="getChannelError">
-      <div
-        v-for="(error, i) of getChannelError?.graphQLErrors"
-        :key="i"
-      >
-        {{ error.message }}
-      </div>
-    </div>
+  <v-container fluid class="max-w-4xl">
+    <div v-if="channelLoading">Loading...</div>
+
     <TailwindForm
       v-else-if="formValues"
-      :form-title="editMode ? 'Edit Channel' : 'Create Forum'"
+      :form-title="editMode ? 'Forum Settings' : 'Create Forum'"
       :needs-changes="needsChanges"
-      :loading="createChannelLoading"
+      :loading="createChannelLoading && !createChannelError"
       @input="touched = true"
       @submit="$emit('submit')"
     >
-      <div class="space-y-8 divide-y divide-gray-200 sm:space-y-5">
+      <div>
+        <div v-if="getChannelError">
+          <ErrorBanner
+            v-for="(error, i) of getChannelError?.graphQLErrors"
+            :key="i"
+            :text="error.message"
+          />
+        </div>
+
+        <div v-if="createChannelError">
+          <ErrorBanner
+            v-for="(error, i) of createChannelError?.graphQLErrors"
+            :key="i"
+            :text="error.message"
+          />
+        </div>
         <div class="mt-5 space-y-4 sm:space-y-5">
-          <FormRow
-            section-title="Title"
-            :required="!editMode"
-          >
+          <FormRow section-title="Title" :required="!editMode">
             <template #content>
               <TextInput
                 ref="titleInputRef"
@@ -196,10 +198,7 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow
-            section-title="Display Name"
-            :required="false"
-          >
+          <FormRow section-title="Display Name" :required="false">
             <template #content>
               <TextInput
                 ref="displayNameInputRef"
@@ -258,7 +257,7 @@ export default defineComponent({
                 class="w-full shadow-sm"
                 :src="formValues.channelBannerURL"
                 :alt="formValues.uniqueName"
-              >
+              />
               <AddImage
                 key="channel-banner-url"
                 :field-name="'channelBannerURL'"
@@ -269,10 +268,7 @@ export default defineComponent({
         </div>
       </div>
     </TailwindForm>
-    <div
-      v-for="(error, i) of getChannelError?.graphQLErrors"
-      :key="i"
-    >
+    <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
       {{ error.message }}
     </div>
   </v-container>
