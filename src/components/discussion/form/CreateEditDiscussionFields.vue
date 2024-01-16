@@ -99,14 +99,11 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container
-    fluid
-    class="overflow-auto"
-  >
+  <div class="overflow-auto">
     <div v-if="discussionLoading">
       Loading...
     </div>
-    <div v-else-if="getDiscussionError">
+    <div v-if="getDiscussionError">
       <div
         v-for="(error, i) of getDiscussionError?.graphQLErrors"
         :key="i"
@@ -114,14 +111,27 @@ export default defineComponent({
         {{ error.message }}
       </div>
     </div>
+
     <TailwindForm
-      v-else-if="formValues"
+      v-if="formValues"
       :form-title="formTitle"
       :needs-changes="needsChanges"
-      :loading="createDiscussionLoading || updateDiscussionLoading"
+      :loading="(createDiscussionLoading || updateDiscussionLoading) && !createDiscussionError && !updateDiscussionError"
       @input="touched = true"
       @submit="$emit('submit')"
     >
+      <ErrorBanner
+        v-if="needsChanges && touched"
+        :text="changesRequiredMessage"
+      />
+      <ErrorBanner
+        v-if="createDiscussionError"
+        :text="createDiscussionError.message"
+      />
+      <ErrorBanner
+        v-if="updateDiscussionError"
+        :text="updateDiscussionError.message"
+      />
       <div class="divide-y divide-gray-200">
         <div class="mt-6 space-y-4">
           <FormRow
@@ -156,9 +166,7 @@ export default defineComponent({
             </template>
           </FormRow>
 
-          <FormRow
-            section-title="Details"
-          >
+          <FormRow section-title="Details">
             <template #content>
               <TextEditor
                 class="mb-3"
@@ -184,18 +192,6 @@ export default defineComponent({
           </FormRow>
         </div>
       </div>
-      <ErrorBanner
-        v-if="needsChanges"
-        :text="changesRequiredMessage"
-      />
-      <ErrorBanner
-        v-if="createDiscussionError"
-        :text="createDiscussionError.message"
-      />
-      <ErrorBanner
-        v-if="updateDiscussionError"
-        :text="updateDiscussionError.message"
-      />
     </TailwindForm>
-  </v-container>
+  </div>
 </template>
