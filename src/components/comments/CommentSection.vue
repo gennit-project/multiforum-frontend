@@ -129,7 +129,11 @@ export default defineComponent({
       };
     });
 
-    const { mutate: editComment, onDone: onDoneUpdatingComment } = useMutation(UPDATE_COMMENT, () => ({
+    const { 
+      mutate: editComment, 
+      error: editCommentError,
+      onDone: onDoneUpdatingComment 
+    } = useMutation(UPDATE_COMMENT, () => ({
       variables: {
         commentWhere: {
           id: commentToEdit.value?.id || "",
@@ -372,6 +376,7 @@ export default defineComponent({
       deleteComment,
       downvoteComment,
       editComment,
+      editCommentError,
       editFormValues,
       editFormOpenAtCommentID,
       isPermalinkPage,
@@ -532,6 +537,7 @@ export default defineComponent({
             :comment-in-process="commentInProcess"
             :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
             :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
+            :edit-comment-error="editCommentError"
             @startCommentSave="commentInProcess = true"
             @openReplyEditor="openReplyEditor"
             @hideReplyEditor="hideReplyEditor"
@@ -567,6 +573,7 @@ export default defineComponent({
               :comment-in-process="commentInProcess"
               :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
               :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
+              :edit-comment-error="editCommentError"
               @startCommentSave="commentInProcess = true"
               @openReplyEditor="openReplyEditor"
               @hideReplyEditor="hideReplyEditor"

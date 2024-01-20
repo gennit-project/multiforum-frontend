@@ -8,16 +8,24 @@ import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import CancelButton from "@/components/generic/buttons/CancelButton.vue";
 import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
+import { ApolloError } from "@apollo/client/errors";
+import ErrorBanner from "../generic/ErrorBanner.vue";
 
 export default defineComponent({
   components: {
     CancelButton,
     Avatar,
+    ErrorBanner,
     RequireAuth,
     SaveButton,
     TextEditor,
   },
   props: {
+    createCommentError: {
+      type: Object as PropType<ApolloError | null>,
+      required: false,
+      default: null,
+    },
     createCommentLoading: {
       type: Boolean,
       required: true,
@@ -29,7 +37,7 @@ export default defineComponent({
     commentEditorOpen: {
       type: Boolean,
       required: true,
-    }
+    },
   },
   setup() {
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
@@ -70,6 +78,10 @@ export default defineComponent({
 </script>
 <template>
   <div class="ml-1 flex w-full flex-col space-x-2 px-1">
+    <ErrorBanner
+      v-if="createCommentError"
+      :text="createCommentError && createCommentError.message"
+    />
     <div class="min-h-36 flex gap-2">
       <Avatar
         v-if="username"
@@ -118,7 +130,7 @@ export default defineComponent({
           <SaveButton
             data-testid="createCommentButton"
             :disabled="createFormValues.text.length === 0"
-            :loading="createCommentLoading"
+            :loading="createCommentLoading && !createCommentError"
             @click.prevent="$emit('handleCreateComment')"
           />
         </div>

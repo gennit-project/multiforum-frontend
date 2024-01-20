@@ -238,6 +238,7 @@ export default defineComponent({
       v-if="event"
       :create-form-values="createFormValues"
       :create-comment-loading="createCommentLoading"
+      :create-comment-error="createCommentError"
       :comment-editor-open="commentEditorOpen"
       @open-comment-editor="commentEditorOpen = true"
       @close-comment-editor="commentEditorOpen = false"

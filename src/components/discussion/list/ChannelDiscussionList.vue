@@ -228,7 +228,10 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <p v-if="!discussionChannelResult && discussionLoading">Loading...</p>
+    <slot />
+    <p v-if="!discussionChannelResult && discussionLoading">
+      Loading...
+    </p>
     <ErrorBanner
       v-else-if="discussionError"
       class="max-w-5xl"
@@ -237,8 +240,8 @@ export default defineComponent({
     <p
       v-else-if="
         discussionChannelResult &&
-        discussionChannelResult.getDiscussionsInChannel.discussionChannels
-          .length === 0
+          discussionChannelResult.getDiscussionsInChannel.discussionChannels
+            .length === 0
       "
       class="flex gap-2 p-4"
     >
@@ -255,13 +258,12 @@ export default defineComponent({
               },
             }"
             class="text-blue-500 underline"
-            >Create one?</router-link
           >
+            Create one?
+          </router-link>
         </template>
         <template #does-not-have-auth>
-          <span class="cursor-pointer text-blue-500 underline"
-            >Create one?</span
-          >
+          <span class="cursor-pointer text-blue-500 underline">Create one?</span>
         </template>
       </RequireAuth>
     </p>
@@ -297,8 +299,8 @@ export default defineComponent({
             :reached-end-of-results="
               discussionChannelResult.getDiscussionsInChannel
                 .aggregateDiscussionChannelsCount ===
-              discussionChannelResult.getDiscussionsInChannel.discussionChannels
-                .length
+                discussionChannelResult.getDiscussionsInChannel.discussionChannels
+                  .length
             "
             @loadMore="loadMore"
           />

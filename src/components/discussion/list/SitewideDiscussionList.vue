@@ -181,24 +181,35 @@ export default defineComponent({
 </script>
 <template>
   <div class="w-full">
-    <p v-if="discussionLoading">Loading...</p>
+    <slot />
+    <p v-if="discussionLoading">
+      Loading...
+    </p>
     <ErrorBanner
       v-else-if="discussionError"
       class="max-w-5xl"
       :text="discussionError.message"
     />
-    <p v-else-if="discussions && discussions.length === 0" class="my-6 px-4">
+    <p
+      v-else-if="discussions && discussions.length === 0"
+      class="my-6 px-4"
+    >
       There are no discussions to show.
       <router-link
         :to="{
           name: 'CreateDiscussion',
         }"
         class="text-blue-500 underline"
-        >Create one?</router-link
       >
+        Create one?
+      </router-link>
     </p>
     <div v-if="discussions && discussions.length > 0">
-      <ul role="list" class="my-6 mr-2 flex flex-col gap-2" data-testid="sitewide-discussion-list">
+      <ul
+        role="list"
+        class="my-6 mr-2 flex flex-col gap-2"
+        data-testid="sitewide-discussion-list"
+      >
         <SitewideDiscussionListItem
           v-for="discussion in discussionResult.getSiteWideDiscussionList
             .discussions"
@@ -219,7 +230,7 @@ export default defineComponent({
           class="ml-4 justify-self-center"
           :reached-end-of-results="
             aggregateDiscussionCount ===
-            discussionResult.getSiteWideDiscussionList.discussions.length
+              discussionResult.getSiteWideDiscussionList.discussions.length
           "
           @loadMore="loadMore"
         />

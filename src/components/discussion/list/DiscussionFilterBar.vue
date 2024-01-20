@@ -134,8 +134,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="space-y-2">
-    <div class="flex items-center justify-between px-1">
+  <div>
+    <SortButtons />
+    <div class="mt-4 flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
@@ -178,6 +179,5 @@ export default defineComponent({
         </template>
       </FilterChip>
     </div>
-    <SortButtons />
   </div>
 </template>

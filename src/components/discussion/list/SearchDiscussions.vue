@@ -240,14 +240,15 @@ export default defineComponent({
 <template>
   <v-container
     :class="[channelId ? '' : 'my-6 max-w-4xl']"
-    class="sm:py-4 lg:py-10 sm:px-4 lg:px-10 justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+    class="justify-center rounded-lg bg-gray-100 dark:bg-gray-800 sm:px-4 sm:py-4 lg:px-10 lg:py-10"
   >
-    <DiscussionFilterBar />
     <SitewideDiscussionList
       v-if="!channelId"
       @filterByTag="handleClickTag"
       @filterByChannel="handleClickChannel"
-    />
+    >
+      <DiscussionFilterBar />
+    </SitewideDiscussionList>
     <ChannelDiscussionList
       v-else
       :channel-id="channelId"
@@ -256,7 +257,9 @@ export default defineComponent({
       :selected-channels="filterValues.channels"
       @filterByTag="handleClickTag"
       @filterByChannel="handleClickChannel"
-    />
+    >
+      <DiscussionFilterBar />
+    </ChannelDiscussionList>
   </v-container>
 </template>
 

@@ -12,7 +12,7 @@ import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { getLinksInText } from "../utils";
-import { gql } from "@apollo/client/core";
+import { ApolloError, gql } from "@apollo/client/core";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
@@ -22,6 +22,7 @@ import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import useClipboard from "vue-clipboard3";
 import { modProfileNameVar } from "@/cache";
+import ErrorBanner from '@/components/generic/ErrorBanner.vue'
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -38,6 +39,7 @@ export default defineComponent({
     ChildComments,
     CommentButtons,
     EllipsisHorizontal,
+    ErrorBanner,
     MarkdownPreview,
     MenuButton,
     RightArrowIcon,
@@ -93,6 +95,11 @@ export default defineComponent({
     goToPermalinkOnClick: {
       type: Boolean,
       default: false,
+    },
+    editCommentError: {
+      type: Object as PropType<ApolloError | null>,
+      required: false,
+      default: null,
     },
   },
   setup(props, { emit }) {
@@ -468,6 +475,10 @@ export default defineComponent({
                     :editor-id="editorId"
                     @update="updateExistingComment($event, depth)"
                   />
+                  <ErrorBanner
+                    v-if="editCommentError && !readonly && editFormOpenAtCommentID === commentData.id"
+                    :text="editCommentError && editCommentError.message"
+                  />
                 </div>
                 <CommentButtons
                   v-if="channelId"
@@ -480,7 +491,7 @@ export default defineComponent({
                   :show-edit-comment-field="editFormOpenAtCommentID === commentData.id"
                   :show-replies="showReplies"
                   :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
-                  :comment-in-process="commentInProcess"
+                  :comment-in-process="commentInProcess && !editCommentError"
                   @startCommentSave="$emit('startCommentSave')"
                   @clickEditComment="handleEdit"
                   @createComment="createComment"
