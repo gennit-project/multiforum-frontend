@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import RequireAuth from "../../auth/RequireAuth.vue";
+import LoadingSpinner from "../LoadingSpinner.vue";
 
 export default defineComponent({
   name: "VoteButton",
   components: {
+    LoadingSpinner,
     RequireAuth,
   },
   props: {
@@ -15,6 +17,10 @@ export default defineComponent({
     count: {
       type: Number,
       default: 0,
+    },
+    loading: {
+      type: Boolean,
+      default: false,
     },
     showCount: {
       type: Boolean,
@@ -39,8 +45,11 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-tooltip location="top" content-class="custom-tooltip">
-    <template v-slot:activator="{ props }">
+  <v-tooltip
+    location="top"
+    content-class="custom-tooltip"
+  >
+    <template #activator="{ props }">
       <RequireAuth :full-width="false">
         <template #has-auth>
           <button
@@ -54,10 +63,22 @@ export default defineComponent({
             ]"
             @click="$emit('vote')"
           >
-            <span class="justify-center">
+            <span
+              v-if="!loading"
+              class="justify-center"
+            >
               <slot />
             </span>
-            <span v-if="showCount" class="mx-1 justify-center text-xs">{{
+            <span
+              v-if="loading"
+              class="justify-center"
+            >
+              <LoadingSpinner />
+            </span>
+            <span
+              v-if="showCount"
+              class="mx-1 justify-center text-xs"
+            >{{
               count
             }}</span>
           </button>
@@ -76,18 +97,28 @@ export default defineComponent({
             <span class="justify-center">
               <slot />
             </span>
-            <span v-if="showCount" class="mx-1 justify-center text-xs">{{
+            <span
+              v-if="showCount"
+              class="mx-1 justify-center text-xs"
+            >{{
               count
             }}</span>
           </button>
         </template>
       </RequireAuth>
     </template>
-    <template v-slot:default>
-      <div v-if="tooltipUnicode" class="flex justify-center">
-        <p class="text-6xl">{{ tooltipUnicode }}</p>
+    <template #default>
+      <div
+        v-if="tooltipUnicode"
+        class="flex justify-center"
+      >
+        <p class="text-6xl">
+          {{ tooltipUnicode }}
+        </p>
       </div>
-      <p class="min-w-sm text-sm">{{ tooltipText }}</p>
+      <p class="min-w-sm text-sm">
+        {{ tooltipText }}
+      </p>
     </template>
   </v-tooltip>
 </template>

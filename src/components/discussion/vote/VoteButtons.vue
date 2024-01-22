@@ -34,6 +34,14 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    upvoteLoading: {
+      type: Boolean,
+      default: false,
+    },
+    downvoteLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     return {};
@@ -56,6 +64,7 @@ export default defineComponent({
           :test-id="'upvote-discussion-button'"
           :count="upvoteCount"
           :active="upvoteActive"
+          :loading="upvoteLoading"
           :tooltip-text="
             upvoteActive ? 'Undo upvote' : 'Upvote to make this discussion more visible'
           "
@@ -69,6 +78,7 @@ export default defineComponent({
           :test-id="'downvote-discussion-button'"
           :count="downvoteCount"
           :active="downvoteActive"
+          :loading="downvoteLoading"
           :tooltip-text="
             downvoteActive ? 'Undo downvote' : 'Give anonymous feedback'
           "

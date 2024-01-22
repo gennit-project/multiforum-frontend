@@ -19,9 +19,11 @@ import { modProfileNameVar } from "@/cache";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { generateSlug } from "random-word-slugs";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 
 export default defineComponent({
   components: {
+    ErrorBanner,
     VoteButtons,
     WarningModal,
   },
@@ -78,7 +80,11 @@ export default defineComponent({
       return props.discussionChannel.id || "";
     });
 
-    const { mutate: downvoteDiscussionChannel } = useMutation(
+    const { 
+      mutate: downvoteDiscussionChannel,
+      error: downvoteDiscussionChannelError,
+      loading: downvoteDiscussionChannelLoading,
+    } = useMutation(
       DOWNVOTE_DISCUSSION_CHANNEL, () => {
         return {
           variables: {
@@ -89,7 +95,11 @@ export default defineComponent({
       }
     );
 
-    const { mutate: upvoteDiscussionChannel } =
+    const { 
+      mutate: upvoteDiscussionChannel,
+      error: upvoteDiscussionChannelError,
+      loading: upvoteDiscussionChannelLoading,
+    } =
       useMutation(UPVOTE_DISCUSSION_CHANNEL, () => {
         return {
           variables: {
@@ -99,7 +109,11 @@ export default defineComponent({
         };
       });
 
-    const { mutate: undoUpvoteDiscussionChannel } =
+    const { 
+      mutate: undoUpvoteDiscussionChannel,
+      error: undoUpvoteDiscussionChannelError,
+      loading: undoUpvoteDiscussionChannelLoading,
+    } =
       useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
         variables: {
           id: discussionChannelId.value || "",
@@ -107,7 +121,11 @@ export default defineComponent({
         },
       }));
 
-    const { mutate: undoDownvoteDiscussionChannel } = useMutation(
+    const { 
+      mutate: undoDownvoteDiscussionChannel,
+      error: undoDownvoteDiscussionChannelError,
+      loading: undoDownvoteDiscussionChannelLoading,
+    } = useMutation(
       UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
       () => ({
         variables: {
@@ -198,6 +216,14 @@ export default defineComponent({
         undoUpvoteDiscussionChannel,
         undoDownvoteDiscussionChannel,
       },
+      downvoteDiscussionChannelError,
+      downvoteDiscussionChannelLoading,
+      upvoteDiscussionChannelError,
+      upvoteDiscussionChannelLoading,
+      undoUpvoteDiscussionChannelError,
+      undoUpvoteDiscussionChannelLoading,
+      undoDownvoteDiscussionChannelError,
+      undoDownvoteDiscussionChannelLoading,
       upvoteCount,
       username,
       route,
@@ -275,6 +301,10 @@ export default defineComponent({
 </script>
 
 <template>
+  <ErrorBanner
+    v-if="downvoteDiscussionChannelError || upvoteDiscussionChannelError || undoUpvoteDiscussionChannelError || undoDownvoteDiscussionChannelError"
+    :text="downvoteDiscussionChannelError?.message || upvoteDiscussionChannelError?.message || undoUpvoteDiscussionChannelError?.message || undoDownvoteDiscussionChannelError?.message || ''"
+  />
   <VoteButtons
     class="my-1"
     :downvote-count="downvoteCount"
@@ -283,6 +313,8 @@ export default defineComponent({
     :downvote-active="loggedInUserDownvoted"
     :has-mod-profile="!!loggedInUserModName"
     :show-downvote="showDownvote"
+    :upvote-loading="upvoteDiscussionChannelLoading || undoUpvoteDiscussionChannelLoading"
+    :downvote-loading="downvoteDiscussionChannelLoading || undoDownvoteDiscussionChannelLoading"
     @clickDown="handleClickDown"
     @clickUp="handleClickUp"
     @openModProfile="showModProfileModal = true"

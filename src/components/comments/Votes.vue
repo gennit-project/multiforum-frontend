@@ -16,6 +16,14 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    downvoteLoading: {
+      type: Boolean,
+      default: false,
+    },
+    upvoteLoading: {
+      type: Boolean,
+      default: false,
+    },
     downvoteCount: {
       type: Number,
       default: 0,
@@ -62,6 +70,7 @@ export default defineComponent({
     <VoteButton
       :test-id="'upvote-comment-button'"
       :count="upvoteCount"
+      :loading="upvoteLoading"
       :active="upvoteActive"
       :tooltip-text="upvoteActive ? 'Undo upvote' : 'Upvote to make this comment more visible'"
       @vote="clickUpvote"
@@ -71,6 +80,7 @@ export default defineComponent({
     <VoteButton
       :test-id="'downvote-comment-button'"
       :count="downvoteCount"
+      :loading="downvoteLoading"
       :active="downvoteActive"
       :tooltip-text="downvoteActive ? 'Undo downvote' : 'Give anonymous feedback'"
       @vote="clickDownvote"

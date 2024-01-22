@@ -10,10 +10,12 @@ import {
   uploadAndGetEmbeddedLink,
   getUploadFileName,
 } from "@/components/utils";
+import ErrorBanner from "../ErrorBanner.vue";
 
 export default defineComponent({
   components: {
     AddImage,
+    ErrorBanner,
     Tab,
     TabGroup,
     TabList,
@@ -52,7 +54,10 @@ export default defineComponent({
         theme @client
       }
     `;
-    const { mutate: createSignedStorageUrl } = useMutation(
+    const { 
+      mutate: createSignedStorageUrl,
+      error: createSignedStorageUrlError,
+    } = useMutation(
       CREATE_SIGNED_STORAGE_URL,
     );
 
@@ -74,6 +79,7 @@ export default defineComponent({
 
     return {
       createSignedStorageUrl,
+      createSignedStorageUrlError,
       editorId: "texteditor",
       embeddedImageLink: ref(""),
       uploadAndGetEmbeddedLink,
@@ -184,6 +190,10 @@ export default defineComponent({
 </script>
 <template>
   <form>
+    <ErrorBanner
+      v-if="createSignedStorageUrlError"
+      :text="createSignedStorageUrlError && createSignedStorageUrlError.message"
+    />
     <TabGroup>
       <TabList class="flex items-center">
         <Tab

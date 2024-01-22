@@ -13,10 +13,13 @@ import {
   UNDO_UPVOTE_COMMENT,
   UNDO_DOWNVOTE_COMMENT,
 } from "@/graphQLData/comment/mutations";
+import ErrorBanner from "../generic/ErrorBanner.vue";
+
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
+    ErrorBanner,
     VotesComponent: Votes,
   },
   props: {
@@ -87,14 +90,22 @@ export default defineComponent({
       return match;
     });
 
-    const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT, () => ({
+    const { 
+      mutate: downvoteComment,
+      error: downvoteCommentError,
+      loading: downvoteCommentLoading,
+    } = useMutation(DOWNVOTE_COMMENT, () => ({
       variables: {
         id: props.commentData.id,
         displayName: loggedInUserModName.value,
       },
     }));
 
-    const { mutate: upvoteComment, error: upvoteCommentError } = useMutation(
+    const { 
+      mutate: upvoteComment, 
+      error: upvoteCommentError,
+      loading: upvoteCommentLoading,
+    } = useMutation(
       UPVOTE_COMMENT,
       () => ({
         variables: {
@@ -104,7 +115,11 @@ export default defineComponent({
       }),
     );
 
-    const { mutate: undoUpvoteComment } = useMutation(
+    const { 
+      mutate: undoUpvoteComment,
+      error: undoUpvoteError,
+      loading: undoUpvoteLoading,
+    } = useMutation(
       UNDO_UPVOTE_COMMENT,
       () => ({
         variables: {
@@ -114,7 +129,11 @@ export default defineComponent({
       }),
     );
 
-    const { mutate: undoDownvoteComment } = useMutation(
+    const { 
+      mutate: undoDownvoteComment,
+      error: undoDownvoteError,
+      loading: undoDownvoteLoading,
+    } = useMutation(
       UNDO_DOWNVOTE_COMMENT,
       () => ({
         variables: {
@@ -124,11 +143,18 @@ export default defineComponent({
       }),
     );
     return {
+      downvoteCommentError,
+      downvoteCommentLoading,
+      upvoteCommentLoading,
+      undoUpvoteLoading,
+      undoDownvoteError,
+      undoDownvoteLoading,
       loggedInUserDownvoted,
       loggedInUserUpvoted,
       loggedInUserModName,
       upvoteComment,
       upvoteCommentError,
+      undoUpvoteError,
       undoDownvoteComment,
       undoUpvoteComment,
       downvoteComment,
@@ -140,12 +166,18 @@ export default defineComponent({
 </script>
 <template>
   <div class="flex items-center">
+    <ErrorBanner
+      v-if="upvoteCommentError || undoUpvoteError || downvoteCommentError || undoDownvoteError"
+      :text="upvoteCommentError?.message || undoUpvoteError?.message || downvoteCommentError?.message || undoDownvoteError?.message || ''"
+    />
     <VotesComponent
       :downvote-count="commentData.DownvotedByModeratorsAggregate?.count || 0"
       :upvote-count="upvoteCount"
       :upvote-active="loggedInUserUpvoted"
       :downvote-active="loggedInUserDownvoted"
       :has-mod-profile="!!loggedInUserModName"
+      :upvote-loading="upvoteCommentLoading || undoUpvoteLoading"
+      :downvote-loading="downvoteCommentLoading || undoDownvoteLoading"
       @downvote="downvoteComment"
       @upvote="upvoteComment"
       @undoUpvote="undoUpvoteComment"
