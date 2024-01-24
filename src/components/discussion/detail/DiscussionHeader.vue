@@ -15,8 +15,9 @@ import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import useClipboard from "vue-clipboard3";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import Notification from "@/components/generic/Notification.vue";
-
+import Notification from "@/components/generic/Notification.vue"
+import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
+import ReportDiscussionModal from "./ReportDiscussionModal.vue";
 export default defineComponent({
   components: {
     EllipsisHorizontal,
@@ -25,7 +26,9 @@ export default defineComponent({
     WarningModal,
     Avatar,
     UsernameWithTooltip,
-    Notification
+    Notification,
+    GenericFeedbackFormModal,
+    ReportDiscussionModal,
   },
   props: {
     discussion: {
@@ -142,7 +145,6 @@ export default defineComponent({
     };
 
     const deleteModalIsOpen = ref(false);
-    const reportModalIsOpen = ref(false);
 
     const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
 
@@ -160,7 +162,7 @@ export default defineComponent({
     });
 
     const menuItems = computed(() => {
-      const out = []
+      let out = []
       if (props.discussion) {
         out.push({
           label: "Copy Link",
@@ -181,11 +183,11 @@ export default defineComponent({
           event: "handleDelete",
         });
       } else {
-        out.concat([
+        out = out.concat([
           {
             label: "Report",
             value: "",
-            event: "handleReport",
+            event: "handleClickReport",
           },
           {
             label: "Give Feedback",
@@ -217,8 +219,9 @@ export default defineComponent({
       lgAndUp,
       mdAndDown,
       mdAndUp,
-      reportModalIsOpen,
       showCopiedLinkNotification,
+      showFeedbackFormModal: ref(false),
+      showReportDiscussionModal: ref(false),
       xlAndUp,
     };
   },
@@ -227,6 +230,18 @@ export default defineComponent({
       const startTimeObj = DateTime.fromISO(startTime);
 
       return startTimeObj.toFormat("cccc LLLL d yyyy");
+    },
+    handleClickGiveFeedback() {
+      this.showFeedbackFormModal = true;
+    },
+    handleSubmitFeedback() {
+      this.showFeedbackFormModal = false;
+    },
+    handleClickReport() {
+      this.showReportCommentModal = true;
+    },
+    handleReportDiscussion() {
+      this.showReportCommentModal = false;
     },
   },
 });
@@ -286,7 +301,8 @@ export default defineComponent({
           )
         "
         @handleDelete="deleteModalIsOpen = true"
-        @handleReport="reportModalIsOpen = true"
+        @handleClickReport="showReportDiscussionModal = true"
+        @handleFeedback="showFeedbackFormModal = true"
       >
         <EllipsisHorizontal
           class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -299,6 +315,16 @@ export default defineComponent({
       :open="deleteModalIsOpen"
       @close="deleteModalIsOpen = false"
       @primary-button-click="deleteDiscussion"
+    />
+    <GenericFeedbackFormModal
+      :open="showFeedbackFormModal"
+      @close="showFeedbackFormModal = false"
+      @primaryButtonClick="handleSubmitFeedback"
+    />
+    <ReportDiscussionModal
+      :open="showReportDiscussionModal"
+      @close="showReportDiscussionModal = false"
+      @primaryButtonClick="handleReportDiscussion"
     />
     <ErrorBanner
       v-if="deleteDiscussionError"

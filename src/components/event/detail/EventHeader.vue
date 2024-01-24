@@ -20,6 +20,8 @@ import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import { getDuration } from "@/components/utils";
+import ReportEventModal from '@/components/event/detail/ReportEventModal.vue'
+import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 
 export default defineComponent({
   name: "EventHeader",
@@ -34,6 +36,8 @@ export default defineComponent({
     WarningModal,
     ErrorBanner,
     UsernameWithTooltip,
+    ReportEventModal,
+    GenericFeedbackFormModal
   },
   props: {
     eventData: {
@@ -161,7 +165,7 @@ export default defineComponent({
     });
 
     const menuItems = computed(() => {
-      const out = [];
+      let out = [];
       if (props.eventData) {
         out.push({
           label: "Copy Link",
@@ -190,7 +194,7 @@ export default defineComponent({
           });
         }
       } else {
-        out.concat([
+        out = out.concat([
           {
             label: "Report",
             value: "",
@@ -233,6 +237,8 @@ export default defineComponent({
       confirmCancelIsOpen: ref(false),
       confirmDeleteIsOpen: ref(false),
       reportModalIsOpen: ref(false),
+      showFeedbackFormModal: ref(false),
+      showReportEventModal: ref(false),
       copyAddress,
       copyLink,
       eventId,
@@ -252,6 +258,18 @@ export default defineComponent({
       const startTimeObj = DateTime.fromISO(startTime);
 
       return startTimeObj.toFormat("cccc LLLL d yyyy h:mm a");
+    },
+    handleSubmitFeedback() {
+      this.showFeedbackFormModal = false;
+    },
+    handleReportEvent() {
+      this.showReportEventModal = false;
+    },
+    handleClickReport() {
+      this.showReportEventModal = true;
+    },
+    handleClickGiveFeedback() {
+      this.showFeedbackFormModal = true;
     },
   },
 });
@@ -363,6 +381,8 @@ export default defineComponent({
       "
       @handleDelete="confirmDeleteIsOpen = true"
       @handleCancel="confirmCancelIsOpen = true"
+      @handleReport="handleClickReport"
+      @handleFeedback="handleClickGiveFeedback"
     >
       <EllipsisHorizontal
         class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -404,6 +424,16 @@ export default defineComponent({
       :secondary-button-text="'No'"
       @close="confirmCancelIsOpen = false"
       @primaryButtonClick="cancelEvent"
+    />
+    <GenericFeedbackFormModal
+      :open="showFeedbackFormModal"
+      @close="showFeedbackFormModal = false"
+      @primaryButtonClick="handleSubmitFeedback"
+    />
+    <ReportEventModal
+      :open="showReportEventModal"
+      @close="showReportEventModal = false"
+      @primaryButtonClick="handleReportEvent"
     />
   </div>
 </template>

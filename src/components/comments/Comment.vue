@@ -237,7 +237,7 @@ export default defineComponent({
           },
         ]);
       } else {
-        out.concat([
+        out = out.concat([
           {
             label: "Report",
             value: "",
@@ -246,7 +246,7 @@ export default defineComponent({
           {
             label: "Give Feedback",
             value: "",
-            event: "handleFeedback",
+            event: "clickFeedback",
           },
           {
             label: "View Feedback",
@@ -340,6 +340,10 @@ export default defineComponent({
     },
     handleReport() {
       this.$emit("clickReport", this.commentData);
+    },
+    handleFeedback() {
+      console.log('in comment, handle feedback runs')
+      this.$emit("clickFeedback", this.commentData);
     },
   },
 });
@@ -450,6 +454,7 @@ export default defineComponent({
                   @copyLink="copyLink"
                   @handleEdit="() => handleEdit(commentData)"
                   @handleReport="handleReport"
+                  @clickFeedback="handleFeedback"
                   @handleDelete="
                     () => {
                       const deleteCommentInput = {
@@ -527,6 +532,7 @@ export default defineComponent({
                   @saveEdit="$emit('saveEdit')"
                   @showReplies="showReplies = true"
                   @updateNewComment="updateNewComment"
+                  @clickFeedback="handleFeedback"
                 />
               </div>
             </div>
@@ -584,6 +590,7 @@ export default defineComponent({
                 @hideReplyEditor="$emit('hideReplyEditor')"
                 @openEditCommentEditor="$emit('openEditCommentEditor', childComment.id)"
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
+                @clickFeedback="handleFeedback"
               />
             </div>
           </ChildComments>

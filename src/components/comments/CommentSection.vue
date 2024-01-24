@@ -24,7 +24,8 @@ import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import ReportCommentModal from "./ReportCommentModal.vue";
-import FeedbackFormModal from "./FeedbackFormModal.vue";
+import FeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
+
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
@@ -505,6 +506,7 @@ export default defineComponent({
       this.editFormOpenAtCommentID = "";
     },
     handleClickGiveFeedback() {
+      console.log("handle click give feedback");
       this.showFeedbackFormModal = true;
     },
     handleSubmitFeedback(/*event: any*/) {
@@ -570,6 +572,7 @@ export default defineComponent({
             @saveEdit="handleSaveEdit"
             @scrollToTop="scrollToTop"
             @clickReport="handleClickReport"
+            @clickFeedback="handleClickGiveFeedback"
           />
         </template>
       </PermalinkedComment>
@@ -609,6 +612,7 @@ export default defineComponent({
               @openModProfileModal="showModProfileModal = true"
               @scrollToTop="scrollToTop"
               @clickReport="handleClickReport"
+              @clickFeedback="handleClickGiveFeedback"
             />
           </div>
         </div>

@@ -248,10 +248,10 @@ export default defineComponent({
       class="items-center gap-2"
     >
       <div class="align-items flex gap-2 px-6 lg:px-10 lg:py-6">
-        <div class="w-16">
+        <div >
           <ExpandableImage
             v-if="channel?.channelIconURL"
-            class="border-2 shadow-sm dark:border-gray-800"
+            class="w-16 h-16 border-2 shadow-sm dark:border-gray-800"
             :is-square="true"
             :is-medium="true"
             :alt="channelId"
@@ -259,7 +259,7 @@ export default defineComponent({
           />
           <Avatar
             v-else
-            class="border-2 shadow-sm dark:border-gray-800"
+            class="w-16 h-16 border-2 shadow-sm dark:border-gray-800"
             :text="channelId"
             :src="channel?.channelIconURL ?? ''"
             :is-medium="true"
