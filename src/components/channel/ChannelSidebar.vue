@@ -248,11 +248,12 @@ export default defineComponent({
       class="items-center gap-2"
     >
       <div class="align-items flex gap-2 px-6 lg:px-10 lg:py-6">
-        <div class="w-12">
+        <div class="w-16">
           <ExpandableImage
             v-if="channel?.channelIconURL"
             class="border-2 shadow-sm dark:border-gray-800"
-            :is-square="false"
+            :is-square="true"
+            :is-medium="true"
             :alt="channelId"
             :src="channel?.channelIconURL ?? ''"
           />
@@ -261,10 +262,11 @@ export default defineComponent({
             class="border-2 shadow-sm dark:border-gray-800"
             :text="channelId"
             :src="channel?.channelIconURL ?? ''"
+            :is-medium="true"
             :is-square="true"
           />
         </div>
-        <div class="mt-3">
+        <div class="mt-4">
           <h1
             v-if="channelId && !channel?.displayName"
             class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"

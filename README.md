@@ -56,6 +56,12 @@ If you upvote an item, the vote counter becomes blue to show that your vote has 
 
 ![Forum detail view on desktop](./screenshots/forum-detail-view-desktop.png)
 
+### Forum with banner and avatar - desktop
+
+Optionally, a decorative banner can be added to the top of a forum, just for fun:
+
+![Decorative banner forum on desktop](./screenshots/decorative-banner-desktop.png)
+
 ### Event list page within a forum - desktop
 
 The sidebar shows links to events that are coming in the very near future (within 2 weeks). The calendar page shows a full list of events that have been submitted to the channel and allows them to be filtered by time, tag, keywords in the name or description, or location.
@@ -104,3 +110,13 @@ Here is how it looks if you filter by past events:
 ### List of forums - mobile
 
 !![List of forums on mobile](./screenshots/list-of-forums-mobile.png)
+
+### Online event link in forum sidebar
+
+If one of the events in the forum's calendar is actively happening now, the forum sidebar has a big blue link to it:
+
+![Online event link in sidebar](./screenshots/online-event-link-in-sidebar.png)
+
+### Forum with a decorative banner at mobile width
+
+![Decorative banner mobile](./screenshots/decorative-banner-mobile.png)

@@ -119,20 +119,22 @@ export default defineComponent({
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
+        :is-medium="true"
+        :is-square="true"
         class="max-h-48 w-full"
       />
-      <div class="flex">
+      <div class="flex items-center">
         <Avatar
           class="mt-1 mb-2 ml-6 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL"
-          :is-small="true"
+          :is-medium="true"
           :is-square="true"
         />
         <div class="ml-6 pt-2">
           <h1
             v-if="channel?.displayName"
-            class="flex border-gray-700 text-4xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
           >
             {{ channel.displayName }}
           </h1>
