@@ -115,26 +115,21 @@ export default defineComponent({
       v-if="smAndDown"
       class="w-full"
     >
-      <div
-        v-if="!channel?.channelBannerURL"
-        class="h-32 w-full object-cover"
-        alt="background pattern"
-      />
       <ExpandableImage
-        v-else
+        v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
         class="max-h-48 w-full"
       />
       <div class="flex">
         <Avatar
-          class="-mt-28 mb-2 ml-6 border-4 border-white dark:border-gray-800"
+          class="mt-1 mb-2 ml-6 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL"
-          :is-medium="true"
+          :is-small="true"
           :is-square="true"
         />
-        <div class="-mt-28 ml-6 pt-2">
+        <div class="ml-6 pt-2">
           <h1
             v-if="channel?.displayName"
             class="flex border-gray-700 text-4xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
@@ -145,7 +140,7 @@ export default defineComponent({
             v-if="channel?.uniqueName"
             class="text-lg font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
           >
-            {{ `c/${channel.uniqueName}` }}
+            {{ `${channel.uniqueName}` }}
           </h2>
         </div>
       </div>

@@ -46,19 +46,18 @@ export default defineComponent({
 <template>
   <div class="flex flex-col">
     <div
-      class="shadow rounded-t-lg bg-white p-8 dark:bg-gray-800 dark:text-gray-200"
+      class="border border-gray-500 dark:border-gray-600 shadow rounded-t-lg bg-white p-3 dark:bg-gray-800 dark:text-gray-200"
     >
       <div class="flex flex-row items-center gap-3">
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
           class="flex cursor-pointer items-center"
         >
-          <div class="w-24 rounded-lg border">
+          <div class="rounded-lg border">
             <Avatar
               :text="channel.uniqueName"
               :src="channel?.channelIconURL"
-              :is-square="true"
-              :is-medium="true"
+              :is-small="true"
             />
           </div>
         </router-link>

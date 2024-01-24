@@ -48,7 +48,7 @@ export default defineComponent({
     >
       There are no results.
     </p>
-    <div class="grid gap-4 md:grid-cols-2">
+    <div class="grid gap-4 md:grid-cols-1">
       <ChannelListItem
         v-for="channel in channels"
         :key="channel.uniqueName"

@@ -101,7 +101,7 @@ export default defineComponent({
             data-testid="addComment"
             name="addcomment"
             rows="1"
-            placeholder="Write a reply"
+            placeholder="Write a comment"
             :class="writeReplyStyle"
             @click="$emit('openCommentEditor')"
           />
@@ -111,7 +111,7 @@ export default defineComponent({
             id="addCommentLoginPrompt"
             name="addcomment"
             rows="1"
-            placeholder="Write a reply"
+            placeholder="Write a comment"
             :class="writeReplyStyle"
           />
         </template>

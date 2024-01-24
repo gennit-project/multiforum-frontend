@@ -236,6 +236,24 @@ export default defineComponent({
             event: "handleDelete",
           },
         ]);
+      } else {
+        out.concat([
+          {
+            label: "Report",
+            value: "",
+            event: "handleReport",
+          },
+          {
+            label: "Give Feedback",
+            value: "",
+            event: "handleFeedback",
+          },
+          {
+            label: "View Feedback",
+            value: "",
+            event: "handleViewFeedback",
+          }
+        ]);
       }
       if (canShowPermalink) {
         out.push({
@@ -243,6 +261,7 @@ export default defineComponent({
           value: "",
           event: "copyLink",
         });
+
       }
       return out;
     });
@@ -318,6 +337,9 @@ export default defineComponent({
     },
     updateText(text: string) {
       this.textCopy = text;
+    },
+    handleReport() {
+      this.$emit("clickReport", this.commentData);
     },
   },
 });
@@ -427,6 +449,7 @@ export default defineComponent({
                   :items="commentMenuItems"
                   @copyLink="copyLink"
                   @handleEdit="() => handleEdit(commentData)"
+                  @handleReport="handleReport"
                   @handleDelete="
                     () => {
                       const deleteCommentInput = {

@@ -23,6 +23,8 @@ import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 import PermalinkedComment from "./PermalinkedComment.vue";
+import ReportCommentModal from "./ReportCommentModal.vue";
+import FeedbackFormModal from "./FeedbackFormModal.vue";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
@@ -52,6 +54,8 @@ export default defineComponent({
     PermalinkedComment,
     WarningModal,
     Notification,
+    ReportCommentModal,
+    FeedbackFormModal,
   },
   inheritAttrs: false,
   props: {
@@ -129,10 +133,10 @@ export default defineComponent({
       };
     });
 
-    const { 
-      mutate: editComment, 
+    const {
+      mutate: editComment,
       error: editCommentError,
-      onDone: onDoneUpdatingComment 
+      onDone: onDoneUpdatingComment,
     } = useMutation(UPDATE_COMMENT, () => ({
       variables: {
         commentWhere: {
@@ -223,116 +227,116 @@ export default defineComponent({
     // so that the replies are still visible.
     const { mutate: softDeleteComment } = useMutation(SOFT_DELETE_COMMENT);
 
-    const { mutate: createComment, error: createCommentError, onDone: onDoneCreatingComment } = useMutation(
-      CREATE_COMMENT,
-      () => ({
-        errorPolicy: "all",
-        variables: {
-          createCommentInput: props.createCommentInput,
-        },
-        update: (cache: any, result: any) => {
-          // This contains logic for updating the cache after you reply
-          // to a comment. For the logic for updating a root comment,
-          // see the CreateRootComment form.
-          const newComment: CommentData =
-            result.data?.createComments?.comments[0];
+    const {
+      mutate: createComment,
+      error: createCommentError,
+      onDone: onDoneCreatingComment,
+    } = useMutation(CREATE_COMMENT, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentInput: props.createCommentInput,
+      },
+      update: (cache: any, result: any) => {
+        // This contains logic for updating the cache after you reply
+        // to a comment. For the logic for updating a root comment,
+        // see the CreateRootComment form.
+        const newComment: CommentData =
+          result.data?.createComments?.comments[0];
 
-          const newCommentParentId = newComment?.ParentComment?.id;
-          if (!newCommentParentId) {
-            throw new Error("newCommentParentId is required");
-          }
+        const newCommentParentId = newComment?.ParentComment?.id;
+        if (!newCommentParentId) {
+          throw new Error("newCommentParentId is required");
+        }
 
-          // For nested comments, first
-          // check if there are already replies to the parent
-          // comment.
-          const readQueryResult = cache.readQuery({
+        // For nested comments, first
+        // check if there are already replies to the parent
+        // comment.
+        const readQueryResult = cache.readQuery({
+          query: GET_COMMENT_REPLIES,
+          variables: {
+            ...getCommentRepliesVariables,
+            commentId: newCommentParentId,
+          },
+        });
+
+        if (!readQueryResult) {
+          // If we have not yet tried to fetch the replies
+          // of the parent comment, it is probably because
+          // the reply count was 0. Changing the count to 1
+          // should cause the replies to refetch.
+          cache.modify({
+            id: cache.identify({
+              __typename: "Comment",
+              id: props.createFormValues.parentCommentId,
+            }),
+            fields: {
+              ChildCommentsAggregate(existingValue: any) {
+                return {
+                  ...existingValue,
+                  count: existingValue.count + 1,
+                };
+              },
+            },
+          });
+        }
+
+        if (readQueryResult) {
+          const existingReplies =
+            readQueryResult?.getCommentReplies?.ChildComments;
+
+          // If there are NOT already replies to the parent
+          // comment, edit the aggregate count
+          // of child comments on the parent comment. That should
+          // trigger the GET_COMMENT_REPLIES query to be fetched.
+
+          const existingChildCommentAggregate =
+            readQueryResult?.getCommentReplies?.aggregateChildCommentCount || 0;
+          let newChildCommentAggregate = existingChildCommentAggregate + 1;
+
+          const newGetRepliesData = {
+            ...readQueryResult,
+            getCommentReplies: {
+              ...readQueryResult?.getCommentReplies,
+              ChildComments: [newComment, ...existingReplies],
+              aggregateChildCommentCount: newChildCommentAggregate,
+            },
+          };
+
+          cache.writeQuery({
             query: GET_COMMENT_REPLIES,
+            data: newGetRepliesData,
             variables: {
               ...getCommentRepliesVariables,
               commentId: newCommentParentId,
             },
           });
+        } // end of if-statement for if query result exists.
+        // the following runs if there were previously 0 or more than
+        // 0 child comments.
 
-          if (!readQueryResult) {
-            // If we have not yet tried to fetch the replies
-            // of the parent comment, it is probably because
-            // the reply count was 0. Changing the count to 1
-            // should cause the replies to refetch.
-            cache.modify({
-              id: cache.identify({
-                __typename: "Comment",
-                id: props.createFormValues.parentCommentId,
-              }),
-              fields: {
-                ChildCommentsAggregate(existingValue: any) {
-                  return {
-                    ...existingValue,
-                    count: existingValue.count + 1,
-                  };
-                },
-              },
-            });
-          }
+        // Update the total count of comments
+        emit("incrementCommentCount", cache);
+      },
+    }));
 
-          if (readQueryResult) {
-            const existingReplies =
-              readQueryResult?.getCommentReplies?.ChildComments;
-
-            // If there are NOT already replies to the parent
-            // comment, edit the aggregate count
-            // of child comments on the parent comment. That should
-            // trigger the GET_COMMENT_REPLIES query to be fetched.
-
-            const existingChildCommentAggregate =
-              readQueryResult?.getCommentReplies?.aggregateChildCommentCount ||
-              0;
-            let newChildCommentAggregate = existingChildCommentAggregate + 1;
-
-            const newGetRepliesData = {
-              ...readQueryResult,
-              getCommentReplies: {
-                ...readQueryResult?.getCommentReplies,
-                ChildComments: [newComment, ...existingReplies],
-                aggregateChildCommentCount: newChildCommentAggregate,
-              },
-            };
-
-            cache.writeQuery({
-              query: GET_COMMENT_REPLIES,
-              data: newGetRepliesData,
-              variables: {
-                ...getCommentRepliesVariables,
-                commentId: newCommentParentId,
-              },
-            });
-          } // end of if-statement for if query result exists.
-          // the following runs if there were previously 0 or more than
-          // 0 child comments.
-
-          // Update the total count of comments
-          emit("incrementCommentCount", cache);
-        },
-      }),
-    );
-
-    const commentInProcess = ref(false)
+    const commentInProcess = ref(false);
 
     // Holds the ID of the comment with an open reply form.
     // Allows us to hold open/close state at the comment section level
     // because the async mutation is at this level, while
     // also allowing us to keep track of which comment has an open editor.
-    const replyFormOpenAtCommentID = ref('')
+    const replyFormOpenAtCommentID = ref("");
 
-    const editFormOpenAtCommentID = ref('')
+    const editFormOpenAtCommentID = ref("");
 
     onDoneCreatingComment(() => {
       commentInProcess.value = false;
-      replyFormOpenAtCommentID.value = '';
+      replyFormOpenAtCommentID.value = "";
     });
 
     onDoneUpdatingComment(() => {
       commentInProcess.value = false;
-      editFormOpenAtCommentID.value = '';
+      editFormOpenAtCommentID.value = "";
     });
 
     const {
@@ -387,6 +391,8 @@ export default defineComponent({
       showCopiedLinkNotification,
       showDeleteCommentModal: ref(false),
       showModProfileModal: ref(false),
+      showFeedbackFormModal: ref(false),
+      showReportCommentModal: ref(false),
       route,
       softDeleteComment,
     };
@@ -487,16 +493,28 @@ export default defineComponent({
       commentSectionHeader.scrollIntoView();
     },
     openReplyEditor(commentId: string) {
-      this.replyFormOpenAtCommentID = commentId
+      this.replyFormOpenAtCommentID = commentId;
     },
     hideReplyEditor() {
-      this.replyFormOpenAtCommentID = ''
+      this.replyFormOpenAtCommentID = "";
     },
     openEditCommentEditor(commentId: string) {
-      this.editFormOpenAtCommentID = commentId
+      this.editFormOpenAtCommentID = commentId;
     },
     hideEditCommentEditor() {
-      this.editFormOpenAtCommentID = ''
+      this.editFormOpenAtCommentID = "";
+    },
+    handleClickGiveFeedback() {
+      this.showFeedbackFormModal = true;
+    },
+    handleSubmitFeedback(/*event: any*/) {
+      // console.log("handle submit feedback", event);
+    },
+    handleClickReport(/*event: any*/) {
+      this.showReportCommentModal = true;
+    },
+    handleReportComment() {
+      // console.log("handle report comment");
     },
   },
 });
@@ -551,6 +569,7 @@ export default defineComponent({
             @updateEditCommentInput="updateEditInputValues"
             @saveEdit="handleSaveEdit"
             @scrollToTop="scrollToTop"
+            @clickReport="handleClickReport"
           />
         </template>
       </PermalinkedComment>
@@ -589,6 +608,7 @@ export default defineComponent({
               @showCopiedLinkNotification="showCopiedLinkNotification = $event"
               @openModProfileModal="showModProfileModal = true"
               @scrollToTop="scrollToTop"
+              @clickReport="handleClickReport"
             />
           </div>
         </div>
@@ -606,6 +626,16 @@ export default defineComponent({
       :open="showDeleteCommentModal"
       @close="showDeleteCommentModal = false"
       @primaryButtonClick="handleDeleteComment"
+    />
+    <FeedbackFormModal
+      :open="showFeedbackFormModal"
+      @close="showFeedbackFormModal = false"
+      @primaryButtonClick="handleSubmitFeedback"
+    />
+    <ReportCommentModal
+      :open="showReportCommentModal"
+      @close="showReportCommentModal = false"
+      @primaryButtonClick="handleReportComment"
     />
     <Notification
       :show="showCopiedLinkNotification"

@@ -1,9 +1,10 @@
 <script>
 import { defineComponent } from "vue";
-import GenericModal from "./GenericModal.vue";
+import GenericModal from "../generic/GenericModal.vue";
 import ExclamationIcon from "../icons/ExclamationIcon.vue";
 
 export default defineComponent({
+  name: "FeedbackFormModal",
   components: {
     GenericModal,
     ExclamationIcon,

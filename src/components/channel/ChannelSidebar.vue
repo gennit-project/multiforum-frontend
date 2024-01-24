@@ -247,8 +247,8 @@ export default defineComponent({
       v-if="channelId"
       class="items-center gap-2"
     >
-      <div class="px-6 py-3 lg:px-10 lg:pt-10">
-        <div class="w-40">
+      <div class="align-items flex gap-2 px-6 lg:px-10 lg:py-6">
+        <div class="w-12">
           <ExpandableImage
             v-if="channel?.channelIconURL"
             class="border-2 shadow-sm dark:border-gray-800"
@@ -264,23 +264,25 @@ export default defineComponent({
             :is-square="true"
           />
         </div>
-        <h1
-          v-if="channelId && !channel?.displayName"
-          class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
-        >
-          {{ channelId }}
-        </h1>
-        <div v-if="channel?.displayName">
+        <div class="mt-3">
           <h1
-            class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
-          >
-            {{ channel?.displayName }}
-          </h1>
-          <span
-            class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+            v-if="channelId && !channel?.displayName"
+            class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
           >
             {{ channelId }}
-          </span>
+          </h1>
+          <div v-if="channel?.displayName">
+            <h1
+              class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+            >
+              {{ channel?.displayName }}
+            </h1>
+            <span
+              class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+            >
+              {{ channelId }}
+            </span>
+          </div>
         </div>
       </div>
     </div>
@@ -295,7 +297,6 @@ export default defineComponent({
             :word-limit="1000"
           />
         </div>
-        
 
         <div class="mt-6 w-full">
           <div v-if="channel.Tags.length > 0">

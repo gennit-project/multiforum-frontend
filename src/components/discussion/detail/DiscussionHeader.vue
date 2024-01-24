@@ -142,6 +142,7 @@ export default defineComponent({
     };
 
     const deleteModalIsOpen = ref(false);
+    const reportModalIsOpen = ref(false);
 
     const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
 
@@ -179,6 +180,24 @@ export default defineComponent({
           value: "",
           event: "handleDelete",
         });
+      } else {
+        out.concat([
+          {
+            label: "Report",
+            value: "",
+            event: "handleReport",
+          },
+          {
+            label: "Give Feedback",
+            value: "",
+            event: "handleFeedback",
+          },
+          {
+            label: "View Feedback",
+            value: "",
+            event: "handleViewFeedback",
+          }
+        ]);
       }
       
       return out;
@@ -198,6 +217,7 @@ export default defineComponent({
       lgAndUp,
       mdAndDown,
       mdAndUp,
+      reportModalIsOpen,
       showCopiedLinkNotification,
       xlAndUp,
     };
@@ -266,6 +286,7 @@ export default defineComponent({
           )
         "
         @handleDelete="deleteModalIsOpen = true"
+        @handleReport="reportModalIsOpen = true"
       >
         <EllipsisHorizontal
           class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"

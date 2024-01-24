@@ -189,6 +189,24 @@ export default defineComponent({
             event: "handleCancel",
           });
         }
+      } else {
+        out.concat([
+          {
+            label: "Report",
+            value: "",
+            event: "handleReport",
+          },
+          {
+            label: "Give Feedback",
+            value: "",
+            event: "handleFeedback",
+          },
+          {
+            label: "View Feedback",
+            value: "",
+            event: "handleViewFeedback",
+          }
+        ]);
       }
 
       return out;
@@ -214,6 +232,7 @@ export default defineComponent({
       cancelEventError,
       confirmCancelIsOpen: ref(false),
       confirmDeleteIsOpen: ref(false),
+      reportModalIsOpen: ref(false),
       copyAddress,
       copyLink,
       eventId,
@@ -326,7 +345,7 @@ export default defineComponent({
             :src="eventData.Poster.profilePicURL ?? ''"
             :display-name="eventData.Poster.displayName || ''"
             :comment-karma="eventData.Poster.commentKarma ?? 0"
-            :event-karma="eventData.Poster.eventKarma ?? 0"
+            :discussion-karma="eventData.Poster.discussionKarma ?? 0"
             :account-created="eventData.Poster.createdAt"
           >
             <span class="underline">{{ eventData.Poster.username }}</span>

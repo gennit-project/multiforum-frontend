@@ -121,7 +121,7 @@ export default defineComponent({
       class="flex flex-col justify-center"
     >
       <Avatar
-        class="-mt-24 mb-4 h-24 w-24 shadow-sm"
+        class="-mt-24 mb-4 h-24 w-24 shadow-sm border"
         :text="username"
         :src="user?.profilePicURL"
         :is-medium="true"
@@ -141,13 +141,13 @@ export default defineComponent({
           {{ `u/${username}` }}
         </div>
       </div>
-      <router-link
+      <!-- <router-link
         v-if="loggedInUserModName"
         class="text-sm text-gray-500 underline dark:text-gray-300"
         :to="`/mod/${loggedInUserModName}`"
       >
         Go to mod profile
-      </router-link>
+      </router-link> -->
     </div>
     <div class="dark:bg-gray-950">
       <article class="relative z-0 flex-1 focus:outline-none xl:order-last">
