@@ -52,19 +52,25 @@ From that list, if you click a list item, you see details of that one event (the
 
 ### Forum detail view - desktop
 
+If you upvote an item, the vote counter becomes blue to show that your vote has been recorded.
+
 ![Forum detail view on desktop](./screenshots/forum-detail-view-desktop.png)
 
 ### Event list page within a forum - desktop
+
+The sidebar shows links to events that are coming in the very near future (within 2 weeks). The calendar page shows a full list of events that have been submitted to the channel and allows them to be filtered by time, tag, keywords in the name or description, or location.
 
 ![Forum event list on desktop](./screenshots/forum-event-list-desktop.png)
 
 ### Discussion detail page with placeholder text - desktop
 
+I intend to let you both upvote and downvote something at the same time. It allows capturing the nuance of something that you think more people should see, but also needs some changes (downvoting is planned to allow the user to submit feedback on the post.)
+
 ![Discussion detail page on desktop](./screenshots/discussion-detail-page-desktop.png)
 
 ### Forums page on desktop
 
-You can see a list of all the forums hosted on the platform, the number of discussions and the number of upcoming events:
+You can see a list of all the forums hosted on the platform, the number of discussions and the number of upcoming events in each one
 
 ![Forum list](./screenshots/forum-list.png)
 
@@ -93,7 +99,7 @@ Here is how it looks if you filter by past events:
 
 ### Discussion detail page - mobile
 
-![Discussion detail page](./screenshots/disc)
+![Discussion detail page](./screenshots/discussion-detail-page-mobile.png)
 
 ### List of forums - mobile
 
