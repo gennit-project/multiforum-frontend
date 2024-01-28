@@ -10,6 +10,18 @@ import { Channel } from "@/__generated__/graphql";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 
+type Tab = {
+  name: string;
+  routeSuffix: string;
+  label: string;
+  icon: any;
+  countProperty: keyof Channel | null;
+};
+
+type TabRoutes = {
+  [key: string]: string;
+};
+
 export default defineComponent({
   name: "ChannelTabs",
   components: {
@@ -57,7 +69,7 @@ export default defineComponent({
     });
 
     const tabRoutes = computed(() => {
-      let routes = {
+      let routes: TabRoutes = {
         discussions: `/channels/c/${channelId.value}/discussions`,
         events: `/channels/c/${channelId.value}/events/search`,
         about: `/channels/c/${channelId.value}/about`,
@@ -66,15 +78,58 @@ export default defineComponent({
 
       return routes;
     });
+
+    const iconSize = computed(() => {
+      return props.vertical ? "h-6 w-6 shrink-0" : "h-5 w-5 shrink-0";
+    });
+
+    const tabs: Tab[] = [
+      {
+        name: "discussions",
+        routeSuffix: "discussions",
+        label: "Discussions",
+        icon: DiscussionIcon,
+        countProperty: "DiscussionChannelsAggregate",
+      },
+      {
+        name: "events",
+        routeSuffix: "events/search",
+        label: "Calendar",
+        icon: CalendarIcon,
+        countProperty: "EventChannelsAggregate",
+      },
+    ];
+    const adminList = props.channel.Admins.map((user) => {
+      return user.username;
+    });
+
+    if (username.value && adminList.includes(username.value)) {
+      tabs.push({
+        name: "settings",
+        routeSuffix: "edit",
+        label: "Settings",
+        icon: CogIcon,
+        countProperty: null,
+      });
+    }
+
+    if (mdAndDown) {
+      tabs.push({
+        name: "about",
+        routeSuffix: "about",
+        label: "About",
+        icon: InfoIcon,
+        countProperty: null,
+      });
+    }
+
     return {
       channelId,
+      iconSize,
       mdAndDown,
       tabRoutes,
       username,
-    };
-  },
-  data() {
-    return {
+      tabs,
       selectedTab: "about",
     };
   },
@@ -86,96 +141,26 @@ export default defineComponent({
   },
 });
 </script>
->
-
 <template>
   <div>
     <nav
-      v-if="vertical"
-      class="text-md flex max-w-7xl flex-col"
+      :class="{
+        'text-md flex max-w-7xl flex-col': vertical,
+        'max-w-7xl space-x-2 pt-1 text-sm': !vertical,
+      }"
       aria-label="Tabs"
     >
       <TabButton
-        :to="tabRoutes.discussions"
-        :label="'Discussions'"
-        :is-active="$route.path.includes('discussions')"
-        :vertical="true"
-        :show-count="showCounts"
-        :count="channel.DiscussionChannelsAggregate?.count || 0"
+        v-for="tab in tabs"
+        :key="tab.name"
+        :to="tabRoutes[tab.name]"
+        :label="tab.label"
+        :is-active="$route.path.includes(tab.routeSuffix)"
+        :vertical="vertical"
+        :show-count="showCounts && !!tab.countProperty"
+        :count="tab.countProperty ? channel[tab.countProperty]?.count : 0"
       >
-        <DiscussionIcon class="h-6 w-6 shrink-0" />
-      </TabButton>
-      <TabButton
-        :to="tabRoutes.events"
-        :label="'Calendar'"
-        :is-active="route.name.includes('Event')"
-        :vertical="true"
-        :show-count="showCounts"
-        :count="channel.EventChannelsAggregate?.count || 0"
-      >
-        <CalendarIcon class="h-6 w-6 shrink-0" />
-      </TabButton>
-      <TabButton
-        v-if="mdAndDown"
-        :to="tabRoutes.about"
-        :label="'About'"
-        :is-active="route.name.includes('About')"
-        :vertical="true"
-        :show-count="false"
-      >
-        <InfoIcon class="h-6 w-6 shrink-0" />
-      </TabButton>
-      <TabButton
-        v-if="username && adminList.includes(username)"
-        :to="tabRoutes.settings"
-        :label="'Settings'"
-        :is-active="route.name.includes('settings')"
-        :vertical="true"
-        :show-count="false"
-      >
-        <CogIcon class="h-6 w-6 shrink-0" />
-      </TabButton>
-    </nav>
-    <nav
-      v-else
-      class="max-w-7xl space-x-2 pt-1 text-sm"
-      aria-label="Tabs"
-    >
-      <TabButton
-        :to="tabRoutes.discussions"
-        :label="'Discussions'"
-        :is-active="route.path.includes('discussions')"
-        :show-count="showCounts"
-        :count="channel.DiscussionChannelsAggregate?.count || 0"
-      >
-        <DiscussionIcon class="h-5 w-5 shrink-0" />
-      </TabButton>
-      <TabButton
-        :to="tabRoutes.events"
-        :label="'Calendar'"
-        :is-active="route.name.includes('Event')"
-        :show-count="showCounts"
-        :count="channel.EventChannelsAggregate?.count || 0"
-      >
-        <CalendarIcon class="h-5 w-5 shrink-0" />
-      </TabButton>
-      <TabButton
-        v-if="mdAndDown"
-        :to="tabRoutes.about"
-        :label="'About'"
-        :is-active="route.name.includes('About')"
-        :show-count="false"
-      >
-        <InfoIcon class="h-5 w-5 shrink-0" />
-      </TabButton>
-      <TabButton
-        v-if="username && adminList.includes(username)"
-        :to="tabRoutes.settings"
-        :label="'Settings'"
-        :is-active="route.name.includes('settings')"
-        :show-count="false"
-      >
-        <InfoIcon class="h-5 w-5 shrink-0" />
+        <component :is="tab.icon" :class="iconSize" />
       </TabButton>
     </nav>
   </div>

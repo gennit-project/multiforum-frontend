@@ -24,13 +24,12 @@ import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 import PermalinkedComment from "@/components/comments/PermalinkedComment.vue";
 import CommentModHistory from "@/components/comments/CommentModHistory.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
-import DownvotedDiscussions from "@/components/mod/DownvotedDiscussions.vue";
-import DownvotedComments from "@/components/mod/DownvotedComments.vue";
 import UserComments from "@/components/user/UserComments.vue";
 import UserDiscussions from "@/components/user/UserDiscussions.vue";
 import UserEvents from "@/components/user/UserEvents.vue";
 import Subreddit from "./components/subreddit/Subreddit.vue";
 import AccountSettings from "./components/user/AccountSettings.vue";
+import Issues from "./components/mod/Issues.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -170,10 +169,20 @@ export const router = createRouter({
           component: ChannelAboutPage,
         },
         {
+          name: "Moderation",
+          path: "issues",
+          component: Issues,
+        },
+        {
           name: "DiscussionDetail",
           path: "discussions/d/:discussionId",
           component: DiscussionDetail,
           children: [
+            {
+              name: "DiscussionModHistory",
+              path: "modhistory",
+              component: CommentModHistory,
+            },
             {
               name: "DiscussionCommentPermalink",
               path: "comments/:commentId",
@@ -222,6 +231,25 @@ export const router = createRouter({
               name: "EventDetail",
               path: "e/:eventId",
               component: EventDetail,
+              children: [
+                {
+                  name: "DiscussionModHistory",
+                  path: "modhistory",
+                  component: CommentModHistory,
+                },
+                {
+                  name: "DiscussionCommentPermalink",
+                  path: "comments/:commentId",
+                  component: PermalinkedComment,
+                  children: [
+                    {
+                      name: "DiscussionCommentModHistory",
+                      path: "modhistory",
+                      component: CommentModHistory,
+                    },
+                  ],
+                },
+              ],
             },
             {
               name: "EditEvent",
@@ -237,18 +265,18 @@ export const router = createRouter({
     {
       path: "/mod/:modId",
       component: ModProfile,
-      children: [
-        {
-          name: "ModProfileDownvotedDiscussions",
-          path: "downvoted/discussions",
-          component: DownvotedDiscussions,
-        },
-        {
-          name: "ModProfileDownvotedComments",
-          path: "",
-          component: DownvotedComments,
-        },
-      ],
+      // children: [
+      //   {
+      //     name: "ModProfileDownvotedDiscussions",
+      //     path: "downvoted/discussions",
+      //     component: DownvotedDiscussions,
+      //   },
+      //   {
+      //     name: "ModProfileDownvotedComments",
+      //     path: "",
+      //     component: DownvotedComments,
+      //   },
+      // ],
     },
     { path: "/settings", component: SiteSettings },
     {

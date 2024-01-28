@@ -165,7 +165,7 @@ export default defineComponent({
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
-        class="my-2 max-h-48 w-full rounded-t-lg"
+        class="my-2 max-h-36 w-full rounded-t-lg"
       />
       <v-container
         fluid
