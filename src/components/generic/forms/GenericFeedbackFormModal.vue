@@ -21,6 +21,12 @@ export default defineComponent({
       body: "Do you have any actionable feedback for the author?",
     };
   },
+  methods: {
+    updateFeedback(event) {
+      console.log(' in generic form',event.target.value);
+      this.$emit('updateFeedback', event.target.value);
+    },
+  },
 });
 </script>
 <template>
@@ -42,6 +48,7 @@ export default defineComponent({
       <textarea
         class="h-32 w-full rounded-md border border-gray-300 p-2"
         placeholder="Your feedback"
+        @input="updateFeedback"
       ></textarea>
       <p class="text-gray-600 dark:text-gray-400">
         Feedback is intended to be a useful tool for the author. If you think

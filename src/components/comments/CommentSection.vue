@@ -518,6 +518,9 @@ export default defineComponent({
     handleReportComment() {
       // console.log("handle report comment");
     },
+    updateFeedback(feedback: string) {
+      console.log("update feedback", feedback);
+    },
   },
 });
 </script>
@@ -573,6 +576,7 @@ export default defineComponent({
             @scrollToTop="scrollToTop"
             @clickReport="handleClickReport"
             @clickFeedback="handleClickGiveFeedback"
+            @updateFeedback="updateFeedback"
           />
         </template>
       </PermalinkedComment>
@@ -613,6 +617,7 @@ export default defineComponent({
               @scrollToTop="scrollToTop"
               @clickReport="handleClickReport"
               @clickFeedback="handleClickGiveFeedback"
+              @updateFeedback="updateFeedback"
             />
           </div>
         </div>
@@ -635,6 +640,7 @@ export default defineComponent({
       :open="showFeedbackFormModal"
       @close="showFeedbackFormModal = false"
       @primaryButtonClick="handleSubmitFeedback"
+      @updateFeedback="updateFeedback"
     />
     <ReportCommentModal
       :open="showReportCommentModal"

@@ -111,10 +111,7 @@ export default defineComponent({
 
 <template>
   <div class="flex h-screen justify-center dark:bg-black">
-    <div
-      v-if="smAndDown"
-      class="w-full"
-    >
+    <div v-if="smAndDown" class="w-full">
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -125,7 +122,7 @@ export default defineComponent({
       />
       <div class="flex items-center">
         <Avatar
-          class="mt-1 mb-2 ml-6 border-4 border-white dark:border-gray-800"
+          class="mb-2 ml-6 mt-1 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL"
           :is-medium="true"
@@ -163,17 +160,17 @@ export default defineComponent({
         </div>
       </article>
     </div>
-    <article
-      v-else
-      class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
-    >
-      <v-container fluid>
-        <ExpandableImage
-          v-if="channel?.channelBannerURL"
-          :src="channel?.channelBannerURL"
-          :alt="'channel banner'"
-          class="my-2 max-h-48 w-full rounded-t-lg"
-        />
+    <article v-else class="w-full">
+      <ExpandableImage
+        v-if="channel?.channelBannerURL"
+        :src="channel?.channelBannerURL"
+        :alt="'channel banner'"
+        class="my-2 max-h-48 w-full rounded-t-lg"
+      />
+      <v-container
+        fluid
+        class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
+      >
         <v-row class="flex">
           <v-col :cols="8">
             <div class="rounded-lg rounded-t-lg">
@@ -182,10 +179,7 @@ export default defineComponent({
               </div>
             </div>
           </v-col>
-          <v-col
-            v-if="channelId"
-            :cols="4"
-          >
+          <v-col v-if="channelId" :cols="4">
             <ChannelSidebar
               v-if="channel"
               :channel="channel"
