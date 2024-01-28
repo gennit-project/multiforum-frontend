@@ -27,7 +27,13 @@ export const GET_CHANNEL = gql`
         discussionKarma
         createdAt
       }
+      Moderators {
+        displayName
+      }
       DiscussionChannelsAggregate {
+        count
+      }
+      IssuesAggregate {
         count
       }
       EventChannelsAggregate(

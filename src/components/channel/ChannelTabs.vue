@@ -4,10 +4,11 @@ import TabButton from "@/components/channel/TabButton.vue";
 import { useDisplay } from "vuetify/lib/framework.mjs";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";
+import FlagIcon from "@/components/icons/FlagIcon.vue";
 import CogIcon from "@/components/icons/CogIcon.vue";
 import InfoIcon from "@/components/icons/InfoIcon.vue";
 import { Channel } from "@/__generated__/graphql";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 
 type Tab = {
@@ -74,6 +75,7 @@ export default defineComponent({
         events: `/channels/c/${channelId.value}/events/search`,
         about: `/channels/c/${channelId.value}/about`,
         settings: `/channels/c/${channelId.value}/edit`,
+        moderation: `/channels/c/${channelId.value}/issues`,
       };
 
       return routes;
@@ -103,6 +105,23 @@ export default defineComponent({
       return user.username;
     });
 
+    const modList = props.channel.Moderators.map((modProfile) => {
+      return modProfile.displayName;
+    });
+
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
     if (username.value && adminList.includes(username.value)) {
       tabs.push({
         name: "settings",
@@ -110,6 +129,16 @@ export default defineComponent({
         label: "Settings",
         icon: CogIcon,
         countProperty: null,
+      });
+    }
+
+    if (loggedInUserModName.value && modList.includes(loggedInUserModName.value)) {
+      tabs.push({
+        name: "moderation",
+        routeSuffix: "issues",
+        label: "Moderation",
+        icon: FlagIcon,
+        countProperty: "IssuesAggregate",
       });
     }
 
