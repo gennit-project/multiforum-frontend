@@ -30,6 +30,7 @@ import UserEvents from "@/components/user/UserEvents.vue";
 import Subreddit from "./components/subreddit/Subreddit.vue";
 import AccountSettings from "./components/user/AccountSettings.vue";
 import Issues from "./components/mod/Issues.vue";
+import IssueDetailPage from "./components/mod/IssueDetailPage.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -172,17 +173,23 @@ export const router = createRouter({
           name: "Moderation",
           path: "issues",
           component: Issues,
+
+        },
+        {
+          name: "IssueDetail",
+          path: "issues/i/:issueId",
+          component: IssueDetailPage
         },
         {
           name: "DiscussionDetail",
           path: "discussions/d/:discussionId",
           component: DiscussionDetail,
           children: [
-            {
-              name: "DiscussionModHistory",
-              path: "modhistory",
-              component: CommentModHistory,
-            },
+            // {
+            //   name: "DiscussionModHistory",
+            //   path: "modhistory",
+            //   component: CommentModHistory,
+            // },
             {
               name: "DiscussionCommentPermalink",
               path: "comments/:commentId",
@@ -231,25 +238,25 @@ export const router = createRouter({
               name: "EventDetail",
               path: "e/:eventId",
               component: EventDetail,
-              children: [
-                {
-                  name: "DiscussionModHistory",
-                  path: "modhistory",
-                  component: CommentModHistory,
-                },
-                {
-                  name: "DiscussionCommentPermalink",
-                  path: "comments/:commentId",
-                  component: PermalinkedComment,
-                  children: [
-                    {
-                      name: "DiscussionCommentModHistory",
-                      path: "modhistory",
-                      component: CommentModHistory,
-                    },
-                  ],
-                },
-              ],
+              // children: [
+              //   {
+              //     name: "EventModHistory",
+              //     path: "modhistory",
+              //     component: CommentModHistory,
+              //   },
+              //   {
+              //     name: "DiscussionCommentPermalink",
+              //     path: "comments/:commentId",
+              //     component: PermalinkedComment,
+              //     children: [
+              //       {
+              //         name: "DiscussionCommentModHistory",
+              //         path: "modhistory",
+              //         component: CommentModHistory,
+              //       },
+              //     ],
+              //   },
+              // ],
             },
             {
               name: "EditEvent",

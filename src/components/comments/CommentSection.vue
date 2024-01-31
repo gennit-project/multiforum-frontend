@@ -99,6 +99,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    console.log("props", props)
     const route = useRoute();
 
     const activeSort = computed(() => {

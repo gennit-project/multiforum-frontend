@@ -35,6 +35,7 @@ import {
   faMoon,
   faChevronDown,
   faDesktop,
+  faDotCircle,
   faTicket,
   faImage,
   faArrowUpRightFromSquare
@@ -90,6 +91,7 @@ library.add(faTicket);
 library.add(faFire);
 library.add(faImage);
 library.add(faArrowUpRightFromSquare);
+library.add(faDotCircle);
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
