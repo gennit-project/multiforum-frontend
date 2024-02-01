@@ -152,3 +152,28 @@ export const GET_DISCUSSION = gql`
     }
   }
 `;
+
+
+export const GET_FEEDBACK_ON_DISCUSSION = gql`
+query getFeedbackOnDiscussion {
+  discussions(
+    where: {
+      id: "29678cc0-4fea-4609-a98a-af2768236887"
+    }
+  ) {
+    title
+    FeedbackComments {
+      text
+      Channel {
+        uniqueName
+      }
+      CommentAuthor {
+        ... on ModerationProfile {
+          displayName
+        }
+      }
+    }
+  }
+}
+
+`

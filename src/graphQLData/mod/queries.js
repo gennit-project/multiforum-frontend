@@ -78,3 +78,31 @@ query getModDownvotedDiscussions($displayName: String!) {
   }
 }
 `
+
+export const GET_FEEDBACK_BY_MOD_PROFILE = gql`
+query getFeedbackByModProfile {
+  moderationProfiles(
+    where: {
+      displayName: "miniatureDeafeningMysteriousTeacher"
+    }
+  ) {
+    displayName
+    
+    AuthoredComments {
+      Channel {
+        uniqueName
+      }
+      text
+      GivesFeedbackOnDiscussion {
+        title
+      }
+      GivesFeedbackOnComment {
+        text
+      }
+      GivesFeedbackOnEvent {
+        title
+      }
+    }
+  }
+}
+`

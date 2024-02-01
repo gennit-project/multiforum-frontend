@@ -195,3 +195,16 @@ export const UNDO_DOWNVOTE_DISCUSSION_CHANNEL = gql`
     }
   }
 `;
+
+export const GIVE_FEEDBACK_ON_DISCUSSION = gql`
+mutation giveFeedbackOnDiscussion($discussionId: ID!, $modProfileName: String!, $commentText: String!, $channelUniqueName: String!) {
+  giveFeedbackOnDiscussion(
+    discussionId: $discussionId, 
+    modProfileName: $modProfileName, 
+    commentText: $commentText,
+    channelUniqueName: $channelUniqueName
+    ) {
+    text
+  }
+}
+`

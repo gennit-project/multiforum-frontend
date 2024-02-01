@@ -95,3 +95,17 @@ export const DELETE_EVENT = gql`
     }
   }
 `;
+
+export const GIVE_FEEDBACK_ON_EVENT = gql`
+mutation giveFeedbackOnEvent($eventId: ID!, $modProfileName: String!, $commentText: String!,
+$channelUniqueName: String!) {
+  giveFeedbackOnEvent(
+    eventId: $eventId, 
+    modProfileName: $modProfileName, 
+    commentText: $commentText,
+    channelUniqueName: $channelUniqueName
+    ) {
+    text
+  }
+}
+`

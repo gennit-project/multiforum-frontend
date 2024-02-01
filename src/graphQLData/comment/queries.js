@@ -251,3 +251,24 @@ export const GET_COMMENT_REPLIES = gql`
   ${COMMENT_FIELDS}
   ${COMMENT_VOTE_FIELDS}
 `;
+
+export const GET_FEEDBACK_ON_COMMENT = gql`
+query getFeedbackOnComment {
+  comments(
+    where: {
+      id: "d1bfb14f-e3f5-453b-9c7c-96d36cdd3fc9"
+    }
+  ) {
+    text
+    FeedbackComments {
+      text
+      CommentAuthor {
+        ... on ModerationProfile {
+          displayName
+        }
+      }
+    }
+  }
+}
+
+`
