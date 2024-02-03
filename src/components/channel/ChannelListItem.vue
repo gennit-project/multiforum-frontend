@@ -44,11 +44,11 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div>
     <div
       class="border border-gray-500 dark:border-gray-600 shadow rounded-t-lg bg-white p-3 dark:bg-gray-800 dark:text-gray-200"
     >
-      <div class="flex flex-row items-center gap-3">
+      <div class="flex flex-row items-center gap-6">
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
           class="flex cursor-pointer items-center"
@@ -57,7 +57,7 @@ export default defineComponent({
             <Avatar
               :text="channel.uniqueName"
               :src="channel?.channelIconURL"
-              :is-small="true"
+              :is-medium="true"
             />
           </div>
         </router-link>
@@ -78,7 +78,7 @@ export default defineComponent({
             </h3>
             <div v-if="channel?.displayName">
               <h3
-                class="mb-2 mt-6 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+                class="mb-2 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
               >
                 <HighlightedSearchTerms
                   :text="channel.displayName"
@@ -95,38 +95,38 @@ export default defineComponent({
               </span>
             </div>
           </router-link>
-        </div>
-      </div>
-      <div class="mt-1">
-        <p
-          v-if="channel.description"
-          class="my-1 truncate text-sm font-normal text-gray-600 dark:text-gray-200"
-        >
-          <HighlightedSearchTerms
-            :text="channel.description"
-            :search-input="searchInput"
-          />
-        </p>
-
-        <div class="flex">
-          <Tag
-            v-for="tag in tags"
-            :key="tag"
-            :active="selectedTags.includes(tag)"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
-          />
+          <div class="mt-1">
+            <p
+              v-if="channel.description"
+              class="my-1 truncate text-sm font-normal text-gray-600 dark:text-gray-200"
+            >
+              <HighlightedSearchTerms
+                :text="channel.description"
+                :search-input="searchInput"
+              />
+            </p>
+    
+            <div class="flex">
+              <Tag
+                v-for="tag in tags"
+                :key="tag"
+                :active="selectedTags.includes(tag)"
+                :tag="tag"
+                @click="$emit('filterByTag', tag)"
+              />
+            </div>
+          </div>   
         </div>
       </div>
     </div>
     <div class="rounded-b-lg bg-black text-white">
-      <div class="flex w-full justify-between gap-3 py-2 px-2">
-        <div class="truncate text-sm font-normal">
+      <div class="flex w-full py-2 px-2">
+        <div class="truncate text-xs font-normal">
           <router-link
             class="flex items-center gap-1 rounded-lg px-4 py-2 hover:bg-gray-700"
             :to="`/channels/c/${channel.uniqueName}/discussions`"
           >
-            <DiscussionIcon class="h-6 w-6" />
+            <DiscussionIcon class="h-4 w-4" />
 
             {{ channel?.DiscussionChannelsAggregate?.count }}
             {{
@@ -138,13 +138,13 @@ export default defineComponent({
         </div>
         <div
           v-if="channel?.EventChannelsAggregate?.count > 0"
-          class="truncate text-sm font-normal"
+          class="truncate text-xs font-normal"
         >
           <router-link
             class="flex items-center gap-1 rounded-lg px-4 py-2 hover:bg-gray-700"
             :to="`/channels/c/${channel.uniqueName}/events/search`"
           >
-            <CalendarIcon class="h-6 w-6" />
+            <CalendarIcon class="h-4 w-4" />
             {{ channel?.EventChannelsAggregate?.count || 0 }} Upcoming Events
           </router-link>
         </div>
