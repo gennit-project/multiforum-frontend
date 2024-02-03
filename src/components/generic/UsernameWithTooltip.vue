@@ -47,29 +47,17 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-tooltip
-    location="bottom"
-    content-class="custom-tooltip"
-  >
+  <v-tooltip location="bottom" content-class="custom-tooltip">
     <template #activator="{ props }">
       <button v-bind="props">
         <slot>
           <router-link
             :to="`/u/${username}`"
-            class="flex flex-row gap-2 hover:underline"
+            class="flex flex-row hover:underline"
           >
-            <span
-              v-if="!displayName"
-              class="font-bold"
-            >{{ username }}</span>
-            <span
-              v-if="displayName"
-              class="font-bold"
-            >{{ displayName }}</span>
-            <span
-              v-if="displayName"
-              class="text-gray-500 dark:text-gray-300"
-            >{{
+            <span v-if="!displayName" class="font-bold">{{ username }}</span>
+            <span v-if="displayName" class="font-bold">{{ displayName }}</span>
+            <span v-if="displayName" class="text-gray-500 dark:text-gray-300">{{
               `u/${username}`
             }}</span>
           </router-link>
@@ -78,41 +66,25 @@ export default defineComponent({
     </template>
     <template #default>
       <div>
-        <div>
-          <div
-            v-if="!displayName"
-            class="text-md flex flex-col w-full font-bold"
-          >
-            <Avatar
-              :text="username"
-              :src="src"
-              :is-medium="true"
-            />{{ username }}
-          </div>
-          <div
-            v-if="displayName"
-            class="text-md flex flex-col w-full gap-2"
-          >
-            <Avatar
-              :text="username"
-              :src="src"
-              :is-medium="true"
-            />
-            <p class="text-lg font-bold">
-              {{ displayName }}
-            </p>
-            <p class="text-sm text-gray-600 dark:text-white">
-              {{ `u/${username}` }}
-            </p>
-          </div>
-          <ul class="text-xs">
-            <li>
-              {{ `account created ${timeAgo(new Date(accountCreated))}` }}
-            </li>
-            <li>{{ `${commentKarma ?? 0} comment karma` }}</li>
-            <li>{{ `${discussionKarma ?? 0} discussion karma` }}</li>
-          </ul>
+        <div v-if="!displayName" class="text-md flex w-full flex-col">
+          <Avatar :text="username" :src="src" :is-medium="true" />{{ username }}
         </div>
+        <div v-if="displayName" class="text-md flex w-full flex-col">
+          <Avatar :text="username" :src="src" :is-medium="true" />
+          <p class="text-xs font-bold">
+            {{ displayName }}
+          </p>
+          <p class="text-xs text-gray-600 dark:text-white">
+            {{ `u/${username}` }}
+          </p>
+        </div>
+        <ul class="text-xs">
+          <li>
+            {{ `account created ${timeAgo(new Date(accountCreated))}` }}
+          </li>
+          <li>{{ `${commentKarma ?? 0} comment karma` }}</li>
+          <li>{{ `${discussionKarma ?? 0} discussion karma` }}</li>
+        </ul>
       </div>
     </template>
   </v-tooltip>
