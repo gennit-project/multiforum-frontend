@@ -138,7 +138,7 @@ export default defineComponent({
             <span class="font-bold text-black dark:text-white">Listical</span>
           </router-link>
           <div
-            v-if="shouldShowChannelId"
+            v-if="shouldShowChannelId && !smAndDown"
             class="flex items-center gap-1"
           >
             <span>•</span>
@@ -147,14 +147,14 @@ export default defineComponent({
             }}</span>
           </div>
           <div
-            v-else-if="shouldShowRouteInfo"
+            v-else-if="shouldShowRouteInfo && !smAndDown"
             class="flex items-center gap-1"
           >
             <span>•</span>
             {{ routeInfoLabel }}
           </div>
           <div
-            v-else
+            v-else-if="!smAndDown"
             class="flex items-center gap-1"
           >
             {{ getLabel() }}
