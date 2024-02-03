@@ -243,15 +243,12 @@ export default defineComponent({
   <div
     class="max-h-screen overflow-auto rounded-lg bg-white pb-8 dark:bg-gray-800"
   >
-    <div
-      v-if="channelId"
-      class="items-center gap-2"
-    >
-      <div class="align-items flex gap-2 px-6 lg:px-6 lg:py-6">
-        <div>
+    <div v-if="channelId" class="items-center gap-2">
+      <div class="align-items flex-col gap-2 px-6 lg:px-6 lg:py-6">
+        <div class="align-items flex gap-3">
           <ExpandableImage
             v-if="channel?.channelIconURL"
-            class="w-16 h-16 border-2 shadow-sm dark:border-gray-800"
+            class="h-16 w-16 border-2 shadow-sm dark:border-gray-800"
             :is-square="true"
             :is-medium="true"
             :alt="channelId"
@@ -259,32 +256,39 @@ export default defineComponent({
           />
           <Avatar
             v-else
-            class="w-16 h-16 border-2 shadow-sm dark:border-gray-800"
+            class="h-16 w-16 border-2 shadow-sm dark:border-gray-800"
             :text="channelId"
             :src="channel?.channelIconURL ?? ''"
             :is-medium="true"
             :is-square="true"
           />
-        </div>
-        <div class="mt-4">
-          <h1
-            v-if="channelId && !channel?.displayName"
-            class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
-          >
-            {{ channelId }}
-          </h1>
-          <div v-if="channel?.displayName">
+          <div class="mt-4">
             <h1
+              v-if="channelId && !channel?.displayName"
               class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
             >
-              {{ channel?.displayName }}
-            </h1>
-            <span
-              class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
-            >
               {{ channelId }}
-            </span>
+            </h1>
+            <div v-if="channel?.displayName">
+              <h1
+                class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+              >
+                {{ channel?.displayName }}
+              </h1>
+              <span
+                class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+              >
+                {{ channelId }}
+              </span>
+            </div>
           </div>
+        </div>
+        <div class="-mb-2 -ml-7 mt-2 w-full">
+          <MarkdownPreview
+            v-if="channel.description"
+            :text="channel.description"
+            :word-limit="1000"
+          />
         </div>
       </div>
     </div>
@@ -292,14 +296,6 @@ export default defineComponent({
 
     <div class="w-full px-6">
       <div v-if="channel">
-        <div class="-ml-2 mb-4 w-full">
-          <MarkdownPreview
-            v-if="channel.description"
-            :text="channel.description"
-            :word-limit="1000"
-          />
-        </div>
-
         <div class="mt-6 w-full">
           <div v-if="channel.Tags.length > 0">
             <div class="flex justify-between border-gray-300">
@@ -321,10 +317,7 @@ export default defineComponent({
             </div>
           </div>
 
-          <div
-            v-if="dateObj.happeningNow.length > 0"
-            class="flex flex-col"
-          >
+          <div v-if="dateObj.happeningNow.length > 0" class="flex flex-col">
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
             >
@@ -357,10 +350,7 @@ export default defineComponent({
             </div>
           </div>
 
-          <div
-            v-if="dateObj.happeningToday.length > 0"
-            class="flex flex-col"
-          >
+          <div v-if="dateObj.happeningToday.length > 0" class="flex flex-col">
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
             >
@@ -444,7 +434,7 @@ export default defineComponent({
           <div
             v-if="
               soonestEventsInChannel.length > 0 &&
-                eventChannelsAggregate > soonestEventsInChannel.length
+              eventChannelsAggregate > soonestEventsInChannel.length
             "
           >
             <router-link
@@ -462,14 +452,8 @@ export default defineComponent({
               Admins
             </span>
           </div>
-          <ul
-            v-if="channel.Admins.length > 0"
-            class="text-sm font-bold"
-          >
-            <li
-              v-for="admin in channel.Admins"
-              :key="admin.username"
-            >
+          <ul v-if="channel.Admins.length > 0" class="text-sm font-bold">
+            <li v-for="admin in channel.Admins" :key="admin.username">
               <router-link
                 :key="admin.username"
                 :to="`/u/${admin.username}`"
@@ -492,10 +476,7 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
-          <p
-            v-else
-            class="mx-6 my-3 mb-6 text-sm dark:text-gray-400"
-          >
+          <p v-else class="mx-6 my-3 mb-6 text-sm dark:text-gray-400">
             This channel does not have any admins.
           </p>
         </div>
