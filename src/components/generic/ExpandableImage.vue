@@ -31,6 +31,10 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    rounded: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const embeddedImages = ref<GalleryItem[]>([]);
@@ -90,7 +94,8 @@ export default defineComponent({
   <img
     :src="src"
     :alt="alt"
-    class="cursor-pointer rounded-lg"
+    class="cursor-pointer"
+    :class="{ 'rounded-lg': rounded }"
     @click="handleImageClick()"
   >
 </template>

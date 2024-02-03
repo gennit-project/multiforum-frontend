@@ -111,7 +111,10 @@ export default defineComponent({
 
 <template>
   <div class="flex h-screen justify-center dark:bg-black">
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -160,12 +163,15 @@ export default defineComponent({
         </div>
       </article>
     </div>
-    <article v-else class="w-full">
+    <article
+      v-else
+      class="w-full"
+    >
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
-        class="my-2 max-h-36 w-full rounded-t-lg"
+        class="my-2 max-h-36 w-full"
       />
       <v-container
         fluid
@@ -173,13 +179,16 @@ export default defineComponent({
       >
         <v-row class="flex">
           <v-col :cols="8">
-            <div class="rounded-lg rounded-t-lg">
+            <div>
               <div>
                 <router-view />
               </div>
             </div>
           </v-col>
-          <v-col v-if="channelId" :cols="4">
+          <v-col
+            v-if="channelId"
+            :cols="4"
+          >
             <ChannelSidebar
               v-if="channel"
               :channel="channel"
