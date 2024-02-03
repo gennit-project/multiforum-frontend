@@ -63,7 +63,10 @@ export default defineComponent({
         filterValues: filterValues.value,
         showMap: false,
         channelId: channelId.value,
-        onlineOnly: !channelId.value || filterValues.value.locationFilter === LocationFilterTypes.ONLY_VIRTUAL,
+        onlineOnly:
+          !channelId.value ||
+          filterValues.value.locationFilter ===
+            LocationFilterTypes.ONLY_VIRTUAL,
       });
     });
 
@@ -81,8 +84,8 @@ export default defineComponent({
         options: {
           limit: 25,
           offset: 0,
-          sort: resultsOrder
-        }
+          sort: resultsOrder,
+        },
       },
       {
         fetchPolicy: "network-only",
@@ -131,7 +134,7 @@ export default defineComponent({
       : "/events/create";
 
     const { mdAndDown } = useDisplay();
-    
+
     return {
       channelId,
       createEventPath,
@@ -225,10 +228,12 @@ export default defineComponent({
 
 <template>
   <v-container
-    class="md:p-8 flex flex-col gap-2 justify-center bg-gray-100 dark:bg-gray-800 rounded-lg"
+    class="flex flex-col justify-center gap-2 rounded-lg bg-gray-100 dark:bg-gray-800 md:p-8"
   >
-    <EventFilterBar :show-distance-filters="false" />
-    <TimeShortcuts :is-list-view="true" />
+    <EventFilterBar :show-distance-filters="false">
+      <TimeShortcuts :is-list-view="true" />
+    </EventFilterBar>
+
     <OnlineInPersonShortcuts v-if="channelId" />
     <ErrorBanner
       v-if="eventError"

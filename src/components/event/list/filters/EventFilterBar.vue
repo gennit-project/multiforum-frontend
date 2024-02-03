@@ -74,15 +74,15 @@ export default defineComponent({
     });
     const route = useRoute();
     const router = useRouter();
-    const showOnlineOnly = route.name === "SearchEventsList"
-    const showInPersonOnly = route.name === "MapEventPreview"
+    const showOnlineOnly = route.name === "SearchEventsList";
+    const showInPersonOnly = route.name === "MapEventPreview";
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams({
         route,
         channelId: channelId.value,
         showOnlineOnly,
-        showInPersonOnly
+        showInPersonOnly,
       }),
     );
 
@@ -170,7 +170,6 @@ export default defineComponent({
       ? `/channels/c/${channelId.value}/events/create`
       : "/events/create";
 
-
     const radiusLabel = computed(() => {
       const distance = filterValues.value.radius;
       if (filterValues.value.radius === 0) {
@@ -229,7 +228,7 @@ export default defineComponent({
           route: this.route,
           channelId: this.channelId,
           showOnlineOnly: this.showOnlineOnly,
-          showInPersonOnly: this.showInPersonOnly
+          showInPersonOnly: this.showInPersonOnly,
         });
       }
     });
@@ -470,7 +469,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="my-2 w-full space-y-2">
+  <div class="my-2 w-full space-y-3">
     <div
       v-if="route.name !== 'EventDetail'"
       class="w-full"
@@ -594,9 +593,11 @@ export default defineComponent({
                         distance.value !== 0 ? 'mi' : ''
                       }`"
                       :active="distance.value === filterValues.radius"
-                      @click="() => {
-                        updateSelectedDistance(distance)
-                      }"
+                      @click="
+                        () => {
+                          updateSelectedDistance(distance);
+                        }
+                      "
                     />
                   </div>
                 </div>
@@ -616,6 +617,7 @@ export default defineComponent({
         </LocationSearchBar>
       </div>
     </div>
+    <slot />
     <div class="flex justify-end">
       <FilterChip
         v-if="!channelId"
