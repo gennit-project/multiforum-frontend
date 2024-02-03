@@ -111,10 +111,7 @@ export default defineComponent({
 
 <template>
   <div class="flex h-screen justify-center dark:bg-black">
-    <div
-      v-if="smAndDown"
-      class="w-full"
-    >
+    <div v-if="smAndDown" class="w-full">
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -125,7 +122,7 @@ export default defineComponent({
       />
       <div class="flex items-center bg-black">
         <Avatar
-          class="mb-2 ml-3 md:ml-6 mt-2 border-4 border-white dark:border-gray-800"
+          class="mb-2 ml-3 mt-2 border-4 border-white dark:border-gray-800 md:ml-6"
           :text="channelId"
           :src="channel?.channelIconURL"
           :is-medium="true"
@@ -152,7 +149,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel && smAndDown"
-          class="block w-full border-b border-gray-200 px-3 md:px-6 dark:border-gray-600"
+          class="block w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
@@ -164,10 +161,7 @@ export default defineComponent({
         </div>
       </article>
     </div>
-    <article
-      v-else
-      class="w-full"
-    >
+    <article v-else class="w-full">
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -178,18 +172,11 @@ export default defineComponent({
         fluid
         class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
       >
-        <v-row class="flex">
-          <v-col :cols="8">
-            <div>
-              <div>
-                <router-view />
-              </div>
-            </div>
+        <v-row class="flex pt-0">
+          <v-col :cols="8" class="pt-0">
+            <router-view />
           </v-col>
-          <v-col
-            v-if="channelId"
-            :cols="4"
-          >
+          <v-col v-if="channelId" :cols="4" class="pt-0">
             <ChannelSidebar
               v-if="channel"
               :channel="channel"

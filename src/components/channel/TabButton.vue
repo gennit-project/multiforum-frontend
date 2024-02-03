@@ -78,7 +78,7 @@ export default defineComponent({
   >
     <div
       :class="[
-        'px-2',
+        'px-2 mt-1',
         !vertical && isHovered ? 'bg-gray-200 dark:bg-gray-700' : '',
         showCount && count ? '' : 'pr-4',
       ]"

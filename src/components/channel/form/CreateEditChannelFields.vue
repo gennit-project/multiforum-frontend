@@ -157,7 +157,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid class="max-w-4xl">
+  <v-container fluid class="max-w-4xl pt-0">
     <div v-if="channelLoading">Loading...</div>
 
     <TailwindForm
