@@ -14,9 +14,12 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { CreateEditEventFormValues } from "@/types/eventTypes";
 import { checkUrl } from "@/utils/formValidation";
 import { DateTime } from "luxon";
-import { getDuration } from "@/components/utils"
+import { getDuration } from "@/components/utils";
 import AddImage from "@/components/generic/buttons/AddImage.vue";
-import { getUploadFileName, uploadAndGetEmbeddedLink } from "@/components/utils";
+import {
+  getUploadFileName,
+  uploadAndGetEmbeddedLink,
+} from "@/components/utils";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import Avatar from "@/components/user/Avatar.vue";
@@ -438,289 +441,274 @@ export default defineComponent({
 <template>
   <v-container
     fluid
+    class="mx-auto max-w-7xl"
   >
-    <v-row class="justify-center">
-      <v-col
-        cols="12"
-        md="10"
-        lg="10"
+    <div v-if="eventLoading">
+      Loading...
+    </div>
+    <div v-else-if="getEventError">
+      <div
+        v-for="(error, i) of getEventError?.graphQLErrors"
+        :key="i"
       >
-        <div v-if="eventLoading">
-          Loading...
-        </div>
-        <div v-else-if="getEventError">
-          <div
-            v-for="(error, i) of getEventError?.graphQLErrors"
-            :key="i"
-          >
-            {{ error.message }}
-          </div>
-        </div>
-        <TailwindForm
-          v-else-if="formValues"
-          class="w-full"
-          data-testid="event-form"
-          :form-title="formTitle"
-          :needs-changes="needsChanges"
-          :loading="createEventLoading"
-          @input="touched = true"
-          @submit="$emit('submit')"
+        {{ error.message }}
+      </div>
+    </div>
+    <TailwindForm
+      v-else-if="formValues"
+      class="w-full"
+      data-testid="event-form"
+      :form-title="formTitle"
+      :needs-changes="needsChanges"
+      :loading="createEventLoading"
+      @input="touched = true"
+      @submit="$emit('submit')"
+    >
+      <div class="w-full space-y-5">
+        <FormRow
+          section-title="Title"
+          :required="true"
+          class="mt-6"
         >
-          <div class="w-full space-y-5">
-            <FormRow
-              section-title="Title"
-              :required="true"
-              class="mt-6"
-            >
-              <template #content>
-                <TextInput
-                  ref="titleInputRef"
-                  :test-id="'title-input'"
-                  :value="formValues.title"
-                  :full-width="true"
-                  :placeholder="'Add title'"
-                  @update="$emit('updateFormValues', { title: $event })"
-                />
-              </template>
-            </FormRow>
-            <FormRow
-              section-title="Channels"
-              :required="true"
-            >
-              <template #content>
-                <TagInput
-                  :test-id="'channel-input'"
-                  :selected-channels="formValues.selectedChannels"
-                  :channel-mode="true"
-                  @setSelectedTags="
-                    $emit('updateFormValues', { selectedChannels: $event })
-                  "
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Time">
-              <template #content>
-                <div class="flex flex-col gap-1">
-                  <div class="flex-wrap items-center xl:flex">
-                    <div class="flex flex-wrap items-center gap-2 xl:flex">
-                      <input
-                        data-testid="start-time-date-input"
-                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                        type="date"
-                        placeholder="Date"
-                        label="Start"
-                        :value="formattedStartTimeDate"
-                        @input="
-                          handleStartTimeDateChange($event?.target?.value)
-                        "
-                      >
-                      <input
-                        v-if="!formValues.isAllDay"
-                        data-testid="start-time-time-input"
-                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                        type="time"
-                        placeholder="Time"
-                        label="Start Time"
-                        :value="formattedStartTimeTime"
-                        @input="
-                          handleStartTimeTimeChange($event?.target?.value)
-                        "
-                      >
-                    </div>
-                    <span class="px-1">to</span>
-                    <div class="flex flex-wrap items-center gap-2 xl:flex">
-                      <input
-                        data-testid="end-time-date-input"
-                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                        type="date"
-                        placeholder="Date and Time"
-                        label="Start"
-                        :value="formattedEndTimeDate"
-                        @input="handleEndTimeDateChange($event?.target?.value)"
-                      >
-                      <input
-                        v-if="!formValues.isAllDay"
-                        data-testid="end-time-time-input"
-                        class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
-                        type="time"
-                        placeholder="Time"
-                        label="Start Time"
-                        :value="formattedEndTimeTime"
-                        @input="handleEndTimeTimeChange($event?.target?.value)"
-                      >
-                    </div>
-                    <div class="pl-2">
-                      {{ duration }}
-                    </div>
-                  </div>
-
-                  <div class="flex items-center">
-                    <CheckBox
-                      data-testid="free-input"
-                      class="align-middle"
-                      :checked="formValues.isAllDay"
-                      @input="toggleIsAllDayField"
-                    />
-                    <span class="ml-2 align-middle">All day</span>
-                  </div>
-                  <ErrorMessage :text="datePickerErrorMessage" />
-                </div>
-              </template>
-            </FormRow>
-            <FormRow section-title="Virtual Event URL">
-              <template #content>
-                <div
-                  class="focus-within:ring-indigo-600 flex w-full rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset dark:border-none"
-                >
-                  <span
-                    class="flex select-none items-center rounded-l-md bg-gray-100 py-3 pl-3 pr-1 text-gray-500 dark:bg-gray-700 dark:text-gray-200 sm:text-sm"
-                  >https://</span>
+          <template #content>
+            <TextInput
+              ref="titleInputRef"
+              :test-id="'title-input'"
+              :value="formValues.title"
+              :full-width="true"
+              :placeholder="'Add title'"
+              @update="$emit('updateFormValues', { title: $event })"
+            />
+          </template>
+        </FormRow>
+        <FormRow
+          section-title="Channels"
+          :required="true"
+        >
+          <template #content>
+            <TagInput
+              :test-id="'channel-input'"
+              :selected-channels="formValues.selectedChannels"
+              :channel-mode="true"
+              @setSelectedTags="
+                $emit('updateFormValues', { selectedChannels: $event })
+              "
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Time">
+          <template #content>
+            <div class="flex flex-col gap-1">
+              <div class="flex-wrap items-center xl:flex">
+                <div class="flex flex-wrap items-center gap-2 xl:flex">
                   <input
-                    id="virtualEventUrl"
-                    data-testid="link-input"
-                    type="text"
-                    name="virtualEventUrl"
-                    class="bg-transparent block w-full flex-1 rounded-r-md border-0 py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 dark:bg-gray-600 dark:text-gray-200 sm:text-sm sm:leading-6"
-                    :value="
-                      formValues.virtualEventUrl?.split('https://').join('')
-                    "
-                    @input="
-                      $emit('updateFormValues', {
-                        virtualEventUrl: `https://${$event.target.value}`,
-                      })
-                    "
+                    data-testid="start-time-date-input"
+                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    type="date"
+                    placeholder="Date"
+                    label="Start"
+                    :value="formattedStartTimeDate"
+                    @input="handleStartTimeDateChange($event?.target?.value)"
+                  >
+                  <input
+                    v-if="!formValues.isAllDay"
+                    data-testid="start-time-time-input"
+                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    type="time"
+                    placeholder="Time"
+                    label="Start Time"
+                    :value="formattedStartTimeTime"
+                    @input="handleStartTimeTimeChange($event?.target?.value)"
                   >
                 </div>
-                <ErrorMessage
-                  :text="
-                    touched &&
-                      formValues.virtualEventUrl &&
-                      formValues.virtualEventUrl.length > 0 &&
-                      !urlIsValid
-                      ? 'Must be a valid URL'
-                      : ''
-                  "
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Location">
-              <template #icon>
-                <LocationIcon
-                  :wide="true"
-                  class="float-right h-6 w-6"
-                />
-                <v-tooltip
-                  activator="parent"
-                  location="top"
-                >
-                  Location
-                </v-tooltip>
-              </template>
-              <template #content>
-                <LocationSearchBar
-                  data-testid="location-input"
-                  :search-placeholder="'Add an address'"
-                  :full-width="true"
-                  :reference-point-address-name="`${
-                    formValues.locationName
-                      ? `${formValues.locationName}, `
-                      : ''
-                  }${formValues.address ? formValues.address : ''}`"
-                  @updateLocationInput="handleUpdateLocation"
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Details">
-              <template #content>
-                <TextEditor
-                  :test-id="'description-input'"
-                  class="mb-3"
-                  :disable-auto-focus="true"
-                  :initial-value="formValues.description"
-                  :placeholder="'Add details'"
-                  @update="$emit('updateFormValues', { description: $event })"
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Cover Image">
-              <template #content>
-                <Avatar
-                  v-if="formValues.coverImageURL"
-                  class="shadow-sm"
-                  :src="formValues.coverImageURL"
-                  :text="formValues.title"
-                  :is-square="true"
-                  :is-large="true"
-                />
-                <div v-else>
-                  <span class="text-sm text-gray-500 dark:text-gray-400">
-                    No cover image uploaded
-                  </span>
+                <span class="px-1">to</span>
+                <div class="flex flex-wrap items-center gap-2 xl:flex">
+                  <input
+                    data-testid="end-time-date-input"
+                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    type="date"
+                    placeholder="Date and Time"
+                    label="Start"
+                    :value="formattedEndTimeDate"
+                    @input="handleEndTimeDateChange($event?.target?.value)"
+                  >
+                  <input
+                    v-if="!formValues.isAllDay"
+                    data-testid="end-time-time-input"
+                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    type="time"
+                    placeholder="Time"
+                    label="Start Time"
+                    :value="formattedEndTimeTime"
+                    @input="handleEndTimeTimeChange($event?.target?.value)"
+                  >
                 </div>
-                <AddImage
-                  key="cover-image-url"
-                  :field-name="'coverImageURL'"
-                  @change="handleCoverImageChange" 
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Tags">
-              <template #content>
-                <TagInput
-                  data-testid="tag-input"
-                  :selected-tags="formValues.selectedTags"
-                  @setSelectedTags="
-                    $emit('updateFormValues', { selectedTags: $event })
-                  "
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Cost">
-              <template #content>
+                <div class="pl-2">
+                  {{ duration }}
+                </div>
+              </div>
+
+              <div class="flex items-center">
                 <CheckBox
                   data-testid="free-input"
                   class="align-middle"
-                  :checked="formValues.free"
-                  @input="toggleCostField"
+                  :checked="formValues.isAllDay"
+                  @input="toggleIsAllDayField"
                 />
-                <span class="ml-2 align-middle">This event is free</span>
-                <TextInput
-                  v-show="!formValues.free"
-                  data-testid="cost-input"
-                  :value="formValues.cost"
-                  :full-width="true"
-                  :placeholder="'Add cost details'"
-                  @update="$emit('updateFormValues', { cost: $event })"
-                />
-              </template>
-            </FormRow>
-            <FormRow section-title="Hosting">
-              <template #content>
-                <CheckBox
-                  data-testid="free-input"
-                  class="align-middle"
-                  :checked="formValues.isHostedByOP"
-                  @input="toggleHostedByOPField"
-                />
-                <span class="ml-2 align-middle">I am hosting this event</span>
-              </template>
-            </FormRow>
-          </div>
-          <ErrorBanner
-            v-if="needsChanges && touched"
-            :text="changesRequiredMessage"
-          />
-          <ErrorBanner
-            v-if="createEventError"
-            :text="createEventError.message"
-          />
-          <ErrorBanner
-            v-if="updateEventError"
-            :text="updateEventError.message"
-          />
-        </TailwindForm>
-      </v-col>
-    </v-row>
+                <span class="ml-2 align-middle">All day</span>
+              </div>
+              <ErrorMessage :text="datePickerErrorMessage" />
+            </div>
+          </template>
+        </FormRow>
+        <FormRow section-title="Virtual Event URL">
+          <template #content>
+            <div
+              class="focus-within:ring-indigo-600 flex w-full rounded-md shadow-sm ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset dark:border-none"
+            >
+              <span
+                class="flex select-none items-center rounded-l-md bg-gray-100 py-3 pl-3 pr-1 text-gray-500 dark:bg-gray-700 dark:text-gray-200 sm:text-sm"
+              >https://</span>
+              <input
+                id="virtualEventUrl"
+                data-testid="link-input"
+                type="text"
+                name="virtualEventUrl"
+                class="bg-transparent block w-full flex-1 rounded-r-md border-0 py-1.5 pl-1 text-gray-900 placeholder:text-gray-400 focus:ring-0 dark:bg-gray-600 dark:text-gray-200 sm:text-sm sm:leading-6"
+                :value="formValues.virtualEventUrl?.split('https://').join('')"
+                @input="
+                  $emit('updateFormValues', {
+                    virtualEventUrl: `https://${$event.target.value}`,
+                  })
+                "
+              >
+            </div>
+            <ErrorMessage
+              :text="
+                touched &&
+                  formValues.virtualEventUrl &&
+                  formValues.virtualEventUrl.length > 0 &&
+                  !urlIsValid
+                  ? 'Must be a valid URL'
+                  : ''
+              "
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Location">
+          <template #icon>
+            <LocationIcon
+              :wide="true"
+              class="float-right h-6 w-6"
+            />
+            <v-tooltip
+              activator="parent"
+              location="top"
+            >
+              Location
+            </v-tooltip>
+          </template>
+          <template #content>
+            <LocationSearchBar
+              data-testid="location-input"
+              :search-placeholder="'Add an address'"
+              :full-width="true"
+              :reference-point-address-name="`${
+                formValues.locationName ? `${formValues.locationName}, ` : ''
+              }${formValues.address ? formValues.address : ''}`"
+              @updateLocationInput="handleUpdateLocation"
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Details">
+          <template #content>
+            <TextEditor
+              :test-id="'description-input'"
+              class="mb-3"
+              :disable-auto-focus="true"
+              :initial-value="formValues.description"
+              :placeholder="'Add details'"
+              @update="$emit('updateFormValues', { description: $event })"
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Cover Image">
+          <template #content>
+            <Avatar
+              v-if="formValues.coverImageURL"
+              class="shadow-sm"
+              :src="formValues.coverImageURL"
+              :text="formValues.title"
+              :is-square="true"
+              :is-large="true"
+            />
+            <div v-else>
+              <span class="text-sm text-gray-500 dark:text-gray-400">
+                No cover image uploaded
+              </span>
+            </div>
+            <AddImage
+              key="cover-image-url"
+              :field-name="'coverImageURL'"
+              @change="handleCoverImageChange"
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Tags">
+          <template #content>
+            <TagInput
+              data-testid="tag-input"
+              :selected-tags="formValues.selectedTags"
+              @setSelectedTags="
+                $emit('updateFormValues', { selectedTags: $event })
+              "
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Cost">
+          <template #content>
+            <CheckBox
+              data-testid="free-input"
+              class="align-middle"
+              :checked="formValues.free"
+              @input="toggleCostField"
+            />
+            <span class="ml-2 align-middle">This event is free</span>
+            <TextInput
+              v-show="!formValues.free"
+              data-testid="cost-input"
+              :value="formValues.cost"
+              :full-width="true"
+              :placeholder="'Add cost details'"
+              @update="$emit('updateFormValues', { cost: $event })"
+            />
+          </template>
+        </FormRow>
+        <FormRow section-title="Hosting">
+          <template #content>
+            <CheckBox
+              data-testid="free-input"
+              class="align-middle"
+              :checked="formValues.isHostedByOP"
+              @input="toggleHostedByOPField"
+            />
+            <span class="ml-2 align-middle">I am hosting this event</span>
+          </template>
+        </FormRow>
+      </div>
+      <ErrorBanner
+        v-if="needsChanges && touched"
+        :text="changesRequiredMessage"
+      />
+      <ErrorBanner
+        v-if="createEventError"
+        :text="createEventError.message"
+      />
+      <ErrorBanner
+        v-if="updateEventError"
+        :text="updateEventError.message"
+      />
+    </TailwindForm>
   </v-container>
 </template>
 <style lang="scss">
