@@ -62,16 +62,16 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="px-4">
+  <div class="px-2">
     <div
       v-if="!channelId"
       class="my-4"
     >
-      <h2 class="text-lg">
+      <h2 class="text-md">
         This event was submitted to the following forums:
       </h2>
 
-      <ul class="list-disc pl-3">
+      <ul>
         <EventChannelLink
           v-for="eventChannel in eventChannels"
           :key="eventChannel.id"
@@ -88,7 +88,7 @@ export default defineComponent({
         <h2 class="mt-4 text-lg">
           Other forums this event was submitted to:
         </h2>
-        <ul class="list-disc pl-3">
+        <ul>
           <EventChannelLink
             v-for="dc in channelsExceptActive"
             :key="dc.id"

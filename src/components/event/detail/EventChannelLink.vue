@@ -40,7 +40,7 @@ export default defineComponent({
         }"
       >
         <TagComponent
-          class="m-2"
+          class="mt-2"
           :tag="channelId"
           :channel-mode="true"
         />
