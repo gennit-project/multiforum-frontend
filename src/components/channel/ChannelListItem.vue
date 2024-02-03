@@ -58,6 +58,7 @@ export default defineComponent({
               :text="channel.uniqueName"
               :src="channel?.channelIconURL"
               :is-medium="true"
+              :is-square="true"
             />
           </div>
         </router-link>
