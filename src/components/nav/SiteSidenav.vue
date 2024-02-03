@@ -160,7 +160,7 @@ export default defineComponent({
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
-                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-800"
+                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
                 @click="$emit('close')"
               >
                 <component
@@ -178,7 +178,7 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated && username"
           :to="`/u/${username}`"
-          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:bg-gray-800"
+          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="$emit('close')"
         >
           <Avatar
@@ -192,14 +192,14 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}/settings`"
-          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700 dark:hover:bg-gray-800"
+          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="$emit('close')"
         >
           Account Settings
         </router-link>
         <button
           v-if="!isAuthenticated"
-          class="font-semibold group flex gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
+          class="font-semibold group flex gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="login"
         >
           Log In
@@ -208,7 +208,7 @@ export default defineComponent({
           v-if="isAuthenticated"
           data-testid="sign-out-link"
           to="/logout"
-          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-6 text-sm leading-6 text-gray-700 dark:text-gray-100 dark:hover:bg-gray-700"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-6 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="logout"
         >
           Sign Out
