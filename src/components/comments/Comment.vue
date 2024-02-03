@@ -22,7 +22,7 @@ import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import useClipboard from "vue-clipboard3";
 import { modProfileNameVar } from "@/cache";
-import ErrorBanner from '@/components/generic/ErrorBanner.vue'
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -78,11 +78,11 @@ export default defineComponent({
     },
     replyFormOpenAtCommentID: {
       type: String,
-      default: '',
+      default: "",
     },
     editFormOpenAtCommentID: {
       type: String,
-      default: '',
+      default: "",
     },
     showChannel: {
       type: Boolean,
@@ -252,7 +252,7 @@ export default defineComponent({
             label: "View Feedback",
             value: "",
             event: "handleViewFeedback",
-          }
+          },
         ]);
       }
       if (canShowPermalink) {
@@ -261,7 +261,6 @@ export default defineComponent({
           value: "",
           event: "copyLink",
         });
-
       }
       return out;
     });
@@ -300,7 +299,10 @@ export default defineComponent({
         this.commentData.createdAt,
       )}${
         this.showChannel
-          ? " in c/" + (this.commentData.DiscussionChannel?.channelUniqueName || this.commentData.Event?.EventChannels[0]?.channelUniqueName || "")
+          ? " in c/" +
+            (this.commentData.DiscussionChannel?.channelUniqueName ||
+              this.commentData.Event?.EventChannels[0]?.channelUniqueName ||
+              "")
           : ""
       }`;
     },
@@ -320,7 +322,7 @@ export default defineComponent({
     },
     handleEdit(commentData: Comment) {
       this.$emit("clickEditComment", commentData);
-      this.$emit("openEditCommentEditor", commentData.id)
+      this.$emit("openEditCommentEditor", commentData.id);
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
@@ -342,7 +344,7 @@ export default defineComponent({
       this.$emit("clickReport", this.commentData);
     },
     handleFeedback() {
-      console.log('in comment, handle feedback runs')
+      console.log("in comment, handle feedback runs");
       this.$emit("clickFeedback", this.commentData);
     },
   },
@@ -356,10 +358,7 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div
-        :class="'text-sm'"
-        class="w-full"
-      >
+      <div :class="'text-sm'" class="w-full">
         <div
           :class="[
             isHighlighted
@@ -378,12 +377,14 @@ export default defineComponent({
               :src="commentData.CommentAuthor.profilePicURL || ''"
             />
 
-            <div class="flex-grow border-l border-gray-300 dark:border-gray-500 pl-4 -ml-4">
+            <div
+              class="-ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
+            >
               <div
                 v-if="
                   showContextLink &&
-                    parentCommentId &&
-                    commentData.DiscussionChannel
+                  parentCommentId &&
+                  commentData.DiscussionChannel
                 "
               >
                 <router-link
@@ -401,7 +402,7 @@ export default defineComponent({
                   View Context
                 </router-link>
               </div>
-              <div class="flex">
+              <div class="mt-2 flex items-center">
                 <div
                   class="ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
                 >
@@ -413,9 +414,7 @@ export default defineComponent({
                     <UsernameWithTooltip
                       v-if="commentData.CommentAuthor.username"
                       :username="commentData.CommentAuthor.username"
-                      :src="
-                        commentData.CommentAuthor.profilePicURL
-                      "
+                      :src="commentData.CommentAuthor.profilePicURL"
                       :display-name="
                         commentData.CommentAuthor.displayName || ''
                       "
@@ -428,26 +427,97 @@ export default defineComponent({
                       :account-created="commentData.CommentAuthor.createdAt"
                     />
                   </router-link>
-                  <span
-                    v-else
-                    class="font-bold"
-                  >[Deleted]</span>
+                  <span v-else class="font-bold">[Deleted]</span>
                   <span class="mx-2">&middot;</span>
                   <span>{{ createdAtFormatted }}</span>
-                  <span
-                    v-if="commentData.updatedAt"
-                    class="mx-2"
-                  >
+                  <span v-if="commentData.updatedAt" class="mx-2">
                     &middot;
                   </span>
                   <span>{{ editedAtFormatted }}</span>
                   <span
                     v-if="isHighlighted"
                     class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-                  >Permalinked
+                    >Permalinked
                   </span>
                 </div>
-                <MenuButton
+              </div>
+              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
+                <div class="w-full overflow-auto">
+                  <div
+                    v-if="
+                      commentData.text &&
+                      editFormOpenAtCommentID !== commentData.id
+                    "
+                    class="-ml-6"
+                    :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
+                  >
+                    <MarkdownPreview
+                      :key="textCopy || ''"
+                      :text="textCopy || ''"
+                      :word-limit="1000"
+                      :disable-gallery="goToPermalinkOnClick"
+                      @click="
+                        () => {
+                          if (goToPermalinkOnClick) {
+                            router.push(permalinkObject);
+                          }
+                        }
+                      "
+                    />
+                  </div>
+                  <TextEditor
+                    v-if="
+                      !readonly && editFormOpenAtCommentID === commentData.id
+                    "
+                    id="editExistingComment"
+                    class="mb-2 mt-3 p-1"
+                    :initial-value="commentData.text || ''"
+                    :editor-id="editorId"
+                    @update="updateExistingComment($event, depth)"
+                  />
+                  <ErrorBanner
+                    v-if="
+                      editCommentError &&
+                      !readonly &&
+                      editFormOpenAtCommentID === commentData.id
+                    "
+                    :text="editCommentError && editCommentError.message"
+                  />
+                </div>
+                <div class="flex items-center">
+                  <CommentButtons
+                    v-if="channelId"
+                    class="mb-1 ml-1 py-1"
+                    :class="[
+                      editFormOpenAtCommentID === commentData.id ? 'ml-1' : '',
+                    ]"
+                    :comment-data="commentData"
+                    :depth="depth"
+                    :locked="locked"
+                    :parent-comment-id="parentCommentId"
+                    :show-edit-comment-field="
+                      editFormOpenAtCommentID === commentData.id
+                    "
+                    :show-replies="showReplies"
+                    :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+                    :comment-in-process="commentInProcess && !editCommentError"
+                    @startCommentSave="$emit('startCommentSave')"
+                    @clickEditComment="handleEdit"
+                    @createComment="createComment"
+                    @openReplyEditor="$emit('openReplyEditor', commentData.id)"
+                    @hideReplyEditor="$emit('hideReplyEditor')"
+                    @openEditCommentEditor="
+                      $emit('openEditCommentEditor', commentData.id)
+                    "
+                    @hideEditCommentEditor="$emit('hideEditCommentEditor')"
+                    @hideReplies="showReplies = false"
+                    @openModProfile="$emit('openModProfile')"
+                    @saveEdit="$emit('saveEdit')"
+                    @showReplies="showReplies = true"
+                    @updateNewComment="updateNewComment"
+                    @clickFeedback="handleFeedback"
+                  >
+                  <MenuButton
                   v-if="commentMenuItems.length > 0"
                   id="commentMenu"
                   :items="commentMenuItems"
@@ -467,73 +537,14 @@ export default defineComponent({
                   "
                 >
                   <EllipsisHorizontal
-                    class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+                    class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
                   />
                 </MenuButton>
-              </div>
-              <div
-                v-if="!themeLoading"
-                class="w-full dark:text-gray-200"
-              >
-                <div class="w-full overflow-auto">
-                  <div
-                    v-if="commentData.text && editFormOpenAtCommentID !== commentData.id"
-                    class="-ml-6"
-                    :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
-                  >
-                    <MarkdownPreview
-                      :key="textCopy || ''"
-                      :text="textCopy || ''"
-                      :word-limit="1000"
-                      :disable-gallery="goToPermalinkOnClick"
-                      @click="
-                        () => {
-                          if (goToPermalinkOnClick) {
-                            router.push(permalinkObject);
-                          }
-                        }
-                      "
-                    />
-                  </div>
-                  <TextEditor
-                    v-if="!readonly && editFormOpenAtCommentID === commentData.id"
-                    id="editExistingComment"
-                    class="mb-2 mt-3 p-1"
-                    :initial-value="commentData.text || ''"
-                    :editor-id="editorId"
-                    @update="updateExistingComment($event, depth)"
-                  />
-                  <ErrorBanner
-                    v-if="editCommentError && !readonly && editFormOpenAtCommentID === commentData.id"
-                    :text="editCommentError && editCommentError.message"
-                  />
+                  
+                </CommentButtons>
+                  
                 </div>
-                <CommentButtons
-                  v-if="channelId"
-                  class="py-1 mb-2 ml-1"
-                  :class="[editFormOpenAtCommentID === commentData.id ? 'ml-1' : '']"
-                  :comment-data="commentData"
-                  :depth="depth"
-                  :locked="locked"
-                  :parent-comment-id="parentCommentId"
-                  :show-edit-comment-field="editFormOpenAtCommentID === commentData.id"
-                  :show-replies="showReplies"
-                  :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
-                  :comment-in-process="commentInProcess && !editCommentError"
-                  @startCommentSave="$emit('startCommentSave')"
-                  @clickEditComment="handleEdit"
-                  @createComment="createComment"
-                  @openReplyEditor="$emit('openReplyEditor', commentData.id)"
-                  @hideReplyEditor="$emit('hideReplyEditor')"
-                  @openEditCommentEditor="$emit('openEditCommentEditor', commentData.id)"
-                  @hideEditCommentEditor="$emit('hideEditCommentEditor')"
-                  @hideReplies="showReplies = false"
-                  @openModProfile="$emit('openModProfile')"
-                  @saveEdit="$emit('saveEdit')"
-                  @showReplies="showReplies = true"
-                  @updateNewComment="updateNewComment"
-                  @clickFeedback="handleFeedback"
-                />
+                
               </div>
             </div>
           </div>
@@ -552,7 +563,7 @@ export default defineComponent({
         <div
           v-else-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="w-full border-gray-300 dark:border-gray-600 ml-4"
+          class="ml-4 w-full border-gray-300 dark:border-gray-600"
         >
           <ChildComments
             v-slot="slotProps"
@@ -586,9 +597,13 @@ export default defineComponent({
                 "
                 @openModProfile="$emit('openModProfile')"
                 @scrollToTop="$emit('scrollToTop')"
-                @openReplyEditor="($event: string) => $emit('openReplyEditor', $event)"
+                @openReplyEditor="
+                  ($event: string) => $emit('openReplyEditor', $event)
+                "
                 @hideReplyEditor="$emit('hideReplyEditor')"
-                @openEditCommentEditor="$emit('openEditCommentEditor', childComment.id)"
+                @openEditCommentEditor="
+                  $emit('openEditCommentEditor', childComment.id)
+                "
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                 @clickFeedback="handleFeedback"
               />
