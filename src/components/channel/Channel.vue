@@ -123,9 +123,9 @@ export default defineComponent({
         :is-square="true"
         class="max-h-48 w-full"
       />
-      <div class="flex items-center">
+      <div class="flex items-center bg-black">
         <Avatar
-          class="mb-2 ml-6 mt-1 border-4 border-white dark:border-gray-800"
+          class="mb-2 ml-6 mt-2 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL"
           :is-medium="true"
