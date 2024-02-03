@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
+import HandThumbDownIcon from "../icons/HandThumbDownIcon.vue";
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
+    HandThumbDownIcon,
     VoteButton,
   },
   props: {
@@ -82,10 +84,10 @@ export default defineComponent({
       :count="downvoteCount"
       :loading="downvoteLoading"
       :active="downvoteActive"
-      :tooltip-text="downvoteActive ? 'Undo downvote' : 'Give anonymous feedback'"
+      :tooltip-text="downvoteActive ? 'Undo downvote' : 'Give semi-anonymous feedback'"
       @vote="clickDownvote"
     >
-      <i class="fa-solid fa-arrow-down mr-1 w-3" />
+      <HandThumbDownIcon class="h-4 w-4" />
     </VoteButton>
   </div>
 </template>

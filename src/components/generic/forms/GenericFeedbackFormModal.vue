@@ -17,7 +17,7 @@ export default defineComponent({
   },
   setup() {
     return {
-      title: "Give Anonymous Feedback",
+      title: "Give Semi-anonymous Feedback",
       body: "Do you have any actionable feedback for the author?",
     };
   },
@@ -51,7 +51,7 @@ export default defineComponent({
         @input="updateFeedback"
       ></textarea>
       <p class="text-gray-600 dark:text-gray-400">
-        Feedback is intended to be a useful tool for the author. If you think
+        Feedback is intended to be a helpful tool for the author. If you think
         the post should be removed, report it.
       </p>
     </template>

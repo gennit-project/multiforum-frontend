@@ -2,10 +2,12 @@
 import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
+import HandThumbDownIcon from "@/components/icons/HandThumbDownIcon.vue";
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
+    HandThumbDownIcon,
     RequireAuth,
     VoteButton,
   },
@@ -66,7 +68,9 @@ export default defineComponent({
           :active="upvoteActive"
           :loading="upvoteLoading"
           :tooltip-text="
-            upvoteActive ? 'Undo upvote' : 'Upvote to make this discussion more visible'
+            upvoteActive
+              ? 'Undo upvote'
+              : 'Upvote to make this discussion more visible'
           "
           @vote="clickUp"
         >
@@ -84,7 +88,7 @@ export default defineComponent({
           "
           @vote="clickDown"
         >
-          <i class="fa-solid fa-arrow-down mr-1 w-3" />
+          <HandThumbDownIcon class="h-4 w-4" />
         </VoteButton>
       </div>
     </template>
@@ -103,9 +107,9 @@ export default defineComponent({
           :test-id="'downvote-discussion-button'"
           :count="downvoteCount"
           :active="downvoteActive"
-          :tooltip-text="'Give anonymous feedback'"
+          :tooltip-text="'Give semi-anonymous feedback'"
         >
-          <i class="fa-solid fa-arrow-down mr-1 w-3" />
+          <HandThumbDownIcon class="h-4 w-4" />
         </VoteButton>
       </div>
     </template>
