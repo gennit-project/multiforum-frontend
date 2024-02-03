@@ -140,7 +140,8 @@ export default defineComponent({
           </h1>
           <h2
             v-if="channel?.uniqueName"
-            class="text-lg font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            :class="[channel?.displayName ? 'text-sm' : 'text-xl']"
+            class="font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
           >
             {{ `${channel.uniqueName}` }}
           </h2>
