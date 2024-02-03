@@ -256,11 +256,11 @@ export default defineComponent({
   />
   <div
     v-else
-    class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 sm:px-2 md:px-4 lg:px-6 dark:bg-gray-800"
+    class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 sm:px-2 md:px-5 dark:bg-gray-800"
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      class="align-center mx-1 mt-2 flex justify-between px-1"
+      class="align-center mx-1 sm:mt-2 md:mt-5 flex justify-between px-1"
     >
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
