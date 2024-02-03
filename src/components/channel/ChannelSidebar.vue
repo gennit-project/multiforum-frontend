@@ -247,8 +247,8 @@ export default defineComponent({
       v-if="channelId"
       class="items-center gap-2"
     >
-      <div class="align-items flex gap-2 px-6 lg:px-10 lg:py-6">
-        <div >
+      <div class="align-items flex gap-2 px-6 lg:px-6 lg:py-6">
+        <div>
           <ExpandableImage
             v-if="channel?.channelIconURL"
             class="w-16 h-16 border-2 shadow-sm dark:border-gray-800"
@@ -290,7 +290,7 @@ export default defineComponent({
     </div>
     <slot />
 
-    <div class="w-full px-10">
+    <div class="w-full px-6">
       <div v-if="channel">
         <div class="-ml-2 mb-4 w-full">
           <MarkdownPreview
@@ -464,7 +464,7 @@ export default defineComponent({
           </div>
           <ul
             v-if="channel.Admins.length > 0"
-            class="px-5 text-sm font-bold"
+            class="text-sm font-bold"
           >
             <li
               v-for="admin in channel.Admins"
