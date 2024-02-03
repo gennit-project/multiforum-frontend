@@ -131,7 +131,7 @@ export default defineComponent({
           :is-medium="true"
           :is-square="true"
         />
-        <div class="ml-6 pt-2">
+        <div class="ml-4">
           <h1
             v-if="channel?.displayName"
             class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"

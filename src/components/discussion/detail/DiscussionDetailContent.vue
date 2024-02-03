@@ -260,7 +260,7 @@ export default defineComponent({
   >
     <div
       v-if="route.name === 'DiscussionDetail'"
-      class="align-center mx-1 mt-2 flex justify-between px-4 "
+      class="align-center mx-1 mt-2 flex justify-between px-1"
     >
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
@@ -292,7 +292,7 @@ export default defineComponent({
       :text="getDiscussionError.message"
     />
     <div v-if="!getDiscussionLoading">
-      <div class="mt-3 w-full px-4">
+      <div class="mt-3 w-full px-2">
         <div ref="discussionDetail">
           <div class="min-w-0">
             <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">

@@ -89,7 +89,7 @@ export default defineComponent({
     :alt="text"
     :class="[
       isLarge ? 'h-72 w-72' : '',
-      isMedium ? 'h-24 w-24' : '',
+      isMedium ? 'h-20 w-20' : '',
       isSmall ? 'h-8 w-8' : '', 
       isSquare ? 'rounded-lg' : 'rounded-full']"
   >
@@ -97,7 +97,7 @@ export default defineComponent({
     v-else
     :class="[
       isLarge ? 'h-72 w-72' : '',
-      isMedium ? 'h-24 w-24' : '',
+      isMedium ? 'h-20 w-20' : '',
       isSmall ? 'h-8 w-8' : '', 
       isSquare ? 'rounded-lg' : 'rounded-full']"
     :src="identiconData" 

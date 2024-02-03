@@ -344,7 +344,6 @@ export default defineComponent({
       this.$emit("clickReport", this.commentData);
     },
     handleFeedback() {
-      console.log("in comment, handle feedback runs");
       this.$emit("clickFeedback", this.commentData);
     },
   },
@@ -358,7 +357,10 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div :class="'text-sm'" class="w-full">
+      <div
+        :class="'text-sm'"
+        class="w-full"
+      >
         <div
           :class="[
             isHighlighted
@@ -383,8 +385,8 @@ export default defineComponent({
               <div
                 v-if="
                   showContextLink &&
-                  parentCommentId &&
-                  commentData.DiscussionChannel
+                    parentCommentId &&
+                    commentData.DiscussionChannel
                 "
               >
                 <router-link
@@ -427,26 +429,35 @@ export default defineComponent({
                       :account-created="commentData.CommentAuthor.createdAt"
                     />
                   </router-link>
-                  <span v-else class="font-bold">[Deleted]</span>
+                  <span
+                    v-else
+                    class="font-bold"
+                  >[Deleted]</span>
                   <span class="mx-2">&middot;</span>
                   <span>{{ createdAtFormatted }}</span>
-                  <span v-if="commentData.updatedAt" class="mx-2">
+                  <span
+                    v-if="commentData.updatedAt"
+                    class="mx-2"
+                  >
                     &middot;
                   </span>
                   <span>{{ editedAtFormatted }}</span>
                   <span
                     v-if="isHighlighted"
                     class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-                    >Permalinked
+                  >Permalinked
                   </span>
                 </div>
               </div>
-              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
+              <div
+                v-if="!themeLoading"
+                class="w-full dark:text-gray-200"
+              >
                 <div class="w-full overflow-auto">
                   <div
                     v-if="
                       commentData.text &&
-                      editFormOpenAtCommentID !== commentData.id
+                        editFormOpenAtCommentID !== commentData.id
                     "
                     class="-ml-6"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
@@ -478,8 +489,8 @@ export default defineComponent({
                   <ErrorBanner
                     v-if="
                       editCommentError &&
-                      !readonly &&
-                      editFormOpenAtCommentID === commentData.id
+                        !readonly &&
+                        editFormOpenAtCommentID === commentData.id
                     "
                     :text="editCommentError && editCommentError.message"
                   />
@@ -517,34 +528,31 @@ export default defineComponent({
                     @updateNewComment="updateNewComment"
                     @clickFeedback="handleFeedback"
                   >
-                  <MenuButton
-                  v-if="commentMenuItems.length > 0"
-                  id="commentMenu"
-                  :items="commentMenuItems"
-                  @copyLink="copyLink"
-                  @handleEdit="() => handleEdit(commentData)"
-                  @handleReport="handleReport"
-                  @clickFeedback="handleFeedback"
-                  @handleDelete="
-                    () => {
-                      const deleteCommentInput = {
-                        commentId: commentData.id,
-                        parentCommentId,
-                        replyCount,
-                      };
-                      handleDelete(deleteCommentInput);
-                    }
-                  "
-                >
-                  <EllipsisHorizontal
-                    class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
-                  />
-                </MenuButton>
-                  
-                </CommentButtons>
-                  
+                    <MenuButton
+                      v-if="commentMenuItems.length > 0"
+                      id="commentMenu"
+                      :items="commentMenuItems"
+                      @copyLink="copyLink"
+                      @handleEdit="() => handleEdit(commentData)"
+                      @handleReport="handleReport"
+                      @clickFeedback="handleFeedback"
+                      @handleDelete="
+                        () => {
+                          const deleteCommentInput = {
+                            commentId: commentData.id,
+                            parentCommentId,
+                            replyCount,
+                          };
+                          handleDelete(deleteCommentInput);
+                        }
+                      "
+                    >
+                      <EllipsisHorizontal
+                        class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+                      />
+                    </MenuButton>
+                  </CommentButtons>
                 </div>
-                
               </div>
             </div>
           </div>
