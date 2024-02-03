@@ -125,7 +125,7 @@ export default defineComponent({
       />
       <div class="flex items-center bg-black">
         <Avatar
-          class="mb-2 ml-6 mt-2 border-4 border-white dark:border-gray-800"
+          class="mb-2 ml-3 md:ml-6 mt-2 border-4 border-white dark:border-gray-800"
           :text="channelId"
           :src="channel?.channelIconURL"
           :is-medium="true"
@@ -152,7 +152,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel && smAndDown"
-          class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
+          class="block w-full border-b border-gray-200 px-3 md:px-6 dark:border-gray-600"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
