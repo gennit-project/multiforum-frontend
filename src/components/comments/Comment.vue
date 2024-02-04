@@ -23,6 +23,7 @@ import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import useClipboard from "vue-clipboard3";
 import { modProfileNameVar } from "@/cache";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -229,11 +230,13 @@ export default defineComponent({
             label: "Edit",
             value: "",
             event: "handleEdit",
+            icon: ALLOWED_ICONS.EDIT,
           },
           {
             label: "Delete",
             value: "",
             event: "handleDelete",
+            icon: ALLOWED_ICONS.DELETE,
           },
         ]);
       } else {
@@ -242,16 +245,19 @@ export default defineComponent({
             label: "Report",
             value: "",
             event: "handleReport",
+            icon: ALLOWED_ICONS.REPORT,
           },
           {
             label: "Give Feedback",
             value: "",
             event: "clickFeedback",
+            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
           },
           {
             label: "View Feedback",
             value: "",
             event: "handleViewFeedback",
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
           },
         ]);
       }
@@ -260,6 +266,7 @@ export default defineComponent({
           label: "Copy Link",
           value: "",
           event: "copyLink",
+          icon: ALLOWED_ICONS.COPY_LINK,
         });
       }
       return out;

@@ -18,6 +18,8 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue"
 import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
 import ReportDiscussionModal from "./ReportDiscussionModal.vue";
+import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
+
 export default defineComponent({
   components: {
     EllipsisHorizontal,
@@ -168,6 +170,7 @@ export default defineComponent({
           label: "Copy Link",
           value: "",
           event: "copyLink",
+          icon: ALLOWED_ICONS.COPY_LINK
         });
       }
 
@@ -176,11 +179,13 @@ export default defineComponent({
           label: "Edit",
           value: "",
           event: "handleEdit",
+          icon: ALLOWED_ICONS.EDIT
         });
         out.push({
           label: "Delete",
           value: "",
           event: "handleDelete",
+          icon: ALLOWED_ICONS.DELETE
         });
       } else {
         out = out.concat([
@@ -188,16 +193,19 @@ export default defineComponent({
             label: "Report",
             value: "",
             event: "handleClickReport",
+            icon: ALLOWED_ICONS.REPORT
           },
           {
             label: "Give Feedback",
             value: "",
             event: "handleFeedback",
+            icon: ALLOWED_ICONS.GIVE_FEEDBACK
           },
           {
             label: "View Feedback",
             value: "",
             event: "handleViewFeedback",
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK
           }
         ]);
       }

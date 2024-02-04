@@ -22,6 +22,7 @@ import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import { getDuration } from "@/components/utils";
 import ReportEventModal from '@/components/event/detail/ReportEventModal.vue'
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
+import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 
 export default defineComponent({
   name: "EventHeader",
@@ -171,6 +172,7 @@ export default defineComponent({
           label: "Copy Link",
           value: "",
           event: "copyLink",
+          icon: ALLOWED_ICONS.COPY_LINK
         });
       }
 
@@ -179,11 +181,13 @@ export default defineComponent({
           label: "Edit",
           value: "",
           event: "handleEdit",
+          icon: ALLOWED_ICONS.EDIT
         });
         out.push({
           label: "Delete",
           value: "",
           event: "handleDelete",
+          icon: ALLOWED_ICONS.DELETE
         });
 
         if (!props.eventData.canceled) {
@@ -191,6 +195,7 @@ export default defineComponent({
             label: "Cancel",
             value: "",
             event: "handleCancel",
+            icon: ALLOWED_ICONS.CANCEL
           });
         }
       } else {
@@ -199,16 +204,19 @@ export default defineComponent({
             label: "Report",
             value: "",
             event: "handleReport",
+            icon: ALLOWED_ICONS.REPORT
           },
           {
             label: "Give Feedback",
             value: "",
             event: "handleFeedback",
+            icon: ALLOWED_ICONS.GIVE_FEEDBACK
           },
           {
             label: "View Feedback",
             value: "",
             event: "handleViewFeedback",
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK
           }
         ]);
       }
