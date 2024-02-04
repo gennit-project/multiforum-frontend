@@ -53,15 +53,26 @@ query getIssuesByDiscussion(
 
 
 export const GET_ISSUES_BY_CHANNEL = gql`
-query getIssuesByChannel {
+query getIssuesByChannel(
+  $channelUniqueName: String!
+) {
   channels (
     where: {
-      uniqueName: "cats"
+      uniqueName: $channelUniqueName
     } 
   ) {
     uniqueName
     Issues {
+      id
       title
+      Author {
+        ... on ModerationProfile {
+          displayName
+        }
+      }
+      createdAt
+      updatedAt
+      isOpen
     }
   }
 }

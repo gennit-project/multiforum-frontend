@@ -2,8 +2,10 @@
 import { computed, defineComponent } from "vue";
 import CheckIcon from "@/components/icons/CheckIcon.vue";
 import { DateTime } from "luxon";
-import { useRouter } from "vue-router";
-
+import { GET_ISSUES_BY_CHANNEL } from "@/graphQLData/issue/queries";
+import { useQuery } from "@vue/apollo-composable";
+import { useRoute } from "vue-router";
+import { Issue } from "@/__generated__/graphql";
 // type Issue {
 //     id: ID! @id
 //     Author: IssueAuthor @relationship(type: "AUTHORED_ISSUE", direction: IN)
@@ -32,38 +34,68 @@ export default defineComponent({
     },
   },
   setup() {
-    const issues = [
-      {
-        id: "1",
-        title: "Issue 1",
-        body: "This is the body of issue 1",
-        Author: {
-          username: "user1",
-        },
-        isOpen: true,
-        timestamp: "2021-08-01T00:00:00.000Z",
-      },
-      {
-        id: "2",
-        title: "Issue 2",
-        body: "This is the body of issue 2",
-        isOpen: false,
-        Author: {
-          username: "user2",
-        },
-        timestamp: "2021-08-02T00:00:00.000Z",
-      },
-    ];
+    const route = useRoute();
 
-    const router  = useRouter();
-    const channelId = router.currentRoute.value.params.channelId;
+    const channelId = computed(() => {
+      if (typeof route.params.channelId !== "string") {
+        return "";
+      }
+      return route.params.channelId;
+    });
+
+    const {
+      result: getIssuesByChannelResult,
+      error: getIssuesByChannelError,
+      loading: getIssuesByChannelLoading,
+    } = useQuery(GET_ISSUES_BY_CHANNEL, {
+      channelUniqueName: channelId.value
+    });
+
+    const issues = computed<Issue[]>(() => {
+      if (getIssuesByChannelLoading.value || getIssuesByChannelError.value) {
+        return [];
+      }
+      console.log(getIssuesByChannelResult.value)
+      const channelData = getIssuesByChannelResult.value.channels[0];
+
+      if (!channelData || !channelData.Issues) {
+        return [];
+      }
+      return channelData.Issues;
+    });
+
+    console.log(issues.value);
+
+    // const issues = [
+    //   {
+    //     id: "1",
+    //     title: "Issue 1",
+    //     body: "This is the body of issue 1",
+    //     Author: {
+    //       username: "user1",
+    //     },
+    //     isOpen: true,
+    //     timestamp: "2021-08-01T00:00:00.000Z",
+    //   },
+    //   {
+    //     id: "2",
+    //     title: "Issue 2",
+    //     body: "This is the body of issue 2",
+    //     isOpen: false,
+    //     Author: {
+    //       username: "user2",
+    //     },
+    //     timestamp: "2021-08-02T00:00:00.000Z",
+    //   },
+    // ];
+
 
     const openCount = computed(() => {
-      return issues.filter((issue) => issue.isOpen).length;
+      return issues.value.filter((issue) => issue.isOpen).length;
     });
 
     const closedCount = computed(() => {
-      return issues.filter((issue) => !issue.isOpen).length;
+      return issues.value.filter((issue) => !issue.isOpen).length;
     });
     const showClosed = false;
     return {
@@ -118,13 +150,13 @@ export default defineComponent({
           {{ issue.title }}
         </router-link>
         </div>
-        <div class="ml-6 text-sm text-gray-500 dark:text-gray-400">
+        <!-- <div class="ml-6 text-sm text-gray-500 dark:text-gray-400">
           {{
             `Opened on ${formatDate(issue.timestamp)} by ${
               issue.Author?.username || "[Deleted]"
             }`
           }}
-        </div>
+        </div> -->
       </li>
     </ul>
   </div>

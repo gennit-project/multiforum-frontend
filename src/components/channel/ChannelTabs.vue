@@ -69,6 +69,10 @@ export default defineComponent({
       return localUsernameResult.value.username;
     });
 
+    const loggedInUsername = computed(() => {
+      return localUsernameResult.value.username;
+    });
+
     const tabRoutes = computed(() => {
       let routes: TabRoutes = {
         discussions: `/channels/c/${channelId.value}/discussions`,
@@ -131,8 +135,17 @@ export default defineComponent({
         countProperty: null,
       });
     }
+    console.log('username', {
+      username: username.value,
+      adminList: adminList,
+      modList: modList,
+      loggedInUserModName: loggedInUserModName.value,
+    });
 
-    if (loggedInUserModName.value && modList.includes(loggedInUserModName.value)) {
+    const isAdmin = adminList.includes(loggedInUsername.value);
+    const isMod = modList.includes(loggedInUserModName.value);
+
+    if (isAdmin || isMod) {
       tabs.push({
         name: "moderation",
         routeSuffix: "issues",
