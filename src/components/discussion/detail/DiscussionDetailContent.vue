@@ -259,7 +259,6 @@ export default defineComponent({
     class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 sm:px-2 md:px-5 dark:bg-gray-800"
   >
     <div
-      v-if="route.name === 'DiscussionDetail'"
       class="align-center mx-1 sm:mt-2 md:mt-5 flex justify-between px-1"
     >
       <BackLink
@@ -294,13 +293,11 @@ export default defineComponent({
     <div v-if="!getDiscussionLoading">
       <div class="mt-3 w-full px-2">
         <div ref="discussionDetail">
-          <div class="min-w-0">
-            <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-              {{
-                discussion && discussion.title ? discussion.title : "[Deleted]"
-              }}
-            </h2>
-          </div>
+          <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
+            {{
+              discussion && discussion.title ? discussion.title : "[Deleted]"
+            }}
+          </h2>
         </div>
       </div>
     </div>

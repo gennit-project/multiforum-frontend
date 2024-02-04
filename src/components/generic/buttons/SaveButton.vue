@@ -15,6 +15,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    text: {
+      type: String,
+      default: "Save",
+    },
   },
   setup() {
   },
@@ -22,7 +26,7 @@ export default defineComponent({
 </script>
 <template>
   <PrimaryButton
-    label="Save"
+    :label="text"
     :disabled="disabled"
     :loading="loading"
     class="border-transparent font-medium ml-3 inline-flex justify-center rounded-full border px-4 py-2 text-sm shadow-sm"

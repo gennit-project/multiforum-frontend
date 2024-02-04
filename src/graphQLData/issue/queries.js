@@ -30,10 +30,12 @@ export const GET_ISSUE = gql`
 
 
 export const GET_ISSUES_BY_DISCUSSION = gql`
-query getIssuesByDiscussion {
+query getIssuesByDiscussion(
+  $discussionId: ID!
+) {
   discussions (
     where: {
-      id: "29678cc0-4fea-4609-a98a-af2768236887"
+      id: $discussionId
     }
   ) {
     id 
@@ -48,6 +50,7 @@ query getIssuesByDiscussion {
     }
   }
 }`
+
 
 export const GET_ISSUES_BY_CHANNEL = gql`
 query getIssuesByChannel {

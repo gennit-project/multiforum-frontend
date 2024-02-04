@@ -38,6 +38,11 @@ export default defineComponent({
       required: false,
       default: "",
     },
+    showEmojiButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -126,7 +131,11 @@ export default defineComponent({
       />
     </div>
     <div class="flex items-center gap-2">
-      <slot /><NewEmojiButton :discussion-channel-id="discussionChannelId" />
+      <slot />
+      <NewEmojiButton
+        v-if="showEmojiButton" 
+        :discussion-channel-id="discussionChannelId" 
+      />
     </div>
   </div>
 </template>

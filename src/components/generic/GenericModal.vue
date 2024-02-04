@@ -43,6 +43,10 @@ export default defineComponent({
       type: String,
       default: "Cancel",
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {},
 });
@@ -116,12 +120,11 @@ export default defineComponent({
                   :class="[highlightColor === 'red' ? 'hover:bg-red-500 bg-red-600' : 'hover:bg-yellow-500 bg-yellow-600',`inline-flex w-full justify-center rounded-full border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`]"
                   @click="
                     () => {
-                      $emit('close');
                       $emit('primaryButtonClick');
                     }
                   "
                 >
-                  {{ primaryButtonText }}
+                  {{ loading ? "Saving..." : primaryButtonText }}
                 </button>
                 <button
                   ref="cancelButtonRef"

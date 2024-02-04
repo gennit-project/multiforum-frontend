@@ -13,12 +13,15 @@ import { useDisplay } from "vuetify";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import useClipboard from "vue-clipboard3";
-import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import Notification from "@/components/generic/Notification.vue"
-import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
+import {
+  GET_LOCAL_MOD_PROFILE_NAME,
+  GET_LOCAL_USERNAME,
+} from "@/graphQLData/user/queries";
+import Notification from "@/components/generic/Notification.vue";
+import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import ReportDiscussionModal from "./ReportDiscussionModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
+import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 
 export default defineComponent({
   components: {
@@ -137,7 +140,7 @@ export default defineComponent({
           router.resolve(permalinkObject.value).href
         }`;
         await toClipboard(permalink);
-        showCopiedLinkNotification.value = event
+        showCopiedLinkNotification.value = event;
       } catch (e: any) {
         throw new Error(e);
       }
@@ -156,6 +159,19 @@ export default defineComponent({
       error: localUsernameError,
     } = useQuery(GET_LOCAL_USERNAME);
 
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
     const username = computed(() => {
       if (localUsernameLoading.value || localUsernameError.value) {
         return "";
@@ -164,13 +180,13 @@ export default defineComponent({
     });
 
     const menuItems = computed(() => {
-      let out = []
+      let out = [];
       if (props.discussion) {
         out.push({
           label: "Copy Link",
           value: "",
           event: "copyLink",
-          icon: ALLOWED_ICONS.COPY_LINK
+          icon: ALLOWED_ICONS.COPY_LINK,
         });
       }
 
@@ -179,40 +195,45 @@ export default defineComponent({
           label: "Edit",
           value: "",
           event: "handleEdit",
-          icon: ALLOWED_ICONS.EDIT
+          icon: ALLOWED_ICONS.EDIT,
         });
         out.push({
           label: "Delete",
           value: "",
           event: "handleDelete",
-          icon: ALLOWED_ICONS.DELETE
+          icon: ALLOWED_ICONS.DELETE,
         });
       } else {
         out = out.concat([
           {
-            label: "Report",
-            value: "",
-            event: "handleClickReport",
-            icon: ALLOWED_ICONS.REPORT
-          },
-          {
-            label: "Give Feedback",
-            value: "",
-            event: "handleFeedback",
-            icon: ALLOWED_ICONS.GIVE_FEEDBACK
-          },
-          {
             label: "View Feedback",
             value: "",
             event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK
-          }
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          },
         ]);
+
+        if (username.value && loggedInUserModName.value) {
+          out = out.concat([
+            {
+              label: "Report",
+              value: "",
+              event: "handleClickReport",
+              icon: ALLOWED_ICONS.REPORT,
+            },
+            {
+              label: "Give Feedback",
+              value: "",
+              event: "handleFeedback",
+              icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+            },
+          ]);
+        }
       }
-      
+
       return out;
     });
- 
+
     return {
       copyLink,
       createdAt,
@@ -268,7 +289,8 @@ export default defineComponent({
           :src="
             discussion && discussion.Author?.profilePicURL
               ? discussion.Author.profilePicURL
-              : ''"
+              : ''
+          "
           :is-small="true"
         />
         <router-link
@@ -290,10 +312,7 @@ export default defineComponent({
         </router-link>
         <span v-else>[Deleted]</span>
         <div>{{ createdAt }}</div>
-        <span
-          v-if="discussion && discussion.updatedAt"
-          class="mx-2"
-        >
+        <span v-if="discussion && discussion.updatedAt" class="mx-2">
           &#8226;
         </span>
         <div>{{ editedAt }}</div>
@@ -311,6 +330,10 @@ export default defineComponent({
         @handleDelete="deleteModalIsOpen = true"
         @handleClickReport="showReportDiscussionModal = true"
         @handleFeedback="showFeedbackFormModal = true"
+        @handleViewFeedback="
+          router.push(
+            `/channels/c/${channelId}/discussions/d/${discussion.id}/modhistory`,
+          )"
       >
         <EllipsisHorizontal
           class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -330,8 +353,12 @@ export default defineComponent({
       @primaryButtonClick="handleSubmitFeedback"
     />
     <ReportDiscussionModal
+      v-if="discussion"
       :open="showReportDiscussionModal"
+      :discussion-id="discussion.id"
+      :discussion-title="discussion?.title"
       @close="showReportDiscussionModal = false"
+      @closeReportForm="showReportDiscussionModal = false"
       @primaryButtonClick="handleReportDiscussion"
     />
     <ErrorBanner

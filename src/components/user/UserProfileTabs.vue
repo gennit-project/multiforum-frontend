@@ -155,7 +155,7 @@ export default defineComponent({
         :label="tab.name"
         :is-active="route.name.includes(tab.name)"
         :count="tab.count"
-        :show-count="showCounts"
+        :show-count="showCounts && !!tab.count"
       />
     </nav>
   </div>
