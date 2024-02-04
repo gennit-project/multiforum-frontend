@@ -232,9 +232,9 @@ export default defineComponent({
   >
     <EventFilterBar :show-distance-filters="false">
       <TimeShortcuts :is-list-view="true" />
+      <OnlineInPersonShortcuts v-if="channelId" />
     </EventFilterBar>
-
-    <OnlineInPersonShortcuts v-if="channelId" />
+    
     <ErrorBanner
       v-if="eventError"
       class="mx-auto block"
