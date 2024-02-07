@@ -89,6 +89,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    showCommentButtons: {
+      type: Boolean,
+      default: true,
+    },
     showContextLink: {
       type: Boolean,
       default: false,
@@ -379,11 +383,17 @@ export default defineComponent({
         >
           <div class="flex w-full rounded-lg">
             <Avatar
-              v-if="commentData.CommentAuthor"
+              v-if="commentData.CommentAuthor?.username"
               class="z-10"
               :is-small="true"
               :text="commentData.CommentAuthor.username"
               :src="commentData.CommentAuthor.profilePicURL || ''"
+            />
+            <Avatar
+              v-else-if="commentData.CommentAuthor?.displayName"
+              class="z-10"
+              :is-small="true"
+              :text="commentData.CommentAuthor.displayName"
             />
 
             <div
@@ -416,7 +426,7 @@ export default defineComponent({
                   class="ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
                 >
                   <router-link
-                    v-if="commentData.CommentAuthor"
+                    v-if="commentData.CommentAuthor?.username"
                     class="mx-1 font-bold hover:underline dark:text-gray-200"
                     :to="`/u/${commentData.CommentAuthor.username}`"
                   >
@@ -435,6 +445,13 @@ export default defineComponent({
                       "
                       :account-created="commentData.CommentAuthor.createdAt"
                     />
+                  </router-link>
+                  <router-link
+                    v-else-if="commentData.CommentAuthor?.displayName"
+                    class="mx-1 font-bold hover:underline dark:text-gray-200"
+                    :to="`/u/${commentData.CommentAuthor.displayName}`"
+                  >
+                    {{ commentData.CommentAuthor.displayName }}
                   </router-link>
                   <span
                     v-else
@@ -504,7 +521,7 @@ export default defineComponent({
                 </div>
                 <div class="flex items-center">
                   <CommentButtons
-                    v-if="channelId"
+                    v-if="channelId && showCommentButtons"
                     class="mb-1 ml-1 py-1"
                     :class="[
                       editFormOpenAtCommentID === commentData.id ? 'ml-1' : '',

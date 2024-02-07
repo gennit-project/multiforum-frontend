@@ -251,6 +251,7 @@ export default defineComponent({
       showCopiedLinkNotification,
       showFeedbackFormModal: ref(false),
       showReportDiscussionModal: ref(false),
+      showSuccessfullyReported: ref(false),
       xlAndUp,
     };
   },
@@ -271,6 +272,7 @@ export default defineComponent({
     },
     handleReportDiscussion() {
       this.showReportCommentModal = false;
+      this.showSuccessfullyReported = true;
     },
   },
 });
@@ -312,7 +314,10 @@ export default defineComponent({
         </router-link>
         <span v-else>[Deleted]</span>
         <div>{{ createdAt }}</div>
-        <span v-if="discussion && discussion.updatedAt" class="mx-2">
+        <span
+          v-if="discussion && discussion.updatedAt"
+          class="mx-2"
+        >
           &#8226;
         </span>
         <div>{{ editedAt }}</div>
@@ -370,6 +375,11 @@ export default defineComponent({
       :show="showCopiedLinkNotification"
       :title="'Copied to clipboard!'"
       @closeNotification="showCopiedLinkNotification = false"
+    />
+    <Notification
+      :show="showSuccessfullyReported"
+      :title="'Your report was submitted successfully.'"
+      @closeNotification="showSuccessfullyReported = false"
     />
   </div>
 </template>

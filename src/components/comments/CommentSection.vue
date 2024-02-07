@@ -506,7 +506,6 @@ export default defineComponent({
       this.editFormOpenAtCommentID = "";
     },
     handleClickGiveFeedback() {
-      console.log("handle click give feedback");
       this.showFeedbackFormModal = true;
     },
     handleSubmitFeedback(/*event: any*/) {
@@ -518,8 +517,8 @@ export default defineComponent({
     handleReportComment() {
       // console.log("handle report comment");
     },
-    updateFeedback(feedback: string) {
-      console.log("update feedback", feedback);
+    updateFeedback() {
+      // console.log("update feedback", feedback);
     },
   },
 });

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref} from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_ISSUE } from "@/graphQLData/issue/queries";
@@ -14,28 +14,32 @@ import { useDisplay } from "vuetify";
 // import IssueComments from "@/components/issue/detail/IssueCommentsWrapper.vue";
 // import IssueCommentForm from "./IssueCommentFormWrapper.vue";
 import "md-editor-v3/lib/style.css";
-import { Comment } from "@/__generated__/graphql";
+import { Comment as CommentData } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
+import { DateTime } from "luxon";
+import Comment from "@/components/comments/Comment.vue";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 export const COMMENT_LIMIT = 5;
 
 export default defineComponent({
   components: {
     BackLink,
+    Comment,
     // IssueCommentForm,
-    // IssueComments,
     ErrorBanner,
+    MarkdownPreview,
     PageNotFound,
   },
   props: {
-
     compactMode: {
       type: Boolean,
       default: false,
     },
   },
-  setup(props) {
+  setup() {
     const route = useRoute();
     const router = useRouter();
     const offset = ref(0);
@@ -53,14 +57,43 @@ export default defineComponent({
       }
       return "";
     });
-    console.log('channelId',channelId.value);
-    console.log('issue id',issueId.value);
 
     const {
       result: getIssueResult,
       error: getIssueError,
       loading: getIssueLoading,
     } = useQuery(GET_ISSUE, { id: issueId });
+
+    const activeIssue = computed<Issue>(() => {
+      if (
+        getIssueLoading.value ||
+        getIssueError.value ||
+        !getIssueResult.value
+      ) {
+        return null;
+      }
+      return getIssueResult.value.issues[0];
+    });
+
+    const discussionId = computed(() => {
+      if (activeIssue.value) {
+        return activeIssue.value.relatedDiscussionId;
+      }
+      return "";
+    });
+
+    const {
+      result: getDiscussionResult,
+      error: getDiscussionError,
+      loading: getDiscussionLoading,
+    } = useQuery(GET_DISCUSSION, { id: discussionId });
+
+    const discussion = computed(() => {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
+        return null;
+      }
+      return getDiscussionResult.value.discussions[0];
+    });
 
     // const {
     //   result: getIssueCommentsResult,
@@ -74,35 +107,19 @@ export default defineComponent({
     //   limit: COMMENT_LIMIT,
     // });
 
-    const activeIssue = computed<Issue>(() => {
-      if (
-        getIssueLoading.value ||
-        getIssueError.value ||
-        !getIssueResult.value
-      ) {
-        return null;
-      }
-      return getIssueResult.value.issues[0];
-    });
-
     const comments = computed(() => {
-      if (getIssueError.value) {
+      if (getIssueLoading.value || getIssueError.value) {
         return [];
       }
-      return (
-        getIssueResult.value?.issues[0]?.Comments || []
-      );
+      return getIssueResult.value?.issues[0]?.Comments || [];
     });
 
     const loadedCommentCount = computed(() => {
-      if (
-        getIssueLoading.value ||
-        getIssueError.value
-      ) {
+      if (getIssueLoading.value || getIssueError.value) {
         return [];
       }
 
-      let Comments = comments.value.filter((comment: Comment) => {
+      let Comments = comments.value.filter((comment: CommentData) => {
         return comment.ParentComment === null;
       });
       return Comments.length;
@@ -201,42 +218,42 @@ export default defineComponent({
       channelId,
       commentCount,
       comments,
+      discussion,
       getIssueResult,
       getIssueError,
       getIssueLoading,
       issue,
       lgAndUp,
       loadedCommentCount,
-    //   loadMore,
+      //   loadMore,
       mdAndUp,
       offset,
       previousOffset,
-    //   reachedEndOfResults,
+      //   reachedEndOfResults,
       relativeTime,
-    //   aggregateCommentCount,
+      //   aggregateCommentCount,
       route,
       router,
       smAndDown,
     };
   },
+  methods: {
+    formatDate(date: string) {
+      return DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL);
+    },
+  },
 });
 </script>
 
 <template>
-  <PageNotFound
-    v-if="
-      !getIssueLoading &&
-        !getIssueLoading &&
-        !activeIssue
-    "
-  />
+  <PageNotFound v-if="!getIssueLoading && !getIssueLoading && !activeIssue" />
   <div
     v-else
-    class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 sm:px-2 md:px-4 lg:px-6 dark:bg-gray-800"
+    class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-4 lg:px-6"
   >
     <div
       v-if="route.name === 'IssueDetail'"
-      class="align-center mx-1 mt-2 flex justify-between px-4 "
+      class="align-center mx-1 mt-2 flex justify-between px-4"
     >
       <BackLink
         :link="`/channels/c/${channelId}/issues`"
@@ -246,19 +263,39 @@ export default defineComponent({
 
     <ErrorBanner
       v-if="getIssueError"
-      class="mt-2 px-4 "
+      class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div v-if="!getIssueLoading">
-      <div class="mt-3 w-full px-4">
-        <div ref="issueDetail">
-          <div class="min-w-0">
-            <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-              {{
-                issue && issue.title ? issue.title : "[Deleted]"
-              }}
-            </h2>
-          </div>
+    <div v-else-if="!getIssueLoading">
+      <div class="mt-3 flex w-full flex-col gap-2 px-4">
+        <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
+          {{ issue && issue.title ? issue.title : "[Deleted]" }}
+        </h2>
+        <div class="text-sm text-gray-500 dark:text-gray-400">
+          {{
+            `Opened on ${formatDate(issue.createdAt)} by ${
+              issue.Author?.displayName || "[Deleted]"
+            }`
+          }}
+        </div>
+        <p>This is the original discussion:</p>
+        <div class="border-l border-l-2 pl-6">
+          <h3 v-if="discussion?.title">
+            <router-link
+              :to="`/channels/c/${channelId}/discussions/d/${discussion.id}`"
+              class="text-blue-500 dark:text-blue-400"
+              rel="noopener noreferrer"
+            >
+              {{ discussion.title }}
+            </router-link>
+          </h3>
+          <MarkdownPreview
+            v-if="discussion?.body"
+            class="-ml-8 max-w-none"
+            :text="discussion.body"
+            :disable-gallery="route.name !== 'DiscussionDetail'"
+            :word-limit="1000"
+          />
         </div>
       </div>
     </div>
@@ -267,12 +304,42 @@ export default defineComponent({
       class="flex justify-center"
     >
       <v-col>
-        <div class="space-y-3 px-2">
+        <div class="space-y-3 px-4">
+          <p>
+            {{
+              `The discussion has been reported ${commentCount} time${
+                commentCount === 1 ? "" : "s"
+              }:`
+            }}
+          </p>
           <div
-            class="dark:bg-gray-950 rounded-lg border dark:border-gray-700 px-4 pb-2 dark:bg-gray-700"
+            class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
           >
-            
+            <Comment
+              v-for="comment in comments"
+              :key="comment.id"
+              :comment-data="comment"
+              :parent-comment-id="
+                comment.ParentComment ? comment.ParentComment.id : null
+              "
+              :depth="0"
+              :show-channel="false"
+              :show-context-link="false"
+              :go-to-permalink-on-click="false"
+              :show-comment-buttons="false"
+            />
           </div>
+
+          <div class="flex justify-center">
+            <h3>Moderation Actions</h3>
+          </div>
+          <ul>
+            <li>Is there a rule violation? Yes/no</li>
+            <li>If yes, which rules were violated?</li>
+            <li>What action was taken?</li>
+            <li>Any other comments?</li>
+            <li>Close the issue?</li>
+          </ul>
         </div>
       </v-col>
     </v-row>

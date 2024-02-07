@@ -18,7 +18,6 @@ export default defineComponent({
   },
   setup: () => {
     const route = useRoute();
-    console.log(route.name);
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -110,7 +109,10 @@ export default defineComponent({
         <div
           class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
         >
-          <DiscussionHeader :discussion="discussion" :channel-id="channelId" />
+          <DiscussionHeader
+            :discussion="discussion"
+            :channel-id="channelId"
+          />
           <DiscussionBody
             :discussion="discussion"
             :channel-id="channelId"
@@ -119,7 +121,10 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <nav class="max-w-7xl space-x-2 pt-1 text-sm" aria-label="Tabs">
+    <nav
+      class="max-w-7xl space-x-2 pt-1 text-sm"
+      aria-label="Tabs"
+    >
       <TabButton
         v-for="tab in tabs"
         :key="tab.name"
@@ -127,8 +132,8 @@ export default defineComponent({
         :label="tab.name"
         :is-active="
           (tab.name === 'Feedback' && route?.name === 'DiscussionModHistory') ||
-          (tab.name === 'Reports' &&
-            route?.name === 'DiscussionModHistoryReports')
+            (tab.name === 'Reports' &&
+              route?.name === 'DiscussionModHistoryReports')
         "
         :show-count="false"
       />

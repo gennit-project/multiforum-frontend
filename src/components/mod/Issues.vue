@@ -55,7 +55,6 @@ export default defineComponent({
       if (getIssuesByChannelLoading.value || getIssuesByChannelError.value) {
         return [];
       }
-      console.log(getIssuesByChannelResult.value)
       const channelData = getIssuesByChannelResult.value.channels[0];
 
       if (!channelData || !channelData.Issues) {
@@ -63,32 +62,6 @@ export default defineComponent({
       }
       return channelData.Issues;
     });
-
-    console.log(issues.value);
-
-    // const issues = [
-    //   {
-    //     id: "1",
-    //     title: "Issue 1",
-    //     body: "This is the body of issue 1",
-    //     Author: {
-    //       username: "user1",
-    //     },
-    //     isOpen: true,
-    //     timestamp: "2021-08-01T00:00:00.000Z",
-    //   },
-    //   {
-    //     id: "2",
-    //     title: "Issue 2",
-    //     body: "This is the body of issue 2",
-    //     isOpen: false,
-    //     Author: {
-    //       username: "user2",
-    //     },
-    //     timestamp: "2021-08-02T00:00:00.000Z",
-    //   },
-    // ];
-
 
     const openCount = computed(() => {
       return issues.value.filter((issue) => issue.isOpen).length;
@@ -117,13 +90,11 @@ export default defineComponent({
 <template>
   <div>
     <div class="flex items-center gap-4 p-3 pl-8">
-      <span class="flex items-center gap-2"
-        ><i class="far fa-dot-circle"></i>{{ openCount }} Open</span
-      >
-      <span class="flex items-center gap-1"
-      :class="{'text-gray-500 dark:text-gray-400': !showClosed}"
-        ><CheckIcon />{{ closedCount }} Closed</span
-      >
+      <span class="flex items-center gap-2"><i class="far fa-dot-circle" />{{ openCount }} Open</span>
+      <span
+        class="flex items-center gap-1"
+        :class="{'text-gray-500 dark:text-gray-400': !showClosed}"
+      ><CheckIcon />{{ closedCount }} Closed</span>
     </div>
     <ul
       class="border-t border-gray-200 dark:border-gray-800 divide-y"
@@ -135,28 +106,28 @@ export default defineComponent({
         class="border-bottom flex flex-col  border-gray-200 p-3 pl-8 dark:border-gray-800"
       >
         <div class="text-lg">
-          <i class="far fa-dot-circle list-item-icon"></i>
+          <i class="far fa-dot-circle list-item-icon" />
     
           <router-link
-          :to="{
+            :to="{
               name: 'IssueDetail',
               params: { 
-                  issueId: issue.id,
-                  channelId: channelId,
-               },
+                issueId: issue.id,
+                channelId: channelId,
+              },
           
-          }"
-        >
-          {{ issue.title }}
-        </router-link>
+            }"
+          >
+            {{ issue.title }}
+          </router-link>
         </div>
-        <!-- <div class="ml-6 text-sm text-gray-500 dark:text-gray-400">
+        <div class="ml-6 text-sm text-gray-500 dark:text-gray-400">
           {{
-            `Opened on ${formatDate(issue.timestamp)} by ${
-              issue.Author?.username || "[Deleted]"
+            `Opened on ${formatDate(issue.createdAt)} by ${
+              issue.Author?.displayName || "[Deleted]"
             }`
           }}
-        </div> -->
+        </div>
       </li>
     </ul>
   </div>

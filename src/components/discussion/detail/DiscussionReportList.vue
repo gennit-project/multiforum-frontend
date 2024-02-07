@@ -28,8 +28,6 @@ export default defineComponent({
     } = useQuery(GET_ISSUES_BY_DISCUSSION, { 
       discussionId: discussionId
     });
-    console.log(getIssuesByDiscussionResult.value);
-
 
     const relatedIssues = computed(() => {
       if (getIssuesByDiscussionLoading.value || getIssuesByDiscussionError.value) {
@@ -38,8 +36,6 @@ export default defineComponent({
       const discussionData = getIssuesByDiscussionResult.value.discussions[0];
       return discussionData.RelatedIssues;
     });
-
-    console.log(relatedIssues.value);
 
     return {
       getIssuesByDiscussionResult,
@@ -51,18 +47,21 @@ export default defineComponent({
 });
 </script>
 <template>
- <ul>
-  <li v-for="issue in relatedIssues" :key="issue.id">
-    {{ issue.title }}
-  </li>
-  <li v-if="relatedIssues.length === 0">
-    No reports found
-  </li>
-  <li v-if="getIssuesByDiscussionError">
-    Error fetching reports
-  </li>
-  <li v-if="getIssuesByDiscussionLoading">
-    Loading reports
-  </li>
- </ul>
+  <ul>
+    <li
+      v-for="issue in relatedIssues"
+      :key="issue.id"
+    >
+      {{ issue.title }}
+    </li>
+    <li v-if="relatedIssues.length === 0">
+      No reports found
+    </li>
+    <li v-if="getIssuesByDiscussionError">
+      Error fetching reports
+    </li>
+    <li v-if="getIssuesByDiscussionLoading">
+      Loading reports
+    </li>
+  </ul>
 </template>

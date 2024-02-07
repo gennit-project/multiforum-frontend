@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client/core";
 import { AUTHOR_FIELDS } from "../discussion/queries";
 
-const COMMENT_VOTE_FIELDS = gql`
+export const COMMENT_VOTE_FIELDS = gql`
   fragment CommentVoteFields on Comment {
     UpvotedByUsers {
       username
@@ -18,7 +18,9 @@ const COMMENT_VOTE_FIELDS = gql`
   }
 `;
 
-const COMMENT_FIELDS = gql`
+export const COMMENT_FIELDS = gql`
+  ${COMMENT_VOTE_FIELDS}
+  ${AUTHOR_FIELDS}
   fragment CommentFields on Comment {
     id
     text
@@ -37,7 +39,6 @@ const COMMENT_FIELDS = gql`
     }
     ...CommentVoteFields
   }
-  ${AUTHOR_FIELDS}
 `;
 
 export const GET_DISCUSSION_COMMENTS = gql`

@@ -135,12 +135,6 @@ export default defineComponent({
         countProperty: null,
       });
     }
-    console.log('username', {
-      username: username.value,
-      adminList: adminList,
-      modList: modList,
-      loggedInUserModName: loggedInUserModName.value,
-    });
 
     const isAdmin = adminList.includes(loggedInUsername.value);
     const isMod = modList.includes(loggedInUserModName.value);
@@ -202,7 +196,10 @@ export default defineComponent({
         :show-count="showCounts && !!tab.countProperty"
         :count="tab.countProperty ? channel[tab.countProperty]?.count : 0"
       >
-        <component :is="tab.icon" :class="iconSize" />
+        <component
+          :is="tab.icon"
+          :class="iconSize"
+        />
       </TabButton>
     </nav>
   </div>

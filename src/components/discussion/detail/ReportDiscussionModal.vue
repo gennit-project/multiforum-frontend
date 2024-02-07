@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 import { defineComponent, computed, ref } from "vue";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import FlagIcon from "@/components/icons/FlagIcon.vue";
@@ -7,37 +7,25 @@ import { REPORT_DISCUSSION } from "@/graphQLData/issue/mutations";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { useRoute } from "vue-router";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import { IssueCreateInput } from "@/__generated__/graphql";
+import { CHECK_ISSUE_EXISTENCE } from "@/graphQLData/issue/queries";
+import { ADD_ISSUE_COMMENT } from "@/graphQLData/issue/mutations";
 
 // mutation reportDiscussion(
-//   $title: String!
-//   $body: String!
-//   $relatedDiscussionId: ID!
-//   $authorName: String!
-//   $channelUniqueName: String!
+//   $input: [IssueCreateInput!]!
 // ) {
-//   reportDiscussion(
-//     title: $title,
-//     body: $body,
-//     relatedDiscussionId: $relatedDiscussionId,
-//     authorName: $authorName,
-//     channelUniqueName: $channelUniqueName
+//   createIssues(
+//     input: $input
 //   ) {
-//     authorName
-//     Author {
-//       ... on ModerationProfile {
-//         displayName
+//     issues {
+//       title 
+//       relatedDiscussionId
+//       channelUniqueName
+//       Author {
+//         ... on ModerationProfile {
+//           displayName
+//         }
 //       }
-//     }
-//     title
-//     body
-//     channelUniqueName
-//     Channel {
-//       uniqueName
-//     }
-//     relatedDiscussionId
-//     RelatedDiscussion {
-//       id
-//       title
 //     }
 //   }
 // }
@@ -73,6 +61,13 @@ export default defineComponent({
       return "";
     });
 
+    const discussionId = computed(() => {
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
+    });
+
     const {
       result: localModProfileNameResult,
       loading: localModProfileNameLoading,
@@ -85,8 +80,30 @@ export default defineComponent({
       }
       return localModProfileNameResult.value.modProfileName;
     });
+    const {
+      result: issueExistenceResult,
+      loading: issueExistenceLoading,
+      error: issueExistenceError,
+    } = useQuery(CHECK_ISSUE_EXISTENCE, () => ({
+      discussionId: discussionId.value,
+      channelUniqueName: channelId.value,
+    }));
 
     const reportText = ref("");
+
+    const {
+      mutate: addIssueComment,
+      // error: addIssueCommentError,
+      // loading: addIssueCommentLoading,
+      // onDone: addIssueCommentDone,
+    } = useMutation(ADD_ISSUE_COMMENT);
+
+    const existingIssueId = computed(() => {
+      if (issueExistenceLoading.value || issueExistenceError.value) {
+        return false;
+      }
+      return issueExistenceResult.value?.issues[0]?.id;
+    });
 
     const {
       mutate: reportDiscussion,
@@ -103,39 +120,95 @@ export default defineComponent({
     });
 
     return {
+      addIssueComment,
       reportDiscussion,
       loggedInUserModName,
       reportDiscussionError,
       reportDiscussionLoading,
       reportText,
       channelId,
+      existingIssueId
     };
   },
   methods: {
     submit() {
-      console.log({
+      // If an issue already exists for this discussion, do not create a new one.
+      // Instead, update the Comments field on the existing issue and add the
+      // new comment to the Comments field.
+      if (this.existingIssueId) {
+        this.addIssueComment({
+            displayName: this.loggedInUserModName,
+            issueId: this.existingIssueId,
+            text: this.reportText
+        });
+
+        return;
+      }
+
+      const issueCreateInput: IssueCreateInput = {
         title: `Reported Discussion: "${this.discussionTitle}"`,
-        body: this.reportText,
+        isOpen: true,
         relatedDiscussionId: this.discussionId,
+        RelatedDiscussion: {
+          connect: {
+            where: {
+              node: {
+                id: this.discussionId,
+              }
+            }
+          },
+        },
         authorName: this.loggedInUserModName,
+        Author: {
+          ModerationProfile: {
+            connect: {
+              where: {
+                node: {
+                  displayName: this.loggedInUserModName
+                }
+              }
+            }
+          }
+        },
         channelUniqueName: this.channelId,
-      });
+        Channel: {
+          connect: {
+            where: {
+              node: {
+                uniqueName: this.channelId
+              }
+            }
+          }
+        },
+        Comments: {
+          create: {
+            node: {
+              text: this.reportText,
+              isRootComment: true,
+              CommentAuthor: {
+                ModerationProfile: {
+                  connect: {
+                    where: {
+                      node: {
+                        displayName: this.loggedInUserModName
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
       this.reportDiscussion({
-        title: `Reported Discussion: "${this.discussionTitle}"`,
-        body: this.reportText,
-        relatedDiscussionId: this.discussionId,
-        authorName: this.loggedInUserModName,
-        channelUniqueName: this.channelId,
+        input: [issueCreateInput],
       });
     },
     close() {
-      console.log('loading',this.reportDiscussionLoading)
       if (this.reportDiscussionLoading){
         return;
       }
       if (this.reportDiscussionError) {
-        console.log(this.reportDiscussionError)
-        
         return;
       }
       this.$emit("closeReportForm");
@@ -156,7 +229,10 @@ export default defineComponent({
     @close="close"
   >
     <template #icon>
-      <FlagIcon class="h-6 w-6 text-red-600 opacity-100" aria-hidden="true" />
+      <FlagIcon
+        class="h-6 w-6 text-red-600 opacity-100"
+        aria-hidden="true"
+      />
     </template>
     <template #content>
       <textarea
