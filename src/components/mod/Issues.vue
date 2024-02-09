@@ -105,7 +105,7 @@ export default defineComponent({
         :key="index"
         class="border-bottom flex flex-col  border-gray-200 p-3 pl-8 dark:border-gray-800"
       >
-        <div class="text-lg">
+        <div class="text-md">
           <i class="far fa-dot-circle list-item-icon" />
     
           <router-link
@@ -121,7 +121,7 @@ export default defineComponent({
             {{ issue.title }}
           </router-link>
         </div>
-        <div class="ml-6 text-sm text-gray-500 dark:text-gray-400">
+        <div class="ml-6 text-xs text-gray-500 dark:text-gray-400">
           {{
             `Opened on ${formatDate(issue.createdAt)} by ${
               issue.Author?.displayName || "[Deleted]"

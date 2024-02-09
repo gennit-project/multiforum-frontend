@@ -19,8 +19,7 @@ import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import { DateTime } from "luxon";
 import Comment from "@/components/comments/Comment.vue";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import DiscussionDetails from "@/components/mod/DiscussionDetails.vue";
 
 export const COMMENT_LIMIT = 5;
 
@@ -30,7 +29,7 @@ export default defineComponent({
     Comment,
     // IssueCommentForm,
     ErrorBanner,
-    MarkdownPreview,
+    DiscussionDetails,
     PageNotFound,
   },
   props: {
@@ -74,27 +73,6 @@ export default defineComponent({
       }
       return getIssueResult.value.issues[0];
     });
-
-    const discussionId = computed(() => {
-      if (activeIssue.value) {
-        return activeIssue.value.relatedDiscussionId;
-      }
-      return "";
-    });
-
-    const {
-      result: getDiscussionResult,
-      error: getDiscussionError,
-      loading: getDiscussionLoading,
-    } = useQuery(GET_DISCUSSION, { id: discussionId });
-
-    const discussion = computed(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value) {
-        return null;
-      }
-      return getDiscussionResult.value.discussions[0];
-    });
-
     // const {
     //   result: getIssueCommentsResult,
     //   error: getIssueCommentsError,
@@ -218,7 +196,6 @@ export default defineComponent({
       channelId,
       commentCount,
       comments,
-      discussion,
       getIssueResult,
       getIssueError,
       getIssueLoading,
@@ -266,38 +243,24 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div v-else-if="!getIssueLoading">
-      <div class="mt-3 flex w-full flex-col gap-2 px-4">
-        <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
-          {{ issue && issue.title ? issue.title : "[Deleted]" }}
-        </h2>
-        <div class="text-sm text-gray-500 dark:text-gray-400">
-          {{
-            `Opened on ${formatDate(issue.createdAt)} by ${
-              issue.Author?.displayName || "[Deleted]"
-            }`
-          }}
-        </div>
-        <p>This is the original discussion:</p>
-        <div class="border-l border-l-2 pl-6">
-          <h3 v-if="discussion?.title">
-            <router-link
-              :to="`/channels/c/${channelId}/discussions/d/${discussion.id}`"
-              class="text-blue-500 dark:text-blue-400"
-              rel="noopener noreferrer"
-            >
-              {{ discussion.title }}
-            </router-link>
-          </h3>
-          <MarkdownPreview
-            v-if="discussion?.body"
-            class="-ml-8 max-w-none"
-            :text="discussion.body"
-            :disable-gallery="route.name !== 'DiscussionDetail'"
-            :word-limit="1000"
-          />
-        </div>
+    <div
+      v-else-if="!getIssueLoading"
+      class="mt-2 px-4"
+    >
+      <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
+        {{ issue && issue.title ? issue.title : "[Deleted]" }}
+      </h2>
+      <div class="text-sm text-gray-500 dark:text-gray-400">
+        {{
+          `Opened on ${formatDate(issue.createdAt)} by ${
+            issue.Author?.displayName || "[Deleted]"
+          }`
+        }}
       </div>
+      <DiscussionDetails 
+        v-if="activeIssue && activeIssue.relatedDiscussionId"
+        :active-issue="activeIssue"
+      />
     </div>
     <v-row
       v-if="issue"

@@ -11,25 +11,6 @@ import { IssueCreateInput } from "@/__generated__/graphql";
 import { CHECK_ISSUE_EXISTENCE } from "@/graphQLData/issue/queries";
 import { ADD_ISSUE_COMMENT } from "@/graphQLData/issue/mutations";
 
-// mutation reportDiscussion(
-//   $input: [IssueCreateInput!]!
-// ) {
-//   createIssues(
-//     input: $input
-//   ) {
-//     issues {
-//       title 
-//       relatedDiscussionId
-//       channelUniqueName
-//       Author {
-//         ... on ModerationProfile {
-//           displayName
-//         }
-//       }
-//     }
-//   }
-// }
-
 export default defineComponent({
   name: "ReportDiscussionModal",
   components: {
@@ -38,10 +19,6 @@ export default defineComponent({
     GenericModal,
   },
   props: {
-    discussionId: {
-      type: String,
-      required: true,
-    },
     discussionTitle: {
       type: String,
       required: true,
@@ -121,6 +98,7 @@ export default defineComponent({
 
     return {
       addIssueComment,
+      discussionId,
       reportDiscussion,
       loggedInUserModName,
       reportDiscussionError,
@@ -130,11 +108,17 @@ export default defineComponent({
       existingIssueId
     };
   },
+  created() {
+    this.$watch("$route", (newRoute: any) => {
+      this.route = newRoute;
+    });
+  },
   methods: {
     submit() {
       // If an issue already exists for this discussion, do not create a new one.
       // Instead, update the Comments field on the existing issue and add the
       // new comment to the Comments field.
+
       if (this.existingIssueId) {
         this.addIssueComment({
             displayName: this.loggedInUserModName,
@@ -149,15 +133,6 @@ export default defineComponent({
         title: `Reported Discussion: "${this.discussionTitle}"`,
         isOpen: true,
         relatedDiscussionId: this.discussionId,
-        RelatedDiscussion: {
-          connect: {
-            where: {
-              node: {
-                id: this.discussionId,
-              }
-            }
-          },
-        },
         authorName: this.loggedInUserModName,
         Author: {
           ModerationProfile: {

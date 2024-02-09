@@ -15,10 +15,6 @@ export const REPORT_DISCUSSION = gql`
         Channel {
           uniqueName
         }
-        RelatedDiscussion {
-          id
-          title
-        }
         Comments {
           id
           text
@@ -102,10 +98,6 @@ export const REPORT_EVENT = gql`
         uniqueName
       }
       relatedDiscussionId
-      RelatedDiscussion {
-        id
-        title
-      }
     }
   }
 `;
@@ -138,10 +130,6 @@ export const REPORT_COMMENT = gql`
         uniqueName
       }
       relatedDiscussionId
-      RelatedDiscussion {
-        id
-        title
-      }
     }
   }
 `;

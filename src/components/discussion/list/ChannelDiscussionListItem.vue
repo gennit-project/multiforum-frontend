@@ -205,10 +205,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <li
-    class="relative mt-1 flex space-y-3 rounded-lg bg-white p-4 dark:bg-gray-700 lg:py-4"
-  >
-    <div class="flex flex-row justify-center gap-4">
+  <li class="relative flex pt-2 hover:cursor-pointer">
+    <div
+      class="flex w-full flex-row justify-start gap-4 rounded-lg hover:bg-white dark:hover:bg-gray-700 lg:p-3"
+    >
       <DiscussionVotes
         v-if="discussionChannel"
         :discussion="discussion"
@@ -216,30 +216,35 @@ export default defineComponent({
         :show-downvote="false"
       />
 
-      <div v-if="discussion" class="flex-col gap-2">
+      <div
+        v-if="discussion"
+        class="w-full flex-col gap-2"
+      >
         <router-link
           :to="{ path: detailLink, query: filteredQuery }"
-          class="hover:text-gray-500"
+          class="w-full hover:text-gray-500"
         >
           <p
             class="cursor-pointer text-lg font-bold hover:text-gray-500 dark:text-gray-100"
           >
-            <HighlightedSearchTerms :text="title" :search-input="searchInput" />
-          </p>
-        </router-link>
-
-        <div
-          v-if="truncatedBody"
-          class="my-2 max-h-72 max-w-lg overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
-        >
-          <router-link :to="{ path: detailLink, query: filteredQuery }">
-            <MarkdownPreview
-              :text="truncatedBody || ''"
-              :disable-gallery="true"
-              class="-ml-4"
+            <HighlightedSearchTerms
+              :text="title"
+              :search-input="searchInput"
             />
-          </router-link>
-        </div>
+          </p>
+          <div
+            v-if="truncatedBody"
+            class="my-2 max-h-72 max-w-lg overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
+          >
+            <router-link :to="{ path: detailLink, query: filteredQuery }">
+              <MarkdownPreview
+                :text="truncatedBody || ''"
+                :disable-gallery="true"
+                class="-ml-4"
+              />
+            </router-link>
+          </div>
+        </router-link>
 
         <div
           class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
@@ -282,7 +287,10 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <ErrorBanner v-if="errorMessage" :text="errorMessage" />
+    <ErrorBanner
+      v-if="errorMessage"
+      :text="errorMessage"
+    />
   </li>
 </template>
 <style>
