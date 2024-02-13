@@ -135,7 +135,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <SortButtons />
+    <SortButtons class="border-b dark:border-gray-600"/>
     <div class="mt-4 flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
