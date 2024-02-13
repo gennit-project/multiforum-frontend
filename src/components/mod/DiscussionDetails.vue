@@ -72,7 +72,7 @@ export default defineComponent({
     <LoadingSpinner v-else-if="getDiscussionLoading" />
     <div
       v-if="discussion"
-      class="mt-3 flex w-full flex-col gap-2 px-4"
+      class="mt-3 flex w-full flex-col gap-2"
     >
       <p>This is the original discussion:</p>
       <div class="border-l border-l-2 pl-6">

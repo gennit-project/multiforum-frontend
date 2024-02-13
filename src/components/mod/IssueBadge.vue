@@ -1,6 +1,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Issue } from "@/__generated__/graphql";
+import CheckIcon from "@/components/icons/CheckIcon.vue";
 
 export default defineComponent({
   props: {
@@ -8,6 +9,9 @@ export default defineComponent({
       type: Object as () => Issue,
       required: true,
     },
+  },
+  components: {
+    CheckIcon,
   },
   setup(props) {
     return {
@@ -26,9 +30,9 @@ export default defineComponent({
   </div>
   <div
     v-else
-    class="flex flex-row space-y-4 rounded-full bg-red-500 px-4 py-1 text-white"
+    class="flex flex-row items-center gap-2 space-y-4 rounded-full bg-purple-500 py-1 pl-2 pr-3 text-white"
   >
-    Closed
+    <CheckIcon class="h-4 w-4" /> Closed
   </div>
 </template>
 

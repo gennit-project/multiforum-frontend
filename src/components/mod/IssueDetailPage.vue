@@ -3,6 +3,7 @@ import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_ISSUE } from "@/graphQLData/issue/queries";
+import { CLOSE_ISSUE, REOPEN_ISSUE } from "@/graphQLData/issue/mutations";
 // import {
 //   GET_ISSUE_COMMENTS,
 //   GET_ISSUE_COMMENT_AGGREGATE,
@@ -84,6 +85,35 @@ export default defineComponent({
       }
       return getIssueResult.value.issues[0];
     });
+
+    const activeIssueId = computed(() => {
+      if (activeIssue.value) {
+        return activeIssue.value.id;
+      }
+      return "";
+    });
+
+    const {
+      mutate: closeIssue,
+      loading: closeIssueLoading,
+      error: closeIssueError,
+    } = useMutation(CLOSE_ISSUE, () => ({
+      variables: {
+        id: activeIssueId.value,
+      },
+    }));
+
+    const {
+      mutate: reopenIssue,
+      loading: reopenIssueLoading,
+      error: reopenIssueError,
+    } = useMutation(REOPEN_ISSUE, () => ({
+      variables: {
+        id: activeIssueId.value,
+      },
+    }));
+
+    
 
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
@@ -275,10 +305,26 @@ export default defineComponent({
 
     const previousOffset = ref(0);
 
+    const closeOpenButtonText = computed(() => {
+      if (activeIssue.value && activeIssue.value.isOpen) {
+
+        if (createFormValues.value.text.length > 0) {
+          return "Close with comment";
+        }
+        return "Close";
+      }
+      if (createFormValues.value.text.length > 0) {
+        return "Reopen with comment";
+      }
+      return "Reopen";
+    });
+
 
     return {
       activeIssue,
       channelId,
+      closeIssue,
+      closeOpenButtonText,
       commentCount,
       comments,
       createCommentLoading,
@@ -293,6 +339,7 @@ export default defineComponent({
       mdAndUp,
       offset,
       previousOffset,
+      reopenIssue,
       relativeTime,
       route,
       router,
@@ -316,6 +363,13 @@ export default defineComponent({
       }
       this.createCommentLoading = true;
       this.createComment();
+    },
+    toggleCloseOpenIssue() {
+      if (this.activeIssue.isOpen) {
+        this.closeIssue();
+      } else {
+        this.reopenIssue();
+      }
     },
   },
 });
@@ -342,7 +396,7 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div v-else-if="!getIssueLoading" class="mt-2 px-4">
+    <div v-else-if="!getIssueLoading" class="mt-2 px-4 flex flex-col gap-2">
       <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
       </h2>
@@ -396,8 +450,8 @@ export default defineComponent({
             />
             <div class="mt-3 flex justify-end">
               <GenericButton 
-                :text="createFormValues.text.length === 0 ? 'Close issue' : 'Close with comment'" 
-                @click="$emit('handleCancel')" 
+                :text="closeOpenButtonText" 
+                @click="toggleCloseOpenIssue" 
               />
               <SaveButton
                 data-testid="createCommentButton"
@@ -408,7 +462,10 @@ export default defineComponent({
               />
             </div>
           </div>
-          <ModerationWizard :issue="issue" />
+          <ModerationWizard 
+            v-if="activeIssue && activeIssue.isOpen"
+            :issue="issue" 
+          />
         </div>
       </v-col>
     </v-row>

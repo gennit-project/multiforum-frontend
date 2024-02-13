@@ -85,9 +85,43 @@ export const GET_ISSUES_BY_DISCUSSION = gql`
 
 export const GET_ISSUES_BY_CHANNEL = gql`
   query getIssuesByChannel($channelUniqueName: String!) {
-    channels(where: { uniqueName: $channelUniqueName }) {
+    channels(where: { 
+      uniqueName: $channelUniqueName,
+    }) {
       uniqueName
-      Issues {
+      Issues (
+        where: {
+          isOpen: true
+        }
+      ) {
+        id
+        title
+        body
+        Author {
+          ... on ModerationProfile {
+            displayName
+          }
+        }
+        createdAt
+        updatedAt
+        isOpen
+        relatedDiscussionId
+      }
+    }
+  }
+`;
+
+export const GET_CLOSED_ISSUES_BY_CHANNEL = gql`
+  query getClosedIssuesByChannel($channelUniqueName: String!) {
+    channels(where: { 
+      uniqueName: $channelUniqueName,
+    }) {
+      uniqueName
+      Issues (
+        where: {
+          isOpen: false
+        }
+      ) {
         id
         title
         body

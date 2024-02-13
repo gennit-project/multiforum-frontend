@@ -29,6 +29,44 @@ export const REPORT_DISCUSSION = gql`
   }
 `;
 
+export const CLOSE_ISSUE = gql`
+mutation closeIssue($id: ID!) {
+  updateIssues (
+    where: {
+      id: $id
+    },
+    update: {
+      isOpen: false
+    }
+  ) {
+    issues {
+      id 
+      title
+      isOpen
+    }
+  }
+}
+`;
+
+export const REOPEN_ISSUE = gql`
+mutation reopenIssue($id: ID!) {
+  updateIssues (
+    where: {
+      id: $id
+    },
+    update: {
+      isOpen: true
+    }
+  ) {
+    issues {
+      id 
+      title
+      isOpen
+    }
+  }
+}
+`;
+
 export const ADD_ISSUE_COMMENT = gql`
   mutation addIssueComment(
     $displayName: String!
