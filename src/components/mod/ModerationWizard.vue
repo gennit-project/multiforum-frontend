@@ -9,12 +9,14 @@ import { DateTime } from "luxon";
 import { useRoute } from "vue-router";
 import GenericButton from "../generic/buttons/GenericButton.vue";
 import PrimaryButton from "../generic/buttons/PrimaryButton.vue";
+import ModerationStep from "./ModerationStep.vue";
 
 export default defineComponent({
   components: {
     ErrorBanner,
     GenericButton,
     LoadingSpinner,
+    ModerationStep,
     PrimaryButton,
   },
   props: {
@@ -51,19 +53,51 @@ export default defineComponent({
     });
 
     const stepNames = {
-      ViolatesRules: "ViolatesRules",
-      SelectRules: "SelectRules",
-      SelectAction: "SelectAction",
-      SuspensionNeeded: "SuspensionNeeded",
-      SuspensionLength: "SuspensionLength",
-      SuspensionMessage: "SuspensionMessage",
-      RequestChangeMessage: "RequestChangeMessage",
-      CloseIssue: "CloseIssue",
-      CloseIssueComment: "CloseIssueComment",
-      FinishedWizard: "FinishedWizard",
+      ViolatesRules: {
+        id: "ViolatesRules",
+        title: "Does the post violate the rules?",
+      },
+      SelectRules: {
+        id: "SelectRules",
+        title: "What rules were broken?",
+      },
+      SelectAction: {
+        id: "SelectAction",
+        title: "What do you want to do with the post?",
+      },
+      SuspensionNeeded: {
+        id: "SuspensionNeeded",
+        title: "Should the author be suspended from this forum?",
+      },
+      SuspensionLength: {
+        id: "SuspensionLength",
+        title: "What should be the length of the suspension?",
+      },
+      SuspensionMessage: {
+        id: "SuspensionMessage",
+        title:
+          "This is the message that will be sent to the author to notify them of their suspension. You can edit the message before sending it.",
+      },
+      RequestChangeMessage: {
+        id: "RequestChangeMessage",
+        title:
+          "This is the message that will be sent to the author to request changes to their post. Would you like to edit it?",
+      },
+      CloseIssue: {
+        id: "CloseIssue",
+        title: "Do you want to close the issue?",
+      },
+      CloseIssueComment: {
+        id: "CloseIssueComment",
+        title: "Please leave a comment explaining your decision",
+      },
+      FinishedWizard: {
+        id: "FinishedWizard",
+        title: "Thank you for your help moderating this forum"
+      },
     };
 
-    const activeStep = ref(stepNames.ViolatesRules);
+    const activeStep = ref(stepNames.ViolatesRules.id);
     const explanationComment = ref("");
     const brokenRules = ref("");
     const selectedPostAction = ref("");
@@ -161,35 +195,61 @@ export default defineComponent({
     <ErrorBanner v-if="getDiscussionError" :text="getDiscussionError.message" />
     <LoadingSpinner v-else-if="getDiscussionLoading" />
     <div v-else-if="discussion" class="mt-6 flex w-96 justify-center space-y-4">
-      <div
-        class="flex w-full flex-col space-y-4"
-        v-if="activeStep === stepNames.ViolatesRules"
+      <!-- <div class="px-4 py-12 sm:px-6 lg:px-8">
+            <nav class="flex justify-center" aria-label="Progress">
+              <ol role="list" class="space-y-6">
+                <li v-for="step in steps" :key="step.name">
+                  <a v-if="step.status === 'complete'" :href="step.href" class="group">
+                    <span class="flex items-start">
+                      <span class="relative flex h-5 w-5 flex-shrink-0 items-center justify-center">
+                        <CheckCircleIcon class="h-full w-full text-indigo-600 group-hover:text-indigo-800" aria-hidden="true" />
+                      </span>
+                      <span class="ml-3 text-sm font-medium text-gray-500 group-hover:text-gray-900">{{ step.name }}</span>
+                    </span>
+                  </a>
+                  <a v-else-if="step.status === 'current'" :href="step.href" class="flex items-start" aria-current="step">
+                    <span class="relative flex h-5 w-5 flex-shrink-0 items-center justify-center" aria-hidden="true">
+                      <span class="absolute h-4 w-4 rounded-full bg-indigo-200" />
+                      <span class="relative block h-2 w-2 rounded-full bg-indigo-600" />
+                    </span>
+                    <span class="ml-3 text-sm font-medium text-indigo-600">{{ step.name }}</span>
+                  </a>
+                  <a v-else :href="step.href" class="group">
+                    <div class="flex items-start">
+                      <div class="relative flex h-5 w-5 flex-shrink-0 items-center justify-center" aria-hidden="true">
+                        <div class="h-2 w-2 rounded-full bg-gray-300 group-hover:bg-gray-400" />
+                      </div>
+                      <p class="ml-3 text-sm font-medium text-gray-500 group-hover:text-gray-900">{{ step.name }}</p>
+                    </div>
+                  </a>
+                </li>
+              </ol>
+            </nav>
+          </div> -->
+
+      <ModerationStep
+        v-if="activeStep === stepNames.ViolatesRules.id"
+        :title="stepNames.ViolatesRules.title"
       >
-        <h2 class="text-xl font-bold">Does the post violate the rules?</h2>
         <div class="flex justify-center gap-2">
           <GenericButton
             class="btn btn-primary"
             :text="'Yes'"
-            @click="activeStep = stepNames.SelectRules"
+            @click="activeStep = stepNames.SelectRules.id"
           />
           <GenericButton
             class="btn btn-primary"
             :text="'No'"
-            @click="activeStep = stepNames.CloseIssue"
+            @click="activeStep = stepNames.CloseIssue.id"
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.SelectRules"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.SelectRules.id"
+        :title="stepNames.SelectRules.title"
+        @clickBack="activeStep = stepNames.ViolatesRules.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.ViolatesRules"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">What rules were broken?</h2>
         <textarea
           class="h-24 w-full rounded-lg border border-gray-300 p-2 text-black"
           :value="brokenRules"
@@ -200,22 +260,16 @@ export default defineComponent({
             class="btn btn-primary"
             :disabled="!brokenRules"
             :label="'Continue'"
-            @click="activeStep = stepNames.SelectAction"
+            @click="activeStep = stepNames.SelectAction.id"
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.SelectAction"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.SelectAction.id"
+        :title="stepNames.SelectAction.title"
+        @clickBack="activeStep = stepNames.SelectRules.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.SelectRules"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">What do you want to do with the post?</h2>
-
         <fieldset class="mt-4">
           <legend class="sr-only">Post actions</legend>
           <div class="space-y-4">
@@ -250,32 +304,23 @@ export default defineComponent({
             @click="
               () => {
                 if (selectedPostAction === 'hide') {
-                  activeStep = stepNames.RequestChangeMessage;
+                  activeStep = stepNames.RequestChangeMessage.id;
                 } else if (selectedPostAction === 'remove') {
-                  activeStep = stepNames.SuspensionNeeded;
+                  activeStep = stepNames.SuspensionNeeded.id;
                 } else {
-                  activeStep = stepNames.CloseIssue;
+                  activeStep = stepNames.CloseIssue.id;
                 }
               }
             "
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.RequestChangeMessage"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.RequestChangeMessage.id"
+        :title="stepNames.RequestChangeMessage.title"
+        @clickBack="activeStep = stepNames.SelectAction.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.SelectAction"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">
-          This is the message that will be sent to the author to request changes
-          to their post. Would you like to edit it?
-        </h2>
-
         <textarea
           class="w-full rounded-lg border border-gray-300 p-2 text-black"
           :rows="10"
@@ -287,51 +332,35 @@ export default defineComponent({
           <PrimaryButton
             class="btn btn-primary"
             :label="'Send Message'"
-            @click="activeStep = stepNames.FinishedWizard"
+            @click="activeStep = stepNames.FinishedWizard.id"
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.SuspensionNeeded"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.SuspensionNeeded.id"
+        :title="stepNames.SuspensionNeeded.title"
+        @clickBack="activeStep = stepNames.SelectAction.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.SelectAction"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">
-          Should the author be suspended from this forum?
-        </h2>
-
         <div class="flex justify-center gap-2">
           <GenericButton
             class="btn btn-primary"
             :text="'Yes'"
-            @click="activeStep = stepNames.SuspensionLength"
+            @click="activeStep = stepNames.SuspensionLength.id"
           />
           <GenericButton
             class="btn btn-primary"
             :text="'No'"
-            @click="activeStep = stepNames.CloseIssue"
+            @click="activeStep = stepNames.CloseIssue.id"
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.SuspensionLength"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.SuspensionLength.id"
+        :title="stepNames.SuspensionLength.title"
+        @clickBack="activeStep = stepNames.SuspensionNeeded.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.SuspensionNeeded"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">
-          What should be the length of the suspension?
-        </h2>
-
         <fieldset class="mt-4">
           <legend class="sr-only">Suspension Lengths</legend>
           <div class="space-y-4">
@@ -362,25 +391,16 @@ export default defineComponent({
             class="btn btn-primary"
             :disabled="!selectedSuspensionLength"
             :label="'Continue'"
-            @click="activeStep = stepNames.SuspensionMessage"
+            @click="activeStep = stepNames.SuspensionMessage.id"
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.SuspensionMessage"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.SuspensionMessage.id"
+        :title="stepNames.SuspensionMessage.title"
+        @clickBack="activeStep = stepNames.SuspensionLength.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.SuspensionLength"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">
-          This is the message that will be sent to the author to notify them of
-          their suspension. You can edit the message before sending it.
-        </h2>
-
         <textarea
           class="w-full rounded-lg border border-gray-300 p-2 text-black"
           :rows="10"
@@ -391,26 +411,21 @@ export default defineComponent({
           <PrimaryButton
             class="btn btn-primary"
             :label="'Send Message'"
-            @click="activeStep = stepNames.FinishedWizard"
+            @click="activeStep = stepNames.FinishedWizard.id"
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.CloseIssue"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.CloseIssue.id"
+        :title="stepNames.CloseIssue.title"
+        @clickBack="activeStep = stepNames.SelectAction.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.ViolatesRules"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">Do you want to close the issue?</h2>
         <div class="flex justify-center gap-2">
           <GenericButton
             class="btn btn-primary"
             :text="'No'"
-            @click="activeStep = stepNames.CloseIssueComment"
+            @click="activeStep = stepNames.CloseIssueComment.id"
           />
           <PrimaryButton
             class="btn btn-primary"
@@ -418,55 +433,43 @@ export default defineComponent({
             @click="
               () => {
                 $emit('close-issue', issue.id);
-                activeStep = stepNames.CloseIssueComment;
+                activeStep = stepNames.CloseIssueComment.id;
               }
             "
           />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.CloseIssueComment"
-        class="flex w-full flex-col space-y-4"
+      <ModerationStep
+        v-if="activeStep === stepNames.CloseIssueComment.id"
+        :title="stepNames.CloseIssueComment.title"
+        @clickBack="activeStep = stepNames.CloseIssue.id"
       >
-        <span
-          class="cursor-pointer underline"
-          @click="activeStep = stepNames.CloseIssue"
-          >Back</span
-        >
-        <h2 class="text-xl font-bold">
-          Please leave a comment explaining your decision
-        </h2>
-        <div class="flex flex-col gap-2">
-          <textarea
-            class="w-full rounded-lg border border-gray-300 p-2 text-black"
-            :value="explanationComment"
-            @input="explanationComment = $event?.target?.value || ''"
+        <textarea
+          class="w-full rounded-lg border border-gray-300 p-2 text-black"
+          :value="explanationComment"
+          @input="explanationComment = $event?.target?.value || ''"
+        />
+        <div class="flex justify-center gap-2">
+          <GenericButton
+            class="btn"
+            :text="'Skip'"
+            @click="activeStep = stepNames.FinishedWizard.id"
           />
-          <div class="flex justify-end gap-2">
-            <GenericButton
-              class="btn"
-              :text="'Skip'"
-              @click="activeStep = stepNames.FinishedWizard"
-            />
-            <PrimaryButton
-              class="btn btn-primary"
-              :label="'Submit'"
-              :disabled="!explanationComment"
-              @click="activeStep = stepNames.FinishedWizard"
-            />
-          </div>
+          <PrimaryButton
+            class="btn btn-primary"
+            :label="'Submit'"
+            :disabled="!explanationComment"
+            @click="activeStep = stepNames.FinishedWizard.id"
+          />
         </div>
-      </div>
+      </ModerationStep>
 
-      <div
-        v-if="activeStep === stepNames.FinishedWizard"
-        class="flex flex-col space-y-4"
-      >
-        <h2 class="text-xl font-bold">
-          Thank you for your help moderating this forum
-        </h2>
-      </div>
-    </div>
+      <ModerationStep
+        v-if="activeStep === stepNames.FinishedWizard.id"
+        :title="stepNames.FinishedWizard.title"
+        :enableBack="false"
+      />
+    </div> 
   </div>
 </template>
