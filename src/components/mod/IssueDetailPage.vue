@@ -20,6 +20,7 @@ import PageNotFound from "@/components/generic/PageNotFound.vue";
 import { DateTime } from "luxon";
 import Comment from "@/components/comments/Comment.vue";
 import DiscussionDetails from "@/components/mod/DiscussionDetails.vue";
+import ModerationWizard from "@/components/mod/ModerationWizard.vue";
 
 export const COMMENT_LIMIT = 5;
 
@@ -30,6 +31,7 @@ export default defineComponent({
     // IssueCommentForm,
     ErrorBanner,
     DiscussionDetails,
+    ModerationWizard,
     PageNotFound,
   },
   props: {
@@ -252,7 +254,7 @@ export default defineComponent({
       </h2>
       <div class="text-sm text-gray-500 dark:text-gray-400">
         {{
-          `Opened on ${formatDate(issue.createdAt)} by ${
+          `First reported on ${formatDate(issue.createdAt)} by ${
             issue.Author?.displayName || "[Deleted]"
           }`
         }}
@@ -292,17 +294,7 @@ export default defineComponent({
               :show-comment-buttons="false"
             />
           </div>
-
-          <div class="flex justify-center">
-            <h3>Moderation Actions</h3>
-          </div>
-          <ul>
-            <li>Is there a rule violation? Yes/no</li>
-            <li>If yes, which rules were violated?</li>
-            <li>What action was taken?</li>
-            <li>Any other comments?</li>
-            <li>Close the issue?</li>
-          </ul>
+          <ModerationWizard :issue="issue" />
         </div>
       </v-col>
     </v-row>
