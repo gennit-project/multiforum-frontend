@@ -211,10 +211,8 @@ export default defineComponent({
               <div class="flex flex-col">
                 <h1
                   v-if="channelId"
-                  :class="[
-                    channel?.channelBannerURL ? 'mt-20' : 'mt-16',
-                    ]"
-                  class=" flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
+                  :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']"
+                  class="flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
                 >
                   {{ channel?.displayName ? channel.displayName : channelId }}
                 </h1>
@@ -231,13 +229,6 @@ export default defineComponent({
               :use-primary-button="true"
             />
           </div>
-          <div class="-mb-2 -ml-7 mt-2 w-full">
-            <MarkdownPreview
-              v-if="channel?.description"
-              :text="channel?.description"
-              :word-limit="1000"
-            />
-          </div>
         </div>
         <v-row class="flex pt-0">
           <v-col :cols="8" class="pt-0">
@@ -249,6 +240,13 @@ export default defineComponent({
               :channel="channel"
               class="sticky top-0 overflow-auto"
             >
+              <div>
+                <MarkdownPreview
+                  v-if="channel?.description"
+                  :text="channel?.description"
+                  :word-limit="1000"
+                />
+              </div>
               <ChannelTabs
                 :route="route"
                 :vertical="true"
