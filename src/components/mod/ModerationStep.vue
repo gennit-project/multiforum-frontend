@@ -26,7 +26,7 @@ export default defineComponent({
       @click="$emit('clickBack')"
       >Back</span
     >
-    <h2 class="text-xl font-bold">{{ title }}</h2>
+    <h2 class="text-md font-bold">{{ title }}</h2>
     <slot></slot>
   </div>
 </template>

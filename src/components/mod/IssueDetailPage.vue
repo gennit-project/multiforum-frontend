@@ -8,11 +8,9 @@ import { GET_ISSUE } from "@/graphQLData/issue/queries";
 //   GET_ISSUE_COMMENT_AGGREGATE,
 // } from "@/graphQLData/comment/queries";
 import { relativeTime } from "@/dateTimeUtils";
-import { Issue } from "@/__generated__/graphql";
+import { CommentCreateInput, Issue } from "@/__generated__/graphql";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
-// import IssueComments from "@/components/issue/detail/IssueCommentsWrapper.vue";
-// import IssueCommentForm from "./IssueCommentFormWrapper.vue";
 import "md-editor-v3/lib/style.css";
 import { Comment as CommentData } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
@@ -21,6 +19,14 @@ import { DateTime } from "luxon";
 import Comment from "@/components/comments/Comment.vue";
 import DiscussionDetails from "@/components/mod/DiscussionDetails.vue";
 import ModerationWizard from "@/components/mod/ModerationWizard.vue";
+import IssueBadge from "@/components/mod/IssueBadge.vue";
+import TextEditor from "../generic/forms/TextEditor.vue";
+import GenericButton from "../generic/buttons/GenericButton.vue";
+import SaveButton from "../generic/buttons/SaveButton.vue";
+import { CreateEditCommentFormValues } from "@/types/commentTypes";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
+import { useMutation } from "@vue/apollo-composable";
 
 export const COMMENT_LIMIT = 5;
 
@@ -28,11 +34,14 @@ export default defineComponent({
   components: {
     BackLink,
     Comment,
-    // IssueCommentForm,
     ErrorBanner,
     DiscussionDetails,
+    GenericButton,
+    IssueBadge,
     ModerationWizard,
     PageNotFound,
+    SaveButton,
+    TextEditor,
   },
   props: {
     compactMode: {
@@ -75,6 +84,28 @@ export default defineComponent({
       }
       return getIssueResult.value.issues[0];
     });
+
+    const createCommentDefaultValues: CreateEditCommentFormValues = {
+      text: "",
+      isRootComment: true,
+      depth: 1,
+    };
+
+    const createFormValues = ref<CreateEditCommentFormValues>(
+      createCommentDefaultValues,
+    );
+
+    // eslint-disable-next-line no-undef
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
+
     // const {
     //   result: getIssueCommentsResult,
     //   error: getIssueCommentsError,
@@ -116,6 +147,116 @@ export default defineComponent({
     //   channelUniqueName: channelId,
     // });
 
+    const createCommentInput = computed(() => {
+      let input: CommentCreateInput = {
+        isRootComment: true,
+        text: createFormValues.value.text || "",
+        CommentAuthor: {
+          User: {
+            connect: {
+              where: {
+                node: {
+                  username: username.value,
+                },
+              },
+            },
+          },
+        },
+        Issue: {
+          connect: {
+            where: {
+              node: {
+                id: activeIssue.value.id,
+              },
+            },
+          },
+        },
+        UpvotedByUsers: {
+          connect: [{
+            where: {
+              node: {
+                username: username.value,
+              },
+            },
+          }]
+            
+        },
+      };
+
+      return [input];
+    });
+
+
+    const {
+      mutate: createComment,
+      loading: createCommentLoading,
+      error: createCommentError,
+      onDone,
+    } = useMutation(CREATE_COMMENT, () => ({
+      errorPolicy: "all",
+      variables: {
+        createCommentInput: createCommentInput.value,
+      },
+      // update: (cache: any, result: any) => {
+      //   // This is the logic for updating the cache
+      //   // after creating a root comment. For the logic for updating
+      //   // the cache after replying to a comment, see the CommentSection
+      //   // component.
+
+      //   const newComment: Comment = result.data?.createComments?.comments[0];
+      //   // Will use readQuery and writeQuery to update the cache
+      //   // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
+
+      //   const commentSectionQueryVariables = {
+      //     discussionId: props.discussionChannel.discussionId,
+      //     channelUniqueName: props.discussionChannel.channelUniqueName,
+      //     limit: COMMENT_LIMIT,
+      //     offset: props.previousOffset,
+      //     sort: getSortFromQuery(route.query),
+      //   };
+
+      //   const readQueryResult = cache.readQuery({
+      //     query: GET_DISCUSSION_COMMENTS,
+      //     variables: commentSectionQueryVariables,
+      //   });
+
+      //   const existingDiscussionChannelData: DiscussionChannel =
+      //     readQueryResult?.getCommentSection?.DiscussionChannel;
+
+      //   let newRootComments: Comment[] = [
+      //     newComment,
+      //     ...(readQueryResult?.getCommentSection?.Comments || []),
+      //   ];
+
+      //   const existingCount =
+      //     existingDiscussionChannelData?.CommentsAggregate?.count || 0;
+
+      //   cache.writeQuery({
+      //     query: GET_DISCUSSION_COMMENTS,
+      //     variables: commentSectionQueryVariables,
+      //     data: {
+      //       ...readQueryResult,
+      //       getCommentSection: {
+      //         ...readQueryResult?.getCommentSection,
+      //         DiscussionChannel: {
+      //           ...existingDiscussionChannelData,
+      //           CommentsAggregate: {
+      //             ...existingDiscussionChannelData?.CommentsAggregate,
+      //             count: existingCount + 1,
+      //           },
+      //         },
+      //         Comments: newRootComments,
+      //       },
+      //     },
+      //   });
+      // },
+    }));
+
+    onDone(() => {
+      createFormValues.value = createCommentDefaultValues;
+      createCommentLoading.value = false;
+    });
+
     const issue = computed<Issue>(() => {
       if (getIssueLoading.value || getIssueError.value) {
         return null;
@@ -132,93 +273,49 @@ export default defineComponent({
       return activeIssue.value.CommentsAggregate?.count || 0;
     });
 
-    // const aggregateCommentCount = computed(() => {
-    //   if (
-    //     getIssueCommentAggregateLoading.value ||
-    //     getIssueCommentAggregateError.value
-    //   ) {
-    //     return 0;
-    //   }
-    //   if (
-    //     !getIssueCommentAggregateResult.value ||
-    //     !getIssueCommentAggregateResult.value.issues
-    //   ) {
-    //     return 0;
-    //   }
-
-    //   const issues =
-    //     getIssueCommentAggregateResult.value.issues;
-    //   if (issues.length === 0) {
-    //     return 0;
-    //   }
-    //   const issue = issues[0];
-    //   return issue.CommentsAggregate?.count || 0;
-    // });
-
-    // Needed to update the cached result of the query if the
-    // user creates a  comment.
     const previousOffset = ref(0);
 
-    // const loadMore = () => {
-    //   fetchMoreComments({
-    //     variables: {
-    //       offset: getIssueResult.value?.getCommentSection?.Comments.length || 0,
-    //     },
-    //     updateQuery: (previousResult, { fetchMoreResult }) => {
-    //       if (!fetchMoreResult) return previousResult;
-
-    //       offset.value =
-    //         offset.value + fetchMoreResult.getCommentSection.Comments.length;
-
-    //       // We need to update the result of GET_ISSUE_COMMENTS
-    //       // to include the new comments.
-    //       return {
-    //         ...previousResult,
-    //         getCommentSection: {
-    //           ...previousResult.getCommentSection,
-    //           Comments: [
-    //             ...previousResult.getCommentSection.Comments,
-    //             ...fetchMoreResult.getCommentSection.Comments,
-    //           ],
-    //         },
-    //       };
-    //     },
-    //   });
-    // };
-
-    // const reachedEndOfResults = computed(() => {
-    //   return (
-    //     loadedCommentCount.value >= aggregateCommentCount.value ||
-    //     loadedCommentCount.value >= commentCount.value
-    //   );
-    // });
 
     return {
       activeIssue,
       channelId,
       commentCount,
       comments,
+      createCommentLoading,
+      createCommentError,
+      createFormValues,
       getIssueResult,
       getIssueError,
       getIssueLoading,
       issue,
       lgAndUp,
       loadedCommentCount,
-      //   loadMore,
       mdAndUp,
       offset,
       previousOffset,
-      //   reachedEndOfResults,
       relativeTime,
-      //   aggregateCommentCount,
       route,
       router,
       smAndDown,
+      username,
     };
   },
   methods: {
     formatDate(date: string) {
       return DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL);
+    },
+    updateComment(text: string) {
+      this.createFormValues.text = text;
+    },
+    async handleCreateComment() {
+      if (!this.discussionChannel) {
+        console.warn(
+          "Could not create the comment because there is no discussion channel in the create root comment form",
+        );
+        return;
+      }
+      this.createCommentLoading = true;
+      this.createComment();
     },
   },
 });
@@ -245,29 +342,26 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div
-      v-else-if="!getIssueLoading"
-      class="mt-2 px-4"
-    >
+    <div v-else-if="!getIssueLoading" class="mt-2 px-4">
       <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
       </h2>
-      <div class="text-sm text-gray-500 dark:text-gray-400">
-        {{
-          `First reported on ${formatDate(issue.createdAt)} by ${
-            issue.Author?.displayName || "[Deleted]"
-          }`
-        }}
+      <div class="flex items-center gap-2">
+        <IssueBadge :issue="issue" />
+        <div class="text-sm text-gray-500 dark:text-gray-400">
+          {{
+            `First reported on ${formatDate(issue.createdAt)} by ${
+              issue.Author?.displayName || "[Deleted]"
+            }`
+          }}
+        </div>
       </div>
-      <DiscussionDetails 
+      <DiscussionDetails
         v-if="activeIssue && activeIssue.relatedDiscussionId"
         :active-issue="activeIssue"
       />
     </div>
-    <v-row
-      v-if="issue"
-      class="flex justify-center"
-    >
+    <v-row v-if="issue" class="flex justify-center">
       <v-col>
         <div class="space-y-3 px-4">
           <p>
@@ -294,30 +388,29 @@ export default defineComponent({
               :show-comment-buttons="false"
             />
           </div>
+          <div class="flex w-full flex-col">
+            <TextEditor
+              :test-id="'texteditor-textarea'"
+              :placeholder="'Please be kind'"
+              @update="updateComment"
+            />
+            <div class="mt-3 flex justify-end">
+              <GenericButton 
+                :text="createFormValues.text.length === 0 ? 'Close issue' : 'Close with comment'" 
+                @click="$emit('handleCancel')" 
+              />
+              <SaveButton
+                data-testid="createCommentButton"
+                :label="'Comment'"
+                :disabled="createFormValues.text.length === 0"
+                :loading="createCommentLoading && !createCommentError"
+                @click.prevent="$emit('handleCreateComment')"
+              />
+            </div>
+          </div>
           <ModerationWizard :issue="issue" />
         </div>
       </v-col>
     </v-row>
-    <!-- <div>
-
-      <div class="my-6 mx-2 rounded-lg">
-        <IssueComment
-          :key="activeIssue?.id"
-          :loading="getIssueLoading"
-          :issue-channel="activeIssue"
-          :comments="comments"
-          :reached-end-of-results="reachedEndOfResults"
-          :previous-offset="previousOffset"
-          @loadMore="loadMore"
-        />
-      </div>
-      <IssueCommentForm
-        :key="`${channelId}${issueId}`"
-        class="pr-3"
-        :channel-id="channelId"
-        :issue-channel="activeIssue"
-        :previous-offset="previousOffset"
-        />
-    </div> -->
   </div>
 </template>

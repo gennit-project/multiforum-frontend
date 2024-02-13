@@ -10,9 +10,7 @@ import gql from "graphql-tag";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import { Event, Channel } from "@/__generated__/graphql";
 import { DateTime } from "luxon";
-import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
 import { GET_SOONEST_EVENTS_IN_CHANNEL } from "@/graphQLData/channel/queries";
-import ExpandableImage from "../generic/ExpandableImage.vue";
 
 const getDateSectionFormat = (date: string) => {
   const dateObj = DateTime.fromISO(date);
@@ -29,9 +27,7 @@ export default defineComponent({
   components: {
     Tag,
     Avatar,
-    MarkdownPreview,
     UsernameWithTooltip,
-    ExpandableImage,
   },
   props: {
     channel: {
@@ -241,57 +237,9 @@ export default defineComponent({
 
 <template>
   <div
-    class="max-h-screen overflow-auto rounded-lg bg-white pb-8 dark:bg-gray-800"
+    class="max-h-screen overflow-auto rounded-lg bg-white pb-8 pt-4 dark:bg-gray-800"
   >
-    <div v-if="channelId" class="items-center gap-2">
-      <div class="align-items flex-col gap-2 px-6 lg:px-6 lg:py-6">
-        <div class="align-items flex gap-3">
-          <ExpandableImage
-            v-if="channel?.channelIconURL"
-            class="h-16 w-16 border-2 shadow-sm dark:border-gray-800"
-            :is-square="true"
-            :is-medium="true"
-            :alt="channelId"
-            :src="channel?.channelIconURL ?? ''"
-          />
-          <Avatar
-            v-else
-            class="h-16 w-16 border-2 shadow-sm dark:border-gray-800"
-            :text="channelId"
-            :src="channel?.channelIconURL ?? ''"
-            :is-medium="true"
-            :is-square="true"
-          />
-          <div class="mt-4">
-            <h1
-              v-if="channelId && !channel?.displayName"
-              class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
-            >
-              {{ channelId }}
-            </h1>
-            <div v-if="channel?.displayName">
-              <h1
-                class="flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
-              >
-                {{ channel?.displayName }}
-              </h1>
-              <span
-                class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
-              >
-                {{ channelId }}
-              </span>
-            </div>
-          </div>
-        </div>
-        <div class="-mb-2 -ml-7 mt-2 w-full">
-          <MarkdownPreview
-            v-if="channel.description"
-            :text="channel.description"
-            :word-limit="1000"
-          />
-        </div>
-      </div>
-    </div>
+    <div v-if="channelId" class="items-center gap-2"></div>
     <slot />
 
     <div class="w-full px-6">

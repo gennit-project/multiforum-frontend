@@ -88,7 +88,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="bg-white dark:bg-black">
     <div class="flex items-center gap-4 p-3 pl-8">
       <span class="flex items-center gap-2"><i class="far fa-dot-circle" />{{ openCount }} Open</span>
       <span

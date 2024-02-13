@@ -11,14 +11,18 @@ import gql from "graphql-tag";
 import Avatar from "@/components/user/Avatar.vue";
 import { User } from "@/__generated__/graphql";
 import ExpandableImage from "../generic/ExpandableImage.vue";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
     Avatar,
     ChannelSidebar,
+    CreateAnythingButton,
     ChannelTabs,
     ExpandableImage,
+    MarkdownPreview,
   },
   setup() {
     const route = ref(useRoute());
@@ -118,30 +122,37 @@ export default defineComponent({
         :alt="'channel banner'"
         :is-medium="true"
         :is-square="true"
-        class="max-h-48 w-full"
+        class="w-full"
       />
-      <div class="flex items-center bg-black">
+      <div class="flex items-center gap-4 bg-black">
         <Avatar
           class="mb-2 ml-3 mt-2 border-4 border-white dark:border-gray-800 md:ml-6"
           :text="channelId"
           :src="channel?.channelIconURL"
           :is-medium="true"
-          :is-square="true"
+          :is-square="false"
         />
-        <div class="ml-4">
-          <h1
-            v-if="channel?.displayName"
-            class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
-          >
-            {{ channel.displayName }}
-          </h1>
+        <div v-if="channel?.displayName && channel?.uniqueName">
+          <div>
+            <h1
+              v-if="channel?.displayName"
+              class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            >
+              {{ channel.displayName }}
+            </h1>
+          </div>
           <h2
-            v-if="channel?.uniqueName"
-            :class="[channel?.displayName ? 'text-sm' : 'text-xl']"
-            class="font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+            class="text-sm font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
           >
             {{ `${channel.uniqueName}` }}
           </h2>
+        </div>
+        <div v-else>
+          <h1
+            class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+          >
+            {{ channelId }}
+          </h1>
         </div>
       </div>
       <article
@@ -161,17 +172,73 @@ export default defineComponent({
         </div>
       </article>
     </div>
-    <article v-else class="w-full">
+
+    <article v-if="!smAndDown" class="w-full">
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
-        class="my-2 max-h-36 w-full"
+        :is-square="true"
+        class="my-2 max-h-40 w-full"
       />
+
       <v-container
         fluid
         class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
       >
+        <div class="align-items flex-col gap-2">
+          <div
+            class="mb-6 flex justify-between"
+            :class="[channel?.channelBannerURL ? '-mt-16' : '']"
+          >
+            <div class="align-items flex gap-4">
+              <ExpandableImage
+                v-if="channel?.channelIconURL"
+                class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+                :is-square="false"
+                :is-medium="true"
+                :alt="channelId"
+                :src="channel?.channelIconURL ?? ''"
+              />
+              <Avatar
+                v-else
+                class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+                :text="channelId"
+                :src="channel?.channelIconURL ?? ''"
+                :is-medium="true"
+                :is-square="false"
+              />
+              <div class="flex flex-col">
+                <h1
+                  v-if="channelId"
+                  :class="[
+                    channel?.channelBannerURL ? 'mt-20' : 'mt-16',
+                    ]"
+                  class=" flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
+                >
+                  {{ channel?.displayName ? channel.displayName : channelId }}
+                </h1>
+                <h2
+                  v-if="channel?.uniqueName && channel?.displayName"
+                  class="font-bold leading-6 text-gray-500 dark:text-gray-200"
+                >
+                  {{ `${channel.displayName}` }}
+                </h2>
+              </div>
+            </div>
+            <CreateAnythingButton
+              class="mb-4 mt-20"
+              :use-primary-button="true"
+            />
+          </div>
+          <div class="-mb-2 -ml-7 mt-2 w-full">
+            <MarkdownPreview
+              v-if="channel?.description"
+              :text="channel?.description"
+              :word-limit="1000"
+            />
+          </div>
+        </div>
         <v-row class="flex pt-0">
           <v-col :cols="8" class="pt-0">
             <router-view />

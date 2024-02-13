@@ -93,7 +93,7 @@ export default defineComponent({
       },
       FinishedWizard: {
         id: "FinishedWizard",
-        title: "Thank you for your help moderating this forum"
+        title: "Thank you for your help moderating this forum."
       },
     };
 
@@ -191,10 +191,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex justify-center">
+  <div class="flex flex-col justify-center w-full">
+    <h1 class="text-xl font-bold">Moderation Wizard</h1>
+    <hr/>
     <ErrorBanner v-if="getDiscussionError" :text="getDiscussionError.message" />
     <LoadingSpinner v-else-if="getDiscussionLoading" />
-    <div v-else-if="discussion" class="mt-6 flex w-96 justify-center space-y-4">
+    <div v-else-if="discussion" class="mt-6 flex justify-center space-y-4">
       <!-- <div class="px-4 py-12 sm:px-6 lg:px-8">
             <nav class="flex justify-center" aria-label="Progress">
               <ol role="list" class="space-y-6">
@@ -230,6 +232,7 @@ export default defineComponent({
       <ModerationStep
         v-if="activeStep === stepNames.ViolatesRules.id"
         :title="stepNames.ViolatesRules.title"
+        :enable-back="false"
       >
         <div class="flex justify-center gap-2">
           <GenericButton
@@ -468,7 +471,7 @@ export default defineComponent({
       <ModerationStep
         v-if="activeStep === stepNames.FinishedWizard.id"
         :title="stepNames.FinishedWizard.title"
-        :enableBack="false"
+        :enable-back="false"
       />
     </div> 
   </div>

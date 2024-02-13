@@ -35,6 +35,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    isSquare: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     const embeddedImages = ref<GalleryItem[]>([]);
@@ -95,7 +99,7 @@ export default defineComponent({
     :src="src"
     :alt="alt"
     class="cursor-pointer"
-    :class="{ 'rounded-lg': rounded }"
+    :class="{ 'rounded-full': !isSquare }"
     @click="handleImageClick()"
   >
 </template>
