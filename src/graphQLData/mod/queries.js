@@ -1,5 +1,35 @@
 import { gql } from '@apollo/client/core';
 
+export const COUNT_OPEN_ISSUES = gql`
+query countOpenIssues(
+  $channelUniqueName: String!
+) {
+  issuesAggregate (
+    where: {
+      channelUniqueName: $channelUniqueName,
+      isOpen: true
+    }
+  ) {
+    count
+  }
+}
+`;
+
+export const COUNT_CLOSED_ISSUES = gql`
+query countClosedIssues(
+  $channelUniqueName: String!
+) {
+  issuesAggregate (
+    where: {
+      channelUniqueName: $channelUniqueName,
+      isOpen: false
+    }
+  ) {
+    count
+  }
+}
+`;
+
 export const GET_MOD = gql`
   query getMod($displayName: String!) {
     moderationProfiles(where: {

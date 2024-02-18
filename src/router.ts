@@ -32,6 +32,8 @@ import Subreddit from "./components/subreddit/Subreddit.vue";
 import AccountSettings from "./components/user/AccountSettings.vue";
 import Issues from "./components/mod/Issues.vue";
 import IssueDetailPage from "./components/mod/IssueDetailPage.vue";
+import OpenIssues from "./components/mod/OpenIssues.vue";
+import ClosedIssues from "./components/mod/ClosedIssues.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -174,6 +176,18 @@ export const router = createRouter({
           name: "Moderation",
           path: "issues",
           component: Issues,
+          children: [
+            {
+              name: "OpenIssues",
+              path: "",
+              component: OpenIssues,
+            },
+            {
+              name: "ClosedIssues",
+              path: "closed",
+              component: ClosedIssues,
+            },
+          ]
 
         },
         {

@@ -1,11 +1,11 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import { DateTime } from "luxon";
-import { GET_ISSUES_BY_CHANNEL, GET_CLOSED_ISSUES_BY_CHANNEL } from "@/graphQLData/issue/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
-import { Issue } from "@/__generated__/graphql";
-
+import {
+  COUNT_CLOSED_ISSUES,
+  COUNT_OPEN_ISSUES,
+} from "@/graphQLData/mod/queries";
 
 export default defineComponent({
   name: "BackLink",
@@ -31,70 +31,42 @@ export default defineComponent({
     });
 
     const {
-      result: getIssuesByChannelResult,
-      error: getIssuesByChannelError,
-      loading: getIssuesByChannelLoading,
-    } = useQuery(GET_ISSUES_BY_CHANNEL, {
+      result: issuesResult,
+      error: issuesError,
+      loading: issuesLoading,
+    } = useQuery(COUNT_OPEN_ISSUES, {
       channelUniqueName: channelId.value,
     });
 
     const {
-      result: getClosedIssuesByChannelResult,
-      error: getClosedIssuesByChannelError,
-      loading: getClosedIssuesByChannelLoading,
-    } = useQuery(GET_CLOSED_ISSUES_BY_CHANNEL, {
+      result: closedIssuesResult,
+      error: closedIssuesError,
+      loading: closedIssuesLoading,
+    } = useQuery(COUNT_CLOSED_ISSUES, {
       channelUniqueName: channelId.value,
     });
 
-    const issues = computed<Issue[]>(() => {
-      if (getIssuesByChannelLoading.value || getIssuesByChannelError.value) {
-        return [];
-      }
-      const channelData = getIssuesByChannelResult.value.channels[0];
-
-      if (!channelData || !channelData.Issues) {
-        return [];
-      }
-      return channelData.Issues;
-    });
-
-    const closedIssues = computed<Issue[]>(() => {
-      if (
-        getClosedIssuesByChannelLoading.value ||
-        getClosedIssuesByChannelError.value
-      ) {
-        return [];
-      }
-      const channelData = getClosedIssuesByChannelResult.value.channels[0];
-
-      if (!channelData || !channelData.Issues) {
-        return [];
-      }
-      return channelData.Issues;
-    });
-
     const openCount = computed(() => {
-      return issues.value.length;
+      if (issuesLoading.value || issuesError.value) {
+        return 0;
+      }
+      return issuesResult.value.issuesAggregate?.count || 0;
     });
 
     const closedCount = computed(() => {
-      return closedIssues.value.length;
+      if (closedIssuesLoading.value || closedIssuesError.value) {
+        return 0;
+      }
+      return closedIssuesResult.value.issuesAggregate?.count || 0;
     });
     const showClosed = false;
 
     return {
       channelId,
-      closedIssues,
-      issues,
       openCount,
       closedCount,
       showClosed,
     };
-  },
-  methods: {
-    formatDate(date: string) {
-      return DateTime.fromISO(date).toLocaleString(DateTime.DATE_FULL);
-    },
   },
 });
 </script>
@@ -102,88 +74,38 @@ export default defineComponent({
 <template>
   <div class="bg-white dark:bg-black">
     <div class="flex items-center gap-4 p-3 pl-8">
-      <div class="flex flex-row items-center gap-2">
+      <!-- Use router-link for navigating to open issues -->
+      <router-link
+        :to="{
+          name: 'OpenIssues',
+          params: {
+            channelId: channelId,
+          },
+        }"
+        class="flex flex-row items-center gap-2"
+        :class="{
+          'text-gray-500 dark:text-gray-400': $route.name === 'ClosedIssues',
+        }"
+      >
         <i class="far fa-dot-circle" />{{ openCount }} Open
-      </div>
-      <div
+      </router-link>
+      <!-- Use router-link for navigating to closed issues -->
+      <router-link
+        :to="{
+          name: 'ClosedIssues',
+          params: {
+            channelId: channelId,
+          },
+        }"
         class="flex flex-row items-center gap-1 whitespace-nowrap"
-        :class="{ 'text-gray-500 dark:text-gray-400': !showClosed }"
+        :class="{
+          'text-gray-500 dark:text-gray-400': $route.name === 'OpenIssues',
+        }"
       >
         <i class="fa-solid fa-check" /> {{ closedCount }} Closed
-      </div>
+      </router-link>
     </div>
-
-
-    <ul
-      class="divide-y border-t border-gray-200 dark:border-gray-800"
-      data-testid="issue-list"
-    >
-      <li
-        v-for="(issue, index) in issues"
-        :key="index"
-        class="border-bottom flex flex-col border-gray-200 p-3 pl-8 dark:border-gray-800"
-      >
-        <div class="text-md flex items-center">
-          <i class="far fa-dot-circle list-item-icon" />
-
-          <router-link
-            :to="{
-              name: 'IssueDetail',
-              params: {
-                issueId: issue.id,
-                channelId: channelId,
-              },
-            }"
-          >
-            {{ issue.title }}
-          </router-link>
-        </div>
-        <div class="ml-6 text-xs text-gray-500 dark:text-gray-400">
-          {{
-            `Opened on ${formatDate(issue.createdAt)} by ${
-              issue.Author?.displayName || "[Deleted]"
-            }`
-          }}
-        </div>
-      </li>
-    </ul>
-
-
-
-    <ul
-      class="divide-y border-t border-gray-200 dark:border-gray-800"
-      data-testid="issue-list"
-    >
-      <li
-        v-for="(issue, index) in closedIssues"
-        :key="index"
-        class="border-bottom flex flex-col border-gray-200 p-3 pl-8 dark:border-gray-800"
-      >
-        <div class="text-md flex gap-2 items-center">
-          <i class="fa-solid fa-circle-check text-purple-500"></i>
-
-          <router-link
-            :to="{
-              name: 'IssueDetail',
-              params: {
-                issueId: issue.id,
-                channelId: channelId,
-              },
-            }"
-          >
-            {{ issue.title }}
-          </router-link>
-        </div>
-        <div class="ml-6 text-xs text-gray-500 dark:text-gray-400">
-          {{
-            `Opened on ${formatDate(issue.createdAt)} by ${
-              issue.Author?.displayName || "[Deleted]"
-            }`
-          }}
-        </div>
-      </li>
-    </ul>
-
+    <router-view />
   </div>
 </template>
 
