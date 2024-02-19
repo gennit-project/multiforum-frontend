@@ -270,10 +270,6 @@ export default defineComponent({
     handleClickReport() {
       this.showReportCommentModal = true;
     },
-    handleReportDiscussion() {
-      this.showReportCommentModal = false;
-      this.showSuccessfullyReported = true;
-    },
   },
 });
 </script>
@@ -364,7 +360,10 @@ export default defineComponent({
       :discussion-title="discussion?.title"
       @close="showReportDiscussionModal = false"
       @closeReportForm="showReportDiscussionModal = false"
-      @primaryButtonClick="handleReportDiscussion"
+      @reportSubmittedSuccessfully="() => {
+        showSuccessfullyReported = true
+        showReportDiscussionModal = false
+      }"
     />
     <ErrorBanner
       v-if="deleteDiscussionError"

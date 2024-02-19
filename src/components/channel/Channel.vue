@@ -115,7 +115,10 @@ export default defineComponent({
 
 <template>
   <div class="flex h-screen justify-center dark:bg-black">
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -124,12 +127,12 @@ export default defineComponent({
         :is-square="true"
         class="w-full"
       />
-      <div class="flex items-center gap-4 bg-black">
+      <div class="flex flex-col items-center justify-center gap-4 bg-black">
         <Avatar
-          class="mb-2 ml-3 mt-2 border-4 border-white dark:border-gray-800 md:ml-6"
+          class="-mt-24 mb-2 ml-3 border-4 border-white dark:border-gray-800 md:ml-6"
           :text="channelId"
           :src="channel?.channelIconURL"
-          :is-medium="true"
+          :is-large="true"
           :is-square="false"
         />
         <div v-if="channel?.displayName && channel?.uniqueName">
@@ -154,6 +157,10 @@ export default defineComponent({
             {{ channelId }}
           </h1>
         </div>
+        <CreateAnythingButton
+          class="mb-4"
+          :use-primary-button="true"
+        />
       </div>
       <article
         class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
@@ -173,28 +180,30 @@ export default defineComponent({
       </article>
     </div>
 
-    <article v-if="!smAndDown" class="w-full">
+    <article
+      v-if="!smAndDown"
+      class="w-full"
+    >
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
         :is-square="true"
-        class="my-2 max-h-40 w-full"
+        class="max-h-40 w-full"
       />
-
-      <v-container
-        fluid
-        class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
-      >
-        <div class="align-items flex-col gap-2">
+      <div class="mb-4 dark:bg-gray-800">
+        <v-container
+          fluid
+          class="relative z-0 p-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
+        >
           <div
-            class="mb-6 flex justify-between"
+            class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
             :class="[channel?.channelBannerURL ? '-mt-16' : '']"
           >
             <div class="align-items flex gap-4">
               <ExpandableImage
                 v-if="channel?.channelIconURL"
-                class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+                class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
                 :is-square="false"
                 :is-medium="true"
                 :alt="channelId"
@@ -229,12 +238,33 @@ export default defineComponent({
               :use-primary-button="true"
             />
           </div>
-        </div>
+          <ChannelTabs
+            v-if="channel"
+            class="block w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
+            :vertical="false"
+            :show-counts="true"
+            :admin-list="adminList"
+            :route="route"
+            :channel="channel"
+          />
+        </v-container>
+      </div>
+      <v-container
+        fluid
+        class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
+      >
         <v-row class="flex pt-0">
-          <v-col :cols="8" class="pt-0">
+          <v-col
+            :cols="8"
+            class="pt-0"
+          >
             <router-view />
           </v-col>
-          <v-col v-if="channelId" :cols="4" class="pt-0">
+          <v-col
+            v-if="channelId"
+            :cols="4"
+            class="pt-0"
+          >
             <ChannelSidebar
               v-if="channel"
               :channel="channel"
@@ -246,14 +276,13 @@ export default defineComponent({
                   :text="channel?.description"
                   :word-limit="1000"
                 />
+                <p
+                  v-else
+                  class="text-xs p-6"
+                >
+                  Welcome to {{ channelId }}!
+                </p>
               </div>
-              <ChannelTabs
-                :route="route"
-                :vertical="true"
-                :show-counts="true"
-                :channel="channel"
-                :admin-list="adminList"
-              />
             </ChannelSidebar>
           </v-col>
         </v-row>

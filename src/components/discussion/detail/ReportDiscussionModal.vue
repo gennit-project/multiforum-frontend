@@ -71,9 +71,13 @@ export default defineComponent({
     const {
       mutate: addIssueComment,
       // error: addIssueCommentError,
-      // loading: addIssueCommentLoading,
-      // onDone: addIssueCommentDone,
+      loading: addIssueCommentLoading,
+      onDone: addIssueCommentDone,
     } = useMutation(ADD_ISSUE_COMMENT);
+
+    addIssueCommentDone(() => {
+      emit("reportSubmittedSuccessfully");
+    });
 
     const existingIssueId = computed(() => {
       if (issueExistenceLoading.value || issueExistenceError.value) {
@@ -93,11 +97,12 @@ export default defineComponent({
 
     reportDiscussionDone(() => {
       reportText.value = "";
-      emit("closeReportForm");
+      emit("reportSubmittedSuccessfully");
     });
 
     return {
       addIssueComment,
+      addIssueCommentLoading,
       discussionId,
       reportDiscussion,
       loggedInUserModName,
@@ -199,13 +204,14 @@ export default defineComponent({
     :open="open"
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
-    :loading="reportDiscussionLoading"
+    :loading="reportDiscussionLoading || addIssueCommentLoading"
+    :primary-button-disabled="!reportText"
     @primaryButtonClick="submit"
     @close="close"
   >
     <template #icon>
       <FlagIcon
-        class="h-6 w-6 text-red-600 opacity-100"
+        class="h-6 w-6 text-red-600 dark:text-red-400 opacity-100"
         aria-hidden="true"
       />
     </template>

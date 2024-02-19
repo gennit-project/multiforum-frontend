@@ -47,6 +47,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    primaryButtonDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {},
 });
@@ -96,7 +100,7 @@ export default defineComponent({
                   :class="[highlightColor === 'red' ? `bg-red-100 dark:bg-red-transparent`: `bg-yellow-100 dark:bg-yellow-transparent`]"
                   class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full  sm:mx-0 sm:h-10 sm:w-10"
                 >
-                  <slot name="icon"></slot>
+                  <slot name="icon" />
                 </div>
               
                 <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
@@ -113,11 +117,14 @@ export default defineComponent({
                   </div>
                 </div>
               </div>
-              <slot name="content"></slot>
+              <slot name="content" />
               <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                 <button
                   type="button"
-                  :class="[highlightColor === 'red' ? 'hover:bg-red-500 bg-red-600' : 'hover:bg-yellow-500 bg-yellow-600',`inline-flex w-full justify-center rounded-full border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`]"
+                  :disabled="primaryButtonDisabled"
+                  :class="[
+                    !primaryButtonDisabled ? `hover:bg-${highlightColor}-500 bg-${highlightColor}-600 text-white border border-transparent` : 'bg-gray-300 dark:bg-gray-700 text-gray-300',
+                    `inline-flex w-full justify-center rounded-full  px-4 py-2 text-base font-medium shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`]"
                   @click="
                     () => {
                       $emit('primaryButtonClick');

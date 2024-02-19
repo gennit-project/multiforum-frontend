@@ -88,7 +88,7 @@ export default defineComponent({
     :src="src" 
     :alt="text"
     :class="[
-      isLarge ? 'h-72 w-72' : '',
+      isLarge ? 'h-48 w-48' : '',
       isMedium ? 'h-20 w-20' : '',
       isSmall ? 'h-8 w-8' : '', 
       isSquare ? 'rounded-lg' : 'rounded-full']"
