@@ -271,7 +271,7 @@ export default defineComponent({
       <div>
         <ul
           role="list"
-          class="relative flex flex-col gap-1 rounded py-2 divide-y dark:divide-gray-700 divide-gray-200"
+          class="relative flex flex-col rounded divide-y dark:divide-gray-700 divide-gray-200"
           data-testid="channel-discussion-list"
         >
           <ChannelDiscussionListItem

@@ -45,89 +45,6 @@ export default defineComponent({
   setup() {
     return {
       actionTypeToIcon,
-      items: [
-        {
-          id: "a4d36a78-a7db-429c-a652-adcf5919c449",
-          actionDescription: "Reopened the issue",
-          actionType: "reopen",
-          createdAt: "2024-02-19T05:11:16.614Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "0cf01b7b-5ffd-4ced-ae95-c3a665251ed2",
-          actionDescription: "Removed the post from the forum",
-          actionType: "remove",
-          createdAt: "2024-02-19T05:09:04.598Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "cb496866-660c-4821-91a2-6e427f677813",
-          actionDescription: "Temporarily hid the post and requested changes",
-          actionType: "hide",
-          createdAt: "2024-02-19T04:57:36.905Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "1af5ebd8-e41d-4e09-bde6-1456df547f7e",
-          actionDescription: "suspended the author",
-          actionType: "suspend",
-          createdAt: "2024-02-19T04:57:36.905Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "63f598d4-1e3d-4d3c-ad38-4d2e6a310081",
-          actionDescription: "Commented on the issue",
-          actionType: "comment",
-          createdAt: "2024-02-19T04:57:36.905Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "a5c788e4-0a77-4501-b2c9-2082b3690861",
-          actionDescription: "Un-hid the post",
-          actionType: "unhide",
-          createdAt: "2024-02-19T04:57:36.905Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "d4c20b3a-2972-45b3-864d-25cf132cfb55",
-          actionDescription: "Closed the issue",
-          actionType: "close",
-          createdAt: "2024-02-19T04:57:36.905Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "f87f5bc4-f098-4274-a832-f2b006605961",
-          actionDescription: "Reported the discussion again",
-          actionType: "report",
-          createdAt: "2024-02-19T04:57:36.905Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-        {
-          id: "2c140ced-a0d6-472b-a57f-3a0492e09659",
-          actionDescription: "Reported the discussion",
-          actionType: "report",
-          createdAt: "2024-02-19T04:45:34.846Z",
-          ModerationProfile: {
-            displayName: "freshManySlimyShoe",
-          },
-        },
-      ],
       timeAgo,
     };
   },
@@ -141,12 +58,12 @@ export default defineComponent({
       class="-mb-8"
     >
       <li
-        v-for="(activityItem, activityItemIdx) in items"
+        v-for="(activityItem, activityItemIdx) in feedItems"
         :key="activityItem.id"
       >
         <div class="relative pb-8">
           <span
-            v-if="activityItemIdx !== items.length - 1"
+            v-if="activityItemIdx !== feedItems.length - 1"
             class="absolute left-5 top-5 -ml-px h-full w-0.5 bg-gray-200 dark:bg-gray-600"
             aria-hidden="true"
           />

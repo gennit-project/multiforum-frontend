@@ -205,9 +205,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative flex pt-1 hover:cursor-pointer">
+  <li class="relative flex hover:cursor-pointer">
     <div
-      class="flex w-full flex-row justify-start gap-4 rounded-lg hover:bg-white dark:hover:bg-gray-700 p-1"
+      class="flex w-full flex-row justify-start gap-4 rounded-lg hover:bg-white dark:hover:bg-gray-700 p-2"
     >
       <DiscussionVotes
         v-if="discussionChannel"

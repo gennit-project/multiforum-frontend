@@ -72,8 +72,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="bg-white dark:bg-black">
-    <div class="flex items-center gap-4 p-3 pl-8">
+  <div class="bg-white dark:bg-gray-900 rounded-t-lg border border-b border-gray-200 dark:border-gray-600">
+    <div class="flex items-center rounded-t-lg gap-4 py-3 pl-8">
       <!-- Use router-link for navigating to open issues -->
       <router-link
         :to="{

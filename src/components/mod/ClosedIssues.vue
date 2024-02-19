@@ -55,7 +55,7 @@ export default defineComponent({
 
 <template>
   <ul
-    class="divide-y border-t border-gray-200 dark:border-gray-800"
+    class="divide-y border-t border-gray-200 dark:border-gray-800 divide-gray-200 dark:divide-gray-800"
     data-testid="issue-list"
   >
     <li

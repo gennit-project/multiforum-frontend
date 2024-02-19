@@ -444,8 +444,9 @@ export default defineComponent({
           >Activity Feed</h2>
 
           <ActivityFeed
+            :key="activeIssue.id"
             v-if="activeIssue"
-            :feed-items="[]"
+            :feed-items="activeIssue.ActivityFeed || []"
           />
 
           <div class="flex w-full flex-col">

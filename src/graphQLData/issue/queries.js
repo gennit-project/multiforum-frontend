@@ -21,6 +21,17 @@ export const ISSUE_FIELDS = gql`
     CommentsAggregate {
       count
     }
+    ActivityFeed {
+      ... on ModerationAction {
+        id
+        actionDescription
+        actionType 
+        createdAt 
+        ModerationProfile {
+          displayName
+        }
+      }
+    }
     Comments {
       id
       text
