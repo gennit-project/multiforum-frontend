@@ -89,7 +89,6 @@ export default defineComponent({
       >
         <i class="far fa-dot-circle" />{{ openCount }} Open
       </router-link>
-      <!-- Use router-link for navigating to closed issues -->
       <router-link
         :to="{
           name: 'ClosedIssues',

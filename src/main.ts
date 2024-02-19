@@ -29,7 +29,13 @@ import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
 
 import { 
+  faArrowsRotate,
+  faCircleCheck,
+  faComment,
+  faEye,
+  faEyeSlash,
   faFaceSmile,
+  faFlag,
   faFire,
   faSun,
   faMoon,
@@ -38,6 +44,10 @@ import {
   faDotCircle,
   faTicket,
   faImage,
+  faUserMinus,
+  faUserLock,
+  faUserPlus,
+  faXmark,
   faArrowUpRightFromSquare
  } from "@fortawesome/free-solid-svg-icons";
 
@@ -82,7 +92,13 @@ const vuetify = createVuetify({
   directives,
 })
 
+library.add(faArrowsRotate);
+library.add(faCircleCheck);
+library.add(faComment);
+library.add(faEye);
+library.add(faEyeSlash);
 library.add(faFaceSmile);
+library.add(faFlag);
 library.add(faSun);
 library.add(faMoon);
 library.add(faChevronDown);
@@ -92,6 +108,10 @@ library.add(faFire);
 library.add(faImage);
 library.add(faArrowUpRightFromSquare);
 library.add(faDotCircle);
+library.add(faUserLock);
+library.add(faUserMinus);
+library.add(faUserPlus);
+library.add(faXmark);
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 

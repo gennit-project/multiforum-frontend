@@ -47,7 +47,7 @@ export default defineComponent({
           );
         }
       } else {
-        classArray.push("text-gray-500 dark:border-gray-800");
+        classArray.push("text-gray-500 border-white dark:border-gray-800");
 
         if (props.vertical) {
           classArray.push("pr-2 px-4 hover:bg-gray-100 dark:hover:bg-gray-700");
@@ -79,7 +79,7 @@ export default defineComponent({
     <div
       :class="[
         'px-2 mt-1',
-        !vertical && isHovered ? 'bg-gray-200 dark:bg-gray-700' : '',
+        !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
         showCount && count ? '' : 'pr-4',
       ]"
       class="md:my-2 sm:my-1 flex h-8 items-center space-x-2 rounded-lg py-2"

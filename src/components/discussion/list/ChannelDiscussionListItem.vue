@@ -205,9 +205,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative flex pt-2 hover:cursor-pointer">
+  <li class="relative flex pt-1 hover:cursor-pointer">
     <div
-      class="flex w-full flex-row justify-start gap-4 rounded-lg hover:bg-white dark:hover:bg-gray-700 lg:p-3"
+      class="flex w-full flex-row justify-start gap-4 rounded-lg hover:bg-white dark:hover:bg-gray-700 p-1"
     >
       <DiscussionVotes
         v-if="discussionChannel"
@@ -218,7 +218,7 @@ export default defineComponent({
 
       <div
         v-if="discussion"
-        class="w-full flex-col gap-2"
+        class="w-full flex-col gap-1"
       >
         <router-link
           :to="{ path: detailLink, query: filteredQuery }"
@@ -261,7 +261,7 @@ export default defineComponent({
         <p
           class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
         >
-          <span class="mr-1"> {{ `Posted ${relativeTime} by` }}</span>
+          <span class="mr-1 text-xs"> {{ `Posted ${relativeTime} by` }}</span>
 
           <UsernameWithTooltip
             v-if="authorUsername"
@@ -277,10 +277,10 @@ export default defineComponent({
         <div class="mt-2 flex items-center justify-start gap-6">
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
-            class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+            class="rounded-md bg-gray-100 px-4 p-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
           >
-            <i class="fa-regular fa-comment h-6 w-6" />
-            <span class="text-sm">{{
+            <i class="fa-regular fa-comment h-5 w-5" />
+            <span class="text-xs">{{
               `${commentCount} comment${commentCount === 1 ? "" : "s"}`
             }}</span>
           </router-link>

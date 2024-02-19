@@ -191,14 +191,14 @@ export default defineComponent({
         :is-square="true"
         class="max-h-40 w-full"
       />
-      <div class="mb-4 dark:bg-gray-800">
+      <div class="mb-4 bg-white dark:bg-gray-800">
         <v-container
           fluid
           class="relative z-0 p-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
         >
           <div
             class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
-            :class="[channel?.channelBannerURL ? '-mt-16' : '']"
+            :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
           >
             <div class="align-items flex gap-4">
               <ExpandableImage

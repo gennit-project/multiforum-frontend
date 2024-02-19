@@ -4,10 +4,6 @@ import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_ISSUE } from "@/graphQLData/issue/queries";
 import { CLOSE_ISSUE, REOPEN_ISSUE } from "@/graphQLData/issue/mutations";
-// import {
-//   GET_ISSUE_COMMENTS,
-//   GET_ISSUE_COMMENT_AGGREGATE,
-// } from "@/graphQLData/comment/queries";
 import { relativeTime } from "@/dateTimeUtils";
 import { CommentCreateInput, Issue } from "@/__generated__/graphql";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
@@ -28,11 +24,13 @@ import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { useMutation } from "@vue/apollo-composable";
+import ActivityFeed from '@/components/mod/ActivityFeed.vue'
 
 export const COMMENT_LIMIT = 5;
 
 export default defineComponent({
   components: {
+    ActivityFeed,
     BackLink,
     Comment,
     ErrorBanner,
@@ -393,9 +391,9 @@ export default defineComponent({
       :text="getIssueError.message"
     />
     <div v-else-if="!getIssueLoading" class="mt-2 flex flex-col gap-2 px-4">
-      <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
+      <h1 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
-      </h2>
+      </h1>
       <div class="flex items-center gap-2">
         <IssueBadge :key="issue.isOpen" :issue="issue" />
         <div class="text-sm text-gray-500 dark:text-gray-400">
@@ -438,6 +436,18 @@ export default defineComponent({
               :show-comment-buttons="false"
             />
           </div>
+
+
+          <h2
+            v-if="activeIssue"
+            class="text-xl font-bold"
+          >Activity Feed</h2>
+
+          <ActivityFeed
+            v-if="activeIssue"
+            :feed-items="[]"
+          />
+
           <div class="flex w-full flex-col">
             <TextEditor
               :test-id="'texteditor-textarea'"
