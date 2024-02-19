@@ -95,7 +95,7 @@ export default defineComponent({
 <style lang="scss">
 body {
   @media (prefers-color-scheme: dark) {
-    @apply bg-black;
+    @apply bg-gray-900;
     color-scheme: dark;
   }
 
@@ -105,7 +105,7 @@ body {
   }
 
   &.dark {
-    @apply bg-black;
+    @apply bg-gray-900;
     color-scheme: dark;
   }
 
