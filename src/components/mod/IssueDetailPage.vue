@@ -113,8 +113,6 @@ export default defineComponent({
       },
     }));
 
-    
-
     const createCommentDefaultValues: CreateEditCommentFormValues = {
       text: "",
       isRootComment: true,
@@ -202,20 +200,20 @@ export default defineComponent({
           },
         },
         UpvotedByUsers: {
-          connect: [{
-            where: {
-              node: {
-                username: username.value,
+          connect: [
+            {
+              where: {
+                node: {
+                  username: username.value,
+                },
               },
             },
-          }]
-            
+          ],
         },
       };
 
       return [input];
     });
-
 
     const {
       mutate: createComment,
@@ -307,7 +305,6 @@ export default defineComponent({
 
     const closeOpenButtonText = computed(() => {
       if (activeIssue.value && activeIssue.value.isOpen) {
-
         if (createFormValues.value.text.length > 0) {
           return "Close with comment";
         }
@@ -318,7 +315,6 @@ export default defineComponent({
       }
       return "Reopen";
     });
-
 
     return {
       activeIssue,
@@ -396,12 +392,12 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div v-else-if="!getIssueLoading" class="mt-2 px-4 flex flex-col gap-2">
+    <div v-else-if="!getIssueLoading" class="mt-2 flex flex-col gap-2 px-4">
       <h2 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
       </h2>
       <div class="flex items-center gap-2">
-        <IssueBadge :issue="issue" />
+        <IssueBadge :key="issue.isOpen" :issue="issue" />
         <div class="text-sm text-gray-500 dark:text-gray-400">
           {{
             `First reported on ${formatDate(issue.createdAt)} by ${
@@ -449,9 +445,9 @@ export default defineComponent({
               @update="updateComment"
             />
             <div class="mt-3 flex justify-end">
-              <GenericButton 
-                :text="closeOpenButtonText" 
-                @click="toggleCloseOpenIssue" 
+              <GenericButton
+                :text="closeOpenButtonText"
+                @click="toggleCloseOpenIssue"
               />
               <SaveButton
                 data-testid="createCommentButton"
@@ -462,9 +458,9 @@ export default defineComponent({
               />
             </div>
           </div>
-          <ModerationWizard 
+          <ModerationWizard
             v-if="activeIssue && activeIssue.isOpen"
-            :issue="issue" 
+            :issue="issue"
           />
         </div>
       </v-col>
