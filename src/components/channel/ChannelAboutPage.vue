@@ -115,7 +115,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="p-8 max-w-4xl justify-center bg-gray-100 dark:bg-gray-900 rounded-lg">
+  <v-container class="p-8 max-w-4xl justify-center bg-white dark:bg-gray-900 rounded-lg">
     <div
       v-if="channelId"
       class="my-4 py-1 space-x-2 flex items-center border-b"
