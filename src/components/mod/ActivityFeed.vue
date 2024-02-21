@@ -1,9 +1,10 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import { ActivityFeedItem } from "@/__generated__/graphql";
+import { ModerationAction } from "@/__generated__/graphql";
 import Avatar from "../user/Avatar.vue";
 import DiscussionIcon from "../icons/DiscussionIcon.vue";
 import { timeAgo } from "@/dateTimeUtils";
+import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
 
 // Enum for the allowed action types
 enum ActionType {
@@ -34,31 +35,51 @@ export default defineComponent({
   components: {
     Avatar,
     DiscussionIcon,
+    MarkdownPreview,
   },
   props: {
     feedItems: {
-      type: Array as () => ActivityFeedItem[],
+      type: Array as () => ModerationAction[],
       required: true,
     },
   },
 
-  setup() {
+  setup(props) {
+    const reversedFeedItems = props.feedItems.slice().reverse();
     return {
       actionTypeToIcon,
       timeAgo,
+      reversedFeedItems,
     };
+  },
+  methods: {
+    getBackgroundColor(actionType: string) {
+      switch (actionType) {
+        case ActionType.Close:
+          return "bg-purple-200 dark:bg-purple-500";
+        case ActionType.Comment:
+          return "bg-blue-200 dark:bg-blue-500";
+        case ActionType.Remove:
+          return "bg-red-200 dark:bg-red-500";
+        case ActionType.Report:
+          return "bg-red-200 dark:bg-red-500";
+        case ActionType.Unsuspend:
+          return "bg-green-200 dark:bg-green-500";
+        case ActionType.Reopen:
+          return "bg-green-200 dark:bg-green-500";
+        default:
+          return "bg-gray-200 dark:bg-gray-600";
+      }
+    },
   },
 });
 </script>
 
 <template>
   <div class="flow-root">
-    <ul
-      role="list"
-      class="-mb-8"
-    >
+    <ul role="list" class="-mb-8">
       <li
-        v-for="(activityItem, activityItemIdx) in feedItems"
+        v-for="(activityItem, activityItemIdx) in reversedFeedItems"
         :key="activityItem.id"
       >
         <div class="relative pb-8">
@@ -99,9 +120,7 @@ export default defineComponent({
                       }"
                       class="font-medium text-gray-900 hover:underline dark:text-gray-200"
                     >
-                      {{
-                        activityItem.ModerationProfile?.displayName
-                      }}
+                      {{ activityItem.ModerationProfile?.displayName }}
                     </router-link>
                   </div>
                   <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-300">
@@ -119,7 +138,8 @@ export default defineComponent({
               <div>
                 <div class="relative px-1">
                   <div
-                    :class="`flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 ring-8 ring-white dark:bg-gray-600 dark:text-white dark:ring-gray-800`"
+                    class="flex h-8 w-8 items-center justify-center rounded-full ring-8 ring-white dark:text-white dark:ring-gray-800"
+                    :class="[getBackgroundColor(activityItem.actionType)]"
                   >
                     <i
                       :class="[`${actionTypeToIcon[activityItem.actionType]}`]"
@@ -139,9 +159,10 @@ export default defineComponent({
                         },
                       }"
                       class="font-medium text-gray-900 hover:underline dark:text-gray-200"
-                    >{{
-                      activityItem.ModerationProfile?.displayName
-                    }}</router-link>
+                      >{{
+                        activityItem.ModerationProfile?.displayName
+                      }}</router-link
+                    >
                     {{ activityItem.actionDescription }}
                   </span>
                   {{ " " }}
@@ -150,6 +171,15 @@ export default defineComponent({
                     `${timeAgo(new Date(activityItem.createdAt))}`
                   }}</span>
                 </div>
+
+                <MarkdownPreview
+                  v-if="
+                    activityItem.actionType === 'report' && activityItem.Comment
+                  "
+                  :text="activityItem.Comment.text || ''"
+                  :word-limit="1000"
+                  :disable-gallery="true"
+                />
               </div>
             </template>
           </div>

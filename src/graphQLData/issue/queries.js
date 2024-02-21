@@ -21,7 +21,13 @@ export const ISSUE_FIELDS = gql`
     CommentsAggregate {
       count
     }
-    ActivityFeed {
+    ActivityFeed (
+      options: {
+        sort: {
+          createdAt: DESC
+        }
+      }
+    ) {
       ... on ModerationAction {
         id
         actionDescription
@@ -30,27 +36,27 @@ export const ISSUE_FIELDS = gql`
         ModerationProfile {
           displayName
         }
-      }
-    }
-    Comments {
-      id
-      text
-      emoji
-      weightedVotesCount
-      createdAt
-      updatedAt
-      CommentAuthor {
-        ... on ModerationProfile {
-          displayName
+        Comment {
+          id
+          text
+          emoji
+          weightedVotesCount
+          createdAt
+          updatedAt
+          CommentAuthor {
+            ... on ModerationProfile {
+              displayName
+            }
+          }
+          ChildCommentsAggregate {
+            count
+          }
+          ParentComment {
+            id
+          }
+          ...CommentVoteFields
         }
       }
-      ChildCommentsAggregate {
-        count
-      }
-      ParentComment {
-        id
-      }
-      ...CommentVoteFields
     }
   }
 `;

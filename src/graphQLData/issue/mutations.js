@@ -65,25 +65,72 @@ mutation reopenIssue($id: ID!) {
     }
   }
 }
-`;
+`
 
-export const ADD_ISSUE_COMMENT = gql`
-  mutation addIssueComment(
-    $displayName: String!
-    $text: String!
+export const ADD_ISSUE_ACTIVITY_FEED_ITEM = gql`
+  mutation addIssueActivityFeedItem(
     $issueId: ID!
+    $actionDescription: String!
+    $actionType: String!
+    $displayName: String!
   ) {
     updateIssues(
       where: { id: $issueId }
       create: {
-        Comments: [
+        ActivityFeed: [
           {
             node: {
-              text: $text
-              isRootComment: true
-              CommentAuthor: {
-                ModerationProfile: {
-                  connect: { where: { node: { displayName: $displayName } } }
+              actionDescription: $actionDescription
+              actionType: $actionType
+              ModerationProfile: {
+                connect: { where: { node: { displayName: $displayName } } }
+              }
+            }
+          }
+        ]
+      }
+    ) {
+      issues {
+        id
+        ActivityFeed {
+          id
+          actionDescription
+          actionType
+          createdAt
+          ModerationProfile {
+            displayName
+          }
+        }
+      }
+    }
+  }
+`
+
+export const ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT = gql`
+  mutation addIssueActivityFeedItemWithComment(
+    $issueId: ID!
+    $actionDescription: String!
+    $actionType: String!
+    $displayName: String!
+    $commentText: String!
+  ) {
+    updateIssues(
+      where: { id: $issueId }
+      create: {
+        ActivityFeed: [
+          {
+            node: {
+              actionDescription: $actionDescription
+              actionType: $actionType
+              ModerationProfile: {
+                connect: { where: { node: { displayName: $displayName } } }
+              }
+              Comment: {
+                create: {
+                  text: $commentText
+                  CommentAuthor: {
+                    connect: { where: { node: { displayName: $displayName } } }
+                  }
                 }
               }
             }
@@ -93,10 +140,18 @@ export const ADD_ISSUE_COMMENT = gql`
     ) {
       issues {
         id
+        ActivityFeed {
+          id
+          actionDescription
+          actionType
+          createdAt
+          ModerationProfile {
+            displayName
+          }
+        }
         Comments {
           id
           text
-          isRootComment
           CommentAuthor {
             ... on ModerationProfile {
               displayName
@@ -106,7 +161,7 @@ export const ADD_ISSUE_COMMENT = gql`
       }
     }
   }
-`;
+`
 
 export const REPORT_EVENT = gql`
   mutation reportEvent(

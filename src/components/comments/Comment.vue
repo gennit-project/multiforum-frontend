@@ -52,6 +52,10 @@ export default defineComponent({
       type: Object as PropType<Comment>,
       required: true,
     },
+    showHeader: {
+      type: Boolean,
+      default: true,
+    },
     compact: {
       type: Boolean,
       default: false,

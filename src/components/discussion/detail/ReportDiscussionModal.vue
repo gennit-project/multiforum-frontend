@@ -9,7 +9,7 @@ import { useRoute } from "vue-router";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { IssueCreateInput } from "@/__generated__/graphql";
 import { CHECK_ISSUE_EXISTENCE } from "@/graphQLData/issue/queries";
-import { ADD_ISSUE_COMMENT } from "@/graphQLData/issue/mutations";
+import { ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT } from "@/graphQLData/issue/mutations";
 
 export default defineComponent({
   name: "ReportDiscussionModal",
@@ -57,6 +57,7 @@ export default defineComponent({
       }
       return localModProfileNameResult.value.modProfileName;
     });
+
     const {
       result: issueExistenceResult,
       loading: issueExistenceLoading,
@@ -69,13 +70,12 @@ export default defineComponent({
     const reportText = ref("");
 
     const {
-      mutate: addIssueComment,
-      // error: addIssueCommentError,
-      loading: addIssueCommentLoading,
-      onDone: addIssueCommentDone,
-    } = useMutation(ADD_ISSUE_COMMENT);
+      mutate: addIssueActivityFeedItem,
+      loading: addIssueActivityFeedItemLoading,
+      onDone: addIssueActivityFeedItemDone,
+    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT);
 
-    addIssueCommentDone(() => {
+    addIssueActivityFeedItemDone(() => {
       emit("reportSubmittedSuccessfully");
     });
 
@@ -101,8 +101,8 @@ export default defineComponent({
     });
 
     return {
-      addIssueComment,
-      addIssueCommentLoading,
+      addIssueActivityFeedItem,
+      addIssueActivityFeedItemLoading,
       discussionId,
       reportDiscussion,
       loggedInUserModName,
@@ -110,7 +110,7 @@ export default defineComponent({
       reportDiscussionLoading,
       reportText,
       channelId,
-      existingIssueId
+      existingIssueId,
     };
   },
   created() {
@@ -125,10 +125,12 @@ export default defineComponent({
       // new comment to the Comments field.
 
       if (this.existingIssueId) {
-        this.addIssueComment({
-            displayName: this.loggedInUserModName,
-            issueId: this.existingIssueId,
-            text: this.reportText
+        this.addIssueActivityFeedItem({
+          issueId: this.existingIssueId,
+          displayName: this.loggedInUserModName,
+          actionDescription: "reported the discussion",
+          actionType: "report",
+          commentText: this.reportText,
         });
 
         return;
@@ -144,48 +146,65 @@ export default defineComponent({
             connect: {
               where: {
                 node: {
-                  displayName: this.loggedInUserModName
-                }
-              }
-            }
-          }
+                  displayName: this.loggedInUserModName,
+                },
+              },
+            },
+          },
         },
         channelUniqueName: this.channelId,
         Channel: {
           connect: {
             where: {
               node: {
-                uniqueName: this.channelId
-              }
-            }
-          }
+                uniqueName: this.channelId,
+              },
+            },
+          },
         },
-        Comments: {
+        ActivityFeed: {
           create: {
             node: {
-              text: this.reportText,
-              isRootComment: true,
-              CommentAuthor: {
-                ModerationProfile: {
-                  connect: {
-                    where: {
-                      node: {
-                        displayName: this.loggedInUserModName
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+              ModerationProfile: {
+                connect: {
+                  where: {
+                    node: {
+                      displayName: this.loggedInUserModName,
+                    },
+                  },
+                },
+              },
+              actionType: "report",
+              actionDescription: "reported the discussion",
+              Comment: {
+                create: {
+                  node: {
+                    text: this.reportText,
+                    isRootComment: true,
+                    CommentAuthor: {
+                      ModerationProfile: {
+                        connect: {
+                          where: {
+                            node: {
+                              displayName: this.loggedInUserModName,
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
       this.reportDiscussion({
         input: [issueCreateInput],
       });
     },
     close() {
-      if (this.reportDiscussionLoading){
+      if (this.reportDiscussionLoading) {
         return;
       }
       if (this.reportDiscussionError) {
@@ -204,14 +223,14 @@ export default defineComponent({
     :open="open"
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
-    :loading="reportDiscussionLoading || addIssueCommentLoading"
+    :loading="reportDiscussionLoading || addIssueActivityFeedItemLoading"
     :primary-button-disabled="!reportText"
     @primaryButtonClick="submit"
     @close="close"
   >
     <template #icon>
       <FlagIcon
-        class="h-6 w-6 text-red-600 dark:text-red-400 opacity-100"
+        class="h-6 w-6 text-red-600 opacity-100 dark:text-red-400"
         aria-hidden="true"
       />
     </template>
