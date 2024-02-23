@@ -135,13 +135,13 @@ export default defineComponent({
 
 <template>
   <div>
-    <SortButtons class="border-b dark:border-gray-600"/>
+    <SortButtons class="border-b dark:border-gray-600" />
     <div class="mt-4 flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
         :initial-value="filterValues.searchInput"
-        :search-placeholder="'Search'"
+        :search-placeholder="'Search to see if something has already been posted'"
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
