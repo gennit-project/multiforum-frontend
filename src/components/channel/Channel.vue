@@ -230,7 +230,7 @@ export default defineComponent({
                   v-if="channel?.uniqueName && channel?.displayName"
                   class="font-bold leading-6 text-gray-500 dark:text-gray-200"
                 >
-                  {{ `${channel.displayName}` }}
+                  {{ `${channel.uniqueName}` }}
                 </h2>
               </div>
             </div>
