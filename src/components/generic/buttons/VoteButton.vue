@@ -110,11 +110,9 @@ export default defineComponent({
     <template #default>
       <div
         v-if="tooltipUnicode"
-        class="flex justify-center"
+        class="flex h-16 justify-center text-6xl"
       >
-        <p class="text-6xl">
-          {{ tooltipUnicode }}
-        </p>
+        {{ tooltipUnicode }}
       </div>
       <p class="min-w-sm text-sm">
         {{ tooltipText }}
