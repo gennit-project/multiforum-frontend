@@ -62,14 +62,20 @@ export default defineComponent({
 </script>
 
 <template>
-  <RequireAuth class="align-middle" :full-width="false">
+  <RequireAuth
+    class="align-middle"
+    :full-width="false"
+  >
     <template #has-auth>
-      <DropdownMenu as="div" class="relative inline-block text-left">
+      <DropdownMenu
+        as="div"
+        class="relative inline-block text-left"
+      >
         <MenuButton
           data-testid="create-anything-button"
           :class="[
             usePrimaryButton
-              ? 'bg-blue-500 text-white'
+              ? 'bg-blue-500 dark:bg-blue-600 text-white'
               : 'bg-white text-black hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-600',
           ]"
           class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border px-4 text-sm focus:outline-none"
@@ -81,7 +87,11 @@ export default defineComponent({
             class="-mr-1 ml-1 mt-0.5 h-3 w-3"
             aria-hidden="true"
           />
-          <v-tooltip v-if="showTooltip && !usePrimaryButton" location="bottom" activator="parent">
+          <v-tooltip
+            v-if="showTooltip && !usePrimaryButton"
+            location="bottom"
+            activator="parent"
+          >
             Create new...
           </v-tooltip>
         </MenuButton>
@@ -96,25 +106,25 @@ export default defineComponent({
           <MenuItems
             class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
           >
-          <div>
-            <MenuItem
-              v-for="(item, index) in menuItems"
-              :key="index"
-              :data-testid="item.testId"
-              class="cursor-pointer"
-              @click="item.action"
-              v-slot="{ active }"
-            >
-              <span
-                :class="[
-                  active ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100' : 'text-gray-700 dark:text-gray-200',
-                  'block px-4 py-2 text-sm',
-                ]"
+            <div>
+              <MenuItem
+                v-for="(item, index) in menuItems"
+                :key="index"
+                v-slot="{ active }"
+                :data-testid="item.testId"
+                class="cursor-pointer"
+                @click="item.action"
               >
-                {{ item.text }}
-              </span>
-            </MenuItem>
-          </div>
+                <span
+                  :class="[
+                    active ? 'bg-gray-100 text-gray-900 dark:bg-gray-500 dark:text-gray-100' : 'text-gray-700 dark:text-gray-200',
+                    'block px-4 py-2 text-sm',
+                  ]"
+                >
+                  {{ item.text }}
+                </span>
+              </MenuItem>
+            </div>
           </MenuItems>
         </transition>
       </DropdownMenu>
@@ -123,7 +133,7 @@ export default defineComponent({
       <button
         :class="[
           usePrimaryButton
-            ? 'bg-blue-500 text-white'
+            ? 'bg-blue-500 dark:bg-blue-600 text-white'
             : 'bg-white text-black hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-600',
         ]"
         class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border px-4 text-sm focus:outline-none"
@@ -131,7 +141,11 @@ export default defineComponent({
       >
         + {{ usePrimaryButton ? 'Create' : '' }}
       </button>
-      <v-tooltip v-if="!usePrimaryButton" activator="parent" location="bottom">
+      <v-tooltip
+        v-if="!usePrimaryButton"
+        activator="parent"
+        location="bottom"
+      >
         Create new...
       </v-tooltip>
     </template>
