@@ -78,7 +78,7 @@ export default defineComponent({
               ? 'bg-blue-500 dark:bg-blue-600 text-white'
               : 'bg-white text-black hover:bg-gray-200 dark:border-gray-800 dark:bg-black dark:text-white dark:hover:bg-gray-600',
           ]"
-          class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md border px-4 text-sm focus:outline-none"
+          class="font-semibold flex h-8 w-full items-center gap-x-1.5 rounded-md px-4 text-sm focus:outline-none"
           @click="showTooltip = false"
           @mouseover="showTooltip = true"
         >
