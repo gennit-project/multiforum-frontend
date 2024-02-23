@@ -115,7 +115,10 @@ export default defineComponent({
 
 <template>
   <div class="flex h-screen justify-center dark:bg-black">
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -155,7 +158,10 @@ export default defineComponent({
             {{ channelId }}
           </h1>
         </div>
-        <CreateAnythingButton class="mb-4" :use-primary-button="true" />
+        <CreateAnythingButton
+          class="mb-4"
+          :use-primary-button="true"
+        />
       </div>
       <article
         class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
@@ -175,7 +181,10 @@ export default defineComponent({
       </article>
     </div>
 
-    <article v-if="!smAndDown" class="w-full">
+    <article
+      v-if="!smAndDown"
+      class="w-full"
+    >
       <ExpandableImage
         v-if="channel?.channelBannerURL"
         :src="channel?.channelBannerURL"
@@ -186,7 +195,7 @@ export default defineComponent({
       <div class="mb-4 bg-white dark:bg-gray-800">
         <v-container
           fluid
-          class="relative z-0 max-w-6xl flex-1 p-0 focus:outline-none xl:order-last"
+          class="relative z-0 max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
         >
           <div
             class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
@@ -243,26 +252,40 @@ export default defineComponent({
       </div>
       <v-container
         fluid
-        class="relative z-0 max-w-6xl flex-1 focus:outline-none xl:order-last"
+        class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
       >
         <v-row class="flex pt-0">
-          <v-col :cols="8" class="pt-0">
+          <v-col
+            :cols="8"
+            class="pt-0"
+          >
             <router-view />
           </v-col>
-          <v-col v-if="channelId" :cols="4" class="pt-0">
+          <v-col
+            v-if="channelId"
+            :cols="4"
+            class="pt-0"
+          >
             <ChannelSidebar
               v-if="channel"
               :channel="channel"
               class="sticky top-0 overflow-auto"
             >
               <div>
-                <h2 class="mt-2 px-6 text-xl font-bold">Intro</h2>
+                <h2 class="mt-2 px-6 text-xl font-bold">
+                  Intro
+                </h2>
                 <MarkdownPreview
                   v-if="channel?.description"
                   :text="channel?.description"
                   :word-limit="1000"
                 />
-                <p v-else class="p-6 text-xs">Welcome to {{ channelId }}!</p>
+                <p
+                  v-else
+                  class="p-6 text-xs"
+                >
+                  Welcome to {{ channelId }}!
+                </p>
               </div>
             </ChannelSidebar>
           </v-col>
