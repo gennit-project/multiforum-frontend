@@ -240,7 +240,7 @@ export default defineComponent({
 <template>
   <v-container
     :class="[channelId ? '' : 'my-6 max-w-4xl']"
-    class="justify-center rounded-lg bg-white dark:bg-gray-800 sm:px-4 sm:py-4 lg:px-10 lg:py-6"
+    class="justify-center rounded-lg bg-white dark:bg-gray-800 sm:px-4 lg:px-10 py-0"
   >
     <SitewideDiscussionList
       v-if="!channelId"
