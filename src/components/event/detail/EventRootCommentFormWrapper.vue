@@ -11,7 +11,7 @@ import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_EVENT_COMMENTS } from "@/graphQLData/comment/queries";
 import { GET_EVENT } from "@/graphQLData/event/queries";
 
-export const COMMENT_LIMIT = 5;
+export const COMMENT_LIMIT = 50;
 
 // The purpose of this component is to wrap the CreateRootCommentForm component
 // and put the event-specific logic in here. This is because the CreateRootCommentForm

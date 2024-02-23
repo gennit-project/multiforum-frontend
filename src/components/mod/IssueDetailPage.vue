@@ -25,7 +25,6 @@ import { useMutation } from "@vue/apollo-composable";
 import ActivityFeed from '@/components/mod/ActivityFeed.vue';
 import { ADD_ISSUE_ACTIVITY_FEED_ITEM } from "@/graphQLData/issue/mutations";
 
-export const COMMENT_LIMIT = 5;
 
 export default defineComponent({
   components: {

@@ -27,7 +27,7 @@ import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 
-export const COMMENT_LIMIT = 5;
+export const COMMENT_LIMIT = 50;
 
 export default defineComponent({
   components: {
