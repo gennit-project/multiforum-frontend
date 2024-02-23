@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client/core";
+import { ISSUE_FIELDS } from "./queries";
 
 export const REPORT_DISCUSSION = gql`
   mutation reportDiscussion($input: [IssueCreateInput!]!) {
@@ -68,6 +69,7 @@ mutation reopenIssue($id: ID!) {
 `
 
 export const ADD_ISSUE_ACTIVITY_FEED_ITEM = gql`
+ ${ISSUE_FIELDS}
   mutation addIssueActivityFeedItem(
     $issueId: ID!
     $actionDescription: String!
@@ -91,16 +93,7 @@ export const ADD_ISSUE_ACTIVITY_FEED_ITEM = gql`
       }
     ) {
       issues {
-        id
-        ActivityFeed {
-          id
-          actionDescription
-          actionType
-          createdAt
-          ModerationProfile {
-            displayName
-          }
-        }
+        ...IssueFields
       }
     }
   }

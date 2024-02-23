@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import { ModerationAction } from "@/__generated__/graphql";
 import Avatar from "../user/Avatar.vue";
 import DiscussionIcon from "../icons/DiscussionIcon.vue";
@@ -45,7 +45,10 @@ export default defineComponent({
   },
 
   setup(props) {
-    const reversedFeedItems = props.feedItems.slice().reverse();
+    const reversedFeedItems = computed(() => {
+      return props.feedItems.slice().reverse();
+    });
+
     return {
       actionTypeToIcon,
       timeAgo,
@@ -77,7 +80,10 @@ export default defineComponent({
 
 <template>
   <div class="flow-root">
-    <ul role="list" class="-mb-8">
+    <ul
+      role="list"
+      class="-mb-8"
+    >
       <li
         v-for="(activityItem, activityItemIdx) in reversedFeedItems"
         :key="activityItem.id"
@@ -138,6 +144,7 @@ export default defineComponent({
               <div>
                 <div class="relative px-1">
                   <div
+                    v-if="activityItem.actionType"
                     class="flex h-8 w-8 items-center justify-center rounded-full ring-8 ring-white dark:text-white dark:ring-gray-800"
                     :class="[getBackgroundColor(activityItem.actionType)]"
                   >
@@ -159,10 +166,9 @@ export default defineComponent({
                         },
                       }"
                       class="font-medium text-gray-900 hover:underline dark:text-gray-200"
-                      >{{
-                        activityItem.ModerationProfile?.displayName
-                      }}</router-link
-                    >
+                    >{{
+                      activityItem.ModerationProfile?.displayName
+                    }}</router-link>
                     {{ activityItem.actionDescription }}
                   </span>
                   {{ " " }}

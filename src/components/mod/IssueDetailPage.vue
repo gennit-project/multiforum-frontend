@@ -23,8 +23,7 @@ import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useMutation } from "@vue/apollo-composable";
 import ActivityFeed from '@/components/mod/ActivityFeed.vue';
-import { ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT,
-ADD_ISSUE_ACTIVITY_FEED_ITEM } from "@/graphQLData/issue/mutations";
+import { ADD_ISSUE_ACTIVITY_FEED_ITEM } from "@/graphQLData/issue/mutations";
 
 export const COMMENT_LIMIT = 5;
 
@@ -92,8 +91,6 @@ export default defineComponent({
 
     const {
       mutate: closeIssue,
-      loading: closeIssueLoading,
-      error: closeIssueError,
     } = useMutation(CLOSE_ISSUE, () => ({
       variables: {
         id: activeIssueId.value,
@@ -104,13 +101,42 @@ export default defineComponent({
       mutate: addIssueActivityFeedItem,
       error: addIssueActivityFeedItemError,
       loading: addIssueActivityFeedItemLoading,
-      onDone: addIssueActivityFeedItemDone,
-    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM);
+    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM, {
+      update: (cache, { data: { updateIssues } }) => {
+
+        const { issues } = updateIssues;
+        const updatedIssue: Issue = issues[0];
+
+        // Attempt to read the existing issues from the cache
+        const existingIssueData = cache.readQuery({
+            query: GET_ISSUE,
+            variables: { id: updatedIssue.id },
+        });
+
+
+        // @ts-ignore
+        if (existingIssueData && existingIssueData.issues && existingIssueData.issues.length > 0){
+
+            // @ts-ignore
+            const existingIssues: Issue[] = existingIssueData.issues;
+
+            const newIssues = existingIssues.map(issue => 
+                issue.id === updatedIssue.id ? updatedIssue : issue
+            );
+
+            cache.writeQuery({
+                query: GET_ISSUE,
+                variables: { id: updatedIssue.id },
+                data: { 
+                  issues: newIssues,
+                },
+            });
+        }
+    },
+    });
 
     const {
       mutate: reopenIssue,
-      loading: reopenIssueLoading,
-      error: reopenIssueError,
     } = useMutation(REOPEN_ISSUE, () => ({
       variables: {
         id: activeIssueId.value,
@@ -302,12 +328,18 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div v-else-if="!getIssueLoading" class="mt-2 flex flex-col gap-2 px-4">
+    <div
+      v-else-if="!getIssueLoading"
+      class="mt-2 flex flex-col gap-2 px-4"
+    >
       <h1 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
       </h1>
       <div class="flex items-center gap-2">
-        <IssueBadge :key="issue.isOpen" :issue="issue" />
+        <IssueBadge
+          :key="issue.isOpen"
+          :issue="issue"
+        />
         <div class="text-sm text-gray-500 dark:text-gray-400">
           {{
             `First reported on ${formatDate(issue.createdAt)} by ${
@@ -321,19 +353,22 @@ export default defineComponent({
         :active-issue="activeIssue"
       />
     </div>
-    <v-row v-if="issue" class="flex justify-center">
+    <v-row
+      v-if="issue"
+      class="flex justify-center"
+    >
       <v-col>
         <div class="space-y-3 px-4">
-  
-
           <h2
             v-if="activeIssue"
             class="text-xl font-bold"
-          >Activity Feed</h2>
+          >
+            Activity Feed
+          </h2>
 
           <ActivityFeed
-            :key="activeIssue.id"
             v-if="activeIssue"
+            :key="activeIssue.id"
             :feed-items="activeIssue.ActivityFeed || []"
           />
 
