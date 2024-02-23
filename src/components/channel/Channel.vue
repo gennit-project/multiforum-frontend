@@ -198,7 +198,7 @@ export default defineComponent({
           class="relative z-0 max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
         >
           <div
-            class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600"
+            class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
             :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
           >
             <div class="align-items flex gap-4">
@@ -252,7 +252,7 @@ export default defineComponent({
       </div>
       <v-container
         fluid
-        class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
+        class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last lg:px-6"
       >
         <v-row class="flex pt-0">
           <v-col
