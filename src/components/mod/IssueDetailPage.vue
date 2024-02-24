@@ -163,24 +163,6 @@ export default defineComponent({
       return "";
     });
 
-    const comments = computed(() => {
-      if (getIssueLoading.value || getIssueError.value) {
-        return [];
-      }
-      return getIssueResult.value?.issues[0]?.Comments || [];
-    });
-
-    const loadedCommentCount = computed(() => {
-      if (getIssueLoading.value || getIssueError.value) {
-        return [];
-      }
-
-      let Comments = comments.value.filter((comment: CommentData) => {
-        return comment.ParentComment === null;
-      });
-      return Comments.length;
-    });
-
     const issue = computed<Issue>(() => {
       if (getIssueLoading.value || getIssueError.value) {
         return null;
@@ -189,13 +171,6 @@ export default defineComponent({
     });
 
     const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
-
-    const commentCount = computed(() => {
-      if (!activeIssue.value) {
-        return 0;
-      }
-      return activeIssue.value.CommentsAggregate?.count || 0;
-    });
 
     const previousOffset = ref(0);
 
@@ -233,15 +208,12 @@ export default defineComponent({
       channelId,
       closeIssue,
       closeOpenButtonText,
-      commentCount,
-      comments,
       createFormValues,
       getIssueResult,
       getIssueError,
       getIssueLoading,
       issue,
       lgAndUp,
-      loadedCommentCount,
       loggedInUserModName,
       mdAndUp,
       offset,

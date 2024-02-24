@@ -18,9 +18,6 @@ export const ISSUE_FIELDS = gql`
         displayName
       }
     }
-    CommentsAggregate {
-      count
-    }
     ActivityFeed (
       options: {
         sort: {
