@@ -398,7 +398,6 @@ export default defineComponent({
       softDeleteComment,
     };
   },
-
   methods: {
     updateCreateInputValuesForReply(input: CreateReplyInputData) {
       const { text, parentCommentId, depth } = input;
@@ -521,6 +520,7 @@ export default defineComponent({
       // console.log("update feedback", feedback);
     },
   },
+
 });
 </script>
 <template>

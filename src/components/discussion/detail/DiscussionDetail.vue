@@ -4,10 +4,12 @@ import { useRoute } from "vue-router";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useDisplay } from "vuetify";
 import DiscussionDetailContent from "./DiscussionDetailContent.vue";
+import ChannelContent from "@/components/channel/ChannelContent.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
+    ChannelContent,
     DiscussionDetailContent,
   },
   props: {
@@ -51,24 +53,23 @@ export default defineComponent({
       smAndDown
     };
   },
-  // created(){
-  //   window.scrollTo(0,0);
-  // }
 });
 </script>
 
 <template>
-  <div
-    :class="[smAndDown ? '' : '']"
-    class="w-full flex justify-center space-y-4"
-  >
-    <DiscussionDetailContent
-      v-if="discussionId"
-      :key="discussionId"
-      :discussion-id="discussionId"
-      :compact-mode="compactMode"
-    />
-  </div>
+  <ChannelContent>
+    <div
+      :class="[smAndDown ? '' : '']"
+      class="w-full flex justify-center space-y-4"
+    >
+      <DiscussionDetailContent
+        v-if="discussionId"
+        :key="discussionId"
+        :discussion-id="discussionId"
+        :compact-mode="compactMode"
+      />
+    </div>
+  </ChannelContent>
 </template>
 <style>
 .large-width {

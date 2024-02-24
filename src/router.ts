@@ -37,16 +37,6 @@ import ClosedIssues from "./components/mod/ClosedIssues.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
-  scrollBehavior(to) {
-    if (to.hash) {
-      return {
-        el: to.hash,
-        behavior: "smooth",
-      };
-    } else {
-      return { top: 0, behavior: "smooth" };
-    }
-  },
   linkActiveClass: "active",
   routes: [
     {
@@ -165,6 +155,26 @@ export const router = createRouter({
       component: Subreddit,
     },
     {
+      name: "DiscussionDetail",
+      path: "/channels/c/:channelId/discussions/d/:discussionId",
+      component: DiscussionDetail,
+      children: [
+        
+        {
+          name: "DiscussionCommentPermalink",
+          path: "comments/:commentId",
+          component: PermalinkedComment,
+          // children: [
+          //   {
+          //     name: "DiscussionCommentModHistory",
+          //     path: "modhistory",
+          //     component: CommentModHistory,
+          //   },
+          // ],
+        },
+      ],
+    },
+    {
       path: "/channels/c/:channelId",
       name: "Channel",
       component: Channel,
@@ -217,40 +227,21 @@ export const router = createRouter({
             }
           ]
         },
-        {
-          name: "DiscussionDetail",
-          path: "discussions/d/:discussionId",
-          component: DiscussionDetail,
-          children: [
-            
-            {
-              name: "DiscussionCommentPermalink",
-              path: "comments/:commentId",
-              component: PermalinkedComment,
-              // children: [
-              //   {
-              //     name: "DiscussionCommentModHistory",
-              //     path: "modhistory",
-              //     component: CommentModHistory,
-              //   },
-              // ],
-            },
-          ],
-        },
+        
         {
           name: "CreateDiscussionInChannel",
           path: "discussions/create",
           component: CreateDiscussion,
         },
         {
-          name: "SearchDiscussionsInChannel",
-          path: "discussions",
-          component: SearchDiscussions,
-        },
-        {
           name: "EditDiscussion",
           path: "discussions/d/:discussionId/edit",
           component: EditDiscussion,
+        },
+        {
+          name: "SearchDiscussionsInChannel",
+          path: "discussions",
+          component: SearchDiscussions,
         },
         {
           name: "Events",

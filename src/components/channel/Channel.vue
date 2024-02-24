@@ -3,7 +3,6 @@ import ChannelTabs from "./ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
@@ -11,18 +10,17 @@ import gql from "graphql-tag";
 import Avatar from "@/components/user/Avatar.vue";
 import { User } from "@/__generated__/graphql";
 import ExpandableImage from "../generic/ExpandableImage.vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
+import ChannelContent from "./ChannelContent.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
     Avatar,
-    ChannelSidebar,
+    ChannelContent,
     CreateAnythingButton,
     ChannelTabs,
     ExpandableImage,
-    MarkdownPreview,
   },
   setup() {
     const route = ref(useRoute());
@@ -87,6 +85,29 @@ export default defineComponent({
     });
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
 
+    const showChannelHeader = computed(() => {
+      if (route.value.name === "SearchDiscussionsInChannel") {
+        return true;
+      }
+
+      if (route.value.name === "SearchEventsInChannel") {
+        return true;
+      }
+
+      if (route.value.name === "EditChannel") {
+        return true;
+      }
+
+      if (route.value.name === "OpenIssues") {
+        return true;
+      }
+
+      if (route.value.name === "About") {
+        return true;
+      }
+      return false;
+    });
+
     return {
       adminList,
       channel,
@@ -100,6 +121,7 @@ export default defineComponent({
       lgAndUp,
       mdAndUp,
       router,
+      showChannelHeader,
       showMenu: ref(false),
       smAndDown,
       theme,
@@ -186,14 +208,14 @@ export default defineComponent({
       class="w-full"
     >
       <ExpandableImage
-        v-if="channel?.channelBannerURL && route.name !== 'DiscussionDetail'"
+        v-if="channel?.channelBannerURL && showChannelHeader"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
         :is-square="true"
         class="max-h-40 w-full"
       />
       <div
-        v-if="route.name !== 'DiscussionDetail'"
+        v-if="showChannelHeader"
         class="mb-4 bg-white dark:bg-gray-800"
       >
         <v-container
@@ -204,7 +226,7 @@ export default defineComponent({
             class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
             :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
           >
-            <div class="flex gap-4 align-items">
+            <div class="align-items flex gap-4">
               <ExpandableImage
                 v-if="channel?.channelIconURL"
                 class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
@@ -253,47 +275,9 @@ export default defineComponent({
           />
         </v-container>
       </div>
-      <v-container
-        fluid
-        class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last lg:px-6"
-      >
-        <v-row class="flex pt-0">
-          <v-col
-            :cols="8"
-            class="pt-0"
-          >
-            <router-view />
-          </v-col>
-          <v-col
-            v-if="channelId"
-            :cols="4"
-            class="pt-0"
-          >
-            <ChannelSidebar
-              v-if="channel"
-              :channel="channel"
-              class="sticky top-0 overflow-auto"
-            >
-              <div>
-                <h2 class="mt-2 px-6 text-xl font-bold">
-                  Intro
-                </h2>
-                <MarkdownPreview
-                  v-if="channel?.description"
-                  :text="channel?.description"
-                  :word-limit="1000"
-                />
-                <p
-                  v-else
-                  class="p-6 text-xs"
-                >
-                  Welcome to {{ channelId }}!
-                </p>
-              </div>
-            </ChannelSidebar>
-          </v-col>
-        </v-row>
-      </v-container>
+      <ChannelContent>
+        <router-view />
+      </ChannelContent>
     </article>
   </div>
 </template>

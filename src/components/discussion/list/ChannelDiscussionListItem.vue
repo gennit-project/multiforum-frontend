@@ -125,7 +125,7 @@ export default defineComponent({
       }
 
       if (props.discussion?.body && props.discussion.body.length > 200) {
-        return props.discussion?.body.slice(0, 500) + "...";
+        return props.discussion?.body.slice(0, 250) + "...";
       }
       return props.discussion.body;
     });
@@ -222,7 +222,7 @@ export default defineComponent({
       >
         <router-link
           :to="{ path: detailLink, query: filteredQuery }"
-          class="w-full hover:text-gray-500"
+          class="w-full"
         >
           <p
             class="cursor-pointer text-lg font-bold hover:text-gray-500 dark:text-gray-100"
@@ -234,7 +234,7 @@ export default defineComponent({
           </p>
           <div
             v-if="truncatedBody"
-            class="my-2 max-h-72 max-w-lg overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
+            class="my-2 max-h-72 overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
           >
             <router-link :to="{ path: detailLink, query: filteredQuery }">
               <MarkdownPreview
