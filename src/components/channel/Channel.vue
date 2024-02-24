@@ -12,15 +12,19 @@ import { User } from "@/__generated__/graphql";
 import ExpandableImage from "../generic/ExpandableImage.vue";
 import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
 import ChannelContent from "./ChannelContent.vue";
+import ChannelHeaderMobile from "./ChannelHeaderMobile.vue";
+import ChannelHeaderDesktop from "./ChannelHeaderDesktop.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
   components: {
     Avatar,
     ChannelContent,
+    ChannelHeaderMobile,
     CreateAnythingButton,
     ChannelTabs,
     ExpandableImage,
+    ChannelHeaderDesktop,
   },
   setup() {
     const route = ref(useRoute());
@@ -136,55 +140,14 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex h-screen justify-center dark:bg-black">
-    <div
-      v-if="smAndDown"
-      class="w-full"
-    >
-      <ExpandableImage
-        v-if="channel?.channelBannerURL"
-        :src="channel?.channelBannerURL"
-        :alt="'channel banner'"
-        :is-medium="true"
-        :is-square="true"
-        class="w-full"
-      />
-      <div class="flex flex-col items-center justify-center gap-4 bg-black">
-        <Avatar
-          class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
-          :class="channel?.channelIconURL ? '-mt-12' : ''"
-          :text="channelId"
-          :src="channel?.channelIconURL ?? ''"
-          :is-medium="true"
-          :is-square="false"
-        />
-        <div v-if="channel?.displayName && channel?.uniqueName">
-          <div>
-            <h1
-              v-if="channel?.displayName"
-              class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
-            >
-              {{ channel.displayName }}
-            </h1>
-          </div>
-          <h2
-            class="text-sm font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
-          >
-            {{ `${channel.uniqueName}` }}
-          </h2>
-        </div>
-        <div v-else>
-          <h1
-            class="flex border-gray-700 text-2xl font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
-          >
-            {{ channelId }}
-          </h1>
-        </div>
-        <CreateAnythingButton
-          class="mb-4"
-          :use-primary-button="true"
-        />
-      </div>
+  <div class="h-screen flex-col justify-center dark:bg-black">
+    <ChannelHeaderMobile
+      v-if="smAndDown && channel"
+      :channel="channel"
+      :channel-id="channelId"
+      :show-create-button="true"
+    />
+    <div v-if="smAndDown" class="w-full">
       <article
         class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
       >
@@ -203,78 +166,25 @@ export default defineComponent({
       </article>
     </div>
 
-    <article
-      v-if="!smAndDown"
-      class="w-full"
-    >
-      <ExpandableImage
-        v-if="channel?.channelBannerURL && showChannelHeader"
-        :src="channel?.channelBannerURL"
-        :alt="'channel banner'"
-        :is-square="true"
-        class="max-h-40 w-full"
-      />
-      <div
+    <article v-if="!smAndDown && channel" class="w-full">
+      <ChannelHeaderDesktop
         v-if="showChannelHeader"
-        class="mb-4 bg-white dark:bg-gray-800"
+        :channel="channel"
+        :channel-id="channelId"
+        :admin-list="adminList"
+        :route="route"
+        :show-create-button="true"
       >
-        <v-container
-          fluid
-          class="relative z-0 max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
-        >
-          <div
-            class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
-            :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
-          >
-            <div class="align-items flex gap-4">
-              <ExpandableImage
-                v-if="channel?.channelIconURL"
-                class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
-                :is-square="false"
-                :is-medium="true"
-                :alt="channelId"
-                :src="channel?.channelIconURL ?? ''"
-              />
-              <Avatar
-                v-else
-                class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
-                :text="channelId"
-                :src="channel?.channelIconURL ?? ''"
-                :is-medium="true"
-                :is-square="false"
-              />
-              <div class="flex flex-col">
-                <h1
-                  v-if="channelId"
-                  :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']"
-                  class="flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
-                >
-                  {{ channel?.displayName ? channel.displayName : channelId }}
-                </h1>
-                <h2
-                  v-if="channel?.uniqueName && channel?.displayName"
-                  class="font-bold leading-6 text-gray-500 dark:text-gray-200"
-                >
-                  {{ `${channel.uniqueName}` }}
-                </h2>
-              </div>
-            </div>
-            <CreateAnythingButton
-              :class="channel?.channelBannerURL ? 'mt-20' : 'mt-12'"
-              :use-primary-button="true"
-            />
-          </div>
-          <ChannelTabs
-            v-if="channel"
-            class="block w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
-            :vertical="false"
-            :show-counts="true"
-            :admin-list="adminList"
-            :route="route"
-            :channel="channel"
-          />
-        </v-container>
-      </div>
+        <ChannelTabs
+          v-if="channel"
+          class="block w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
+          :vertical="false"
+          :show-counts="true"
+          :admin-list="adminList"
+          :route="route"
+          :channel="channel"
+        />
+      </ChannelHeaderDesktop>
       <ChannelContent>
         <router-view />
       </ChannelContent>
