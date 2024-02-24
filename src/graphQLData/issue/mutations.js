@@ -31,45 +31,31 @@ export const REPORT_DISCUSSION = gql`
 `;
 
 export const CLOSE_ISSUE = gql`
-mutation closeIssue($id: ID!) {
-  updateIssues (
-    where: {
-      id: $id
-    },
-    update: {
-      isOpen: false
-    }
-  ) {
-    issues {
-      id 
-      title
-      isOpen
+  mutation closeIssue($id: ID!) {
+    updateIssues(where: { id: $id }, update: { isOpen: false }) {
+      issues {
+        id
+        title
+        isOpen
+      }
     }
   }
-}
 `;
 
 export const REOPEN_ISSUE = gql`
-mutation reopenIssue($id: ID!) {
-  updateIssues (
-    where: {
-      id: $id
-    },
-    update: {
-      isOpen: true
-    }
-  ) {
-    issues {
-      id 
-      title
-      isOpen
+  mutation reopenIssue($id: ID!) {
+    updateIssues(where: { id: $id }, update: { isOpen: true }) {
+      issues {
+        id
+        title
+        isOpen
+      }
     }
   }
-}
-`
+`;
 
 export const ADD_ISSUE_ACTIVITY_FEED_ITEM = gql`
- ${ISSUE_FIELDS}
+  ${ISSUE_FIELDS}
   mutation addIssueActivityFeedItem(
     $issueId: ID!
     $actionDescription: String!
@@ -97,9 +83,10 @@ export const ADD_ISSUE_ACTIVITY_FEED_ITEM = gql`
       }
     }
   }
-`
+`;
 
 export const ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT = gql`
+  ${ISSUE_FIELDS}
   mutation addIssueActivityFeedItemWithComment(
     $issueId: ID!
     $actionDescription: String!
@@ -120,9 +107,16 @@ export const ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT = gql`
               }
               Comment: {
                 create: {
-                  text: $commentText
-                  CommentAuthor: {
-                    connect: { where: { node: { displayName: $displayName } } }
+                  node: {
+                    isRootComment: false
+                    text: $commentText
+                    CommentAuthor: {
+                      ModerationProfile: {
+                        connect: {
+                          where: { node: { displayName: $displayName } }
+                        }
+                      }
+                    }
                   }
                 }
               }
@@ -132,29 +126,11 @@ export const ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT = gql`
       }
     ) {
       issues {
-        id
-        ActivityFeed {
-          id
-          actionDescription
-          actionType
-          createdAt
-          ModerationProfile {
-            displayName
-          }
-        }
-        Comments {
-          id
-          text
-          CommentAuthor {
-            ... on ModerationProfile {
-              displayName
-            }
-          }
-        }
+        ...IssueFields
       }
     }
   }
-`
+`;
 
 export const REPORT_EVENT = gql`
   mutation reportEvent(

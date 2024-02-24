@@ -137,6 +137,12 @@ export default defineComponent({
                 <div class="mt-2 text-sm text-gray-700 dark:text-gray-200">
                   <p>{{ activityItem.actionDescription }}</p>
                 </div>
+                <MarkdownPreview
+                  v-if="activityItem.actionType === 'comment' && activityItem.Comment"
+                  :text="activityItem.Comment.text || ''"
+                  :word-limit="1000"
+                  :disable-gallery="true"
+                />
               </div>
             </template>
 

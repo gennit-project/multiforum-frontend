@@ -9,7 +9,6 @@ import { Issue } from "@/__generated__/graphql";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { useDisplay } from "vuetify";
 import "md-editor-v3/lib/style.css";
-import { Comment as CommentData } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import { DateTime } from "luxon";
@@ -20,11 +19,16 @@ import TextEditor from "../generic/forms/TextEditor.vue";
 import GenericButton from "../generic/buttons/GenericButton.vue";
 import SaveButton from "../generic/buttons/SaveButton.vue";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
-import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import {
+  GET_LOCAL_MOD_PROFILE_NAME,
+  GET_LOCAL_USERNAME,
+} from "@/graphQLData/user/queries";
 import { useMutation } from "@vue/apollo-composable";
-import ActivityFeed from '@/components/mod/ActivityFeed.vue';
-import { ADD_ISSUE_ACTIVITY_FEED_ITEM } from "@/graphQLData/issue/mutations";
-
+import ActivityFeed from "@/components/mod/ActivityFeed.vue";
+import {
+  ADD_ISSUE_ACTIVITY_FEED_ITEM,
+  ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT,
+} from "@/graphQLData/issue/mutations";
 
 export default defineComponent({
   components: {
@@ -88,9 +92,7 @@ export default defineComponent({
       return "";
     });
 
-    const {
-      mutate: closeIssue,
-    } = useMutation(CLOSE_ISSUE, () => ({
+    const { mutate: closeIssue } = useMutation(CLOSE_ISSUE, () => ({
       variables: {
         id: activeIssueId.value,
       },
@@ -102,41 +104,41 @@ export default defineComponent({
       loading: addIssueActivityFeedItemLoading,
     } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM, {
       update: (cache, { data: { updateIssues } }) => {
-
         const { issues } = updateIssues;
         const updatedIssue: Issue = issues[0];
 
         // Attempt to read the existing issues from the cache
         const existingIssueData = cache.readQuery({
-            query: GET_ISSUE,
-            variables: { id: updatedIssue.id },
+          query: GET_ISSUE,
+          variables: { id: updatedIssue.id },
         });
 
+        if (
+          existingIssueData &&
+          // @ts-ignore
+          existingIssueData.issues &&
+          // @ts-ignore
+          existingIssueData.issues.length > 0
+        ) {
+          // @ts-ignore
+          const existingIssues: Issue[] = existingIssueData.issues;
 
-        // @ts-ignore
-        if (existingIssueData && existingIssueData.issues && existingIssueData.issues.length > 0){
+          const newIssues = existingIssues.map((issue) =>
+            issue.id === updatedIssue.id ? updatedIssue : issue,
+          );
 
-            // @ts-ignore
-            const existingIssues: Issue[] = existingIssueData.issues;
-
-            const newIssues = existingIssues.map(issue => 
-                issue.id === updatedIssue.id ? updatedIssue : issue
-            );
-
-            cache.writeQuery({
-                query: GET_ISSUE,
-                variables: { id: updatedIssue.id },
-                data: { 
-                  issues: newIssues,
-                },
-            });
+          cache.writeQuery({
+            query: GET_ISSUE,
+            variables: { id: updatedIssue.id },
+            data: {
+              issues: newIssues,
+            },
+          });
         }
-    },
+      },
     });
 
-    const {
-      mutate: reopenIssue,
-    } = useMutation(REOPEN_ISSUE, () => ({
+    const { mutate: reopenIssue } = useMutation(REOPEN_ISSUE, () => ({
       variables: {
         id: activeIssueId.value,
       },
@@ -150,6 +152,45 @@ export default defineComponent({
 
     const createFormValues = ref<CreateEditCommentFormValues>(
       createCommentDefaultValues,
+    );
+
+    const { mutate: createComment } = useMutation(
+      ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT,
+      {
+        update: (cache, { data: { updateIssues } }) => {
+          const { issues } = updateIssues;
+          const updatedIssue: Issue = issues[0];
+
+          // Attempt to read the existing issues from the cache
+          const existingIssueData = cache.readQuery({
+            query: GET_ISSUE,
+            variables: { id: updatedIssue.id },
+          });
+
+          if (
+            existingIssueData &&
+            // @ts-ignore
+            existingIssueData.issues &&
+            // @ts-ignore
+            existingIssueData.issues.length > 0
+          ) {
+            // @ts-ignore
+            const existingIssues: Issue[] = existingIssueData.issues;
+
+            const newIssues = existingIssues.map((issue) =>
+              issue.id === updatedIssue.id ? updatedIssue : issue,
+            );
+
+            cache.writeQuery({
+              query: GET_ISSUE,
+              variables: { id: updatedIssue.id },
+              data: {
+                issues: newIssues,
+              },
+            });
+          }
+        },
+      },
     );
 
     // eslint-disable-next-line no-undef
@@ -208,6 +249,7 @@ export default defineComponent({
       channelId,
       closeIssue,
       closeOpenButtonText,
+      createComment,
       createFormValues,
       getIssueResult,
       getIssueError,
@@ -256,13 +298,24 @@ export default defineComponent({
         );
         return;
       }
+      if (this.createFormValues.text.length > 0) {
+        // Creating comment
+        console.log("Creating comment", this.createFormValues.text);
+        this.createComment({
+          issueId: this.activeIssue.id,
+          commentText: this.createFormValues.text,
+          displayName: this.loggedInUserModName,
+          actionDescription: "commented on the issue",
+          actionType: "comment",
+        });
+      }
       if (this.activeIssue.isOpen) {
         this.closeIssue();
         this.addIssueActivityFeedItem({
           issueId: this.activeIssue.id,
           displayName: this.loggedInUserModName,
           actionDescription: "closed the issue",
-          actionType: "close"
+          actionType: "close",
         });
       } else {
         this.reopenIssue();
@@ -270,7 +323,7 @@ export default defineComponent({
           issueId: this.activeIssue.id,
           displayName: this.loggedInUserModName,
           actionDescription: "reopened the issue",
-          actionType: "reopen"
+          actionType: "reopen",
         });
       }
     },
@@ -299,18 +352,12 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div
-      v-else-if="!getIssueLoading"
-      class="mt-2 flex flex-col gap-2 px-4"
-    >
+    <div v-else-if="!getIssueLoading" class="mt-2 flex flex-col gap-2 px-4">
       <h1 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
       </h1>
       <div class="flex items-center gap-2">
-        <IssueBadge
-          :key="issue.isOpen"
-          :issue="issue"
-        />
+        <IssueBadge :key="issue.isOpen" :issue="issue" />
         <div class="text-sm text-gray-500 dark:text-gray-400">
           {{
             `First reported on ${formatDate(issue.createdAt)} by ${
@@ -324,18 +371,10 @@ export default defineComponent({
         :active-issue="activeIssue"
       />
     </div>
-    <v-row
-      v-if="issue"
-      class="flex justify-center"
-    >
+    <v-row v-if="issue" class="flex justify-center">
       <v-col>
         <div class="space-y-3 px-4">
-          <h2
-            v-if="activeIssue"
-            class="text-xl font-bold"
-          >
-            Activity Feed
-          </h2>
+          <h2 v-if="activeIssue" class="text-xl font-bold">Activity Feed</h2>
 
           <ActivityFeed
             v-if="activeIssue"
@@ -358,7 +397,10 @@ export default defineComponent({
                 data-testid="createCommentButton"
                 :label="'Comment'"
                 :disabled="createFormValues.text.length === 0"
-                :loading="addIssueActivityFeedItemLoading && !addIssueActivityFeedItemError"
+                :loading="
+                  addIssueActivityFeedItemLoading &&
+                  !addIssueActivityFeedItemError
+                "
                 @click.prevent="$emit('handleCreateComment')"
               />
             </div>
