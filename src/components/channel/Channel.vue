@@ -186,13 +186,16 @@ export default defineComponent({
       class="w-full"
     >
       <ExpandableImage
-        v-if="channel?.channelBannerURL"
+        v-if="channel?.channelBannerURL && route.name !== 'DiscussionDetail'"
         :src="channel?.channelBannerURL"
         :alt="'channel banner'"
         :is-square="true"
         class="max-h-40 w-full"
       />
-      <div class="mb-4 bg-white dark:bg-gray-800">
+      <div
+        v-if="route.name !== 'DiscussionDetail'"
+        class="mb-4 bg-white dark:bg-gray-800"
+      >
         <v-container
           fluid
           class="relative z-0 max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
@@ -201,7 +204,7 @@ export default defineComponent({
             class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
             :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
           >
-            <div class="align-items flex gap-4">
+            <div class="flex gap-4 align-items">
               <ExpandableImage
                 v-if="channel?.channelIconURL"
                 class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
@@ -235,7 +238,7 @@ export default defineComponent({
               </div>
             </div>
             <CreateAnythingButton
-              class="mb-4 mt-20"
+              :class="channel?.channelBannerURL ? 'mt-14' : 'mt-8'"
               :use-primary-button="true"
             />
           </div>

@@ -16,6 +16,10 @@ export default defineComponent({
       type: String,
       default: "",
     },
+    text: {
+      type: String,
+      default: "Back",
+    },
   },
   setup() {},
 });
@@ -25,8 +29,8 @@ export default defineComponent({
   <router-link
     :to="link"
     :data-testid="dataTestid"
-    class="flex h-10 w-10 items-center justify-center rounded-full border bg-white px-2 text-xs hover:bg-gray-200 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-500"
+    class="inline-flex items-center text-xs gap-2 text-blue-500 hover:underline"
   >
-    <LeftArrowIcon class="inline-flex" />
+    <LeftArrowIcon class="h-4 w-4" /> {{ text }}
   </router-link>
 </template>

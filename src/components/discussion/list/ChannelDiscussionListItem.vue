@@ -205,9 +205,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative flex hover:cursor-pointer">
+  <li class="relative flex">
     <div
-      class="flex w-full flex-row justify-start gap-4 rounded-lg hover:bg-white dark:hover:bg-gray-700 p-2"
+      class="flex w-full flex-row justify-start gap-4 rounded-lg  p-2"
     >
       <DiscussionVotes
         v-if="discussionChannel"
@@ -277,7 +277,7 @@ export default defineComponent({
         <div class="mt-2 flex items-center justify-start gap-6">
           <router-link
             :to="{ path: detailLink, query: filteredQuery }"
-            class="rounded-md bg-gray-100 px-4 p-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+            class="rounded-md bg-gray-100 px-4 p-1 dark:bg-gray-600"
           >
             <i class="fa-regular fa-comment h-5 w-5" />
             <span class="text-xs">{{

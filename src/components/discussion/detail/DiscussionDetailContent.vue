@@ -188,7 +188,9 @@ export default defineComponent({
     const loadMore = () => {
       fetchMoreComments({
         variables: {
-          offset: getDiscussionChannelResult.value?.getCommentSection?.Comments.length || 0,
+          offset:
+            getDiscussionChannelResult.value?.getCommentSection?.Comments
+              .length || 0,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
@@ -247,23 +249,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <PageNotFound
-    v-if="
-      !getDiscussionLoading &&
-        !getDiscussionChannelLoading &&
-        !activeDiscussionChannel
-    "
-  />
-  <div
-    v-else
-    class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 sm:px-2 md:px-5 dark:bg-gray-800"
-  >
-    <div
-      class="align-center mx-1 sm:mt-2 md:mt-5 flex justify-between px-1"
-    >
+  <div class="w-full">
+    <div class="align-center mx-1 mb-2 flex justify-between px-1">
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
+        :text="`Back to Discussions in ${channelId}`"
       />
       <RequireAuth
         :full-width="false"
@@ -285,83 +276,97 @@ export default defineComponent({
       </RequireAuth>
     </div>
 
-    <ErrorBanner
-      v-if="getDiscussionError"
-      class="mt-2 px-4 "
-      :text="getDiscussionError.message"
+    <PageNotFound
+      v-if="
+        !getDiscussionLoading &&
+          !getDiscussionChannelLoading &&
+          !activeDiscussionChannel
+      "
     />
-    <div v-if="!getDiscussionLoading">
-      <div class="mt-3 w-full px-2">
-        <div ref="discussionDetail">
-          <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-            {{
-              discussion && discussion.title ? discussion.title : "[Deleted]"
-            }}
-          </h2>
-        </div>
-      </div>
-    </div>
-    <v-row
-      v-if="discussion"
-      class="flex justify-center"
+    <div
+      v-else
+      class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <v-col>
-        <div class="space-y-3 px-2">
-          <div
-            class="dark:bg-gray-950 rounded-lg border dark:border-gray-700 px-4 pb-2 dark:bg-gray-700"
-          >
-            <DiscussionHeader
-              :discussion="discussion"
-              :channel-id="channelId"
-              :compact-mode="compactMode"
-            />
-            <DiscussionBody
-              :discussion="discussion"
-              :channel-id="channelId"
-              :discussion-channel-id="activeDiscussionChannel?.id"
-              :emoji-json="activeDiscussionChannel?.emoji"
-            >
-              <div class="flex h-12 items-center">
-                <DiscussionVotes
-                  v-if="activeDiscussionChannel"
-                  :discussion="discussion"
-                  :discussion-channel="activeDiscussionChannel"
-                />
-              </div>
-            </DiscussionBody>
+      <div v-if="!getDiscussionLoading">
+        <div class="mt-3 w-full px-2">
+          <div ref="discussionDetail">
+            <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
+              {{
+                discussion && discussion.title ? discussion.title : "[Deleted]"
+              }}
+            </h2>
           </div>
         </div>
-      </v-col>
-    </v-row>
-    <div>
-      <DiscussionRootCommentFormWrapper
-        :key="`${channelId}${discussionId}`"
-        class="pr-3"
-        :channel-id="channelId"
-        :discussion-channel="activeDiscussionChannel"
-        :previous-offset="previousOffset"
+      </div>
+
+      <ErrorBanner
+        v-if="getDiscussionError"
+        class="mt-2 px-4"
+        :text="getDiscussionError.message"
       />
-      <div class="my-6 mx-2 rounded-lg">
-        <DiscussionCommentsWrapper
-          :key="activeDiscussionChannel?.id"
-          :loading="getDiscussionChannelLoading"
+
+      <v-row
+        v-if="discussion"
+        class="flex justify-center"
+      >
+        <v-col>
+          <div class="space-y-3 px-2">
+            <div
+              class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
+            >
+              <DiscussionHeader
+                :discussion="discussion"
+                :channel-id="channelId"
+                :compact-mode="compactMode"
+              />
+              <DiscussionBody
+                :discussion="discussion"
+                :channel-id="channelId"
+                :discussion-channel-id="activeDiscussionChannel?.id"
+                :emoji-json="activeDiscussionChannel?.emoji"
+              >
+                <div class="flex h-12 items-center">
+                  <DiscussionVotes
+                    v-if="activeDiscussionChannel"
+                    :discussion="discussion"
+                    :discussion-channel="activeDiscussionChannel"
+                  />
+                </div>
+              </DiscussionBody>
+            </div>
+          </div>
+        </v-col>
+      </v-row>
+      <div>
+        <DiscussionRootCommentFormWrapper
+          :key="`${channelId}${discussionId}`"
+          class="pr-3"
+          :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"
-          :comments="comments"
-          :reached-end-of-results="reachedEndOfResults"
           :previous-offset="previousOffset"
-          @loadMore="loadMore"
+        />
+        <div class="mx-2 my-6 rounded-lg">
+          <DiscussionCommentsWrapper
+            :key="activeDiscussionChannel?.id"
+            :loading="getDiscussionChannelLoading"
+            :discussion-channel="activeDiscussionChannel"
+            :comments="comments"
+            :reached-end-of-results="reachedEndOfResults"
+            :previous-offset="previousOffset"
+            @loadMore="loadMore"
+          />
+        </div>
+        <DiscussionChannelLinks
+          v-if="discussion && discussion.DiscussionChannels"
+          class="my-4"
+          :discussion-channels="discussion.DiscussionChannels"
+          :channel-id="
+            activeDiscussionChannel
+              ? activeDiscussionChannel.channelUniqueName
+              : ''
+          "
         />
       </div>
-      <DiscussionChannelLinks
-        v-if="discussion && discussion.DiscussionChannels"
-        class="my-4"
-        :discussion-channels="discussion.DiscussionChannels"
-        :channel-id="
-          activeDiscussionChannel
-            ? activeDiscussionChannel.channelUniqueName
-            : ''
-        "
-      />
     </div>
   </div>
 </template>
