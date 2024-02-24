@@ -260,7 +260,7 @@ export default defineComponent({
               </div>
             </div>
             <CreateAnythingButton
-              :class="channel?.channelBannerURL ? 'mt-14' : 'mt-8'"
+              :class="channel?.channelBannerURL ? 'mt-20' : 'mt-12'"
               :use-primary-button="true"
             />
           </div>
