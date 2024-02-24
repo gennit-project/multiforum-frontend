@@ -173,20 +173,20 @@ export default defineComponent({
             getDetailLink(discussion.DiscussionChannels[0].channelUniqueName)
           "
         >
-          <p
+          <span
             :class="discussionIdInParams === discussionId ? 'text-black' : ''"
-            class="text-lg mb-2 cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+            class="text-lg cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
           >
             <HighlightedSearchTerms
               :text="title"
               :search-input="searchInput"
             />
-          </p>
+          </span>
         </router-link>
 
         <div
           v-if="discussion && discussion.body"
-          class="max-w-xl border-l-2 border-gray-300 dark:bg-gray-700 max-h-72 overflow-auto"
+          class="border-l-2 border-gray-300 dark:bg-gray-700 max-h-72 overflow-auto"
         >
           <MarkdownPreview
             :text="discussion.body"

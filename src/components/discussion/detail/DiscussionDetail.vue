@@ -53,6 +53,11 @@ export default defineComponent({
       smAndDown
     };
   },
+  mounted() {
+  this.$nextTick(() => {
+    window.scrollTo(0, 0);
+  });
+}
 });
 </script>
 

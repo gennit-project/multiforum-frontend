@@ -5,6 +5,7 @@ import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import { useRoute } from "vue-router";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
+import { useDisplay } from "vuetify"
 
 export default defineComponent({
   name: "ChannelContent",
@@ -39,9 +40,12 @@ export default defineComponent({
       const channel = getChannelResult.value.channels[0];
       return channel;
     });
+
+    const { mdAndDown } = useDisplay();
     return {
       channelId,
       channel,
+      mdAndDown,
     };
   },
 });
@@ -54,14 +58,14 @@ export default defineComponent({
   >
     <v-row class="flex pt-0">
       <v-col
-        :cols="8"
+        :cols="mdAndDown ? 12 : 8" 
         class="pt-0"
       >
         <slot />
       </v-col>
       <v-col
         v-if="channelId"
-        :cols="4"
+        :cols="mdAndDown ? 12 : 4"
         class="pt-0"
       >
         <ChannelSidebar

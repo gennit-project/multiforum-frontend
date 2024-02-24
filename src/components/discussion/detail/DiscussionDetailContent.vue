@@ -250,7 +250,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <div class="align-center mx-1 mb-2 flex justify-between px-1">
+    <div class="align-center mb-2 flex justify-between">
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
