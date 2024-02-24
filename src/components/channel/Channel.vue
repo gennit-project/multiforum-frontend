@@ -7,10 +7,7 @@ import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
 import gql from "graphql-tag";
-import Avatar from "@/components/user/Avatar.vue";
 import { User } from "@/__generated__/graphql";
-import ExpandableImage from "../generic/ExpandableImage.vue";
-import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
 import ChannelContent from "./ChannelContent.vue";
 import ChannelHeaderMobile from "./ChannelHeaderMobile.vue";
 import ChannelHeaderDesktop from "./ChannelHeaderDesktop.vue";
@@ -18,12 +15,9 @@ import ChannelHeaderDesktop from "./ChannelHeaderDesktop.vue";
 export default defineComponent({
   name: "ChannelComponent",
   components: {
-    Avatar,
     ChannelContent,
     ChannelHeaderMobile,
-    CreateAnythingButton,
     ChannelTabs,
-    ExpandableImage,
     ChannelHeaderDesktop,
   },
   setup() {
@@ -147,7 +141,10 @@ export default defineComponent({
       :channel-id="channelId"
       :show-create-button="true"
     />
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <article
         class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
       >
@@ -166,7 +163,10 @@ export default defineComponent({
       </article>
     </div>
 
-    <article v-if="!smAndDown && channel" class="w-full">
+    <article
+      v-if="!smAndDown && channel"
+      class="w-full"
+    >
       <ChannelHeaderDesktop
         v-if="showChannelHeader"
         :channel="channel"

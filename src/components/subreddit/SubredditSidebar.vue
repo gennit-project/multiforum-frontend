@@ -4,14 +4,12 @@ import { useQuery } from "@vue/apollo-composable";
 import { GET_SUBREDDIT_SIDEBAR } from "@/graphQLData/subreddit/queries";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
-import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 import { useRoute, useRouter } from "vue-router";
 
 export default defineComponent({
   name: "AboutPage",
   components: {
-    Avatar,
   },
   setup() {
     const route = useRoute();
@@ -81,25 +79,7 @@ export default defineComponent({
       v-if="subredditName"
       class="items-center gap-2"
     >
-      <img
-        v-if="subreddit?.bannerImg"
-        :class="[
-          theme === 'dark' ? 'subreddit-background-dark' : 'subreddit-background',
-        ]"
-        class="h-36 w-full object-cover"
-        alt="background pattern"
-        :src="subreddit?.bannerImg"
-      >
       <div class="p-6">
-        <Avatar
-          v-if="subreddit?.communityIcon"
-          :class="subreddit?.bannerImg ? '-mt-20' : ''"
-          class="w-24 shadow-sm border-2 dark:border-gray-800"
-          :src="subreddit?.communityIcon || 'https://www.redditstatic.com/avatars/avatar_default_02_7193D6.png'"
-          :alt="subredditName"
-          :is-square="true"
-          :is-large="true"
-        />
         <h1
           v-if="subredditName"
           class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"

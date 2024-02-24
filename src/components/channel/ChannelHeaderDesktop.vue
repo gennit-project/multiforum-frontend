@@ -44,7 +44,7 @@ export default defineComponent({
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
     :is-square="true"
-    class="max-h-40 w-full"
+    class="max-h-52 w-full"
   />
   <div class="mb-4 bg-white dark:bg-gray-800">
     <v-container
@@ -94,7 +94,7 @@ export default defineComponent({
           :use-primary-button="true"
         />
       </div>
-      <slot></slot>
+      <slot />
     </v-container>
   </div>
 </template>

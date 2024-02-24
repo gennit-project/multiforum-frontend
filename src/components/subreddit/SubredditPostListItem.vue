@@ -78,11 +78,11 @@ export default defineComponent({
             target="_blank"
             class="hover:text-gray-500"
           >
-            <p
-              class="text-md cursor-pointer font-bold hover:text-gray-500"
+            <span
+              class="text-lg cursor-pointer font-bold hover:text-gray-500 hover:dark:text-gray-300 dark:text-gray-200 dark:hover:text-gray-300"
             >
               {{ title }}
-            </p>
+            </span>
           </a>
           <div
             v-if="truncatedBody"

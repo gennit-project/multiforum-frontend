@@ -3,21 +3,32 @@
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
-import SubredditSidebar from "@/components/subreddit/SubredditSidebar.vue";
-import { GET_SUBREDDIT_SIDEBAR, GET_SUBREDDIT_POSTS } from "@/graphQLData/subreddit/queries";
+import SubredditContent from "@/components/subreddit/SubredditContent.vue";
+import {
+  GET_SUBREDDIT_SIDEBAR,
+  GET_SUBREDDIT_POSTS,
+} from "@/graphQLData/subreddit/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { router } from "@/router";
 import gql from "graphql-tag";
-import Avatar from "@/components/user/Avatar.vue";
 import SubredditPostList from "@/components/subreddit/SubredditPostList.vue";
+import ChannelHeaderMobile from "@/components/channel/ChannelHeaderMobile.vue";
+import ChannelHeaderDesktop from "@/components/channel/ChannelHeaderDesktop.vue";
+
+// const channel = {
+//         channelBannerURL,
+//         channelIconURL,
+//         displayName,
+//         uniqueName
+//     }
 
 export default defineComponent({
-  name: "ChannelComponent",
+  name: "SubredditComponent",
   components: {
-    Avatar,
+    ChannelHeaderMobile,
+    ChannelHeaderDesktop,
+    SubredditContent,
     SubredditPostList,
-    SubredditSidebar,
-    // ChannelTabs,
   },
   setup() {
     const route = ref(useRoute());
@@ -72,7 +83,20 @@ export default defineComponent({
 
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
 
+    const channel = computed(() => {
+      if (getSubredditSidebarError.value || getSubredditPostsError.value) {
+        return null;
+      }
+      return {
+        channelBannerURL: subredditSidebar.value?.bannerImg || "",
+        channelIconURL: subredditSidebar.value?.communityIcon || "",
+        displayName: subredditSidebar.value?.displayName || "",
+        uniqueName: subredditName.value,
+      };
+    });
+
     return {
+      channel,
       getSubredditPostsError,
       getSubredditPostsLoading,
       getSubredditPostsResult,
@@ -99,75 +123,45 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex h-screen w-full justify-center dark:bg-black">
+  <div class="h-screen flex-col justify-center dark:bg-black">
+    <ChannelHeaderMobile
+      v-if="smAndDown && channel"
+      :channel="channel"
+      :channel-id="subredditName"
+      :show-create-button="false"
+    />
     <div
       v-if="smAndDown"
       class="w-full"
     >
-      <div
-        :class="[
-          theme === 'dark' ? 'channel-background-dark' : 'channel-background',
-        ]"
-        class="h-24 w-full object-cover"
-        alt="background pattern"
-      />
-      <div class="flex justify-center">
-        <Avatar
-          class="-mt-24 mb-2 h-24 w-24 border-4 border-white dark:border-gray-800"
-          :alt="subredditName"
-          :src="subredditSidebar?.icon"
-          :is-square="true"
-          :is-large="true"
-        />
-      </div>
       <article
-        class="relative z-0 h-full max-w-7xl flex-1 rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
+        class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
       >
-        <!-- <ChannelTabs
-          v-if="subredditSidebar && smAndDown"
-          :vertical="false"
-          :show-counts="true"
-          class="block w-full border-b border-gray-200 px-6 dark:border-gray-600"
-          :route="route"
-          :channel="channel"
-        /> -->
         <div>
           <router-view />
         </div>
       </article>
     </div>
+
     <article
-      v-else
-      class="relative z-0 h-full max-w-7xl flex-1 focus:outline-none xl:order-last"
+      v-if="!smAndDown && channel"
+      class="w-full"
     >
-      <v-container
-        fluid
-        class="h-full"
+      <ChannelHeaderDesktop
+        v-if="channel"
+        :channel="channel"
+        :channel-id="subredditName"
+        :admin-list="[]"
+        :route="route"
+        :show-create-button="false"
+      />
+      <SubredditContent
+        v-if="channel"
+        :channel-id="subredditName"
+        :channel="channel"
       >
-        <v-row class="h-full flex flex-row">
-          <v-col
-            v-if="subredditSidebar"
-            cols="3"
-          >
-            <SubredditSidebar
-              class="sticky top-0 w-72"
-            >
-              <!-- <ChannelTabs
-                v-if="channel && route.name !== 'EditChannel'"
-                :route="route"
-                :vertical="true"
-                :show-counts="true"
-                :channel="channel"
-              /> -->
-            </SubredditSidebar>
-          </v-col>
-          <v-col :cols="9">
-            <div class="rounded-lg md:ml-16 lg:ml-10 xl:ml-0">
-              <SubredditPostList />
-            </div>
-          </v-col>
-        </v-row>
-      </v-container>
+        <SubredditPostList />
+      </SubredditContent>
     </article>
   </div>
 </template>
