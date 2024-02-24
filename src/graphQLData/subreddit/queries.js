@@ -18,20 +18,23 @@ export const GET_SUBREDDIT_SIDEBAR = gql`
 `;
 
 export const GET_SUBREDDIT_POSTS = gql`
-  query getSubredditPosts($subredditName: String!) {
-    getSubreddit(subredditName: $subredditName) {
-      subreddit
-      title
-      createdUTC
-      author
-      commentCount
-      text
-      permalink
-      thumbnail
-      upvoteCount
-      mediaMetadata
-      url
-      preview
+  query getSubredditPosts($subredditName: String!, $options: RedditPostOptions) {
+    getSubreddit(subredditName: $subredditName, options: $options) {
+      posts {
+        id
+        title
+        createdUTC
+        author
+        commentCount
+        text
+        permalink
+        thumbnail
+        upvoteCount
+        mediaMetadata
+        url
+        preview
+      }
+      after
     }
   }
 `;

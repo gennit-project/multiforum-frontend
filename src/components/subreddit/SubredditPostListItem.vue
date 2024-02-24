@@ -32,7 +32,7 @@ export default defineComponent({
       }
 
       if (props.post.text && props.post.text.length > 1000) {
-        return props.post?.text.slice(0, 1000) + "...";
+        return props.post?.text.slice(0, 250) + "...";
       }
       return props.post.text;
     });
@@ -68,7 +68,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative mt-1 space-y-3 rounded-lg p-4 dark:bg-gray-800 lg:py-4"
+    class="relative mt-1 space-y-3 rounded-lg p-4 dark:bg-gray-800 lg:py-4 lg:px-8"
   >
     <v-row>
       <v-col :cols="12">
@@ -91,7 +91,7 @@ export default defineComponent({
             <MarkdownPreview
               :text="truncatedBody || ''"
               :disable-gallery="false"
-              class="-ml-4"
+              class="-ml-4 px-12 pb-2"
             />
           </div>
           <div
@@ -117,7 +117,8 @@ export default defineComponent({
       </v-col> -->
     </v-row>
     <MediaViewer
-      v-if="post.mediaMetadata || isImageUrl(post.url)"
+      v-if="post.mediaMetadata || isImageUrl(post.url || '')"
+      class="lg:px-12"
       :media-metadata="post.mediaMetadata"
       :image-url="post.url"
     />

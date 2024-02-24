@@ -224,7 +224,7 @@ ul,
 li
 {
   font-size: 0.9rem !important;
-  line-height: 1.3rem !important;
+  line-height: 1.4rem !important;
  
 }
 
