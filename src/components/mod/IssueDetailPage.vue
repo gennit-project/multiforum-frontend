@@ -154,7 +154,11 @@ export default defineComponent({
       createCommentDefaultValues,
     );
 
-    const { mutate: createComment } = useMutation(
+    const { 
+      mutate: createComment, 
+      loading: createCommentLoading,
+      error: createCommentError,
+    } = useMutation(
       ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT,
       {
         update: (cache, { data: { updateIssues } }) => {
@@ -250,6 +254,8 @@ export default defineComponent({
       closeIssue,
       closeOpenButtonText,
       createComment,
+      createCommentError,
+      createCommentLoading,
       createFormValues,
       getIssueResult,
       getIssueError,
@@ -276,14 +282,27 @@ export default defineComponent({
       this.createFormValues.text = text;
     },
     async handleCreateComment() {
-      if (!this.discussionChannel) {
+     if (!this.activeIssue || !this.activeIssue.id) {
         console.warn(
-          "Could not create the comment because there is no discussion channel in the create root comment form",
+          "Could not create the comment because there is no active issue",
         );
         return;
       }
-      this.createCommentLoading = true;
-      this.createComment();
+      if (!this.loggedInUserModName) {
+        console.warn(
+          "Could not create the comment because there is no logged in moderator",
+        );
+        return;
+      }
+      this.createComment({
+        issueId: this.activeIssue.id,
+        commentText: this.createFormValues.text,
+        displayName: this.loggedInUserModName,
+        actionDescription: "commented on the issue",
+        actionType: "comment",
+      });
+       // Reset the form values
+       this.createFormValues.text = "";
     },
     toggleCloseOpenIssue() {
       if (!this.activeIssue || !this.activeIssue.id) {
@@ -299,8 +318,6 @@ export default defineComponent({
         return;
       }
       if (this.createFormValues.text.length > 0) {
-        // Creating comment
-        console.log("Creating comment", this.createFormValues.text);
         this.createComment({
           issueId: this.activeIssue.id,
           commentText: this.createFormValues.text,
@@ -308,6 +325,8 @@ export default defineComponent({
           actionDescription: "commented on the issue",
           actionType: "comment",
         });
+        // Reset the form values
+        this.createFormValues.text = "";
       }
       if (this.activeIssue.isOpen) {
         this.closeIssue();
@@ -352,12 +371,18 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getIssueError.message"
     />
-    <div v-else-if="!getIssueLoading" class="mt-2 flex flex-col gap-2 px-4">
+    <div
+      v-else-if="!getIssueLoading"
+      class="mt-2 flex flex-col gap-2 px-4"
+    >
       <h1 class="text-wrap text-2xl font-bold sm:tracking-tight">
         {{ issue && issue.title ? issue.title : "[Deleted]" }}
       </h1>
       <div class="flex items-center gap-2">
-        <IssueBadge :key="issue.isOpen" :issue="issue" />
+        <IssueBadge
+          :key="issue.isOpen"
+          :issue="issue"
+        />
         <div class="text-sm text-gray-500 dark:text-gray-400">
           {{
             `First reported on ${formatDate(issue.createdAt)} by ${
@@ -371,10 +396,18 @@ export default defineComponent({
         :active-issue="activeIssue"
       />
     </div>
-    <v-row v-if="issue" class="flex justify-center">
+    <v-row
+      v-if="issue"
+      class="flex justify-center"
+    >
       <v-col>
         <div class="space-y-3 px-4">
-          <h2 v-if="activeIssue" class="text-xl font-bold">Activity Feed</h2>
+          <h2
+            v-if="activeIssue"
+            class="text-xl font-bold"
+          >
+            Activity Feed
+          </h2>
 
           <ActivityFeed
             v-if="activeIssue"
@@ -384,8 +417,10 @@ export default defineComponent({
 
           <div class="flex w-full flex-col">
             <TextEditor
+              :key="createFormValues.text === ''"
               :test-id="'texteditor-textarea'"
               :placeholder="'Please be kind'"
+              :initial-value="createFormValues.text"
               @update="updateComment"
             />
             <div class="mt-3 flex justify-end">
@@ -398,10 +433,10 @@ export default defineComponent({
                 :label="'Comment'"
                 :disabled="createFormValues.text.length === 0"
                 :loading="
-                  addIssueActivityFeedItemLoading &&
-                  !addIssueActivityFeedItemError
+                  createCommentLoading &&
+                    !createCommentError
                 "
-                @click.prevent="$emit('handleCreateComment')"
+                @click.prevent="handleCreateComment"
               />
             </div>
           </div>
