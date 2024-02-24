@@ -114,8 +114,8 @@ export default defineComponent({
                 </span>
               </div>
               <div class="min-w-0 flex-1">
-                <div>
-                  <div class="text-sm">
+                <div class="flex align-items gap-2">
+                  <span class="text-sm">
                     <router-link
                       v-if="activityItem.ModerationProfile?.displayName"
                       :to="{
@@ -128,21 +128,25 @@ export default defineComponent({
                     >
                       {{ activityItem.ModerationProfile?.displayName }}
                     </router-link>
-                  </div>
-                  <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-300">
+                  </span>
+                  <span class="text-sm text-gray-500 dark:text-gray-300">
                     Commented
                     {{ `${timeAgo(new Date(activityItem.createdAt))}` }}
-                  </p>
+                  </span>
                 </div>
-                <div class="mt-2 text-sm text-gray-700 dark:text-gray-200">
-                  <p>{{ activityItem.actionDescription }}</p>
+                <div
+                  class="mt-3 border-l-2 border-gray-200 dark:border-gray-500"
+                >
+                  <MarkdownPreview
+                    v-if="
+                      activityItem.actionType === 'comment' &&
+                        activityItem.Comment
+                    "
+                    :text="activityItem.Comment.text || ''"
+                    :word-limit="1000"
+                    :disable-gallery="true"
+                  />
                 </div>
-                <MarkdownPreview
-                  v-if="activityItem.actionType === 'comment' && activityItem.Comment"
-                  :text="activityItem.Comment.text || ''"
-                  :word-limit="1000"
-                  :disable-gallery="true"
-                />
               </div>
             </template>
 
@@ -184,14 +188,17 @@ export default defineComponent({
                   }}</span>
                 </div>
 
-                <MarkdownPreview
-                  v-if="
-                    activityItem.actionType === 'report' && activityItem.Comment
-                  "
-                  :text="activityItem.Comment.text || ''"
-                  :word-limit="1000"
-                  :disable-gallery="true"
-                />
+                <div class="border-l-2 border-gray-200 dark:border-gray-500">
+                  <MarkdownPreview
+                    v-if="
+                      activityItem.actionType === 'report' &&
+                        activityItem.Comment
+                    "
+                    :text="activityItem.Comment.text || ''"
+                    :word-limit="1000"
+                    :disable-gallery="true"
+                  />
+                </div>
               </div>
             </template>
           </div>

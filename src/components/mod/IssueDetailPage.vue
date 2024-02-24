@@ -417,7 +417,7 @@ export default defineComponent({
 
           <div class="flex w-full flex-col">
             <TextEditor
-              :key="createFormValues.text === ''"
+              :key="`${createFormValues.text === ''}`"
               :test-id="'texteditor-textarea'"
               :placeholder="'Please be kind'"
               :initial-value="createFormValues.text"
