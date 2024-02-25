@@ -167,33 +167,35 @@ export default defineComponent({
         `${embeddedImages.length || 1} image${embeddedImages.length === 1 || embeddedImages.length === 0 ? "" : "s"}`
       }}
     </figcaption>
-    <swiper
-      v-if="embeddedImages.length > 0"
-      class="mySwiper"
-      :navigation="true"
-      :modules="modules"
-      :space-between="10"
-      :slides-per-view="Math.min(embeddedImages.length, 3)"
-    >
-      <swiper-slide
-        v-for="(image, index) in embeddedImages"
-        :key="index"
-        class="max-w-sm"
+    <div class="flex justify-center">
+      <swiper
+        v-if="embeddedImages.length > 0"
+        class="mySwiper"
+        :navigation="true"
+        :modules="modules"
+        :space-between="10"
+        :slides-per-view="Math.min(embeddedImages.length, 3)"
       >
-        <img
-          :src="image.src"
-          class="cursor-pointer"
-          @click="handleClick"
+        <swiper-slide
+          v-for="(image, index) in embeddedImages"
+          :key="index"
+          class="max-w-sm"
         >
-      </swiper-slide>
-    </swiper>
+          <img
+            :src="image.src"
+            class="cursor-pointer"
+            @click="handleClick"
+          >
+        </swiper-slide>
+      </swiper>
 
-    <img
-      v-else-if="imageUrl && imageUrl.match(/\.(jpeg|jpg|gif|png)$/)"
-      :src="imageUrl"
-      class="cursor-pointer max-w-sm"
-      @click="handleClickSingleImage"
-    >
+      <img
+        v-else-if="imageUrl && imageUrl.match(/\.(jpeg|jpg|gif|png)$/)"
+        :src="imageUrl"
+        class="max-w-sm cursor-pointer"
+        @click="handleClickSingleImage"
+      >
+    </div>
   </div>
 </template>
 <style lang="scss">
