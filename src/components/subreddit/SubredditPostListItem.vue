@@ -62,6 +62,10 @@ export default defineComponent({
     isImageUrl(url: string) {
       return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
     },
+    hasImages() {
+      console.log('media', Object.keys(this.post.media.mediaMetadata))
+      return this.post.media && Object.keys(this.post.media.mediaMetadata).length > 0;
+    },
   }
 });
 </script>
@@ -118,7 +122,7 @@ export default defineComponent({
       </v-col> -->
     </v-row>
     <MediaViewer
-      v-if="post.media?.mediaMetadata || isImageUrl(post.url || '')"
+      v-if="hasImages() || isImageUrl(post.url || '')"
       :media-metadata="post.media.mediaMetadata"
       :image-url="post.url"
     />
