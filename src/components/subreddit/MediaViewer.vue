@@ -68,20 +68,6 @@ export default defineComponent({
       }
     }
 
-    if (props.imageUrl) {
-      // if the URL does not end with an image extension, don't add it to the gallery
-      if (props.imageUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
-        const galleryItem: GalleryItem = {
-          href: props.imageUrl,
-          src: props.imageUrl,
-          thumbnail: props.imageUrl,
-          width: 0,
-          height: 0,
-        };
-        embeddedImages.value.push(galleryItem);
-      }
-    }
-
     // // Define a function to update the dimensions
     const updateImageDimensions = (src: string) => {
       const img = new Image();
@@ -140,13 +126,41 @@ export default defineComponent({
         lightbox.loadAndOpen(clickedIndex);
       }
     },
+    handleClickSingleImage() {
+      const img = new Image();
+      img.onload = () => {
+        // Image is now fully loaded; perform aspect ratio calculation
+        const { width, height } = calculateAspectRatioFit(
+          img.width,
+          img.height,
+          window.innerWidth,
+          window.innerHeight,
+        );
+
+        const lightbox = setGallery({
+          dataSource: [
+            {
+              href: this.imageUrl,
+              src: this.imageUrl,
+              thumbnail: this.imageUrl,
+              width,
+              height,
+            },
+          ],
+          wheelToZoom: true,
+        });
+
+        lightbox.loadAndOpen(0);
+      };
+      img.src = this.imageUrl; // This starts the image loading process
+    },
   },
 });
 </script>
 
 <template>
   <div
-    class="overflow-x-auto  rounded-lg border bg-black p-4 dark:border-gray-600"
+    class="overflow-x-auto rounded-lg border bg-black p-4 dark:border-gray-600"
   >
     <figcaption class="mb-2 text-sm text-gray-200">
       {{
@@ -161,14 +175,25 @@ export default defineComponent({
       :space-between="10"
       :slides-per-view="Math.min(embeddedImages.length, 3)"
     >
-      <swiper-slide v-for="(image, index) in embeddedImages" :key="index" class="max-w-lg">
+      <swiper-slide
+        v-for="(image, index) in embeddedImages"
+        :key="index"
+        class="max-w-md"
+      >
         <img
           :src="image.src"
           class="cursor-pointer"
           @click="handleClick"
-        />
+        >
       </swiper-slide>
     </swiper>
+
+    <img
+      v-else-if="imageUrl && imageUrl.match(/\.(jpeg|jpg|gif|png)$/)"
+      :src="imageUrl"
+      class="cursor-pointer max-w-md"
+      @click="handleClickSingleImage"
+    >
   </div>
 </template>
 <style lang="scss">
