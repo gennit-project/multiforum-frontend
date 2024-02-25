@@ -128,26 +128,16 @@ export default defineComponent({
 
       lightbox.loadAndOpen(0);
     },
-    onSwiper(swiper: any) {
-      console.log(swiper);
-    },
-    onSlideChange(swiper: any) {
-      console.log(swiper);
-    },
   },
 });
 </script>
 
 <template>
   <div class="w-full">
-    
     <swiper
       v-if="embeddedImages.length > 0"
       :slides-per-view="Math.min(embeddedImages.length, 3)"
-      :space-between="50"
-      navigation
-      @swiper="onSwiper"
-      @slideChange="onSlideChange"
+      :space-between="10"
     >
       <swiper-slide v-for="(image, index) in embeddedImages" :key="index">
         <img
@@ -162,8 +152,6 @@ export default defineComponent({
       v-else-if="imageUrl"
       :slides-per-view="1"
       :space-between="50"
-      @swiper="onSwiper"
-      @slideChange="onSlideChange"
     >
       <swiper-slide>
         <img
