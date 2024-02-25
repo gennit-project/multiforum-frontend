@@ -57,6 +57,8 @@ export default defineComponent({
       });
     };
 
+    console.log('posts',postResult.value?.getSubreddit.posts)
+
     return {
       subredditName,
       postResult,

@@ -68,6 +68,20 @@ export default defineComponent({
       }
     }
 
+    if (props.imageUrl) {
+      // if the URL does not end with an image extension, don't add it to the gallery
+      if (props.imageUrl.match(/\.(jpeg|jpg|gif|png)$/)) {
+        const galleryItem: GalleryItem = {
+          href: props.imageUrl,
+          src: props.imageUrl,
+          thumbnail: props.imageUrl,
+          width: 0,
+          height: 0,
+        };
+        embeddedImages.value.push(galleryItem);
+      }
+    }
+
     // // Define a function to update the dimensions
     const updateImageDimensions = (src: string) => {
       const img = new Image();
@@ -131,8 +145,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full overflow-x-auto rounded border p-2 dark:border-gray-600">
-    <figcaption class="mb-2 text-sm text-gray-500 dark:text-gray-400">
+  <div
+    class="overflow-x-auto  rounded-lg border bg-black p-4 dark:border-gray-600"
+  >
+    <figcaption class="mb-2 text-sm text-gray-200">
       {{
         `${embeddedImages.length || 1} image${embeddedImages.length === 1 || embeddedImages.length === 0 ? "" : "s"}`
       }}
@@ -145,29 +161,12 @@ export default defineComponent({
       :space-between="10"
       :slides-per-view="Math.min(embeddedImages.length, 3)"
     >
-      <swiper-slide
-        v-for="(image, index) in embeddedImages"
-        :key="index"
-      >
+      <swiper-slide v-for="(image, index) in embeddedImages" :key="index" class="max-w-lg">
         <img
           :src="image.src"
-          cover
-          class="max-h-72 cursor-pointer"
+          class="cursor-pointer"
           @click="handleClick"
-        >
-      </swiper-slide>
-    </swiper>
-    <swiper
-      v-else-if="imageUrl"
-      :slides-per-view="1"
-    >
-      <swiper-slide>
-        <img
-          class="cursor-pointer max-h-72"
-          cover
-          :src="imageUrl"
-          @click="handleClick"
-        >
+        />
       </swiper-slide>
     </swiper>
   </div>
