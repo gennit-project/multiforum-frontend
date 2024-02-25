@@ -71,8 +71,8 @@ export default defineComponent({
     class="relative mt-1 space-y-3 rounded-lg p-4 dark:bg-gray-800 lg:py-4 lg:px-8"
   >
     <v-row>
-      <v-col :cols="12">
-        <div class="flex-col gap-2">
+      <v-col :cols="12" class="flex-col">
+        <div class="flex-col  dark:divide-gray-600">
           <a
             :href="detailLink"
             target="_blank"
@@ -84,18 +84,9 @@ export default defineComponent({
               {{ title }}
             </span>
           </a>
+          
           <div
-            v-if="truncatedBody"
-            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700"
-          >
-            <MarkdownPreview
-              :text="truncatedBody || ''"
-              :disable-gallery="false"
-              class="-ml-4 px-12 pb-2"
-            />
-          </div>
-          <div
-            class="font-medium mt-2 text-xs no-underline"
+            class="font-medium mt-2 border-b pb-2 text-xs no-underline"
           >
             <span class="mr-1"> {{ `Posted ${timeAgo} by` }}</span>
             <a
@@ -104,6 +95,16 @@ export default defineComponent({
               target="_blank"
             >{{ authorUsername }}
             </a>
+          </div>
+          <div
+            v-if="truncatedBody"
+            class="my-2 border-l-2 border-gray-400 dark:bg-gray-700"
+          >
+            <MarkdownPreview
+              :text="truncatedBody || ''"
+              :disable-gallery="false"
+              class="-ml-4 px-4 py-2 pb-2"
+            />
           </div>
         </div>
       </v-col>
@@ -117,9 +118,8 @@ export default defineComponent({
       </v-col> -->
     </v-row>
     <MediaViewer
-      v-if="post.mediaMetadata || isImageUrl(post.url || '')"
-      class="lg:px-12"
-      :media-metadata="post.mediaMetadata"
+      v-if="post.media?.mediaMetadata || isImageUrl(post.url || '')"
+      :media-metadata="post.media.mediaMetadata"
       :image-url="post.url"
     />
     <div class="mt-2 flex items-center justify-start gap-6">

@@ -2,7 +2,8 @@
 import { defineComponent } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import { ref } from "vue";
-
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
 
 type GalleryItem = {
   href: string;
@@ -23,7 +24,10 @@ function calculateAspectRatioFit(
 }
 
 export default defineComponent({
-
+  components: {
+    Swiper,
+    SwiperSlide,
+  },
   props: {
     mediaMetadata: {
       type: Object,
@@ -116,39 +120,72 @@ export default defineComponent({
         lightbox.loadAndOpen(clickedIndex);
       }
     },
+    handleClickOpenGallery() {
+      const lightbox = setGallery({
+        dataSource: this.embeddedImages,
+        wheelToZoom: true,
+      });
+
+      lightbox.loadAndOpen(0);
+    },
+    onSwiper(swiper: any) {
+      console.log(swiper);
+    },
+    onSlideChange(swiper: any) {
+      console.log(swiper);
+    },
   },
 });
 </script>
 
 <template>
   <div class="w-full">
-    <v-carousel
-      v-if="embeddedImages.length > 0"
-      class="cursor-pointer"
-    >
-      <v-carousel-item
-        v-for="(image, index) in embeddedImages"
-        :key="index"
-        :src="image.src"
-        cover
-        @click="handleClick"
-      />
-    </v-carousel>
     
-    <img 
-      v-else-if="imageUrl" 
-      class="cursor-pointer"
-      :src="imageUrl" 
-      cover 
-      @click="handleClick" 
+    <swiper
+      v-if="embeddedImages.length > 0"
+      :slides-per-view="Math.min(embeddedImages.length, 3)"
+      :space-between="50"
+      navigation
+      @swiper="onSwiper"
+      @slideChange="onSlideChange"
     >
+      <swiper-slide v-for="(image, index) in embeddedImages" :key="index">
+        <img
+          :src="image.src"
+          cover
+          class="cursor-pointer"
+          @click="handleClick"
+        />
+      </swiper-slide>
+    </swiper>
+    <swiper
+      v-else-if="imageUrl"
+      :slides-per-view="1"
+      :space-between="50"
+      @swiper="onSwiper"
+      @slideChange="onSlideChange"
+    >
+      <swiper-slide>
+        <img
+          class="cursor-pointer"
+          :src="imageUrl"
+          cover
+          @click="handleClick"
+        />
+      </swiper-slide>
+    </swiper>
+
+    <button v-if="embeddedImages.length > 0" @click="handleClickOpenGallery">
+      {{ `View ${embeddedImages.length} images in gallery` }}
+      <i class="fas fa-images"></i>
+    </button>
   </div>
 </template>
 <style lang="scss">
 .github-markdown-body img {
   cursor: pointer !important;
 }
-.v-btn  {
+.v-btn {
   color: white !important;
   background-color: black !important;
   opacity: 0.6 !important;

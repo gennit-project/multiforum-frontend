@@ -27,10 +27,12 @@ export const GET_SUBREDDIT_POSTS = gql`
         author
         commentCount
         text
+        media
+        flair
+        numCrossposts
         permalink
         thumbnail
         upvoteCount
-        mediaMetadata
         url
         preview
       }
