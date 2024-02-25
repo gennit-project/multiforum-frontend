@@ -2,8 +2,13 @@
 import { defineComponent } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import { ref } from "vue";
+import "swiper/css/bundle";
 import { Swiper, SwiperSlide } from "swiper/vue";
+import { Navigation } from "swiper/modules";
 import "swiper/css";
+
+import "swiper/css/navigation";
+import "./style.css";
 
 type GalleryItem = {
   href: string;
@@ -96,6 +101,7 @@ export default defineComponent({
     return {
       embeddedImages,
       updateImageDimensions,
+      modules: [Navigation],
     };
   },
   methods: {
@@ -120,27 +126,24 @@ export default defineComponent({
         lightbox.loadAndOpen(clickedIndex);
       }
     },
-    handleClickOpenGallery() {
-      const lightbox = setGallery({
-        dataSource: this.embeddedImages,
-        wheelToZoom: true,
-      });
-
-      lightbox.loadAndOpen(0);
-    },
   },
 });
 </script>
 
 <template>
-  <div class="w-full rounded border p-2 dark:border-gray-600">
+  <div class="w-full overflow-x-auto rounded border p-2 dark:border-gray-600">
     <figcaption class="mb-2 text-sm text-gray-500 dark:text-gray-400">
-      Images
+      {{
+        `${embeddedImages.length || 1} image${embeddedImages.length === 1 || embeddedImages.length === 0 ? "" : "s"}`
+      }}
     </figcaption>
     <swiper
       v-if="embeddedImages.length > 0"
-      :slides-per-view="Math.min(embeddedImages.length, 3)"
+      class="mySwiper"
+      :navigation="true"
+      :modules="modules"
       :space-between="10"
+      :slides-per-view="Math.min(embeddedImages.length, 3)"
     >
       <swiper-slide
         v-for="(image, index) in embeddedImages"
@@ -149,7 +152,7 @@ export default defineComponent({
         <img
           :src="image.src"
           cover
-          class="h-72 cursor-pointer"
+          class="max-h-72 cursor-pointer"
           @click="handleClick"
         >
       </swiper-slide>
@@ -157,27 +160,16 @@ export default defineComponent({
     <swiper
       v-else-if="imageUrl"
       :slides-per-view="1"
-      :space-between="50"
     >
       <swiper-slide>
         <img
-          class="h-56 cursor-pointer"
-          :src="imageUrl"
+          class="cursor-pointer max-h-72"
           cover
+          :src="imageUrl"
           @click="handleClick"
         >
       </swiper-slide>
     </swiper>
-
-    <button
-      class="v-btn mt-2 w-full p-2 text-center"
-      @click="handleClickOpenGallery"
-    >
-      {{
-        `View ${embeddedImages.length > 0 ? embeddedImages.length : 1} image${embeddedImages.length === 1 || embeddedImages.length === 0 ? "" : "s"} in gallery`
-      }}
-      <i class="fas fa-images" />
-    </button>
   </div>
 </template>
 <style lang="scss">

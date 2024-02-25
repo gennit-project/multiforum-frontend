@@ -1,7 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { Issue } from "@/__generated__/graphql";
-import CheckIcon from "@/components/icons/CheckIcon.vue";
 
 export default defineComponent({
   props: {
@@ -9,9 +8,6 @@ export default defineComponent({
       type: Object as () => Issue,
       required: true,
     },
-  },
-  components: {
-    CheckIcon,
   },
   setup(props) {
     return {
