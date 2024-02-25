@@ -82,7 +82,7 @@ export default defineComponent({
       v-if="createCommentError"
       :text="createCommentError && createCommentError.message"
     />
-    <div class="min-h-36 flex gap-2">
+    <div class="flex gap-2">
       <Avatar
         v-if="username"
         class="h-5 w-5"
