@@ -77,7 +77,10 @@ export default defineComponent({
 
 <template>
   <li
-    :class="[!compact ? 'rounded-lg p-4' : 'p-2']"
+    :class="[
+      !compact ? 'rounded-lg p-4' : 'p-2',
+      post.stickied ? 'border border-2 border-blue-500 dark:border-blue-600' : '',
+    ]"
     class="relative mt-1 space-y-3 bg-white dark:bg-gray-800 lg:px-8 lg:py-4"
   >
     <v-row>
@@ -85,6 +88,13 @@ export default defineComponent({
         :cols="12"
         class="flex-col"
       >
+        <div class="mb-2 text-xs text-gray-500 dark:text-gray-300">
+          <i
+            v-if="post.stickied"
+            class="fa-solid fa-thumbtack text-blue-500 dark:text-blue-600"
+          />
+          {{ post.stickied ? "Pinned by moderators" : "" }}
+        </div>
         <div class="flex-col dark:divide-gray-600">
           <a
             :href="detailLink"
@@ -98,10 +108,11 @@ export default defineComponent({
             </span>
           </a>
 
-          <div class="font-medium mt-2 border-b pb-2 text-xs no-underline">
-            <span class="mr-1"> {{ `Posted ${timeAgo} by` }}</span>
+          <div class="mt-2 border-b pb-2 no-underline">
+            <span class="mr-1 text-xs text-gray-500 dark:text-gray-300">
+              {{ `Posted ${timeAgo} by` }}</span>
             <a
-              class="cursor-pointer underline"
+              class="cursor-pointer text-xs underline hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400 hover:dark:text-gray-300"
               :href="usernameLink"
               target="_blank"
             >{{ authorUsername }}

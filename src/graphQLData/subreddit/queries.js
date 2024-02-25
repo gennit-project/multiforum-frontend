@@ -35,6 +35,7 @@ export const GET_SUBREDDIT_POSTS = gql`
         upvoteCount
         url
         preview
+        stickied
       }
       after
     }
