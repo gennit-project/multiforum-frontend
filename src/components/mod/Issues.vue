@@ -101,7 +101,7 @@ export default defineComponent({
           'text-gray-500 dark:text-gray-400': $route.name === 'OpenIssues',
         }"
       >
-        <i class="fa-solid fa-check" /> {{ closedCount }} Closed
+        <i class="fa-regular fa-circle-check" /> {{ closedCount }} Closed
       </router-link>
     </div>
     <router-view />

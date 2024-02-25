@@ -32,7 +32,7 @@ export default defineComponent({
     v-else
     class="flex flex-row items-center gap-2 space-y-4 rounded-full bg-purple-500 py-1 pl-2 pr-3 text-white"
   >
-    <CheckIcon class="h-4 w-4" /> Closed
+    <i class="fa-regular fa-circle-check h-4 w-4 pl-1 mr-1" /> Closed
   </div>
 </template>
 
