@@ -133,7 +133,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full">
+  <div class="w-full border p-2 rounded dark:border-gray-600">
+    <figcaption class="text-sm mb-2 text-gray-500 dark:text-gray-400">
+      Images
+    </figcaption>
     <swiper
       v-if="embeddedImages.length > 0"
       :slides-per-view="Math.min(embeddedImages.length, 3)"
@@ -143,7 +146,7 @@ export default defineComponent({
         <img
           :src="image.src"
           cover
-          class="cursor-pointer"
+          class="cursor-pointer h-72"
           @click="handleClick"
         />
       </swiper-slide>
@@ -155,7 +158,7 @@ export default defineComponent({
     >
       <swiper-slide>
         <img
-          class="cursor-pointer"
+          class="cursor-pointer h-56"
           :src="imageUrl"
           cover
           @click="handleClick"
@@ -163,7 +166,11 @@ export default defineComponent({
       </swiper-slide>
     </swiper>
 
-    <button v-if="embeddedImages.length > 0" @click="handleClickOpenGallery">
+    <button
+       v-if="embeddedImages.length > 0" 
+        class="v-btn p-2 mt-2 w-full text-center"
+       @click="handleClickOpenGallery"
+    >
       {{ `View ${embeddedImages.length} images in gallery` }}
       <i class="fas fa-images"></i>
     </button>
