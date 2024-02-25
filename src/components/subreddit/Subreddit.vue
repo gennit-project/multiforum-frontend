@@ -134,13 +134,13 @@ export default defineComponent({
       v-if="smAndDown"
       class="w-full"
     >
-      <article
-        class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
+      <SubredditContent
+        v-if="channel"
+        :channel-id="subredditName"
+        :channel="channel"
       >
-        <div>
-          <router-view />
-        </div>
-      </article>
+        <SubredditPostList :compact="true" />
+      </SubredditContent>
     </div>
 
     <article

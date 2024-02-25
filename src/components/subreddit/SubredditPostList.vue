@@ -14,6 +14,12 @@ export default defineComponent({
     SubredditPostListItem,
   },
   inheritAttrs: false,
+  props: {
+    compact: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
     const route = useRoute();
     const subredditName = computed(() => route.params.subredditName as string || "");
@@ -87,11 +93,13 @@ export default defineComponent({
     <div v-else>
       <ul
         role="list"
-        class="relative flex flex-col gap-1 rounded"
+        :class="compact ? 'grid grid-cols-1' : 'rounded'"
+        class="relative flex flex-col"
       >
         <SubredditPostListItem
           v-for="post in postResult.getSubreddit.posts"
           :key="post.id"
+          :compact="compact"
           :post="post"
         />
       </ul>

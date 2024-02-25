@@ -14,6 +14,10 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
+    compact: {
+      type: Boolean,
+      default: false,
+    },
     post: {
       type: Object as () => RedditSubmission,
       required: true,
@@ -63,37 +67,38 @@ export default defineComponent({
       return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
     },
     hasImages() {
-      return this.post.media && Object.keys(this.post.media.mediaMetadata).length > 0;
+      return (
+        this.post.media && Object.keys(this.post.media.mediaMetadata).length > 0
+      );
     },
-  }
+  },
 });
 </script>
 
 <template>
   <li
-    class="relative mt-1 space-y-3 rounded-lg p-4 bg-white dark:bg-gray-800 lg:py-4 lg:px-8"
+    :class="[!compact ? 'rounded-lg p-4' : 'p-2']"
+    class="relative mt-1 space-y-3 bg-white dark:bg-gray-800 lg:px-8 lg:py-4"
   >
     <v-row>
       <v-col
         :cols="12"
         class="flex-col"
       >
-        <div class="flex-col  dark:divide-gray-600">
+        <div class="flex-col dark:divide-gray-600">
           <a
             :href="detailLink"
             target="_blank"
             class="hover:text-gray-500"
           >
             <span
-              class="text-lg cursor-pointer font-bold hover:text-gray-500 hover:dark:text-gray-300 dark:text-gray-200 dark:hover:text-gray-300"
+              class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
             >
               {{ title }}
             </span>
           </a>
-          
-          <div
-            class="font-medium mt-2 border-b pb-2 text-xs no-underline"
-          >
+
+          <div class="font-medium mt-2 border-b pb-2 text-xs no-underline">
             <span class="mr-1"> {{ `Posted ${timeAgo} by` }}</span>
             <a
               class="cursor-pointer underline"
@@ -146,5 +151,4 @@ export default defineComponent({
 .highlighted {
   background-color: #f9f95d;
 }
-
 </style>

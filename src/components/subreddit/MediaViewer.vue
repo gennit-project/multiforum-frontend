@@ -178,7 +178,7 @@ export default defineComponent({
       <swiper-slide
         v-for="(image, index) in embeddedImages"
         :key="index"
-        class="max-w-md"
+        class="max-w-sm"
       >
         <img
           :src="image.src"
@@ -191,7 +191,7 @@ export default defineComponent({
     <img
       v-else-if="imageUrl && imageUrl.match(/\.(jpeg|jpg|gif|png)$/)"
       :src="imageUrl"
-      class="cursor-pointer max-w-md"
+      class="cursor-pointer max-w-sm"
       @click="handleClickSingleImage"
     >
   </div>

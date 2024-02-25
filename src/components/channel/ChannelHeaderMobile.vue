@@ -39,7 +39,7 @@ export default defineComponent({
       :alt="'channel banner'"
       :is-medium="true"
       :is-square="true"
-      class="w-full"
+      class="w-full min-h-20"
     />
     <Avatar
       class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"

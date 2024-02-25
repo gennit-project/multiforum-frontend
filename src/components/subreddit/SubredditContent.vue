@@ -21,9 +21,9 @@ export default defineComponent({
     },
   },
   setup() {
-    const { mdAndDown } = useDisplay();
+    const { smAndDown } = useDisplay();
     return {
-      mdAndDown,
+      smAndDown,
     };
   },
 });
@@ -36,14 +36,14 @@ export default defineComponent({
   >
     <v-row class="flex pt-0">
       <v-col
-        :cols="mdAndDown ? 12 : 8" 
+        :cols="smAndDown ? 12 : 8" 
         class="pt-0"
       >
         <slot />
       </v-col>
       <v-col
         v-if="channelId"
-        :cols="mdAndDown ? 12 : 4"
+        :cols="smAndDown ? 12 : 4"
       >
         <SubredditSidebar class="sticky top-0 w-72" />
       </v-col>
