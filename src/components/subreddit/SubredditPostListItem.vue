@@ -63,7 +63,6 @@ export default defineComponent({
       return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
     },
     hasImages() {
-      console.log('media', Object.keys(this.post.media.mediaMetadata))
       return this.post.media && Object.keys(this.post.media.mediaMetadata).length > 0;
     },
   }
@@ -75,7 +74,10 @@ export default defineComponent({
     class="relative mt-1 space-y-3 rounded-lg p-4 bg-white dark:bg-gray-800 lg:py-4 lg:px-8"
   >
     <v-row>
-      <v-col :cols="12" class="flex-col">
+      <v-col
+        :cols="12"
+        class="flex-col"
+      >
         <div class="flex-col  dark:divide-gray-600">
           <a
             :href="detailLink"

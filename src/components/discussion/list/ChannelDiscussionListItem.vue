@@ -205,59 +205,25 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative flex">
-    <div
-      class="flex w-full flex-row justify-start gap-4 rounded-lg  p-2"
-    >
-      <DiscussionVotes
-        v-if="discussionChannel"
-        :discussion="discussion"
-        :discussion-channel="discussionChannel"
-        :show-downvote="false"
-      />
-
+  <li class="relative flex bg-white dark:bg-gray-700 rounded-lg p-2 my-1">
+    <div class="flex w-full flex-row justify-start gap-4 rounded-lg p-2">
       <div
         v-if="discussion"
-        class="w-full flex-col gap-1"
+        class="w-full flex-col gap-2"
       >
         <router-link
           :to="{ path: detailLink, query: filteredQuery }"
           class="w-full"
         >
-          <p
+          <span
             class="cursor-pointer text-lg font-bold hover:text-gray-500 dark:text-gray-100"
           >
             <HighlightedSearchTerms
               :text="title"
               :search-input="searchInput"
             />
-          </p>
-          <div
-            v-if="truncatedBody"
-            class="my-2 max-h-72 overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
-          >
-            <router-link :to="{ path: detailLink, query: filteredQuery }">
-              <MarkdownPreview
-                :text="truncatedBody || ''"
-                :disable-gallery="true"
-                class="-ml-4"
-              />
-            </router-link>
-          </div>
+          </span>
         </router-link>
-
-        <div
-          class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
-        >
-          <Tag
-            v-for="tag in tags"
-            :key="tag"
-            class="my-1"
-            :active="selectedTags.includes(tag)"
-            :tag="tag"
-            @click="$emit('filterByTag', tag)"
-          />
-        </div>
         <p
           class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
         >
@@ -273,17 +239,51 @@ export default defineComponent({
             :account-created="authorAccountCreated"
           />
         </p>
+        <hr class="dark:border-gray-600 mt-2">
 
-        <div class="mt-2 flex items-center justify-start gap-6">
-          <router-link
-            :to="{ path: detailLink, query: filteredQuery }"
-            class="rounded-md bg-gray-100 px-4 p-1 dark:bg-gray-600"
-          >
-            <i class="fa-regular fa-comment h-5 w-5" />
-            <span class="text-xs">{{
-              `${commentCount} comment${commentCount === 1 ? "" : "s"}`
-            }}</span>
+        <div
+          v-if="truncatedBody"
+          class="my-2 max-h-72 overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
+        >
+          <router-link :to="{ path: detailLink, query: filteredQuery }">
+            <MarkdownPreview
+              :text="truncatedBody || ''"
+              :disable-gallery="true"
+              class="-ml-4"
+            />
           </router-link>
+        </div>
+        <div
+          class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
+        >
+          <Tag
+            v-for="tag in tags"
+            :key="tag"
+            class="my-1"
+            :active="selectedTags.includes(tag)"
+            :tag="tag"
+            @click="$emit('filterByTag', tag)"
+          />
+        </div>
+        <div class="flex items-center">
+          <DiscussionVotes
+            v-if="discussionChannel"
+            :discussion="discussion"
+            :discussion-channel="discussionChannel"
+            :show-downvote="false"
+          />
+
+          <div class="flex items-center justify-start gap-6">
+            <router-link
+              :to="{ path: detailLink, query: filteredQuery }"
+              class="rounded-md p-1 px-4 underline"
+            >
+              <i class="fa-regular fa-comment h-5 w-5" />
+              <span class="text-xs">{{
+                `${commentCount} comment${commentCount === 1 ? "" : "s"}`
+              }}</span>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>

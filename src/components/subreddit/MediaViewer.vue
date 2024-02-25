@@ -133,8 +133,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="w-full border p-2 rounded dark:border-gray-600">
-    <figcaption class="text-sm mb-2 text-gray-500 dark:text-gray-400">
+  <div class="w-full rounded border p-2 dark:border-gray-600">
+    <figcaption class="mb-2 text-sm text-gray-500 dark:text-gray-400">
       Images
     </figcaption>
     <swiper
@@ -142,13 +142,16 @@ export default defineComponent({
       :slides-per-view="Math.min(embeddedImages.length, 3)"
       :space-between="10"
     >
-      <swiper-slide v-for="(image, index) in embeddedImages" :key="index">
+      <swiper-slide
+        v-for="(image, index) in embeddedImages"
+        :key="index"
+      >
         <img
           :src="image.src"
           cover
-          class="cursor-pointer h-72"
+          class="h-72 cursor-pointer"
           @click="handleClick"
-        />
+        >
       </swiper-slide>
     </swiper>
     <swiper
@@ -158,21 +161,22 @@ export default defineComponent({
     >
       <swiper-slide>
         <img
-          class="cursor-pointer h-56"
+          class="h-56 cursor-pointer"
           :src="imageUrl"
           cover
           @click="handleClick"
-        />
+        >
       </swiper-slide>
     </swiper>
 
     <button
-       v-if="embeddedImages.length > 0" 
-        class="v-btn p-2 mt-2 w-full text-center"
-       @click="handleClickOpenGallery"
+      class="v-btn mt-2 w-full p-2 text-center"
+      @click="handleClickOpenGallery"
     >
-      {{ `View ${embeddedImages.length} images in gallery` }}
-      <i class="fas fa-images"></i>
+      {{
+        `View ${embeddedImages.length > 0 ? embeddedImages.length : 1} image${embeddedImages.length === 1 || embeddedImages.length === 0 ? "" : "s"} in gallery`
+      }}
+      <i class="fas fa-images" />
     </button>
   </div>
 </template>

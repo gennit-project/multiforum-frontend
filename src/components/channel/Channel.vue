@@ -146,7 +146,7 @@ export default defineComponent({
       class="w-full"
     >
       <article
-        class="relative z-0 h-full max-w-7xl rounded-lg bg-white focus:outline-none dark:bg-black xl:order-last"
+        class="relative z-0 h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
           v-if="channel && smAndDown"

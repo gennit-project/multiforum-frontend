@@ -43,7 +43,7 @@ export default defineComponent({
           );
         } else {
           classArray.push(
-            "border-b-2 dark:text-gray-200 dark:border-blue-500 dark:text-gray-200",
+            "border-b-2 dark:text-gray-400 dark:border-blue-500 dark:text-gray-400",
           );
         }
       } else {
@@ -71,7 +71,7 @@ export default defineComponent({
 <template>
   <router-link
     :to="to"
-    class="border-transparent link font-medium group inline-flex items-center gap-1 hover:text-gray-600 dark:text-gray-200"
+    class="border-transparent link font-medium group inline-flex items-center gap-1 hover:text-gray-600 dark:text-gray-400"
     :class="classes"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"
