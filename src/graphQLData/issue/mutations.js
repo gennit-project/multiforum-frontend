@@ -16,15 +16,6 @@ export const REPORT_DISCUSSION = gql`
         Channel {
           uniqueName
         }
-        Comments {
-          id
-          text
-          CommentAuthor {
-            ... on ModerationProfile {
-              displayName
-            }
-          }
-        }
       }
     }
   }

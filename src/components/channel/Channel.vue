@@ -100,6 +100,10 @@ export default defineComponent({
         return true;
       }
 
+      if (route.value.name === "ClosedIssues") {
+        return true;
+      }
+
       if (route.value.name === "About") {
         return true;
       }

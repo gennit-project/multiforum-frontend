@@ -8,8 +8,9 @@ import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { useRoute } from "vue-router";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { IssueCreateInput } from "@/__generated__/graphql";
-import { CHECK_ISSUE_EXISTENCE } from "@/graphQLData/issue/queries";
+import { CHECK_ISSUE_EXISTENCE, GET_ISSUES_BY_CHANNEL } from "@/graphQLData/issue/queries";
 import { ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT } from "@/graphQLData/issue/mutations";
+import { COUNT_OPEN_ISSUES } from "@/graphQLData/mod/queries";
 
 export default defineComponent({
   name: "ReportDiscussionModal",
@@ -73,7 +74,11 @@ export default defineComponent({
       mutate: addIssueActivityFeedItem,
       loading: addIssueActivityFeedItemLoading,
       onDone: addIssueActivityFeedItemDone,
-    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT);
+    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT, {
+      update: (cache: any, result: any) => {
+        
+      },
+    });
 
     addIssueActivityFeedItemDone(() => {
       emit("reportSubmittedSuccessfully");
@@ -92,7 +97,72 @@ export default defineComponent({
       loading: reportDiscussionLoading,
       onDone: reportDiscussionDone,
     } = useMutation(REPORT_DISCUSSION, () => ({
-      // update: (cache: any, result: any) => {}
+      update: (cache: any, result: any) => {
+        const resultIssues = result?.data?.createIssues?.issues
+        const activeIssue = resultIssues[0];
+
+         // Also update the result of COUNT_OPEN_ISSUES
+        // to increment the count of open issues
+        const existingOpenIssuesData = cache.readQuery({
+          query: COUNT_OPEN_ISSUES,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingOpenIssuesData &&
+          // @ts-ignore
+          existingOpenIssuesData.issuesAggregate
+        ) {
+          // @ts-ignore
+          const existingOpenIssues = existingOpenIssuesData.issuesAggregate;
+          const newOpenIssues = {
+            count: existingOpenIssues.count + 1,
+          };
+
+          cache.writeQuery({
+            query: COUNT_OPEN_ISSUES,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              issuesAggregate: {
+                ...existingOpenIssues,
+                ...newOpenIssues,
+              }
+            },
+          });
+        }
+
+
+        // Also update the result of GET_ISSUES_BY_CHANNEL
+        // to add this issue to the list of open issues
+        const existingIssuesByChannelData = cache.readQuery({
+          query: GET_ISSUES_BY_CHANNEL,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingIssuesByChannelData &&
+          // @ts-ignore
+          existingIssuesByChannelData.channels
+        ) {
+          // @ts-ignore
+          const existingIssuesByChannel = existingIssuesByChannelData.channels[0];
+          const newIssuesByChannel = {
+            ...existingIssuesByChannel,
+            Issues: [
+              ...existingIssuesByChannel.Issues,
+              activeIssue.value,
+            ],
+          };
+
+          cache.writeQuery({
+            query: GET_ISSUES_BY_CHANNEL,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              channels: [newIssuesByChannel],
+            },
+          });
+        }
+      }
     }));
 
     reportDiscussionDone(() => {

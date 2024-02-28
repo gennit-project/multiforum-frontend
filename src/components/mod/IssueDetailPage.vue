@@ -214,6 +214,38 @@ export default defineComponent({
             },
           });
         }
+
+        // Also update the result of GET_CLOSED_ISSUES_BY_CHANNEL
+        // to add this issue to the list of closed issues
+        const existingClosedIssuesByChannelData = cache.readQuery({
+          query: GET_CLOSED_ISSUES_BY_CHANNEL,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingClosedIssuesByChannelData &&
+          // @ts-ignore
+          existingClosedIssuesByChannelData.channels
+        ) {
+          // @ts-ignore
+          const existingClosedIssuesByChannel =
+            existingClosedIssuesByChannelData.channels[0];
+          const newClosedIssuesByChannel = {
+            ...existingClosedIssuesByChannel,
+            Issues: [
+              ...existingClosedIssuesByChannel.Issues,
+              activeIssue.value,
+            ],
+          };
+
+          cache.writeQuery({
+            query: GET_CLOSED_ISSUES_BY_CHANNEL,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              channels: [newClosedIssuesByChannel],
+            },
+          });
+        }
       },
     }));
 
@@ -344,6 +376,37 @@ export default defineComponent({
             variables: { channelUniqueName: channelId.value },
             data: {
               channels: [newClosedIssuesByChannel],
+            },
+          });
+        }
+
+        // Also update the result of GET_ISSUES_BY_CHANNEL
+        // to add this issue to the list of open issues
+        const existingIssuesByChannelData = cache.readQuery({
+          query: GET_ISSUES_BY_CHANNEL,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingIssuesByChannelData &&
+          // @ts-ignore
+          existingIssuesByChannelData.channels
+        ) {
+          // @ts-ignore
+          const existingIssuesByChannel = existingIssuesByChannelData.channels[0];
+          const newIssuesByChannel = {
+            ...existingIssuesByChannel,
+            Issues: [
+              ...existingIssuesByChannel.Issues,
+              activeIssue.value,
+            ],
+          };
+
+          cache.writeQuery({
+            query: GET_ISSUES_BY_CHANNEL,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              channels: [newIssuesByChannel],
             },
           });
         }

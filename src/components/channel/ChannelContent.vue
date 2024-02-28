@@ -59,7 +59,7 @@ export default defineComponent({
     <v-row class="flex pt-0 ">
       <v-col
         :cols="mdAndDown ? 12 : 8" 
-        class="pt-0 bg-gray-100 rounded-lg"
+        class="bg-gray-100 dark:bg-gray-900 rounded-lg pt-2 mb-2"
       >
         <slot />
       </v-col>

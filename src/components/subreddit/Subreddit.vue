@@ -141,7 +141,7 @@ export default defineComponent({
     />
     <div
       v-if="smAndDown"
-      class="w-full bg-gray-100 flex-col pt-8"
+      class="w-full bg-gray-100  dark:bg-gray-900 flex-col pt-8"
     >
       <SubredditContent
         v-if="channel"
@@ -155,7 +155,7 @@ export default defineComponent({
 
     <article
       v-if="!smAndDown && channel"
-      class="w-full bg-gray-100"
+      class="w-full bg-gray-100 dark:bg-gray-900"
     >
       <ChannelHeaderDesktop
         v-if="channel"
