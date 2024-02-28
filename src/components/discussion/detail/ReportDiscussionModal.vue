@@ -4,6 +4,7 @@ import GenericModal from "@/components/generic/GenericModal.vue";
 import FlagIcon from "@/components/icons/FlagIcon.vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { REPORT_DISCUSSION } from "@/graphQLData/issue/mutations";
+import { REOPEN_ISSUE } from "@/graphQLData/issue/mutations";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { useRoute } from "vue-router";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
@@ -68,17 +69,17 @@ export default defineComponent({
       channelUniqueName: channelId.value,
     }));
 
+    const {
+      mutate: reopenIssue,
+    } = useMutation(REOPEN_ISSUE);
+    
     const reportText = ref("");
 
     const {
       mutate: addIssueActivityFeedItem,
       loading: addIssueActivityFeedItemLoading,
       onDone: addIssueActivityFeedItemDone,
-    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT, {
-      update: (cache: any, result: any) => {
-        
-      },
-    });
+    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT);
 
     addIssueActivityFeedItemDone(() => {
       emit("reportSubmittedSuccessfully");
@@ -89,6 +90,13 @@ export default defineComponent({
         return false;
       }
       return issueExistenceResult.value?.issues[0]?.id;
+    });
+
+    const existingIssueIsOpen = computed(() => {
+      if (issueExistenceLoading.value || issueExistenceError.value) {
+        return false;
+      }
+      return issueExistenceResult.value?.issues[0]?.isOpen;
     });
 
     const {
@@ -176,11 +184,13 @@ export default defineComponent({
       discussionId,
       reportDiscussion,
       loggedInUserModName,
+      reopenIssue,
       reportDiscussionError,
       reportDiscussionLoading,
       reportText,
       channelId,
       existingIssueId,
+      existingIssueIsOpen,
     };
   },
   created() {
@@ -202,6 +212,13 @@ export default defineComponent({
           actionType: "report",
           commentText: this.reportText,
         });
+
+        // If the existing issue is closed, reopen it.
+        if (!this.existingIssueIsOpen) {
+          this.reopenIssue({
+            id: this.existingIssueId,
+          });
+        }
 
         return;
       }

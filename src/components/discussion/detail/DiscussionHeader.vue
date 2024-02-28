@@ -23,6 +23,13 @@ import ReportDiscussionModal from "./ReportDiscussionModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 
+type MenuItem = {
+  label: string;
+  value: string;
+  event: string;
+  icon: string;
+}
+
 export default defineComponent({
   components: {
     EllipsisHorizontal,
@@ -180,17 +187,27 @@ export default defineComponent({
     });
 
     const menuItems = computed(() => {
-      let out = [];
+      let out: MenuItem[] = [];
+
       if (props.discussion) {
-        out.push({
-          label: "Copy Link",
-          value: "",
-          event: "copyLink",
-          icon: ALLOWED_ICONS.COPY_LINK,
-        });
+        out = out.concat([
+          {
+            label: "View Feedback",
+            value: "",
+            event: "handleViewFeedback",
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          },
+          {
+            label: "Copy Link",
+            value: "",
+            event: "copyLink",
+            icon: ALLOWED_ICONS.COPY_LINK,
+          },
+        ]);
       }
 
       if (props.discussion?.Author?.username === username.value) {
+        // If it's your own post, you can edit or delete it.
         out.push({
           label: "Edit",
           value: "",
@@ -204,15 +221,8 @@ export default defineComponent({
           icon: ALLOWED_ICONS.DELETE,
         });
       } else {
-        out = out.concat([
-          {
-            label: "View Feedback",
-            value: "",
-            event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
-          },
-        ]);
-
+        // If it is someone else's post, you can report it 
+        // or give feedback on it.
         if (username.value && loggedInUserModName.value) {
           out = out.concat([
             {
@@ -334,7 +344,8 @@ export default defineComponent({
         @handleViewFeedback="
           router.push(
             `/channels/c/${channelId}/discussions/d/${discussion.id}/modhistory`,
-          )"
+          )
+        "
       >
         <EllipsisHorizontal
           class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -360,10 +371,12 @@ export default defineComponent({
       :discussion-title="discussion?.title"
       @close="showReportDiscussionModal = false"
       @closeReportForm="showReportDiscussionModal = false"
-      @reportSubmittedSuccessfully="() => {
-        showSuccessfullyReported = true
-        showReportDiscussionModal = false
-      }"
+      @reportSubmittedSuccessfully="
+        () => {
+          showSuccessfullyReported = true;
+          showReportDiscussionModal = false;
+        }
+      "
     />
     <ErrorBanner
       v-if="deleteDiscussionError"
