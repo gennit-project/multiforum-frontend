@@ -81,7 +81,7 @@ export default defineComponent({
     >
       <div class="p-6">
         <h1
-          v-if="subredditName"
+          v-if="subredditName && subreddit?.shortDescription"
           class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
         >
           Intro

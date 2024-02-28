@@ -13,13 +13,24 @@ export const GET_SUBREDDIT_SIDEBAR = gql`
       showMediaPreview
       bannerImg
       allowImages
+      linkFlairs {
+        text
+      }
     }
   }
 `;
 
 export const GET_SUBREDDIT_POSTS = gql`
-  query getSubredditPosts($subredditName: String!, $options: RedditPostOptions) {
-    getSubreddit(subredditName: $subredditName, options: $options) {
+  query getSubredditPosts(
+    $subredditName: String!,
+    $options: RedditPostOptions,
+    $flair: String
+  ) {
+    getSubreddit(
+      subredditName: $subredditName, 
+      options: $options
+      flair: $flair
+    ) {
       posts {
         id
         title

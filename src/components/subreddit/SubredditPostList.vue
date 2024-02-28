@@ -24,12 +24,20 @@ export default defineComponent({
     const route = useRoute();
     const subredditName = computed(() => route.params.subredditName as string || "");
     const after = ref(null);
+    const flair = ref(route.query.flair as string || "");
 
-    const { result: postResult, error: postError, loading: postLoading, fetchMore } = useQuery(GET_SUBREDDIT_POSTS, () => ({
+    const { 
+      result: postResult, 
+      error: postError, 
+      loading: postLoading, 
+      fetchMore,
+      refetch
+    } = useQuery(GET_SUBREDDIT_POSTS, () => ({
       subredditName: subredditName.value,
       options: {
         after: after.value,
       },
+      flair: flair.value,
     }));
 
     const reachedEndOfResults = ref(false);
@@ -64,13 +72,30 @@ export default defineComponent({
     };
 
     return {
+      after,
+      flair,
       subredditName,
       postResult,
       postError,
       postLoading,
       loadMore,
       reachedEndOfResults,
+      refetch,
     };
+  },
+  created() {
+    this.$watch("$route.query", () => {
+      if (this.$route.query) {
+        this.flair = this.$route.query?.flair || ""; 
+        this.refetch({
+          subredditName: this.subredditName,
+          options: {
+            after: this.after,
+          },
+          flair: this.$route.query?.flair || "",
+        });
+      }
+    });
   },
 });
 </script>

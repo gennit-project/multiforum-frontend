@@ -74,6 +74,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    showShowMore: {
+      type: Boolean,
+      default: true,
+    },
     text: {
       type: String,
       required: true,
@@ -91,9 +95,12 @@ export default defineComponent({
       return str.trim().split(/\s+/).length;
     };
 
-    const showFullText = ref(countWords(props.text) < props.wordLimit);
+    const showFullText = ref(!props.showShowMore || countWords(props.text) < props.wordLimit);
 
     const shouldShowMoreButton = computed(() => {
+      if (!props.showShowMore) {
+        return false
+      }
       if (!props.text) {
         return false;
       }
@@ -224,12 +231,12 @@ ul,
 li
 {
   font-size: 0.9rem !important;
-  line-height: 1.4rem !important;
  
 }
 
 p {
   margin-bottom: 0.5rem !important;
+  margin-top: 0.7rem !important;
 }
 
 ul {
@@ -243,10 +250,6 @@ li {
 
 /* p within nested list should have no margin */
 
-ul p,
-ol p {
-  margin-bottom: 0 !important;
-  margin-top: 0 !important;
-}
+
 
 </style>

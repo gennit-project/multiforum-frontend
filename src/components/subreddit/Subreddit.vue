@@ -1,5 +1,4 @@
 <script lang="ts">
-// import ChannelTabs from "@/components/channel/ChannelTabs.vue";
 import { useRoute } from "vue-router";
 import { defineComponent, computed, ref } from "vue";
 import { useDisplay } from "vuetify";
@@ -14,6 +13,7 @@ import gql from "graphql-tag";
 import SubredditPostList from "@/components/subreddit/SubredditPostList.vue";
 import ChannelHeaderMobile from "@/components/channel/ChannelHeaderMobile.vue";
 import ChannelHeaderDesktop from "@/components/channel/ChannelHeaderDesktop.vue";
+import FlairList from "@/components/subreddit/FlairList.vue";
 
 // const channel = {
 //         channelBannerURL,
@@ -27,6 +27,7 @@ export default defineComponent({
   components: {
     ChannelHeaderMobile,
     ChannelHeaderDesktop,
+    FlairList,
     SubredditContent,
     SubredditPostList,
   },
@@ -81,6 +82,13 @@ export default defineComponent({
       return sidebar;
     });
 
+    const linkFlairs = computed(() => {
+      if (!subredditSidebar.value) {
+        return [];
+      }
+      return subredditSidebar.value.linkFlairs;
+    });
+
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
 
     const channel = computed(() => {
@@ -101,6 +109,7 @@ export default defineComponent({
       getSubredditPostsLoading,
       getSubredditPostsResult,
       lgAndDown,
+      linkFlairs,
       leftColumnIsExpanded: ref(true),
       mdAndDown,
       lgAndUp,
@@ -132,20 +141,21 @@ export default defineComponent({
     />
     <div
       v-if="smAndDown"
-      class="w-full"
+      class="w-full bg-gray-100 flex-col pt-8"
     >
       <SubredditContent
         v-if="channel"
         :channel-id="subredditName"
         :channel="channel"
       >
+        <FlairList :flairs="linkFlairs" />
         <SubredditPostList :compact="true" />
       </SubredditContent>
     </div>
 
     <article
       v-if="!smAndDown && channel"
-      class="w-full"
+      class="w-full bg-gray-100"
     >
       <ChannelHeaderDesktop
         v-if="channel"
@@ -160,6 +170,7 @@ export default defineComponent({
         :channel-id="subredditName"
         :channel="channel"
       >
+        <FlairList :flairs="linkFlairs" />
         <SubredditPostList />
       </SubredditContent>
     </article>

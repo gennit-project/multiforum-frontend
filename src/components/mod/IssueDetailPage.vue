@@ -2,7 +2,7 @@
 import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
-import { GET_ISSUE } from "@/graphQLData/issue/queries";
+import { GET_CLOSED_ISSUES_BY_CHANNEL, GET_ISSUE, GET_ISSUES_BY_CHANNEL } from "@/graphQLData/issue/queries";
 import { CLOSE_ISSUE, REOPEN_ISSUE } from "@/graphQLData/issue/mutations";
 import { relativeTime } from "@/dateTimeUtils";
 import { Issue } from "@/__generated__/graphql";
@@ -29,6 +29,10 @@ import {
   ADD_ISSUE_ACTIVITY_FEED_ITEM,
   ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT,
 } from "@/graphQLData/issue/mutations";
+import {
+  COUNT_CLOSED_ISSUES,
+  COUNT_OPEN_ISSUES,
+} from "@/graphQLData/mod/queries";
 
 export default defineComponent({
   components: {
@@ -92,9 +96,124 @@ export default defineComponent({
       return "";
     });
 
+    // export const COUNT_OPEN_ISSUES = gql`
+    //   query countOpenIssues(
+    //     $channelUniqueName: String!
+    //   ) {
+    //     issuesAggregate (
+    //       where: {
+    //         channelUniqueName: $channelUniqueName,
+    //         isOpen: true
+    //       }
+    //     ) {
+    //       count
+    //     }
+    //   }
+    //   `;
+
+    //   export const COUNT_CLOSED_ISSUES = gql`
+    //   query countClosedIssues(
+    //     $channelUniqueName: String!
+    //   ) {
+    //     issuesAggregate (
+    //       where: {
+    //         channelUniqueName: $channelUniqueName,
+    //         isOpen: false
+    //       }
+    //     ) {
+    //       count
+    //     }
+    //   }
+    //   `;
+
     const { mutate: closeIssue } = useMutation(CLOSE_ISSUE, () => ({
       variables: {
         id: activeIssueId.value,
+      },
+      update(cache) {
+        // update the result of COUNT_CLOSED_ISSUES
+        // to increment the count of closed issues
+        const existingClosedIssuesData = cache.readQuery({
+          query: COUNT_CLOSED_ISSUES,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingClosedIssuesData &&
+          // @ts-ignore
+          existingClosedIssuesData.issuesAggregate
+        ) {
+          // @ts-ignore
+          const existingClosedIssues = existingClosedIssuesData.issuesAggregate;
+          const newClosedIssues = {
+            count: existingClosedIssues.count + 1,
+          };
+
+          cache.writeQuery({
+            query: COUNT_CLOSED_ISSUES,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              issuesAggregate: newClosedIssues,
+            },
+          });
+        }
+
+        // Also update the result of COUNT_OPEN_ISSUES
+        // to decrement the count of open issues
+        const existingOpenIssuesData = cache.readQuery({
+          query: COUNT_OPEN_ISSUES,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingOpenIssuesData &&
+          // @ts-ignore
+          existingOpenIssuesData.issuesAggregate
+        ) {
+          // @ts-ignore
+          const existingOpenIssues = existingOpenIssuesData.issuesAggregate;
+          const newOpenIssues = {
+            count: existingOpenIssues.count - 1,
+          };
+
+          cache.writeQuery({
+            query: COUNT_OPEN_ISSUES,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              issuesAggregate: newOpenIssues,
+            },
+          });
+        }
+
+        // Also update the result of GET_ISSUES_BY_CHANNEL
+        // to remove this issue from the list of open issues
+        const existingIssuesByChannelData = cache.readQuery({
+          query: GET_ISSUES_BY_CHANNEL,
+          variables: { channelUniqueName: channelId.value },
+        });
+        
+        if (
+          existingIssuesByChannelData &&
+          // @ts-ignore
+          existingIssuesByChannelData.channels
+        ) {
+          // @ts-ignore
+          const existingIssuesByChannel = existingIssuesByChannelData.channels[0];
+          const newIssuesByChannel = {
+            ...existingIssuesByChannel,
+            Issues: existingIssuesByChannel.Issues.filter(
+              (issue: Issue) => issue.id !== activeIssueId.value,
+            ),
+          };
+
+          cache.writeQuery({
+            query: GET_ISSUES_BY_CHANNEL,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              channels: [newIssuesByChannel],
+            },
+          });
+        }
       },
     }));
 
@@ -142,6 +261,93 @@ export default defineComponent({
       variables: {
         id: activeIssueId.value,
       },
+      update(cache) {
+        // update the result of COUNT_CLOSED_ISSUES
+        // to decrement the count of closed issues
+        const existingClosedIssuesData = cache.readQuery({
+          query: COUNT_CLOSED_ISSUES,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingClosedIssuesData &&
+          // @ts-ignore
+          existingClosedIssuesData.issuesAggregate
+        ) {
+          // @ts-ignore
+          const existingClosedIssues = existingClosedIssuesData.issuesAggregate;
+          const newClosedIssues = {
+            count: existingClosedIssues.count - 1,
+          };
+
+          cache.writeQuery({
+            query: COUNT_CLOSED_ISSUES,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              issuesAggregate: newClosedIssues,
+            },
+          });
+        }
+
+        // Also update the result of COUNT_OPEN_ISSUES
+        // to increment the count of open issues
+        const existingOpenIssuesData = cache.readQuery({
+          query: COUNT_OPEN_ISSUES,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingOpenIssuesData &&
+          // @ts-ignore
+          existingOpenIssuesData.issuesAggregate
+        ) {
+          // @ts-ignore
+          const existingOpenIssues = existingOpenIssuesData.issuesAggregate;
+          const newOpenIssues = {
+            count: existingOpenIssues.count + 1,
+          };
+
+          cache.writeQuery({
+            query: COUNT_OPEN_ISSUES,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              issuesAggregate: newOpenIssues,
+            },
+          });
+        }
+
+        // Also update the result of GET_CLOSED_ISSUES_BY_CHANNEL
+        // so that the newly reopened issue is removed from the list
+        // of closed issues.
+        const existingClosedIssuesByChannelData = cache.readQuery({
+          query: GET_CLOSED_ISSUES_BY_CHANNEL,
+          variables: { channelUniqueName: channelId.value },
+        });
+
+        if (
+          existingClosedIssuesByChannelData &&
+          // @ts-ignore
+          existingClosedIssuesByChannelData.channels
+        ) {
+          // @ts-ignore
+          const existingClosedIssuesByChannel =
+            existingClosedIssuesByChannelData.channels[0];
+          const newClosedIssuesByChannel = {
+            ...existingClosedIssuesByChannel,
+            Issues: existingClosedIssuesByChannel.Issues.filter(
+              (issue: Issue) => issue.id !== activeIssueId.value,
+            ),
+          };
+
+          cache.writeQuery({
+            query: GET_CLOSED_ISSUES_BY_CHANNEL,
+            variables: { channelUniqueName: channelId.value },
+            data: {
+              channels: [newClosedIssuesByChannel],
+            },
+          });
+        }
+      },
     }));
 
     const createCommentDefaultValues: CreateEditCommentFormValues = {
@@ -154,48 +360,45 @@ export default defineComponent({
       createCommentDefaultValues,
     );
 
-    const { 
-      mutate: createComment, 
+    const {
+      mutate: createComment,
       loading: createCommentLoading,
       error: createCommentError,
-    } = useMutation(
-      ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT,
-      {
-        update: (cache, { data: { updateIssues } }) => {
-          const { issues } = updateIssues;
-          const updatedIssue: Issue = issues[0];
+    } = useMutation(ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT, {
+      update: (cache, { data: { updateIssues } }) => {
+        const { issues } = updateIssues;
+        const updatedIssue: Issue = issues[0];
 
-          // Attempt to read the existing issues from the cache
-          const existingIssueData = cache.readQuery({
+        // Attempt to read the existing issues from the cache
+        const existingIssueData = cache.readQuery({
+          query: GET_ISSUE,
+          variables: { id: updatedIssue.id },
+        });
+
+        if (
+          existingIssueData &&
+          // @ts-ignore
+          existingIssueData.issues &&
+          // @ts-ignore
+          existingIssueData.issues.length > 0
+        ) {
+          // @ts-ignore
+          const existingIssues: Issue[] = existingIssueData.issues;
+
+          const newIssues = existingIssues.map((issue) =>
+            issue.id === updatedIssue.id ? updatedIssue : issue,
+          );
+
+          cache.writeQuery({
             query: GET_ISSUE,
             variables: { id: updatedIssue.id },
+            data: {
+              issues: newIssues,
+            },
           });
-
-          if (
-            existingIssueData &&
-            // @ts-ignore
-            existingIssueData.issues &&
-            // @ts-ignore
-            existingIssueData.issues.length > 0
-          ) {
-            // @ts-ignore
-            const existingIssues: Issue[] = existingIssueData.issues;
-
-            const newIssues = existingIssues.map((issue) =>
-              issue.id === updatedIssue.id ? updatedIssue : issue,
-            );
-
-            cache.writeQuery({
-              query: GET_ISSUE,
-              variables: { id: updatedIssue.id },
-              data: {
-                issues: newIssues,
-              },
-            });
-          }
-        },
+        }
       },
-    );
+    });
 
     // eslint-disable-next-line no-undef
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
@@ -282,7 +485,7 @@ export default defineComponent({
       this.createFormValues.text = text;
     },
     async handleCreateComment() {
-     if (!this.activeIssue || !this.activeIssue.id) {
+      if (!this.activeIssue || !this.activeIssue.id) {
         console.warn(
           "Could not create the comment because there is no active issue",
         );
@@ -301,8 +504,8 @@ export default defineComponent({
         actionDescription: "commented on the issue",
         actionType: "comment",
       });
-       // Reset the form values
-       this.createFormValues.text = "";
+      // Reset the form values
+      this.createFormValues.text = "";
     },
     toggleCloseOpenIssue() {
       if (!this.activeIssue || !this.activeIssue.id) {
@@ -432,10 +635,7 @@ export default defineComponent({
                 data-testid="createCommentButton"
                 :label="'Comment'"
                 :disabled="createFormValues.text.length === 0"
-                :loading="
-                  createCommentLoading &&
-                    !createCommentError
-                "
+                :loading="createCommentLoading && !createCommentError"
                 @click.prevent="handleCreateComment"
               />
             </div>

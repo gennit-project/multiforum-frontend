@@ -1,11 +1,13 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { RedditSubmission } from "@/__generated__/graphql";
 import { relativeTime } from "@/dateTimeUtils";
 import { useRoute } from "vue-router";
 import { useDisplay } from "vuetify";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import MediaViewer from "./MediaViewer.vue";
+
+const TRUNCATED_LENGTH = 150;
 
 export default defineComponent({
   components: {
@@ -35,8 +37,8 @@ export default defineComponent({
         return "";
       }
 
-      if (props.post.text && props.post.text.length > 1000) {
-        return props.post?.text.slice(0, 250) + "...";
+      if (props.post.text && props.post.text.length > TRUNCATED_LENGTH) {
+        return props.post?.text.slice(0, TRUNCATED_LENGTH) + "...";
       }
       return props.post.text;
     });
@@ -47,6 +49,7 @@ export default defineComponent({
     const detailLink = `https://www.reddit.com${props.post.permalink}`;
     const usernameLink = `https://www.reddit.com/user/${authorUsername}`;
     const timeAgo = relativeTime(createdAt);
+    const showAll = ref(false);
 
     return {
       authorUsername,
@@ -57,8 +60,10 @@ export default defineComponent({
       relativeTime,
       route,
       timeAgo,
+      showAll,
       title,
       truncatedBody,
+      TRUNCATED_LENGTH,
       usernameLink,
     };
   },
@@ -79,7 +84,9 @@ export default defineComponent({
   <li
     :class="[
       !compact ? 'rounded-lg p-4' : 'p-2',
-      post.stickied ? 'border border-2 border-blue-500 dark:border-blue-600' : '',
+      post.stickied
+        ? 'border border-2 border-blue-500 dark:border-blue-600'
+        : '',
     ]"
     class="relative mt-1 space-y-3 bg-white dark:bg-gray-800 lg:px-8 lg:py-4"
   >
@@ -96,17 +103,22 @@ export default defineComponent({
           {{ post.stickied ? "Pinned by moderators" : "" }}
         </div>
         <div class="flex-col dark:divide-gray-600">
-          <a
-            :href="detailLink"
-            target="_blank"
-            class="hover:text-gray-500"
+          <span
+            class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
           >
-            <span
-              class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
-            >
-              {{ title }}
-            </span>
-          </a>
+            <a
+              :href="detailLink"
+              target="_blank"
+              class="hover:text-gray-500"
+            >{{ title }}</a>
+          </span>
+            
+          <span
+            v-if="post.flair?.linkFlairText"
+            class="ml-2 rounded-md bg-gray-200 px-2 py-1 dark:bg-gray-600"
+          >
+            {{ post.flair?.linkFlairText || "" }}
+          </span>
 
           <div class="mt-2 border-b pb-2 no-underline">
             <span class="mr-1 text-xs text-gray-500 dark:text-gray-300">
@@ -123,10 +135,33 @@ export default defineComponent({
             class="my-2 border-l-2 border-gray-400 dark:bg-gray-700"
           >
             <MarkdownPreview
+              v-if="!showAll"
               :text="truncatedBody || ''"
               :disable-gallery="false"
+              :show-show-more="false"
               class="-ml-4 px-4 py-2 pb-2"
             />
+            <MarkdownPreview
+              v-else
+              :text="post.text || ''"
+              :disable-gallery="false"
+              :show-show-more="false"
+              class="-ml-4 px-4 py-2 pb-2"
+            />
+            <button
+              v-if="truncatedBody.length > TRUNCATED_LENGTH && !showAll"
+              class="text-xs ml-8 text-gray-500 dark:text-gray-300 cursor-pointer"
+              @click="showAll = true"
+            >
+              Show more
+            </button>
+            <button 
+              v-else-if="truncatedBody.length > TRUNCATED_LENGTH && showAll"
+              class="text-xs ml-8 text-gray-500 dark:text-gray-300 cursor-pointer"
+              @click="showAll = false"
+            >
+              Show less
+            </button>
           </div>
         </div>
       </v-col>
