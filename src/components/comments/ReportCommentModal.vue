@@ -1,13 +1,15 @@
 <script>
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import GenericModal from "../generic/GenericModal.vue";
 import FlagIcon from "../icons/FlagIcon.vue";
+import TextEditor from "../generic/forms/TextEditor.vue";
 
 export default defineComponent({
   name: "ReportCommentModal",
   components: {
     GenericModal,
     FlagIcon,
+    TextEditor: TextEditor,
   },
   props: {
     body: {
@@ -20,7 +22,11 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {},
+  setup() {
+    return {
+      reportText: ref(""),
+    }
+  },
 });
 </script>
 <template>
@@ -32,8 +38,21 @@ export default defineComponent({
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
   >
-    <template v-slot:icon>
-      <FlagIcon class="h-6 w-6 text-red-600 opacity-100" aria-hidden="true" />
+    <template #icon>
+      <FlagIcon
+        class="h-6 w-6 text-red-600 opacity-100"
+        aria-hidden="true"
+      />
+    </template>
+    <template #content>
+      <TextEditor
+        :test-id="'comment-report-input'"
+        :initial-value="reportText"
+        :placeholder="'Your feedback'"
+        :disable-auto-focus="false"
+        :allow-image-upload="false"
+        @update="reportText = $event"
+      />
     </template>
   </GenericModal>
 </template>

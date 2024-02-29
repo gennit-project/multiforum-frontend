@@ -1,13 +1,15 @@
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import FlagIcon from "@/components/icons/FlagIcon.vue";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
 
 export default defineComponent({
   name: "ReportEventModal",
   components: {
     GenericModal,
     FlagIcon,
+    TextEditor,
   },
   props: {
     body: {
@@ -21,6 +23,12 @@ export default defineComponent({
     },
   },
   setup() {},
+  methods: {
+    updateFeedback() {
+    
+      
+    },
+  },
 });
 </script>
 <template>
@@ -32,14 +40,21 @@ export default defineComponent({
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
   >
-    <template v-slot:icon>
-      <FlagIcon class="h-6 w-6 text-red-600 opacity-100" aria-hidden="true" />
+    <template #icon>
+      <FlagIcon
+        class="h-6 w-6 text-red-600 opacity-100"
+        aria-hidden="true"
+      />
     </template>
-    <template v-slot:content>
-      <textarea
-        class="h-32 w-full rounded-md border border-gray-300 p-2"
-        placeholder="Explain why this discussion should be removed."
-      ></textarea>
+    <template #content>
+      <TextEditor
+        :test-id="'event-report-input'"
+        :initial-value="''"
+        :placeholder="'Explain why this event should be removed'"
+        :disable-auto-focus="false"
+        :allow-image-upload="false"
+        @update="updateFeedback"
+      />
     </template>
   </GenericModal>
 </template>

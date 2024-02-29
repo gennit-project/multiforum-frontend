@@ -1,13 +1,15 @@
-<script>
+<script lang="ts">
 import { defineComponent } from "vue";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import HandThumbDownIcon from "@/components/icons/HandThumbDownIcon.vue";
+import TextEditor from '@/components/generic/forms/TextEditor.vue'
 
 export default defineComponent({
   name: "DiscussionFeedbackFormModal",
   components: {
     GenericModal,
     HandThumbDownIcon,
+    TextEditor,
   },
   props: {
     open: {
@@ -22,8 +24,8 @@ export default defineComponent({
     };
   },
   methods: {
-    updateFeedback(event) {
-      this.$emit('updateFeedback', event.target.value);
+    updateFeedback(text: string) {
+      this.$emit('updateFeedback', text);
     },
   },
 });
@@ -44,10 +46,13 @@ export default defineComponent({
       />
     </template>
     <template #content>
-      <textarea
-        class="h-32 w-full rounded-md border border-gray-300 p-2"
-        placeholder="Your feedback"
-        @input="updateFeedback"
+      <TextEditor
+        :test-id="'description-input'"
+        :initial-value="''"
+        :placeholder="'Your feedback'"
+        :disable-auto-focus="false"
+        :allow-image-upload="false"
+        @update="updateFeedback"
       />
       <p class="text-gray-600 dark:text-gray-400">
         Feedback is intended to be a helpful tool for the author. If you think

@@ -12,6 +12,7 @@ import { IssueCreateInput } from "@/__generated__/graphql";
 import { CHECK_ISSUE_EXISTENCE, GET_ISSUES_BY_CHANNEL } from "@/graphQLData/issue/queries";
 import { ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT } from "@/graphQLData/issue/mutations";
 import { COUNT_OPEN_ISSUES } from "@/graphQLData/mod/queries";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
 
 export default defineComponent({
   name: "ReportDiscussionModal",
@@ -19,6 +20,7 @@ export default defineComponent({
     ErrorBanner,
     FlagIcon,
     GenericModal,
+    TextEditor,
   },
   props: {
     discussionTitle: {
@@ -322,11 +324,13 @@ export default defineComponent({
       />
     </template>
     <template #content>
-      <textarea
-        v-model="reportText"
-        class="h-32 w-full rounded-md border border-gray-300 p-2 placeholder-gray-400 dark:border-gray-500 dark:bg-gray-600 dark:text-gray-200 dark:placeholder-gray-300"
-        placeholder="Explain why this discussion should be removed."
-        @input="reportText = $event.target.value"
+      <TextEditor
+        :test-id="'report-discussion-input'"
+        :initial-value="reportText"
+        :placeholder="'Explain why this discussion should be removed'"
+        :disable-auto-focus="false"
+        :allow-image-upload="false"
+        @update="reportText = $event"
       />
       <ErrorBanner
         v-if="reportDiscussionError"
