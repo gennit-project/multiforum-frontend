@@ -84,7 +84,7 @@ export default defineComponent({
           :active="downvoteActive"
           :loading="downvoteLoading"
           :tooltip-text="
-            downvoteActive ? 'Undo downvote' : 'Give anonymous feedback'
+            downvoteActive ? 'Undo downvote' : 'Give semi-anonymous feedback'
           "
           @vote="clickDown"
         >

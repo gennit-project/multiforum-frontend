@@ -20,10 +20,12 @@ import WarningModal from "@/components/generic/WarningModal.vue";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { generateSlug } from "random-word-slugs";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue';
 
 export default defineComponent({
   components: {
     ErrorBanner,
+    GenericFeedbackFormModal,
     VoteButtons,
     WarningModal,
   },
@@ -227,6 +229,7 @@ export default defineComponent({
       upvoteCount,
       username,
       route,
+      showFeedbackFormModal: ref(false),
       showModProfileModal: ref(false),
     };
   },
@@ -252,7 +255,8 @@ export default defineComponent({
     handleClickDown() {
       if (this.loggedInUserModName) {
         if (!this.loggedInUserDownvoted) {
-          this.downvote();
+          this.showFeedbackFormModal = true;
+          // this.downvote();
         } else {
           this.discussionChannelMutations.undoDownvoteDiscussionChannel();
         }
@@ -296,6 +300,9 @@ export default defineComponent({
     undoDownvote() {
       this.discussionChannelMutations.undoDownvoteDiscussionChannel();
     },
+    handleSubmitFeedback() {
+      this.showFeedbackFormModal = false;
+    },
   },
 });
 </script>
@@ -326,6 +333,11 @@ export default defineComponent({
     :primary-button-text="'Yes, create a mod profile'"
     @close="showModProfileModal = false"
     @primaryButtonClick="handleCreateModProfileClick"
+  />
+  <GenericFeedbackFormModal
+    :open="showFeedbackFormModal"
+    @close="showFeedbackFormModal = false"
+    @primaryButtonClick="handleSubmitFeedback"
   />
 </template>
 <style>
