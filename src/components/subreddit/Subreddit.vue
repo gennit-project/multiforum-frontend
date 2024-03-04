@@ -89,6 +89,13 @@ export default defineComponent({
       return subredditSidebar.value.linkFlairs;
     });
 
+    const rules = computed(() => {
+      if (!subredditSidebar.value) {
+        return [];
+      }
+      return subredditSidebar.value.rules;
+    });
+
     const { lgAndDown, lgAndUp, mdAndUp, mdAndDown, smAndDown } = useDisplay();
 
     const channel = computed(() => {
@@ -116,6 +123,7 @@ export default defineComponent({
       mdAndUp,
       route,
       router,
+      rules,
       showMenu: ref(false),
       smAndDown,
       subredditName,
@@ -155,7 +163,7 @@ export default defineComponent({
 
     <article
       v-if="!smAndDown && channel"
-      class="w-full bg-gray-100 dark:bg-gray-900"
+      class="w-full flex-col bg-gray-100 dark:bg-gray-900"
     >
       <ChannelHeaderDesktop
         v-if="channel"
@@ -169,6 +177,7 @@ export default defineComponent({
         v-if="channel"
         :channel-id="subredditName"
         :channel="channel"
+        :rules="rules.rules || []"
       >
         <FlairList :flairs="linkFlairs" />
         <SubredditPostList />

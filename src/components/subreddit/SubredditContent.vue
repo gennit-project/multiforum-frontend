@@ -5,6 +5,11 @@ import { Channel } from "@/__generated__/graphql";
 import { useDisplay } from "vuetify"
 import { PropType } from "vue";
 
+type Rule = {
+  short_name: string;
+  description: string;
+}
+
 export default defineComponent({
   name: "ChannelContent",
   components: {
@@ -19,6 +24,10 @@ export default defineComponent({
       type: Object as PropType<Channel>,
       required: true,
     },
+    rules: {
+      type: Array as PropType<Rule[]>,
+      required: true,
+    }
   },
   setup() {
     const { smAndDown } = useDisplay();
@@ -31,8 +40,7 @@ export default defineComponent({
 
 <template>
   <v-container
-    fluid
-    class="relative z-0 max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last p-0"
+    class="relative z-0 flex-1 focus:outline-none lg:px-6 xl:order-last p-0"
   >
     <v-row class="flex pt-0">
       <v-col
@@ -45,7 +53,10 @@ export default defineComponent({
         v-if="channelId"
         :cols="smAndDown ? 12 : 4"
       >
-        <SubredditSidebar class="sticky top-0 w-72 bg-gray-100 dark:bg-gray-900" />
+        <SubredditSidebar
+          class="sticky top-0 bg-gray-100 dark:bg-gray-900"
+          :rules="rules"
+        />
       </v-col>
     </v-row>
   </v-container>

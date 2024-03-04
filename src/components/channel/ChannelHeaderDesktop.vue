@@ -74,7 +74,10 @@ export default defineComponent({
           />
           <div class="w-full">
             <div class="flex w-full flex-col">
-              <div  class="bg-white dark:bg-black p-2 rounded-lg w-full" :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']">
+              <div
+                class="bg-white dark:bg-gray-900 p-2 rounded-lg w-full"
+                :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']"
+              >
                 <h1
                   v-if="channelId"
                   class="flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"

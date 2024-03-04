@@ -16,6 +16,7 @@ export const GET_SUBREDDIT_SIDEBAR = gql`
       linkFlairs {
         text
       }
+      rules
     }
   }
 `;

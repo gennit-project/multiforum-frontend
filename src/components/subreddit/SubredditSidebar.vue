@@ -1,15 +1,28 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, PropType } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_SUBREDDIT_SIDEBAR } from "@/graphQLData/subreddit/queries";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
 import gql from "graphql-tag";
 import { useRoute, useRouter } from "vue-router";
+import RulesComponent from "./RulesComponent.vue";
+
+export type Rule = {
+  short_name: string;
+  description: string;
+};
 
 export default defineComponent({
   name: "AboutPage",
   components: {
+    RulesComponent,
+  },
+  props: {
+    rules: {
+      type: Array as PropType<Rule[]>,
+      default: () => [],
+    },
   },
   setup() {
     const route = useRoute();
@@ -72,9 +85,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="pb-8 overflow-auto rounded-lg dark:bg-gray-800"
-  >
+  <div class="max-h-screen overflow-y-auto rounded-lg pb-8">
     <div
       v-if="subredditName"
       class="items-center gap-2"
@@ -89,7 +100,7 @@ export default defineComponent({
       </div>
     </div>
 
-    <div class="w-full">
+    <div class="w-full px-6">
       <p v-if="getSubredditLoading">
         Loading...
       </p>
@@ -101,27 +112,34 @@ export default defineComponent({
           {{ error.message }}
         </div>
       </div>
-      <div
-        v-else-if="!subreddit"
-        class="px-4"
-      >
+      <div v-else-if="!subreddit">
         Could not find the subreddit.
       </div>
       <div v-else-if="subreddit">
-        <div class="mb-4 w-full px-4">
+        <div class="mb-4 w-full">
           <div
             v-if="subreddit.shortDescription"
-            class="my-2 px-2 text-sm dark:text-gray-200"
+            class="my-2 text-sm dark:text-gray-200"
           >
             {{ subreddit.shortDescription }}
           </div>
         </div>
         <slot />
       </div>
+
+      <div v-if="rules.length > 0">
+        <h2
+          v-if="subredditName && subreddit?.rules"
+          class="mb-2 mt-8 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+        >
+          Rules
+        </h2>
+        <RulesComponent :rules="rules" />
+      </div>
     </div>
   </div>
 </template>
-<style lang="scss" scoped>
+<style lang="scss">
 /* Apply the user's preferred color scheme by default */
 @media (prefers-color-scheme: dark) {
   #md-editor-v3-preview,
@@ -136,4 +154,6 @@ export default defineComponent({
     background-color: blue;
   }
 }
+
+
 </style>
