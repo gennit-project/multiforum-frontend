@@ -88,7 +88,7 @@ export default defineComponent({
         ? 'border border-2 border-blue-500 dark:border-blue-600'
         : '',
     ]"
-    class="relative mt-1 space-y-3 bg-white dark:bg-gray-800 lg:px-8 lg:py-2"
+    class="relative mt-1 space-y-3 bg-white dark:bg-gray-700 lg:px-8 lg:py-2"
   >
     <v-row>
       <v-col
