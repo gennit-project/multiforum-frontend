@@ -72,7 +72,7 @@ export default defineComponent({
       :key="flair.text"
       :class="[
         flairInQuery === flair.text
-          ? 'bg-black text-white dark:bg-gray-800 dark:text-white'
+          ? 'bg-black text-white dark:bg-white dark:text-black'
           : 'bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500 dark:hover:text-white',
       ]"
       class="mr-2 mt-1 cursor-pointer rounded-full  px-2 py-1  "
