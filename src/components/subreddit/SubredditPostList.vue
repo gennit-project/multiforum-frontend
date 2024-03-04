@@ -22,16 +22,18 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const subredditName = computed(() => route.params.subredditName as string || "");
+    const subredditName = computed(
+      () => (route.params.subredditName as string) || "",
+    );
     const after = ref(null);
-    const flair = ref(route.query.flair as string || "");
+    const flair = ref((route.query.flair as string) || "");
 
-    const { 
-      result: postResult, 
-      error: postError, 
-      loading: postLoading, 
+    const {
+      result: postResult,
+      error: postError,
+      loading: postLoading,
       fetchMore,
-      refetch
+      refetch,
     } = useQuery(GET_SUBREDDIT_POSTS, () => ({
       subredditName: subredditName.value,
       options: {
@@ -86,7 +88,7 @@ export default defineComponent({
   created() {
     this.$watch("$route.query", () => {
       if (this.$route.query) {
-        this.flair = this.$route.query?.flair || ""; 
+        this.flair = this.$route.query?.flair || "";
         this.refetch({
           subredditName: this.subredditName,
           options: {
@@ -101,7 +103,6 @@ export default defineComponent({
 </script>
 <template>
   <div>
-   
     <ErrorBanner
       v-if="!postLoading && postError"
       class="max-w-5xl"
@@ -126,9 +127,7 @@ export default defineComponent({
           :post="post"
         />
       </ul>
-      <p v-if="postLoading">
-        Loading...
-      </p> 
+      <p v-if="postLoading">Loading...</p>
       <LoadMore
         class="justify-self-center"
         :reached-end-of-results="reachedEndOfResults"

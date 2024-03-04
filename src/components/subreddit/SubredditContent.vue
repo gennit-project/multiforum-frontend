@@ -45,7 +45,7 @@ export default defineComponent({
         v-if="channelId"
         :cols="smAndDown ? 12 : 4"
       >
-        <SubredditSidebar class="sticky top-0 w-72" />
+        <SubredditSidebar class="sticky top-0 w-72 bg-gray-100 dark:bg-gray-900" />
       </v-col>
     </v-row>
   </v-container>

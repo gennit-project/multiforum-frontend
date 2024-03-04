@@ -44,7 +44,7 @@ export default defineComponent({
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
     :is-square="true"
-    class="max-h-52 w-full"
+    class="sticky top-0 max-h-52 w-full"
   />
   <div class="mb-4 bg-white dark:bg-gray-800">
     <v-container
@@ -55,7 +55,7 @@ export default defineComponent({
         class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
         :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
       >
-        <div class="align-items flex gap-4">
+        <div class="align-items flex w-full gap-4">
           <ExpandableImage
             v-if="channel?.channelIconURL"
             class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
@@ -65,27 +65,30 @@ export default defineComponent({
             :src="channel?.channelIconURL ?? ''"
           />
           <Avatar
-            v-else
+            v-if="!channel?.channelIconURL"
             class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
             :text="channelId"
             :src="channel?.channelIconURL ?? ''"
             :is-medium="true"
             :is-square="false"
           />
-          <div class="flex flex-col">
-            <h1
-              v-if="channelId"
-              :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']"
-              class="flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
-            >
-              {{ channel?.displayName ? channel.displayName : channelId }}
-            </h1>
-            <h2
-              v-if="channel?.uniqueName && channel?.displayName"
-              class="font-bold leading-6 text-gray-500 dark:text-gray-200"
-            >
-              {{ `${channel.uniqueName}` }}
-            </h2>
+          <div class="w-full">
+            <div class="flex w-full flex-col">
+              <div  class="bg-white dark:bg-black p-2 rounded-lg w-full" :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']">
+                <h1
+                  v-if="channelId"
+                  class="flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
+                >
+                  {{ channel?.displayName ? channel.displayName : channelId }}
+                </h1>
+                <h2
+                  v-if="channel?.uniqueName && channel?.displayName"
+                  class="font-bold leading-6 text-gray-500 dark:text-gray-200"
+                >
+                  {{ `${channel.uniqueName}` }}
+                </h2>
+              </div>
+            </div>
           </div>
         </div>
         <CreateAnythingButton
