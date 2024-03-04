@@ -174,13 +174,6 @@ export const router = createRouter({
           name: "DiscussionCommentPermalink",
           path: "comments/:commentId",
           component: PermalinkedComment,
-          // children: [
-          //   {
-          //     name: "DiscussionCommentModHistory",
-          //     path: "modhistory",
-          //     component: CommentModHistory,
-          //   },
-          // ],
         },
       ],
     },
@@ -272,25 +265,6 @@ export const router = createRouter({
               name: "EventDetail",
               path: "e/:eventId",
               component: EventDetail,
-              // children: [
-              //   {
-              //     name: "EventModHistory",
-              //     path: "modhistory",
-              //     component: CommentModHistory,
-              //   },
-              //   {
-              //     name: "DiscussionCommentPermalink",
-              //     path: "comments/:commentId",
-              //     component: PermalinkedComment,
-              //     children: [
-              //       {
-              //         name: "DiscussionCommentModHistory",
-              //         path: "modhistory",
-              //         component: CommentModHistory,
-              //       },
-              //     ],
-              //   },
-              // ],
             },
             {
               name: "EditEvent",

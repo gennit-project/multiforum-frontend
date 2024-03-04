@@ -1,20 +1,27 @@
 <script lang="ts">
 import { Discussion } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import { GET_DISCUSSION_FEEDBACK } from "@/graphQLData/discussion/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { computed, defineComponent } from "vue";
 import { useRoute } from "vue-router";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
-import TabButton from "@/components/channel/TabButton.vue";
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import { timeAgo } from "@/dateTimeUtils";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import PageNotFound from "@/components/generic/PageNotFound.vue";
+import InfoBanner from "@/components/generic/InfoBanner.vue";
 
 export default defineComponent({
   components: {
     BackLink,
     DiscussionBody,
     DiscussionHeader,
-    TabButton,
+    ErrorBanner,
+    InfoBanner,
+    MarkdownPreview,
+    PageNotFound,
   },
   setup: () => {
     const route = useRoute();
@@ -37,7 +44,7 @@ export default defineComponent({
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
-    } = useQuery(GET_DISCUSSION, { id: discussionId });
+    } = useQuery(GET_DISCUSSION_FEEDBACK, { id: discussionId });
 
     const discussion = computed<Discussion>(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {
@@ -46,43 +53,24 @@ export default defineComponent({
       return getDiscussionResult.value.discussions[0];
     });
 
-    const tabs = [
-      {
-        name: "Feedback",
-        href: `/channels/c/${channelId.value}/discussions/d/${discussionId.value}/modhistory`,
-        current: true,
-      },
-      {
-        name: "Reports",
-        href: `/channels/c/${channelId.value}/discussions/d/${discussionId.value}/modhistory/reports`,
-        current: false,
-      },
-    ];
+    const feedbackComments = computed(() => {
+      if (discussion.value) {
+        return discussion.value.FeedbackComments;
+      }
+      return [];
+    });
 
     return {
       channelId,
       discussion,
       getDiscussionLoading,
       getDiscussionError,
+      feedbackComments,
       route,
-      tabs,
+      timeAgo,
     };
   },
 });
-
-// <ErrorBanner
-//       v-if="getDiscussionError"
-//       class="mt-2 px-4 "
-//       :text="getDiscussionError.message"
-//     />
-// <PageNotFound
-//     v-if="
-//       !getDiscussionLoading &&
-//         !getDiscussionChannelLoading &&
-//         !activeDiscussionChannel
-//     "
-//   />
-//     </div>
 </script>
 <template>
   <div
@@ -95,11 +83,17 @@ export default defineComponent({
       />
     </div>
     <h1 class="text-wrap text-center text-2xl font-bold dark:text-gray-200">
-      Moderation History
+      Feedback
     </h1>
-    <p class="px-2">
-      This page collects all feedback and reports on this discussion:
-    </p>
+    <ErrorBanner
+      v-if="getDiscussionError"
+      class="mt-2 px-4"
+      :text="getDiscussionError.message"
+    />
+    <PageNotFound
+      v-if="!getDiscussionLoading && !getDiscussionError && !discussion"
+    />
+    <p class="px-2">This page collects feedback on this discussion:</p>
     <div class="ml-2 flex flex-col gap-2 border-l pl-4">
       <h3 class="text-wrap px-1 px-2 text-xl font-bold sm:tracking-tight">
         {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
@@ -109,10 +103,7 @@ export default defineComponent({
         <div
           class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
         >
-          <DiscussionHeader
-            :discussion="discussion"
-            :channel-id="channelId"
-          />
+          <DiscussionHeader :discussion="discussion" :channel-id="channelId" />
           <DiscussionBody
             :discussion="discussion"
             :channel-id="channelId"
@@ -121,25 +112,39 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <nav
-      class="max-w-7xl space-x-2 pt-1 text-sm"
-      aria-label="Tabs"
-    >
-      <TabButton
-        v-for="tab in tabs"
-        :key="tab.name"
-        :to="tab.href"
-        :label="tab.name"
-        :is-active="
-          (tab.name === 'Feedback' && route?.name === 'DiscussionModHistory') ||
-            (tab.name === 'Reports' &&
-              route?.name === 'DiscussionModHistoryReports')
-        "
-        :show-count="false"
-      />
-    </nav>
-    <div class="px-2">
-      <router-view />
+    <h2 class="text-wrap text-center text-xl font-bold dark:text-gray-200">
+      Feedback Comments
+    </h2>
+    <InfoBanner
+      :text="'Feedback should be respectful and useful to the author. If the feedback is rude or non-actionable, please report it.'"
+    />
+    <div v-for="comment in feedbackComments" :key="comment.id">
+      <div class="text-sm leading-8 text-gray-500 dark:text-gray-300">
+        <span class="mr-0.5">
+          <router-link
+            v-if="comment.CommentAuthor?.displayName"
+            :to="{
+              name: 'ModProfile',
+              params: {
+                modId: comment.CommentAuthor.displayName,
+              },
+            }"
+            class="font-medium text-gray-900 hover:underline dark:text-gray-200"
+            >{{ comment.CommentAuthor?.displayName }}</router-link
+          >
+        </span>
+        <span class="whitespace-nowrap">{{
+          `gave feedback ${timeAgo(new Date(comment.createdAt))}`
+        }}</span>
+      </div>
+
+      <div class="border-l-2 border-gray-200 dark:border-gray-500">
+        <MarkdownPreview
+          v-if="comment.text"
+          :text="comment.text"
+          :disable-gallery="true"
+        />
+      </div>
     </div>
   </div>
 </template>

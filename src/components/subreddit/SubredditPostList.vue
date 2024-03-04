@@ -101,11 +101,9 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <p v-if="!postResult && postLoading">
-      Loading...
-    </p>
+   
     <ErrorBanner
-      v-else-if="postError"
+      v-if="!postLoading && postError"
       class="max-w-5xl"
       :text="postError.message"
     />
@@ -115,19 +113,22 @@ export default defineComponent({
     >
       <span>There are no posts to show.</span>
     </p>
-    <div v-else>
+    <div>
       <ul
         role="list"
         :class="compact ? 'grid grid-cols-1' : 'rounded'"
         class="relative flex flex-col"
       >
         <SubredditPostListItem
-          v-for="post in postResult.getSubreddit.posts"
+          v-for="post in postResult?.getSubreddit?.posts || []"
           :key="post.id"
           :compact="compact"
           :post="post"
         />
       </ul>
+      <p v-if="postLoading">
+        Loading...
+      </p> 
       <LoadMore
         class="justify-self-center"
         :reached-end-of-results="reachedEndOfResults"

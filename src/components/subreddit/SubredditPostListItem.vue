@@ -183,7 +183,7 @@ export default defineComponent({
       <a
         :href="detailLink"
         target="_blank"
-        class="rounded-md px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+        class="rounded-md underline pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
       >
         <i class="fa-regular fa-comment h-6 w-6" />
         <span class="text-sm">{{
