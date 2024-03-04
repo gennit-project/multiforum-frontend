@@ -1,5 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
+import MarkdownPreview from '@/components/generic/forms/MarkdownPreview.vue'
 
 type Rule = {
   short_name: string;
@@ -8,6 +9,9 @@ type Rule = {
 
 export default defineComponent({
   name: "RulesComponent",
+    components: {
+        MarkdownPreview,
+    },
   props: {
     rules: {
       type: Array as PropType<Rule[]>,
@@ -55,9 +59,9 @@ export default defineComponent({
       </div>
       <div
         v-if="isOpen(rule.short_name)" 
-        class="mt-2 text-sm text-gray-600 dark:text-gray-300"
+        class="mt-2 -ml-6 text-sm text-gray-600 dark:text-gray-300"
       >
-        {{ rule.description }}
+        <MarkdownPreview :text="rule.description" />
       </div>
     </div>
   </div>
