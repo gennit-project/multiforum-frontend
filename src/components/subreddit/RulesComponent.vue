@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import MarkdownPreview from '@/components/generic/forms/MarkdownPreview.vue'
+import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 type Rule = {
   short_name: string;
@@ -9,9 +9,9 @@ type Rule = {
 
 export default defineComponent({
   name: "RulesComponent",
-    components: {
-        MarkdownPreview,
-    },
+  components: {
+    MarkdownPreview,
+  },
   props: {
     rules: {
       type: Array as PropType<Rule[]>,
@@ -45,21 +45,31 @@ export default defineComponent({
       v-for="rule in rules"
       :key="rule.short_name"
       class="my-2 cursor-pointer pt-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
-      @click="toggleRule(rule.short_name)"
+      @click="
+        () => {
+          if (rule.description) {
+            toggleRule(rule.short_name);
+          }
+        }
+      "
     >
-      <div class="font-bold flex items-center">
+      <div class="flex items-center font-bold">
         {{ rule.short_name }}
         <i
+          v-if="rule.description"
           :class="[
-            'fa-solid', 'h-3', 'w-3', 'text-xs',
+            'fa-solid',
+            'h-3',
+            'w-3',
+            'text-xs',
             isOpen(rule.short_name) ? 'fa-chevron-up' : 'fa-chevron-down',
             'ml-2',
           ]"
         />
       </div>
       <div
-        v-if="isOpen(rule.short_name)" 
-        class="mt-2 -ml-6 text-sm text-gray-600 dark:text-gray-300"
+        v-if="isOpen(rule.short_name)"
+        class="-ml-6 mt-2 text-sm text-gray-600 dark:text-gray-300"
       >
         <MarkdownPreview :text="rule.description" />
       </div>
