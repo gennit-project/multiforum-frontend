@@ -62,7 +62,7 @@ export default defineComponent({
 
     const feedbackCommentsAggregate = computed(() => {
       if (discussion.value) {
-        return discussion.value.FeedbackCommentsAggregate?.count;
+        return discussion.value.FeedbackCommentsAggregate?.count || 0;
       }
       return 0;
     });
@@ -129,8 +129,15 @@ export default defineComponent({
       Feedback Comments ({{ feedbackCommentsAggregate }})
     </h2>
     <InfoBanner
+      v-if="feedbackCommentsAggregate > 0"
       :text="'Feedback should be respectful and useful to the author. If the feedback is rude or non-actionable, please report it.'"
     />
+    <div
+      v-if="feedbackCommentsAggregate === 0"
+      class="text-center text-gray-500 dark:text-gray-300"
+    >
+      No feedback yet.
+    </div>
     <div
       v-for="comment in feedbackComments"
       :key="comment.id"
