@@ -164,6 +164,7 @@ export default defineComponent({
       }
     },
     handleClickSingleImage() {
+      console.log("handleClickSingleImage");
       const img = new Image();
       img.onload = () => {
         // Image is now fully loaded; perform aspect ratio calculation
@@ -171,7 +172,7 @@ export default defineComponent({
           img.width,
           img.height,
           window.innerWidth,
-          window.innerHeight - 500,
+          window.innerHeight - 100,
         );
 
         const lightbox = setGallery({
