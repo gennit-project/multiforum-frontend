@@ -154,7 +154,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel && smAndDown"
-          class="block w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
+          class="block w-full bg-white dark:bg-gray-800 border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
@@ -181,7 +181,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel"
-          class="block w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
+          class="block bg-white dark:bg-gray-800 w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"

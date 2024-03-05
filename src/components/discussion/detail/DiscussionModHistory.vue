@@ -60,12 +60,20 @@ export default defineComponent({
       return [];
     });
 
+    const feedbackCommentsAggregate = computed(() => {
+      if (discussion.value) {
+        return discussion.value.FeedbackCommentsAggregate?.count;
+      }
+      return 0;
+    });
+
     return {
       channelId,
       discussion,
       getDiscussionLoading,
       getDiscussionError,
       feedbackComments,
+      feedbackCommentsAggregate,
       route,
       timeAgo,
     };
@@ -93,7 +101,9 @@ export default defineComponent({
     <PageNotFound
       v-if="!getDiscussionLoading && !getDiscussionError && !discussion"
     />
-    <p class="px-2">This page collects feedback on this discussion:</p>
+    <p class="px-2">
+      This page collects feedback on this discussion:
+    </p>
     <div class="ml-2 flex flex-col gap-2 border-l pl-4">
       <h3 class="text-wrap px-1 px-2 text-xl font-bold sm:tracking-tight">
         {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
@@ -103,7 +113,10 @@ export default defineComponent({
         <div
           class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
         >
-          <DiscussionHeader :discussion="discussion" :channel-id="channelId" />
+          <DiscussionHeader
+            :discussion="discussion"
+            :channel-id="channelId"
+          />
           <DiscussionBody
             :discussion="discussion"
             :channel-id="channelId"
@@ -113,12 +126,15 @@ export default defineComponent({
       </div>
     </div>
     <h2 class="text-wrap text-center text-xl font-bold dark:text-gray-200">
-      Feedback Comments
+      Feedback Comments ({{ feedbackCommentsAggregate }})
     </h2>
     <InfoBanner
       :text="'Feedback should be respectful and useful to the author. If the feedback is rude or non-actionable, please report it.'"
     />
-    <div v-for="comment in feedbackComments" :key="comment.id">
+    <div
+      v-for="comment in feedbackComments"
+      :key="comment.id"
+    >
       <div class="text-sm leading-8 text-gray-500 dark:text-gray-300">
         <span class="mr-0.5">
           <router-link
@@ -130,8 +146,7 @@ export default defineComponent({
               },
             }"
             class="font-medium text-gray-900 hover:underline dark:text-gray-200"
-            >{{ comment.CommentAuthor?.displayName }}</router-link
-          >
+          >{{ comment.CommentAuthor?.displayName }}</router-link>
         </span>
         <span class="whitespace-nowrap">{{
           `gave feedback ${timeAgo(new Date(comment.createdAt))}`

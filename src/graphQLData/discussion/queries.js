@@ -162,6 +162,9 @@ export const GET_DISCUSSION_FEEDBACK = gql`
       Author {
         username
       }
+      FeedbackCommentsAggregate {
+        count
+      }
       FeedbackComments {
         id
         text

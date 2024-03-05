@@ -17,8 +17,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <p class="text-wrap text-blue-500 bg-blue-100 p-2 my-2 rounded pl-4 dark:bg-blue-500 dark:text-white flex gap-2">
-   <InfoIcon class="h-6 w-6" /> {{ text }}
+  <p class="text-wrap text-blue-500 bg-blue-100 p-2 my-2 rounded pl-4 dark:bg-blue-800 dark:text-white flex gap-2">
+    <InfoIcon class="h-6 w-6" /> {{ text }}
   </p>
 </template>
 
