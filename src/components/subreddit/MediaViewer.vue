@@ -216,35 +216,27 @@ export default defineComponent({
         const scrollContainer = document.querySelector('.thumbnail-row');
         const activeThumbnail = document.querySelector('.border-green-500');
 
+        
+
+
         if (scrollContainer && activeThumbnail) {
-          const containerScrollLeft = scrollContainer.scrollLeft;
-          const containerWidth = scrollContainer.offsetWidth;
+          // If the container is already scrolled to the right, don't scroll
+        // all the way to the left.
+        // Depending on the scroll position, you may need to scroll right or left.
 
-          const thumbnailOffsetLeft = activeThumbnail.offsetLeft;
-          const thumbnailWidth = activeThumbnail.offsetWidth;
+        const scrollContainerRect = scrollContainer.getBoundingClientRect();
+        const activeThumbnailRect = activeThumbnail.getBoundingClientRect();
 
-          // Calculate the positions
-          const startVisibleArea = containerScrollLeft;
-          const endVisibleArea = startVisibleArea + containerWidth;
-
-          const thumbnailStart = thumbnailOffsetLeft;
-          const thumbnailEnd = thumbnailStart + thumbnailWidth;
-
-          // Check if the thumbnail is not fully visible
-          if (thumbnailStart < startVisibleArea) {
-            // Thumbnail is off to the left
-            scrollContainer.scrollLeft = thumbnailStart;
-          } else if (thumbnailEnd > endVisibleArea) {
-            // Thumbnail is off to the right
-            scrollContainer.scrollLeft = thumbnailStart - containerWidth + thumbnailWidth;
-          }
-
-          // For centering the thumbnail, you might adjust the calculation
-          // Example for centering:
-          // scrollContainer.scrollLeft = thumbnailOffsetLeft + thumbnailWidth / 2 - containerWidth / 2;
+        if (activeThumbnailRect.right > scrollContainerRect.right) {
+          scrollContainer.scrollLeft += activeThumbnailRect.right - scrollContainerRect.right;
+        } else if (activeThumbnailRect.left < scrollContainerRect.left) {
+          scrollContainer.scrollLeft -= scrollContainerRect.left - activeThumbnailRect.left;
+        }
         }
       });
     },
+
+
   },
 });
 </script>
