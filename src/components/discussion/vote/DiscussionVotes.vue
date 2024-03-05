@@ -255,7 +255,7 @@ export default defineComponent({
     handleClickDown() {
       if (this.loggedInUserModName) {
         if (!this.loggedInUserDownvoted) {
-          this.showFeedbackFormModal = true;
+          this.$emit('handleClickGiveFeedback');
           // this.downvote();
         } else {
           this.discussionChannelMutations.undoDownvoteDiscussionChannel();

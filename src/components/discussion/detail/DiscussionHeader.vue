@@ -18,7 +18,6 @@ import {
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
-import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import ReportDiscussionModal from "./ReportDiscussionModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
@@ -39,7 +38,6 @@ export default defineComponent({
     Avatar,
     UsernameWithTooltip,
     Notification,
-    GenericFeedbackFormModal,
     ReportDiscussionModal,
   },
   props: {
@@ -259,7 +257,6 @@ export default defineComponent({
       mdAndDown,
       mdAndUp,
       showCopiedLinkNotification,
-      showFeedbackFormModal: ref(false),
       showReportDiscussionModal: ref(false),
       showSuccessfullyReported: ref(false),
       xlAndUp,
@@ -272,10 +269,7 @@ export default defineComponent({
       return startTimeObj.toFormat("cccc LLLL d yyyy");
     },
     handleClickGiveFeedback() {
-      this.showFeedbackFormModal = true;
-    },
-    handleSubmitFeedback() {
-      this.showFeedbackFormModal = false;
+      this.$emit("handleClickGiveFeedback");
     },
     handleClickReport() {
       this.showReportCommentModal = true;
@@ -340,7 +334,7 @@ export default defineComponent({
         "
         @handleDelete="deleteModalIsOpen = true"
         @handleClickReport="showReportDiscussionModal = true"
-        @handleFeedback="showFeedbackFormModal = true"
+        @handleFeedback="handleClickGiveFeedback"
         @handleViewFeedback="
           router.push(
             `/channels/c/${channelId}/discussions/d/${discussion.id}/modhistory`,
@@ -358,11 +352,6 @@ export default defineComponent({
       :open="deleteModalIsOpen"
       @close="deleteModalIsOpen = false"
       @primary-button-click="deleteDiscussion"
-    />
-    <GenericFeedbackFormModal
-      :open="showFeedbackFormModal"
-      @close="showFeedbackFormModal = false"
-      @primaryButtonClick="handleSubmitFeedback"
     />
     <ReportDiscussionModal
       v-if="discussion"

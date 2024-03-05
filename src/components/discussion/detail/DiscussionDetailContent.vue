@@ -26,12 +26,14 @@ import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
+import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
 
 export const COMMENT_LIMIT = 50;
 
 export default defineComponent({
   components: {
     BackLink,
+    CreateButton,
     DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
     DiscussionCommentsWrapper,
@@ -39,7 +41,7 @@ export default defineComponent({
     DiscussionHeader,
     DiscussionVotes,
     ErrorBanner,
-    CreateButton,
+    GenericFeedbackFormModal,
     PageNotFound,
     PrimaryButton,
     RequireAuth,
@@ -242,9 +244,18 @@ export default defineComponent({
       aggregateRootCommentCount,
       route,
       router,
+      showFeedbackFormModal: ref(false),
       smAndDown,
     };
   },
+  methods: {
+    handleClickGiveFeedback() {
+      this.showFeedbackFormModal = true;
+    },
+    handleSubmitFeedback() {
+      this.showFeedbackFormModal = false;
+    },
+  }
 });
 </script>
 
@@ -318,6 +329,7 @@ export default defineComponent({
                 :discussion="discussion"
                 :channel-id="channelId"
                 :compact-mode="compactMode"
+                @handleClickGiveFeedback="handleClickGiveFeedback"
               />
               <DiscussionBody
                 :discussion="discussion"
@@ -330,6 +342,7 @@ export default defineComponent({
                     v-if="activeDiscussionChannel"
                     :discussion="discussion"
                     :discussion-channel="activeDiscussionChannel"
+                    @handleClickGiveFeedback="handleClickGiveFeedback"
                   />
                 </div>
               </DiscussionBody>
@@ -368,5 +381,10 @@ export default defineComponent({
         />
       </div>
     </div>
+    <GenericFeedbackFormModal
+      :open="showFeedbackFormModal"
+      @close="showFeedbackFormModal = false"
+      @primaryButtonClick="handleSubmitFeedback"
+    />
   </div>
 </template>
