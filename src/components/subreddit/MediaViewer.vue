@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, watch } from "vue";
 import { setGallery } from "vue-preview-imgs";
 import { ref } from "vue";
 import "swiper/css/bundle";
@@ -23,9 +23,14 @@ function calculateAspectRatioFit(
   srcHeight: number,
   maxWidth: number,
   maxHeight: number,
+  showThumbnailRow: boolean,
 ) {
   const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-  return { width: srcWidth * ratio, height: srcHeight * ratio };
+  const offsetForThumbnailRow = showThumbnailRow ? 100 : 0;
+  return {
+    width: srcWidth * ratio,
+    height: srcHeight * ratio - offsetForThumbnailRow,
+  };
 }
 
 export default defineComponent({
@@ -68,6 +73,11 @@ export default defineComponent({
       }
     }
 
+    const lightbox = setGallery({
+      dataSource: embeddedImages.value,
+      wheelToZoom: true,
+    });
+
     // // Define a function to update the dimensions
     const updateImageDimensions = (src: string) => {
       const img = new Image();
@@ -77,6 +87,7 @@ export default defineComponent({
           this.height,
           window.innerWidth,
           window.innerHeight,
+          showThumbnailRow.value,
         );
 
         // Find the image in the embeddedImages array and update its dimensions
@@ -98,13 +109,43 @@ export default defineComponent({
       img.src = src;
     };
 
+    const showThumbnailRow = ref(false);
+    watch(showThumbnailRow, (newValue) => {
+      console.log("showThumbnailRow", newValue);
+      const elements = document.querySelectorAll(
+        ".pswp__scroll-wrap, .pswp__bg, .pswp--open, .pswp__zoom-wrap, .pswp__img, .pswp__img--placeholder",
+      );
+
+      console.log("elements", elements);
+      elements.forEach((el) => {
+        // @ts-ignore
+        if (el.style && newValue) {
+          // @ts-ignore
+          el.style["height"] = "calc(100vh - 110px)";
+
+          console.log("setting height: ", el.style["height"]);
+        }
+      });
+    });
     return {
       embeddedImages,
+      lightbox,
       updateImageDimensions,
       modules: [Navigation],
+      showThumbnailRow,
+      activeImageIndex: ref(0),
     };
   },
   methods: {
+    setActiveImage(index: number) {
+      console.log("set active index", index);
+      this.activeImageIndex = index;
+      // The active thumbnail is scrolled into view.
+      this.scrollToActiveThumbnail();
+
+      // Open Gallery with clickedIndex highlighted
+      this.lightbox.pswp.goTo(index);
+    },
     handleClick(event: any) {
       if (event.target.tagName === "IMG") {
         const clickedSrc = event.target.src;
@@ -116,14 +157,28 @@ export default defineComponent({
         const clickedIndex = this.embeddedImages.findIndex(
           (image: GalleryItem) => image.href === clickedSrc,
         );
+        this.activeImageIndex = clickedIndex;
 
         // Open Gallery with clickedIndex highlighted
-        const lightbox = setGallery({
-          dataSource: this.embeddedImages,
-          wheelToZoom: true,
+        this.lightbox.loadAndOpen(clickedIndex);
+
+        this.lightbox.on("close", () => {
+          this.showThumbnailRow = false;
         });
 
-        lightbox.loadAndOpen(clickedIndex);
+        this.lightbox.on("change", () => {
+          console.log("on change event", this.lightbox.pswp.currSlide.index);
+          this.activeImageIndex = this.lightbox.pswp.currSlide.index;
+          this.scrollToActiveThumbnail();
+        });
+
+        // on lightbox open, show the thumbnail row
+        this.lightbox.on("beforeOpen", () => {
+          console.log("on open event");
+          this.showThumbnailRow = true;
+        });
+      } else {
+        this.showThumbnailRow = false;
       }
     },
     handleClickSingleImage() {
@@ -135,6 +190,7 @@ export default defineComponent({
           img.height,
           window.innerWidth,
           window.innerHeight,
+          this.showThumbnailRow,
         );
 
         const lightbox = setGallery({
@@ -154,12 +210,48 @@ export default defineComponent({
       };
       img.src = this.imageUrl; // This starts the image loading process
     },
+    scrollToActiveThumbnail() {
+      console.log("scrollToActiveThumbnail");
+      this.$nextTick(() => {
+        const scrollContainer = document.querySelector('.thumbnail-row');
+        const activeThumbnail = document.querySelector('.border-green-500');
+
+        if (scrollContainer && activeThumbnail) {
+          const containerScrollLeft = scrollContainer.scrollLeft;
+          const containerWidth = scrollContainer.offsetWidth;
+
+          const thumbnailOffsetLeft = activeThumbnail.offsetLeft;
+          const thumbnailWidth = activeThumbnail.offsetWidth;
+
+          // Calculate the positions
+          const startVisibleArea = containerScrollLeft;
+          const endVisibleArea = startVisibleArea + containerWidth;
+
+          const thumbnailStart = thumbnailOffsetLeft;
+          const thumbnailEnd = thumbnailStart + thumbnailWidth;
+
+          // Check if the thumbnail is not fully visible
+          if (thumbnailStart < startVisibleArea) {
+            // Thumbnail is off to the left
+            scrollContainer.scrollLeft = thumbnailStart;
+          } else if (thumbnailEnd > endVisibleArea) {
+            // Thumbnail is off to the right
+            scrollContainer.scrollLeft = thumbnailStart - containerWidth + thumbnailWidth;
+          }
+
+          // For centering the thumbnail, you might adjust the calculation
+          // Example for centering:
+          // scrollContainer.scrollLeft = thumbnailOffsetLeft + thumbnailWidth / 2 - containerWidth / 2;
+        }
+      });
+    },
   },
 });
 </script>
 
 <template>
   <div
+    :class="{ 'thumbnails-shown': showThumbnailRow }"
     class="overflow-x-auto rounded-lg border bg-black p-4 dark:border-gray-600"
   >
     <figcaption class="mb-2 text-sm text-gray-200">
@@ -181,11 +273,7 @@ export default defineComponent({
           :key="index"
           class="max-w-sm"
         >
-          <img
-            :src="image.src"
-            class="cursor-pointer"
-            @click="handleClick"
-          >
+          <img :src="image.src" class="cursor-pointer" @click="handleClick" />
         </swiper-slide>
       </swiper>
 
@@ -194,6 +282,26 @@ export default defineComponent({
         :src="imageUrl"
         class="max-w-sm cursor-pointer"
         @click="handleClickSingleImage"
+      />
+    </div>
+    <div
+      v-if="showThumbnailRow"
+      :key="activeImageIndex"
+      class="thumbnail-row flex-row gap-2 overflow-x-auto bg-black"
+    >
+      <img
+        v-for="(image, index) in embeddedImages"
+        :key="index"
+        :class="[
+          activeImageIndex === index ? 'border-green-500' : 'border-black',
+        ]"
+        :src="image.thumbnail"
+        class="constrain-img-height flex cursor-pointer border-4"
+        @click="
+          () => {
+            setActiveImage(index);
+          }
+        "
       >
     </div>
   </div>
@@ -223,5 +331,19 @@ p,
 li {
   font-size: 0.9rem;
   line-height: 1.3rem;
+}
+
+.thumbnail-row {
+  display: flex;
+  position: fixed;
+  height: 108px;
+  width: 100%;
+  left: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+.constrain-img-height {
+  height: 92px;
 }
 </style>
