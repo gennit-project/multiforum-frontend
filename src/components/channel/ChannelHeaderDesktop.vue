@@ -72,21 +72,20 @@ export default defineComponent({
             :is-medium="true"
             :is-square="false"
           />
-          <div class="w-full">
-            <div class="flex w-full flex-col">
+          <div>
+            <div>
               <div
-                class="bg-white dark:bg-gray-900 p-2 rounded-lg w-full"
                 :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']"
               >
                 <h1
                   v-if="channelId"
-                  class="flex border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
+                  class="rounded-full px-4 py-2 flex mb-2 bg-white dark:bg-gray-900 border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
                 >
                   {{ channel?.displayName ? channel.displayName : channelId }}
                 </h1>
                 <h2
                   v-if="channel?.uniqueName && channel?.displayName"
-                  class="font-bold leading-6 text-gray-500 dark:text-gray-200"
+                  class="rounded-full px-4 py-2 bg-white dark:bg-gray-900 font-bold text-gray-500 dark:text-gray-200"
                 >
                   {{ `${channel.uniqueName}` }}
                 </h2>
