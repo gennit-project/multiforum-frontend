@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from "vue";
-import { useQuery } from "@vue/apollo-composable";
+import { useQuery, useMutation } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import {
@@ -27,6 +27,9 @@ import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
+import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mutations";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import Notification from "@/components/generic/Notification.vue";
 
 export const COMMENT_LIMIT = 50;
 
@@ -42,6 +45,7 @@ export default defineComponent({
     DiscussionVotes,
     ErrorBanner,
     GenericFeedbackFormModal,
+    Notification,
     PageNotFound,
     PrimaryButton,
     RequireAuth,
@@ -76,6 +80,36 @@ export default defineComponent({
       error: getDiscussionError,
       loading: getDiscussionLoading,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
+
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
+    const { 
+      mutate: addFeedbackCommentToDiscussion,
+      loading: addFeedbackCommentToDiscussionLoading,
+      error: addFeedbackCommentToDiscussionError,
+      onDone: onAddFeedbackCommentToDiscussionDone,
+    } = useMutation(
+      ADD_FEEDBACK_COMMENT_TO_DISCUSSION
+    );
+
+    const showFeedbackFormModal = ref(false);
+    const showFeedbackSubmittedSuccessfully = ref(false);
+
+    onAddFeedbackCommentToDiscussionDone(() => {
+      showFeedbackFormModal.value = false;
+      showFeedbackSubmittedSuccessfully.value = true;
+    });
 
     const commentSort = computed(() => {
       return getSortFromQuery(route.query);
@@ -225,6 +259,9 @@ export default defineComponent({
 
     return {
       activeDiscussionChannel,
+      addFeedbackCommentToDiscussion,
+      addFeedbackCommentToDiscussionError,
+      addFeedbackCommentToDiscussionLoading,
       channelId,
       commentCount,
       comments,
@@ -233,9 +270,11 @@ export default defineComponent({
       getDiscussionLoading,
       getDiscussionChannelLoading,
       discussion,
+      feedbackText: ref(""),
       lgAndUp,
       loadedRootCommentCount,
       loadMore,
+      loggedInUserModName,
       mdAndUp,
       offset,
       previousOffset,
@@ -244,7 +283,8 @@ export default defineComponent({
       aggregateRootCommentCount,
       route,
       router,
-      showFeedbackFormModal: ref(false),
+      showFeedbackFormModal,
+      showFeedbackSubmittedSuccessfully,
       smAndDown,
     };
   },
@@ -252,8 +292,15 @@ export default defineComponent({
     handleClickGiveFeedback() {
       this.showFeedbackFormModal = true;
     },
+    handleFeedbackInput(event: any) {
+      this.feedbackText = event.target.value;
+    },
     handleSubmitFeedback() {
-      this.showFeedbackFormModal = false;
+      this.addFeedbackCommentToDiscussion({
+        discussionId: this.discussionId,
+        text: this.feedbackText,
+        modProfileName: this.loggedInUserModName,
+      });
     },
   }
 });
@@ -383,8 +430,15 @@ export default defineComponent({
     </div>
     <GenericFeedbackFormModal
       :open="showFeedbackFormModal"
+      :loading="addFeedbackCommentToDiscussionLoading"
       @close="showFeedbackFormModal = false"
+      @input="handleFeedbackInput"
       @primaryButtonClick="handleSubmitFeedback"
+    />
+    <Notification
+      :show="showFeedbackSubmittedSuccessfully"
+      :title="'Your feedback was submitted successfully.'"
+      @closeNotification="showFeedbackSubmittedSuccessfully = false"
     />
   </div>
 </template>

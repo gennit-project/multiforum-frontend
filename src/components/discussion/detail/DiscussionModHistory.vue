@@ -12,9 +12,11 @@ import { timeAgo } from "@/dateTimeUtils";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import InfoBanner from "@/components/generic/InfoBanner.vue";
+import Avatar from "@/components/user/Avatar.vue";
 
 export default defineComponent({
   components: {
+    Avatar,
     BackLink,
     DiscussionBody,
     DiscussionHeader,
@@ -142,7 +144,14 @@ export default defineComponent({
       v-for="comment in feedbackComments"
       :key="comment.id"
     >
-      <div class="text-sm leading-8 text-gray-500 dark:text-gray-300">
+      <div class="flex gap-2 text-sm leading-8 text-gray-500 dark:text-gray-300">
+        <Avatar
+          v-if="comment.CommentAuthor?.displayName"
+          class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+          :text="comment.CommentAuthor.displayName"
+          :is-small="true"
+          :is-square="false"
+        />
         <span class="mr-0.5">
           <router-link
             v-if="comment.CommentAuthor?.displayName"
@@ -160,9 +169,10 @@ export default defineComponent({
         }}</span>
       </div>
 
-      <div class="border-l-2 border-gray-200 dark:border-gray-500">
+      <div class="ml-12 border-l-2 border-gray-200 dark:border-gray-500">
         <MarkdownPreview
           v-if="comment.text"
+          class="-ml-4"
           :text="comment.text"
           :disable-gallery="true"
         />

@@ -197,14 +197,55 @@ export const UNDO_DOWNVOTE_DISCUSSION_CHANNEL = gql`
 `;
 
 export const GIVE_FEEDBACK_ON_DISCUSSION = gql`
-mutation giveFeedbackOnDiscussion($discussionId: ID!, $modProfileName: String!, $commentText: String!, $channelUniqueName: String!) {
-  giveFeedbackOnDiscussion(
-    discussionId: $discussionId, 
-    modProfileName: $modProfileName, 
-    commentText: $commentText,
-    channelUniqueName: $channelUniqueName
+  mutation giveFeedbackOnDiscussion(
+    $discussionId: ID!
+    $modProfileName: String!
+    $commentText: String!
+    $channelUniqueName: String!
+  ) {
+    giveFeedbackOnDiscussion(
+      discussionId: $discussionId
+      modProfileName: $modProfileName
+      commentText: $commentText
+      channelUniqueName: $channelUniqueName
     ) {
-    text
+      text
+    }
   }
-}
-`
+`;
+
+export const ADD_FEEDBACK_COMMENT_TO_DISCUSSION = gql`
+  mutation addFeedbackCommentToDiscussion(
+    $modProfileName: String!
+    $text: String!
+    $discussionId: ID!
+  ) {
+    createComments(
+      input: [
+        {
+          isRootComment: true
+          text: $text
+          CommentAuthor: {
+            ModerationProfile: {
+              connect: { where: { node: { displayName: $modProfileName } } }
+            }
+          }
+          GivesFeedbackOnDiscussion: {
+            connect: { where: { node: { id: $discussionId } } }
+          }
+        }
+      ]
+    ) {
+      comments {
+        id
+        CommentAuthor {
+          ... on ModerationProfile {
+            displayName
+          }
+        }
+        createdAt
+        text
+      }
+    }
+  }
+`;
