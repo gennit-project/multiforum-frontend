@@ -23,13 +23,12 @@ function calculateAspectRatioFit(
   srcHeight: number,
   maxWidth: number,
   maxHeight: number,
-  showThumbnailRow: boolean,
 ) {
   const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-  const offsetForThumbnailRow = showThumbnailRow ? 100 : 0;
+  
   return {
     width: srcWidth * ratio,
-    height: srcHeight * ratio - offsetForThumbnailRow,
+    height: srcHeight * ratio,
   };
 }
 
@@ -86,8 +85,7 @@ export default defineComponent({
           this.width,
           this.height,
           window.innerWidth,
-          window.innerHeight,
-          showThumbnailRow.value,
+          window.innerHeight  - 100,
         );
 
         // Find the image in the embeddedImages array and update its dimensions
@@ -111,22 +109,9 @@ export default defineComponent({
 
     const showThumbnailRow = ref(false);
     watch(showThumbnailRow, (newValue) => {
-      console.log("showThumbnailRow", newValue);
-      const elements = document.querySelectorAll(
-        ".pswp__scroll-wrap, .pswp__bg, .pswp--open, .pswp__zoom-wrap, .pswp__img, .pswp__img--placeholder",
-      );
+  document.documentElement.style.setProperty('--thumbnail-row-offset', newValue ? '108px' : '0px');
+});
 
-      console.log("elements", elements);
-      elements.forEach((el) => {
-        // @ts-ignore
-        if (el.style && newValue) {
-          // @ts-ignore
-          el.style["height"] = "calc(100vh - 110px)";
-
-          console.log("setting height: ", el.style["height"]);
-        }
-      });
-    });
     return {
       embeddedImages,
       lightbox,
@@ -138,7 +123,6 @@ export default defineComponent({
   },
   methods: {
     setActiveImage(index: number) {
-      console.log("set active index", index);
       this.activeImageIndex = index;
       // The active thumbnail is scrolled into view.
       this.scrollToActiveThumbnail();
@@ -167,14 +151,12 @@ export default defineComponent({
         });
 
         this.lightbox.on("change", () => {
-          console.log("on change event", this.lightbox.pswp.currSlide.index);
           this.activeImageIndex = this.lightbox.pswp.currSlide.index;
           this.scrollToActiveThumbnail();
         });
 
         // on lightbox open, show the thumbnail row
         this.lightbox.on("beforeOpen", () => {
-          console.log("on open event");
           this.showThumbnailRow = true;
         });
       } else {
@@ -189,8 +171,7 @@ export default defineComponent({
           img.width,
           img.height,
           window.innerWidth,
-          window.innerHeight,
-          this.showThumbnailRow,
+          window.innerHeight - 500,
         );
 
         const lightbox = setGallery({
@@ -211,32 +192,25 @@ export default defineComponent({
       img.src = this.imageUrl; // This starts the image loading process
     },
     scrollToActiveThumbnail() {
-      console.log("scrollToActiveThumbnail");
       this.$nextTick(() => {
-        const scrollContainer = document.querySelector('.thumbnail-row');
-        const activeThumbnail = document.querySelector('.border-green-500');
-
-        
-
+        const scrollContainer = document.querySelector(".thumbnail-row");
+        const activeThumbnail = document.querySelector(".border-green-500");
 
         if (scrollContainer && activeThumbnail) {
-          // If the container is already scrolled to the right, don't scroll
-        // all the way to the left.
-        // Depending on the scroll position, you may need to scroll right or left.
 
-        const scrollContainerRect = scrollContainer.getBoundingClientRect();
-        const activeThumbnailRect = activeThumbnail.getBoundingClientRect();
+          const scrollContainerRect = scrollContainer.getBoundingClientRect();
+          const activeThumbnailRect = activeThumbnail.getBoundingClientRect();
 
-        if (activeThumbnailRect.right > scrollContainerRect.right) {
-          scrollContainer.scrollLeft += activeThumbnailRect.right - scrollContainerRect.right;
-        } else if (activeThumbnailRect.left < scrollContainerRect.left) {
-          scrollContainer.scrollLeft -= scrollContainerRect.left - activeThumbnailRect.left;
-        }
+          if (activeThumbnailRect.right > scrollContainerRect.right) {
+            scrollContainer.scrollLeft +=
+              activeThumbnailRect.right - scrollContainerRect.right;
+          } else if (activeThumbnailRect.left < scrollContainerRect.left) {
+            scrollContainer.scrollLeft -=
+              scrollContainerRect.left - activeThumbnailRect.left;
+          }
         }
       });
     },
-
-
   },
 });
 </script>
@@ -265,7 +239,11 @@ export default defineComponent({
           :key="index"
           class="max-w-sm"
         >
-          <img :src="image.src" class="cursor-pointer" @click="handleClick" />
+          <img
+            :src="image.src"
+            class="cursor-pointer"
+            @click="handleClick"
+          >
         </swiper-slide>
       </swiper>
 
@@ -274,7 +252,7 @@ export default defineComponent({
         :src="imageUrl"
         class="max-w-sm cursor-pointer"
         @click="handleClickSingleImage"
-      />
+      >
     </div>
     <div
       v-if="showThumbnailRow"
@@ -323,6 +301,10 @@ p,
 li {
   font-size: 0.9rem;
   line-height: 1.3rem;
+}
+
+.pswp__scroll-wrap, .pswp__bg, .pswp--open, .pswp__zoom-wrap, .pswp__img, .pswp__img--placeholder {
+  height: calc(100vh - var(--thumbnail-row-offset)) !important;
 }
 
 .thumbnail-row {
