@@ -85,7 +85,7 @@ export default defineComponent({
           this.width,
           this.height,
           window.innerWidth,
-          window.innerHeight  - 100,
+          window.innerHeight - ( embeddedImages.value.length > 0 && showThumbnailRow.value ? 108 : 0)
         );
 
         // Find the image in the embeddedImages array and update its dimensions
@@ -108,9 +108,26 @@ export default defineComponent({
     };
 
     const showThumbnailRow = ref(false);
+    if (embeddedImages.value.length > 0 && showThumbnailRow.value) {
+      document.documentElement.style.setProperty(
+        "--thumbnail-row-offset",
+        "108px",
+      );
+    } else {
+      document.documentElement.style.setProperty(
+        "--thumbnail-row-offset",
+        "0px",
+      );
+    }
+
     watch(showThumbnailRow, (newValue) => {
-  document.documentElement.style.setProperty('--thumbnail-row-offset', newValue ? '108px' : '0px');
-});
+      if (embeddedImages.value.length > 0) {
+        document.documentElement.style.setProperty(
+          "--thumbnail-row-offset",
+          newValue ? "108px" : "0px",
+        );
+      }
+    });
 
     return {
       embeddedImages,
@@ -164,7 +181,6 @@ export default defineComponent({
       }
     },
     handleClickSingleImage() {
-      console.log("handleClickSingleImage");
       const img = new Image();
       img.onload = () => {
         // Image is now fully loaded; perform aspect ratio calculation
@@ -172,7 +188,7 @@ export default defineComponent({
           img.width,
           img.height,
           window.innerWidth,
-          window.innerHeight - 100,
+          window.innerHeight - ( this.embeddedImages.length > 0 && this.showThumbnailRow ? 108 : 0)
         );
 
         const lightbox = setGallery({
@@ -304,7 +320,7 @@ li {
   line-height: 1.3rem;
 }
 
-.pswp__scroll-wrap, .pswp__bg, .pswp--open, .pswp__zoom-wrap, .pswp__img, .pswp__img--placeholder {
+.pswp__scroll-wrap, .pswp--open {
   height: calc(100vh - var(--thumbnail-row-offset)) !important;
 }
 

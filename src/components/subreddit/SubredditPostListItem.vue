@@ -50,12 +50,16 @@ export default defineComponent({
     const usernameLink = `https://www.reddit.com/user/${authorUsername}`;
     const timeAgo = relativeTime(createdAt);
     const showAll = ref(false);
+    const hasImages = computed(() => {
+      return props.post.media && Object.keys(props.post.media.mediaMetadata).length > 0
+    })
 
     return {
       authorUsername,
       commentCount,
       createdAt,
       detailLink,
+      hasImages,
       lgAndUp,
       relativeTime,
       route,
@@ -70,11 +74,6 @@ export default defineComponent({
   methods: {
     isImageUrl(url: string) {
       return url.match(/\.(jpeg|jpg|gif|png)$/) != null;
-    },
-    hasImages() {
-      return (
-        this.post.media && Object.keys(this.post.media.mediaMetadata).length > 0
-      );
     },
   },
 });
@@ -175,7 +174,7 @@ export default defineComponent({
       </v-col> -->
     </v-row>
     <MediaViewer
-      v-if="hasImages() || isImageUrl(post.url || '')"
+      v-if="hasImages || isImageUrl(post.url || '')"
       :media-metadata="post.media.mediaMetadata"
       :image-url="post.url"
     />
