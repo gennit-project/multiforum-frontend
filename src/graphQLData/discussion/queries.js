@@ -168,6 +168,7 @@ export const GET_DISCUSSION_FEEDBACK = gql`
       FeedbackComments {
         id
         text
+        createdAt
         Channel {
           uniqueName
         }

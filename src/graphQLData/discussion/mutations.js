@@ -238,6 +238,7 @@ export const ADD_FEEDBACK_COMMENT_TO_DISCUSSION = gql`
     ) {
       comments {
         id
+        createdAt
         CommentAuthor {
           ... on ModerationProfile {
             displayName
