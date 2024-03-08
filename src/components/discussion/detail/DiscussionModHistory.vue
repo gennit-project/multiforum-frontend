@@ -165,7 +165,7 @@ export default defineComponent({
           >{{ comment.CommentAuthor?.displayName }}</router-link>
         </span>
         <span class="whitespace-nowrap">{{
-          `gave feedback ${timeAgo(new Date(comment.createdAt))}`
+          `gave feedback in ${comment.Channel?.uniqueName} ${timeAgo(new Date(comment.createdAt))}`
         }}</span>
       </div>
 

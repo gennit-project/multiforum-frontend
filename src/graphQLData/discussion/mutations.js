@@ -219,12 +219,14 @@ export const ADD_FEEDBACK_COMMENT_TO_DISCUSSION = gql`
     $modProfileName: String!
     $text: String!
     $discussionId: ID!
+    $channelId: String!
   ) {
     createComments(
       input: [
         {
           isRootComment: true
           text: $text
+          Channel: { connect: { where: { node: { uniqueName: $channelId } } } }
           CommentAuthor: {
             ModerationProfile: {
               connect: { where: { node: { displayName: $modProfileName } } }
@@ -239,6 +241,9 @@ export const ADD_FEEDBACK_COMMENT_TO_DISCUSSION = gql`
       comments {
         id
         createdAt
+        Channel {
+          uniqueName
+        }
         CommentAuthor {
           ... on ModerationProfile {
             displayName

@@ -296,11 +296,15 @@ export default defineComponent({
       this.feedbackText = event.target.value;
     },
     handleSubmitFeedback() {
+      if (!this.activeDiscussionChannel?.channelUniqueName) {
+        console.error("No active discussion channel found.");
+        return;
+      }
       this.addFeedbackCommentToDiscussion({
         discussionId: this.discussionId,
         text: this.feedbackText,
         modProfileName: this.loggedInUserModName,
-        // channelId: this.activeDiscussionChannel?.id,
+        channelId: this.activeDiscussionChannel?.channelUniqueName,
       });
     },
   }
