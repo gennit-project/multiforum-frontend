@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, PropType, computed, ref } from "vue";
 import { Comment } from "@/__generated__/graphql";
-import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
@@ -61,7 +61,7 @@ export default defineComponent({
       default: "",
     },
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
 
     const {
@@ -77,10 +77,32 @@ export default defineComponent({
       return localModProfileNameResult.value.modProfileName;
     });
 
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value.username;
+    });
+
+    const loggedInUserIsAuthor = computed(() => {
+      if (!props.commentData) {
+        return false;
+      }
+      return props.commentData.CommentAuthor?.username === username.value;
+    });
+
     return {
+      loggedInUserIsAuthor,
       loggedInUserModName,
       route,
       showEmojiPicker: ref(false),
+      username
     };
   },
   methods: {
@@ -108,6 +130,7 @@ export default defineComponent({
       <VoteButtons
         v-if="!locked"
         :comment-data="commentData"
+        :show-downvote="!loggedInUserIsAuthor"
         @openModProfile="$emit('openModProfile')"
         @clickFeedback="$emit('clickFeedback')"
       />

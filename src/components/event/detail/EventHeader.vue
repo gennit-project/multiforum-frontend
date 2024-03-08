@@ -20,7 +20,7 @@ import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import { getDuration } from "@/components/utils";
-import ReportEventModal from '@/components/event/detail/ReportEventModal.vue'
+import ReportEventModal from "@/components/event/detail/ReportEventModal.vue";
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 
@@ -38,7 +38,7 @@ export default defineComponent({
     ErrorBanner,
     UsernameWithTooltip,
     ReportEventModal,
-    GenericFeedbackFormModal
+    GenericFeedbackFormModal,
   },
   props: {
     eventData: {
@@ -113,7 +113,8 @@ export default defineComponent({
         return route.params.channelId;
       }
 
-      const defaultChannelId = props.eventData?.EventChannels?.[0]?.channelUniqueName;
+      const defaultChannelId =
+        props.eventData?.EventChannels?.[0]?.channelUniqueName;
 
       if (typeof defaultChannelId === "string") {
         return defaultChannelId;
@@ -172,30 +173,38 @@ export default defineComponent({
           label: "Copy Link",
           value: "",
           event: "copyLink",
-          icon: ALLOWED_ICONS.COPY_LINK
+          icon: ALLOWED_ICONS.COPY_LINK,
         });
       }
 
       if (props.eventData?.Poster?.username === username.value) {
-        out.push({
-          label: "Edit",
-          value: "",
-          event: "handleEdit",
-          icon: ALLOWED_ICONS.EDIT
-        });
-        out.push({
-          label: "Delete",
-          value: "",
-          event: "handleDelete",
-          icon: ALLOWED_ICONS.DELETE
-        });
+        out = out.concat([
+          {
+            label: "Edit",
+            value: "",
+            event: "handleEdit",
+            icon: ALLOWED_ICONS.EDIT,
+          },
+          {
+            label: "Delete",
+            value: "",
+            event: "handleDelete",
+            icon: ALLOWED_ICONS.DELETE,
+          },
+          {
+            label: "View Feedback",
+            value: "",
+            event: "handleViewFeedback",
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          },
+        ]);
 
         if (!props.eventData.canceled) {
           out.push({
             label: "Cancel",
             value: "",
             event: "handleCancel",
-            icon: ALLOWED_ICONS.CANCEL
+            icon: ALLOWED_ICONS.CANCEL,
           });
         }
       } else {
@@ -204,20 +213,20 @@ export default defineComponent({
             label: "Report",
             value: "",
             event: "handleReport",
-            icon: ALLOWED_ICONS.REPORT
+            icon: ALLOWED_ICONS.REPORT,
           },
           {
             label: "Give Feedback",
             value: "",
             event: "handleFeedback",
-            icon: ALLOWED_ICONS.GIVE_FEEDBACK
+            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
           },
           {
             label: "View Feedback",
             value: "",
             event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK
-          }
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          },
         ]);
       }
 

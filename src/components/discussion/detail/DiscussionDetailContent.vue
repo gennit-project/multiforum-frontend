@@ -28,7 +28,10 @@ import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
 import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mutations";
-import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import {
+  GET_LOCAL_MOD_PROFILE_NAME,
+  GET_LOCAL_USERNAME,
+} from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
 
 export const COMMENT_LIMIT = 50;
@@ -80,6 +83,19 @@ export default defineComponent({
       error: getDiscussionError,
       loading: getDiscussionLoading,
     } = useQuery(GET_DISCUSSION, { id: discussionId });
+
+    const {
+      result: localUsernameResult,
+      loading: localUsernameLoading,
+      error: localUsernameError,
+    } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value.username;
+    });
 
     const {
       result: localModProfileNameResult,
@@ -257,6 +273,13 @@ export default defineComponent({
       );
     });
 
+    const loggedInUserIsAuthor = computed(() => {
+      if (!discussion.value) {
+        return false;
+      }
+      return discussion.value.Author?.username === username.value;
+    });
+
     return {
       activeDiscussionChannel,
       addFeedbackCommentToDiscussion,
@@ -275,6 +298,7 @@ export default defineComponent({
       loadedRootCommentCount,
       loadMore,
       loggedInUserModName,
+      loggedInUserIsAuthor,
       mdAndUp,
       offset,
       previousOffset,
@@ -394,6 +418,7 @@ export default defineComponent({
                     v-if="activeDiscussionChannel"
                     :discussion="discussion"
                     :discussion-channel="activeDiscussionChannel"
+                    :show-downvote="!loggedInUserIsAuthor"
                     @handleClickGiveFeedback="handleClickGiveFeedback"
                   />
                 </div>

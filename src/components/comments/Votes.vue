@@ -38,6 +38,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    showDownvote: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup() {
     return {};
@@ -80,6 +84,7 @@ export default defineComponent({
       <i class="fa-solid fa-arrow-up mr-1 w-3" />
     </VoteButton>
     <VoteButton
+      v-if="showDownvote"
       :test-id="'downvote-comment-button'"
       :count="downvoteCount"
       :loading="downvoteLoading"

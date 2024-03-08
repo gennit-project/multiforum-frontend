@@ -164,6 +164,13 @@ export default defineComponent({
       error: localUsernameError,
     } = useQuery(GET_LOCAL_USERNAME);
 
+    const username = computed(() => {
+      if (localUsernameLoading.value || localUsernameError.value) {
+        return "";
+      }
+      return localUsernameResult.value.username;
+    });
+
     const {
       result: localModProfileNameResult,
       loading: localModProfileNameLoading,
@@ -176,14 +183,7 @@ export default defineComponent({
       }
       return localModProfileNameResult.value.modProfileName;
     });
-
-    const username = computed(() => {
-      if (localUsernameLoading.value || localUsernameError.value) {
-        return "";
-      }
-      return localUsernameResult.value.username;
-    });
-
+    
     const menuItems = computed(() => {
       let out: MenuItem[] = [];
 
