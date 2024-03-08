@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed, PropType, watchEffect } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import Comment from "./Comment.vue";
 import LoadMore from "../generic/LoadMore.vue";
 import {
@@ -10,7 +10,6 @@ import {
   DeleteCommentInputData,
 } from "@/types/commentTypes";
 import { GET_COMMENT_REPLIES } from "@/graphQLData/comment/queries";
-import { DOWNVOTE_COMMENT } from "@/graphQLData/comment/mutations";
 import {
   DELETE_COMMENT,
   UPDATE_COMMENT,
@@ -20,12 +19,12 @@ import { useQuery, useMutation } from "@vue/apollo-composable";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
-import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import type { Ref } from "vue";
 import PermalinkedComment from "./PermalinkedComment.vue";
 import ReportCommentModal from "./ReportCommentModal.vue";
-import FeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
-
+import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
+import { ADD_FEEDBACK_COMMENT_TO_COMMENT } from "@/graphQLData/comment/mutations";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { modProfileNameVar } from "@/cache";
 import Notification from "@/components/generic/Notification.vue";
@@ -56,7 +55,7 @@ export default defineComponent({
     WarningModal,
     Notification,
     ReportCommentModal,
-    FeedbackFormModal,
+    GenericFeedbackFormModal,
   },
   inheritAttrs: false,
   props: {
@@ -100,6 +99,14 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const route = useRoute();
+    const router = useRouter();
+
+    const channelId = computed(() => {
+      if (typeof route.params.channelId !== "string") {
+        return "";
+      }
+      return route.params.channelId;
+    });
 
     const activeSort = computed(() => {
       return getSortFromQuery(route.query);
@@ -120,6 +127,23 @@ export default defineComponent({
     const commentToDeleteReplyCount = ref(0);
     const parentOfCommentToDelete = ref("");
     const commentToEdit: Ref<CommentData | null> = ref(null);
+    const showFeedbackSubmittedSuccessfully = ref(false);
+    const showFeedbackFormModal = ref(false);
+    const commentToGiveFeedbackOn: Ref<CommentData | null> = ref(null);
+
+    const { 
+      mutate: addFeedbackCommentToComment,
+      loading: addFeedbackCommentToCommentLoading,
+      error: addFeedbackCommentToCommentError,
+      onDone: onAddFeedbackCommentToCommentDone,
+    } = useMutation(
+      ADD_FEEDBACK_COMMENT_TO_COMMENT
+    );
+
+    onAddFeedbackCommentToCommentDone(() => {
+      showFeedbackFormModal.value = false;
+      showFeedbackSubmittedSuccessfully.value = true;
+    });
 
     const editFormValues = ref<CreateEditCommentFormValues>({
       text: commentToEdit.value?.text || "",
@@ -353,8 +377,6 @@ export default defineComponent({
       return localModProfileNameResult.value.modProfileName;
     });
 
-    const { mutate: downvoteComment } = useMutation(DOWNVOTE_COMMENT);
-
     const permalinkedCommentId = ref(`${route.params.commentId}`);
 
     watchEffect(() => {
@@ -371,15 +393,18 @@ export default defineComponent({
 
     return {
       activeSort,
-      permalinkedCommentId,
+      addFeedbackCommentToComment,
+      addFeedbackCommentToCommentError,
+      addFeedbackCommentToCommentLoading,
+      channelId,
       commentInProcess,
       commentToEdit,
       commentToDeleteId,
       commentToDeleteReplyCount,
+      commentToGiveFeedbackOn,
       createComment,
       createCommentError,
       deleteComment,
-      downvoteComment,
       editComment,
       editCommentError,
       editFormValues,
@@ -388,13 +413,16 @@ export default defineComponent({
       locked: ref(false),
       loggedInUserModName,
       parentOfCommentToDelete,
+      permalinkedCommentId,
       replyFormOpenAtCommentID,
       showCopiedLinkNotification,
       showDeleteCommentModal: ref(false),
       showModProfileModal: ref(false),
-      showFeedbackFormModal: ref(false),
+      showFeedbackFormModal,
       showReportCommentModal: ref(false),
+      showFeedbackSubmittedSuccessfully,
       route,
+      router,
       softDeleteComment,
     };
   },
@@ -452,37 +480,13 @@ export default defineComponent({
         this.deleteComment({ id: this.commentToDeleteId });
       }
     },
-    handleDownvoteComment({
-      commentId,
-      modProfileName,
-    }: {
-      commentId: string;
-      modProfileName: string;
-    }) {
-      if (!commentId) {
-        throw new Error("commentId is required to downvote a comment");
-      }
-      if (!modProfileName) {
-        throw new Error(
-          "loggedInUserModName is required to downvote a comment",
-        );
-      }
-      this.downvoteComment({
-        id: commentId,
-        displayName: modProfileName,
-      });
-    },
-    async handleCreateModProfileClick(commentId: string) {
+    async handleCreateModProfileClick() {
       const result = await this.createModProfile();
 
       const modProfileName =
         result.data.updateUsers.users[0].ModerationProfile.displayName;
 
       modProfileNameVar(modProfileName);
-      this.$emit("downvoteComment", {
-        commentId,
-        modProfileName,
-      });
       this.showModProfileModal = false;
     },
     scrollToTop() {
@@ -504,11 +508,17 @@ export default defineComponent({
     hideEditCommentEditor() {
       this.editFormOpenAtCommentID = "";
     },
-    handleClickGiveFeedback() {
+    handleClickGiveFeedback(commentData: any) {
+      this.commentToGiveFeedbackOn = commentData;
       this.showFeedbackFormModal = true;
     },
-    handleSubmitFeedback(/*event: any*/) {
-      // console.log("handle submit feedback", event);
+    handleSubmitFeedback() {
+      this.addFeedbackCommentToComment({
+        commentId: this.commentToGiveFeedbackOn?.id,
+        text: this.feedbackText,
+        modProfileName: this.loggedInUserModName,
+        channelId: this.channelId,
+      });
     },
     handleClickReport(/*event: any*/) {
       this.showReportCommentModal = true;
@@ -516,8 +526,18 @@ export default defineComponent({
     handleReportComment() {
       // console.log("handle report comment");
     },
-    updateFeedback() {
-      // console.log("update feedback", feedback);
+    updateFeedback(text: string) {
+      this.feedbackText = text;
+    },
+    handleViewFeedback(commentId: string) {
+      this.router.push({
+        name: "CommentFeedback",
+        params: {
+          channelId: this.channelId,
+          discussionId: this.discussionId,
+          commentId: commentId,
+        },
+      })
     },
   },
 });
@@ -566,7 +586,6 @@ export default defineComponent({
             @hideEditCommentEditor="hideEditCommentEditor"
             @clickEditComment="handleClickEdit"
             @deleteComment="handleClickDelete"
-            @downvoteComment="handleDownvoteComment"
             @createComment="handleClickCreate"
             @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
             @updateEditCommentInput="updateEditInputValues"
@@ -575,6 +594,7 @@ export default defineComponent({
             @clickReport="handleClickReport"
             @clickFeedback="handleClickGiveFeedback"
             @updateFeedback="updateFeedback"
+            @handleViewFeedback="handleViewFeedback"
           />
         </template>
       </PermalinkedComment>
@@ -605,7 +625,6 @@ export default defineComponent({
               @hideEditCommentEditor="hideEditCommentEditor"
               @clickEditComment="handleClickEdit"
               @deleteComment="handleClickDelete"
-              @downvoteComment="handleDownvoteComment"
               @createComment="handleClickCreate"
               @updateCreateReplyCommentInput="updateCreateInputValuesForReply"
               @updateEditCommentInput="updateEditInputValues"
@@ -616,6 +635,7 @@ export default defineComponent({
               @clickReport="handleClickReport"
               @clickFeedback="handleClickGiveFeedback"
               @updateFeedback="updateFeedback"
+              @handleViewFeedback="handleViewFeedback"
             />
           </div>
         </div>
@@ -634,12 +654,6 @@ export default defineComponent({
       @close="showDeleteCommentModal = false"
       @primaryButtonClick="handleDeleteComment"
     />
-    <FeedbackFormModal
-      :open="showFeedbackFormModal"
-      @close="showFeedbackFormModal = false"
-      @primaryButtonClick="handleSubmitFeedback"
-      @updateFeedback="updateFeedback"
-    />
     <ReportCommentModal
       :open="showReportCommentModal"
       @close="showReportCommentModal = false"
@@ -657,6 +671,19 @@ export default defineComponent({
       :primary-button-text="'Yes, create a mod profile'"
       @close="showModProfileModal = false"
       @primaryButtonClick="handleCreateModProfileClick"
+    />
+    <GenericFeedbackFormModal
+      :open="showFeedbackFormModal"
+      :loading="addFeedbackCommentToCommentLoading"
+      :error="addFeedbackCommentToCommentError?.message || ''"
+      @close="showFeedbackFormModal = false"
+      @updateFeedback="updateFeedback"
+      @primaryButtonClick="handleSubmitFeedback"
+    />
+    <Notification
+      :show="showFeedbackSubmittedSuccessfully"
+      :title="'Your feedback was submitted successfully.'"
+      @closeNotification="showFeedbackSubmittedSuccessfully = false"
     />
   </div>
 </template>

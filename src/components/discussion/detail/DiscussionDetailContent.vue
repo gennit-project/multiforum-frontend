@@ -300,6 +300,7 @@ export default defineComponent({
         discussionId: this.discussionId,
         text: this.feedbackText,
         modProfileName: this.loggedInUserModName,
+        // channelId: this.activeDiscussionChannel?.id,
       });
     },
   }

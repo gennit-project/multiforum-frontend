@@ -109,6 +109,7 @@ export default defineComponent({
         v-if="!locked"
         :comment-data="commentData"
         @openModProfile="$emit('openModProfile')"
+        @clickFeedback="$emit('clickFeedback')"
       />
       <NewEmojiButton
         :comment-id="commentData.id"
@@ -125,8 +126,7 @@ export default defineComponent({
         v-if="showEditCommentField"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
         @click="$emit('hideEditCommentEditor')"
-        >Cancel</span
-      >
+      >Cancel</span>
       <span
         v-if="showEditCommentField && !commentInProcess"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -136,13 +136,11 @@ export default defineComponent({
             $emit('startCommentSave');
           }
         "
-        >Save</span
-      >
+      >Save</span>
       <span
         v-if="showEditCommentField && commentInProcess"
         class="cursor-pointer underline hover:text-black dark:text-gray-300 dark:hover:text-white"
-        >Saving...</span
-      >
+      >Saving...</span>
       <span
         v-if="commentData.DiscussionChannel"
         :to="`${route.path}/comments/${commentData.id}`"
@@ -174,7 +172,7 @@ export default defineComponent({
       >
         {{ `Show ${replyCount} ${replyCount === 1 ? "Reply" : "Replies"}` }}
       </span>
-      <slot></slot>
+      <slot />
     </div>
 
     <div

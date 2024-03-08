@@ -22,7 +22,6 @@ import EventListView from "@/components/event/list/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 import PermalinkedComment from "@/components/comments/PermalinkedComment.vue";
-import DiscussionReportList from "./components/discussion/detail/DiscussionReportList.vue";
 import DiscussionModHistory from "@/components/discussion/detail/DiscussionModHistory.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
 import UserComments from "@/components/user/UserComments.vue";
@@ -34,6 +33,7 @@ import Issues from "./components/mod/Issues.vue";
 import IssueDetailPage from "./components/mod/IssueDetailPage.vue";
 import OpenIssues from "./components/mod/OpenIssues.vue";
 import ClosedIssues from "./components/mod/ClosedIssues.vue";
+import CommentFeedback from "./components/comments/CommentFeedback.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -42,12 +42,12 @@ export const router = createRouter({
     if (to.hash) {
       return {
         el: to.hash,
-        behavior: 'smooth',
+        behavior: "smooth",
       };
     } else {
       return { top: 0 };
     }
-  },  
+  },
   routes: [
     {
       path: "/",
@@ -78,7 +78,7 @@ export const router = createRouter({
           name: "AccountSettings",
           path: "settings",
           component: AccountSettings,
-        }
+        },
       ],
     },
     {
@@ -165,11 +165,15 @@ export const router = createRouter({
       component: Subreddit,
     },
     {
+      name: "CommentFeedback",
+      path: "/channels/c/:channelId/discussions/d/:discussionId/comments/:commentId/feedback",
+      component: CommentFeedback,
+    },
+    {
       name: "DiscussionDetail",
       path: "/channels/c/:channelId/discussions/d/:discussionId",
       component: DiscussionDetail,
       children: [
-        
         {
           name: "DiscussionCommentPermalink",
           path: "comments/:commentId",
@@ -210,27 +214,18 @@ export const router = createRouter({
               path: "closed",
               component: ClosedIssues,
             },
-          ]
-
+          ],
         },
         {
           name: "IssueDetail",
           path: "issues/i/:issueId",
-          component: IssueDetailPage
+          component: IssueDetailPage,
         },
         {
           name: "DiscussionModHistory",
           path: "discussions/d/:discussionId/modhistory",
           component: DiscussionModHistory,
-          children: [
-            {
-              name: "DiscussionModHistoryReports",
-              path: "reports",
-              component: DiscussionReportList,
-            }
-          ]
         },
-        
         {
           name: "CreateDiscussionInChannel",
           path: "discussions/create",

@@ -3,15 +3,25 @@ import { defineComponent } from "vue";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import HandThumbDownIcon from "@/components/icons/HandThumbDownIcon.vue";
 import TextEditor from '@/components/generic/forms/TextEditor.vue'
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 
 export default defineComponent({
   name: "DiscussionFeedbackFormModal",
   components: {
+    ErrorBanner,
     GenericModal,
     HandThumbDownIcon,
     TextEditor,
   },
   props: {
+    error: {
+      type: String,
+      default: "",
+    },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
     open: {
       type: Boolean,
       default: false,
@@ -36,6 +46,7 @@ export default defineComponent({
     :title="title"
     :body="body"
     :open="open"
+    :loading="loading"
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
   >
@@ -53,6 +64,10 @@ export default defineComponent({
         :disable-auto-focus="false"
         :allow-image-upload="false"
         @update="updateFeedback"
+      />
+      <ErrorBanner
+        v-if="error"
+        :text="error"
       />
       <p class="text-gray-600 dark:text-gray-400">
         Feedback is intended to be a helpful tool for the author. If you think

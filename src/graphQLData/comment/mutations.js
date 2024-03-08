@@ -331,19 +331,56 @@ export const DELETE_COMMENT = gql`
   }
 `;
 
-
 export const GIVE_FEEDBACK_ON_COMMENT = gql`
-mutation giveFeedbackOnComment(
-  $commentId: ID!, 
-  $modProfileName: String!, 
-  $commentText: String!, 
-) {
-  giveFeedbackOnComment(
-    commentId: $commentId, 
-    modProfileName: $modProfileName, 
-    commentText: $commentText,
+  mutation giveFeedbackOnComment(
+    $commentId: ID!
+    $modProfileName: String!
+    $commentText: String!
+  ) {
+    giveFeedbackOnComment(
+      commentId: $commentId
+      modProfileName: $modProfileName
+      commentText: $commentText
     ) {
-    text
+      text
+    }
   }
-}
-`
+`;
+
+export const ADD_FEEDBACK_COMMENT_TO_COMMENT = gql`
+  mutation addFeedbackCommentToComment(
+    $modProfileName: String!
+    $text: String!
+    $commentId: ID!
+    $channelId: String!
+  ) {
+    createComments(
+      input: [
+        {
+          isRootComment: true
+          text: $text
+          CommentAuthor: {
+            ModerationProfile: {
+              connect: { where: { node: { displayName: $modProfileName } } }
+            }
+          }
+          Channel: { connect: { where: { node: { uniqueName: $channelId } } } }
+          GivesFeedbackOnComment: {
+            connect: { where: { node: { id: $commentId } } }
+          }
+        }
+      ]
+    ) {
+      comments {
+        id
+        CommentAuthor {
+          ... on ModerationProfile {
+            displayName
+          }
+        }
+        createdAt
+        text
+      }
+    }
+  }
+`;

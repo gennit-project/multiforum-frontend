@@ -3,10 +3,8 @@ import { defineComponent, PropType, ref, computed } from "vue";
 import { CreateReplyInputData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { relativeTime } from "../../dateTimeUtils";
 import TextEditor from "../generic/forms/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
-import Avatar from "../user/Avatar.vue";
 import CommentButtons from "./CommentButtons.vue";
 import { generateSlug } from "random-word-slugs";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
@@ -19,11 +17,11 @@ import { Comment } from "@/__generated__/graphql";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
-import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import useClipboard from "vue-clipboard3";
 import { modProfileNameVar } from "@/cache";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
+import CommentHeader from "./CommentHeader.vue";
 
 const MAX_COMMENT_DEPTH = 5;
 
@@ -36,16 +34,16 @@ type DeleteCommentInputData = {
 export default defineComponent({
   name: "CommentComponent",
   components: {
-    Avatar,
     ChildComments,
     CommentButtons,
+    CommentHeader,
     EllipsisHorizontal,
     ErrorBanner,
     MarkdownPreview,
     MenuButton,
     RightArrowIcon,
     TextEditor,
-    UsernameWithTooltip,
+    
   },
   props: {
     commentData: {
@@ -295,7 +293,6 @@ export default defineComponent({
       maxCommentDepth: MAX_COMMENT_DEPTH,
       permalinkedCommentId: route.params.commentId,
       permalinkObject,
-      relativeTime,
       replyCount,
       route,
       router,
@@ -304,29 +301,6 @@ export default defineComponent({
       themeLoading,
       theme,
     };
-  },
-  computed: {
-    createdAtFormatted() {
-      if (!this.commentData.createdAt) {
-        return "";
-      }
-      return `${this.compact ? "" : "posted "}${this.relativeTime(
-        this.commentData.createdAt,
-      )}${
-        this.showChannel
-          ? " in c/" +
-            (this.commentData.DiscussionChannel?.channelUniqueName ||
-              this.commentData.Event?.EventChannels[0]?.channelUniqueName ||
-              "")
-          : ""
-      }`;
-    },
-    editedAtFormatted() {
-      if (!this.commentData.updatedAt) {
-        return "";
-      }
-      return `Edited ${this.relativeTime(this.commentData.updatedAt)}`;
-    },
   },
   methods: {
     createComment(parentCommentId: string) {
@@ -385,98 +359,17 @@ export default defineComponent({
           class="flex w-full"
           data-testid="comment"
         >
-          <div class="flex w-full rounded-lg">
-            <Avatar
-              v-if="commentData.CommentAuthor?.username"
-              class="z-10"
-              :is-small="true"
-              :text="commentData.CommentAuthor.username"
-              :src="commentData.CommentAuthor.profilePicURL || ''"
+          <div class="flex-col w-full rounded-lg">
+            <CommentHeader
+              :comment-data="commentData"
+              :is-highlighted="isHighlighted"
+              :parent-comment-id="parentCommentId"
+              :show-context-link="showContextLink"
+              :show-channel="showChannel"
             />
-            <Avatar
-              v-else-if="commentData.CommentAuthor?.displayName"
-              class="z-10"
-              :is-small="true"
-              :text="commentData.CommentAuthor.displayName"
-            />
-
             <div
-              class="-ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
+              class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
-              <div
-                v-if="
-                  showContextLink &&
-                    parentCommentId &&
-                    commentData.DiscussionChannel
-                "
-              >
-                <router-link
-                  class="px-2 text-xs underline"
-                  :to="{
-                    name: 'DiscussionCommentPermalink',
-                    params: {
-                      discussionId: commentData.DiscussionChannel.discussionId,
-                      commentId: parentCommentId,
-                      channelId:
-                        commentData.DiscussionChannel.channelUniqueName,
-                    },
-                  }"
-                >
-                  View Context
-                </router-link>
-              </div>
-              <div class="mt-2 flex items-center">
-                <div
-                  class="ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
-                >
-                  <router-link
-                    v-if="commentData.CommentAuthor?.username"
-                    class="mx-1 font-bold hover:underline dark:text-gray-200"
-                    :to="`/u/${commentData.CommentAuthor.username}`"
-                  >
-                    <UsernameWithTooltip
-                      v-if="commentData.CommentAuthor.username"
-                      :username="commentData.CommentAuthor.username"
-                      :src="commentData.CommentAuthor.profilePicURL"
-                      :display-name="
-                        commentData.CommentAuthor.displayName || ''
-                      "
-                      :comment-karma="
-                        commentData.CommentAuthor.commentKarma ?? 0
-                      "
-                      :discussion-karma="
-                        commentData.CommentAuthor.discussionKarma ?? 0
-                      "
-                      :account-created="commentData.CommentAuthor.createdAt"
-                    />
-                  </router-link>
-                  <router-link
-                    v-else-if="commentData.CommentAuthor?.displayName"
-                    class="mx-1 font-bold hover:underline dark:text-gray-200"
-                    :to="`/u/${commentData.CommentAuthor.displayName}`"
-                  >
-                    {{ commentData.CommentAuthor.displayName }}
-                  </router-link>
-                  <span
-                    v-else
-                    class="font-bold"
-                  >[Deleted]</span>
-                  <span class="mx-2">&middot;</span>
-                  <span>{{ createdAtFormatted }}</span>
-                  <span
-                    v-if="commentData.updatedAt"
-                    class="mx-2"
-                  >
-                    &middot;
-                  </span>
-                  <span>{{ editedAtFormatted }}</span>
-                  <span
-                    v-if="isHighlighted"
-                    class="rounded-lg bg-blue-500 px-2 py-1 text-black"
-                  >Permalinked
-                  </span>
-                </div>
-              </div>
               <div
                 v-if="!themeLoading"
                 class="w-full dark:text-gray-200"
@@ -564,6 +457,7 @@ export default defineComponent({
                       @handleEdit="() => handleEdit(commentData)"
                       @handleReport="handleReport"
                       @clickFeedback="handleFeedback"
+                      @handleViewFeedback="$emit('handleViewFeedback', commentData.id)"
                       @handleDelete="
                         () => {
                           const deleteCommentInput = {
@@ -642,6 +536,7 @@ export default defineComponent({
                 "
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                 @clickFeedback="handleFeedback"
+                @handleViewFeedback="$emit('handleViewFeedback', childComment.id)"
               />
             </div>
           </ChildComments>

@@ -254,15 +254,31 @@ export const GET_COMMENT_REPLIES = gql`
 `;
 
 export const GET_FEEDBACK_ON_COMMENT = gql`
-query getFeedbackOnComment {
+query getFeedbackOnComment (
+  $commentId: ID!
+) {
   comments(
     where: {
-      id: "d1bfb14f-e3f5-453b-9c7c-96d36cdd3fc9"
+      id: $commentId
     }
   ) {
+    id
+    CommentAuthor {
+      ... on User {
+        username
+      }
+    }
+    createdAt
     text
+    FeedbackCommentsAggregate {
+      count
+    }
     FeedbackComments {
+      id
       text
+      Channel {
+        uniqueName
+      }
       CommentAuthor {
         ... on ModerationProfile {
           displayName
@@ -271,5 +287,4 @@ query getFeedbackOnComment {
     }
   }
 }
-
 `
