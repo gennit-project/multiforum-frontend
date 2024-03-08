@@ -44,7 +44,7 @@ export default defineComponent({
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
     :is-square="true"
-    class="sticky top-0 max-h-52 w-full"
+    class="max-h-52 w-full"
   />
   <div class="mb-4 bg-white dark:bg-gray-800">
     <v-container
