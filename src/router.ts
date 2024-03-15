@@ -22,7 +22,8 @@ import EventListView from "@/components/event/list/EventListView.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import CreateUsernamePage from "@/components/auth/CreateUsernamePage.vue";
 import PermalinkedComment from "@/components/comments/PermalinkedComment.vue";
-import DiscussionModHistory from "@/components/discussion/detail/DiscussionModHistory.vue";
+import DiscussionFeedback from "@/components/discussion/detail/DiscussionFeedback.vue";
+import EventFeedback from "@/components/event/detail/EventFeedback.vue";
 import ModProfile from "@/components/mod/ModProfile.vue";
 import UserComments from "@/components/user/UserComments.vue";
 import UserDiscussions from "@/components/user/UserDiscussions.vue";
@@ -222,9 +223,14 @@ export const router = createRouter({
           component: IssueDetailPage,
         },
         {
-          name: "DiscussionModHistory",
-          path: "discussions/d/:discussionId/modhistory",
-          component: DiscussionModHistory,
+          name: "DiscussionFeedback",
+          path: "discussions/d/:discussionId/feedback",
+          component: DiscussionFeedback,
+        },
+        {
+          name: "EventFeedback",
+          path: "events/e/:eventId/feedback",
+          component: EventFeedback,
         },
         {
           name: "CreateDiscussionInChannel",

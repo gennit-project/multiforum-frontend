@@ -109,3 +109,45 @@ $channelUniqueName: String!) {
   }
 }
 `
+
+export const ADD_FEEDBACK_COMMENT_TO_EVENT = gql`
+  mutation addFeedbackCommentToEvent(
+    $modProfileName: String!
+    $text: String!
+    $eventId: ID!
+    $channelId: String!
+  ) {
+    createComments(
+      input: [
+        {
+          isRootComment: true
+          text: $text
+          Channel: { connect: { where: { node: { uniqueName: $channelId } } } }
+          CommentAuthor: {
+            ModerationProfile: {
+              connect: { where: { node: { displayName: $modProfileName } } }
+            }
+          }
+          GivesFeedbackOnEvent: {
+            connect: { where: { node: { id: $eventId } } }
+          }
+        }
+      ]
+    ) {
+      comments {
+        id
+        createdAt
+        Channel {
+          uniqueName
+        }
+        CommentAuthor {
+          ... on ModerationProfile {
+            displayName
+          }
+        }
+        createdAt
+        text
+      }
+    }
+  }
+`;

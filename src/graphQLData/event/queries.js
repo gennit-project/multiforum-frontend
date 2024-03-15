@@ -109,27 +109,29 @@ export const GET_EVENTS = gql`
   ${AUTHOR_FIELDS}
 `;
 
-
-export const GET_FEEDBACK_ON_EVENT = gql`
-query getFeedbackOnEvent {
-  events(
-    where: {
-      id: "b2bc604d-1fe6-431e-b200-95cc9d882597"
-    }
-  ) {
-    title
-    FeedbackComments {
-      text
-      Channel {
-        uniqueName
+export const GET_EVENT_FEEDBACK = gql`
+  query getEventFeedback($id: ID!) {
+    events(where: { id: $id }) {
+      id 
+      title 
+      startTime
+      endTime
+      FeedbackCommentsAggregate {
+        count
       }
-      CommentAuthor {
-        ... on ModerationProfile {
-          displayName
+      FeedbackComments {
+        id
+        text
+        createdAt
+        Channel {
+          uniqueName
+        }
+        CommentAuthor {
+          ... on ModerationProfile {
+            displayName
+          }
         }
       }
     }
   }
-}
-
-`
+`;

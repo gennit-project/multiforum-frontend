@@ -205,7 +205,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative flex bg-white dark:bg-gray-700 rounded-lg p-2 my-1">
+  <li class="relative flex bg-white dark:bg-gray-700 p-2 my-1 border rounded-lg">
     <div class="flex w-full flex-row justify-start gap-4 rounded-lg p-2">
       <div
         v-if="discussion"

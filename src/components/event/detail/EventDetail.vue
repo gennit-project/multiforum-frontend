@@ -18,7 +18,7 @@ import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
 import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import EventBody from "./EventBody.vue";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import ExpandableImage from "@/components/generic/ExpandableImage.vue";
 import EventCommentsWrapper from "./EventCommentsWrapper.vue";
@@ -33,6 +33,7 @@ export default defineComponent({
     BackLink,
     EventChannelLinks,
     ErrorBanner,
+    EventBody,
     EventCommentsWrapper,
     EventFooter,
     EventHeader,
@@ -43,7 +44,6 @@ export default defineComponent({
     RequireAuth,
     PrimaryButton,
     Tag,
-    MarkdownPreview,
   },
   props: {
     compactMode: {
@@ -442,21 +442,10 @@ export default defineComponent({
               class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
             >
               <EventHeader :event-data="event" />
-              <MarkdownPreview
+              <EventBody
                 v-if="event.description"
-                :text="visibleDescription"
-                :disable-gallery="false"
-                class="-ml-4"
+                :event="event"
               />
-              <button
-                v-if="
-                  event?.description && event.description.split(' ').length > 50
-                "
-                class="mt-2 rounded bg-black px-4 py-2 font-bold text-white hover:bg-blue-700"
-                @click="toggleDescription"
-              >
-                {{ showFullDescription ? "Show less" : "Show more" }}
-              </button>
 
               <div class="p-4">
                 <h2 class="text-md mt-4">

@@ -14,7 +14,7 @@ import { useRouter } from "vue-router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { DELETE_EVENT } from "@/graphQLData/event/mutations";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
@@ -23,6 +23,7 @@ import { getDuration } from "@/components/utils";
 import ReportEventModal from "@/components/event/detail/ReportEventModal.vue";
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
+import { ADD_FEEDBACK_COMMENT_TO_EVENT } from "@/graphQLData/event/mutations";
 
 export default defineComponent({
   name: "EventHeader",
@@ -58,6 +59,36 @@ export default defineComponent({
         return route.params.eventId;
       }
       return "";
+    });
+
+    const { 
+      mutate: addFeedbackCommentToEvent,
+      loading: addFeedbackCommentToEventLoading,
+      error: addFeedbackCommentToEventError,
+      onDone: onAddFeedbackCommentToEventDone,
+    } = useMutation(
+      ADD_FEEDBACK_COMMENT_TO_EVENT
+    );
+
+    const showFeedbackFormModal = ref(false);
+    const showFeedbackSubmittedSuccessfully = ref(false);
+
+    onAddFeedbackCommentToEventDone(() => {
+      showFeedbackFormModal.value = false;
+      showFeedbackSubmittedSuccessfully.value = true;
+    });
+
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
     });
 
     const {
@@ -249,25 +280,31 @@ export default defineComponent({
     );
 
     return {
+      addFeedbackCommentToEvent,
+      addFeedbackCommentToEventLoading,
+      addFeedbackCommentToEventError,
       cancelEvent,
       cancelEventError,
+      channelId,
       confirmCancelIsOpen: ref(false),
       confirmDeleteIsOpen: ref(false),
-      reportModalIsOpen: ref(false),
-      showFeedbackFormModal: ref(false),
-      showReportEventModal: ref(false),
       copyAddress,
       copyLink,
-      eventId,
-      channelId,
-      getDuration,
-      menuItems,
-      route,
-      router,
-      showAddressCopiedNotification,
-      showCopiedLinkNotification,
       deleteEvent,
       deleteEventError,
+      eventId,
+      getDuration,
+      feedbackText: ref(''),
+      loggedInUserModName,
+      menuItems,
+      reportModalIsOpen: ref(false),
+      route,
+      router,
+      showFeedbackFormModal,
+      showFeedbackSubmittedSuccessfully,
+      showReportEventModal: ref(false),
+      showAddressCopiedNotification,
+      showCopiedLinkNotification,
     };
   },
   methods: {
@@ -277,7 +314,15 @@ export default defineComponent({
       return startTimeObj.toFormat("cccc LLLL d yyyy h:mm a");
     },
     handleSubmitFeedback() {
-      this.showFeedbackFormModal = false;
+      this.addFeedbackCommentToEvent({
+        eventId: this.eventId,
+        text: this.feedbackText,
+        channelId: this.channelId,
+        modProfileName: this.loggedInUserModName,
+      });
+    },
+    handleFeedbackInput(event: any) {
+      this.feedbackText = event.target.value;
     },
     handleReportEvent() {
       this.showReportEventModal = false;
@@ -287,6 +332,15 @@ export default defineComponent({
     },
     handleClickGiveFeedback() {
       this.showFeedbackFormModal = true;
+    },
+    handleViewFeedback() {
+      this.$router.push({
+        name: "EventFeedback",
+        params: {
+          eventId: this.eventId,
+          channelId: this.channelId,
+        },
+      });
     },
   },
 });
@@ -400,6 +454,7 @@ export default defineComponent({
       @handleCancel="confirmCancelIsOpen = true"
       @handleReport="handleClickReport"
       @handleFeedback="handleClickGiveFeedback"
+      @handleViewFeedback="handleViewFeedback"
     >
       <EllipsisHorizontal
         class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
@@ -444,8 +499,16 @@ export default defineComponent({
     />
     <GenericFeedbackFormModal
       :open="showFeedbackFormModal"
+      :error="addFeedbackCommentToEventError?.message"
+      :loading="addFeedbackCommentToEventLoading"
+      @input="handleFeedbackInput"
       @close="showFeedbackFormModal = false"
       @primaryButtonClick="handleSubmitFeedback"
+    />
+    <Notification
+      :show="showFeedbackSubmittedSuccessfully"
+      :title="'Your feedback has been recorded. Thank you!'"
+      @closeNotification="showFeedbackSubmittedSuccessfully = false"
     />
     <ReportEventModal
       :open="showReportEventModal"

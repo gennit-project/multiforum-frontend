@@ -337,7 +337,7 @@ export default defineComponent({
         @handleFeedback="handleClickGiveFeedback"
         @handleViewFeedback="
           router.push(
-            `/channels/c/${channelId}/discussions/d/${discussion.id}/modhistory`,
+            `/channels/c/${channelId}/discussions/d/${discussion.id}/feedback`,
           )
         "
       >
