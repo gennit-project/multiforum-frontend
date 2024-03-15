@@ -99,7 +99,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="px-2">
+  <div class="md:px-2">
     <div
       v-if="discussion?.body"
       class="-ml-8 -mt-4 max-w-none"
