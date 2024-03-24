@@ -218,14 +218,8 @@ export default defineComponent({
       checkEventIssueExistence,
       discussionId,
       discussionIssueExistenceResult,
-      discussionIssueExistenceLoading,
-      discussionIssueExistenceError,
       eventIssueExistenceResult,
-      eventIssueExistenceLoading,
-      eventIssueExistenceError,
       commentIssueExistenceResult,
-      commentIssueExistenceLoading,
-      commentIssueExistenceError,
       reportContent,
       loggedInUserModName,
       reopenIssue,
@@ -252,7 +246,7 @@ export default defineComponent({
         return `Reported Comment: "${this.comment?.text || ""}"`;
       }
     },
-    submit() {
+    async submit() {
       // If an issue already exists for this discussion, do not create a new one.
       // Instead, update the Comments field on the existing issue and add the
       // new comment to the Comments field.
@@ -264,7 +258,7 @@ export default defineComponent({
       // - If an event ID is provided, we check for an existing issue related to that event.
       // - If a comment ID is provided, we check for an existing issue related to that comment.
       if (this.discussionId) {
-        this.checkDiscussionIssueExistence({
+        await this.checkDiscussionIssueExistence({
           discussionId: this.commentId,
           channelUniqueName: this.channelId,
         });
@@ -314,7 +308,6 @@ export default defineComponent({
       const issueCreateInput: IssueCreateInput = {
         title: this.getIssueTitle(),
         isOpen: true,
-        relatedDiscussionId: this.discussionId,
         authorName: this.loggedInUserModName,
         Author: {
           ModerationProfile: {
@@ -374,17 +367,20 @@ export default defineComponent({
           },
         },
       };
-      this.reportDiscussion({
+      if (this.discussionId) {
+        issueCreateInput.relatedDiscussionId = this.discussionId;
+      }
+      if (this.eventId) {
+        issueCreateInput.relatedEventId = this.eventId;
+      }
+      if (this.commentId) {
+        issueCreateInput.relatedCommentId = this.commentId;
+      }
+      this.reportContent({
         input: [issueCreateInput],
       });
     },
     close() {
-      if (this.reportDiscussionLoading) {
-        return;
-      }
-      if (this.reportDiscussionError) {
-        return;
-      }
       this.$emit("closeReportForm");
     },
   },
@@ -398,7 +394,7 @@ export default defineComponent({
     :open="open"
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
-    :loading="reportDiscussionLoading || addIssueActivityFeedItemLoading"
+    :loading="reportContentLoading || addIssueActivityFeedItemLoading"
     :primary-button-disabled="!reportText"
     @primaryButtonClick="submit"
     @close="close"
@@ -419,8 +415,8 @@ export default defineComponent({
         @update="reportText = $event"
       />
       <ErrorBanner
-        v-if="reportDiscussionError"
-        :text="reportDiscussionError.message"
+        v-if="reportContentError"
+        :text="reportContentError.message"
       />
     </template>
   </GenericModal>

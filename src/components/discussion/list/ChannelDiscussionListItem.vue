@@ -205,53 +205,62 @@ export default defineComponent({
 </script>
 
 <template>
-  <li class="relative flex bg-white dark:bg-gray-700 p-2 my-1 border rounded-lg">
-    <div class="flex w-full flex-row justify-start gap-4 rounded-lg p-2">
-      <div
-        v-if="discussion"
-        class="w-full flex-col gap-2"
-      >
-        <router-link
-          :to="{ path: detailLink, query: filteredQuery }"
-          class="w-full"
-        >
-          <span
-            class="cursor-pointer text-lg font-bold hover:text-gray-500 dark:text-gray-100"
+  <li
+    class="relative my-1 flex rounded-lg border bg-white p-2 dark:bg-gray-700"
+  >
+    <div class="flex w-full flex-row justify-start gap-4 rounded-lg p-1">
+      <div v-if="discussion" class="w-full flex-col">
+        <div class="flex">
+          <div
+            class="mr-2 flex h-10 w-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
           >
-            <HighlightedSearchTerms
-              :text="title"
-              :search-input="searchInput"
-            />
-          </span>
-        </router-link>
-        <p
-          class="font-medium text-xs text-gray-600 no-underline dark:text-gray-300"
-        >
-          <span class="mr-1 text-xs"> {{ `Posted ${relativeTime} by` }}</span>
+            💬
+          </div>
+          <div class="w-full flex-col">
+            <router-link
+              :to="{ path: detailLink, query: filteredQuery }"
+              class="w-full"
+            >
+              <span
+                class="cursor-pointer hover:text-gray-500 dark:text-gray-100"
+              >
+                <HighlightedSearchTerms
+                  :text="title"
+                  :search-input="searchInput"
+                  :classes="'font-bold text-md'"
+                />
+              </span>
+            </router-link>
+            <div
+              class="font-medium py-1 text-xs text-gray-600 no-underline dark:text-gray-300"
+            >
+              <span class="mr-1 text-xs">
+                {{ `Posted ${relativeTime} by` }}</span
+              >
 
-          <UsernameWithTooltip
-            v-if="authorUsername"
-            :username="authorUsername"
-            :src="authorProfilePicURL ?? ''"
-            :display-name="authorDisplayName ?? ''"
-            :comment-karma="authorCommentKarma ?? 0"
-            :discussion-karma="authorDiscussionKarma ?? 0"
-            :account-created="authorAccountCreated"
-          />
-        </p>
-        <hr class="dark:border-gray-600 mt-2">
+              <UsernameWithTooltip
+                v-if="authorUsername"
+                :username="authorUsername"
+                :src="authorProfilePicURL ?? ''"
+                :display-name="authorDisplayName ?? ''"
+                :comment-karma="authorCommentKarma ?? 0"
+                :discussion-karma="authorDiscussionKarma ?? 0"
+                :account-created="authorAccountCreated"
+              />
+            </div>
+          </div>
+        </div>
+        <hr class="dark:border-gray-600" />
 
         <div
-          v-if="truncatedBody"
+          v-if="discussion?.body"
           class="my-2 max-h-72 overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
         >
-          <router-link :to="{ path: detailLink, query: filteredQuery }">
-            <MarkdownPreview
-              :text="truncatedBody || ''"
-              :disable-gallery="true"
-              class="-ml-4"
-            />
-          </router-link>
+          <MarkdownPreview
+            :text="discussion.body"
+            :disable-gallery="true"
+            class="-ml-4"
+          />
         </div>
         <div
           class="font-medium my-1 flex space-x-1 text-xs text-gray-600 hover:no-underline"
@@ -287,10 +296,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <ErrorBanner
-      v-if="errorMessage"
-      :text="errorMessage"
-    />
+    <ErrorBanner v-if="errorMessage" :text="errorMessage" />
   </li>
 </template>
 <style>

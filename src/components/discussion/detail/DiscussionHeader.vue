@@ -333,7 +333,7 @@ export default defineComponent({
           )
         "
         @handleDelete="deleteModalIsOpen = true"
-        @handleClickReport="showReportDiscussionModal = true"
+        @handleClickReport="showOpenIssueModal = true"
         @handleFeedback="handleClickGiveFeedback"
         @handleViewFeedback="
           router.push(
