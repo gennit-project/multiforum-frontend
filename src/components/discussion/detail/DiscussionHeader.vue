@@ -350,15 +350,14 @@ export default defineComponent({
       :title="'Delete Discussion'"
       :body="'Are you sure you want to delete this discussion?'"
       :open="deleteModalIsOpen"
+      :icon="'trash'"
       @close="deleteModalIsOpen = false"
       @primary-button-click="deleteDiscussion"
     />
     <OpenIssueModal
-      v-if="discussion"
       :open="showOpenIssueModal"
       :discussion-title="discussion?.title"
       @close="showOpenIssueModal = false"
-      @closeReportForm="showOpenIssueModal = false"
       @reportSubmittedSuccessfully="
         () => {
           showSuccessfullyReported = true;

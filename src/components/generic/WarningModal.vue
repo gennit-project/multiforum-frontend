@@ -31,6 +31,10 @@ export default defineComponent({
       type: String,
       default: "Cancel",
     },
+    icon: {
+      type: String,
+      default: "ExclamationIcon",
+    },
   },
   setup() {},
 });
@@ -44,9 +48,12 @@ export default defineComponent({
     :primary-button-text="primaryButtonText"
     :secondary-button-text="secondaryButtonText"
   >
-    <ExclamationIcon
-      class="h-6 w-6 text-yellow-600 opacity-100"
-      aria-hidden="true"
-    />
+    <template #icon>
+      <i 
+        v-if="icon === 'trash'" 
+        class="fas fa-trash-alt" 
+      />
+      <ExclamationIcon v-else />
+    </template>
   </GenericModal>
 </template>
