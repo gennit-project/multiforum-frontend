@@ -237,7 +237,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="max-h-screen overflow-auto rounded-lg bg-white pb-8 pt-4 dark:bg-gray-800"
+    class="max-h-screen overflow-auto rounded-lg bg-white pb-8 pt-4 lg:pt-8 lg:px-6 dark:bg-gray-800"
   >
     <div v-if="channelId" class="items-center gap-2"></div>
     <slot />
