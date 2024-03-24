@@ -155,6 +155,7 @@ export default defineComponent({
     };
 
     const deleteModalIsOpen = ref(false);
+    const showOpenIssueModal = ref(false);
 
     const { lgAndDown, lgAndUp, mdAndDown, mdAndUp, xlAndUp } = useDisplay();
 
@@ -257,7 +258,7 @@ export default defineComponent({
       mdAndDown,
       mdAndUp,
       showCopiedLinkNotification,
-      showOpenIssueModal: ref(false),
+      showOpenIssueModal,
       showSuccessfullyReported: ref(false),
       xlAndUp,
     };

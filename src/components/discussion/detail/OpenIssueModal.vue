@@ -381,7 +381,7 @@ export default defineComponent({
       });
     },
     close() {
-      this.$emit("closeReportForm");
+      this.$emit("close");
     },
   },
 });
