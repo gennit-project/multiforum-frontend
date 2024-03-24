@@ -67,7 +67,7 @@ export const GET_ISSUE = gql`
   }
 `;
 
-export const CHECK_ISSUE_EXISTENCE = gql`
+export const CHECK_DISCUSSION_ISSUE_EXISTENCE = gql`
   query getIssue($discussionId: ID!, $channelUniqueName: String!) {
     issues(
       where: {
@@ -80,6 +80,31 @@ export const CHECK_ISSUE_EXISTENCE = gql`
   }
 `;
 
+export const CHECK_EVENT_ISSUE_EXISTENCE = gql`
+  query getIssue($eventId: ID!, $channelUniqueName: String!) {
+    issues(
+      where: {
+        relatedEventId: $eventId,
+        channelUniqueName: $channelUniqueName
+      }
+    ) {
+      id
+    }
+  }
+`
+
+export const CHECK_COMMENT_ISSUE_EXISTENCE = gql`
+  query getIssue($commentId: ID!, $channelUniqueName: String!) {
+    issues(
+      where: {
+        relatedCommentId: $commentId,
+        channelUniqueName: $channelUniqueName
+      }
+    ) {
+      id
+    }
+  }
+`
 export const GET_ISSUES_BY_DISCUSSION = gql`
   query getIssuesByDiscussion($discussionId: ID!) {
     discussions(where: { id: $discussionId }) {

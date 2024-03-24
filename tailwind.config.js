@@ -75,7 +75,7 @@ module.exports = {
       },
     },
     fontWeight: {
-      bold: "700",
+      bold: "800",
       normal: "400",
     },
     container: {

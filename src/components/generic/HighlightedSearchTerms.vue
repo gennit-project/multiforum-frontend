@@ -5,6 +5,10 @@ import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   props: {
+    classes: {
+      type: String,
+      default: '',
+    },
     text: {
       type: String,
       default: '',
@@ -42,6 +46,7 @@ export default defineComponent({
   <span
     v-for="(part, i) in parts"
     :key="i"
+    :class="classes"
   >
     <mark v-if="match(part, searchInput)">
       {{ part }}

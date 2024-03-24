@@ -57,6 +57,7 @@ export default defineComponent({
       error: getDiscussionError,
     } = useQuery(GET_DISCUSSION, {
       id: discussionId,
+      loggedInModName: "placeholder",
     });
 
     const discussion = computed<DiscussionData>(() => {

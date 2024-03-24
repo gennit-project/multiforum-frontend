@@ -18,7 +18,7 @@ import {
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
-import ReportDiscussionModal from "./ReportDiscussionModal.vue";
+import OpenIssueModal from "./OpenIssueModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 
@@ -38,7 +38,7 @@ export default defineComponent({
     Avatar,
     UsernameWithTooltip,
     Notification,
-    ReportDiscussionModal,
+    OpenIssueModal,
   },
   props: {
     discussion: {
@@ -257,7 +257,7 @@ export default defineComponent({
       mdAndDown,
       mdAndUp,
       showCopiedLinkNotification,
-      showReportDiscussionModal: ref(false),
+      showOpenIssueModal: ref(false),
       showSuccessfullyReported: ref(false),
       xlAndUp,
     };
@@ -272,7 +272,7 @@ export default defineComponent({
       this.$emit("handleClickGiveFeedback");
     },
     handleClickReport() {
-      this.showReportCommentModal = true;
+      this.showOpenIssueModal = true;
     },
   },
 });
@@ -353,17 +353,16 @@ export default defineComponent({
       @close="deleteModalIsOpen = false"
       @primary-button-click="deleteDiscussion"
     />
-    <ReportDiscussionModal
+    <OpenIssueModal
       v-if="discussion"
-      :open="showReportDiscussionModal"
-      :discussion-id="discussion.id"
+      :open="showOpenIssueModal"
       :discussion-title="discussion?.title"
-      @close="showReportDiscussionModal = false"
-      @closeReportForm="showReportDiscussionModal = false"
+      @close="showOpenIssueModal = false"
+      @closeReportForm="showOpenIssueModal = false"
       @reportSubmittedSuccessfully="
         () => {
           showSuccessfullyReported = true;
-          showReportDiscussionModal = false;
+          showOpenIssueModal = false;
         }
       "
     />

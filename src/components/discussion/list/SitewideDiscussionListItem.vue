@@ -18,7 +18,7 @@ export default defineComponent({
     MarkdownPreview,
     Tag,
     ChevronDownIcon,
-    UsernameWithTooltip
+    UsernameWithTooltip,
   },
   inheritAttrs: false,
   props: {
@@ -82,27 +82,24 @@ export default defineComponent({
       if (!props.discussion) {
         return [];
       }
-      return props.discussion.DiscussionChannels
-        .map((dc) => {
-          const commentCount = dc.CommentsAggregate?.count || 0;
-          return {
-            label: `${commentCount} ${
-              commentCount === 1 ? "comment" : "comments"
-            } in ${dc.channelUniqueName}`,
-            value: router.resolve({
-              name: "DiscussionDetail",
-              params: {
-                discussionId: props.discussion?.id,
-                channelId: dc.channelUniqueName,
-              },
-            }).href,
-            event: "",
-          };
-        })
-        .sort((a, b) => {
-          return b.label.localeCompare(a.label);
-        });
-       
+      return props.discussion.DiscussionChannels.map((dc) => {
+        const commentCount = dc.CommentsAggregate?.count || 0;
+        return {
+          label: `${commentCount} ${
+            commentCount === 1 ? "comment" : "comments"
+          } in ${dc.channelUniqueName}`,
+          value: router.resolve({
+            name: "DiscussionDetail",
+            params: {
+              discussionId: props.discussion?.id,
+              channelId: dc.channelUniqueName,
+            },
+          }).href,
+          event: "",
+        };
+      }).sort((a, b) => {
+        return b.label.localeCompare(a.label);
+      });
     });
 
     return {
@@ -163,30 +160,59 @@ export default defineComponent({
 
 <template>
   <li
-    class="rounded-lg relative flex gap-3 space-x-2 px-6 py-4 bg-white dark:bg-gray-700"
+    class="relative flex gap-3 space-x-2 rounded-lg bg-white px-6 py-4 dark:bg-gray-700"
   >
     <div class="flex w-full justify-between">
       <div class="w-full">
-        <router-link
-          v-if="discussion"
-          :to="
-            getDetailLink(discussion.DiscussionChannels[0].channelUniqueName)
-          "
-        >
-          <span
-            :class="discussionIdInParams === discussionId ? 'text-black' : ''"
-            class="text-lg cursor-pointer font-bold hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+        <div class="flex border-b pb-2 dark:border-b-gray-600">
+          <div
+            class="mr-2 flex w-10 justify-center rounded-md p-1 text-xl dark:bg-gray-600"
           >
-            <HighlightedSearchTerms
-              :text="title"
-              :search-input="searchInput"
-            />
-          </span>
-        </router-link>
-
+            💬
+          </div>
+          <div>
+            <router-link
+              v-if="discussion"
+              :to="
+                getDetailLink(
+                  discussion.DiscussionChannels[0].channelUniqueName,
+                )
+              "
+            >
+              <span
+                :class="
+                  discussionIdInParams === discussionId ? 'text-black' : ''
+                "
+                class="cursor-pointer hover:text-gray-500 dark:text-gray-100 dark:hover:text-gray-300"
+              >
+                <HighlightedSearchTerms
+                  :text="title"
+                  :search-input="searchInput"
+                  :classes="'font-bold text-md'"
+                />
+              </span>
+            </router-link>
+            <div
+              class="font-medium flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
+            >
+              <span
+                >{{ `Posted ${relativeTime} by ` }}
+                <UsernameWithTooltip
+                  v-if="authorUsername"
+                  :username="authorUsername"
+                  :src="discussion?.Author?.profilePicURL || ''"
+                  :display-name="discussion?.Author?.displayName || ''"
+                  :comment-karma="discussion?.Author?.commentKarma ?? 0"
+                  :discussion-karma="discussion?.Author?.discussionKarma ?? 0"
+                  :account-created="discussion?.Author?.createdAt"
+                />
+              </span>
+            </div>
+          </div>
+        </div>
         <div
           v-if="discussion && discussion.body"
-          class="border-l-2 border-gray-300 dark:bg-gray-700 max-h-72 overflow-auto"
+          class="max-h-72 overflow-auto border-l-2 border-gray-300 dark:bg-gray-700"
         >
           <MarkdownPreview
             :text="discussion.body"
@@ -207,55 +233,31 @@ export default defineComponent({
           />
         </div>
 
-        <div
-          class="font-medium mb-2 flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
-        >
-          <span>{{ `Posted ${relativeTime} by ` }}
-            <UsernameWithTooltip
-              v-if="authorUsername"
-              :username="authorUsername"
-              :src="discussion?.Author?.profilePicURL || ''"
-              :display-name="discussion?.Author?.displayName || ''"
-              :comment-karma="discussion?.Author?.commentKarma ?? 0"
-              :discussion-karma="discussion?.Author?.discussionKarma ?? 0"
-              :account-created="discussion?.Author?.createdAt"
-            />
-          </span>
-        </div>
         <router-link
           v-if="discussion && !submittedToMultipleChannels"
           :to="
             getDetailLink(discussion.DiscussionChannels[0].channelUniqueName)
           "
-          class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
+          class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 underline dark:text-gray-100"
         >
-          <button class="rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-1 dark:hover:bg-gray-500">
-            <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-            <span>{{
-              `View ${commentCount} ${
-                commentCount === 1 ? "comment" : "comments"
-              } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
-            }}</span>
-          </button>
+          <span>{{
+            `View ${commentCount} ${
+              commentCount === 1 ? "comment" : "comments"
+            } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
+          }}</span>
         </router-link>
 
-        <MenuButton
-          v-else-if="discussion"
-          :items="discussionDetailOptions"
-        >
-          <button class="-ml-1 flex items-center rounded-md bg-gray-100 hover:bg-gray-200 dark:bg-gray-600 px-4 pt-2 dark:hover:bg-gray-500 pb-2">
+        <MenuButton v-else-if="discussion" :items="discussionDetailOptions">
+          <button
+            class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+          >
             <i class="fa-regular fa-comment mr-2 h-4 w-4" />
             {{
               `${commentCount} ${
                 commentCount === 1 ? "comment" : "comments"
-              } in ${channelCount} ${
-                channelCount === 1 ? "forum" : "forums"
-              }`
+              } in ${channelCount} ${channelCount === 1 ? "forum" : "forums"}`
             }}
-            <ChevronDownIcon
-              class="-mr-1 ml-2 h-4 w-4"
-              aria-hidden="true"
-            />
+            <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
           </button>
         </MenuButton>
       </div>

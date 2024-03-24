@@ -43,6 +43,11 @@ export default defineComponent({
       required: false,
       default: true,
     },
+    wordLimit: {
+      type: Number,
+      required: false,
+      default: 1000,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -107,7 +112,7 @@ export default defineComponent({
       <MarkdownPreview
         :text="bodyText"
         :disable-gallery="route.name !== 'DiscussionDetail'"
-        :word-limit="1000"
+        :word-limit="wordLimit"
       />
     </div>
     <div class="flex -mt-2">

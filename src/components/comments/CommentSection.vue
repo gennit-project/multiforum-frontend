@@ -21,7 +21,7 @@ import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import type { Ref } from "vue";
 import PermalinkedComment from "./PermalinkedComment.vue";
-import ReportCommentModal from "./ReportCommentModal.vue";
+import OpenIssueModal from "@/components/discussion/detail/OpenIssueModal.vue";
 import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
 import { ADD_FEEDBACK_COMMENT_TO_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
@@ -54,7 +54,7 @@ export default defineComponent({
     PermalinkedComment,
     WarningModal,
     Notification,
-    ReportCommentModal,
+    OpenIssueModal,
     GenericFeedbackFormModal,
   },
   inheritAttrs: false,
@@ -419,7 +419,7 @@ export default defineComponent({
       showDeleteCommentModal: ref(false),
       showModProfileModal: ref(false),
       showFeedbackFormModal,
-      showReportCommentModal: ref(false),
+      showOpenIssueModal: ref(false),
       showFeedbackSubmittedSuccessfully,
       route,
       router,
@@ -521,7 +521,7 @@ export default defineComponent({
       });
     },
     handleClickReport(/*event: any*/) {
-      this.showReportCommentModal = true;
+      this.showOpenIssueModal = true;
     },
     handleReportComment() {
       // console.log("handle report comment");
@@ -654,9 +654,9 @@ export default defineComponent({
       @close="showDeleteCommentModal = false"
       @primaryButtonClick="handleDeleteComment"
     />
-    <ReportCommentModal
-      :open="showReportCommentModal"
-      @close="showReportCommentModal = false"
+    <OpenIssueModal
+      :open="showOpenIssueModal"
+      @close="showOpenIssueModal = false"
       @primaryButtonClick="handleReportComment"
     />
     <Notification

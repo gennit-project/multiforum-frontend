@@ -79,12 +79,6 @@ export default defineComponent({
     });
 
     const {
-      result: getDiscussionResult,
-      error: getDiscussionError,
-      loading: getDiscussionLoading,
-    } = useQuery(GET_DISCUSSION, { id: discussionId });
-
-    const {
       result: localUsernameResult,
       loading: localUsernameLoading,
       error: localUsernameError,
@@ -105,9 +99,18 @@ export default defineComponent({
 
     const loggedInUserModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
-        return "";
+        return "placeholder";
       }
       return localModProfileNameResult.value.modProfileName;
+    });
+
+    const {
+      result: getDiscussionResult,
+      error: getDiscussionError,
+      loading: getDiscussionLoading,
+    } = useQuery(GET_DISCUSSION, { 
+      id: discussionId,
+      loggedInModName: loggedInUserModName
     });
 
     const { 
@@ -337,7 +340,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <div class="align-center mb-2 flex justify-between">
+    <div class="align-center mb-2 md:px-6 flex justify-between">
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
@@ -399,7 +402,7 @@ export default defineComponent({
         <v-col>
           <div class="space-y-3 px-2">
             <div
-              class="dark:bg-gray-950 rounded-lg md:border md:px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
+              class="dark:bg-gray-950 rounded-lg md:border md:px-4 lg:px-12 pb-2 dark:border-gray-700 dark:bg-gray-700"
             >
               <DiscussionHeader
                 :discussion="discussion"

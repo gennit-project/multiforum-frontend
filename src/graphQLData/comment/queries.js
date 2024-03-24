@@ -81,12 +81,6 @@ export const GET_DISCUSSION_COMMENTS = gql`
         UpvotedByUsersAggregate {
           count
         }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
       }
       Comments {
         ...CommentFields
@@ -105,12 +99,14 @@ export const GET_DISCUSSION_COMMENTS = gql`
 export const GET_EVENT_COMMENTS = gql`
   query getEventComments(
     $eventId: ID!
+    $loggedInModName: String!
     $offset: Int
     $limit: Int
     $sort: SortType
   ) {
     getEventComments(
       eventId: $eventId
+      loggedInModName: $loggedInModName
       offset: $offset
       limit: $limit
       sort: $sort

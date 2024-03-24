@@ -123,6 +123,7 @@ export default defineComponent({
             :discussion="discussion"
             :channel-id="channelId"
             :show-emoji-button="false"
+            :word-limit="100"
           />
         </div>
       </div>

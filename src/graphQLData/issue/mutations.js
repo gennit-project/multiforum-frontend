@@ -1,12 +1,14 @@
 import { gql } from "@apollo/client/core";
 import { ISSUE_FIELDS } from "./queries";
 
-export const REPORT_DISCUSSION = gql`
-  mutation reportDiscussion($input: [IssueCreateInput!]!) {
+export const REPORT_CONTENT = gql`
+  mutation reportContent($input: [IssueCreateInput!]!) {
     createIssues(input: $input) {
       issues {
         title
         relatedDiscussionId
+        relatedCommentId
+        relatedEventId
         channelUniqueName
         Author {
           ... on ModerationProfile {
@@ -20,6 +22,7 @@ export const REPORT_DISCUSSION = gql`
     }
   }
 `;
+
 
 export const CLOSE_ISSUE = gql`
   mutation closeIssue($id: ID!) {
@@ -119,70 +122,6 @@ export const ADD_ISSUE_ACTIVITY_FEED_ITEM_WITH_COMMENT = gql`
       issues {
         ...IssueFields
       }
-    }
-  }
-`;
-
-export const REPORT_EVENT = gql`
-  mutation reportEvent(
-    $title: String!
-    $body: String!
-    $relatedEventId: ID!
-    $authorName: String!
-    $channelUniqueName: String!
-  ) {
-    reportEvent(
-      title: $title
-      body: $body
-      relatedEventId: $relatedEventId
-      authorName: $authorName
-      channelUniqueName: $channelUniqueName
-    ) {
-      authorName
-      Author {
-        ... on ModerationProfile {
-          displayName
-        }
-      }
-      title
-      body
-      channelUniqueName
-      Channel {
-        uniqueName
-      }
-      relatedDiscussionId
-    }
-  }
-`;
-
-export const REPORT_COMMENT = gql`
-  mutation reportComment(
-    $title: String!
-    $body: String!
-    $relatedCommentId: ID!
-    $authorName: String!
-    $channelUniqueName: String!
-  ) {
-    reportComment(
-      title: $title
-      body: $body
-      relatedCommentId: $relatedCommentId
-      authorName: $authorName
-      channelUniqueName: $channelUniqueName
-    ) {
-      authorName
-      Author {
-        ... on ModerationProfile {
-          displayName
-        }
-      }
-      title
-      body
-      channelUniqueName
-      Channel {
-        uniqueName
-      }
-      relatedDiscussionId
     }
   }
 `;

@@ -144,11 +144,35 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
   ${AUTHOR_FIELDS}
 `;
 
+
+
+
 export const GET_DISCUSSION = gql`
   ${DISCUSSION_FIELDS}
-  query getDiscussion($id: ID!) {
-    discussions(where: { id: $id }) {
+  query getDiscussion(
+    $id: ID!, 
+    $loggedInModName: String!
+  ) {
+    discussions(where: { 
+      id: $id,
+    }) {
       ...DiscussionFields
+      FeedbackCommentsAggregate {
+        count
+      }
+      FeedbackComments(
+        where: {
+          CommentAuthorConnection: {
+            ModerationProfile: {
+              node: {
+                displayName: $loggedInModName
+              }    
+            }
+          }
+        } 
+      ) {
+        id
+      }
     }
   }
 `;

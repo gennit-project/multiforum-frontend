@@ -89,7 +89,7 @@ export default defineComponent({
       :count="downvoteCount"
       :loading="downvoteLoading"
       :active="downvoteActive"
-      :tooltip-text="downvoteActive ? 'Undo downvote' : 'Give semi-anonymous feedback'"
+      :tooltip-text="downvoteActive ? 'Undo or edit feedback' : 'Give semi-anonymous feedback'"
       @vote="clickDownvote"
     >
       <HandThumbDownIcon class="h-4 w-4" />

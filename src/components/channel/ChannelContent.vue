@@ -56,7 +56,7 @@ export default defineComponent({
     fluid
     class="relative z-0 max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last"
   >
-    <v-row class="flex pt-0 ">
+    <v-row class="flex">
       <v-col
         :cols="mdAndDown ? 12 : 8" 
         class="bg-white dark:bg-gray-900 rounded-lg pt-2 mb-2"

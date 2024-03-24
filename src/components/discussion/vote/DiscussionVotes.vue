@@ -46,6 +46,8 @@ export default defineComponent({
     },
   },
   setup(props) {
+    console.log('props.discussionChannel', props.discussionChannel);
+    console.log('props.discussion', props.discussion);
     const route = useRoute();
 
     const discussionIdInParams = computed(() => {
@@ -152,20 +154,14 @@ export default defineComponent({
     });
 
     const loggedInUserDownvoted = computed(() => {
-      if (
-        localUsernameLoading.value ||
-        !localUsernameResult.value ||
-        !props.discussionChannel
-      ) {
+      // The feedback comments on the discussion are already
+      // filtered by the logged-in moderator's displayname if applicable,
+      // so if there is at least one, the UI should show the downvote button
+      // as active.
+      if (!props.discussion?.FeedbackComments) {
         return false;
       }
-      const mods = props.discussionChannel.DownvotedByModerators || [];
-      const loggedInMod = localModProfileNameResult.value.modProfileName;
-      const match =
-        mods.filter((mod: any) => {
-          return mod.displayName === loggedInMod;
-        }).length === 1;
-      return match;
+      return props.discussion.FeedbackComments.length > 0;
     });
 
     const upvoteCount = computed(() => {
@@ -176,10 +172,10 @@ export default defineComponent({
     });
 
     const downvoteCount = computed(() => {
-      if (props.discussionChannel) {
-        return props.discussionChannel.DownvotedByModeratorsAggregate?.count;
+      if (!props.discussion?.FeedbackCommentsAggregate) {
+        return 0;
       }
-      return 0;
+      return props.discussion.FeedbackCommentsAggregate.count;
     });
 
     const randomWords = generateSlug(4, { format: "camel" });
