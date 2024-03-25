@@ -402,7 +402,7 @@ export default defineComponent({
         <v-col>
           <div class="space-y-3 px-2">
             <div
-              class="dark:bg-gray-950 rounded-lg md:border md:px-4 lg:px-12 pb-2 dark:border-gray-700 dark:bg-gray-700"
+              class="dark:bg-gray-950 rounded-lg md:border md:px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
             >
               <DiscussionHeader
                 :discussion="discussion"
