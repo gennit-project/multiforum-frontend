@@ -51,8 +51,11 @@ export default defineComponent({
     const timeAgo = relativeTime(createdAt);
     const showAll = ref(false);
     const hasImages = computed(() => {
-      return props.post.media && Object.keys(props.post.media.mediaMetadata).length > 0
-    })
+      return (
+        props.post.media &&
+        Object.keys(props.post.media.mediaMetadata).length > 0
+      );
+    });
 
     return {
       authorUsername,
@@ -82,18 +85,15 @@ export default defineComponent({
 <template>
   <li
     :class="[
-      !compact ? 'rounded-lg px-4' : 'px-2',
+      'rounded-lg px-2',
       post.stickied
-        ? 'border border-2 border-blue-500 dark:border-blue-600'
+        ? 'border-2 border-blue-500 dark:border-blue-600'
         : '',
     ]"
-    class="relative mt-1 space-y-3 bg-white dark:bg-gray-700 lg:px-8 lg:py-2"
+    class="relative mt-1 space-y-3 bg-white dark:bg-gray-700 lg:px-4 lg:py-2"
   >
     <v-row>
-      <v-col
-        :cols="12"
-        class="flex-col"
-      >
+      <v-col :cols="12" class="flex-col">
         <div class="mb-2 text-xs text-gray-500 dark:text-gray-300">
           <i
             v-if="post.stickied"
@@ -102,32 +102,43 @@ export default defineComponent({
           {{ post.stickied ? "Pinned by moderators" : "" }}
         </div>
         <div class="flex-col dark:divide-gray-600">
-          <span
-            class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
-          >
-            <a
-              :href="detailLink"
-              target="_blank"
-              class="hover:text-gray-500"
-            >{{ title }}</a>
-          </span>
-            
-          <span
-            v-if="post.flair?.linkFlairText"
-            class="ml-2 rounded-md bg-gray-200 px-2 py-1 dark:bg-gray-600"
-          >
-            {{ post.flair?.linkFlairText || "" }}
-          </span>
+          <div class="flex border-b pb-2 ">
+            <div
+              class="mr-2 flex h-10 w-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
+            >
+              💬
+            </div>
+            <div>
+              <span
+                class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
+              >
+                <a
+                  :href="detailLink"
+                  target="_blank"
+                  class="hover:text-gray-500"
+                  >{{ title }}</a
+                >
+              </span>
 
-          <div class="mt-2 border-b pb-2 no-underline">
-            <span class="mr-1 text-xs text-gray-500 dark:text-gray-300">
-              {{ `Posted ${timeAgo} by` }}</span>
-            <a
-              class="cursor-pointer text-xs underline hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400 hover:dark:text-gray-300"
-              :href="usernameLink"
-              target="_blank"
-            >{{ authorUsername }}
-            </a>
+              <span
+                v-if="post.flair?.linkFlairText"
+                class="ml-2 rounded-md bg-gray-200 px-2 py-1 dark:bg-gray-600"
+              >
+                {{ post.flair?.linkFlairText || "" }}
+              </span>
+
+              <div class="no-underline">
+                <span class="mr-1 text-xs text-gray-500 dark:text-gray-300">
+                  {{ `Posted ${timeAgo} by` }}</span
+                >
+                <a
+                  class="cursor-pointer text-xs underline hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400 hover:dark:text-gray-300"
+                  :href="usernameLink"
+                  target="_blank"
+                  >{{ authorUsername }}
+                </a>
+              </div>
+            </div>
           </div>
           <div
             v-if="truncatedBody"
@@ -149,14 +160,14 @@ export default defineComponent({
             />
             <button
               v-if="truncatedBody.length > TRUNCATED_LENGTH && !showAll"
-              class="text-xs ml-8 text-gray-500 dark:text-gray-300 cursor-pointer"
+              class="ml-8 cursor-pointer text-xs text-gray-500 dark:text-gray-300"
               @click="showAll = true"
             >
               Show more
             </button>
-            <button 
+            <button
               v-else-if="truncatedBody.length > TRUNCATED_LENGTH && showAll"
-              class="text-xs ml-8 text-gray-500 dark:text-gray-300 cursor-pointer"
+              class="ml-8 cursor-pointer text-xs text-gray-500 dark:text-gray-300"
               @click="showAll = false"
             >
               Show less
@@ -179,11 +190,7 @@ export default defineComponent({
       :image-url="post.url"
     />
     <div class="mt-2 flex items-center justify-start gap-6">
-      <a
-        :href="detailLink"
-        target="_blank"
-        class="rounded-md underline pt-1"
-      >
+      <a :href="detailLink" target="_blank" class="rounded-md pt-1 underline">
         <i class="fa-regular fa-comment h-6 w-6" />
         <span class="text-sm">{{
           `${commentCount} comment${commentCount === 1 ? "" : "s"}`

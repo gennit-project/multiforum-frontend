@@ -128,17 +128,17 @@ module.exports = {
             h1: {
               textDecoration: "none",
               wordWrap: "break-word",
-              fontSize: "3rem",
+              fontSize: "2rem",
             },
             h2: {
               textDecoration: "none",
               wordWrap: "break-word",
-              fontSize: "2em",
+              fontSize: "1.5rem",
             },
             h3: {
               textDecoration: "none",
               wordWrap: "break-word",
-              fontSize: "1.25rem",
+              fontSize: "1rem",
             },
             h4: {
               textDecoration: "none",
