@@ -166,7 +166,7 @@ export default defineComponent({
       <div class="w-full">
         <div class="flex border-b pb-2 dark:border-b-gray-600">
           <div
-            class="mr-2 flex w-10 justify-center rounded-md p-1 text-xl dark:bg-gray-600 bg-gray-100"
+            class="mr-2 flex w-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
           >
             💬
           </div>
@@ -238,9 +238,9 @@ export default defineComponent({
           :to="
             getDetailLink(discussion.DiscussionChannels[0].channelUniqueName)
           "
-          class="mt-1 flex cursor-pointer items-center justify-start gap-1 text-gray-500 underline dark:text-gray-100"
+          class="mt-1 flex cursor-pointer items-center justify-start gap-1 text-xs text-gray-400 dark:text-gray-100"
         >
-          <span>{{
+          <span class="font-bold hover:underline">{{
             `View ${commentCount} ${
               commentCount === 1 ? "comment" : "comments"
             } in c/${discussion.DiscussionChannels[0].channelUniqueName}`
