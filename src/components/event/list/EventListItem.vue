@@ -349,7 +349,7 @@ export default defineComponent({
   >
     <div>
       <div class="block">
-        <div class="py-1">
+        <div>
           <div class="flex">
             <div
               class="mr-4 flex h-16 w-16 flex-col items-center justify-center rounded-lg"
@@ -382,7 +382,7 @@ export default defineComponent({
                 :src="event.coverImageURL"
                 class="mb-4 max-h-48 rounded-lg"
               >
-              <p class="space-x-2">
+              <div>
                 <span
                   class="text-lg cursor-pointer font-bold hover:underline dark:text-gray-100"
                 >
@@ -396,7 +396,7 @@ export default defineComponent({
                   v-if="event.canceled"
                   class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
                 >Canceled</span>
-              </p>
+              </div>
               <p
                 class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
               >
