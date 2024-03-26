@@ -263,7 +263,7 @@ export default defineComponent({
         return `Reported Discussion: "${this.discussionTitle}"`;
       }
       if (this.eventId) {
-        return `Reported Event: "${this.event.title}"`;
+        return `Reported Event: "${this.eventTitle}"`;
       }
       if (this.commentId) {
         return `Reported Comment: "${this.comment?.text || ""}"`;
@@ -285,7 +285,19 @@ export default defineComponent({
       // - If a discussion ID is provided, we check for an existing issue related to that discussion.
       // - If an event ID is provided, we check for an existing issue related to that event.
       // - If a comment ID is provided, we check for an existing issue related to that comment.
-      if (this.discussionId) {
+      
+      if (this.commentId) {
+        // Check if it is a comment first, because event IDs and discussion IDs
+        // will be present in the URL for the comments, but a comment ID
+        // will not be present in the props if this component is for
+        // reporting a discussion or event.
+        const existingIssueIds = await this.checkCommentIssueExistence();
+        if (existingIssueIds && existingIssueIds.issues?.length > 0) {
+          existingIssueId = existingIssueIds.issues[0].id || "";
+        }
+        console.log("checked for comment issue existence", existingIssueId);
+      }
+      else if (this.discussionId) {
         console.log("checking for discussion issue existence");
         const existingIssueIds = await this.checkDiscussionIssueExistence();
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
@@ -300,14 +312,6 @@ export default defineComponent({
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
         console.log("checked for event issue existence", existingIssueId);
-      }
-
-      else if (this.commentId) {
-        const existingIssueIds = await this.checkCommentIssueExistence();
-        if (existingIssueIds && existingIssueIds.issues?.length > 0) {
-          existingIssueId = existingIssueIds.issues[0].id || "";
-        }
-        console.log("checked for comment issue existence", existingIssueId);
       }
 
       if (existingIssueId) {

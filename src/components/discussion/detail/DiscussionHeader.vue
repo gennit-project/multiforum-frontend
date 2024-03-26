@@ -366,6 +366,11 @@ export default defineComponent({
         }
       "
     />
+    <Notification
+      :show="showSuccessfullyReported"
+      :title="'Your report was submitted successfully.'"
+      @closeNotification="showSuccessfullyReported = false"
+    />
     <ErrorBanner
       v-if="deleteDiscussionError"
       class="mt-2"
@@ -375,11 +380,6 @@ export default defineComponent({
       :show="showCopiedLinkNotification"
       :title="'Copied to clipboard!'"
       @closeNotification="showCopiedLinkNotification = false"
-    />
-    <Notification
-      :show="showSuccessfullyReported"
-      :title="'Your report was submitted successfully.'"
-      @closeNotification="showSuccessfullyReported = false"
     />
   </div>
 </template>

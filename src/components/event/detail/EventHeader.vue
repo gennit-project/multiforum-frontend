@@ -20,10 +20,10 @@ import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import { getDuration } from "@/components/utils";
-import ReportEventModal from "@/components/event/detail/ReportEventModal.vue";
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import { ADD_FEEDBACK_COMMENT_TO_EVENT } from "@/graphQLData/event/mutations";
+import OpenIssueModal from "@/components/discussion/detail/OpenIssueModal.vue";
 
 export default defineComponent({
   name: "EventHeader",
@@ -35,10 +35,10 @@ export default defineComponent({
     LocationIcon,
     MenuButton,
     Notification,
+    OpenIssueModal,
     WarningModal,
     ErrorBanner,
     UsernameWithTooltip,
-    ReportEventModal,
     GenericFeedbackFormModal,
   },
   props: {
@@ -303,6 +303,7 @@ export default defineComponent({
       showFeedbackFormModal,
       showFeedbackSubmittedSuccessfully,
       showReportEventModal: ref(false),
+      showSuccessfullyReported: ref(false),
       showAddressCopiedNotification,
       showCopiedLinkNotification,
     };
@@ -510,10 +511,21 @@ export default defineComponent({
       :title="'Your feedback has been recorded. Thank you!'"
       @closeNotification="showFeedbackSubmittedSuccessfully = false"
     />
-    <ReportEventModal
+    <OpenIssueModal
       :open="showReportEventModal"
+      :event-title="eventData.title"
       @close="showReportEventModal = false"
-      @primaryButtonClick="handleReportEvent"
+      @reportSubmittedSuccessfully="
+        () => {
+          showSuccessfullyReported = true;
+          showReportEventModal = false;
+        }
+      "
+    />
+    <Notification
+      :show="showSuccessfullyReported"
+      :title="'Your report was submitted successfully.'"
+      @closeNotification="showSuccessfullyReported = false"
     />
   </div>
 </template>
