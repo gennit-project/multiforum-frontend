@@ -281,8 +281,10 @@ export default defineComponent({
       visibleDescription,
     };
   },
-  created() {
-    window.scrollTo(0, 0);
+  mounted() {
+    this.$nextTick(() => {
+      window.scrollTo(0, 0);
+    });
   },
   methods: {
     openLink() {
