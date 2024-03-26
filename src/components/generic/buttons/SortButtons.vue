@@ -103,7 +103,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex items-center space-x-4">
+  <div class="flex items-center space-x-4 border-b dark:border-b-gray-600">
     <nav
       class="flex items-center space-x-2 pt-1 text-sm"
       aria-label="Sort Buttons"

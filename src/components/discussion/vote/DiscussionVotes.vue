@@ -46,8 +46,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log('props.discussionChannel', props.discussionChannel);
-    console.log('props.discussion', props.discussion);
     const route = useRoute();
 
     const discussionIdInParams = computed(() => {

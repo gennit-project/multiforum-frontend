@@ -123,7 +123,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const route = useRoute();
 
     const channelId = computed(() => {
@@ -209,6 +209,19 @@ export default defineComponent({
       emit("reportSubmittedSuccessfully");
     });
 
+    const modalTitle = computed(() => {
+      if (discussionId.value) {
+        return "Report Discussion";
+      }
+      if (eventId.value) {
+        return "Report Event";
+      }
+      if (props.commentId) {
+        return "Report Comment";
+      }
+      return "Report Content";
+    })
+
     return {
       addIssueActivityFeedItem,
       addIssueActivityFeedItemLoading,
@@ -216,10 +229,11 @@ export default defineComponent({
       checkCommentIssueExistence,
       checkDiscussionIssueExistence,
       checkEventIssueExistence,
+      commentIssueExistenceResult,
       discussionId,
       discussionIssueExistenceResult,
       eventIssueExistenceResult,
-      commentIssueExistenceResult,
+      modalTitle,
       reportContent,
       loggedInUserModName,
       reopenIssue,
@@ -250,6 +264,11 @@ export default defineComponent({
       // If an issue already exists for this discussion, do not create a new one.
       // Instead, update the Comments field on the existing issue and add the
       // new comment to the Comments field.
+      if (!this.discussionId && !this.eventId && !this.commentId) {
+        console.error("No discussion, event, or comment ID provided.");
+        return;
+      }
+      console.log("submitting report");
 
       let issueAlreadyExists = false;
       // First we check for existing issues. This 'open issue modal'
@@ -258,6 +277,7 @@ export default defineComponent({
       // - If an event ID is provided, we check for an existing issue related to that event.
       // - If a comment ID is provided, we check for an existing issue related to that comment.
       if (this.discussionId) {
+        console.log('checking for discussion issue existence')
         await this.checkDiscussionIssueExistence({
           discussionId: this.commentId,
           channelUniqueName: this.channelId,
@@ -389,7 +409,7 @@ export default defineComponent({
 <template>
   <GenericModal
     :highlight-color="'red'"
-    :title="'Report Discussion'"
+    :title="modalTitle"
     :body="'Why should this discussion be removed? Please be specific about any rule violations.'"
     :open="open"
     :primary-button-text="'Submit'"
