@@ -212,7 +212,7 @@ export default defineComponent({
       <div v-if="discussion" class="w-full flex-col">
         <div class="flex">
           <div
-            class="mr-2 flex h-10 w-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
+            class="mr-2 flex h-10 w-10 justify-center items-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
           >
             💬
           </div>
@@ -227,7 +227,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-bold text-md'"
+                  :classes="'font-bold text-lg'"
                 />
               </span>
             </router-link>
