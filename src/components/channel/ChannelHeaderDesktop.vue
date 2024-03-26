@@ -75,7 +75,7 @@ export default defineComponent({
           <div>
             <div>
               <div
-                :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-16']"
+                :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-12']"
               >
                 <h1
                   v-if="channelId"
