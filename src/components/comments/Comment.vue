@@ -250,7 +250,7 @@ export default defineComponent({
           {
             label: "Report",
             value: "",
-            event: "handleReport",
+            event: "clickReport",
             icon: ALLOWED_ICONS.REPORT,
           },
           {
@@ -455,7 +455,7 @@ export default defineComponent({
                       :items="commentMenuItems"
                       @copyLink="copyLink"
                       @handleEdit="() => handleEdit(commentData)"
-                      @handleReport="handleReport"
+                      @clickReport="handleReport"
                       @clickFeedback="handleFeedback"
                       @handleViewFeedback="$emit('handleViewFeedback', commentData.id)"
                       @handleDelete="

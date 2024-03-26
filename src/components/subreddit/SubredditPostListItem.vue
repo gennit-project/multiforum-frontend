@@ -102,20 +102,20 @@ export default defineComponent({
           {{ post.stickied ? "Pinned by moderators" : "" }}
         </div>
         <div class="flex-col dark:divide-gray-600">
-          <div class="flex border-b pb-2 ">
+          <div class="flex border-b dark:border-b-gray-600 pb-2 ">
             <div
-              class="mr-2 flex h-10 w-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
+              class="mr-2 flex h-12 w-12 justify-center items-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
             >
-              💬
+              <div>💬</div>
             </div>
-            <div>
+            <div class="flex-1">
               <span
                 class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
               >
                 <a
                   :href="detailLink"
                   target="_blank"
-                  class="hover:text-gray-500"
+                  class="hover:text-gray-500 text-lg"
                   >{{ title }}</a
                 >
               </span>

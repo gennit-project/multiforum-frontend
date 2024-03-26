@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from "vue";
+import { defineComponent, computed, ref, PropType } from "vue";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import FlagIcon from "@/components/icons/FlagIcon.vue";
 import { useMutation, useQuery, useLazyQuery } from "@vue/apollo-composable";
@@ -114,7 +114,7 @@ export default defineComponent({
       default: "",
     },
     comment: {
-      type: Comment,
+      type: Object as PropType<Comment | null | undefined>,
       required: false,
       default: null,
     },
@@ -219,16 +219,40 @@ export default defineComponent({
     });
 
     const modalTitle = computed(() => {
-      if (discussionId.value) {
-        return "Report Discussion";
-      }
-      if (eventId.value) {
-        return "Report Event";
-      }
+      // Check the comment first because the comment ID will be present
+      // in the URL for the comments, but a comment ID will not be present
+      // in the props if this component is for reporting a discussion or event.
       if (props.commentId) {
         return "Report Comment";
+      } else if (discussionId.value) {
+        return "Report Discussion";
+      } else if (eventId.value) {
+        return "Report Event";
       }
+
       return "Report Content";
+    });
+
+    const modalBody = computed(() => {
+      let contentType = "discussion";
+      if (props.commentId) {
+        contentType = "comment";
+      } else if (eventId.value) {
+        contentType = "event";
+      }
+
+      return `Why should this ${contentType} be removed? Please be specific about any rule violations.`;
+    });
+
+    const modalPlaceholder = computed(() => {
+      let contentType = "discussion";
+      if (props.commentId) {
+        contentType = "comment";
+      } else if (eventId.value) {
+        contentType = "event";
+      }
+
+      return `Explain why this ${contentType} should be removed`;
     });
 
     return {
@@ -242,6 +266,8 @@ export default defineComponent({
       discussionId,
       discussionIssueExistenceResult,
       eventIssueExistenceResult,
+      modalBody,
+      modalPlaceholder,
       modalTitle,
       reportContent,
       loggedInUserModName,
@@ -266,7 +292,11 @@ export default defineComponent({
         return `Reported Event: "${this.eventTitle}"`;
       }
       if (this.commentId) {
-        return `Reported Comment: "${this.comment?.text || ""}"`;
+        const truncatedCommentText =
+          this.comment?.text?.length > 50
+            ? this.comment?.text?.substring(0, 50) + "..."
+            : this.comment?.text;
+        return `Reported Comment: "${truncatedCommentText || ""}"`;
       }
     },
     async submit() {
@@ -285,7 +315,7 @@ export default defineComponent({
       // - If a discussion ID is provided, we check for an existing issue related to that discussion.
       // - If an event ID is provided, we check for an existing issue related to that event.
       // - If a comment ID is provided, we check for an existing issue related to that comment.
-      
+
       if (this.commentId) {
         // Check if it is a comment first, because event IDs and discussion IDs
         // will be present in the URL for the comments, but a comment ID
@@ -296,22 +326,23 @@ export default defineComponent({
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
         console.log("checked for comment issue existence", existingIssueId);
-      }
-      else if (this.discussionId) {
+
+      } else if (this.discussionId) {
         console.log("checking for discussion issue existence");
         const existingIssueIds = await this.checkDiscussionIssueExistence();
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
-          console.log('setting issue to ',existingIssueIds.issues[0].id )
+          console.log("setting issue to ", existingIssueIds.issues[0].id);
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
         console.log("checked for discussion issue existence", existingIssueIds);
-      }
-      else if (this.eventId) {
+
+      } else if (this.eventId) {
         const existingIssueIds = await this.checkEventIssueExistence();
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
         console.log("checked for event issue existence", existingIssueId);
+        
       }
 
       if (existingIssueId) {
@@ -324,13 +355,11 @@ export default defineComponent({
         });
 
         console.log("existing issue found", {
-
           issueId: existingIssueId,
           displayName: this.loggedInUserModName,
           actionDescription: "reported the discussion",
           actionType: "report",
           commentText: this.reportText,
-        
         });
 
         // If the existing issue is closed, reopen it.
@@ -405,15 +434,14 @@ export default defineComponent({
           },
         },
       };
-      if (this.discussionId) {
-        issueCreateInput.relatedDiscussionId = this.discussionId;
-      }
-      if (this.eventId) {
-        issueCreateInput.relatedEventId = this.eventId;
-      }
       if (this.commentId) {
         issueCreateInput.relatedCommentId = this.commentId;
+      } else if (this.discussionId) {
+        issueCreateInput.relatedDiscussionId = this.discussionId;
+      } else if (this.eventId) {
+        issueCreateInput.relatedEventId = this.eventId;
       }
+
       this.reportContent({
         input: [issueCreateInput],
       });
@@ -428,7 +456,7 @@ export default defineComponent({
   <GenericModal
     :highlight-color="'red'"
     :title="modalTitle"
-    :body="'Why should this discussion be removed? Please be specific about any rule violations.'"
+    :body="modalBody"
     :open="open"
     :primary-button-text="'Submit'"
     :secondary-button-text="'Cancel'"
@@ -447,7 +475,7 @@ export default defineComponent({
       <TextEditor
         :test-id="'report-discussion-input'"
         :initial-value="reportText"
-        :placeholder="'Explain why this discussion should be removed'"
+        :placeholder="modalPlaceholder"
         :disable-auto-focus="false"
         :allow-image-upload="false"
         @update="reportText = $event"

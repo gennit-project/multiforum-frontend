@@ -4,7 +4,6 @@ import { useRoute, useRouter } from "vue-router";
 import Comment from "./Comment.vue";
 import LoadMore from "../generic/LoadMore.vue";
 import {
-  CommentData,
   CreateEditCommentFormValues,
   CreateReplyInputData,
   DeleteCommentInputData,
@@ -126,10 +125,11 @@ export default defineComponent({
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
     const parentOfCommentToDelete = ref("");
-    const commentToEdit: Ref<CommentData | null> = ref(null);
+    const commentToEdit: Ref<CommentType | null> = ref(null);
     const showFeedbackSubmittedSuccessfully = ref(false);
     const showFeedbackFormModal = ref(false);
-    const commentToGiveFeedbackOn: Ref<CommentData | null> = ref(null);
+    const commentToGiveFeedbackOn: Ref<CommentType | null> = ref(null);
+    const commentToReport: Ref<CommentType | null> = ref(null);
 
     const {
       mutate: addFeedbackCommentToComment,
@@ -196,7 +196,7 @@ export default defineComponent({
 
             // 2. Filter out the deleted reply.
             const filteredReplies = existingReplies.filter(
-              (reply: CommentData) => reply.id !== commentToDeleteId.value,
+              (reply: CommentType) => reply.id !== commentToDeleteId.value,
             );
 
             const existingChildCommentAggregate =
@@ -263,7 +263,7 @@ export default defineComponent({
         // This contains logic for updating the cache after you reply
         // to a comment. For the logic for updating a root comment,
         // see the CreateRootComment form.
-        const newComment: CommentData =
+        const newComment: CommentType =
           result.data?.createComments?.comments[0];
 
         const newCommentParentId = newComment?.ParentComment?.id;
@@ -400,6 +400,7 @@ export default defineComponent({
       commentToDeleteId,
       commentToDeleteReplyCount,
       commentToGiveFeedbackOn,
+      commentToReport,
       createComment,
       createCommentError,
       deleteComment,
@@ -418,6 +419,7 @@ export default defineComponent({
       showModProfileModal: ref(false),
       showFeedbackFormModal,
       showOpenIssueModal: ref(false),
+      showSuccessfullyReported: ref(false),
       showFeedbackSubmittedSuccessfully,
       route,
       router,
@@ -447,7 +449,7 @@ export default defineComponent({
       // is handled in the parent component.
       this.createComment();
     },
-    handleClickEdit(commentData: CommentData) {
+    handleClickEdit(commentData: CommentType) {
       this.commentToEdit = commentData;
     },
     handleClickDelete(input: DeleteCommentInputData) {
@@ -506,9 +508,13 @@ export default defineComponent({
     hideEditCommentEditor() {
       this.editFormOpenAtCommentID = "";
     },
-    handleClickGiveFeedback(commentData: any) {
+    handleClickGiveFeedback(commentData: CommentType) {
       this.commentToGiveFeedbackOn = commentData;
       this.showFeedbackFormModal = true;
+    },
+    handleClickReport(commentData: CommentType) {
+      this.commentToReport = commentData;
+      this.showOpenIssueModal = true;
     },
     handleSubmitFeedback() {
       this.addFeedbackCommentToComment({
@@ -517,12 +523,6 @@ export default defineComponent({
         modProfileName: this.loggedInUserModName,
         channelId: this.channelId,
       });
-    },
-    handleClickReport(/*event: any*/) {
-      this.showOpenIssueModal = true;
-    },
-    handleReportComment() {
-      // console.log("handle report comment");
     },
     updateFeedback(text: string) {
       this.feedbackText = text;
@@ -644,8 +644,20 @@ export default defineComponent({
     />
     <OpenIssueModal
       :open="showOpenIssueModal"
+      :comment-id="commentToReport?.id"
+      :comment="commentToReport"
       @close="showOpenIssueModal = false"
-      @primaryButtonClick="handleReportComment"
+      @reportSubmittedSuccessfully="
+        () => {
+          showSuccessfullyReported = true;
+          showOpenIssueModal = false;
+        }
+      "
+    />
+    <Notification
+      :show="showSuccessfullyReported"
+      :title="'Your report was submitted successfully.'"
+      @closeNotification="showSuccessfullyReported = false"
     />
     <Notification
       :show="showCopiedLinkNotification"
