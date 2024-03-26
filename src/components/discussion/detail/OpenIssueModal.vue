@@ -163,17 +163,26 @@ export default defineComponent({
     const {
       load: checkDiscussionIssueExistence,
       result: discussionIssueExistenceResult,
-    } = useLazyQuery(CHECK_DISCUSSION_ISSUE_EXISTENCE);
+    } = useLazyQuery(CHECK_DISCUSSION_ISSUE_EXISTENCE, {
+      discussionId: discussionId.value,
+      channelUniqueName: channelId.value,
+    });
 
     const {
       load: checkEventIssueExistence,
       result: eventIssueExistenceResult,
-    } = useLazyQuery(CHECK_EVENT_ISSUE_EXISTENCE);
+    } = useLazyQuery(CHECK_EVENT_ISSUE_EXISTENCE, {
+      eventId: eventId.value,
+      channelUniqueName: channelId.value,
+    });
 
     const {
       load: checkCommentIssueExistence,
       result: commentIssueExistenceResult,
-    } = useLazyQuery(CHECK_COMMENT_ISSUE_EXISTENCE);
+    } = useLazyQuery(CHECK_COMMENT_ISSUE_EXISTENCE, {
+      commentId: props.commentId,
+      channelUniqueName: channelId.value,
+    });
 
     const { mutate: reopenIssue } = useMutation(REOPEN_ISSUE);
 
@@ -220,7 +229,7 @@ export default defineComponent({
         return "Report Comment";
       }
       return "Report Content";
-    })
+    });
 
     return {
       addIssueActivityFeedItem,
@@ -270,55 +279,60 @@ export default defineComponent({
       }
       console.log("submitting report");
 
-      let issueAlreadyExists = false;
+      let existingIssueId = "";
       // First we check for existing issues. This 'open issue modal'
       // is designed to be used for reporting comments, discussions or events.
       // - If a discussion ID is provided, we check for an existing issue related to that discussion.
       // - If an event ID is provided, we check for an existing issue related to that event.
       // - If a comment ID is provided, we check for an existing issue related to that comment.
       if (this.discussionId) {
-        console.log('checking for discussion issue existence')
-        await this.checkDiscussionIssueExistence({
-          discussionId: this.commentId,
-          channelUniqueName: this.channelId,
-        });
-        issueAlreadyExists = this.discussionIssueExistenceResult;
-        console.log(
-          "checked for discussion issue existence",
-          issueAlreadyExists,
-        );
+        console.log("checking for discussion issue existence");
+        const existingIssueIds = await this.checkDiscussionIssueExistence();
+        if (existingIssueIds && existingIssueIds.issues?.length > 0) {
+          console.log('setting issue to ',existingIssueIds.issues[0].id )
+          existingIssueId = existingIssueIds.issues[0].id || "";
+        }
+        console.log("checked for discussion issue existence", existingIssueIds);
       }
-      if (this.eventId) {
-        this.checkEventIssueExistence({
-          eventId: this.eventId,
-          channelUniqueName: this.channelId,
-        });
-        issueAlreadyExists = this.eventIssueExistenceResult;
-        console.log("checked for event issue existence", issueAlreadyExists);
+      else if (this.eventId) {
+        const existingIssueIds = await this.checkEventIssueExistence();
+        if (existingIssueIds && existingIssueIds.issues?.length > 0) {
+          existingIssueId = existingIssueIds.issues[0].id || "";
+        }
+        console.log("checked for event issue existence", existingIssueId);
       }
 
-      if (this.commentId) {
-        this.checkCommentIssueExistence({
-          commentId: this.commentId,
-          channelUniqueName: this.channelId,
-        });
-        issueAlreadyExists = this.commentIssueExistenceResult;
-        console.log("checked for comment issue existence", issueAlreadyExists);
+      else if (this.commentId) {
+        const existingIssueIds = await this.checkCommentIssueExistence();
+        if (existingIssueIds && existingIssueIds.issues?.length > 0) {
+          existingIssueId = existingIssueIds.issues[0].id || "";
+        }
+        console.log("checked for comment issue existence", existingIssueId);
       }
 
-      if (issueAlreadyExists) {
+      if (existingIssueId) {
         this.addIssueActivityFeedItem({
-          issueId: this.existingIssueId,
+          issueId: existingIssueId,
           displayName: this.loggedInUserModName,
           actionDescription: "reported the discussion",
           actionType: "report",
           commentText: this.reportText,
         });
 
+        console.log("existing issue found", {
+
+          issueId: existingIssueId,
+          displayName: this.loggedInUserModName,
+          actionDescription: "reported the discussion",
+          actionType: "report",
+          commentText: this.reportText,
+        
+        });
+
         // If the existing issue is closed, reopen it.
         if (!this.existingIssueIsOpen) {
           this.reopenIssue({
-            id: this.existingIssueId,
+            id: existingIssueId,
           });
         }
 
