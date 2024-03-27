@@ -255,6 +255,18 @@ export default defineComponent({
       return `Explain why this ${contentType} should be removed`;
     });
 
+    const modActionDescription = computed(() => {
+      if (props.commentId) {
+        return "reported the comment";
+      } else if (discussionId.value) {
+        return "reported the discussion";
+      } else if (eventId.value) {
+        return "reported the event";
+      }
+
+      return "reported the content";
+    });
+
     return {
       addIssueActivityFeedItem,
       addIssueActivityFeedItemLoading,
@@ -266,6 +278,7 @@ export default defineComponent({
       discussionId,
       discussionIssueExistenceResult,
       eventIssueExistenceResult,
+      modActionDescription,
       modalBody,
       modalPlaceholder,
       modalTitle,
@@ -285,18 +298,18 @@ export default defineComponent({
   },
   methods: {
     getIssueTitle() {
-      if (this.discussionId) {
-        return `Reported Discussion: "${this.discussionTitle}"`;
-      }
-      if (this.eventId) {
-        return `Reported Event: "${this.eventTitle}"`;
-      }
       if (this.commentId) {
         const truncatedCommentText =
           this.comment?.text?.length > 50
             ? this.comment?.text?.substring(0, 50) + "..."
             : this.comment?.text;
         return `Reported Comment: "${truncatedCommentText || ""}"`;
+      }
+      if (this.discussionId) {
+        return `Reported Discussion: "${this.discussionTitle}"`;
+      }
+      if (this.eventId) {
+        return `Reported Event: "${this.eventTitle}"`;
       }
     },
     async submit() {
@@ -307,7 +320,6 @@ export default defineComponent({
         console.error("No discussion, event, or comment ID provided.");
         return;
       }
-      console.log("submitting report");
 
       let existingIssueId = "";
       // First we check for existing issues. This 'open issue modal'
@@ -325,36 +337,23 @@ export default defineComponent({
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
-        console.log("checked for comment issue existence", existingIssueId);
 
       } else if (this.discussionId) {
-        console.log("checking for discussion issue existence");
         const existingIssueIds = await this.checkDiscussionIssueExistence();
+
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
-          console.log("setting issue to ", existingIssueIds.issues[0].id);
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
-        console.log("checked for discussion issue existence", existingIssueIds);
 
       } else if (this.eventId) {
         const existingIssueIds = await this.checkEventIssueExistence();
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
-        console.log("checked for event issue existence", existingIssueId);
-        
       }
 
       if (existingIssueId) {
         this.addIssueActivityFeedItem({
-          issueId: existingIssueId,
-          displayName: this.loggedInUserModName,
-          actionDescription: "reported the discussion",
-          actionType: "report",
-          commentText: this.reportText,
-        });
-
-        console.log("existing issue found", {
           issueId: existingIssueId,
           displayName: this.loggedInUserModName,
           actionDescription: "reported the discussion",
@@ -410,7 +409,7 @@ export default defineComponent({
                 },
               },
               actionType: "report",
-              actionDescription: "reported the discussion",
+              actionDescription: this.modActionDescription,
               Comment: {
                 create: {
                   node: {

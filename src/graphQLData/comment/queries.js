@@ -228,6 +228,15 @@ export const GET_COMMENT_AND_REPLIES = gql`
   ${COMMENT_VOTE_FIELDS}
 `;
 
+export const GET_COMMENT = gql`
+  query getComment($id: ID!) {
+    comments(where: { id: $id }) {
+      ...CommentFields
+    }
+  }
+  ${COMMENT_FIELDS}
+`;
+
 export const GET_COMMENT_REPLIES = gql`
   query getCommentWithReplies($commentId: ID!, $limit: Int, $offset: Int, $sort: SortType) {
     getCommentReplies (

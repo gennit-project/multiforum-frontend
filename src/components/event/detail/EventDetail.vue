@@ -50,14 +50,32 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    issueEventId: {
+      // This prop is used only in the issue detail page,
+      // where the event details are needed for context of a reported
+      // event, but the event ID is not in the URL.
+      type: String,
+      required: false,
+      default: ""
+    },
+    showComments: {
+      type: Boolean,
+      default: true,
+    }
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
     const offset = ref(0);
     const showFullDescription = ref(route.name === "EventDetail");
 
     const eventId = computed(() => {
-      return route.params.eventId;
+      if (typeof route.params.eventId === "string") {
+        return route.params.eventId;
+      }
+      if (props.issueEventId) {
+        return props.issueEventId;
+      }
+      return "";
     });
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -169,7 +187,9 @@ export default defineComponent({
     const loadMore = () => {
       fetchMoreComments({
         variables: {
-          offset: getEventCommentsResult.value?.getEventComments?.Comments?.length || 0
+          offset:
+            getEventCommentsResult.value?.getEventComments?.Comments?.length ||
+            0,
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
@@ -513,7 +533,7 @@ export default defineComponent({
               :event-data="event"
               :channels-except-current="channelsExceptCurrent"
             />
-            <div>
+            <div v-if="showComments">
               <EventRootCommentFormWrapper
                 :key="`${eventId}`"
                 :event="event"

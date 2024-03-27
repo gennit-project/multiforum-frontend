@@ -23,7 +23,7 @@ import { getDuration } from "@/components/utils";
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import { ADD_FEEDBACK_COMMENT_TO_EVENT } from "@/graphQLData/event/mutations";
-import OpenIssueModal from "@/components/discussion/detail/OpenIssueModal.vue";
+import OpenIssueModal from "@/components/mod/OpenIssueModal.vue";
 
 export default defineComponent({
   name: "EventHeader",

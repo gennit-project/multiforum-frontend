@@ -18,7 +18,7 @@ import {
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
-import OpenIssueModal from "./OpenIssueModal.vue";
+import OpenIssueModal from "@/components/mod/OpenIssueModal.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 

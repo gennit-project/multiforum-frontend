@@ -1,10 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref } from "vue";
-import { useQuery } from "@vue/apollo-composable";
-import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { Issue } from "@/__generated__/graphql";
-import LoadingSpinner from "../generic/LoadingSpinner.vue";
 import { DateTime } from "luxon";
 import { useRoute } from "vue-router";
 import GenericButton from "../generic/buttons/GenericButton.vue";
@@ -13,9 +9,7 @@ import ModerationStep from "./ModerationStep.vue";
 
 export default defineComponent({
   components: {
-    ErrorBanner,
     GenericButton,
-    LoadingSpinner,
     ModerationStep,
     PrimaryButton,
   },
@@ -25,31 +19,14 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const route = useRoute();
-
-    const discussionId = computed(() => {
-      return props.issue.relatedDiscussionId;
-    });
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
         return route.params.channelId;
       }
       return "";
-    });
-
-    const {
-      result: getDiscussionResult,
-      error: getDiscussionError,
-      loading: getDiscussionLoading,
-    } = useQuery(GET_DISCUSSION, { id: discussionId, loggedInModName: "placeholder" });
-
-    const discussion = computed(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value) {
-        return null;
-      }
-      return getDiscussionResult.value.discussions[0];
     });
 
     const stepNames = {
@@ -169,10 +146,10 @@ export default defineComponent({
       activeStep,
       brokenRules,
       channelId,
-      discussion,
+      // discussion,
       explanationComment,
-      getDiscussionError,
-      getDiscussionLoading,
+      // getDiscussionError,
+      // getDiscussionLoading,
       postActions,
       requestChangeMessage,
       selectedPostAction,
@@ -192,11 +169,11 @@ export default defineComponent({
 
 <template>
   <div class="flex flex-col justify-center w-full">
-    <h1 class="text-xl font-bold">Moderation Wizard</h1>
-    <hr/>
-    <ErrorBanner v-if="getDiscussionError" :text="getDiscussionError.message" />
-    <LoadingSpinner v-else-if="getDiscussionLoading" />
-    <div v-else-if="discussion" class="mt-6 flex justify-center space-y-4">
+    <h1 class="text-xl font-bold">
+      Moderation Wizard
+    </h1>
+    <hr>
+    <div class="mt-6 flex justify-center space-y-4">
       <!-- <div class="px-4 py-12 sm:px-6 lg:px-8">
             <nav class="flex justify-center" aria-label="Progress">
               <ol role="list" class="space-y-6">
@@ -274,7 +251,9 @@ export default defineComponent({
         @clickBack="activeStep = stepNames.SelectRules.id"
       >
         <fieldset class="mt-4">
-          <legend class="sr-only">Post actions</legend>
+          <legend class="sr-only">
+            Post actions
+          </legend>
           <div class="space-y-4">
             <div
               v-for="action in postActions"
@@ -288,13 +267,12 @@ export default defineComponent({
                 :checked="action.id === selectedPostAction"
                 class="text-indigo-600 focus:ring-indigo-600 h-4 w-4 border-gray-300"
                 @change="selectedPostAction = action.id"
-              />
+              >
               <label
                 :for="action.id"
                 class="font-medium ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-100"
               >
-                {{ action.title }}</label
-              >
+                {{ action.title }}</label>
             </div>
           </div>
         </fieldset>
@@ -365,7 +343,9 @@ export default defineComponent({
         @clickBack="activeStep = stepNames.SuspensionNeeded.id"
       >
         <fieldset class="mt-4">
-          <legend class="sr-only">Suspension Lengths</legend>
+          <legend class="sr-only">
+            Suspension Lengths
+          </legend>
           <div class="space-y-4">
             <div
               v-for="length in suspensionLengths"
@@ -379,13 +359,12 @@ export default defineComponent({
                 :checked="length.title === selectedSuspensionLength"
                 class="text-indigo-600 focus:ring-indigo-600 h-4 w-4 border-gray-300"
                 @change="selectedSuspensionLength = length.title"
-              />
+              >
               <label
                 :for="length.id"
                 class="font-medium ml-3 block text-sm leading-6 text-gray-900 dark:text-gray-100"
               >
-                {{ length.title }}</label
-              >
+                {{ length.title }}</label>
             </div>
           </div>
         </fieldset>

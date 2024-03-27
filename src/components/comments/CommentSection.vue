@@ -20,7 +20,7 @@ import WarningModal from "../generic/WarningModal.vue";
 import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import type { Ref } from "vue";
 import PermalinkedComment from "./PermalinkedComment.vue";
-import OpenIssueModal from "@/components/discussion/detail/OpenIssueModal.vue";
+import OpenIssueModal from "@/components/mod/OpenIssueModal.vue";
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import { ADD_FEEDBACK_COMMENT_TO_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
@@ -543,7 +543,11 @@ export default defineComponent({
 <template>
   <div class="bg-white dark:bg-gray-800">
     <div>
-      <h2 id="comments" ref="commentSectionHeader" class="px-1 text-lg">
+      <h2
+        id="comments"
+        ref="commentSectionHeader"
+        class="px-1 text-lg"
+      >
         {{ `Comments (${aggregateCommentCount})` }}
       </h2>
       <ErrorBanner
@@ -552,7 +556,10 @@ export default defineComponent({
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <SortButtons :show-top-options="false" />
-      <LoadingSpinner v-if="loading" class="ml-2" />
+      <LoadingSpinner
+        v-if="loading"
+        class="ml-2"
+      />
       <PermalinkedComment
         v-if="isPermalinkPage"
         :key="permalinkedCommentId"
@@ -594,7 +601,10 @@ export default defineComponent({
           There are no comments yet.
         </div>
         <div :key="activeSort">
-          <div v-for="comment in comments || []" :key="comment.id">
+          <div
+            v-for="comment in comments || []"
+            :key="comment.id"
+          >
             <Comment
               v-if="comment.id !== permalinkedCommentId"
               :aggregate-comment-count="aggregateCommentCount"

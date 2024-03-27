@@ -2,7 +2,11 @@
 import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useRoute, useRouter } from "vue-router";
-import { GET_CLOSED_ISSUES_BY_CHANNEL, GET_ISSUE, GET_ISSUES_BY_CHANNEL } from "@/graphQLData/issue/queries";
+import {
+  GET_CLOSED_ISSUES_BY_CHANNEL,
+  GET_ISSUE,
+  GET_ISSUES_BY_CHANNEL,
+} from "@/graphQLData/issue/queries";
 import { CLOSE_ISSUE, REOPEN_ISSUE } from "@/graphQLData/issue/mutations";
 import { relativeTime } from "@/dateTimeUtils";
 import { Issue } from "@/__generated__/graphql";
@@ -13,6 +17,8 @@ import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import { DateTime } from "luxon";
 import DiscussionDetails from "@/components/mod/DiscussionDetails.vue";
+import EventDetail from "@/components/event/detail/EventDetail.vue";
+import CommentDetails from "@/components/mod/CommentDetails.vue";
 import ModerationWizard from "@/components/mod/ModerationWizard.vue";
 import IssueBadge from "@/components/mod/IssueBadge.vue";
 import TextEditor from "../generic/forms/TextEditor.vue";
@@ -38,7 +44,9 @@ export default defineComponent({
   components: {
     ActivityFeed,
     BackLink,
+    CommentDetails,
     ErrorBanner,
+    EventDetail,
     DiscussionDetails,
     GenericButton,
     IssueBadge,
@@ -161,14 +169,15 @@ export default defineComponent({
           query: GET_ISSUES_BY_CHANNEL,
           variables: { channelUniqueName: channelId.value },
         });
-        
+
         if (
           existingIssuesByChannelData &&
           // @ts-ignore
           existingIssuesByChannelData.channels
         ) {
           // @ts-ignore
-          const existingIssuesByChannel = existingIssuesByChannelData.channels[0];
+          const existingIssuesByChannel =
+            existingIssuesByChannelData.channels[0];
           const newIssuesByChannel = {
             ...existingIssuesByChannel,
             Issues: existingIssuesByChannel.Issues.filter(
@@ -363,13 +372,11 @@ export default defineComponent({
           existingIssuesByChannelData.channels
         ) {
           // @ts-ignore
-          const existingIssuesByChannel = existingIssuesByChannelData.channels[0];
+          const existingIssuesByChannel =
+            existingIssuesByChannelData.channels[0];
           const newIssuesByChannel = {
             ...existingIssuesByChannel,
-            Issues: [
-              ...existingIssuesByChannel.Issues,
-              activeIssue.value,
-            ],
+            Issues: [...existingIssuesByChannel.Issues, activeIssue.value],
           };
 
           cache.writeQuery({
@@ -627,9 +634,20 @@ export default defineComponent({
           }}
         </div>
       </div>
+
+      <p>Original post:</p>
       <DiscussionDetails
         v-if="activeIssue && activeIssue.relatedDiscussionId"
         :active-issue="activeIssue"
+      />
+      <EventDetail
+        v-if="activeIssue && activeIssue.relatedEventId"
+        :issue-event-id="activeIssue.relatedEventId"
+        :show-comments="false"
+      />
+      <CommentDetails
+        v-if="activeIssue && activeIssue.relatedCommentId"
+        :comment-id="activeIssue.relatedCommentId"
       />
     </div>
     <v-row
