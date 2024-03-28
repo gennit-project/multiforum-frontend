@@ -14,7 +14,10 @@ import { useRouter } from "vue-router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "@/components/icons/EllipsisHorizontal.vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
-import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import {
+  GET_LOCAL_MOD_PROFILE_NAME,
+  GET_LOCAL_USERNAME,
+} from "@/graphQLData/user/queries";
 import { DELETE_EVENT } from "@/graphQLData/event/mutations";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
@@ -61,14 +64,12 @@ export default defineComponent({
       return "";
     });
 
-    const { 
+    const {
       mutate: addFeedbackCommentToEvent,
       loading: addFeedbackCommentToEventLoading,
       error: addFeedbackCommentToEventError,
       onDone: onAddFeedbackCommentToEventDone,
-    } = useMutation(
-      ADD_FEEDBACK_COMMENT_TO_EVENT
-    );
+    } = useMutation(ADD_FEEDBACK_COMMENT_TO_EVENT);
 
     const showFeedbackFormModal = ref(false);
     const showFeedbackSubmittedSuccessfully = ref(false);
@@ -199,7 +200,7 @@ export default defineComponent({
 
     const menuItems = computed(() => {
       let out = [];
-      if (props.eventData) {
+      if (props.eventData && route.name !== "EventFeedback") {
         out.push({
           label: "Copy Link",
           value: "",
@@ -222,13 +223,18 @@ export default defineComponent({
             event: "handleDelete",
             icon: ALLOWED_ICONS.DELETE,
           },
-          {
-            label: "View Feedback",
-            value: "",
-            event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
-          },
         ]);
+
+        if (route.name !== "EventFeedback") {
+          out = out.concat([
+            {
+              label: "View Feedback",
+              value: "",
+              event: "handleViewFeedback",
+              icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+            },
+          ]);
+        }
 
         if (!props.eventData.canceled) {
           out.push({
@@ -246,19 +252,24 @@ export default defineComponent({
             event: "handleReport",
             icon: ALLOWED_ICONS.REPORT,
           },
-          {
-            label: "Give Feedback",
-            value: "",
-            event: "handleFeedback",
-            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-          },
-          {
-            label: "View Feedback",
-            value: "",
-            event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
-          },
         ]);
+
+        if (route.name !== "EventFeedback") {
+          out = out.concat([
+            {
+              label: "Give Feedback",
+              value: "",
+              event: "handleFeedback",
+              icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+            },
+            {
+              label: "View Feedback",
+              value: "",
+              event: "handleViewFeedback",
+              icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+            },
+          ]);
+        }
       }
 
       return out;
@@ -294,7 +305,7 @@ export default defineComponent({
       deleteEventError,
       eventId,
       getDuration,
-      feedbackText: ref(''),
+      feedbackText: ref(""),
       loggedInUserModName,
       menuItems,
       reportModalIsOpen: ref(false),

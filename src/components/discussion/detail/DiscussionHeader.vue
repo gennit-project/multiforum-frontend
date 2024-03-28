@@ -27,7 +27,7 @@ type MenuItem = {
   value: string;
   event: string;
   icon: string;
-}
+};
 
 export default defineComponent({
   components: {
@@ -184,25 +184,27 @@ export default defineComponent({
       }
       return localModProfileNameResult.value.modProfileName;
     });
-    
+
     const menuItems = computed(() => {
       let out: MenuItem[] = [];
 
       if (props.discussion) {
-        out = out.concat([
-          {
-            label: "View Feedback",
-            value: "",
-            event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
-          },
-          {
-            label: "Copy Link",
-            value: "",
-            event: "copyLink",
-            icon: ALLOWED_ICONS.COPY_LINK,
-          },
-        ]);
+        if (route.name !== "DiscussionFeedback") {
+          out = out.concat([
+            {
+              label: "View Feedback",
+              value: "",
+              event: "handleViewFeedback",
+              icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+            },
+            {
+              label: "Copy Link",
+              value: "",
+              event: "copyLink",
+              icon: ALLOWED_ICONS.COPY_LINK,
+            },
+          ]);
+        }
       }
 
       if (props.discussion?.Author?.username === username.value) {
@@ -220,7 +222,7 @@ export default defineComponent({
           icon: ALLOWED_ICONS.DELETE,
         });
       } else {
-        // If it is someone else's post, you can report it 
+        // If it is someone else's post, you can report it
         // or give feedback on it.
         if (username.value && loggedInUserModName.value) {
           out = out.concat([
@@ -230,13 +232,18 @@ export default defineComponent({
               event: "handleClickReport",
               icon: ALLOWED_ICONS.REPORT,
             },
-            {
-              label: "Give Feedback",
-              value: "",
-              event: "handleFeedback",
-              icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-            },
           ]);
+
+          if (route.name !== "DiscussionFeedback") {
+            out = out.concat([
+              {
+                label: "Give Feedback",
+                value: "",
+                event: "handleFeedback",
+                icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+              },
+            ]);
+          }
         }
       }
 

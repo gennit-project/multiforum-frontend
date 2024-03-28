@@ -209,7 +209,10 @@ export default defineComponent({
     class="relative my-1 flex rounded-lg border dark:border-gray-800 bg-white p-2 dark:bg-gray-700"
   >
     <div class="flex w-full flex-row justify-start gap-4 rounded-lg p-1">
-      <div v-if="discussion" class="w-full flex-col">
+      <div
+        v-if="discussion"
+        class="w-full flex-col"
+      >
         <div class="flex">
           <div
             class="mr-2 flex h-10 w-10 justify-center items-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
@@ -227,7 +230,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-bold text-lg'"
+                  :classes="'font-bold text-md'"
                 />
               </span>
             </router-link>
@@ -235,8 +238,7 @@ export default defineComponent({
               class="font-medium py-1 text-xs text-gray-600 no-underline dark:text-gray-300"
             >
               <span class="mr-1 text-xs">
-                {{ `Posted ${relativeTime} by` }}</span
-              >
+                {{ `Posted ${relativeTime} by` }}</span>
 
               <UsernameWithTooltip
                 v-if="authorUsername"
@@ -250,7 +252,7 @@ export default defineComponent({
             </div>
           </div>
         </div>
-        <hr class="dark:border-gray-600" />
+        <hr class="dark:border-gray-600">
 
         <div
           v-if="discussion?.body"
@@ -296,7 +298,10 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <ErrorBanner v-if="errorMessage" :text="errorMessage" />
+    <ErrorBanner
+      v-if="errorMessage"
+      :text="errorMessage"
+    />
   </li>
 </template>
 <style>
