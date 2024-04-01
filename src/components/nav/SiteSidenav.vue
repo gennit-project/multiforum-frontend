@@ -13,6 +13,7 @@ import clickOutside from "vue-click-outside";
 import Avatar from "@/components/user/Avatar.vue";
 import { useDisplay } from "vuetify";
 import CreateAnythingButton from "./CreateAnythingButton.vue";
+import ExpandableImage from "../generic/ExpandableImage.vue";
 
 type NavigationItem = {
   name: string;
@@ -47,6 +48,7 @@ export default defineComponent({
     Avatar,
     CalendarIcon,
     CreateAnythingButton,
+    ExpandableImage,
     LocationIcon,
     DiscussionIcon,
     ChannelIcon,
@@ -62,8 +64,10 @@ export default defineComponent({
   setup() {
     const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
 
+    const recentForums =
+      JSON.parse(localStorage.getItem("recentForums") || '""') || [];
+
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
-    
 
     const username = computed(() => {
       let username = localUsernameResult.value?.username;
@@ -106,6 +110,7 @@ export default defineComponent({
       navigation,
       username,
       profilePicURL,
+      recentForums,
       smAndDown,
     };
   },
@@ -160,7 +165,7 @@ export default defineComponent({
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
-                class="font-semibold group flex gap-x-3 rounded-md py-2 pl-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+                class="font-semibold group flex gap-x-3 rounded-md py-1 pl-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
                 @click="$emit('close')"
               >
                 <component
@@ -174,7 +179,51 @@ export default defineComponent({
           </ul>
         </nav>
       </div>
-      <ul class="mb-6">
+      <div
+        v-if="recentForums.length > 0"
+        class="border-t border-gray-200 dark:border-gray-600"
+      >
+        <div
+          class="text-bold mt-3 px-6 uppercase leading-6 text-gray-400 dark:text-gray-100"
+        >
+          Recent Forums
+        </div>
+        <ul class="mb-6">
+          <li 
+            v-for="forum in recentForums" 
+            :key="forum.uniqueName"
+          >
+            <router-link
+              :to="{
+                name: 'SearchDiscussionsInChannel',
+                params: { channelId: forum.uniqueName },
+              }"
+              class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-1 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+              @click="$emit('close')"
+            >
+              <ExpandableImage
+                v-if="forum?.channelIconURL"
+                class="list-item-icon border-1 h-8 w-8 shrink-0 border-gray-200 shadow-sm dark:border-gray-800"
+                aria-hidden="true"
+                :is-square="false"
+                :is-medium="true"
+                :alt="forum.uniqueName"
+                :src="forum?.channelIconURL ?? ''"
+              />
+              <Avatar
+                v-if="!forum?.channelIconURL"
+                class="list-item-icon border-1 h-8 w-8 shrink-0 border-gray-200 shadow-sm dark:border-gray-800"
+                :text="forum.uniqueName || ''"
+                :src="forum?.channelIconURL ?? ''"
+                :is-medium="true"
+                :is-square="false"
+              />
+              {{ forum.uniqueName }}
+            </router-link>
+          </li>
+        </ul>
+      </div>
+      <ul class="mb-6 border-t">
         <router-link
           v-if="isAuthenticated && username"
           :to="`/u/${username}`"

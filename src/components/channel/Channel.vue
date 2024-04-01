@@ -11,6 +11,7 @@ import { User } from "@/__generated__/graphql";
 import ChannelContent from "./ChannelContent.vue";
 import ChannelHeaderMobile from "./ChannelHeaderMobile.vue";
 import ChannelHeaderDesktop from "./ChannelHeaderDesktop.vue";
+import { Channel } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -52,17 +53,53 @@ export default defineComponent({
       error: getChannelError,
       result: getChannelResult,
       loading: getChannelLoading,
+      onResult: onGetChannelResult,
     } = useQuery(GET_CHANNEL, {
       uniqueName: channelId,
       now: new Date().toISOString(),
     });
-
     const channel = computed(() => {
       if (getChannelLoading.value || getChannelError.value) {
         return null;
       }
       const channel = getChannelResult.value.channels[0];
       return channel;
+    });
+
+    const addForumToLocalStorage = (channel: Channel) => {
+      let recentForums =
+        JSON.parse(localStorage.getItem("recentForums") || '""') || [];
+
+      const sideNavItem = {
+        uniqueName: channelId.value,
+        displayName: channel.displayName,
+        channelIconURL: channel.channelIconURL,
+      };
+
+      recentForums.push(sideNavItem);
+
+      // filter out any values that are strings instead of objects
+      recentForums = recentForums.filter(
+        (forum: any) => typeof forum === "object",
+      );
+
+      // deduplicate the array
+      recentForums = recentForums
+        .reverse()
+        .filter(
+          (forum: any, index: number, self: any) =>
+            index ===
+            self.findIndex((t: any) => t.uniqueName === forum.uniqueName),
+        );
+      localStorage.setItem("recentForums", JSON.stringify(recentForums));
+    };
+
+    onGetChannelResult((result) => {
+      const channel = result.data?.channels[0];
+      if (!channel) {
+        return;
+      }
+      addForumToLocalStorage(channel);
     });
 
     const discussionId = computed(() => {
@@ -154,7 +191,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel && smAndDown"
-          class="block w-full bg-white dark:bg-gray-800 border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
+          class="block w-full border-b border-gray-200 bg-white px-3 dark:border-gray-600 dark:bg-gray-800 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
@@ -181,7 +218,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel"
-          class="block bg-white dark:bg-gray-800 w-full border-b border-gray-200 px-3 dark:border-gray-600 md:px-6"
+          class="block w-full border-b border-gray-200 bg-white px-3 dark:border-gray-600 dark:bg-gray-800 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
