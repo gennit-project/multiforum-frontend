@@ -37,7 +37,7 @@ const navigation: NavigationItem[] = [
     href: "/discussions",
     icon: DiscussionIcon,
   },
-  { name: "Forums", href: "/channels", icon: ChannelIcon },
+  { name: "All Forums", href: "/channels", icon: ChannelIcon },
 ];
 
 export default defineComponent({

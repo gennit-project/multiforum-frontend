@@ -163,26 +163,44 @@ export default defineComponent({
     const {
       load: checkDiscussionIssueExistence,
       result: discussionIssueExistenceResult,
-    } = useLazyQuery(CHECK_DISCUSSION_ISSUE_EXISTENCE, {
-      discussionId: discussionId.value,
-      channelUniqueName: channelId.value,
-    });
+    } = useLazyQuery(
+      CHECK_DISCUSSION_ISSUE_EXISTENCE,
+      {
+        discussionId: discussionId.value,
+        channelUniqueName: channelId.value,
+      },
+      {
+        fetchPolicy: "network-only"
+      },
+    );
 
     const {
       load: checkEventIssueExistence,
       result: eventIssueExistenceResult,
-    } = useLazyQuery(CHECK_EVENT_ISSUE_EXISTENCE, {
-      eventId: eventId.value,
-      channelUniqueName: channelId.value,
-    });
+    } = useLazyQuery(
+      CHECK_EVENT_ISSUE_EXISTENCE,
+      {
+        eventId: eventId.value,
+        channelUniqueName: channelId.value,
+      },
+      {
+        fetchPolicy: "network-only"
+      },
+    );
 
     const {
       load: checkCommentIssueExistence,
       result: commentIssueExistenceResult,
-    } = useLazyQuery(CHECK_COMMENT_ISSUE_EXISTENCE, {
-      commentId: props.commentId,
-      channelUniqueName: channelId.value,
-    });
+    } = useLazyQuery(
+      CHECK_COMMENT_ISSUE_EXISTENCE,
+      {
+        commentId: props.commentId,
+        channelUniqueName: channelId.value,
+      },
+      {
+        fetchPolicy: "network-only"
+      },
+    );
 
     const { mutate: reopenIssue } = useMutation(REOPEN_ISSUE);
 
@@ -337,14 +355,12 @@ export default defineComponent({
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
-
       } else if (this.discussionId) {
         const existingIssueIds = await this.checkDiscussionIssueExistence();
 
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
           existingIssueId = existingIssueIds.issues[0].id || "";
         }
-
       } else if (this.eventId) {
         const existingIssueIds = await this.checkEventIssueExistence();
         if (existingIssueIds && existingIssueIds.issues?.length > 0) {
@@ -353,6 +369,7 @@ export default defineComponent({
       }
 
       if (existingIssueId) {
+        // Add a new activity feed item to the existing issue.
         this.addIssueActivityFeedItem({
           issueId: existingIssueId,
           displayName: this.loggedInUserModName,
@@ -441,7 +458,7 @@ export default defineComponent({
         issueCreateInput.relatedEventId = this.eventId;
       }
 
-      this.reportContent({
+      await this.reportContent({
         input: [issueCreateInput],
       });
     },
