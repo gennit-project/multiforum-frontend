@@ -635,7 +635,42 @@ export default defineComponent({
         </div>
       </div>
 
-      <p>Original post:</p>
+      <p v-if="activeIssue?.relatedDiscussionId || activeIssue?.relatedEventId">
+        Original post (
+        <router-link
+          v-if="activeIssue?.relatedDiscussionId"
+          class="text-blue-500 hover:underline"
+          :to="{
+            name: 'DiscussionDetail',
+            params: {
+              discussionId: activeIssue.relatedDiscussionId,
+              channelId: channelId,
+            },
+          }"
+        >
+          link
+        </router-link>
+        <router-link
+          v-else-if="activeIssue?.relatedEventId"
+          class="text-blue-500 hover:underline"
+          :to="{
+            name: 'EventDetail',
+            params: {
+              eventId: activeIssue.relatedEventId,
+              channelId: channelId,
+            },
+          }"
+        >
+          link
+        </router-link>
+        <span>):</span>
+      </p>
+      <p
+        v-if="activeIssue?.relatedCommentId"
+        class="text-sm text-gray-500 dark:text-gray-400"
+      >
+        Original comment:
+      </p>
       <DiscussionDetails
         v-if="activeIssue && activeIssue.relatedDiscussionId"
         :active-issue="activeIssue"
@@ -644,6 +679,7 @@ export default defineComponent({
         v-if="activeIssue && activeIssue.relatedEventId"
         :issue-event-id="activeIssue.relatedEventId"
         :show-comments="false"
+        :show-menu-buttons="false"
       />
       <CommentDetails
         v-if="activeIssue && activeIssue.relatedCommentId"

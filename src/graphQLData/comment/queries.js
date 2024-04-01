@@ -231,7 +231,14 @@ export const GET_COMMENT_AND_REPLIES = gql`
 export const GET_COMMENT = gql`
   query getComment($id: ID!) {
     comments(where: { id: $id }) {
-      ...CommentFields
+      ...CommentFields,
+      DiscussionChannel {
+        channelUniqueName
+        discussionId
+      }
+      Event {
+        id
+      }
     }
   }
   ${COMMENT_FIELDS}

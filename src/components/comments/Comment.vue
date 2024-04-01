@@ -43,7 +43,6 @@ export default defineComponent({
     MenuButton,
     RightArrowIcon,
     TextEditor,
-    
   },
   props: {
     commentData: {
@@ -117,7 +116,8 @@ export default defineComponent({
 
     const isHighlighted = computed(() => {
       return (
-        route.name === "DiscussionCommentPermalink" &&
+        (route.name === "DiscussionCommentPermalink" ||
+          route.name === "EventCommentPermalink") &&
         props.commentData?.id === route.params.commentId
       );
     });
@@ -164,15 +164,28 @@ export default defineComponent({
       if (!canShowPermalink) {
         return {};
       }
+      const discussionIdInLink =
+        discussionId || props.commentData?.DiscussionChannel?.discussionId;
+
+      if (discussionIdInLink) {
+        return {
+          name: "DiscussionCommentPermalink",
+          params: {
+            discussionId: discussionIdInLink,
+            commentId: props.commentData.id,
+            channelId:
+              channelId ||
+              props.commentData?.DiscussionChannel?.channelUniqueName,
+          },
+        };
+      }
+
+      // if discussionId is not present, assume it is an event comment
       return {
-        name: "DiscussionCommentPermalink",
+        name: "EventCommentPermalink",
         params: {
-          discussionId:
-            discussionId || props.commentData?.DiscussionChannel?.discussionId,
+          eventId: props.commentData.Event?.id,
           commentId: props.commentData.id,
-          channelId:
-            channelId ||
-            props.commentData?.DiscussionChannel?.channelUniqueName,
         },
       };
     });
@@ -359,7 +372,7 @@ export default defineComponent({
           class="flex w-full"
           data-testid="comment"
         >
-          <div class="flex-col w-full rounded-lg">
+          <div class="w-full flex-col rounded-lg">
             <CommentHeader
               :comment-data="commentData"
               :is-highlighted="isHighlighted"
@@ -457,7 +470,9 @@ export default defineComponent({
                       @handleEdit="() => handleEdit(commentData)"
                       @clickReport="handleReport"
                       @clickFeedback="handleFeedback"
-                      @handleViewFeedback="$emit('handleViewFeedback', commentData.id)"
+                      @handleViewFeedback="
+                        $emit('handleViewFeedback', commentData.id)
+                      "
                       @handleDelete="
                         () => {
                           const deleteCommentInput = {
@@ -536,7 +551,9 @@ export default defineComponent({
                 "
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                 @clickFeedback="handleFeedback"
-                @handleViewFeedback="$emit('handleViewFeedback', childComment.id)"
+                @handleViewFeedback="
+                  $emit('handleViewFeedback', childComment.id)
+                "
               />
             </div>
           </ChildComments>

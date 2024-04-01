@@ -56,12 +56,16 @@ export default defineComponent({
       // event, but the event ID is not in the URL.
       type: String,
       required: false,
-      default: ""
+      default: "",
     },
     showComments: {
       type: Boolean,
       default: true,
-    }
+    },
+    showMenuButtons: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -400,7 +404,7 @@ export default defineComponent({
               :text="'This event is canceled.'"
             />
             <div
-              v-if="route.name === 'EventDetail'"
+              v-if="route.name === 'EventDetail' || route.name === 'EventCommentPermalink'"
               :class="'align-center mt-2 flex justify-between gap-4'"
             >
               <BackLink :link="`/channels/c/${channelId}/events/search`" />
@@ -463,7 +467,10 @@ export default defineComponent({
             <div
               class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
             >
-              <EventHeader :event-data="event" />
+              <EventHeader
+                :event-data="event"
+                :show-menu-buttons="showMenuButtons"
+              />
               <EventBody
                 v-if="event.description"
                 :event="event"

@@ -266,6 +266,13 @@ export const router = createRouter({
               name: "EventDetail",
               path: "e/:eventId",
               component: EventDetail,
+              children: [
+                {
+                  name: "EventCommentPermalink",
+                  path: "comments/:commentId",
+                  component: PermalinkedComment,
+                },
+              ],
             },
             {
               name: "EditEvent",

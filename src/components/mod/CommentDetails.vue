@@ -6,6 +6,7 @@ import CommentHeader from "@/components/comments/CommentHeader.vue";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import LoadingSpinner from "../generic/LoadingSpinner.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "CommentDetails",
@@ -22,6 +23,13 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const route = useRoute();
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
 
     const {
       result: commentResult,
@@ -38,11 +46,44 @@ export default defineComponent({
 
       return commentResult.value?.comments && commentResult.value?.comments[0];
     });
+
+    const permalinkObject = computed(() => {
+      const discussionIdInLink =
+        originalComment.value?.DiscussionChannel?.discussionId;
+      const eventIdInLink = originalComment.value?.Event?.id;
+
+      if (discussionIdInLink) {
+        return {
+          name: "DiscussionCommentPermalink",
+          params: {
+            discussionId: discussionIdInLink,
+            commentId: props.commentId,
+            channelId: channelId.value,
+          },
+        };
+      }
+
+      // if discussionId is not present, assume it is an event comment
+      if (eventIdInLink) {
+        return {
+          name: "EventCommentPermalink",
+          params: {
+            eventId: eventIdInLink,
+            commentId: props.commentId,
+            channelId: channelId.value,
+          },
+        };
+      }
+      return {
+       
+      };
+    });
     return {
       commentResult,
       commentError,
       commentLoading,
       originalComment,
+      permalinkObject,
     };
   },
 });
@@ -55,14 +96,24 @@ export default defineComponent({
       v-if="commentError"
       :text="commentError.message"
     />
-    <CommentHeader
-      v-else-if="originalComment"
-      :comment-data="originalComment"
-      :is-highlighted="false"
-      :parent-comment-id="originalComment?.parentCommentId"
-      :show-context-link="true"
-      :show-channel="false"
-    />
+    <div 
+      v-else-if="originalComment" 
+      class="flex items-center"
+    >
+      <CommentHeader
+        :comment-data="originalComment"
+        :is-highlighted="false"
+        :parent-comment-id="originalComment?.parentCommentId"
+        :show-context-link="true"
+        :show-channel="false"
+      />
+      <router-link
+        :to="permalinkObject"
+        class="text-blue-500 underline"
+      >
+        Context
+      </router-link>
+    </div>
     <div class="ml-2 flex flex-col gap-2 border-l pl-4">
       <MarkdownPreview
         class="-ml-4"

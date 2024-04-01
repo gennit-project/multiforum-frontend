@@ -49,6 +49,10 @@ export default defineComponent({
       type: Object as PropType<Event>,
       required: true,
     },
+    showMenuButtons: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props: any) {
     const route = useRoute();
@@ -455,7 +459,7 @@ export default defineComponent({
       </li>
     </ul>
     <MenuButton
-      v-if="eventData && menuItems.length > 0"
+      v-if="showMenuButtons && eventData && menuItems.length > 0"
       data-testid="event-menu-button"
       :items="menuItems"
       @copyLink="copyLink"
