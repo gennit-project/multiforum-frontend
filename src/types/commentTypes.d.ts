@@ -1,8 +1,5 @@
 
 import { TagData } from './tagTypes'
-import UserData from './userTypes'
-import ModeratorData from './userTypes';
-
 
 export type CreateEditCommentFormValues = {
   depth: number

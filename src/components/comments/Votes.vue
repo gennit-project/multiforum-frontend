@@ -42,6 +42,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    showDownvoteCount: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup() {
     return {};
@@ -87,6 +91,7 @@ export default defineComponent({
       v-if="showDownvote"
       :test-id="'downvote-comment-button'"
       :count="downvoteCount"
+      :show-count="showDownvoteCount"
       :loading="downvoteLoading"
       :active="downvoteActive"
       :tooltip-text="downvoteActive ? 'Undo or edit feedback' : 'Give semi-anonymous feedback'"

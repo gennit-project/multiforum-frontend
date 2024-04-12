@@ -85,7 +85,7 @@ export default defineComponent({
                 </h1>
                 <h2
                   v-if="channel?.uniqueName && channel?.displayName"
-                  class="rounded-full px-4 py-2 bg-white dark:bg-gray-900 font-bold text-gray-500 dark:text-gray-200"
+                  class="rounded-full px-4  bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-300 font-mono"
                 >
                   {{ `${channel.uniqueName}` }}
                 </h2>

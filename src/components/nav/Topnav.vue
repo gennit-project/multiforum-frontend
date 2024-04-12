@@ -142,7 +142,7 @@ export default defineComponent({
             class="flex items-center gap-1"
           >
             <span>•</span>
-            <span class="font-bold text-gray-800 dark:text-gray-300">{{
+            <span class="font-mono text-gray-800 dark:text-gray-300">{{
               channelId
             }}</span>
           </div>

@@ -59,7 +59,7 @@ export default defineComponent({
         </h1>
       </div>
       <h2
-        class="text-sm font-bold leading-6 text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
+        class="text-sm font-mono leading-6 text-white dark:text-gray-300 drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]"
       >
         {{ `${channel.uniqueName}` }}
       </h2>

@@ -119,12 +119,6 @@ export default defineComponent({
     }));
 
     return {
-      // downvoteCommentError,
-      // downvoteCommentLoading,
-      // undoDownvoteComment,
-      // downvoteComment,
-      // undoDownvoteError,
-      // undoDownvoteLoading,
       upvoteCommentLoading,
       undoUpvoteLoading,
       loggedInUserDownvoted,
@@ -156,7 +150,7 @@ export default defineComponent({
       :text="upvoteCommentError?.message || undoUpvoteError?.message"
     />
     <VotesComponent
-      :downvote-count="commentData.FeedbackCommentsAggregate?.count || 0"
+      :show-downvote-count="false"
       :upvote-count="upvoteCount"
       :upvote-active="loggedInUserUpvoted"
       :downvote-active="loggedInUserDownvoted"
