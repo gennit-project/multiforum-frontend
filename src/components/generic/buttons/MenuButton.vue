@@ -57,18 +57,29 @@ export default defineComponent({
     },
   },
   setup() {
+    // Give the button a unique ID so this will work even if there are multiple menu buttons.
+    const uniqueID = ref(Math.random().toString(36).substring(7));
     const shouldOpenUpwards = ref(false);
+    const shouldOpenLeftwards = ref(false);
 
     const adjustMenuPosition = () => {
       nextTick(() => {
-        const menuButton = document.querySelector(".menu-button");
-        const menuItems = document.querySelector(".menu-items");
+        const menuButton = document.querySelector(`#menu-button-${uniqueID.value}`);
+        const menuItems = document.querySelector(`#menu-items-${uniqueID.value}`);
 
         if (menuButton && menuItems) {
           const menuButtonRect = menuButton.getBoundingClientRect();
           const menuItemsHeight = menuItems.getBoundingClientRect().height;
+          const menuItemsWidth = menuItems.getBoundingClientRect().width;
           const spaceBelow = window.innerHeight - menuButtonRect.bottom;
           shouldOpenUpwards.value = spaceBelow < menuItemsHeight;
+
+
+          // Calculate the number of pixels from the menu button to the left
+          // edge of the screen.
+          const spaceLeft  = menuButtonRect.left;
+          // Open to the left if there is enough space to the left of the menu button.
+          shouldOpenLeftwards.value = spaceLeft > menuItemsWidth;
         }
       });
     };
@@ -79,7 +90,9 @@ export default defineComponent({
     return {
       actionItemMap: actionIconMap,
       adjustMenuPosition,
+      shouldOpenLeftwards,
       shouldOpenUpwards,
+      uniqueID,
     };
   },
 });
@@ -92,6 +105,7 @@ export default defineComponent({
   >
     <div>
       <MenuButton
+        :id="`menu-button-${uniqueID}`"
         class="menu-button focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
         @click="adjustMenuPosition"
       >
@@ -114,10 +128,11 @@ export default defineComponent({
       leave-to-class="transform opacity-0 scale-95"
     >
       <MenuItems
-        class="menu-items absolute right-0 z-50 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
+        :id="`menu-items-${uniqueID}`"
+        class="menu-items absolute  z-50 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
         :style="{
           top: shouldOpenUpwards ? 'auto' : '100%',
-          left: '0',
+          right: shouldOpenLeftwards ? 0 : 'auto',
           bottom: shouldOpenUpwards ? '100%' : 'auto',
         }"
       >

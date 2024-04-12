@@ -223,6 +223,7 @@ export default defineComponent({
       console.log("clicked edit feedback");
     },
     handleClickUndoFeedback() {
+      console.log("clicked undo feedback")
       if (this.loggedInUserModName) {
         // undo give feedback
       } else {
