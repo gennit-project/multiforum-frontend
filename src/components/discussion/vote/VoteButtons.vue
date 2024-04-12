@@ -138,7 +138,7 @@ export default defineComponent({
           <VoteButton
             class="ml-2"
             :test-id="'downvote-discussion-button'"
-            :count="downvoteCount"
+            :show-count="false"
             :active="downvoteActive"
             :loading="downvoteLoading"
           >
@@ -162,7 +162,7 @@ export default defineComponent({
         <VoteButton
           v-if="showDownvote"
           :test-id="'downvote-discussion-button'"
-          :count="downvoteCount"
+          :show-count="false"
           :active="downvoteActive"
           :tooltip-text="'Give semi-anonymous feedback'"
         >

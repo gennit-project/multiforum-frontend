@@ -1,6 +1,6 @@
 <script lang="ts">
 import { SelectOptionData } from "@/types/genericFormTypes";
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, nextTick, ref, onMounted } from "vue";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
 import LinkIcon from "@/components/icons/LinkIcon.vue";
@@ -57,22 +57,50 @@ export default defineComponent({
     },
   },
   setup() {
+    const shouldOpenUpwards = ref(false);
+
+    const adjustMenuPosition = () => {
+      nextTick(() => {
+        const menuButton = document.querySelector(".menu-button");
+        const menuItems = document.querySelector(".menu-items");
+
+        if (menuButton && menuItems) {
+          const menuButtonRect = menuButton.getBoundingClientRect();
+          const menuItemsHeight = menuItems.getBoundingClientRect().height;
+          const spaceBelow = window.innerHeight - menuButtonRect.bottom;
+          shouldOpenUpwards.value = spaceBelow < menuItemsHeight;
+        }
+      });
+    };
+
+    onMounted(adjustMenuPosition);
+    window.addEventListener("resize", adjustMenuPosition);
+
     return {
       actionItemMap: actionIconMap,
+      adjustMenuPosition,
+      shouldOpenUpwards,
     };
   },
 });
 </script>
 
 <template>
-  <MenuComponent as="div" class="relative inline-block text-left">
+  <MenuComponent
+    as="div"
+    class="relative inline-block text-left"
+  >
     <div>
       <MenuButton
-        class="focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+        class="menu-button focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+        @click="adjustMenuPosition"
       >
         <slot>
           Options
-          <ChevronDownIcon class="-mr-1 ml-2 h-5 w-5" aria-hidden="true" />
+          <ChevronDownIcon
+            class="-mr-1 ml-2 h-5 w-5"
+            aria-hidden="true"
+          />
         </slot>
       </MenuButton>
     </div>
@@ -86,10 +114,19 @@ export default defineComponent({
       leave-to-class="transform opacity-0 scale-95"
     >
       <MenuItems
-        class="absolute right-0 z-50 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
+        class="menu-items absolute right-0 z-50 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
+        :style="{
+          top: shouldOpenUpwards ? 'auto' : '100%',
+          left: '0',
+          bottom: shouldOpenUpwards ? '100%' : 'auto',
+        }"
       >
         <div class="py-1">
-          <MenuItem v-for="item in items" v-slot="{ active }" :key="item.label">
+          <MenuItem
+            v-for="item in items"
+            v-slot="{ active }"
+            :key="item.label"
+          >
             <router-link
               v-if="item.value"
               :to="item.value"
@@ -101,7 +138,10 @@ export default defineComponent({
                 'block px-4 py-2 text-sm',
               ]"
             >
-              <component :is="actionItemMap[item.icon]" class="mr-2 h-6 w-6" />
+              <component
+                :is="actionItemMap[item.icon]"
+                class="mr-2 h-6 w-6"
+              />
               {{ item.label }}
             </router-link>
             <div
@@ -115,7 +155,10 @@ export default defineComponent({
               ]"
               @click="$emit(item.event)"
             >
-              <component :is="actionItemMap[item.icon]" class="mr-2 h-4 w-4" />
+              <component
+                :is="actionItemMap[item.icon]"
+                class="mr-2 h-4 w-4"
+              />
               {{ item.label }}
             </div>
           </MenuItem>
