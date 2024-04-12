@@ -2,7 +2,7 @@
 import { defineComponent, PropType, computed, ref } from "vue";
 import { Discussion } from "@/__generated__/graphql";
 import { DiscussionChannel } from "@/__generated__/graphql";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import VoteButtons from "./VoteButtons.vue";
 import {
   GET_LOCAL_MOD_PROFILE_NAME,
@@ -10,17 +10,15 @@ import {
 } from "@/graphQLData/user/queries";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import {
-  DOWNVOTE_DISCUSSION_CHANNEL,
   UPVOTE_DISCUSSION_CHANNEL,
   UNDO_UPVOTE_DISCUSSION_CHANNEL,
-  UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
 } from "@/graphQLData/discussion/mutations";
 import { modProfileNameVar } from "@/cache";
 import WarningModal from "@/components/generic/WarningModal.vue";
 import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { generateSlug } from "random-word-slugs";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
-import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue';
+import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 
 export default defineComponent({
   components: {
@@ -47,6 +45,7 @@ export default defineComponent({
   },
   setup(props) {
     const route = useRoute();
+    const router = useRouter();
 
     const discussionIdInParams = computed(() => {
       if (typeof route.params.discussionId === "string") {
@@ -82,60 +81,29 @@ export default defineComponent({
       return props.discussionChannel.id || "";
     });
 
-    const { 
-      mutate: downvoteDiscussionChannel,
-      error: downvoteDiscussionChannelError,
-      loading: downvoteDiscussionChannelLoading,
-    } = useMutation(
-      DOWNVOTE_DISCUSSION_CHANNEL, () => {
-        return {
-          variables: {
-            id: discussionChannelId.value || "",
-            displayName: localModProfileNameResult.value?.modProfileName || "",
-          },
-        };
-      }
-    );
-
-    const { 
+    const {
       mutate: upvoteDiscussionChannel,
       error: upvoteDiscussionChannelError,
       loading: upvoteDiscussionChannelLoading,
-    } =
-      useMutation(UPVOTE_DISCUSSION_CHANNEL, () => {
-        return {
-          variables: {
-            id: discussionChannelId.value || "",
-            username: localUsernameResult.value?.username || "",
-          },
-        };
-      });
-
-    const { 
-      mutate: undoUpvoteDiscussionChannel,
-      error: undoUpvoteDiscussionChannelError,
-      loading: undoUpvoteDiscussionChannelLoading,
-    } =
-      useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
+    } = useMutation(UPVOTE_DISCUSSION_CHANNEL, () => {
+      return {
         variables: {
           id: discussionChannelId.value || "",
           username: localUsernameResult.value?.username || "",
         },
-      }));
+      };
+    });
 
-    const { 
-      mutate: undoDownvoteDiscussionChannel,
-      error: undoDownvoteDiscussionChannelError,
-      loading: undoDownvoteDiscussionChannelLoading,
-    } = useMutation(
-      UNDO_DOWNVOTE_DISCUSSION_CHANNEL,
-      () => ({
-        variables: {
-          id: discussionChannelId.value || "",
-          displayName: localModProfileNameResult.value?.modProfileName || "",
-        },
-      }),
-    );
+    const {
+      mutate: undoUpvoteDiscussionChannel,
+      error: undoUpvoteDiscussionChannelError,
+      loading: undoUpvoteDiscussionChannelLoading,
+    } = useMutation(UNDO_UPVOTE_DISCUSSION_CHANNEL, () => ({
+      variables: {
+        id: discussionChannelId.value || "",
+        username: localUsernameResult.value?.username || "",
+      },
+    }));
 
     const loggedInUserUpvoted = computed(() => {
       if (localUsernameLoading.value || !localUsernameResult.value) {
@@ -208,21 +176,16 @@ export default defineComponent({
       loggedInUserModName,
       discussionChannelMutations: {
         upvoteDiscussionChannel,
-        downvoteDiscussionChannel,
         undoUpvoteDiscussionChannel,
-        undoDownvoteDiscussionChannel,
       },
-      downvoteDiscussionChannelError,
-      downvoteDiscussionChannelLoading,
       upvoteDiscussionChannelError,
       upvoteDiscussionChannelLoading,
       undoUpvoteDiscussionChannelError,
       undoUpvoteDiscussionChannelLoading,
-      undoDownvoteDiscussionChannelError,
-      undoDownvoteDiscussionChannelLoading,
       upvoteCount,
       username,
       route,
+      router,
       showFeedbackFormModal: ref(false),
       showModProfileModal: ref(false),
     };
@@ -236,7 +199,6 @@ export default defineComponent({
 
       modProfileNameVar(modProfileName);
 
-      
       this.showModProfileModal = false;
     },
     async handleClickUp() {
@@ -246,33 +208,35 @@ export default defineComponent({
         await this.upvote();
       }
     },
-    handleClickDown() {
+    handleClickGiveFeedback() {
       if (this.loggedInUserModName) {
         if (!this.loggedInUserDownvoted) {
-          this.$emit('handleClickGiveFeedback');
+          this.$emit("handleClickGiveFeedback");
           // this.downvote();
-        } else {
-          this.discussionChannelMutations.undoDownvoteDiscussionChannel();
         }
       } else {
         // Create mod profile, then downvote comment
         this.showModProfileModal = true;
       }
     },
-    async downvote() {
-      const loggedInUserModNameValue = this.loggedInUserModName; // Cache the computed value
-      if (!loggedInUserModNameValue) {
-        throw new Error("Username is required to downvote");
-      }
-
-      if (this.discussionChannel && this.discussionChannel.id) {
-        this.discussionChannelMutations.downvoteDiscussionChannel({
-          id: this.discussionChannel.id,
-          displayName: loggedInUserModNameValue, // Use the cached value
-        });
+    handleClickEditFeedback() {
+      console.log("clicked edit feedback");
+    },
+    handleClickUndoFeedback() {
+      if (this.loggedInUserModName) {
+        // undo give feedback
       } else {
-        throw new Error("Discussion channel id is required to downvote");
+        console.error("Mod profile name is required to undo feedback");
       }
+    },
+    handleClickViewFeedback() {
+      console.log("clicked view feedback");
+      this.router.push({
+        name: "DiscussionFeedback",
+        params: {
+          discussionId: this.discussionIdInParams,
+        },
+      });
     },
     async upvote() {
       if (!this.username) {
@@ -291,9 +255,6 @@ export default defineComponent({
     undoUpvote() {
       this.discussionChannelMutations.undoUpvoteDiscussionChannel();
     },
-    undoDownvote() {
-      this.discussionChannelMutations.undoDownvoteDiscussionChannel();
-    },
     handleSubmitFeedback() {
       this.showFeedbackFormModal = false;
     },
@@ -303,8 +264,12 @@ export default defineComponent({
 
 <template>
   <ErrorBanner
-    v-if="downvoteDiscussionChannelError || upvoteDiscussionChannelError || undoUpvoteDiscussionChannelError || undoDownvoteDiscussionChannelError"
-    :text="downvoteDiscussionChannelError?.message || upvoteDiscussionChannelError?.message || undoUpvoteDiscussionChannelError?.message || undoDownvoteDiscussionChannelError?.message || ''"
+    v-if="upvoteDiscussionChannelError || undoUpvoteDiscussionChannelError"
+    :text="
+      upvoteDiscussionChannelError?.message ||
+      undoUpvoteDiscussionChannelError?.message ||
+      ''
+    "
   />
   <VoteButtons
     class="my-1"
@@ -314,9 +279,13 @@ export default defineComponent({
     :downvote-active="loggedInUserDownvoted"
     :has-mod-profile="!!loggedInUserModName"
     :show-downvote="showDownvote"
-    :upvote-loading="upvoteDiscussionChannelLoading || undoUpvoteDiscussionChannelLoading"
-    :downvote-loading="downvoteDiscussionChannelLoading || undoDownvoteDiscussionChannelLoading"
-    @clickDown="handleClickDown"
+    :upvote-loading="
+      upvoteDiscussionChannelLoading || undoUpvoteDiscussionChannelLoading
+    "
+    @viewFeedback="handleClickViewFeedback"
+    @giveFeedback="handleClickGiveFeedback"
+    @editFeedback="handleClickEditFeedback"
+    @undoFeedback="handleClickUndoFeedback"
     @clickUp="handleClickUp"
     @openModProfile="showModProfileModal = true"
   />

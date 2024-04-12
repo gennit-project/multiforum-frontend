@@ -9,12 +9,6 @@ export const COMMENT_VOTE_FIELDS = gql`
     UpvotedByUsersAggregate {
       count
     }
-    DownvotedByModerators {
-      displayName
-    }
-    DownvotedByModeratorsAggregate {
-      count
-    }
   }
 `;
 

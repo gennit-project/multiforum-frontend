@@ -19,6 +19,7 @@ export const ALLOWED_ICONS = {
   EDIT: "EDIT",
   DELETE: "DELETE",
   CANCEL: "CANCEL",
+  UNDO: "UNDO",
 };
 
 const actionIconMap = {
@@ -29,6 +30,7 @@ const actionIconMap = {
   [ALLOWED_ICONS.EDIT]: PencilIcon,
   [ALLOWED_ICONS.DELETE]: TrashIcon,
   [ALLOWED_ICONS.CANCEL]: XmarkIcon,
+  [ALLOWED_ICONS.UNDO]: XmarkIcon,
 };
 
 export default defineComponent({

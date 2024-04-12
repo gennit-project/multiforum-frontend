@@ -49,11 +49,6 @@ const cache = new InMemoryCache({
         CommentAuthor: {
           merge: false,
         },
-        DownvotedByModerators: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
         UpvotedByUsers: {
           merge(existing, incoming) {
             return incoming;
@@ -77,11 +72,6 @@ const cache = new InMemoryCache({
     },
     DiscussionChannel: {
       fields: {
-        DownvotedByModerators: {
-          merge(existing, incoming) {
-            return incoming;
-          },
-        },
         UpvotedByUsers: {
           merge(existing, incoming) {
             return incoming;

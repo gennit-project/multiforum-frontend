@@ -146,56 +146,6 @@ export const UNDO_UPVOTE_DISCUSSION_CHANNEL = gql`
   }
 `;
 
-export const DOWNVOTE_DISCUSSION_CHANNEL = gql`
-  mutation downvoteDiscussionChannel($id: ID!, $displayName: String!) {
-    updateDiscussionChannels(
-      where: { id: $id }
-      connect: {
-        DownvotedByModerators: {
-          where: { node: { displayName: $displayName } }
-        }
-      }
-    ) {
-      discussionChannels {
-        id
-        discussionId
-        channelUniqueName
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-      }
-    }
-  }
-`;
-
-export const UNDO_DOWNVOTE_DISCUSSION_CHANNEL = gql`
-  mutation undoDownvoteDiscussionChannel($id: ID!, $displayName: String!) {
-    updateDiscussionChannels(
-      where: { id: $id }
-      disconnect: {
-        DownvotedByModerators: {
-          where: { node: { displayName: $displayName } }
-        }
-      }
-    ) {
-      discussionChannels {
-        id
-        discussionId
-        channelUniqueName
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-      }
-    }
-  }
-`;
-
 export const GIVE_FEEDBACK_ON_DISCUSSION = gql`
   mutation giveFeedbackOnDiscussion(
     $discussionId: ID!

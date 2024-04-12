@@ -13,7 +13,6 @@ import {
 } from "@/graphQLData/comment/mutations";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 
-
 export default defineComponent({
   name: "VoteComponent",
   components: {
@@ -76,49 +75,48 @@ export default defineComponent({
     });
 
     const loggedInUserDownvoted = computed(() => {
-      if (
-        localModProfileNameLoading.value ||
-        !localModProfileNameResult.value ||
-        !props.commentData.DownvotedByModerators
-      ) {
-        return false;
-      }
-      const mods = props.commentData.DownvotedByModerators;
-      const loggedInMod = localModProfileNameResult.value.modProfileName;
-      const match =
-        mods.filter((mod: any) => {
-          return mod.displayName === loggedInMod;
-        }).length === 1;
-      return match;
+      // if (
+      //   localModProfileNameLoading.value ||
+      //   !localModProfileNameResult.value
+      // ) {
+      //   return false;
+      // }
+      // const feedbackComments = props.commentData.FeedbackComments;
+      // const loggedInMod = localModProfileNameResult.value.modProfileName;
+      // const match =
+      //   feedbackComments
+      //     .map((feedbackComment: Comment) => {
+      //       return feedbackComment.CommentAuthor?.displayName || "";
+      //     })
+      //     .filter((author: string) => {
+      //       return author === loggedInMod;
+      //     })
+      //     .length === 1;
+      // return match;
+      return false
     });
 
-    const { 
-      mutate: upvoteComment, 
+    const {
+      mutate: upvoteComment,
       error: upvoteCommentError,
       loading: upvoteCommentLoading,
-    } = useMutation(
-      UPVOTE_COMMENT,
-      () => ({
-        variables: {
-          id: props.commentData.id,
-          username: username.value,
-        },
-      }),
-    );
+    } = useMutation(UPVOTE_COMMENT, () => ({
+      variables: {
+        id: props.commentData.id,
+        username: username.value,
+      },
+    }));
 
-    const { 
+    const {
       mutate: undoUpvoteComment,
       error: undoUpvoteError,
       loading: undoUpvoteLoading,
-    } = useMutation(
-      UNDO_UPVOTE_COMMENT,
-      () => ({
-        variables: {
-          id: props.commentData.id,
-          username: username.value,
-        },
-      }),
-    );
+    } = useMutation(UNDO_UPVOTE_COMMENT, () => ({
+      variables: {
+        id: props.commentData.id,
+        username: username.value,
+      },
+    }));
 
     return {
       // downvoteCommentError,
@@ -143,12 +141,12 @@ export default defineComponent({
   methods: {
     downvoteComment() {
       // console.log("downvoteComment");
-      this.$emit("clickFeedback")
+      this.$emit("clickFeedback");
     },
     undoDownvoteComment() {
       // console.log("undoDownvoteComment");
     },
-  }
+  },
 });
 </script>
 <template>
@@ -158,7 +156,7 @@ export default defineComponent({
       :text="upvoteCommentError?.message || undoUpvoteError?.message"
     />
     <VotesComponent
-      :downvote-count="commentData.DownvotedByModeratorsAggregate?.count || 0"
+      :downvote-count="commentData.FeedbackCommentsAggregate?.count || 0"
       :upvote-count="upvoteCount"
       :upvote-active="loggedInUserUpvoted"
       :downvote-active="loggedInUserDownvoted"

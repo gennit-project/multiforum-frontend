@@ -3,11 +3,15 @@ import { defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import HandThumbDownIcon from "@/components/icons/HandThumbDownIcon.vue";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
+import { SelectOptionData } from "@/types/genericFormTypes";
+import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
     HandThumbDownIcon,
+    MenuButton,
     RequireAuth,
     VoteButton,
   },
@@ -45,12 +49,57 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
-    return {};
+  setup(props) {
+    let thumbsDownMenuItems: SelectOptionData[] = [
+      {
+        label: "View Feedback",
+        icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+        value: "",
+        event: "viewFeedback",
+      },
+    ];
+
+    if (props.downvoteActive) {
+      thumbsDownMenuItems = thumbsDownMenuItems.concat([
+        {
+          label: "Undo feedback",
+          icon: ALLOWED_ICONS.UNDO,
+          value: "",
+          event: "undoFeedback",
+        },
+        {
+          label: "Edit feedback",
+          icon: ALLOWED_ICONS.EDIT,
+          value: "",
+          event: "editFeedback",
+        },
+      ]);
+    } else {
+      thumbsDownMenuItems = thumbsDownMenuItems.concat([
+        {
+          label: "Give feedback",
+          icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+          value: "",
+          event: "giveFeedback",
+        },
+      ]);
+    }
+    return {
+      thumbsDownMenuItems,
+    };
   },
   methods: {
-    clickDown() {
-      this.$emit("clickDown");
+    editFeedback() {
+      this.$emit("editFeedback");
+    },
+    undoFeedback() {
+      this.$emit("undoFeedback");
+    },
+    giveFeedback() {
+      this.$emit("giveFeedback");
+    },
+    viewFeedback() {
+      this.$emit("viewFeedback");
     },
     clickUp() {
       this.$emit("clickUp");
@@ -76,20 +125,28 @@ export default defineComponent({
         >
           <i class="fa-solid fa-arrow-up mr-1 w-3" />
         </VoteButton>
-        <VoteButton
+
+        <MenuButton
           v-if="showDownvote"
-          class="ml-2"
-          :test-id="'downvote-discussion-button'"
-          :count="downvoteCount"
-          :active="downvoteActive"
-          :loading="downvoteLoading"
-          :tooltip-text="
-            downvoteActive ? 'Undo or edit feedback' : 'Give semi-anonymous feedback'
-          "
-          @vote="clickDown"
+          data-testid="thumbs-down-menu-button"
+          :items="thumbsDownMenuItems"
+          @viewFeedback="viewFeedback"
+          @giveFeedback="giveFeedback"
+          @editFeedback="editFeedback"
+          @undoFeedback="undoFeedback"
         >
-          <HandThumbDownIcon class="h-4 w-4" />
-        </VoteButton>
+          <VoteButton
+            class="ml-2"
+            :test-id="'downvote-discussion-button'"
+            :count="downvoteCount"
+            :active="downvoteActive"
+            :loading="downvoteLoading"
+          >
+            <div>
+              <HandThumbDownIcon class="h-4 w-4" />
+            </div>
+          </VoteButton>
+        </MenuButton>
       </div>
     </template>
     <template #does-not-have-auth>

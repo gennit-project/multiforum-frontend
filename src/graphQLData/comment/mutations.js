@@ -36,42 +36,6 @@ export const REMOVE_EMOJI_FROM_COMMENT = gql`
   }
 `;
 
-export const UNDO_DOWNVOTE_COMMENT = gql`
-  mutation undoDownvoteComment($id: ID!, $displayName: String) {
-    updateComments(
-      where: { id: $id }
-      disconnect: {
-        DownvotedByModerators: {
-          where: { node: { displayName: $displayName } }
-        }
-      }
-    ) {
-      comments {
-        id
-        CommentAuthor {
-          ... on User {
-            username
-          }
-        }
-        text
-        weightedVotesCount
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-      }
-    }
-  }
-`;
-
 export const UPVOTE_COMMENT = gql`
   mutation upvoteComment($id: ID!, $username: String!) {
     upvoteComment(commentId: $id, username: $username) {
@@ -102,42 +66,6 @@ export const UNDO_UPVOTE_COMMENT = gql`
   }
 `;
 
-export const DOWNVOTE_COMMENT = gql`
-  mutation downvoteComment($id: ID!, $displayName: String) {
-    updateComments(
-      where: { id: $id }
-      connect: {
-        DownvotedByModerators: {
-          where: { node: { displayName: $displayName } }
-        }
-      }
-    ) {
-      comments {
-        id
-        CommentAuthor {
-          ... on User {
-            username
-          }
-        }
-        text
-        weightedVotesCount
-        UpvotedByUsers {
-          username
-        }
-        UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-      }
-    }
-  }
-`;
-
 export const CREATE_COMMENT = gql`
   mutation createComment($createCommentInput: [CommentCreateInput!]!) {
     createComments(input: $createCommentInput) {
@@ -151,12 +79,6 @@ export const CREATE_COMMENT = gql`
           username
         }
         UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
           count
         }
         CommentAuthor {
@@ -195,12 +117,6 @@ export const CREATE_COMMENT = gql`
           UpvotedByUsersAggregate {
             count
           }
-          DownvotedByModerators {
-            displayName
-          }
-          DownvotedByModeratorsAggregate {
-            count
-          }
         }
       }
     }
@@ -231,12 +147,6 @@ export const CREATE_DISCUSSION_CHANNEL = gql`
           username
         }
         UpvotedByUsersAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
-        DownvotedByModeratorsAggregate {
           count
         }
         Comments {
@@ -286,10 +196,15 @@ export const UPDATE_COMMENT = gql`
         UpvotedByUsersAggregate {
           count
         }
-        DownvotedByModerators {
-          displayName
+        FeedbackComments {
+          id 
+          CommentAuthor {
+            ... on ModProfile {
+              displayName
+            }
+          }
         }
-        DownvotedByModeratorsAggregate {
+        FeedbackCommentsAggregate {
           count
         }
       }

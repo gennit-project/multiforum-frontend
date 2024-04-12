@@ -52,63 +52,6 @@ export const GET_MOD = gql`
     }
   }`
 
-export const GET_MOD_DOWNVOTED_COMMENTS = gql`
-query getModDownvotedComments($displayName: String!) {
-  moderationProfiles(
-    where: {displayName: $displayName}
-  ) {
-    displayName
-    DownvotedComments {
-      id
-      text
-      createdAt
-      updatedAt
-      deleted
-      CommentAuthor {
-        ... on User {
-          username
-        }
-      }
-      Channel {
-        uniqueName
-      }
-      UpvotedByUsers {
-        username
-      }
-      UpvotedByUsersAggregate {
-        count
-      }
-      DownvotedByModerators {
-        displayName
-      }
-      DownvotedByModeratorsAggregate {
-        count
-      }
-    }
-  }
-}`
-
-export const GET_MOD_DOWNVOTED_DISCUSSIONS = gql`
-query getModDownvotedDiscussions($displayName: String!) {
-  moderationProfiles(
-    where: {displayName: $displayName}
-  ) {
-    displayName
-    DownvotedDiscussions {
-      id
-      title
-      body
-      createdAt
-      updatedAt
-      deleted
-      Channel {
-        uniqueName
-      }
-    }
-  }
-}
-`
-
 export const GET_FEEDBACK_BY_MOD_PROFILE = gql`
 query getFeedbackByModProfile {
   moderationProfiles(

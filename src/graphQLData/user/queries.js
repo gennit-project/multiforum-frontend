@@ -88,12 +88,6 @@ export const GET_USER_COMMENTS = gql`
         UpvotedByUsers {
           username
         }
-        DownvotedByModeratorsAggregate {
-          count
-        }
-        DownvotedByModerators {
-          displayName
-        }
       }
     }
   }

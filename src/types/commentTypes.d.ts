@@ -23,28 +23,3 @@ export type DeleteCommentInputData = {
   commentId: string
   replyCount: number
 }
-
-export type CommentData = {
-  id: string
-  CommentAuthor?: UserData
-  text: string
-  isRootComment: boolean
-  DiscussionChannel?: DiscussionChannelData
-  ParentComment?: CommentData
-  ChildCommentsAggregate?: { 
-    count: number
-  }
-  ChildComments?: [Comment]
-  deleted?: boolean
-  updatedAt?: string
-  createdAt: string
-  Tags?: [TagData]
-  UpvotedByUsers: [UserData]
-  DownvotedByModerators: [ModeratorData]
-  UpvotedByUsersAggregate?: {
-    count: number
-  }
-  DownvotedByModeratorsAggregate?: {
-    count: number
-  }
-}

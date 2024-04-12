@@ -17,7 +17,7 @@ export default defineComponent({
     body: {
       type: String,
       require: true,
-      default: ''
+      default: "",
     },
     open: {
       type: Boolean,
@@ -49,11 +49,8 @@ export default defineComponent({
     :secondary-button-text="secondaryButtonText"
   >
     <template #icon>
-      <i 
-        v-if="icon === 'trash'" 
-        class="fas fa-trash-alt" 
-      />
-      <ExclamationIcon v-else />
+      <i v-if="icon === 'trash'" class="fas fa-trash-alt" />
+      <ExclamationIcon v-else class="dark:text-gray-100" />
     </template>
   </GenericModal>
 </template>

@@ -322,10 +322,7 @@ export default defineComponent({
         </router-link>
         <span v-else>[Deleted]</span>
         <div>{{ createdAt }}</div>
-        <span
-          v-if="discussion && discussion.updatedAt"
-          class="mx-2"
-        >
+        <span v-if="discussion && discussion.updatedAt" class="mx-2">
           &#8226;
         </span>
         <div>{{ editedAt }}</div>
@@ -344,9 +341,16 @@ export default defineComponent({
         @handleClickReport="showOpenIssueModal = true"
         @handleFeedback="handleClickGiveFeedback"
         @handleViewFeedback="
-          router.push(
-            `/channels/c/${channelId}/discussions/d/${discussion.id}/feedback`,
-          )
+          () => {
+            if (discussion) {
+              router.push({
+                name: 'DiscussionFeedback',
+                params: {
+                  discussionId: discussion.id,
+                },
+              });
+            }
+          }
         "
       >
         <EllipsisHorizontal
