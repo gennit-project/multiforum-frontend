@@ -705,7 +705,18 @@ export default defineComponent({
             :feed-items="activeIssue.ActivityFeed || []"
           />
 
+          <ModerationWizard
+            v-if="activeIssue && activeIssue.isOpen"
+            :issue="issue"
+          />
+
           <div class="flex w-full flex-col">
+            <h2
+              v-if="activeIssue"
+              class="text-xl font-bold border-b mb-4 pb-1"
+            >
+              Leave a comment
+            </h2>
             <TextEditor
               :key="`${createFormValues.text === ''}`"
               :test-id="'texteditor-textarea'"
@@ -727,10 +738,6 @@ export default defineComponent({
               />
             </div>
           </div>
-          <ModerationWizard
-            v-if="activeIssue && activeIssue.isOpen"
-            :issue="issue"
-          />
         </div>
       </v-col>
     </v-row>

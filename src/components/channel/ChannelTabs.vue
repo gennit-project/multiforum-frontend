@@ -100,7 +100,7 @@ export default defineComponent({
       {
         name: "events",
         routeSuffix: "events/search",
-        label: "Calendar",
+        label: "Events",
         icon: CalendarIcon,
         countProperty: "EventChannelsAggregate",
       },
@@ -143,7 +143,7 @@ export default defineComponent({
       tabs.push({
         name: "moderation",
         routeSuffix: "issues",
-        label: "Moderation",
+        label: "Issues",
         icon: FlagIcon,
         countProperty: "IssuesAggregate",
       });
