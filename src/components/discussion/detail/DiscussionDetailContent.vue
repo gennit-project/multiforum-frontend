@@ -34,6 +34,7 @@ import {
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
+import EditFeedbackModal from "@/components/discussion/detail/EditFeedbackModal.vue";
 
 export const COMMENT_LIMIT = 50;
 
@@ -48,6 +49,7 @@ export default defineComponent({
     DiscussionBody,
     DiscussionHeader,
     DiscussionVotes,
+    EditFeedbackModal,
     ErrorBanner,
     GenericFeedbackFormModal,
     Notification,
@@ -126,6 +128,7 @@ export default defineComponent({
     );
 
     const showFeedbackFormModal = ref(false);
+    const showEditFeedbackModal = ref(false);
     const showConfirmUndoFeedbackModal = ref(false);
     const showFeedbackSubmittedSuccessfully = ref(false);
 
@@ -316,6 +319,7 @@ export default defineComponent({
       route,
       router,
       showConfirmUndoFeedbackModal,
+      showEditFeedbackModal,
       showFeedbackFormModal,
       showFeedbackSubmittedSuccessfully,
       smAndDown,
@@ -489,6 +493,13 @@ export default defineComponent({
       :discussion-id="discussionId"
       :mod-name="loggedInUserModName"
       @close="showConfirmUndoFeedbackModal = false"
+    />
+    <EditFeedbackModal
+      v-if="showEditFeedbackModal"
+      :open="showEditFeedbackModal"
+      :discussion-id="discussionId"
+      :mod-name="loggedInUserModName"
+      @close="showEditFeedbackModal = false"
     />
     <Notification
       :show="showFeedbackSubmittedSuccessfully"

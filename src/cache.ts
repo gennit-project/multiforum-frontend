@@ -41,6 +41,9 @@ const cache = new InMemoryCache({
         DiscussionChannels: {
           merge: false,
         },
+        Author: {
+          merge: true
+        }
       },
     },
     Comment: {

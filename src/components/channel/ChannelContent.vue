@@ -5,7 +5,7 @@ import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import { useRoute } from "vue-router";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
-import { useDisplay } from "vuetify"
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "ChannelContent",
@@ -56,17 +56,17 @@ export default defineComponent({
     fluid
     class="relative z-0 max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last"
   >
-    <v-row class="flex gap-4">
+    <v-row class="flex divide-x divide-y dark:divide-gray-600">
       <v-col
-        :cols="mdAndDown ? 12 : 8" 
-        class="bg-white dark:bg-gray-900 rounded-lg py-2 lg:py-8 lg:px-8"
+        :cols="mdAndDown ? 12 : 8"
+        class=" bg-white dark:bg-gray-900 lg:py-8"
       >
         <slot />
       </v-col>
       <v-col
         v-if="channelId"
         :cols="mdAndDown ? 12 : 4"
-        class="bg-white dark:bg-gray-900 rounded-lg lg:px-8 pt-0"
+        class="bg-white dark:bg-gray-900"
       >
         <ChannelSidebar
           v-if="channel"
@@ -74,20 +74,13 @@ export default defineComponent({
           class="sticky top-0 overflow-auto"
         >
           <div>
-            <h2 class="mt-2 px-6 text-xl font-bold">
-              Forum Intro
-            </h2>
+            <h2 class="mt-2 px-6 text-xl font-bold">Forum Intro</h2>
             <MarkdownPreview
               v-if="channel?.description"
               :text="channel?.description"
               :word-limit="1000"
             />
-            <p
-              v-else
-              class="p-6 text-xs"
-            >
-              Welcome to {{ channelId }}!
-            </p>
+            <p v-else class="p-6 text-xs">Welcome to {{ channelId }}!</p>
           </div>
         </ChannelSidebar>
       </v-col>
