@@ -26,6 +26,12 @@ export default defineComponent({
     ArrowUpBoldBox,
     // SearchButton
   },
+  props: {
+    sideNavIsOpen: {
+      type: Boolean,
+      required: true,
+    },
+  },
   setup() {
     const { isAuthenticated, loginWithPopup, loginWithRedirect } = useAuth0();
     const route = useRoute();
@@ -120,12 +126,13 @@ export default defineComponent({
     >
       <div class="flex items-center lg:px-0">
         <HamburgerMenuButton
+          v-if="!sideNavIsOpen"
           data-testid="menu-button"
-          class="cursor-pointer "
+          class="cursor-pointer fixed-menu-button"
           @click="$emit('toggleDropdown')"
         />
         <div
-          class="flex items-center space-x-1 text-sm text-gray-500 dark:text-white"
+          class="flex items-center space-x-1 ml-8 text-sm text-gray-500 dark:text-white"
         >
           <router-link
             to="/"
@@ -196,3 +203,11 @@ export default defineComponent({
     </div>
   </div>
 </template>
+<style scoped>
+.fixed-menu-button {
+  position: fixed;  /* Makes the button stay in the same place on the screen */
+  top: 6px;       /* Distance from the top of the viewport */
+  left: 10px;      /* Distance from the left of the viewport */
+  z-index: 100;    /* Ensures the button is above other content */
+}
+</style>

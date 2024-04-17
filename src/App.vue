@@ -63,6 +63,7 @@ export default defineComponent({
     <nav>
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
+        :side-nav-is-open="showDropdown"
         @toggleDropdown="toggleDropdown"
         @closeUserProfileDropdown="closeUserProfileDropdown"
         @toggleUserProfileDropdown="toggleUserProfileDropdown"
