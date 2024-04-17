@@ -321,6 +321,7 @@ export default defineComponent({
       this.$emit("createComment", parentCommentId);
     },
     handleDelete(input: DeleteCommentInputData) {
+      console.log("handle delete", input);
       this.$emit("deleteComment", input);
     },
     handleEdit(commentData: Comment) {
@@ -346,9 +347,9 @@ export default defineComponent({
     handleReport() {
       this.$emit("clickReport", this.commentData);
     },
-    handleFeedback() {
-      console.log("handleFeedback", this.commentData);
-      this.$emit("clickFeedback", this.commentData);
+    handleFeedback(commentData: Comment) {
+      console.log("handleFeedback", commentData);
+      this.$emit("clickFeedback", commentData);
     },
   },
 });
@@ -465,7 +466,17 @@ export default defineComponent({
                       @copyLink="copyLink"
                       @handleEdit="() => handleEdit(commentData)"
                       @clickReport="handleReport"
-                      @clickFeedback="handleFeedback"
+                      @clickFeedback="
+                        () => {
+                          // Passing the commentData in at the template instead of the setup
+                          // function or methods is better because it allows us to specify that
+                          // we want a nested comment to be the target. If we did it in methods
+                          // or setup, the feedback event would be emitted for the parent comment(s)
+                          // as well as the child, so feedback would end up attached to the parent
+                          // instead of the child.
+                          handleFeedback(commentData);
+                        }
+                      "
                       @handleViewFeedback="
                         $emit('handleViewFeedback', commentData.id)
                       "

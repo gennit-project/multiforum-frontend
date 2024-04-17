@@ -470,6 +470,7 @@ export default defineComponent({
             :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
             :comments="comments"
+            :mod-name="loggedInUserModName"
             :reached-end-of-results="reachedEndOfResults"
             :previous-offset="previousOffset"
             @loadMore="loadMore"

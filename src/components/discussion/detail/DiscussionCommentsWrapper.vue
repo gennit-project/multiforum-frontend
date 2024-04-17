@@ -62,6 +62,11 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    modName: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -75,7 +80,10 @@ export default defineComponent({
       return "";
     });
     const aggregateCommentCount = computed(() => {
-      if (props.loading && props.discussionChannel?.CommentsAggregate?.count === 0) {
+      if (
+        props.loading &&
+        props.discussionChannel?.CommentsAggregate?.count === 0
+      ) {
         return 0;
       }
       return props.discussionChannel?.CommentsAggregate?.count;
@@ -84,6 +92,7 @@ export default defineComponent({
     const commentSectionQueryVariables = {
       discussionId: props.discussionChannel?.discussionId,
       channelUniqueName: props.discussionChannel?.channelUniqueName,
+      modName: props.modName,
       limit: COMMENT_LIMIT,
       offset: props.previousOffset,
       sort: getSortFromQuery(route.query),
@@ -159,26 +168,12 @@ export default defineComponent({
     },
     updateCommentSectionQueryResult(input: CommentSectionQueryUpdateInput) {
       const { cache, commentToDeleteId } = input;
-      const readQueryResult = cache.readQuery({
-        query: GET_DISCUSSION_COMMENTS,
-        variables: this.commentSectionQueryVariables,
-      });
 
-      const filteredRootComments: Comment[] = (
-        readQueryResult?.getCommentSection?.Comments || []
-      ).filter((comment: CommentType) => comment.id !== commentToDeleteId);
-
-      cache.writeQuery({
-        query: GET_DISCUSSION_COMMENTS,
-        variables: this.commentSectionQueryVariables,
-        data: {
-          ...readQueryResult,
-          getCommentSection: {
-            ...readQueryResult?.getCommentSection,
-            Comments: filteredRootComments,
-          },
-        },
-      });
+      if (commentToDeleteId) {
+        cache.evict({
+          id: cache.identify({ __typename: "Comment", id: commentToDeleteId }),
+        });
+      }
     },
     updateAggregateCount(cache: any) {
       cache.modify({

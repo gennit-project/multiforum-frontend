@@ -131,6 +131,7 @@ export default defineComponent({
     const showFeedbackFormModal = ref(false);
     const commentToGiveFeedbackOn: Ref<CommentType | null> = ref(null);
     const commentToReport: Ref<CommentType | null> = ref(null);
+    const showDeleteCommentModal = ref(false);
 
     const {
       mutate: addFeedbackCommentToComment,
@@ -177,7 +178,10 @@ export default defineComponent({
       sort: getSortFromQuery(route.query),
     };
 
-    const { mutate: deleteComment } = useMutation(DELETE_COMMENT, {
+    const { 
+      mutate: deleteComment ,
+      onDone: onDoneDeletingComment,
+    } = useMutation(DELETE_COMMENT, {
       update: (cache: any) => {
         if (parentOfCommentToDelete.value) {
           // For child comments, update the parent comment's replies
@@ -243,6 +247,11 @@ export default defineComponent({
         // count of the comment section
         emit("decrementCommentCount", cache);
       },
+    });
+
+    onDoneDeletingComment(() => {
+      commentToDeleteId.value = "";
+      showDeleteCommentModal.value = false;
     });
 
     // The soft delete is for comments that have
@@ -416,7 +425,7 @@ export default defineComponent({
       permalinkedCommentId,
       replyFormOpenAtCommentID,
       showCopiedLinkNotification,
-      showDeleteCommentModal: ref(false),
+      showDeleteCommentModal,
       showModProfileModal: ref(false),
       showFeedbackFormModal,
       showOpenIssueModal: ref(false),
