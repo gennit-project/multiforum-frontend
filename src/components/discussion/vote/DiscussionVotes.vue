@@ -159,10 +159,6 @@ export default defineComponent({
 
       const newModProfileName = updatedUser.ModerationProfile.displayName;
       modProfileNameVar(newModProfileName);
-      downvoteDiscussionChannel({
-        id: discussionChannelId.value,
-        displayName: newModProfileName,
-      });
     });
 
     return {
@@ -212,7 +208,6 @@ export default defineComponent({
       if (this.loggedInUserModName) {
         if (!this.loggedInUserDownvoted) {
           this.$emit("handleClickGiveFeedback");
-          // this.downvote();
         }
       } else {
         // Create mod profile, then downvote comment
@@ -223,15 +218,13 @@ export default defineComponent({
       console.log("clicked edit feedback");
     },
     handleClickUndoFeedback() {
-      console.log("clicked undo feedback")
       if (this.loggedInUserModName) {
-        // undo give feedback
+        this.$emit("handleClickUndoFeedback");
       } else {
         console.error("Mod profile name is required to undo feedback");
       }
     },
     handleClickViewFeedback() {
-      console.log("clicked view feedback");
       this.router.push({
         name: "DiscussionFeedback",
         params: {

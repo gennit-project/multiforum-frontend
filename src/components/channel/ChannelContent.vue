@@ -56,7 +56,7 @@ export default defineComponent({
     fluid
     class="relative z-0 max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last"
   >
-    <v-row class="flex">
+    <v-row class="flex gap-4">
       <v-col
         :cols="mdAndDown ? 12 : 8" 
         class="bg-white dark:bg-gray-900 rounded-lg py-2 lg:py-8 lg:px-8"
@@ -66,7 +66,7 @@ export default defineComponent({
       <v-col
         v-if="channelId"
         :cols="mdAndDown ? 12 : 4"
-        class="pt-0"
+        class="bg-white dark:bg-gray-900 rounded-lg lg:px-8 pt-0"
       >
         <ChannelSidebar
           v-if="channel"

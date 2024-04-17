@@ -60,7 +60,7 @@ export default defineComponent({
       <TextEditor
         :test-id="'description-input'"
         :initial-value="''"
-        :placeholder="'Your feedback'"
+        :placeholder="'How can the author improve their post?'"
         :disable-auto-focus="false"
         :allow-image-upload="false"
         @update="updateFeedback"

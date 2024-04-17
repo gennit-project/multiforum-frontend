@@ -27,6 +27,7 @@ import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
+import ConfirmUndoFeedbackModal from '@/components/discussion/detail/ConfirmUndoFeedbackModal.vue'
 import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import {
   GET_LOCAL_MOD_PROFILE_NAME,
@@ -39,6 +40,7 @@ export const COMMENT_LIMIT = 50;
 export default defineComponent({
   components: {
     BackLink,
+    ConfirmUndoFeedbackModal,
     CreateButton,
     DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
@@ -108,6 +110,7 @@ export default defineComponent({
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
+      refetch: refetchDiscussion,
     } = useQuery(GET_DISCUSSION, { 
       id: discussionId,
       loggedInModName: loggedInUserModName
@@ -123,6 +126,7 @@ export default defineComponent({
     );
 
     const showFeedbackFormModal = ref(false);
+    const showConfirmUndoFeedbackModal = ref(false);
     const showFeedbackSubmittedSuccessfully = ref(false);
 
     onAddFeedbackCommentToDiscussionDone(() => {
@@ -308,8 +312,10 @@ export default defineComponent({
       reachedEndOfResults,
       relativeTime,
       aggregateRootCommentCount,
+      refetchDiscussion,
       route,
       router,
+      showConfirmUndoFeedbackModal,
       showFeedbackFormModal,
       showFeedbackSubmittedSuccessfully,
       smAndDown,
@@ -319,20 +325,26 @@ export default defineComponent({
     handleClickGiveFeedback() {
       this.showFeedbackFormModal = true;
     },
+    handleClickUndoFeedback() {
+      this.showConfirmUndoFeedbackModal = true;
+    },
     handleFeedbackInput(event: any) {
       this.feedbackText = event.target.value;
     },
-    handleSubmitFeedback() {
+    async handleSubmitFeedback() {
       if (!this.activeDiscussionChannel?.channelUniqueName) {
         console.error("No active discussion channel found.");
         return;
       }
-      this.addFeedbackCommentToDiscussion({
+      await this.addFeedbackCommentToDiscussion({
         discussionId: this.discussionId,
         text: this.feedbackText,
         modProfileName: this.loggedInUserModName,
         channelId: this.activeDiscussionChannel?.channelUniqueName,
       });
+      // Refetch the discussion so that the thumbs-down shows
+      // that it's active, meaning the user has given feedback.
+      this.refetchDiscussion();
     },
   }
 });
@@ -423,6 +435,7 @@ export default defineComponent({
                     :discussion-channel="activeDiscussionChannel"
                     :show-downvote="!loggedInUserIsAuthor"
                     @handleClickGiveFeedback="handleClickGiveFeedback"
+                    @handleClickUndoFeedback="handleClickUndoFeedback"
                   />
                 </div>
               </DiscussionBody>
@@ -462,11 +475,20 @@ export default defineComponent({
       </div>
     </div>
     <GenericFeedbackFormModal
+      v-if="showFeedbackFormModal"
       :open="showFeedbackFormModal"
       :loading="addFeedbackCommentToDiscussionLoading"
       @close="showFeedbackFormModal = false"
       @input="handleFeedbackInput"
       @primaryButtonClick="handleSubmitFeedback"
+    />
+    <ConfirmUndoFeedbackModal
+      v-if="showConfirmUndoFeedbackModal"
+      :key="loggedInUserModName"
+      :open="showConfirmUndoFeedbackModal"
+      :discussion-id="discussionId"
+      :mod-name="loggedInUserModName"
+      @close="showConfirmUndoFeedbackModal = false"
     />
     <Notification
       :show="showFeedbackSubmittedSuccessfully"

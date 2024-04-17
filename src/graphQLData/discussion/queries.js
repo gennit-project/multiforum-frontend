@@ -205,3 +205,43 @@ export const GET_DISCUSSION_FEEDBACK = gql`
     }
   }
 `;
+
+export const GET_SPECIFIC_DISCUSSION_FEEDBACK = gql`
+query getSpecificDiscussionFeedback (
+  $discussionId: ID,
+  $modName: String
+) {
+  comments(
+    where: {
+      GivesFeedbackOnDiscussion: {
+        id: $discussionId
+      },
+      CommentAuthorConnection: {
+        ModerationProfile: {
+          node: {
+            displayName: $modName
+          }
+        }
+      }
+    }
+  ) {
+      id
+      text
+      createdAt
+      Channel {
+        uniqueName
+      }
+      CommentAuthor (
+        where: {
+          ModerationProfile: {
+            displayName: $modName
+          }
+        }
+      ) {
+        ... on ModerationProfile {
+          displayName
+        }
+      }
+  }
+}
+`

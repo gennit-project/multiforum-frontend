@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import HandThumbDownIcon from "@/components/icons/HandThumbDownIcon.vue";
@@ -50,40 +50,44 @@ export default defineComponent({
     },
   },
   setup(props) {
-    let thumbsDownMenuItems: SelectOptionData[] = [
-      {
-        label: "View Feedback",
-        icon: ALLOWED_ICONS.VIEW_FEEDBACK,
-        value: "",
-        event: "viewFeedback",
-      },
-    ];
+    const thumbsDownMenuItems = computed(() => {
+      let items: SelectOptionData[] = [
+        {
+          label: "View Feedback",
+          icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          value: "",
+          event: "viewFeedback",
+        },
+      ];
 
-    if (props.downvoteActive) {
-      thumbsDownMenuItems = thumbsDownMenuItems.concat([
-        {
-          label: "Undo feedback",
-          icon: ALLOWED_ICONS.UNDO,
-          value: "",
-          event: "undoFeedback",
-        },
-        {
-          label: "Edit feedback",
-          icon: ALLOWED_ICONS.EDIT,
-          value: "",
-          event: "editFeedback",
-        },
-      ]);
-    } else {
-      thumbsDownMenuItems = thumbsDownMenuItems.concat([
-        {
-          label: "Give feedback",
-          icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-          value: "",
-          event: "giveFeedback",
-        },
-      ]);
-    }
+      if (props.downvoteActive) {
+        items = items.concat([
+          {
+            label: "Undo feedback",
+            icon: ALLOWED_ICONS.UNDO,
+            value: "",
+            event: "undoFeedback",
+          },
+          {
+            label: "Edit feedback",
+            icon: ALLOWED_ICONS.EDIT,
+            value: "",
+            event: "editFeedback",
+          },
+        ]);
+      } else {
+        items = items.concat([
+          {
+            label: "Give feedback",
+            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+            value: "",
+            event: "giveFeedback",
+          },
+        ]);
+      }
+      return items;
+    });
+
     return {
       thumbsDownMenuItems,
     };
