@@ -74,10 +74,6 @@ module.exports = {
         100: "#f5fdf5",
       },
     },
-    fontWeight: {
-      bold: "800",
-      normal: "400",
-    },
     container: {
       padding: {
         DEFAULT: "1rem",

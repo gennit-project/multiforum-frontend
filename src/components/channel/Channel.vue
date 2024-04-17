@@ -75,7 +75,8 @@ export default defineComponent({
         displayName: channel.displayName,
         channelIconURL: channel.channelIconURL,
       };
-
+      // save the most recent 20
+      recentForums = recentForums.slice(0, 20);
       recentForums.push(sideNavItem);
 
       // filter out any values that are strings instead of objects
@@ -84,13 +85,12 @@ export default defineComponent({
       );
 
       // deduplicate the array
-      recentForums = recentForums
-        .reverse()
-        .filter(
-          (forum: any, index: number, self: any) =>
-            index ===
-            self.findIndex((t: any) => t.uniqueName === forum.uniqueName),
-        );
+      recentForums = recentForums.filter(
+        (forum: any, index: number, self: any) =>
+          index ===
+          self.findIndex((t: any) => t.uniqueName === forum.uniqueName),
+      );
+
       localStorage.setItem("recentForums", JSON.stringify(recentForums));
     };
 
@@ -182,10 +182,7 @@ export default defineComponent({
       :channel-id="channelId"
       :show-create-button="true"
     />
-    <div
-      v-if="smAndDown"
-      class="w-full"
-    >
+    <div v-if="smAndDown" class="w-full">
       <article
         class="relative z-0 h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
       >
@@ -204,10 +201,7 @@ export default defineComponent({
       </article>
     </div>
 
-    <article
-      v-if="!smAndDown && channel"
-      class="w-full"
-    >
+    <article v-if="!smAndDown && channel" class="w-full">
       <ChannelHeaderDesktop
         v-if="showChannelHeader"
         :channel="channel"

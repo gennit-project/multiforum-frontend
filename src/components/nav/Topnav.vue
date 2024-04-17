@@ -115,13 +115,13 @@ export default defineComponent({
 <template>
   <div class="z-10 w-full bg-gray-100 border-b dark:bg-black dark:border-b-gray-600">
     <div
-      :class="[smAndDown ? 'px-6 py-2' : 'px-10 py-1']"
+      :class="[smAndDown ? 'px-2 py-2' : 'px-4 py-1']"
       class="flex items-center justify-between"
     >
       <div class="flex items-center lg:px-0">
         <HamburgerMenuButton
           data-testid="menu-button"
-          class="cursor-pointer"
+          class="cursor-pointer "
           @click="$emit('toggleDropdown')"
         />
         <div

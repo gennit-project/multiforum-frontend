@@ -14,13 +14,8 @@ import SubredditPostList from "@/components/subreddit/SubredditPostList.vue";
 import ChannelHeaderMobile from "@/components/channel/ChannelHeaderMobile.vue";
 import ChannelHeaderDesktop from "@/components/channel/ChannelHeaderDesktop.vue";
 import FlairList from "@/components/subreddit/FlairList.vue";
+import { Channel, SubredditSidebar } from "@/__generated__/graphql";
 
-// const channel = {
-//         channelBannerURL,
-//         channelIconURL,
-//         displayName,
-//         uniqueName
-//     }
 
 export default defineComponent({
   name: "SubredditComponent",
@@ -62,6 +57,7 @@ export default defineComponent({
     const {
       error: getSubredditSidebarError,
       result: getSubredditSidebarResult,
+      onResult: onGetChannelResult,
     } = useQuery(GET_SUBREDDIT_SIDEBAR, {
       subredditName: subredditName,
     });
@@ -102,12 +98,53 @@ export default defineComponent({
       if (getSubredditSidebarError.value || getSubredditPostsError.value) {
         return null;
       }
-      return {
+      const result: Channel = {
         channelBannerURL: subredditSidebar.value?.bannerImg || "",
         channelIconURL: subredditSidebar.value?.communityIcon || "",
         displayName: subredditSidebar.value?.displayName || "",
         uniqueName: subredditName.value,
       };
+      return result
+    });
+
+    const addForumToLocalStorage = (subreddit: SubredditSidebar) => {
+      let recentForums =
+        JSON.parse(localStorage.getItem("recentSubreddits") || '""') || [];
+
+      const sideNavItem = {
+        name: subreddit.displayName,
+        iconURL: subreddit.communityIcon,
+        timestamp: new Date().getTime(),
+      };
+
+      // filter out any values that are strings instead of objects
+      recentForums = recentForums.filter(
+        (forum: any) => typeof forum === "object",
+      );
+      
+        // sort by timestamp with most recent first.
+      recentForums.sort((a: any, b: any) => a.timestamp - b.timestamp);
+      // limit to 20 recent forums.
+      recentForums = recentForums.slice(0, 20);
+      recentForums.push(sideNavItem);
+      recentForums.reverse()
+
+      // deduplicate the array
+      recentForums = recentForums
+        .filter(
+          (forum: any, index: number, self: any) =>
+            index ===
+            self.findIndex((t: any) => t.name === forum.name),
+        );
+      localStorage.setItem("recentSubreddits", JSON.stringify(recentForums));
+    };
+
+    onGetChannelResult((result) => {
+      const channel = result.data?.getSubredditSidebar;
+      if (!channel) {
+        return;
+      }
+      addForumToLocalStorage(channel);
     });
 
     return {
@@ -163,7 +200,7 @@ export default defineComponent({
 
     <article
       v-if="!smAndDown && channel"
-      class="w-full flex-col bg-gray-100 dark:bg-gray-900"
+      class="w-full flex-col bg-gray-100 dark:bg-gray-900 mt-6"
     >
       <ChannelHeaderDesktop
         v-if="channel"

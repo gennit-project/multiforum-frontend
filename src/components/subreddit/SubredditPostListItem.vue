@@ -7,7 +7,7 @@ import { useDisplay } from "vuetify";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import MediaViewer from "./MediaViewer.vue";
 
-const TRUNCATED_LENGTH = 150;
+const TRUNCATED_LENGTH = 500;
 
 export default defineComponent({
   components: {
@@ -110,12 +110,12 @@ export default defineComponent({
             </div>
             <div class="flex-1">
               <span
-                class="text-md cursor-pointer font-bold hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
+                class="cursor-pointer hover:text-gray-500 dark:text-gray-200 dark:hover:text-gray-300 hover:dark:text-gray-300"
               >
                 <a
                   :href="detailLink"
                   target="_blank"
-                  class="hover:text-gray-500 text-lg"
+                  class="hover:text-gray-500 text-lg font-bold"
                   >{{ title }}</a
                 >
               </span>

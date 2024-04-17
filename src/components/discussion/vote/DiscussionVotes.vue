@@ -215,7 +215,6 @@ export default defineComponent({
       }
     },
     handleClickEditFeedback() {
-      console.log("clicked edit feedback");
       if (this.loggedInUserModName) {
         this.$emit("handleClickEditFeedback");
       } else {

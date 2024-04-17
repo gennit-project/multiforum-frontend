@@ -188,7 +188,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-bold text-md'"
+                  :classes="'font-bold text-lg'"
                 />
               </span>
             </router-link>
@@ -240,7 +240,7 @@ export default defineComponent({
           "
           class="mt-1 flex cursor-pointer items-center justify-start gap-1 text-xs text-gray-400 dark:text-gray-100"
         >
-          <span class="font-bold hover:underline">{{
+          <span class="font-bold underline">{{
             `View ${commentCount} ${
               commentCount === 1 ? "comment" : "comments"
             } in c/${discussion.DiscussionChannels[0].channelUniqueName}`

@@ -68,8 +68,9 @@ export default defineComponent({
         @toggleUserProfileDropdown="toggleUserProfileDropdown"
       />
     </nav>
-    <div class="flex hconstrain-height relative">
+    <div class="flex constrain-height relative">
       <SiteSidenav
+        :key="`${showDropdown}`"
         :show-dropdown="showDropdown"
         @close="showDropdown = false"
       />

@@ -230,7 +230,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-bold text-md'"
+                  :classes="'font-bold text-lg'"
                 />
               </span>
             </router-link>
@@ -290,7 +290,7 @@ export default defineComponent({
               class="rounded-md p-1 px-4 underline"
             >
               <i class="fa-regular fa-comment h-5 w-5" />
-              <span class="text-xs">{{
+              <span class="text-md">{{
                 `${commentCount} comment${commentCount === 1 ? "" : "s"}`
               }}</span>
             </router-link>
