@@ -101,6 +101,9 @@ export const CREATE_COMMENT = gql`
         ChildCommentsAggregate {
           count
         }
+        FeedbackComments {
+          id
+        }
         ChildComments {
           id
           text

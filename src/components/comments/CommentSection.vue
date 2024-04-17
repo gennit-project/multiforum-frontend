@@ -518,8 +518,17 @@ export default defineComponent({
       this.showOpenIssueModal = true;
     },
     handleSubmitFeedback() {
-      this.addFeedbackCommentToComment({
+      console.log('clicked handle submit feedback',{
         commentId: this.commentToGiveFeedbackOn?.id,
+        text: this.feedbackText,
+        modProfileName: this.loggedInUserModName,
+        channelId: this.channelId,
+      })
+      if (!this.commentToGiveFeedbackOn?.id) {
+        console.error("commentId is required to submit feedback");
+      }
+      this.addFeedbackCommentToComment({
+        commentId:  this.commentToGiveFeedbackOn?.id,
         text: this.feedbackText,
         modProfileName: this.loggedInUserModName,
         channelId: this.channelId,
@@ -647,6 +656,7 @@ export default defineComponent({
       @loadMore="$emit('loadMore')"
     />
     <WarningModal
+      v-if="showDeleteCommentModal"
       :title="'Delete Comment'"
       :body="'Are you sure you want to delete this comment?'"
       :open="showDeleteCommentModal"
@@ -654,6 +664,7 @@ export default defineComponent({
       @primaryButtonClick="handleDeleteComment"
     />
     <OpenIssueModal
+      v-if="showOpenIssueModal"
       :open="showOpenIssueModal"
       :comment-id="commentToReport?.id"
       :comment="commentToReport"
@@ -676,6 +687,7 @@ export default defineComponent({
       @closeNotification="showCopiedLinkNotification = false"
     />
     <WarningModal
+      v-if="showModProfileModal"
       :title="'Create Mod Profile'"
       :body="`Moderation activity is tracked to prevent abuse, therefore you need to create a mod profile in order to downvote this comment. Continue?`"
       :open="showModProfileModal"
@@ -684,6 +696,7 @@ export default defineComponent({
       @primaryButtonClick="handleCreateModProfileClick"
     />
     <GenericFeedbackFormModal
+      v-if="showFeedbackFormModal"
       :open="showFeedbackFormModal"
       :loading="addFeedbackCommentToCommentLoading"
       :error="addFeedbackCommentToCommentError?.message || ''"

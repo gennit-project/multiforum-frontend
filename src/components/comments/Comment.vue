@@ -347,6 +347,7 @@ export default defineComponent({
       this.$emit("clickReport", this.commentData);
     },
     handleFeedback() {
+      console.log("handleFeedback", this.commentData);
       this.$emit("clickFeedback", this.commentData);
     },
   },

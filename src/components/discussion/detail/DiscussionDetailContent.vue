@@ -462,6 +462,7 @@ export default defineComponent({
           :channel-id="channelId"
           :discussion-channel="activeDiscussionChannel"
           :previous-offset="previousOffset"
+          :mod-name="loggedInUserModName"
         />
         <div class="mx-2 my-6 rounded-lg">
           <DiscussionCommentsWrapper
