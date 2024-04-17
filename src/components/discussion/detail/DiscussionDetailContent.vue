@@ -149,6 +149,7 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION_COMMENTS, {
       discussionId: discussionId,
       channelUniqueName: channelId,
+      modName: loggedInUserModName.value || "",
       offset: offset.value,
       limit: COMMENT_LIMIT,
       sort: commentSort,
@@ -289,6 +290,7 @@ export default defineComponent({
       }
       return discussion.value.Author?.username === username.value;
     });
+    console.log('active DC', activeDiscussionChannel.value)
 
     return {
       activeDiscussionChannel,

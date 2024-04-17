@@ -97,6 +97,7 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+  console.log('comments are', props.comments)
     const route = useRoute();
     const router = useRouter();
 

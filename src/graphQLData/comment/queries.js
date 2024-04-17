@@ -39,6 +39,7 @@ export const GET_DISCUSSION_COMMENTS = gql`
   query getCommentSection(
     $channelUniqueName: String!
     $discussionId: ID!
+    $modName: String
     $offset: Int
     $limit: Int
     $sort: String
@@ -46,6 +47,7 @@ export const GET_DISCUSSION_COMMENTS = gql`
     getCommentSection(
       channelUniqueName: $channelUniqueName
       discussionId: $discussionId
+      modName: $modName
       offset: $offset
       limit: $limit
       sort: $sort
@@ -81,6 +83,9 @@ export const GET_DISCUSSION_COMMENTS = gql`
         ChildComments {
           id
           text
+        }
+        FeedbackComments {
+          id
         }
       }
     }

@@ -75,25 +75,18 @@ export default defineComponent({
     });
 
     const loggedInUserDownvoted = computed(() => {
-      // if (
-      //   localModProfileNameLoading.value ||
-      //   !localModProfileNameResult.value
-      // ) {
-      //   return false;
-      // }
-      // const feedbackComments = props.commentData.FeedbackComments;
-      // const loggedInMod = localModProfileNameResult.value.modProfileName;
-      // const match =
-      //   feedbackComments
-      //     .map((feedbackComment: Comment) => {
-      //       return feedbackComment.CommentAuthor?.displayName || "";
-      //     })
-      //     .filter((author: string) => {
-      //       return author === loggedInMod;
-      //     })
-      //     .length === 1;
-      // return match;
-      return false
+  
+      // Feedback comments are pre-filtered by the logged in author
+      // just so that we can use them to indicate if the logged in user
+      // has already given feedback on the comment.
+      const feedbackCommentsByLoggedInUser = props.commentData.FeedbackComments;
+      if (!feedbackCommentsByLoggedInUser) {
+        return false;
+      }
+      if (feedbackCommentsByLoggedInUser.length === 0) {
+        return false;
+      }
+      return true
     });
 
     const {
