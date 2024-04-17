@@ -1,21 +1,22 @@
 <script lang="ts">
-import { Ref, defineComponent, ref } from "vue";
+import { Ref, computed, defineComponent, ref } from "vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
-import { DELETE_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_SPECIFIC_DISCUSSION_FEEDBACK as GET_FEEDBACK } from "@/graphQLData/discussion/queries";
 import { Comment } from "@/__generated__/graphql";
 import CommentHeader from "@/components/comments/CommentHeader.vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import TextEditor from "@/components/generic/forms/TextEditor.vue";
+import { UPDATE_COMMENT } from "@/graphQLData/comment/mutations";
+import { CreateEditCommentFormValues } from "@/types/commentTypes";
 
 export default defineComponent({
-  name: "ConfirmUndoFeedbackModal",
+  name: "EditFeedbackModal",
   components: {
     CommentHeader,
     ErrorBanner,
     GenericModal,
-    MarkdownPreview,
+    TextEditor,
   },
   props: {
     discussionId: {
@@ -34,19 +35,34 @@ export default defineComponent({
   setup(props, { emit }) {
     // Fetch the feedback from the server - check for feedback comments
     // that match the discussion ID and the mod username.
-    const feedbackToDeleteID = ref("");
+    const feedbackToEditID = ref("");
     const commentData: Ref<Comment | null> = ref(null);
 
     const {
       error: getError,
       result: feedbackResult,
       onResult,
-    } = useQuery(GET_FEEDBACK, {
-      discussionId: props.discussionId,
-      modName: props.modName,
-    }, {
-      fetchPolicy: "network-only",
-    
+    } = useQuery(
+      GET_FEEDBACK,
+      {
+        discussionId: props.discussionId,
+        modName: props.modName,
+      },
+      {
+        fetchPolicy: "network-only",
+      },
+    );
+
+    const editFormValues = ref<CreateEditCommentFormValues>({
+      text: commentData.value?.text || "",
+      isRootComment: true,
+      depth: 1,
+    });
+
+    const updateCommentInput = computed(() => {
+      return {
+        text: editFormValues.value?.text || "",
+      };
     });
 
     onResult((result) => {
@@ -55,49 +71,52 @@ export default defineComponent({
         console.warn("No feedback found");
         return;
       }
-      feedbackToDeleteID.value = comment.id;
+      feedbackToEditID.value = comment.id;
       commentData.value = comment;
+      editFormValues.value.text = comment.text;
     });
 
     const {
-      mutate: deleteFeedback,
-      loading: deleteLoading,
-      error: deleteError,
-      onDone: onFeedbackDeleted,
-    } = useMutation(DELETE_COMMENT, {
-      update: (cache, { data }) => {
-        if (commentData.value && data?.deleteComments?.nodesDeleted > 0) {
-          cache.evict({ id: cache.identify(commentData.value) });
-        }
+      mutate: editComment,
+      loading: editLoading,
+      error: editCommentError,
+      onDone: onDoneUpdatingComment,
+    } = useMutation(UPDATE_COMMENT, () => ({
+      variables: {
+        commentWhere: {
+          id: commentData.value?.id || "",
+        },
+        updateCommentInput: updateCommentInput.value,
       },
-    });
+    }));
 
-    onFeedbackDeleted(() => {
+    onDoneUpdatingComment(() => {
       emit("close");
     });
 
     return {
       body: "Are you sure you want to delete your feedback?",
       commentData,
-      deleteError: deleteError,
-      deleteFeedback,
+      editFormValues,
+      editCommentError,
+      editComment,
       getError: getError,
       feedbackResult,
-      feedbackToDeleteID,
-      loading: deleteLoading,
+      feedbackToEditID,
+      loading: editLoading,
       title: "Delete your feedback?",
     };
   },
   methods: {
-    handleDelete() {
+    handleEdit() {
       try {
-        this.deleteFeedback({ id: this.feedbackToDeleteID });
+        this.editComment();
       } catch (error) {
-        console.error("Error deleting feedback", error);
+        console.error("Error updating feedback", error);
       }
     },
     updateFeedback(text: string) {
-      this.$emit("updateFeedback", text);
+      this.editFormValues.text = text;
     },
   },
 });
@@ -109,9 +128,9 @@ export default defineComponent({
     :body="body"
     :open="open"
     :loading="loading"
-    :primary-button-text="'Delete'"
+    :primary-button-text="'Update'"
     :secondary-button-text="'Cancel'"
-    @primaryButtonClick="handleDelete"
+    @primaryButtonClick="handleEdit"
     @secondaryButtonClick="$emit('close')"
   >
     <template #icon>
@@ -126,14 +145,22 @@ export default defineComponent({
         :show-channel="false"
       />
       <div class="ml-2 flex flex-col gap-2 border-l pl-4">
-        <MarkdownPreview
-          class="-ml-4"
-          :text="commentData?.text || '[Deleted]'"
-          :disable-gallery="true"
+        <TextEditor
+          id="editFeedbackComment"
+          :key="commentData?.id"
+          class="mb-2 mt-3 p-1"
+          :initial-value="commentData?.text || '[Deleted]'"
+          @update="updateFeedback"
         />
       </div>
-      <ErrorBanner v-if="getError" :text="getError.message" />
-      <ErrorBanner v-if="deleteError" :text="deleteError.message" />
+      <ErrorBanner
+        v-if="getError"
+        :text="getError.message"
+      />
+      <ErrorBanner
+        v-if="editCommentError"
+        :text="editCommentError.message"
+      />
     </template>
   </GenericModal>
 </template>

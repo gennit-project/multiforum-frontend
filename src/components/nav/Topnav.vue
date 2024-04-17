@@ -208,6 +208,6 @@ export default defineComponent({
   position: fixed;  /* Makes the button stay in the same place on the screen */
   top: 6px;       /* Distance from the top of the viewport */
   left: 10px;      /* Distance from the left of the viewport */
-  z-index: 100;    /* Ensures the button is above other content */
+  z-index: 10;    /* Ensures the button is above other content */
 }
 </style>

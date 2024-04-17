@@ -185,6 +185,9 @@ export const UPDATE_COMMENT = gql`
           ... on User {
             username
           }
+          ... on ModerationProfile {
+            displayName
+          }
         }
         createdAt
         updatedAt
@@ -199,7 +202,7 @@ export const UPDATE_COMMENT = gql`
         FeedbackComments {
           id 
           CommentAuthor {
-            ... on ModProfile {
+            ... on ModerationProfile {
               displayName
             }
           }
