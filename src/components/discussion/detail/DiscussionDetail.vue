@@ -3,14 +3,20 @@ import { defineComponent, computed, ref, watchEffect } from "vue";
 import { useRoute } from "vue-router";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useDisplay } from "vuetify";
+import LoadingSpinner from "@/components/generic/LoadingSpinner.vue";
+import { useQuery } from "@vue/apollo-composable";
 import DiscussionDetailContent from "./DiscussionDetailContent.vue";
 import ChannelContent from "@/components/channel/ChannelContent.vue";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
     ChannelContent,
     DiscussionDetailContent,
+    ErrorBanner,
+    LoadingSpinner,
   },
   props: {
     compactMode: {
@@ -41,23 +47,39 @@ export default defineComponent({
       return "";
     });
 
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
     const { lgAndUp, mdAndUp, smAndDown } = useDisplay();
 
     return {
       channelId,
       discussionId,
       lgAndUp,
+      localModProfileNameError,
+      localModProfileNameLoading,
+      loggedInUserModName,
       mdAndUp,
       relativeTime,
       route,
-      smAndDown
+      smAndDown,
     };
   },
   mounted() {
     this.$nextTick(() => {
       window.scrollTo(0, 0);
     });
-  }
+  },
 });
 </script>
 
@@ -65,13 +87,23 @@ export default defineComponent({
   <ChannelContent>
     <div
       :class="[smAndDown ? '' : '']"
-      class="w-full flex justify-center space-y-4"
+      class="flex w-full justify-center space-y-4"
     >
+      <LoadingSpinner v-if="localModProfileNameLoading" class="h-12 w-12" />
+      <ErrorBanner
+        v-else-if="localModProfileNameError"
+        :text="localModProfileNameError.message"
+      />
+      <ErrorBanner 
+        v-else-if="!discussionId"
+        text="Discussion not found"
+      />
       <DiscussionDetailContent
-        v-if="discussionId"
+        v-else-if="discussionId && !localModProfileNameError && !localModProfileNameLoading"
         :key="discussionId"
         :discussion-id="discussionId"
         :compact-mode="compactMode"
+        :logged-in-user-mod-name="loggedInUserModName"
       />
     </div>
   </ChannelContent>

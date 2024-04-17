@@ -30,7 +30,6 @@ import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedback
 import ConfirmUndoFeedbackModal from '@/components/discussion/detail/ConfirmUndoFeedbackModal.vue'
 import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import {
-  GET_LOCAL_MOD_PROFILE_NAME,
   GET_LOCAL_USERNAME,
 } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
@@ -66,14 +65,22 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    loggedInUserModName: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
+    console.log('props in discussion detail content', props)
     const route = useRoute();
     const router = useRouter();
     const offset = ref(0);
 
     // Makes the query refetch if the discussionId changes.
     const discussionId = computed(() => props.discussionId);
+
+    // Makes the query refetch if the mod name changes.
+    const loggedInUserModName = computed(() => props.loggedInUserModName);
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -96,26 +103,13 @@ export default defineComponent({
     });
 
     const {
-      result: localModProfileNameResult,
-      loading: localModProfileNameLoading,
-      error: localModProfileNameError,
-    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
-
-    const loggedInUserModName = computed(() => {
-      if (localModProfileNameLoading.value || localModProfileNameError.value) {
-        return "placeholder";
-      }
-      return localModProfileNameResult.value.modProfileName;
-    });
-
-    const {
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
       refetch: refetchDiscussion,
     } = useQuery(GET_DISCUSSION, { 
       id: discussionId,
-      loggedInModName: loggedInUserModName
+      loggedInModName: props.loggedInUserModName
     });
 
     const { 
@@ -141,6 +135,15 @@ export default defineComponent({
       return getSortFromQuery(route.query);
     });
 
+    console.log('props passed to getDiscussionComments',{
+      discussionId: discussionId,
+      channelUniqueName: channelId,
+      modName: loggedInUserModName,
+      offset: offset.value,
+      limit: COMMENT_LIMIT,
+      sort: commentSort,
+    })
+
     const {
       result: getDiscussionChannelResult,
       error: getDiscussionChannelError,
@@ -149,7 +152,7 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION_COMMENTS, {
       discussionId: discussionId,
       channelUniqueName: channelId,
-      modName: loggedInUserModName.value || "",
+      modName: loggedInUserModName,
       offset: offset.value,
       limit: COMMENT_LIMIT,
       sort: commentSort,
@@ -309,7 +312,6 @@ export default defineComponent({
       lgAndUp,
       loadedRootCommentCount,
       loadMore,
-      loggedInUserModName,
       loggedInUserIsAuthor,
       mdAndUp,
       offset,
