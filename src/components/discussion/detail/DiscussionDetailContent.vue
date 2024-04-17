@@ -329,6 +329,9 @@ export default defineComponent({
     handleClickGiveFeedback() {
       this.showFeedbackFormModal = true;
     },
+    handleClickEditFeedback() {
+      this.showEditFeedbackModal = true;
+    },
     handleClickUndoFeedback() {
       this.showConfirmUndoFeedbackModal = true;
     },
@@ -440,6 +443,7 @@ export default defineComponent({
                     :show-downvote="!loggedInUserIsAuthor"
                     @handleClickGiveFeedback="handleClickGiveFeedback"
                     @handleClickUndoFeedback="handleClickUndoFeedback"
+                    @handleClickEditFeedback="handleClickEditFeedback"
                   />
                 </div>
               </DiscussionBody>
