@@ -239,7 +239,14 @@ export default defineComponent({
     });
 
     const commentMenuItems = computed(() => {
-      let out: any[] = [];
+      let out: any[] = [
+        {
+          label: "View Feedback",
+          value: "",
+          event: "handleViewFeedback",
+          icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+        },
+      ];
 
       if (
         props.commentData?.CommentAuthor?.username === username.value.username
@@ -271,12 +278,6 @@ export default defineComponent({
             value: "",
             event: "clickFeedback",
             icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-          },
-          {
-            label: "View Feedback",
-            value: "",
-            event: "handleViewFeedback",
-            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
           },
         ]);
       }
@@ -359,10 +360,7 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div
-        :class="'text-sm'"
-        class="w-full"
-      >
+      <div :class="'text-sm'" class="w-full">
         <div
           :class="[
             isHighlighted
@@ -383,15 +381,12 @@ export default defineComponent({
             <div
               class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
-              <div
-                v-if="!themeLoading"
-                class="w-full dark:text-gray-200"
-              >
+              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
                 <div class="w-full overflow-auto">
                   <div
                     v-if="
                       commentData.text &&
-                        editFormOpenAtCommentID !== commentData.id
+                      editFormOpenAtCommentID !== commentData.id
                     "
                     class="-ml-6"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
@@ -423,8 +418,8 @@ export default defineComponent({
                   <ErrorBanner
                     v-if="
                       editCommentError &&
-                        !readonly &&
-                        editFormOpenAtCommentID === commentData.id
+                      !readonly &&
+                      editFormOpenAtCommentID === commentData.id
                     "
                     :text="editCommentError && editCommentError.message"
                   />
