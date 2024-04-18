@@ -71,7 +71,6 @@ export default defineComponent({
     },
   },
   setup(props) {
-    console.log('props in discussion detail content', props)
     const route = useRoute();
     const router = useRouter();
     const offset = ref(0);
@@ -134,15 +133,6 @@ export default defineComponent({
     const commentSort = computed(() => {
       return getSortFromQuery(route.query);
     });
-
-    console.log('props passed to getDiscussionComments',{
-      discussionId: discussionId,
-      channelUniqueName: channelId,
-      modName: loggedInUserModName,
-      offset: offset.value,
-      limit: COMMENT_LIMIT,
-      sort: commentSort,
-    })
 
     const {
       result: getDiscussionChannelResult,
@@ -293,7 +283,6 @@ export default defineComponent({
       }
       return discussion.value.Author?.username === username.value;
     });
-    console.log('active DC', activeDiscussionChannel.value)
 
     return {
       activeDiscussionChannel,

@@ -130,7 +130,6 @@ export default defineComponent({
         // component.
 
         const newComment: Comment = result.data?.createComments?.comments[0];
-        console.log('new comment', newComment)
         // Will use readQuery and writeQuery to update the cache
         // https://www.apollographql.com/docs/react/caching/cache-interaction/#using-graphql-queries
 
@@ -158,14 +157,6 @@ export default defineComponent({
 
         const existingCount =
           existingDiscussionChannelData?.CommentsAggregate?.count || 0;
-
-          console.log({
-            commentSectionQueryVariables,
-            readQueryResult,
-            existingDiscussionChannelData,
-            newRootComments,
-            existingCount,
-          })
 
         cache.writeQuery({
           query: GET_DISCUSSION_COMMENTS,
@@ -212,7 +203,6 @@ export default defineComponent({
   },
   methods: {
     async handleCreateComment() {
-      console.log('handleCreateComment')
       if (!this.discussionChannel) {
         console.warn(
           "Could not create the comment because there is no discussion channel in the create root comment form",

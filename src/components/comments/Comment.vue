@@ -326,7 +326,6 @@ export default defineComponent({
       this.$emit("createComment", parentCommentId);
     },
     handleDelete(input: DeleteCommentInputData) {
-      console.log("handle delete", input);
       this.$emit("deleteComment", input);
     },
     handleEdit(commentData: Comment) {
@@ -353,7 +352,6 @@ export default defineComponent({
       this.$emit("clickReport", this.commentData);
     },
     handleFeedback(commentData: Comment) {
-      console.log("handleFeedback", commentData);
       this.$emit("clickFeedback", commentData);
     },
   },
@@ -367,7 +365,10 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div :class="'text-sm'" class="w-full">
+      <div
+        :class="'text-sm'"
+        class="w-full"
+      >
         <div
           :class="[
             isHighlighted
@@ -388,12 +389,15 @@ export default defineComponent({
             <div
               class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
-              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
+              <div
+                v-if="!themeLoading"
+                class="w-full dark:text-gray-200"
+              >
                 <div class="w-full overflow-auto">
                   <div
                     v-if="
                       commentData.text &&
-                      editFormOpenAtCommentID !== commentData.id
+                        editFormOpenAtCommentID !== commentData.id
                     "
                     class="-ml-6"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
@@ -425,8 +429,8 @@ export default defineComponent({
                   <ErrorBanner
                     v-if="
                       editCommentError &&
-                      !readonly &&
-                      editFormOpenAtCommentID === commentData.id
+                        !readonly &&
+                        editFormOpenAtCommentID === commentData.id
                     "
                     :text="editCommentError && editCommentError.message"
                   />

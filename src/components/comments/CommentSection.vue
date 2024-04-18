@@ -97,7 +97,6 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
-  console.log('comments are', props.comments)
     const route = useRoute();
     const router = useRouter();
 
@@ -171,8 +170,22 @@ export default defineComponent({
       },
     }));
 
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
     const getCommentRepliesVariables = {
       commentId: props.createFormValues.parentCommentId,
+      modName: loggedInUserModName.value,
       limit: 5,
       offset: 0,
       sort: getSortFromQuery(route.query),
@@ -258,7 +271,15 @@ export default defineComponent({
     // replies. It replaces the text with [deleted]
     // and removes the author name, but leaves the comment
     // so that the replies are still visible.
-    const { mutate: softDeleteComment } = useMutation(SOFT_DELETE_COMMENT);
+    const { 
+      mutate: softDeleteComment,
+      onDone: onDoneSoftDeletingComment,
+    } = useMutation(SOFT_DELETE_COMMENT);
+
+    onDoneSoftDeletingComment(() => {
+      commentToDeleteId.value = "";
+      showDeleteCommentModal.value = false;
+    });
 
     const {
       mutate: createComment,
@@ -370,19 +391,6 @@ export default defineComponent({
     onDoneUpdatingComment(() => {
       commentInProcess.value = false;
       editFormOpenAtCommentID.value = "";
-    });
-
-    const {
-      result: localModProfileNameResult,
-      loading: localModProfileNameLoading,
-      error: localModProfileNameError,
-    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
-
-    const loggedInUserModName = computed(() => {
-      if (localModProfileNameLoading.value || localModProfileNameError.value) {
-        return "";
-      }
-      return localModProfileNameResult.value.modProfileName;
     });
 
     const permalinkedCommentId = ref(`${route.params.commentId}`);
@@ -527,12 +535,6 @@ export default defineComponent({
       this.showOpenIssueModal = true;
     },
     handleSubmitFeedback() {
-      console.log('clicked handle submit feedback',{
-        commentId: this.commentToGiveFeedbackOn?.id,
-        text: this.feedbackText,
-        modProfileName: this.loggedInUserModName,
-        channelId: this.channelId,
-      })
       if (!this.commentToGiveFeedbackOn?.id) {
         console.error("commentId is required to submit feedback");
       }
