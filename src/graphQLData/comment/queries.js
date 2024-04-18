@@ -244,16 +244,20 @@ export const GET_COMMENT = gql`
 `;
 
 export const GET_COMMENT_REPLIES = gql`
-  query getCommentWithReplies($commentId: ID!, $limit: Int, $offset: Int, $sort: SortType) {
+  query getCommentWithReplies($commentId: ID!, $modName: String, $limit: Int, $offset: Int, $sort: SortType) {
     getCommentReplies (
       commentId: $commentId
+      modName: $modName
       limit: $limit
       offset: $offset
       sort: $sort
     ) {
       aggregateChildCommentCount
       ChildComments {
-        ...CommentFields
+        ...CommentFields,
+        FeedbackComments {
+          id
+        }
       }
     }
   }

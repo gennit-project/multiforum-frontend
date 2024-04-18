@@ -13,6 +13,10 @@ export default defineComponent({
     LoadMore,
   },
   props: {
+    modName: {
+      type: String,
+      required: true,
+    },
     parentCommentId: {
       type: String,
       required: true,
@@ -33,6 +37,7 @@ export default defineComponent({
       fetchMore,
     } = useQuery(GET_COMMENT_REPLIES, {
       commentId: props.parentCommentId,
+      modName: props.modName,
       limit: PAGE_LIMIT,
       offset: 0,
       sort: activeSort,

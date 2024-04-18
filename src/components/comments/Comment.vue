@@ -49,6 +49,11 @@ export default defineComponent({
       type: Object as PropType<Comment>,
       required: true,
     },
+    modProfileName: {
+      type: String,
+      required: false,
+      default: "",
+    },
     showHeader: {
       type: Boolean,
       default: true,
@@ -520,6 +525,7 @@ export default defineComponent({
           <ChildComments
             v-slot="slotProps"
             :parent-comment-id="commentData.id"
+            :mod-name="modProfileName"
             @mouseenter="highlight = true"
             @mouseleave="highlight = false"
           >
@@ -537,6 +543,7 @@ export default defineComponent({
                 :comment-in-process="commentInProcess"
                 :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
                 :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
+                :mod-profile-name="modProfileName"
                 @startCommentSave="$emit('startCommentSave')"
                 @clickEditComment="$emit('clickEditComment', $event)"
                 @deleteComment="handleDelete"
