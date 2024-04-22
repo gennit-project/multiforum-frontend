@@ -27,7 +27,7 @@ import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
-import ConfirmUndoFeedbackModal from '@/components/discussion/detail/ConfirmUndoFeedbackModal.vue'
+import ConfirmUndoDiscussionFeedbackModal from '@/components/discussion/detail/ConfirmUndoDiscussionFeedbackModal.vue'
 import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mutations";
 import {
   GET_LOCAL_USERNAME,
@@ -40,7 +40,7 @@ export const COMMENT_LIMIT = 50;
 export default defineComponent({
   components: {
     BackLink,
-    ConfirmUndoFeedbackModal,
+    ConfirmUndoDiscussionFeedbackModal,
     CreateButton,
     DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
@@ -485,7 +485,7 @@ export default defineComponent({
       @input="handleFeedbackInput"
       @primaryButtonClick="handleSubmitFeedback"
     />
-    <ConfirmUndoFeedbackModal
+    <ConfirmUndoDiscussionFeedbackModal
       v-if="showConfirmUndoFeedbackModal"
       :key="loggedInUserModName"
       :open="showConfirmUndoFeedbackModal"

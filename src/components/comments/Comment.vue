@@ -359,6 +359,9 @@ export default defineComponent({
     handleFeedback(input: HandleFeedbackInput) {
       this.$emit("clickFeedback", input);
     },
+    handleUndoFeedback(input: HandleFeedbackInput) {
+      this.$emit("clickUndoFeedback", input);
+    },
   },
 });
 </script>
@@ -370,7 +373,10 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div :class="'text-sm'" class="w-full">
+      <div
+        :class="'text-sm'"
+        class="w-full"
+      >
         <div
           :class="[
             isHighlighted
@@ -391,12 +397,15 @@ export default defineComponent({
             <div
               class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
-              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
+              <div
+                v-if="!themeLoading"
+                class="w-full dark:text-gray-200"
+              >
                 <div class="w-full overflow-auto">
                   <div
                     v-if="
                       commentData.text &&
-                      editFormOpenAtCommentID !== commentData.id
+                        editFormOpenAtCommentID !== commentData.id
                     "
                     class="-ml-6"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
@@ -428,8 +437,8 @@ export default defineComponent({
                   <ErrorBanner
                     v-if="
                       editCommentError &&
-                      !readonly &&
-                      editFormOpenAtCommentID === commentData.id
+                        !readonly &&
+                        editFormOpenAtCommentID === commentData.id
                     "
                     :text="editCommentError && editCommentError.message"
                   />
@@ -479,6 +488,10 @@ export default defineComponent({
                         });
                       }
                     "
+                    @clickUndoFeedback="() => {
+                      // See comment on clickFeedback. The same principle applies.
+                      handleUndoFeedback({ commentData, parentCommentId })
+                    }"
                   >
                     <MenuButton
                       v-if="commentMenuItems.length > 0"
@@ -501,6 +514,10 @@ export default defineComponent({
                           });
                         }
                       "
+                      @clickUndoFeedback="() => {
+                        // See comment on clickFeedback. The same principle applies.
+                        handleUndoFeedback({ commentData, parentCommentId })
+                      }"
                       @handleViewFeedback="
                         $emit('handleViewFeedback', commentData.id)
                       "

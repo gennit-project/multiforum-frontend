@@ -301,3 +301,44 @@ query getFeedbackOnComment (
   }
 }
 `
+
+
+export const GET_SPECIFIC_COMMENT_FEEDBACK = gql`
+query getSpecificDiscussionFeedback (
+  $commentId: ID,
+  $modName: String
+) {
+  comments(
+    where: {
+      GivesFeedbackOnComment: {
+        id: $commentId
+      },
+      CommentAuthorConnection: {
+        ModerationProfile: {
+          node: {
+            displayName: $modName
+          }
+        }
+      }
+    }
+  ) {
+      id
+      text
+      createdAt
+      Channel {
+        uniqueName
+      }
+      CommentAuthor (
+        where: {
+          ModerationProfile: {
+            displayName: $modName
+          }
+        }
+      ) {
+        ... on ModerationProfile {
+          displayName
+        }
+      }
+  }
+}
+`

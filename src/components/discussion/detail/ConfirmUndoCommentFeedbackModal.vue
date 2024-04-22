@@ -1,16 +1,16 @@
 <script lang="ts">
-import { Ref, defineComponent, ref } from "vue";
+import { Ref, defineComponent, ref, PropType } from "vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
 import GenericModal from "@/components/generic/GenericModal.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { DELETE_COMMENT } from "@/graphQLData/comment/mutations";
-import { GET_SPECIFIC_DISCUSSION_FEEDBACK as GET_FEEDBACK } from "@/graphQLData/discussion/queries";
+import { GET_SPECIFIC_COMMENT_FEEDBACK as GET_FEEDBACK } from "@/graphQLData/comment/queries";
 import { Comment } from "@/__generated__/graphql";
 import CommentHeader from "@/components/comments/CommentHeader.vue";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 
 export default defineComponent({
-  name: "ConfirmUndoFeedbackModal",
+  name: "ConfirmUndoCommentFeedbackModal",
   components: {
     CommentHeader,
     ErrorBanner,
@@ -18,8 +18,12 @@ export default defineComponent({
     MarkdownPreview,
   },
   props: {
-    discussionId: {
+    commentId: {
       type: String,
+      required: true,
+    },
+    commentToRemoveFeedbackFrom: {
+      type: Object as PropType<Comment>,
       required: true,
     },
     modName: {
@@ -33,7 +37,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     // Fetch the feedback from the server - check for feedback comments
-    // that match the discussion ID and the mod username.
+    // that match the original comment's ID and the mod username.
     const feedbackToDeleteID = ref("");
     const commentData: Ref<Comment | null> = ref(null);
 
@@ -42,11 +46,10 @@ export default defineComponent({
       result: feedbackResult,
       onResult,
     } = useQuery(GET_FEEDBACK, {
-      discussionId: props.discussionId,
+      commentId: props.commentId,
       modName: props.modName,
     }, {
       fetchPolicy: "network-only",
-    
     });
 
     onResult((result) => {
@@ -115,7 +118,7 @@ export default defineComponent({
     @secondaryButtonClick="$emit('close')"
   >
     <template #icon>
-      <i class="fas fa-trash-alt" />
+      <i class="fas fa-trash-alt dark:text-white" />
     </template>
     <template #content>
       <CommentHeader
@@ -127,13 +130,19 @@ export default defineComponent({
       />
       <div class="ml-2 flex flex-col gap-2 border-l pl-4">
         <MarkdownPreview
-          class="-ml-4"
+          class="-ml-4 dark:text-white"
           :text="commentData?.text || '[Deleted]'"
           :disable-gallery="true"
         />
       </div>
-      <ErrorBanner v-if="getError" :text="getError.message" />
-      <ErrorBanner v-if="deleteError" :text="deleteError.message" />
+      <ErrorBanner
+        v-if="getError"
+        :text="getError.message"
+      />
+      <ErrorBanner
+        v-if="deleteError"
+        :text="deleteError.message"
+      />
     </template>
   </GenericModal>
 </template>

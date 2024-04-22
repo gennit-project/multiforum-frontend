@@ -133,6 +133,7 @@ export default defineComponent({
         :show-downvote="!loggedInUserIsAuthor"
         @openModProfile="$emit('openModProfile')"
         @clickFeedback="$emit('clickFeedback')"
+        @clickUndoFeedback="$emit('clickUndoFeedback')"
       />
       <NewEmojiButton
         :comment-id="commentData.id"

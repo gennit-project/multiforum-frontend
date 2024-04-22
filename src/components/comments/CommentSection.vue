@@ -1,5 +1,11 @@
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watchEffect, watch } from "vue";
+import {
+  defineComponent,
+  ref,
+  computed,
+  PropType,
+  watchEffect,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Comment from "./Comment.vue";
 import LoadMore from "../generic/LoadMore.vue";
@@ -33,6 +39,7 @@ import {
   CommentCreateInput,
   Comment as CommentType,
 } from "@/__generated__/graphql";
+import ConfirmUndoDiscussionFeedbackModal from "@/components/discussion/detail/ConfirmUndoCommentFeedbackModal.vue";
 
 type CommentSectionQueryVariablesType = {
   discussionId?: string;
@@ -44,9 +51,9 @@ type CommentSectionQueryVariablesType = {
 };
 
 type GiveFeedbackInput = {
-  commentData: CommentType,
-  parentCommentId: string
-}
+  commentData: CommentType;
+  parentCommentId: string;
+};
 
 export default defineComponent({
   components: {
@@ -60,6 +67,7 @@ export default defineComponent({
     Notification,
     OpenIssueModal,
     GenericFeedbackFormModal,
+    ConfirmUndoDiscussionFeedbackModal,
   },
   inheritAttrs: false,
   props: {
@@ -129,13 +137,15 @@ export default defineComponent({
 
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
-   
+
     const commentToEdit: Ref<CommentType | null> = ref(null);
     const showFeedbackSubmittedSuccessfully = ref(false);
     const showFeedbackFormModal = ref(false);
     const commentToGiveFeedbackOn: Ref<CommentType | null> = ref(null);
+    const commentToRemoveFeedbackFrom: Ref<CommentType | null> = ref(null);
     const commentToReport: Ref<CommentType | null> = ref(null);
     const showDeleteCommentModal = ref(false);
+    const showConfirmUndoFeedbackModal = ref(false);
 
     const parentOfCommentToDelete = ref("");
     const parentIdOfCommentToGiveFeedbackOn = ref("");
@@ -147,62 +157,69 @@ export default defineComponent({
       onDone: onAddFeedbackCommentToCommentDone,
     } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT, {
       update: (cache: any, result: any) => {
-        const parentId = JSON.parse(JSON.stringify(parentIdOfCommentToGiveFeedbackOn.value));
-        const newFeedbackComment = result.data.createComments.comments[0]
+        const parentId = JSON.parse(
+          JSON.stringify(parentIdOfCommentToGiveFeedbackOn.value),
+        );
+        const newFeedbackComment = result.data.createComments.comments[0];
 
         // if it was a child comment, update GET_COMMENT_REPLIES
-        const readQueryResult = cache.readQuery({
-          query: GET_COMMENT_REPLIES,
-          variables: {
-            ...getCommentRepliesVariables,
-            commentId: parentId,
-          },
-        });
-
-        if (readQueryResult) {
-          const existingReplies =
-            readQueryResult?.getCommentReplies?.ChildComments;
-
-
-          const newChildComments = existingReplies.map(
-            (comment: CommentType) => {
-              const commentWeGaveFeedbackOn = commentToGiveFeedbackOn.value;
-
-              if (comment.id === commentWeGaveFeedbackOn?.id) {
-                const updatedComment = {
-                  ...commentWeGaveFeedbackOn,
-                  FeedbackComments: [
-                    ...comment.FeedbackComments,
-                    newFeedbackComment,
-                  ],
-                };
-                return updatedComment;
-              }
-              return comment;
-            },
-          );
-
-          const writeQueryData = {
-            ...readQueryResult,
-            getCommentReplies: {
-              ...readQueryResult.getCommentReplies,
-              ChildComments: newChildComments,
-            },
-          };
-
-          // Write the updated replies back to the cache.
-          cache.writeQuery({
+        if (parentId) {
+          const readQueryResult = cache.readQuery({
             query: GET_COMMENT_REPLIES,
-            data: writeQueryData,
             variables: {
               ...getCommentRepliesVariables,
               commentId: parentId,
             },
           });
+
+          if (readQueryResult) {
+            const existingReplies =
+              readQueryResult?.getCommentReplies?.ChildComments;
+
+            const newChildComments = existingReplies.map(
+              (comment: CommentType) => {
+                const commentWeGaveFeedbackOn = commentToGiveFeedbackOn.value;
+
+                if (comment.id === commentWeGaveFeedbackOn?.id) {
+                  const updatedComment = {
+                    ...commentWeGaveFeedbackOn,
+                    FeedbackComments: [
+                      ...comment.FeedbackComments,
+                      newFeedbackComment,
+                    ],
+                  };
+                  return updatedComment;
+                }
+                return comment;
+              },
+            );
+
+            const writeQueryData = {
+              ...readQueryResult,
+              getCommentReplies: {
+                ...readQueryResult.getCommentReplies,
+                ChildComments: newChildComments,
+              },
+            };
+
+            // Write the updated replies back to the cache.
+            cache.writeQuery({
+              query: GET_COMMENT_REPLIES,
+              data: writeQueryData,
+              variables: {
+                ...getCommentRepliesVariables,
+                commentId: parentId,
+              },
+            });
+          }
+        } else {
+          // If it was a root comment, update the comment section query result
+          emit("updateCommentSectionQueryResult", {
+            cache,
+            commentToAddFeedbackTo: commentToGiveFeedbackOn.value,
+            newFeedbackComment,
+          });
         }
-        // We need to add the comment to the FeedbackComments field
-        // on the comment that was given feedback on.
-        const feedbackComment = result.data.createComments.comments[0];
       },
     });
 
@@ -481,6 +498,7 @@ export default defineComponent({
       commentToDeleteId,
       commentToDeleteReplyCount,
       commentToGiveFeedbackOn,
+      commentToRemoveFeedbackFrom,
       commentToReport,
       createComment,
       createCommentError,
@@ -493,12 +511,17 @@ export default defineComponent({
       locked: ref(false),
       loggedInUserModName,
       parentOfCommentToDelete,
+      // This 'parentIdOfCommentToGiveFeedbackOn' is not used in the template.
+      // We only return it from setup because that is needed to keep the variable
+      // reactive when it is used in the cache update function that runs
+      // after a feedback comment is added.
       parentIdOfCommentToGiveFeedbackOn,
       permalinkedCommentId,
       replyFormOpenAtCommentID,
       showCopiedLinkNotification,
       showDeleteCommentModal,
       showModProfileModal: ref(false),
+      showConfirmUndoFeedbackModal,
       showFeedbackFormModal,
       showOpenIssueModal: ref(false),
       showSuccessfullyReported: ref(false),
@@ -596,6 +619,12 @@ export default defineComponent({
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
       this.commentToGiveFeedbackOn = commentData;
     },
+    handleClickUndoFeedback(input: GiveFeedbackInput) {
+      const { commentData, parentCommentId } = input;
+      this.showConfirmUndoFeedbackModal = true;
+      this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
+      this.commentToRemoveFeedbackFrom = commentData;
+    },
     handleClickReport(commentData: CommentType) {
       this.commentToReport = commentData;
       this.showOpenIssueModal = true;
@@ -631,7 +660,11 @@ export default defineComponent({
 <template>
   <div class="bg-white dark:bg-gray-800">
     <div>
-      <h2 id="comments" ref="commentSectionHeader" class="px-1 text-lg">
+      <h2
+        id="comments"
+        ref="commentSectionHeader"
+        class="px-1 text-lg"
+      >
         {{ `Comments (${aggregateCommentCount})` }}
       </h2>
       <ErrorBanner
@@ -640,7 +673,10 @@ export default defineComponent({
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <SortButtons :show-top-options="false" />
-      <LoadingSpinner v-if="loading" class="ml-2" />
+      <LoadingSpinner
+        v-if="loading"
+        class="ml-2"
+      />
       <PermalinkedComment
         v-if="isPermalinkPage"
         :key="permalinkedCommentId"
@@ -673,6 +709,7 @@ export default defineComponent({
             @scrollToTop="scrollToTop"
             @clickReport="handleClickReport"
             @clickFeedback="handleClickGiveFeedback"
+            @clickUndoFeedback="handleClickUndoFeedback"
             @updateFeedback="updateFeedback"
             @handleViewFeedback="handleViewFeedback"
           />
@@ -683,7 +720,10 @@ export default defineComponent({
           There are no comments yet.
         </div>
         <div :key="activeSort">
-          <div v-for="comment in comments || []" :key="comment.id">
+          <div
+            v-for="comment in comments || []"
+            :key="comment.id"
+          >
             <Comment
               v-if="comment.id !== permalinkedCommentId"
               :aggregate-comment-count="aggregateCommentCount"
@@ -712,6 +752,7 @@ export default defineComponent({
               @scrollToTop="scrollToTop"
               @clickReport="handleClickReport"
               @clickFeedback="handleClickGiveFeedback"
+              @clickUndoFeedback="handleClickUndoFeedback"
               @updateFeedback="updateFeedback"
               @handleViewFeedback="handleViewFeedback"
             />
@@ -771,6 +812,15 @@ export default defineComponent({
       @close="showFeedbackFormModal = false"
       @updateFeedback="updateFeedback"
       @primaryButtonClick="handleSubmitFeedback"
+    />
+    <ConfirmUndoDiscussionFeedbackModal
+      v-if="showConfirmUndoFeedbackModal && commentToRemoveFeedbackFrom"
+      :key="loggedInUserModName"
+      :open="showConfirmUndoFeedbackModal"
+      :comment-id="commentToRemoveFeedbackFrom.id"
+      :comment-to-remove-feedback-from="commentToRemoveFeedbackFrom"
+      :mod-name="loggedInUserModName"
+      @close="showConfirmUndoFeedbackModal = false"
     />
     <Notification
       :show="showFeedbackSubmittedSuccessfully"

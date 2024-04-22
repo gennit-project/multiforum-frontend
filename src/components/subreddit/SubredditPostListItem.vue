@@ -93,7 +93,10 @@ export default defineComponent({
     class="relative mt-1 space-y-3 bg-white dark:bg-gray-700 lg:px-4 lg:py-2"
   >
     <v-row>
-      <v-col :cols="12" class="flex-col">
+      <v-col
+        :cols="12"
+        class="flex-col"
+      >
         <div class="mb-2 text-xs text-gray-500 dark:text-gray-300">
           <i
             v-if="post.stickied"
@@ -115,9 +118,8 @@ export default defineComponent({
                 <a
                   :href="detailLink"
                   target="_blank"
-                  class="hover:text-gray-500 text-lg font-bold"
-                  >{{ title }}</a
-                >
+                  class="hover:text-gray-500 hover:dark:text-gray-300 text-lg font-bold"
+                >{{ title }}</a>
               </span>
 
               <span
@@ -129,13 +131,12 @@ export default defineComponent({
 
               <div class="no-underline">
                 <span class="mr-1 text-xs text-gray-500 dark:text-gray-300">
-                  {{ `Posted ${timeAgo} by` }}</span
-                >
+                  {{ `Posted ${timeAgo} by` }}</span>
                 <a
                   class="cursor-pointer text-xs underline hover:text-gray-500 dark:text-gray-300 dark:hover:text-gray-400 hover:dark:text-gray-300"
                   :href="usernameLink"
                   target="_blank"
-                  >{{ authorUsername }}
+                >{{ authorUsername }}
                 </a>
               </div>
             </div>
@@ -190,7 +191,11 @@ export default defineComponent({
       :image-url="post.url"
     />
     <div class="mt-2 flex items-center justify-start gap-6">
-      <a :href="detailLink" target="_blank" class="rounded-md pt-1 underline">
+      <a
+        :href="detailLink"
+        target="_blank"
+        class="rounded-md pt-1 underline"
+      >
         <i class="fa-regular fa-comment h-6 w-6" />
         <span class="text-sm">{{
           `${commentCount} comment${commentCount === 1 ? "" : "s"}`

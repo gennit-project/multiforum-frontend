@@ -127,11 +127,10 @@ export default defineComponent({
   },
   methods: {
     downvoteComment() {
-      // console.log("downvoteComment");
       this.$emit("clickFeedback");
     },
     undoDownvoteComment() {
-      // console.log("undoDownvoteComment");
+      this.$emit("clickUndoFeedback");
     },
   },
 });

@@ -24,6 +24,8 @@ import CommentSection from "@/components/comments/CommentSection.vue";
 type CommentSectionQueryUpdateInput = {
   cache: any;
   commentToDeleteId: string;
+  commentToAddFeedbackTo?: CommentType;
+  newFeedbackComment?: CommentType;
 };
 
 export default defineComponent({
@@ -167,11 +169,56 @@ export default defineComponent({
       this.createFormValues = event;
     },
     updateCommentSectionQueryResult(input: CommentSectionQueryUpdateInput) {
-      const { cache, commentToDeleteId } = input;
+      const {
+        cache,
+        commentToDeleteId,
+        commentToAddFeedbackTo,
+        newFeedbackComment,
+      } = input;
 
       if (commentToDeleteId) {
         cache.evict({
           id: cache.identify({ __typename: "Comment", id: commentToDeleteId }),
+        });
+      }
+
+      if (commentToAddFeedbackTo) {
+        const readCommentQueryResult = cache.readQuery({
+          query: GET_DISCUSSION_COMMENTS,
+          variables: {
+            ...this.commentSectionQueryVariables,
+          },
+        });
+
+        const existingComments =
+          readCommentQueryResult?.getCommentSection?.Comments;
+
+        const updatedComments = existingComments.map((comment: CommentType) => {
+          if (comment.id === commentToAddFeedbackTo.id) {
+            const updatedComment = {
+              ...commentToAddFeedbackTo,
+              FeedbackComments: [
+                ...comment.FeedbackComments,
+                newFeedbackComment,
+              ],
+            };
+            return updatedComment;
+          }
+          return comment;
+        });
+
+        cache.writeQuery({
+          query: GET_DISCUSSION_COMMENTS,
+          variables: {
+            ...this.commentSectionQueryVariables,
+          },
+          data: {
+            ...readCommentQueryResult,
+            getCommentSection: {
+              ...readCommentQueryResult.getCommentSection,
+              Comments: updatedComments,
+            },
+          },
         });
       }
     },
