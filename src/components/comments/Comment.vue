@@ -490,7 +490,10 @@ export default defineComponent({
                     "
                     @clickUndoFeedback="() => {
                       // See comment on clickFeedback. The same principle applies.
-                      handleUndoFeedback({ commentData, parentCommentId })
+                      handleUndoFeedback({ 
+                        commentData, 
+                        parentCommentId 
+                      })
                     }"
                   >
                     <MenuButton
@@ -601,6 +604,7 @@ export default defineComponent({
                 "
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                 @clickFeedback="handleFeedback"
+                @clickUndoFeedback="handleUndoFeedback"
                 @handleViewFeedback="
                   $emit('handleViewFeedback', childComment.id)
                 "
