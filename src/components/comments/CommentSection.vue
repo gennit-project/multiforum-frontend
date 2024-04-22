@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, computed, PropType, watchEffect } from "vue";
+import { defineComponent, ref, computed, PropType, watchEffect, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Comment from "./Comment.vue";
 import LoadMore from "../generic/LoadMore.vue";
@@ -42,6 +42,11 @@ type CommentSectionQueryVariablesType = {
   offset: number;
   sort: string;
 };
+
+type GiveFeedbackInput = {
+  commentData: CommentType,
+  parentCommentId: string
+}
 
 export default defineComponent({
   components: {
@@ -124,7 +129,7 @@ export default defineComponent({
 
     const commentToDeleteId = ref("");
     const commentToDeleteReplyCount = ref(0);
-    const parentOfCommentToDelete = ref("");
+   
     const commentToEdit: Ref<CommentType | null> = ref(null);
     const showFeedbackSubmittedSuccessfully = ref(false);
     const showFeedbackFormModal = ref(false);
@@ -132,12 +137,74 @@ export default defineComponent({
     const commentToReport: Ref<CommentType | null> = ref(null);
     const showDeleteCommentModal = ref(false);
 
+    const parentOfCommentToDelete = ref("");
+    const parentIdOfCommentToGiveFeedbackOn = ref("");
+
     const {
       mutate: addFeedbackCommentToComment,
       loading: addFeedbackCommentToCommentLoading,
       error: addFeedbackCommentToCommentError,
       onDone: onAddFeedbackCommentToCommentDone,
-    } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT);
+    } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT, {
+      update: (cache: any, result: any) => {
+        const parentId = JSON.parse(JSON.stringify(parentIdOfCommentToGiveFeedbackOn.value));
+        const newFeedbackComment = result.data.createComments.comments[0]
+
+        // if it was a child comment, update GET_COMMENT_REPLIES
+        const readQueryResult = cache.readQuery({
+          query: GET_COMMENT_REPLIES,
+          variables: {
+            ...getCommentRepliesVariables,
+            commentId: parentId,
+          },
+        });
+
+        if (readQueryResult) {
+          const existingReplies =
+            readQueryResult?.getCommentReplies?.ChildComments;
+
+
+          const newChildComments = existingReplies.map(
+            (comment: CommentType) => {
+              const commentWeGaveFeedbackOn = commentToGiveFeedbackOn.value;
+
+              if (comment.id === commentWeGaveFeedbackOn?.id) {
+                const updatedComment = {
+                  ...commentWeGaveFeedbackOn,
+                  FeedbackComments: [
+                    ...comment.FeedbackComments,
+                    newFeedbackComment,
+                  ],
+                };
+                return updatedComment;
+              }
+              return comment;
+            },
+          );
+
+          const writeQueryData = {
+            ...readQueryResult,
+            getCommentReplies: {
+              ...readQueryResult.getCommentReplies,
+              ChildComments: newChildComments,
+            },
+          };
+
+          // Write the updated replies back to the cache.
+          cache.writeQuery({
+            query: GET_COMMENT_REPLIES,
+            data: writeQueryData,
+            variables: {
+              ...getCommentRepliesVariables,
+              commentId: parentId,
+            },
+          });
+        }
+        // We need to add the comment to the FeedbackComments field
+        // on the comment that was given feedback on.
+        const feedbackComment = result.data.createComments.comments[0];
+      },
+    });
 
     onAddFeedbackCommentToCommentDone(() => {
       showFeedbackFormModal.value = false;
@@ -191,76 +258,74 @@ export default defineComponent({
       sort: getSortFromQuery(route.query),
     };
 
-    const { 
-      mutate: deleteComment ,
-      onDone: onDoneDeletingComment,
-    } = useMutation(DELETE_COMMENT, {
-      update: (cache: any) => {
-        if (parentOfCommentToDelete.value) {
-          // For child comments, update the parent comment's replies
+    const { mutate: deleteComment, onDone: onDoneDeletingComment } =
+      useMutation(DELETE_COMMENT, {
+        update: (cache: any) => {
+          if (parentOfCommentToDelete.value) {
+            // For child comments, update the parent comment's replies
 
-          // 1. Read the current set of replies to the parent comment.
-          const readQueryResult = cache.readQuery({
-            query: GET_COMMENT_REPLIES,
-            variables: {
-              ...getCommentRepliesVariables,
-              commentId: parentOfCommentToDelete.value,
-            },
-          });
-
-          if (readQueryResult) {
-            const existingReplies =
-              readQueryResult?.getCommentReplies?.ChildComments;
-
-            // 2. Filter out the deleted reply.
-            const filteredReplies = existingReplies.filter(
-              (reply: CommentType) => reply.id !== commentToDeleteId.value,
-            );
-
-            const existingChildCommentAggregate =
-              readQueryResult?.getCommentReplies?.aggregateChildCommentCount ||
-              0;
-
-            // 3. Decrease the aggregate count.
-            let newChildCommentAggregate = Math.max(
-              0,
-              existingChildCommentAggregate - 1,
-            );
-
-            const writeQueryData = {
-              ...readQueryResult,
-              getCommentReplies: {
-                ...readQueryResult.getCommentReplies,
-                ChildComments: filteredReplies,
-                aggregateChildCommentCount: newChildCommentAggregate,
-              },
-            };
-
-            // Write the updated replies back to the cache.
-            cache.writeQuery({
+            // 1. Read the current set of replies to the parent comment.
+            const readQueryResult = cache.readQuery({
               query: GET_COMMENT_REPLIES,
-              data: writeQueryData,
               variables: {
                 ...getCommentRepliesVariables,
                 commentId: parentOfCommentToDelete.value,
               },
             });
 
-            // 4. Update the total count of comments
-            emit("decrementCommentCount", cache);
+            if (readQueryResult) {
+              const existingReplies =
+                readQueryResult?.getCommentReplies?.ChildComments;
+
+              // 2. Filter out the deleted reply.
+              const filteredReplies = existingReplies.filter(
+                (reply: CommentType) => reply.id !== commentToDeleteId.value,
+              );
+
+              const existingChildCommentAggregate =
+                readQueryResult?.getCommentReplies
+                  ?.aggregateChildCommentCount || 0;
+
+              // 3. Decrease the aggregate count.
+              let newChildCommentAggregate = Math.max(
+                0,
+                existingChildCommentAggregate - 1,
+              );
+
+              const writeQueryData = {
+                ...readQueryResult,
+                getCommentReplies: {
+                  ...readQueryResult.getCommentReplies,
+                  ChildComments: filteredReplies,
+                  aggregateChildCommentCount: newChildCommentAggregate,
+                },
+              };
+
+              // Write the updated replies back to the cache.
+              cache.writeQuery({
+                query: GET_COMMENT_REPLIES,
+                data: writeQueryData,
+                variables: {
+                  ...getCommentRepliesVariables,
+                  commentId: parentOfCommentToDelete.value,
+                },
+              });
+
+              // 4. Update the total count of comments
+              emit("decrementCommentCount", cache);
+            }
+          } else {
+            // For root comments, update the comment section query result
+            emit("updateCommentSectionQueryResult", {
+              cache,
+              commentToDeleteId: commentToDeleteId.value,
+            });
           }
-        } else {
-          // For root comments, update the comment section query result
-          emit("updateCommentSectionQueryResult", {
-            cache,
-            commentToDeleteId: commentToDeleteId.value,
-          });
-        }
-        // For both root comments and replies, update the aggregate
-        // count of the comment section
-        emit("decrementCommentCount", cache);
-      },
-    });
+          // For both root comments and replies, update the aggregate
+          // count of the comment section
+          emit("decrementCommentCount", cache);
+        },
+      });
 
     onDoneDeletingComment(() => {
       commentToDeleteId.value = "";
@@ -271,10 +336,8 @@ export default defineComponent({
     // replies. It replaces the text with [deleted]
     // and removes the author name, but leaves the comment
     // so that the replies are still visible.
-    const { 
-      mutate: softDeleteComment,
-      onDone: onDoneSoftDeletingComment,
-    } = useMutation(SOFT_DELETE_COMMENT);
+    const { mutate: softDeleteComment, onDone: onDoneSoftDeletingComment } =
+      useMutation(SOFT_DELETE_COMMENT);
 
     onDoneSoftDeletingComment(() => {
       commentToDeleteId.value = "";
@@ -430,6 +493,7 @@ export default defineComponent({
       locked: ref(false),
       loggedInUserModName,
       parentOfCommentToDelete,
+      parentIdOfCommentToGiveFeedbackOn,
       permalinkedCommentId,
       replyFormOpenAtCommentID,
       showCopiedLinkNotification,
@@ -526,9 +590,11 @@ export default defineComponent({
     hideEditCommentEditor() {
       this.editFormOpenAtCommentID = "";
     },
-    handleClickGiveFeedback(commentData: CommentType) {
-      this.commentToGiveFeedbackOn = commentData;
+    handleClickGiveFeedback(input: GiveFeedbackInput) {
+      const { commentData, parentCommentId } = input;
       this.showFeedbackFormModal = true;
+      this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
+      this.commentToGiveFeedbackOn = commentData;
     },
     handleClickReport(commentData: CommentType) {
       this.commentToReport = commentData;
@@ -537,9 +603,10 @@ export default defineComponent({
     handleSubmitFeedback() {
       if (!this.commentToGiveFeedbackOn?.id) {
         console.error("commentId is required to submit feedback");
+        return;
       }
       this.addFeedbackCommentToComment({
-        commentId:  this.commentToGiveFeedbackOn?.id,
+        commentId: this.commentToGiveFeedbackOn?.id,
         text: this.feedbackText,
         modProfileName: this.loggedInUserModName,
         channelId: this.channelId,
@@ -564,11 +631,7 @@ export default defineComponent({
 <template>
   <div class="bg-white dark:bg-gray-800">
     <div>
-      <h2
-        id="comments"
-        ref="commentSectionHeader"
-        class="px-1 text-lg"
-      >
+      <h2 id="comments" ref="commentSectionHeader" class="px-1 text-lg">
         {{ `Comments (${aggregateCommentCount})` }}
       </h2>
       <ErrorBanner
@@ -577,10 +640,7 @@ export default defineComponent({
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
       <SortButtons :show-top-options="false" />
-      <LoadingSpinner
-        v-if="loading"
-        class="ml-2"
-      />
+      <LoadingSpinner v-if="loading" class="ml-2" />
       <PermalinkedComment
         v-if="isPermalinkPage"
         :key="permalinkedCommentId"
@@ -623,10 +683,7 @@ export default defineComponent({
           There are no comments yet.
         </div>
         <div :key="activeSort">
-          <div
-            v-for="comment in comments || []"
-            :key="comment.id"
-          >
+          <div v-for="comment in comments || []" :key="comment.id">
             <Comment
               v-if="comment.id !== permalinkedCommentId"
               :aggregate-comment-count="aggregateCommentCount"
@@ -669,7 +726,6 @@ export default defineComponent({
       @loadMore="$emit('loadMore')"
     />
     <WarningModal
-      v-if="showDeleteCommentModal"
       :title="'Delete Comment'"
       :body="'Are you sure you want to delete this comment?'"
       :open="showDeleteCommentModal"
@@ -709,7 +765,6 @@ export default defineComponent({
       @primaryButtonClick="handleCreateModProfileClick"
     />
     <GenericFeedbackFormModal
-      v-if="showFeedbackFormModal"
       :open="showFeedbackFormModal"
       :loading="addFeedbackCommentToCommentLoading"
       :error="addFeedbackCommentToCommentError?.message || ''"

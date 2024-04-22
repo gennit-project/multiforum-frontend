@@ -31,6 +31,11 @@ type DeleteCommentInputData = {
   replyCount: number;
 };
 
+type HandleFeedbackInput = {
+  commentData: Comment;
+  parentCommentId: string;
+}
+
 export default defineComponent({
   name: "CommentComponent",
   components: {
@@ -351,8 +356,8 @@ export default defineComponent({
     handleReport() {
       this.$emit("clickReport", this.commentData);
     },
-    handleFeedback(commentData: Comment) {
-      this.$emit("clickFeedback", commentData);
+    handleFeedback(input: HandleFeedbackInput) {
+      this.$emit("clickFeedback", input);
     },
   },
 });
@@ -365,10 +370,7 @@ export default defineComponent({
       ]"
       class="flex w-full"
     >
-      <div
-        :class="'text-sm'"
-        class="w-full"
-      >
+      <div :class="'text-sm'" class="w-full">
         <div
           :class="[
             isHighlighted
@@ -389,15 +391,12 @@ export default defineComponent({
             <div
               class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
-              <div
-                v-if="!themeLoading"
-                class="w-full dark:text-gray-200"
-              >
+              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
                 <div class="w-full overflow-auto">
                   <div
                     v-if="
                       commentData.text &&
-                        editFormOpenAtCommentID !== commentData.id
+                      editFormOpenAtCommentID !== commentData.id
                     "
                     class="-ml-6"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
@@ -429,8 +428,8 @@ export default defineComponent({
                   <ErrorBanner
                     v-if="
                       editCommentError &&
-                        !readonly &&
-                        editFormOpenAtCommentID === commentData.id
+                      !readonly &&
+                      editFormOpenAtCommentID === commentData.id
                     "
                     :text="editCommentError && editCommentError.message"
                   />
@@ -466,7 +465,20 @@ export default defineComponent({
                     @saveEdit="$emit('saveEdit')"
                     @showReplies="showReplies = true"
                     @updateNewComment="updateNewComment"
-                    @clickFeedback="handleFeedback"
+                    @clickFeedback="
+                      () => {
+                        // This event is emitted when the user clicks the thumbs-down.
+                        // Passing the commentData in at the template instead of the setup
+                        // function or methods is better because it allows us to specify that
+                        // we want a nested comment to be the target. If we did it in methods
+                        // or setup, feedback would end up attached to the parent
+                        // instead of the child (because the event is emitted by both child and parent).
+                        handleFeedback({
+                          commentData,
+                          parentCommentId,
+                        });
+                      }
+                    "
                   >
                     <MenuButton
                       v-if="commentMenuItems.length > 0"
@@ -477,13 +489,16 @@ export default defineComponent({
                       @clickReport="handleReport"
                       @clickFeedback="
                         () => {
+                          // This event is emitted when the user clicks give feedback in the comment menu.
                           // Passing the commentData in at the template instead of the setup
                           // function or methods is better because it allows us to specify that
                           // we want a nested comment to be the target. If we did it in methods
-                          // or setup, the feedback event would be emitted for the parent comment(s)
-                          // as well as the child, so feedback would end up attached to the parent
-                          // instead of the child.
-                          handleFeedback(commentData);
+                          // or setup, feedback would end up attached to the parent
+                          // instead of the child (because the event is emitted by both child and parent).
+                          handleFeedback({
+                            commentData,
+                            parentCommentId,
+                          });
                         }
                       "
                       @handleViewFeedback="
