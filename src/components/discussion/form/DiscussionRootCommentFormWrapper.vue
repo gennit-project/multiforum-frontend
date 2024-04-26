@@ -6,7 +6,7 @@ import { CREATE_COMMENT } from "@/graphQLData/comment/mutations";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CreateEditCommentFormValues } from "@/types/commentTypes";
 import { GET_DISCUSSION_COMMENTS } from "@/graphQLData/comment/queries";
-import { COMMENT_LIMIT } from "./DiscussionDetailContent.vue";
+import { COMMENT_LIMIT } from "@/components/discussion/detail/DiscussionDetailContent.vue"
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { useRoute } from "vue-router";

@@ -1,12 +1,16 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import VoteButton from "@/components/generic/buttons/VoteButton.vue";
 import HandThumbDownIcon from "../icons/HandThumbDownIcon.vue";
+import { SelectOptionData } from "@/types/genericFormTypes";
+import { ALLOWED_ICONS } from "../generic/buttons/MenuButton.vue";
+import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 
 export default defineComponent({
   name: "VoteComponent",
   components: {
     HandThumbDownIcon,
+    MenuButton,
     VoteButton,
   },
   props: {
@@ -47,21 +51,60 @@ export default defineComponent({
       default: true,
     },
   },
-  setup() {
-    return {};
+  setup(props) {
+    const thumbsDownMenuItems = computed(() => {
+      let items: SelectOptionData[] = [
+        {
+          label: "View Feedback",
+          icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          value: "",
+          event: "viewFeedback",
+        },
+      ];
+
+      if (props.downvoteActive) {
+        items = items.concat([
+          {
+            label: "Undo feedback",
+            icon: ALLOWED_ICONS.UNDO,
+            value: "",
+            event: "undoFeedback",
+          },
+          {
+            label: "Edit feedback",
+            icon: ALLOWED_ICONS.EDIT,
+            value: "",
+            event: "editFeedback",
+          },
+        ]);
+      } else {
+        items = items.concat([
+          {
+            label: "Give feedback",
+            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+            value: "",
+            event: "giveFeedback",
+          },
+        ]);
+      }
+      return items;
+    });
+    return {
+      thumbsDownMenuItems,
+    };
   },
   methods: {
-    clickDownvote() {
-      if (this.hasModProfile) {
-        if (!this.downvoteActive) {
-          this.$emit("downvote");
-        } else {
-          this.$emit("undoDownvote");
-        }
-      } else {
-        // Create mod profile, then downvote comment
-        this.$emit("openModProfile");
-      }
+    editFeedback() {
+      this.$emit("editFeedback");
+    },
+    undoFeedback() {
+      this.$emit("undoFeedback");
+    },
+    giveFeedback() {
+      this.$emit("giveFeedback");
+    },
+    viewFeedback() {
+      this.$emit("viewFeedback");
     },
     clickUpvote() {
       if (!this.upvoteActive) {
@@ -74,7 +117,6 @@ export default defineComponent({
 });
 </script>
 
-
 <template>
   <div class="flex flex-row space-x-1">
     <VoteButton
@@ -82,22 +124,34 @@ export default defineComponent({
       :count="upvoteCount"
       :loading="upvoteLoading"
       :active="upvoteActive"
-      :tooltip-text="upvoteActive ? 'Undo upvote' : 'Upvote to make this comment more visible'"
+      :tooltip-text="
+        upvoteActive
+          ? 'Undo upvote'
+          : 'Upvote to make this comment more visible'
+      "
       @vote="clickUpvote"
     >
       <i class="fa-solid fa-arrow-up mr-1 w-3" />
     </VoteButton>
-    <VoteButton
+
+    <MenuButton
       v-if="showDownvote"
-      :test-id="'downvote-comment-button'"
-      :count="downvoteCount"
-      :show-count="showDownvoteCount"
-      :loading="downvoteLoading"
-      :active="downvoteActive"
-      :tooltip-text="downvoteActive ? 'Undo or edit feedback' : 'Give semi-anonymous feedback'"
-      @vote="clickDownvote"
+      data-testid="thumbs-down-menu-button"
+      :items="thumbsDownMenuItems"
+      @viewFeedback="viewFeedback"
+      @giveFeedback="giveFeedback"
+      @editFeedback="editFeedback"
+      @undoFeedback="undoFeedback"
     >
-      <HandThumbDownIcon class="h-4 w-4" />
-    </VoteButton>
+      <VoteButton
+        :test-id="'downvote-comment-button'"
+        :count="downvoteCount"
+        :show-count="showDownvoteCount"
+        :loading="downvoteLoading"
+        :active="downvoteActive"
+      >
+        <HandThumbDownIcon class="h-4 w-4" />
+      </VoteButton>
+    </MenuButton>
   </div>
 </template>

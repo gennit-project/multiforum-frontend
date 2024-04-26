@@ -39,7 +39,7 @@ import {
   CommentCreateInput,
   Comment as CommentType,
 } from "@/__generated__/graphql";
-import ConfirmUndoDiscussionFeedbackModal from "@/components/discussion/detail/ConfirmUndoCommentFeedbackModal.vue";
+import ConfirmUndoCommentFeedbackModal from "@/components/discussion/detail/ConfirmUndoCommentFeedbackModal.vue";
 
 type CommentSectionQueryVariablesType = {
   discussionId?: string;
@@ -67,7 +67,7 @@ export default defineComponent({
     Notification,
     OpenIssueModal,
     GenericFeedbackFormModal,
-    ConfirmUndoDiscussionFeedbackModal,
+    ConfirmUndoCommentFeedbackModal,
   },
   inheritAttrs: false,
   props: {
@@ -813,7 +813,7 @@ export default defineComponent({
       @updateFeedback="updateFeedback"
       @primaryButtonClick="handleSubmitFeedback"
     />
-    <ConfirmUndoDiscussionFeedbackModal
+    <ConfirmUndoCommentFeedbackModal
       v-if="showConfirmUndoFeedbackModal && commentToRemoveFeedbackFrom"
       :key="loggedInUserModName"
       :open="showConfirmUndoFeedbackModal"

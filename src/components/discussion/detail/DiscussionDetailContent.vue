@@ -15,7 +15,7 @@ import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
 import DiscussionCommentsWrapper from "@/components/discussion/detail/DiscussionCommentsWrapper.vue";
 import DiscussionChannelLinks from "./DiscussionChannelLinks.vue";
-import DiscussionRootCommentFormWrapper from "./DiscussionRootCommentFormWrapper.vue";
+import DiscussionRootCommentFormWrapper from "@/components/discussion/form/DiscussionRootCommentFormWrapper.vue"
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
