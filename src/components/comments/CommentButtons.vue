@@ -134,6 +134,7 @@ export default defineComponent({
         @openModProfile="$emit('openModProfile')"
         @clickFeedback="$emit('clickFeedback')"
         @clickUndoFeedback="$emit('clickUndoFeedback')"
+        @clickEditFeedback="$emit('clickEditFeedback')"
       />
       <NewEmojiButton
         :comment-id="commentData.id"

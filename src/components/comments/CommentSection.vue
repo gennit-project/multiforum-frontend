@@ -40,6 +40,7 @@ import {
   Comment as CommentType,
 } from "@/__generated__/graphql";
 import ConfirmUndoCommentFeedbackModal from "@/components/discussion/detail/ConfirmUndoCommentFeedbackModal.vue";
+import EditCommentFeedbackModal from "@/components/comments/EditCommentFeedbackModal.vue";
 
 type CommentSectionQueryVariablesType = {
   discussionId?: string;
@@ -55,19 +56,24 @@ type GiveFeedbackInput = {
   parentCommentId: string;
 };
 
+type EditFeedbackInput = {
+  commentData: CommentType;
+}
+
 export default defineComponent({
   components: {
     Comment,
-    SortButtons,
+    ConfirmUndoCommentFeedbackModal,
+    EditCommentFeedbackModal,
     ErrorBanner,
+    GenericFeedbackFormModal,
     LoadingSpinner,
     LoadMore,
-    PermalinkedComment,
-    WarningModal,
     Notification,
     OpenIssueModal,
-    GenericFeedbackFormModal,
-    ConfirmUndoCommentFeedbackModal,
+    PermalinkedComment,
+    SortButtons,
+    WarningModal,
   },
   inheritAttrs: false,
   props: {
@@ -146,6 +152,7 @@ export default defineComponent({
     const commentToReport: Ref<CommentType | null> = ref(null);
     const showDeleteCommentModal = ref(false);
     const showConfirmUndoFeedbackModal = ref(false);
+    const showEditCommentFeedbackModal = ref(false);
 
     const parentOfCommentToDelete = ref("");
     const parentIdOfCommentToGiveFeedbackOn = ref("");
@@ -523,6 +530,7 @@ export default defineComponent({
       showModProfileModal: ref(false),
       showConfirmUndoFeedbackModal,
       showFeedbackFormModal,
+      showEditCommentFeedbackModal,
       showOpenIssueModal: ref(false),
       showSuccessfullyReported: ref(false),
       showFeedbackSubmittedSuccessfully,
@@ -625,6 +633,11 @@ export default defineComponent({
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
       this.commentToRemoveFeedbackFrom = commentData;
     },
+    handleClickEditFeedback(input: EditFeedbackInput) {
+      const { commentData } = input;
+      this.commentToGiveFeedbackOn = commentData;
+      this.showEditCommentFeedbackModal = true;
+    },
     handleClickReport(commentData: CommentType) {
       this.commentToReport = commentData;
       this.showOpenIssueModal = true;
@@ -710,6 +723,7 @@ export default defineComponent({
             @clickReport="handleClickReport"
             @clickFeedback="handleClickGiveFeedback"
             @clickUndoFeedback="handleClickUndoFeedback"
+            @clickEditFeedback="handleClickEditFeedback"
             @updateFeedback="updateFeedback"
             @handleViewFeedback="handleViewFeedback"
           />
@@ -753,6 +767,7 @@ export default defineComponent({
               @clickReport="handleClickReport"
               @clickFeedback="handleClickGiveFeedback"
               @clickUndoFeedback="handleClickUndoFeedback"
+              @clickEditFeedback="handleClickEditFeedback"
               @updateFeedback="updateFeedback"
               @handleViewFeedback="handleViewFeedback"
             />
@@ -821,6 +836,13 @@ export default defineComponent({
       :comment-to-remove-feedback-from="commentToRemoveFeedbackFrom"
       :mod-name="loggedInUserModName"
       @close="showConfirmUndoFeedbackModal = false"
+    />
+    <EditCommentFeedbackModal
+      v-if="showEditCommentFeedbackModal"
+      :open="showEditCommentFeedbackModal"
+      :comment-id="commentToGiveFeedbackOn?.id"
+      :mod-name="loggedInUserModName"
+      @close="showEditCommentFeedbackModal = false"
     />
     <Notification
       :show="showFeedbackSubmittedSuccessfully"

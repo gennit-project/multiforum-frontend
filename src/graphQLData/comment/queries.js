@@ -304,7 +304,7 @@ query getFeedbackOnComment (
 
 
 export const GET_SPECIFIC_COMMENT_FEEDBACK = gql`
-query getSpecificDiscussionFeedback (
+query getSpecificCommentFeedback (
   $commentId: ID,
   $modName: String
 ) {

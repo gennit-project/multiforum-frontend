@@ -36,6 +36,10 @@ type HandleFeedbackInput = {
   parentCommentId: string;
 }
 
+type HandleEditFeedbackInput = {
+  commentData: Comment
+}
+
 export default defineComponent({
   name: "CommentComponent",
   components: {
@@ -362,6 +366,9 @@ export default defineComponent({
     handleUndoFeedback(input: HandleFeedbackInput) {
       this.$emit("clickUndoFeedback", input);
     },
+    handleEditFeedback(input: HandleEditFeedbackInput) {
+      this.$emit("clickEditFeedback", input)
+    }
   },
 });
 </script>
@@ -476,12 +483,13 @@ export default defineComponent({
                     @updateNewComment="updateNewComment"
                     @clickFeedback="
                       () => {
-                        // This event is emitted when the user clicks the thumbs-down.
+                        // This event is emitted when the user clicks a menu item from the thumbs-down.
                         // Passing the commentData in at the template instead of the setup
                         // function or methods is better because it allows us to specify that
                         // we want a nested comment to be the target. If we did it in methods
                         // or setup, feedback would end up attached to the parent
-                        // instead of the child (because the event is emitted by both child and parent).
+                        // instead of the child (because the event is emitted by both child and parent,
+                        // because this is a recursively nested component).
                         handleFeedback({
                           commentData,
                           parentCommentId,
@@ -493,6 +501,12 @@ export default defineComponent({
                       handleUndoFeedback({ 
                         commentData, 
                         parentCommentId 
+                      })
+                    }"
+                    @clickEditFeedback="() => {
+                      // See comment on clickFeedback. The same principle applies.
+                      handleEditFeedback({
+                        commentData,
                       })
                     }"
                   >
@@ -534,6 +548,12 @@ export default defineComponent({
                           handleDelete(deleteCommentInput);
                         }
                       "
+                      @clickEditFeedback="() => {
+                        // See comment on clickFeedback. The same principle applies.
+                        handleEditFeedback({
+                          commentData,
+                        })
+                      }"
                     >
                       <EllipsisHorizontal
                         class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
