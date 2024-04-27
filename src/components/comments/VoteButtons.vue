@@ -134,6 +134,9 @@ export default defineComponent({
     },
     editFeedback(){
       this.$emit("clickEditFeedback")
+    },
+    undoFeedback(){
+      this.$emit("clickUndoFeedback")
     }
   },
 });
@@ -159,6 +162,7 @@ export default defineComponent({
       @undoDownvote="undoDownvoteComment"
       @openModProfile="$emit('openModProfile')"
       @editFeedback="editFeedback"
+      @undoFeedback="undoFeedback"
     />
   </div>
 </template>

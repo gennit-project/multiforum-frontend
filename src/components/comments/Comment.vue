@@ -34,11 +34,11 @@ type DeleteCommentInputData = {
 type HandleFeedbackInput = {
   commentData: Comment;
   parentCommentId: string;
-}
+};
 
 type HandleEditFeedbackInput = {
-  commentData: Comment
-}
+  commentData: Comment;
+};
 
 export default defineComponent({
   name: "CommentComponent",
@@ -367,8 +367,8 @@ export default defineComponent({
       this.$emit("clickUndoFeedback", input);
     },
     handleEditFeedback(input: HandleEditFeedbackInput) {
-      this.$emit("clickEditFeedback", input)
-    }
+      this.$emit("clickEditFeedback", input);
+    },
   },
 });
 </script>
@@ -496,19 +496,23 @@ export default defineComponent({
                         });
                       }
                     "
-                    @clickUndoFeedback="() => {
-                      // See comment on clickFeedback. The same principle applies.
-                      handleUndoFeedback({ 
-                        commentData, 
-                        parentCommentId 
-                      })
-                    }"
-                    @clickEditFeedback="() => {
-                      // See comment on clickFeedback. The same principle applies.
-                      handleEditFeedback({
-                        commentData,
-                      })
-                    }"
+                    @clickUndoFeedback="
+                      () => {
+                        // See comment on clickFeedback. The same principle applies.
+                        handleUndoFeedback({
+                          commentData,
+                          parentCommentId,
+                        });
+                      }
+                    "
+                    @clickEditFeedback="
+                      () => {
+                        // See comment on clickFeedback. The same principle applies.
+                        handleEditFeedback({
+                          commentData,
+                        });
+                      }
+                    "
                   >
                     <MenuButton
                       v-if="commentMenuItems.length > 0"
@@ -531,10 +535,12 @@ export default defineComponent({
                           });
                         }
                       "
-                      @clickUndoFeedback="() => {
-                        // See comment on clickFeedback. The same principle applies.
-                        handleUndoFeedback({ commentData, parentCommentId })
-                      }"
+                      @clickUndoFeedback="
+                        () => {
+                          // See comment on clickFeedback. The same principle applies.
+                          handleUndoFeedback({ commentData, parentCommentId });
+                        }
+                      "
                       @handleViewFeedback="
                         $emit('handleViewFeedback', commentData.id)
                       "
@@ -548,12 +554,14 @@ export default defineComponent({
                           handleDelete(deleteCommentInput);
                         }
                       "
-                      @clickEditFeedback="() => {
-                        // See comment on clickFeedback. The same principle applies.
-                        handleEditFeedback({
-                          commentData,
-                        })
-                      }"
+                      @clickEditFeedback="
+                        () => {
+                          // See comment on clickFeedback. The same principle applies.
+                          handleEditFeedback({
+                            commentData,
+                          });
+                        }
+                      "
                     >
                       <EllipsisHorizontal
                         class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
