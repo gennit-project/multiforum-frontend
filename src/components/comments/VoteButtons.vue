@@ -75,7 +75,6 @@ export default defineComponent({
     });
 
     const loggedInUserDownvoted = computed(() => {
-  
       // Feedback comments are pre-filtered by the logged in author
       // just so that we can use them to indicate if the logged in user
       // has already given feedback on the comment.
@@ -86,7 +85,7 @@ export default defineComponent({
       if (feedbackCommentsByLoggedInUser.length === 0) {
         return false;
       }
-      return true
+      return true;
     });
 
     const {
@@ -125,20 +124,6 @@ export default defineComponent({
       username,
     };
   },
-  methods: {
-    downvoteComment() {
-      this.$emit("clickFeedback");
-    },
-    undoDownvoteComment() {
-      this.$emit("clickUndoFeedback");
-    },
-    editFeedback(){
-      this.$emit("clickEditFeedback")
-    },
-    undoFeedback(){
-      this.$emit("clickUndoFeedback")
-    }
-  },
 });
 </script>
 <template>
@@ -154,15 +139,15 @@ export default defineComponent({
       :downvote-active="loggedInUserDownvoted"
       :has-mod-profile="!!loggedInUserModName"
       :upvote-loading="upvoteCommentLoading || undoUpvoteLoading"
-      :downvote-loading="false"
       :show-downvote="showDownvote"
-      @downvote="downvoteComment"
       @upvote="upvoteComment"
       @undoUpvote="undoUpvoteComment"
-      @undoDownvote="undoDownvoteComment"
+      @undoDownvote="$emit('clickUndoFeedback')"
       @openModProfile="$emit('openModProfile')"
-      @editFeedback="editFeedback"
-      @undoFeedback="undoFeedback"
+      @editFeedback="$emit('clickEditFeedback')"
+      @undoFeedback="$emit('clickUndoFeedback')"
+      @viewFeedback="$emit('viewFeedback')"
+      @giveFeedback="$emit('clickFeedback')"
     />
   </div>
 </template>

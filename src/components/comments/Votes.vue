@@ -22,10 +22,6 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    downvoteLoading: {
-      type: Boolean,
-      default: false,
-    },
     upvoteLoading: {
       type: Boolean,
       default: false,
@@ -147,7 +143,7 @@ export default defineComponent({
         :test-id="'downvote-comment-button'"
         :count="downvoteCount"
         :show-count="showDownvoteCount"
-        :loading="downvoteLoading"
+        :loading="false"
         :active="downvoteActive"
       >
         <HandThumbDownIcon class="h-4 w-4" />

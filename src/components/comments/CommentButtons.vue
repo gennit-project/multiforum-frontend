@@ -135,6 +135,7 @@ export default defineComponent({
         @clickFeedback="$emit('clickFeedback')"
         @clickUndoFeedback="$emit('clickUndoFeedback')"
         @clickEditFeedback="$emit('clickEditFeedback')"
+        @viewFeedback="$emit('handleViewFeedback')"
       />
       <NewEmojiButton
         :comment-id="commentData.id"

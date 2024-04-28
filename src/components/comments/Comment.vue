@@ -496,6 +496,9 @@ export default defineComponent({
                         });
                       }
                     "
+                    @handleViewFeedback="
+                      $emit('handleViewFeedback', commentData.id)
+                    "
                     @clickUndoFeedback="
                       () => {
                         // See comment on clickFeedback. The same principle applies.
