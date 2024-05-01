@@ -57,6 +57,11 @@ const cache = new InMemoryCache({
             return incoming;
           },
         },
+        FeedbackComments: {
+          merge(existing, incoming) {
+            return incoming;
+          },
+        },
       },
     },
     Event: {
