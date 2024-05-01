@@ -287,13 +287,28 @@ export default defineComponent({
             event: "clickReport",
             icon: ALLOWED_ICONS.REPORT,
           },
-          {
+        ]);
+        if (props.commentData.FeedbackComments.length === 0) {
+          out.push({
             label: "Give Feedback",
             value: "",
             event: "clickFeedback",
             icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-          },
-        ]);
+          });
+        } else {
+          out.push({
+            label: "Undo Feedback",
+            value: "",
+            event: "clickUndoFeedback",
+            icon: ALLOWED_ICONS.UNDO,
+          });
+          out.push({
+            label: "Edit Feedback",
+            value: "",
+            event: "clickEditFeedback",
+            icon: ALLOWED_ICONS.EDIT,
+          });
+        }
       }
       if (canShowPermalink) {
         out.push({
@@ -531,7 +546,7 @@ export default defineComponent({
                           // function or methods is better because it allows us to specify that
                           // we want a nested comment to be the target. If we did it in methods
                           // or setup, feedback would end up attached to the parent
-                          // instead of the child (because the event is emitted by both child and parent).
+                          // instead of the child.
                           handleFeedback({
                             commentData,
                             parentCommentId,
