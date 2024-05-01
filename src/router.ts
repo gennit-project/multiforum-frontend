@@ -166,11 +166,6 @@ export const router = createRouter({
       component: Subreddit,
     },
     {
-      name: "CommentFeedback",
-      path: "/channels/c/:channelId/discussions/d/:discussionId/comments/:commentId/feedback",
-      component: CommentFeedback,
-    },
-    {
       name: "DiscussionDetail",
       path: "/channels/c/:channelId/discussions/d/:discussionId",
       component: DiscussionDetail,
@@ -194,6 +189,11 @@ export const router = createRouter({
           name: "EditChannel",
           path: "edit",
           component: EditChannel,
+        },
+        {
+          name: "CommentFeedback",
+          path: "discussions/d/:discussionId/comments/:commentId/feedback",
+          component: CommentFeedback,
         },
         {
           name: "About",
