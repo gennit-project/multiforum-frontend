@@ -77,22 +77,14 @@ export default defineComponent({
   },
   inheritAttrs: false,
   props: {
-    commentSectionQueryVariables: {
-      required: true,
-      type: Object as PropType<CommentSectionQueryVariablesType>,
-    },
-    createFormValues: {
-      type: Object as PropType<CreateEditCommentFormValues>,
-      required: true,
-    },
-    createCommentInput: {
-      type: Object as PropType<CommentCreateInput>,
-      required: true,
-    },
     aggregateCommentCount: {
       type: Number,
       required: false,
       default: 0,
+    },
+    commentSectionQueryVariables: {
+      required: true,
+      type: Object as PropType<CommentSectionQueryVariablesType>,
     },
     comments: {
       type: Array as PropType<CommentType[]>,
@@ -100,6 +92,19 @@ export default defineComponent({
       default: () => {
         return [];
       },
+    },
+    createCommentInput: {
+      type: Object as PropType<CommentCreateInput>,
+      required: true,
+    },
+    createFormValues: {
+      type: Object as PropType<CreateEditCommentFormValues>,
+      required: true,
+    },
+    enableFeedback: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     loading: {
       type: Boolean,
@@ -705,6 +710,7 @@ export default defineComponent({
             :aggregate-comment-count="aggregateCommentCount"
             :compact="true"
             :comment-data="commentData"
+            :enable-feedback="enableFeedback"
             :depth="1"
             :locked="locked"
             :comment-in-process="commentInProcess"
@@ -747,6 +753,7 @@ export default defineComponent({
               :aggregate-comment-count="aggregateCommentCount"
               :compact="true"
               :comment-data="comment"
+              :enable-feedback="enableFeedback"
               :depth="1"
               :locked="locked"
               :comment-in-process="commentInProcess"

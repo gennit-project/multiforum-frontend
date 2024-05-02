@@ -274,6 +274,7 @@ export default defineComponent({
     :create-form-values="createFormValues"
     :create-comment-input="createCommentInput"
     :previous-offset="previousOffset"
+    :enable-feedback="false"
     @decrementCommentCount="decrementCommentCount"
     @incrementCommentCount="incrementCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"

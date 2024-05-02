@@ -28,6 +28,10 @@ export default defineComponent({
       type: Object as PropType<Comment>,
       required: true,
     },
+    enableFeedback: {
+      type: Boolean,
+      default: true,
+    },
     depth: {
       type: Number,
       required: true,
@@ -130,7 +134,7 @@ export default defineComponent({
       <VoteButtons
         v-if="!locked"
         :comment-data="commentData"
-        :show-downvote="!loggedInUserIsAuthor"
+        :show-downvote="enableFeedback && !loggedInUserIsAuthor"
         @openModProfile="$emit('openModProfile')"
         @clickFeedback="$emit('clickFeedback')"
         @clickUndoFeedback="$emit('clickUndoFeedback')"

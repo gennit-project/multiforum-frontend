@@ -58,14 +58,10 @@ export default defineComponent({
       type: Object as PropType<Comment>,
       required: true,
     },
-    modProfileName: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    showHeader: {
+    commentInProcess: {
+      // Used to show loading state in save comment button.
       type: Boolean,
-      default: true,
+      default: false,
     },
     compact: {
       type: Boolean,
@@ -75,9 +71,31 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    editCommentError: {
+      type: Object as PropType<ApolloError | null>,
+      required: false,
+      default: null,
+    },
+    editFormOpenAtCommentID: {
+      type: String,
+      default: "",
+    },
+    enableFeedback: {
+      type: Boolean,
+      default: true,
+    },
+    goToPermalinkOnClick: {
+      type: Boolean,
+      default: false,
+    },
     locked: {
       type: Boolean,
       default: false,
+    },
+    modProfileName: {
+      type: String,
+      required: false,
+      default: "",
     },
     parentCommentId: {
       type: String,
@@ -87,18 +105,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    commentInProcess: {
-      // Used to show loading state in save comment button.
-      type: Boolean,
-      default: false,
-    },
     replyFormOpenAtCommentID: {
       type: String,
       default: "",
     },
-    editFormOpenAtCommentID: {
-      type: String,
-      default: "",
+    showHeader: {
+      type: Boolean,
+      default: true,
     },
     showChannel: {
       type: Boolean,
@@ -111,15 +124,6 @@ export default defineComponent({
     showContextLink: {
       type: Boolean,
       default: false,
-    },
-    goToPermalinkOnClick: {
-      type: Boolean,
-      default: false,
-    },
-    editCommentError: {
-      type: Object as PropType<ApolloError | null>,
-      required: false,
-      default: null,
     },
   },
   setup(props, { emit }) {
@@ -253,14 +257,18 @@ export default defineComponent({
     });
 
     const commentMenuItems = computed(() => {
-      let out: any[] = [
-        {
-          label: "View Feedback",
-          value: "",
-          event: "handleViewFeedback",
-          icon: ALLOWED_ICONS.VIEW_FEEDBACK,
-        },
-      ];
+      let out: any[] = [];
+
+      if (props.enableFeedback) {
+        out = out.concat([
+          {
+            label: "View Feedback",
+            value: "",
+            event: "handleViewFeedback",
+            icon: ALLOWED_ICONS.VIEW_FEEDBACK,
+          },
+        ]);
+      }
 
       if (
         props.commentData?.CommentAuthor?.username === username.value.username
@@ -288,26 +296,28 @@ export default defineComponent({
             icon: ALLOWED_ICONS.REPORT,
           },
         ]);
-        if (props.commentData.FeedbackComments?.length === 0) {
-          out.push({
-            label: "Give Feedback",
-            value: "",
-            event: "clickFeedback",
-            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-          });
-        } else {
-          out.push({
-            label: "Undo Feedback",
-            value: "",
-            event: "clickUndoFeedback",
-            icon: ALLOWED_ICONS.UNDO,
-          });
-          out.push({
-            label: "Edit Feedback",
-            value: "",
-            event: "clickEditFeedback",
-            icon: ALLOWED_ICONS.EDIT,
-          });
+        if (props.enableFeedback) {
+          if (props.commentData.FeedbackComments?.length === 0) {
+            out.push({
+              label: "Give Feedback",
+              value: "",
+              event: "clickFeedback",
+              icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+            });
+          } else {
+            out.push({
+              label: "Undo Feedback",
+              value: "",
+              event: "clickUndoFeedback",
+              icon: ALLOWED_ICONS.UNDO,
+            });
+            out.push({
+              label: "Edit Feedback",
+              value: "",
+              event: "clickEditFeedback",
+              icon: ALLOWED_ICONS.EDIT,
+            });
+          }
         }
       }
       if (canShowPermalink) {
@@ -473,6 +483,7 @@ export default defineComponent({
                       editFormOpenAtCommentID === commentData.id ? 'ml-1' : '',
                     ]"
                     :comment-data="commentData"
+                    :enable-feedback="enableFeedback"
                     :depth="depth"
                     :locked="locked"
                     :parent-comment-id="parentCommentId"
@@ -651,9 +662,10 @@ export default defineComponent({
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                 @clickFeedback="handleFeedback"
                 @clickUndoFeedback="handleUndoFeedback"
-                @handleViewFeedback="(commentId: string) => {
-                  $emit('handleViewFeedback', commentId)
-                }
+                @handleViewFeedback="
+                  (commentId: string) => {
+                    $emit('handleViewFeedback', commentId);
+                  }
                 "
               />
             </div>
