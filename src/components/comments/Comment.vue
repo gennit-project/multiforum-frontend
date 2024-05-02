@@ -651,8 +651,9 @@ export default defineComponent({
                 @hideEditCommentEditor="$emit('hideEditCommentEditor')"
                 @clickFeedback="handleFeedback"
                 @clickUndoFeedback="handleUndoFeedback"
-                @handleViewFeedback="
-                  $emit('handleViewFeedback', childComment.id)
+                @handleViewFeedback="(commentId: string) => {
+                  $emit('handleViewFeedback', commentId)
+                }
                 "
               />
             </div>
