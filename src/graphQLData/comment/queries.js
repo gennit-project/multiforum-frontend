@@ -220,6 +220,9 @@ export const GET_COMMENT_AND_REPLIES = gql`
       ChildComments {
         ...CommentFields
       }
+      FeedbackComments {
+        id
+      }
     }
   }
   ${AUTHOR_FIELDS}

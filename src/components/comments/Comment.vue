@@ -288,7 +288,7 @@ export default defineComponent({
             icon: ALLOWED_ICONS.REPORT,
           },
         ]);
-        if (props.commentData.FeedbackComments.length === 0) {
+        if (props.commentData.FeedbackComments?.length === 0) {
           out.push({
             label: "Give Feedback",
             value: "",
