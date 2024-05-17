@@ -110,16 +110,16 @@ export const GET_EVENTS = gql`
 `;
 
 export const GET_EVENT_FEEDBACK = gql`
-  query getEventFeedback($id: ID!) {
+  query getEventFeedback($id: ID!, $limit: Int, $offset: Int) {
     events(where: { id: $id }) {
-      id 
-      title 
+      id
+      title
       startTime
       endTime
       FeedbackCommentsAggregate {
         count
       }
-      FeedbackComments {
+      FeedbackComments(options: { limit: $limit, offset: $offset }) {
         id
         text
         createdAt

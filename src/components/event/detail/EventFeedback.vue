@@ -13,6 +13,9 @@ import PageNotFound from "@/components/generic/PageNotFound.vue";
 import InfoBanner from "@/components/generic/InfoBanner.vue";
 import Avatar from "@/components/user/Avatar.vue";
 import EventBody from "./EventBody.vue";
+import LoadMore from "@/components/generic/LoadMore.vue";
+
+const PAGE_LIMIT = 10;
 
 export default defineComponent({
   components: {
@@ -22,6 +25,7 @@ export default defineComponent({
     EventHeader,
     ErrorBanner,
     InfoBanner,
+    LoadMore,
     MarkdownPreview,
     PageNotFound,
   },
@@ -46,13 +50,18 @@ export default defineComponent({
       result: getEventResult,
       error: getEventError,
       loading: getEventLoading,
-    } = useQuery(GET_EVENT_FEEDBACK, { id: eventId });
+      fetchMore,
+    } = useQuery(GET_EVENT_FEEDBACK, {
+      id: eventId,
+      limit: PAGE_LIMIT,
+      offset: 0,
+    });
 
     const event = computed<Event>(() => {
-      if (getEventLoading.value || getEventError.value) {
+      if (getEventError.value) {
         return null;
       }
-      return getEventResult.value.events[0];
+      return getEventResult.value?.events[0] || null;
     });
 
     const feedbackComments = computed(() => {
@@ -69,6 +78,42 @@ export default defineComponent({
       return 0;
     });
 
+    const loadMore = () => {
+      fetchMore({
+        variables: {
+          offset: feedbackComments.value.length,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+
+          const prevFeedbackComments =
+            previousResult.events[0].FeedbackComments;
+          const newFeedbackComments =
+            fetchMoreResult.events[0].FeedbackComments;
+
+          return {
+            ...previousResult,
+            events: [
+              {
+                ...previousResult.events[0],
+                FeedbackComments: [
+                  ...prevFeedbackComments,
+                  ...newFeedbackComments,
+                ],
+              },
+            ],
+          };
+        },
+      });
+    };
+
+    const reachedEndOfResults = computed(() => {
+      if (getEventLoading.value || getEventError.value) {
+        return false;
+      }
+      return feedbackComments.value.length === feedbackCommentsAggregate.value;
+    });
+
     return {
       channelId,
       event,
@@ -76,6 +121,8 @@ export default defineComponent({
       getEventError,
       feedbackComments,
       feedbackCommentsAggregate,
+      loadMore,
+      reachedEndOfResults,
       route,
       timeAgo,
     };
@@ -100,9 +147,7 @@ export default defineComponent({
       class="mt-2 px-4"
       :text="getEventError.message"
     />
-    <PageNotFound
-      v-if="!getEventLoading && !getEventError && !event"
-    />
+    <PageNotFound v-if="!getEventLoading && !getEventError && !event" />
     <p class="px-2">
       This page collects feedback on this event:
     </p>
@@ -132,7 +177,7 @@ export default defineComponent({
     </h2>
     <InfoBanner
       v-if="feedbackCommentsAggregate > 0"
-      :text="'Feedback should be respectful and useful to the author. If the feedback is rude or non-actionable, please report it.'"
+      :text="'Feedback should be respectful and constructive. If the feedback is rude or non-actionable, please report it.'"
     />
     <div
       v-if="feedbackCommentsAggregate === 0"
@@ -144,7 +189,9 @@ export default defineComponent({
       v-for="comment in feedbackComments"
       :key="comment.id"
     >
-      <div class="flex gap-2 text-sm leading-8 text-gray-500 dark:text-gray-300">
+      <div
+        class="flex gap-2 text-sm leading-8 text-gray-500 dark:text-gray-300"
+      >
         <Avatar
           v-if="comment.CommentAuthor?.displayName"
           class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
@@ -177,6 +224,14 @@ export default defineComponent({
           :disable-gallery="true"
         />
       </div>
+    </div>
+    <LoadMore
+      v-if="!getEventLoading && !reachedEndOfResults"
+      :reached-end-of-results="reachedEndOfResults"
+      @loadMore="loadMore"
+    />
+    <div v-if="getEventLoading">
+      Loading...
     </div>
   </div>
 </template>

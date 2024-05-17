@@ -12,6 +12,9 @@ import PageNotFound from "@/components/generic/PageNotFound.vue";
 import InfoBanner from "@/components/generic/InfoBanner.vue";
 import Avatar from "@/components/user/Avatar.vue";
 import CommentHeader from "./CommentHeader.vue";
+import LoadMore from "@/components/generic/LoadMore.vue";
+
+const PAGE_LIMIT = 10;
 
 export default defineComponent({
   name: "CommentFeedback",
@@ -21,6 +24,7 @@ export default defineComponent({
     CommentHeader,
     ErrorBanner,
     InfoBanner,
+    LoadMore,
     MarkdownPreview,
     PageNotFound,
   },
@@ -52,13 +56,18 @@ export default defineComponent({
       result: getCommentResult,
       error: getCommentError,
       loading: getCommentLoading,
-    } = useQuery(GET_FEEDBACK_ON_COMMENT, { commentId: commentId });
+      fetchMore,
+    } = useQuery(GET_FEEDBACK_ON_COMMENT, {
+      commentId: commentId,
+      limit: PAGE_LIMIT,
+      offset: 0,
+    });
 
     const originalComment = computed<Comment>(() => {
-      if (getCommentLoading.value || getCommentError.value) {
+      if (getCommentError.value) {
         return null;
       }
-      return getCommentResult.value.comments[0];
+      return getCommentResult.value?.comments[0] || null;
     });
 
     const parentCommentId = computed(() => {
@@ -82,6 +91,42 @@ export default defineComponent({
       return 0;
     });
 
+    const loadMore = () => {
+      fetchMore({
+        variables: {
+          offset: feedbackComments.value.length,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+
+          const prevFeedbackComments =
+            previousResult.comments[0].FeedbackComments;
+          const newFeedbackComments =
+            fetchMoreResult.comments[0].FeedbackComments;
+
+          return {
+            ...previousResult,
+            comments: [
+              {
+                ...previousResult.comments[0],
+                FeedbackComments: [
+                  ...prevFeedbackComments,
+                  ...newFeedbackComments,
+                ],
+              },
+            ],
+          };
+        },
+      });
+    };
+
+    const reachedEndOfResults = computed(() => {
+      if (getCommentLoading.value || getCommentError.value) {
+        return false;
+      }
+      return feedbackComments.value.length === feedbackCommentsAggregate.value;
+    });
+
     return {
       channelId,
       discussionId,
@@ -89,7 +134,9 @@ export default defineComponent({
       getCommentError,
       feedbackComments,
       feedbackCommentsAggregate,
+      loadMore,
       originalComment,
+      reachedEndOfResults,
       route,
       parentCommentId,
       timeAgo,
@@ -164,7 +211,7 @@ export default defineComponent({
         </h2>
         <InfoBanner
           v-if="feedbackCommentsAggregate > 0"
-          :text="'Feedback should be respectful and useful to the author. If the feedback is rude or non-actionable, please report it.'"
+          :text="'Feedback should focus on the writing, not the writer. If the feedback is rude or non-actionable, please report it.'"
         />
         <div
           v-if="feedbackCommentsAggregate === 0"
@@ -211,6 +258,14 @@ export default defineComponent({
               :disable-gallery="true"
             />
           </div>
+        </div>
+        <LoadMore
+          v-if="!getCommentLoading && !reachedEndOfResults"
+          :reached-end-of-results="reachedEndOfResults"
+          @loadMore="loadMore"
+        />
+        <div v-if="getCommentLoading">
+          Loading...
         </div>
       </div>
     </div>

@@ -55,11 +55,11 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
     $selectedTags: [String!]
     $options: DiscussionListOptions
   ) {
-    getDiscussionsInChannel (
-       channelUniqueName: $channelUniqueName,
-       options: $options,
-       selectedTags: $selectedTags,
-       searchInput: $searchInput
+    getDiscussionsInChannel(
+      channelUniqueName: $channelUniqueName
+      options: $options
+      selectedTags: $selectedTags
+      searchInput: $searchInput
     ) {
       aggregateDiscussionChannelsCount
       discussionChannels {
@@ -144,18 +144,10 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
   ${AUTHOR_FIELDS}
 `;
 
-
-
-
 export const GET_DISCUSSION = gql`
   ${DISCUSSION_FIELDS}
-  query getDiscussion(
-    $id: ID!, 
-    $loggedInModName: String!
-  ) {
-    discussions(where: { 
-      id: $id,
-    }) {
+  query getDiscussion($id: ID!, $loggedInModName: String!) {
+    discussions(where: { id: $id }) {
       ...DiscussionFields
       FeedbackCommentsAggregate {
         count
@@ -163,13 +155,9 @@ export const GET_DISCUSSION = gql`
       FeedbackComments(
         where: {
           CommentAuthorConnection: {
-            ModerationProfile: {
-              node: {
-                displayName: $loggedInModName
-              }    
-            }
+            ModerationProfile: { node: { displayName: $loggedInModName } }
           }
-        } 
+        }
       ) {
         id
       }
@@ -178,10 +166,10 @@ export const GET_DISCUSSION = gql`
 `;
 
 export const GET_DISCUSSION_FEEDBACK = gql`
-  query getDiscussionFeedback($id: ID!) {
+  query getDiscussionFeedback($id: ID!, $limit: Int, $offset: Int) {
     discussions(where: { id: $id }) {
-      id 
-      title 
+      id
+      title
       body
       Author {
         username
@@ -189,7 +177,7 @@ export const GET_DISCUSSION_FEEDBACK = gql`
       FeedbackCommentsAggregate {
         count
       }
-      FeedbackComments {
+      FeedbackComments(options: { limit: $limit, offset: $offset }) {
         id
         text
         createdAt
@@ -207,41 +195,26 @@ export const GET_DISCUSSION_FEEDBACK = gql`
 `;
 
 export const GET_SPECIFIC_DISCUSSION_FEEDBACK = gql`
-query getSpecificDiscussionFeedback (
-  $discussionId: ID,
-  $modName: String
-) {
-  comments(
-    where: {
-      GivesFeedbackOnDiscussion: {
-        id: $discussionId
-      },
-      CommentAuthorConnection: {
-        ModerationProfile: {
-          node: {
-            displayName: $modName
-          }
+  query getSpecificDiscussionFeedback($discussionId: ID, $modName: String) {
+    comments(
+      where: {
+        GivesFeedbackOnDiscussion: { id: $discussionId }
+        CommentAuthorConnection: {
+          ModerationProfile: { node: { displayName: $modName } }
         }
       }
-    }
-  ) {
+    ) {
       id
       text
       createdAt
       Channel {
         uniqueName
       }
-      CommentAuthor (
-        where: {
-          ModerationProfile: {
-            displayName: $modName
-          }
-        }
-      ) {
+      CommentAuthor(where: { ModerationProfile: { displayName: $modName } }) {
         ... on ModerationProfile {
           displayName
         }
       }
+    }
   }
-}
-`
+`;

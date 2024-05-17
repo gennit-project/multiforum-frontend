@@ -13,6 +13,9 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import InfoBanner from "@/components/generic/InfoBanner.vue";
 import Avatar from "@/components/user/Avatar.vue";
+import LoadMore from "@/components/generic/LoadMore.vue";
+
+const PAGE_LIMIT = 10;
 
 export default defineComponent({
   components: {
@@ -22,6 +25,7 @@ export default defineComponent({
     DiscussionHeader,
     ErrorBanner,
     InfoBanner,
+    LoadMore,
     MarkdownPreview,
     PageNotFound,
   },
@@ -46,27 +50,58 @@ export default defineComponent({
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
-    } = useQuery(GET_DISCUSSION_FEEDBACK, { id: discussionId });
+      fetchMore,
+    } = useQuery(GET_DISCUSSION_FEEDBACK, { 
+      id: discussionId,
+      limit: PAGE_LIMIT,
+      offset: 0
+    });
 
     const discussion = computed<Discussion>(() => {
-      if (getDiscussionLoading.value || getDiscussionError.value) {
+      if (getDiscussionError.value) {
         return null;
       }
-      return getDiscussionResult.value.discussions[0];
+      return getDiscussionResult.value?.discussions[0] || null;
     });
 
     const feedbackComments = computed(() => {
-      if (discussion.value) {
-        return discussion.value.FeedbackComments;
-      }
-      return [];
+      return discussion.value?.FeedbackComments || [];
     });
 
     const feedbackCommentsAggregate = computed(() => {
-      if (discussion.value) {
-        return discussion.value.FeedbackCommentsAggregate?.count || 0;
+      return discussion.value?.FeedbackCommentsAggregate?.count || 0;
+    });
+
+    const loadMore = () => {
+      fetchMore({
+        variables: {
+          offset: feedbackComments.value.length,
+        },
+        updateQuery: (previousResult, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return previousResult;
+          
+
+          const prevFeedbackComments = previousResult.discussions[0].FeedbackComments;
+          const newFeedbackComments = fetchMoreResult.discussions[0].FeedbackComments;
+
+          return {
+            ...previousResult,
+            discussions: [
+              {
+                ...previousResult.discussions[0],
+                FeedbackComments: [...prevFeedbackComments, ...newFeedbackComments],
+              },
+            ],
+          };
+        },
+      });
+    };
+
+    const reachedEndOfResults = computed(() => {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
+        return false;
       }
-      return 0;
+      return feedbackComments.value.length === feedbackCommentsAggregate.value;
     });
 
     return {
@@ -76,6 +111,8 @@ export default defineComponent({
       getDiscussionError,
       feedbackComments,
       feedbackCommentsAggregate,
+      loadMore,
+      reachedEndOfResults,
       route,
       timeAgo,
     };
@@ -133,7 +170,7 @@ export default defineComponent({
     </h2>
     <InfoBanner
       v-if="feedbackCommentsAggregate > 0"
-      :text="'Feedback should be respectful and useful to the author. If the feedback is rude or non-actionable, please report it.'"
+      :text="'Feedback should focus on the writing, not the writer. If the feedback is rude or non-actionable, please report it.'"
     />
     <div
       v-if="feedbackCommentsAggregate === 0"
@@ -178,6 +215,14 @@ export default defineComponent({
           :disable-gallery="true"
         />
       </div>
+    </div>
+    <LoadMore
+      v-if="!getDiscussionLoading && !reachedEndOfResults"
+      :reached-end-of-results="reachedEndOfResults"
+      @loadMore="loadMore"
+    />
+    <div v-if="getDiscussionLoading">
+      Loading...
     </div>
   </div>
 </template>

@@ -233,7 +233,7 @@ export const GET_COMMENT_AND_REPLIES = gql`
 export const GET_COMMENT = gql`
   query getComment($id: ID!) {
     comments(where: { id: $id }) {
-      ...CommentFields,
+      ...CommentFields
       DiscussionChannel {
         channelUniqueName
         discussionId
@@ -247,8 +247,14 @@ export const GET_COMMENT = gql`
 `;
 
 export const GET_COMMENT_REPLIES = gql`
-  query getCommentWithReplies($commentId: ID!, $modName: String, $limit: Int, $offset: Int, $sort: SortType) {
-    getCommentReplies (
+  query getCommentWithReplies(
+    $commentId: ID!
+    $modName: String
+    $limit: Int
+    $offset: Int
+    $sort: SortType
+  ) {
+    getCommentReplies(
       commentId: $commentId
       modName: $modName
       limit: $limit
@@ -257,7 +263,7 @@ export const GET_COMMENT_REPLIES = gql`
     ) {
       aggregateChildCommentCount
       ChildComments {
-        ...CommentFields,
+        ...CommentFields
         FeedbackComments {
           id
         }
@@ -270,78 +276,56 @@ export const GET_COMMENT_REPLIES = gql`
 `;
 
 export const GET_FEEDBACK_ON_COMMENT = gql`
-query getFeedbackOnComment (
-  $commentId: ID!
-) {
-  comments(
-    where: {
-      id: $commentId
-    }
-  ) {
-    id
-    CommentAuthor {
-      ... on User {
-        username
-      }
-    }
-    createdAt
-    text
-    FeedbackCommentsAggregate {
-      count
-    }
-    FeedbackComments {
+  query getFeedbackOnComment($commentId: ID!, $limit: Int, $offset: Int) {
+    comments(where: { id: $commentId }) {
       id
-      text
-      Channel {
-        uniqueName
-      }
       CommentAuthor {
-        ... on ModerationProfile {
-          displayName
+        ... on User {
+          username
         }
       }
-    }
-  }
-}
-`
-
-
-export const GET_SPECIFIC_COMMENT_FEEDBACK = gql`
-query getSpecificCommentFeedback (
-  $commentId: ID,
-  $modName: String
-) {
-  comments(
-    where: {
-      GivesFeedbackOnComment: {
-        id: $commentId
-      },
-      CommentAuthorConnection: {
-        ModerationProfile: {
-          node: {
-            displayName: $modName
+      createdAt
+      text
+      FeedbackCommentsAggregate {
+        count
+      }
+      FeedbackComments(options: { limit: $limit, offset: $offset }) {
+        id
+        text
+        Channel {
+          uniqueName
+        }
+        CommentAuthor {
+          ... on ModerationProfile {
+            displayName
           }
         }
       }
     }
-  ) {
+  }
+`;
+
+export const GET_SPECIFIC_COMMENT_FEEDBACK = gql`
+  query getSpecificCommentFeedback($commentId: ID, $modName: String) {
+    comments(
+      where: {
+        GivesFeedbackOnComment: { id: $commentId }
+        CommentAuthorConnection: {
+          ModerationProfile: { node: { displayName: $modName } }
+        }
+      }
+    ) {
       id
       text
       createdAt
       Channel {
         uniqueName
       }
-      CommentAuthor (
-        where: {
-          ModerationProfile: {
-            displayName: $modName
-          }
-        }
-      ) {
+      CommentAuthor(where: { ModerationProfile: { displayName: $modName } }) {
         ... on ModerationProfile {
           displayName
         }
       }
+    }
   }
-}
-`
+`;

@@ -25,7 +25,7 @@ export default defineComponent({
     <button
       v-else
       :class="!reachedEndOfResults ? 'underline' : ''"
-      class="justify-self-center"
+      class="justify-self-center cursor-pointer"
       @click="$emit('loadMore')"
     >
       Load more
