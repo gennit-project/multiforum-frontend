@@ -28,6 +28,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    showUpvote: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const { result: localUsernameResult, loading: localUsernameLoading } =
@@ -140,6 +144,7 @@ export default defineComponent({
       :has-mod-profile="!!loggedInUserModName"
       :upvote-loading="upvoteCommentLoading || undoUpvoteLoading"
       :show-downvote="showDownvote"
+      :show-upvote="showUpvote"
       @upvote="upvoteComment"
       @undoUpvote="undoUpvoteComment"
       @undoDownvote="$emit('clickUndoFeedback')"

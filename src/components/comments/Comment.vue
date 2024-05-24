@@ -31,12 +31,12 @@ type DeleteCommentInputData = {
   replyCount: number;
 };
 
-type HandleFeedbackInput = {
+export type HandleFeedbackInput = {
   commentData: Comment;
   parentCommentId: string;
 };
 
-type HandleEditFeedbackInput = {
+export type HandleEditFeedbackInput = {
   commentData: Comment;
 };
 

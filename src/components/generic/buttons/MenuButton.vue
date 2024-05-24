@@ -64,8 +64,12 @@ export default defineComponent({
 
     const adjustMenuPosition = () => {
       nextTick(() => {
-        const menuButton = document.querySelector(`#menu-button-${uniqueID.value}`);
-        const menuItems = document.querySelector(`#menu-items-${uniqueID.value}`);
+        const menuButton = document.querySelector(
+          `#menu-button-${uniqueID.value}`,
+        );
+        const menuItems = document.querySelector(
+          `#menu-items-${uniqueID.value}`,
+        );
 
         if (menuButton && menuItems) {
           const menuButtonRect = menuButton.getBoundingClientRect();
@@ -74,10 +78,9 @@ export default defineComponent({
           const spaceBelow = window.innerHeight - menuButtonRect.bottom;
           shouldOpenUpwards.value = spaceBelow < menuItemsHeight;
 
-
           // Calculate the number of pixels from the menu button to the left
           // edge of the screen.
-          const spaceLeft  = menuButtonRect.left;
+          const spaceLeft = menuButtonRect.left;
           // Open to the left if there is enough space to the left of the menu button.
           shouldOpenLeftwards.value = spaceLeft > menuItemsWidth;
         }
@@ -103,21 +106,19 @@ export default defineComponent({
     as="div"
     class="relative inline-block text-left"
   >
-    <div>
-      <MenuButton
-        :id="`menu-button-${uniqueID}`"
-        class="menu-button focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
-        @click="adjustMenuPosition"
-      >
-        <slot>
-          Options
-          <ChevronDownIcon
-            class="-mr-1 ml-2 h-5 w-5"
-            aria-hidden="true"
-          />
-        </slot>
-      </MenuButton>
-    </div>
+    <MenuButton
+      :id="`menu-button-${uniqueID}`"
+      class="menu-button focus:ring-indigo-500 inline-flex w-full justify-center rounded-md px-1 text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100"
+      @click="adjustMenuPosition"
+    >
+      <slot>
+        Options
+        <ChevronDownIcon
+          class="-mr-1 ml-2 h-5 w-5"
+          aria-hidden="true"
+        />
+      </slot>
+    </MenuButton>
 
     <transition
       enter-active-class="transition ease-out duration-100"
@@ -129,7 +130,7 @@ export default defineComponent({
     >
       <MenuItems
         :id="`menu-items-${uniqueID}`"
-        class="menu-items absolute  z-50 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
+        class="menu-items absolute z-50 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
         :style="{
           top: shouldOpenUpwards ? 'auto' : '100%',
           right: shouldOpenLeftwards ? 0 : 'auto',

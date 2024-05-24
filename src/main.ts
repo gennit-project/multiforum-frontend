@@ -77,6 +77,7 @@ import 'codemirror/lib/codemirror.css';
 
 VMdEditor.Codemirror = Codemirror;
 VMdEditor.lang.use('en-US', enUS);
+
 VMdEditor.use(githubTheme, {
   Hljs: hljs,
 });

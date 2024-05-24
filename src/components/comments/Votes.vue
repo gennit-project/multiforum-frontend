@@ -46,6 +46,10 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    showUpvote: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const thumbsDownMenuItems = computed(() => {
@@ -116,6 +120,7 @@ export default defineComponent({
 <template>
   <div class="flex flex-row space-x-1">
     <VoteButton
+      v-if="showUpvote"
       :test-id="'upvote-comment-button'"
       :count="upvoteCount"
       :loading="upvoteLoading"
