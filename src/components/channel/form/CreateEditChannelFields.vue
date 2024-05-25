@@ -153,6 +153,21 @@ export default defineComponent({
         }
       }
     },
+    updateRule(index: number, field: string, value: string) {
+      const updatedRules = [...this.formValues.rules];
+      updatedRules[index][field] = value;
+      this.$emit("updateFormValues", { rules: updatedRules });
+    },
+    addNewRule() {
+      const newRule = { short_name: "", description: "" };
+      const updatedRules = [...this.formValues.rules, newRule];
+      this.$emit("updateFormValues", { rules: updatedRules });
+    },
+    deleteRule(index: number) {
+      const updatedRules = [...this.formValues.rules];
+      updatedRules.splice(index, 1);
+      this.$emit("updateFormValues", { rules: updatedRules });
+    },
   },
 });
 </script>
@@ -263,6 +278,29 @@ export default defineComponent({
                 :field-name="'channelBannerURL'"
                 @change="handleImageChange"
               />
+            </template>
+          </FormRow>
+          <FormRow section-title="Forum Rules">
+            <template #content>
+              <div v-for="(rule, index) in formValues.rules" :key="index" class="mb-4">
+                <TextInput
+                  :test-id="'rule-short-name-input-' + index"
+                  :value="rule.short_name"
+                  :placeholder="'Rule short name'"
+                  :full-width="true"
+                  @update="updateRule(index, 'short_name', $event)"
+                />
+                <TextEditor
+                  :test-id="'rule-description-input-' + index"
+                  :initial-value="rule.description || ''"
+                  :placeholder="'Rule description'"
+                  :disable-auto-focus="true"
+                  :allow-image-upload="false"
+                  @update="updateRule(index, 'description', $event)"
+                />
+                <button @click="deleteRule(index)">Delete Rule</button>
+              </div>
+              <button @click="addNewRule">Add New Rule</button>
             </template>
           </FormRow>
         </div>
