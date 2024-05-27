@@ -136,13 +136,14 @@ export default defineComponent({
         >
           <router-link
             to="/"
-            class="flex items-center"
+            class="flex gap-2 items-center"
           >
             <arrow-up-bold-box
               :size="38"
-              class="ml-3 mr-2 text-black dark:text-blue-500"
+              class="text-black dark:text-blue-500"
             />
             <span class="font-bold text-black dark:text-white">Listical</span>
+            <span class="text-blue-500 text-xs py-0.5 px-1 border rounded-md border-blue-500 dark:text-blue-500">BETA</span>
           </router-link>
           <div
             v-if="shouldShowChannelId && !smAndDown"
