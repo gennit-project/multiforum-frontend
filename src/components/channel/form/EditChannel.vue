@@ -205,6 +205,7 @@ export default defineComponent({
 
     const {
       mutate: updateChannel,
+      loading: editChannelLoading,
       error: updateChannelError,
       onDone,
     } = useMutation(UPDATE_CHANNEL);
@@ -217,6 +218,7 @@ export default defineComponent({
       channelId,
       channelUpdateInput,
       existingTags,
+      editChannelLoading,
       formValues,
       dataLoaded,
       getChannelError,
@@ -267,6 +269,7 @@ export default defineComponent({
         :channel-loading="getChannelLoading"
         :get-channel-error="getChannelError"
         :update-channel-error="updateChannelError"
+        :edit-channel-loading="editChannelLoading"
         :form-values="formValues"
         :owner-list="ownerList"
         @submit="submit"

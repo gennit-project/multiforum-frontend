@@ -47,6 +47,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    editChannelLoading: {
+      type: Boolean,
+      default: false,
+    },
     formValues: {
       type: Object as PropType<CreateEditChannelFormValues | null>,
       required: false,
@@ -187,7 +191,7 @@ export default defineComponent({
       v-else-if="formValues"
       :form-title="editMode ? 'Forum Settings' : 'Create Forum'"
       :needs-changes="needsChanges"
-      :loading="createChannelLoading && !createChannelError"
+      :loading="createChannelLoading || editChannelLoading"
       @input="touched = true"
       @submit="$emit('submit')"
     >
@@ -323,6 +327,7 @@ export default defineComponent({
                     :test-id="'rule-detail-input-' + index"
                     :initial-value="rule.detail || ''"
                     :placeholder="'Rule details'"
+                    :rows="4"
                     :disable-auto-focus="true"
                     :allow-image-upload="false"
                     @update="updateRule(index, 'detail', $event)"
@@ -333,7 +338,7 @@ export default defineComponent({
                 class="mt-2 rounded border border-blue-500 px-2 py-1 text-blue-500"
                 @click="addNewRule"
               >
-                Add New Rule
+                + Add New Rule
               </button>
             </template>
           </FormRow>

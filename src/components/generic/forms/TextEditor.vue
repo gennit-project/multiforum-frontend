@@ -45,7 +45,7 @@ export default defineComponent({
     },
     rows: {
       type: Number,
-      default: 8,
+      default: 4,
     },
   },
   setup(props) {
@@ -227,9 +227,9 @@ export default defineComponent({
           </button>
         </Tab>
       </TabList>
-      <TabPanels class="h-50 mt-2">
+      <TabPanels class=" mt-2">
         <TabPanel
-          class="-m-0.5 h-52 rounded-md px-0.5 py-1" 
+          class="-m-0.5 rounded-md px-0.5 py-1" 
         >
           <label
             for="comment"
@@ -252,7 +252,7 @@ export default defineComponent({
             @change="handleFileChange"
           />
         </TabPanel>
-        <TabPanel class="-m-0.5 h-52 rounded-md p-0.5">
+        <TabPanel class="-m-0.5 h-36 rounded-md p-0.5">
           <v-md-preview
             :text="text"
             class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-500 dark:text-gray-100"

@@ -71,10 +71,12 @@ export default defineComponent({
         }
       "
     >
-      <div class="flex items-center font-bold">
+      <div
+        v-if="rule.detail"
+        class="flex items-center font-bold"
+      >
         <span class="mr-2 dark:text-gray-400">{{ `${i + 1}.` }}</span>{{ rule.summary }}
         <i
-          v-if="rule.detail"
           :class="[
             'fa-solid',
             'h-3',
