@@ -16,6 +16,12 @@ export default defineComponent({
     Avatar,
     MarkdownPreview,
   },
+  props: {
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
@@ -83,7 +89,7 @@ export default defineComponent({
 
 <template>
   <div class="sticky top-0 max-h-screen overflow-auto rounded-lg pt-6">
-    <div class="mb-4 mt-6 flex flex-col gap-2">
+    <div class="mb-4 mt-6 p-4 flex flex-col gap-2">
       <Avatar
         class="shadow-sm"
         :src="user?.profilePicURL"
@@ -93,9 +99,9 @@ export default defineComponent({
       />
       <h1
         v-if="username && !user?.displayName"
-        class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+        class="mb-2 mt-4 flex items-center gap-2 border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
-        {{ username }}
+        {{ username }}<span v-if="isAdmin" class="text-xs text-blue-500 px-2 py-1 border border-blue-500 rounded-md">ADMIN</span>
       </h1>
       <h1
         v-if="user?.displayName"

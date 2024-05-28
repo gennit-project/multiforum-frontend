@@ -38,6 +38,11 @@ export default defineComponent({
       required: false,
       default: 0,
     },
+    isAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   setup() {
     return {
@@ -60,6 +65,7 @@ export default defineComponent({
             <span v-if="displayName" class="text-gray-500 dark:text-gray-300">{{
               `u/${username}`
             }}</span>
+            <span v-if="isAdmin" class="text-sm text-blue-500">Admin</span>
           </router-link>
         </slot>
       </button>

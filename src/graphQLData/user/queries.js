@@ -47,6 +47,9 @@ export const GET_USER = gql`
       EventsAggregate {
         count
       }
+      ServerRoles {
+        showAdminTag
+      }
     }
   }
 `;

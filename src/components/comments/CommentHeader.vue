@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, PropType } from "vue";
+import { defineComponent, PropType, computed } from "vue";
 import { Comment } from "@/__generated__/graphql";
 import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import clickOutside from "vue-click-outside";
@@ -37,8 +37,24 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
+  setup(props) {
+    console.log('comment data in comment header' , props.commentData.CommentAuthor)
+    const isAdmin = computed(() => {
+      const serverRoles = props.commentData.CommentAuthor?.ServerRoles;
+      if (!serverRoles) {
+        return false;
+      }
+      if (serverRoles.length === 0) {
+        return false;
+      }
+      const serverRole = serverRoles[0];
+      if (serverRole.showAdminTag) {
+        return true;
+      }
+      return false;
+    });
     return {
+      isAdmin,
       relativeTime,
     };
   },
@@ -124,6 +140,7 @@ export default defineComponent({
               :comment-karma="commentData.CommentAuthor.commentKarma ?? 0"
               :discussion-karma="commentData.CommentAuthor.discussionKarma ?? 0"
               :account-created="commentData.CommentAuthor.createdAt"
+              :is-admin="isAdmin"
             />
           </router-link>
           <router-link

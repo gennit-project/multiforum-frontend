@@ -10,14 +10,13 @@ import gql from "graphql-tag";
 import { useDisplay } from "vuetify";
 import UserProfileTabs from "./UserProfileTabs.vue";
 import UserProfileSidebar from "./UserProfileSidebar.vue";
-// import { CalendarHeatmap } from "vue3-calendar-heatmap";
+import { User } from "@/__generated__/graphql";
 
 export default defineComponent({
   components: {
     Avatar,
     UserProfileSidebar,
     UserProfileTabs,
-    // CalendarHeatmap,
   },
   setup() {
     const route = useRoute();
@@ -68,15 +67,27 @@ export default defineComponent({
       // in the first session.
       fetchPolicy: "network-only",
     });
-    const user = computed(() => {
+
+    // Returns type User or null
+    const user = computed<User | null>(() => {
       if (loading.value || error.value) {
         return null;
       }
       if (result.value && result.value.users.length > 0) {
+        console.log('result.value.users[0]', result.value.users[0])
         return result.value.users[0];
       }
       return null;
     });
+
+    const isAdmin = computed(() => {
+      if (user.value) {
+        const serverRole = user.value.ServerRoles?.[0];
+        return serverRole.showAdminTag;
+      }
+      return false;
+    });
+    console.log('user', user.value)
 
     const links = computed(() => {
       return [
@@ -91,6 +102,7 @@ export default defineComponent({
 
     return {
       error,
+      isAdmin,
       links,
       loading,
       loggedInUserModName,
@@ -128,7 +140,7 @@ export default defineComponent({
       />
       <div class="mb-6">
         <div v-if="user?.displayName">
-          {{ user.displayName }}
+          {{ user.displayName }} 
         </div>
         <div
           :class="[
@@ -161,18 +173,14 @@ export default defineComponent({
               cols="3"
               class="p-0"
             >
-              <UserProfileSidebar />
+              <UserProfileSidebar :is-admin="isAdmin"/>
             </v-col>
             <v-col
               :class="[!smAndDown ? 'pt-6' : '']"
               :cols="!smAndDown ? 8 : 12"
               class="rounded-lg bg-gray-100 dark:bg-gray-900"
             >
-              <!-- <CalendarHeatmap
-                :values="[{ date: '2023-9-22', count: 6 }]"
-                :end-date="new Date()"
-                :start-date="new Date('2021-9-22')"
-              /> -->
+              
               <UserProfileTabs
                 v-if="user"
                 :show-counts="true"

@@ -8,6 +8,11 @@ export const AUTHOR_FIELDS = gql`
     createdAt
     discussionKarma
     commentKarma
+    ... on User {
+      ServerRoles {
+        showAdminTag
+      }
+    }
   }
 `;
 
