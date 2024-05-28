@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import MarkdownPreview from './../generic/forms/MarkdownPreview.vue'
+import MarkdownPreview from "./../generic/forms/MarkdownPreview.vue";
 
 type Rule = {
   detail: string;
@@ -15,14 +15,13 @@ export default defineComponent({
   props: {
     rules: {
       type: String,
-      default: ""
+      default: "",
     },
   },
   setup(props) {
-    
-      const channelRules = computed(() => {
-        let rules: Rule[] = [];
-    try {
+    const channelRules = computed(() => {
+      let rules: Rule[] = [];
+      try {
         const rulesArray = JSON.parse(props.rules) || [];
         for (const rule of rulesArray) {
           rules.push({
@@ -31,10 +30,10 @@ export default defineComponent({
           });
         }
       } catch (e) {
-        console.error('Error parsing channel rules', e)
+        console.error("Error parsing channel rules", e);
       }
       return rules;
-      })
+    });
     return {
       openRules: ref<Rule[]>(channelRules.value),
     };
@@ -58,9 +57,12 @@ export default defineComponent({
 <template>
   <div class="divide-y">
     <div
-      v-for="rule in openRules"
+      v-for="(rule, i) in openRules"
       :key="rule.summary"
-      class="my-2 cursor-pointer pt-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+      class="my-2 pt-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
+      :class="[
+        rule.detail ? 'cursor-pointer' : '',
+      ]"
       @click="
         () => {
           if (rule.detail) {
@@ -70,7 +72,7 @@ export default defineComponent({
       "
     >
       <div class="flex items-center font-bold">
-        {{ rule.summary }}
+        <span class="mr-2 dark:text-gray-400">{{ `${i + 1}.` }}</span>{{ rule.summary }}
         <i
           v-if="rule.detail"
           :class="[
