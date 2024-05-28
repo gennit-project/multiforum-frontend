@@ -17,6 +17,7 @@ export const GET_CHANNEL = gql`
       description
       channelIconURL
       channelBannerURL
+      rules
       Tags {
         text
       }

@@ -158,8 +158,9 @@ export default defineComponent({
       updatedRules[index][field] = value;
       this.$emit("updateFormValues", { rules: updatedRules });
     },
-    addNewRule() {
-      const newRule = { short_name: "", description: "" };
+    addNewRule(event: any) {
+      event.preventDefault();
+      const newRule = { summary: "", detail: "" };
       const updatedRules = [...this.formValues.rules, newRule];
       this.$emit("updateFormValues", { rules: updatedRules });
     },
@@ -172,8 +173,13 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-container fluid class="max-w-4xl pt-0 mt-4">
-    <div v-if="channelLoading">Loading...</div>
+  <v-container
+    fluid
+    class="mt-4 max-w-4xl pt-0"
+  >
+    <div v-if="channelLoading">
+      Loading...
+    </div>
 
     <TailwindForm
       v-else-if="formValues"
@@ -200,7 +206,10 @@ export default defineComponent({
           />
         </div>
         <div class="mt-5 space-y-4 sm:space-y-5">
-          <FormRow section-title="Title" :required="!editMode">
+          <FormRow
+            section-title="Title"
+            :required="!editMode"
+          >
             <template #content>
               <TextInput
                 ref="titleInputRef"
@@ -213,7 +222,10 @@ export default defineComponent({
               />
             </template>
           </FormRow>
-          <FormRow section-title="Display Name" :required="false">
+          <FormRow
+            section-title="Display Name"
+            :required="false"
+          >
             <template #content>
               <TextInput
                 ref="displayNameInputRef"
@@ -272,7 +284,7 @@ export default defineComponent({
                 class="w-full shadow-sm"
                 :src="formValues.channelBannerURL"
                 :alt="formValues.uniqueName"
-              />
+              >
               <AddImage
                 key="channel-banner-url"
                 :field-name="'channelBannerURL'"
@@ -282,31 +294,48 @@ export default defineComponent({
           </FormRow>
           <FormRow section-title="Forum Rules">
             <template #content>
-              <div v-for="(rule, index) in formValues.rules" :key="index" class="mb-4">
+              <div
+                v-for="(rule, index) in formValues.rules"
+                :key="index"
+                class="mb-4"
+              >
                 <TextInput
                   :test-id="'rule-short-name-input-' + index"
-                  :value="rule.short_name"
+                  :value="rule.summary"
                   :placeholder="'Rule short name'"
                   :full-width="true"
-                  @update="updateRule(index, 'short_name', $event)"
+                  @update="updateRule(index, 'summary', $event)"
                 />
                 <TextEditor
-                  :test-id="'rule-description-input-' + index"
-                  :initial-value="rule.description || ''"
-                  :placeholder="'Rule description'"
+                  :test-id="'rule-detail-input-' + index"
+                  :initial-value="rule.detail || ''"
+                  :placeholder="'Rule details'"
                   :disable-auto-focus="true"
                   :allow-image-upload="false"
-                  @update="updateRule(index, 'description', $event)"
+                  @update="updateRule(index, 'detail', $event)"
                 />
-                <button @click="deleteRule(index)">Delete Rule</button>
+                <button
+                  class="mt-2 rounded border border-blue-500 px-2 py-1 text-blue-500"
+                  @click="deleteRule(index)"
+                >
+                  Delete Rule
+                </button>
               </div>
-              <button @click="addNewRule">Add New Rule</button>
+              <button
+                class="mt-2 rounded border border-blue-500 px-2 py-1 text-blue-500"
+                @click="addNewRule"
+              >
+                Add New Rule
+              </button>
             </template>
           </FormRow>
         </div>
       </div>
     </TailwindForm>
-    <div v-for="(error, i) of getChannelError?.graphQLErrors" :key="i">
+    <div
+      v-for="(error, i) of getChannelError?.graphQLErrors"
+      :key="i"
+    >
       {{ error.message }}
     </div>
   </v-container>

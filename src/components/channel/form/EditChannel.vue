@@ -76,6 +76,7 @@ export default defineComponent({
           }),
           channelIconURL: channel.value.channelIconURL,
           channelBannerURL: channel.value.channelBannerURL,
+          rules: channel.value.rules || []
         };
       }
 
@@ -84,6 +85,7 @@ export default defineComponent({
         displayName: "",
         description: "",
         selectedTags: [],
+        rules: [],
         channelIconURL: "",
         channelBannerURL: "",
       };
@@ -114,6 +116,14 @@ export default defineComponent({
       }
 
       const channel = value.data.channels[0];
+      let rules = []
+
+      // Try to deserialize channel.rules JSON into an array.
+      try {
+        rules = JSON.parse(channel.rules) || [];
+      } catch (e) {
+        console.error('Error parsing channel rules', e)
+      }
 
       formValues.value = {
         uniqueName: channel.uniqueName,
@@ -124,6 +134,7 @@ export default defineComponent({
         }),
         channelIconURL: channel.channelIconURL,
         channelBannerURL: channel.channelBannerURL,
+        rules
       };
 
       dataLoaded.value = true;
@@ -166,6 +177,7 @@ export default defineComponent({
         displayName: formValues.value.displayName,
         channelIconURL: formValues.value.channelIconURL,
         channelBannerURL: formValues.value.channelBannerURL,
+        rules: JSON.stringify(formValues.value.rules),
         Tags: [
           {
             connectOrCreate: tagConnections,

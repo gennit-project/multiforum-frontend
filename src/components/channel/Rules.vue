@@ -1,6 +1,6 @@
 <script lang="ts">
-import { defineComponent, ref, PropType } from "vue";
-import MarkdownPreview from './../../generic/forms/MarkdownPreview.vue'
+import { defineComponent, ref, computed } from "vue";
+import MarkdownPreview from './../generic/forms/MarkdownPreview.vue'
 
 type Rule = {
   detail: string;
@@ -14,13 +14,29 @@ export default defineComponent({
   },
   props: {
     rules: {
-      type: Array as PropType<Rule[]>,
-      default: () => [],
+      type: String,
+      default: ""
     },
   },
-  setup() {
+  setup(props) {
+    
+      const channelRules = computed(() => {
+        let rules: Rule[] = [];
+    try {
+        const rulesArray = JSON.parse(props.rules) || [];
+        for (const rule of rulesArray) {
+          rules.push({
+            detail: rule.detail,
+            summary: rule.summary,
+          });
+        }
+      } catch (e) {
+        console.error('Error parsing channel rules', e)
+      }
+      return rules;
+      })
     return {
-      openRules: ref([]),
+      openRules: ref<Rule[]>(channelRules.value),
     };
   },
   methods: {
@@ -42,13 +58,13 @@ export default defineComponent({
 <template>
   <div class="divide-y">
     <div
-      v-for="rule in rules"
-      :key="rule.short_name"
+      v-for="rule in openRules"
+      :key="rule.summary"
       class="my-2 cursor-pointer pt-2 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200"
       @click="
         () => {
           if (rule.detail) {
-            toggleRule(rule.short_name);
+            toggleRule(rule.summary);
           }
         }
       "
@@ -62,7 +78,7 @@ export default defineComponent({
             'h-3',
             'w-3',
             'text-xs',
-            isOpen(rule.short_name) ? 'fa-chevron-up' : 'fa-chevron-down',
+            isOpen(rule.summary) ? 'fa-chevron-up' : 'fa-chevron-down',
             'ml-2',
           ]"
         />
@@ -71,7 +87,7 @@ export default defineComponent({
         v-if="isOpen(rule.summary)"
         class="-ml-8 mt-2 text-sm text-gray-600 dark:text-gray-300"
       >
-        <MarkdownPreview :text="rule.description" />
+        <MarkdownPreview :text="rule.detail" />
       </div>
     </div>
   </div>

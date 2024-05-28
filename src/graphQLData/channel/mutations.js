@@ -38,6 +38,7 @@ export const UPDATE_CHANNEL = gql`
         Tags {
           text
         }
+        rules
       }
     }
   }

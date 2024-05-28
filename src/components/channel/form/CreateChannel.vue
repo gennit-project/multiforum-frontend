@@ -47,6 +47,7 @@ export default defineComponent({
       channelIconURL: "",
       channelBannerURL: "",
       selectedTags: [],
+      rules: []
     };
 
     const formValues = ref(createChannelDefaultValues);
