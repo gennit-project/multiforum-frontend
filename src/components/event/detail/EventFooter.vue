@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { EventData } from "@/types/eventTypes";
+import { Event as EventData } from "@/__generated__/graphql";
 import { useRoute } from "vue-router";
 import { DateTime } from "luxon";
 import { relativeTime } from "@/dateTimeUtils";
@@ -25,7 +25,7 @@ export default defineComponent({
       default: () => [],
     },
   },
-  setup() {
+  setup(props) {
     const route = useRoute();
 
     const eventId = computed(() => {
@@ -42,9 +42,25 @@ export default defineComponent({
       return "";
     });
 
+    const posterIsAdmin = computed(() => {
+      const serverRoles = props.eventData.Poster?.ServerRoles;
+      if (!serverRoles) {
+        return false;
+      }
+      if (serverRoles.length === 0) {
+        return false;
+      }
+      const serverRole = serverRoles[0];
+      if (serverRole.showAdminTag) {
+        return true;
+      }
+      return false;
+    });
+
     return {
       channelId,
       eventId,
+      posterIsAdmin,
       relativeTime,
       route,
     };
@@ -60,12 +76,7 @@ export default defineComponent({
 </script>
 <template>
   <div class="mt-4 px-4 text-xs text-gray-700 dark:text-gray-200">
-    <p v-if="!eventData.virtualEventUrl && !eventData.address">
-      This event won't show in site-wide search results because it doesn't have
-      a location or a virtual event URL. It will only appear in channel specific
-      search results.
-    </p>
-    <div class="organizer">
+    <div class="organizer flex items-center gap-1">
       <router-link
         v-if="eventData.Poster"
         class="underline"
@@ -73,15 +84,14 @@ export default defineComponent({
       >
         <UsernameWithTooltip
           v-if="eventData.Poster.username"
+          :is-admin="posterIsAdmin"
           :username="eventData.Poster.username"
           :src="eventData.Poster.profilePicURL ?? ''"
           :display-name="eventData.Poster.displayName || ''"
           :comment-karma="eventData.Poster.commentKarma ?? 0"
           :discussion-karma="eventData.Poster.discussionKarma ?? 0"
           :account-created="eventData.Poster.createdAt"
-        >
-          {{ eventData.Poster.username }}
-        </UsernameWithTooltip>
+        />
       </router-link>
       <span v-else>[Deleted]</span>
       {{
@@ -101,5 +111,13 @@ export default defineComponent({
     <div class="time-zone">
       {{ `Time zone: ${getTimeZone(eventData.startTime)}` }}
     </div>
+    <p
+      v-if="!eventData.virtualEventUrl && !eventData.address"
+      class="xs"
+    >
+      This event won't show in site-wide search results because it doesn't have
+      a location or a virtual event URL. It will only appear in channel specific
+      search results.
+    </p>
   </div>
 </template>

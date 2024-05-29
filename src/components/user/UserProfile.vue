@@ -74,7 +74,6 @@ export default defineComponent({
         return null;
       }
       if (result.value && result.value.users.length > 0) {
-        console.log('result.value.users[0]', result.value.users[0])
         return result.value.users[0];
       }
       return null;
@@ -87,7 +86,6 @@ export default defineComponent({
       }
       return false;
     });
-    console.log('user', user.value)
 
     const links = computed(() => {
       return [
@@ -173,14 +171,13 @@ export default defineComponent({
               cols="3"
               class="p-0"
             >
-              <UserProfileSidebar :is-admin="isAdmin"/>
+              <UserProfileSidebar :is-admin="isAdmin" />
             </v-col>
             <v-col
               :class="[!smAndDown ? 'pt-6' : '']"
               :cols="!smAndDown ? 8 : 12"
               class="rounded-lg bg-gray-100 dark:bg-gray-900"
             >
-              
               <UserProfileTabs
                 v-if="user"
                 :show-counts="true"

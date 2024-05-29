@@ -130,7 +130,18 @@ export default defineComponent({
       return props.discussion.body;
     });
 
+    const authorIsAdmin = computed(() => {
+      const author = props.discussion?.Author;
+      const serverRoles = author?.ServerRoles || [];
+      if (serverRoles.length === 0) {
+        return false;
+      }
+      const serverRole = serverRoles[0];
+      return serverRole.showAdminTag || false;
+    })
+
     return {
+      authorIsAdmin,
       commentCount,
       discussionChannelId,
       defaultUniqueName,
@@ -242,6 +253,7 @@ export default defineComponent({
 
               <UsernameWithTooltip
                 v-if="authorUsername"
+                :is-admin="authorIsAdmin"
                 :username="authorUsername"
                 :src="authorProfilePicURL ?? ''"
                 :display-name="authorDisplayName ?? ''"

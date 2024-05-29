@@ -41,6 +41,7 @@ export default defineComponent({
       }
       return "";
     });
+
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams({
         route,

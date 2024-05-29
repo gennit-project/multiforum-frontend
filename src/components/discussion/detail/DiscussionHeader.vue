@@ -250,7 +250,18 @@ export default defineComponent({
       return out;
     });
 
+    const authorIsAdmin = computed(() => {
+      const author = props.discussion?.Author;
+      const serverRoles = author?.ServerRoles || [];
+      if (serverRoles.length === 0) {
+        return false;
+      }
+      const serverRole = serverRoles[0];
+      return serverRole.showAdminTag || false;
+    });
+
     return {
+      authorIsAdmin,
       copyLink,
       createdAt,
       deleteModalIsOpen,
@@ -310,19 +321,21 @@ export default defineComponent({
         >
           <UsernameWithTooltip
             v-if="discussion.Author.username"
+            :is-admin="authorIsAdmin"
             :username="discussion.Author.username"
             :src="discussion.Author.profilePicURL ?? ''"
             :display-name="discussion.Author.displayName ?? ''"
             :comment-karma="discussion.Author.commentKarma ?? 0"
             :discussion-karma="discussion.Author.discussionKarma ?? 0"
             :account-created="discussion.Author.createdAt"
-          >
-            {{ discussion.Author.username }}
-          </UsernameWithTooltip>
+          />
         </router-link>
         <span v-else>[Deleted]</span>
         <div>{{ createdAt }}</div>
-        <span v-if="discussion && discussion.updatedAt" class="mx-2">
+        <span
+          v-if="discussion && discussion.updatedAt"
+          class="mx-2"
+        >
           &#8226;
         </span>
         <div>{{ editedAt }}</div>

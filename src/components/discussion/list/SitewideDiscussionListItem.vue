@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType, computed } from "vue";
-import { DiscussionData } from "../../../types/discussionTypes";
+import { Discussion as DiscussionData } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
 import Tag from "@/components/tag/Tag.vue";
@@ -102,7 +102,27 @@ export default defineComponent({
       });
     });
 
+    const authorIsAdmin = computed(() => {
+      if (!props.discussion) {
+        return false;
+      }
+      const serverRoles = props.discussion.Author?.ServerRoles;
+      if (!serverRoles) {
+        return false;
+      }
+      if (serverRoles.length === 0) {
+        return false;
+      }
+      const serverRole = serverRoles[0];
+      if (serverRole.showAdminTag) {
+        return true;
+      }
+      return false;
+    
+    })
+
     return {
+      authorIsAdmin,
       channelCount,
       commentCount,
       discussionDetailOptions,
@@ -195,10 +215,10 @@ export default defineComponent({
             <div
               class="font-medium flex flex-wrap items-center gap-1 text-xs text-gray-600 no-underline dark:text-gray-300"
             >
-              <span
-                >{{ `Posted ${relativeTime} by ` }}
+              <span>{{ `Posted ${relativeTime} by ` }}
                 <UsernameWithTooltip
                   v-if="authorUsername"
+                  :is-admin="authorIsAdmin"
                   :username="authorUsername"
                   :src="discussion?.Author?.profilePicURL || ''"
                   :display-name="discussion?.Author?.displayName || ''"
@@ -212,10 +232,11 @@ export default defineComponent({
         </div>
         <div
           v-if="discussion && discussion.body"
-          class="max-h-72 overflow-auto border-l-2 border-gray-300 dark:bg-gray-700"
+          class="border-l-2 border-gray-300 dark:bg-gray-700"
         >
           <MarkdownPreview
             :text="discussion.body"
+            :word-limit="50"
             :disable-gallery="false"
             class="-ml-4"
           />
@@ -247,7 +268,10 @@ export default defineComponent({
           }}</span>
         </router-link>
 
-        <MenuButton v-else-if="discussion" :items="discussionDetailOptions">
+        <MenuButton
+          v-else-if="discussion"
+          :items="discussionDetailOptions"
+        >
           <button
             class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
           >
@@ -257,7 +281,10 @@ export default defineComponent({
                 commentCount === 1 ? "comment" : "comments"
               } in ${channelCount} ${channelCount === 1 ? "forum" : "forums"}`
             }}
-            <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
+            <ChevronDownIcon
+              class="-mr-1 ml-2 h-4 w-4"
+              aria-hidden="true"
+            />
           </button>
         </MenuButton>
       </div>

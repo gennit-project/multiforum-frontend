@@ -294,6 +294,21 @@ export default defineComponent({
       },
     );
 
+    const isAdmin = computed(() => {
+      const serverRoles = props.eventData.Poster?.ServerRoles;
+      if (!serverRoles) {
+        return false;
+      }
+      if (serverRoles.length === 0) {
+        return false;
+      }
+      const serverRole = serverRoles[0];
+      if (serverRole.showAdminTag) {
+        return true;
+      }
+      return false;
+    });
+
     return {
       addFeedbackCommentToEvent,
       addFeedbackCommentToEventLoading,
@@ -310,6 +325,7 @@ export default defineComponent({
       eventId,
       getDuration,
       feedbackText: ref(""),
+      isAdmin,
       loggedInUserModName,
       menuItems,
       reportModalIsOpen: ref(false),
@@ -446,15 +462,14 @@ export default defineComponent({
           Hosted by
           <UsernameWithTooltip
             v-if="eventData.Poster.username"
+            :is-admin="isAdmin"
             :username="eventData.Poster.username"
             :src="eventData.Poster.profilePicURL ?? ''"
             :display-name="eventData.Poster.displayName || ''"
             :comment-karma="eventData.Poster.commentKarma ?? 0"
             :discussion-karma="eventData.Poster.discussionKarma ?? 0"
             :account-created="eventData.Poster.createdAt"
-          >
-            <span class="underline">{{ eventData.Poster.username }}</span>
-          </UsernameWithTooltip>
+          />
         </router-link>
       </li>
     </ul>

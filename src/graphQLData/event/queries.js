@@ -66,6 +66,9 @@ export const GET_EVENT = gql`
         createdAt
         discussionKarma
         commentKarma
+        ServerRoles {
+          showAdminTag
+        }
       }
     }
   }

@@ -52,31 +52,60 @@ export default defineComponent({
 });
 </script>
 <template>
-  <v-tooltip location="bottom" content-class="custom-tooltip">
+  <v-tooltip
+    location="bottom"
+    content-class="custom-tooltip"
+  >
     <template #activator="{ props }">
       <button v-bind="props">
         <slot>
           <router-link
             :to="`/u/${username}`"
-            class="flex flex-row hover:underline"
+            class="flex flex-row items-center gap-1 hover:underline"
           >
-            <span v-if="!displayName" class="font-bold">{{ username }}</span>
-            <span v-if="displayName" class="font-bold">{{ displayName }}</span>
-            <span v-if="displayName" class="text-gray-500 dark:text-gray-300">{{
+            <span
+              v-if="!displayName"
+              class="font-bold"
+            >{{ username }}</span>
+            <span
+              v-if="displayName"
+              class="font-bold"
+            >{{ displayName }}</span>
+            <span
+              v-if="displayName"
+              class="text-gray-500 dark:text-gray-300"
+            >{{
               `u/${username}`
             }}</span>
-            <span v-if="isAdmin" class="text-sm text-blue-500">Admin</span>
+            <span
+              v-if="isAdmin"
+              class="rounded-md border border-blue-500 px-1 py-0.5 text-xs text-blue-500"
+            >Admin</span>
           </router-link>
         </slot>
       </button>
     </template>
     <template #default>
       <div>
-        <div v-if="!displayName" class="text-md flex w-full flex-col">
-          <Avatar :text="username" :src="src" :is-medium="true" />{{ username }}
+        <div
+          v-if="!displayName"
+          class="text-md flex w-full flex-col"
+        >
+          <Avatar
+            :text="username"
+            :src="src"
+            :is-medium="true"
+          />{{ username }}
         </div>
-        <div v-if="displayName" class="text-md flex w-full flex-col">
-          <Avatar :text="username" :src="src" :is-medium="true" />
+        <div
+          v-if="displayName"
+          class="text-md flex w-full flex-col"
+        >
+          <Avatar
+            :text="username"
+            :src="src"
+            :is-medium="true"
+          />
           <p class="text-xs font-bold">
             {{ displayName }}
           </p>
