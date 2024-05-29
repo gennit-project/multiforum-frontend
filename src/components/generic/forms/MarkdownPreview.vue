@@ -223,8 +223,9 @@ export default defineComponent({
   </div>
 </template>
 <style>
+
 .github-markdown-body img {
-  cursor: pointer !important;
+  max-height: 500px !important;
 }
 p,
 ul,

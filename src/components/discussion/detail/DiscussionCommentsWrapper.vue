@@ -44,6 +44,10 @@ export default defineComponent({
         return null;
       },
     },
+    discussionAuthor: {
+      type: String,
+      required: true,
+    },
     comments: {
       type: Array as PropType<CommentType[]>,
       required: false,
@@ -318,6 +322,7 @@ export default defineComponent({
     :create-form-values="createFormValues"
     :create-comment-input="createCommentInput"
     :previous-offset="previousOffset"
+    :original-poster="discussionAuthor"
     @decrementCommentCount="decrementCommentCount"
     @incrementCommentCount="incrementCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"

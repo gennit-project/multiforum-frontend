@@ -284,6 +284,13 @@ export default defineComponent({
       return discussion.value.Author?.username === username.value;
     });
 
+    const discussionAuthor = computed(() => {
+      if (!discussion.value) {
+        return "";
+      }
+      return discussion.value.Author?.username;
+    });
+
     return {
       activeDiscussionChannel,
       addFeedbackCommentToDiscussion,
@@ -297,6 +304,7 @@ export default defineComponent({
       getDiscussionLoading,
       getDiscussionChannelLoading,
       discussion,
+      discussionAuthor,
       feedbackText: ref(""),
       lgAndUp,
       loadedRootCommentCount,
@@ -458,6 +466,7 @@ export default defineComponent({
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
+            :discussion-author="discussionAuthor"
             :comments="comments"
             :mod-name="loggedInUserModName"
             :reached-end-of-results="reachedEndOfResults"

@@ -36,6 +36,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    originalPoster: {
+      type: String,
+      default: "",
+    }
   },
   setup(props) {
     const isAdmin = computed(() => {
@@ -140,6 +144,7 @@ export default defineComponent({
               :discussion-karma="commentData.CommentAuthor.discussionKarma ?? 0"
               :account-created="commentData.CommentAuthor.createdAt"
               :is-admin="isAdmin"
+              :is-original-poster="commentData.CommentAuthor.username === originalPoster"
             />
           </router-link>
           <router-link

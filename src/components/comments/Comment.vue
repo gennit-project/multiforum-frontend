@@ -125,6 +125,11 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    originalPoster: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
   setup(props, { emit }) {
     const route = useRoute();
@@ -425,6 +430,7 @@ export default defineComponent({
               :parent-comment-id="parentCommentId"
               :show-context-link="showContextLink"
               :show-channel="showChannel"
+              :original-poster="originalPoster"
             />
             <div
               class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
@@ -640,6 +646,7 @@ export default defineComponent({
                 :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
                 :reply-form-open-at-comment-i-d="replyFormOpenAtCommentID"
                 :mod-profile-name="modProfileName"
+                :original-poster="originalPoster"
                 @startCommentSave="$emit('startCommentSave')"
                 @clickEditComment="$emit('clickEditComment', $event)"
                 @deleteComment="handleDelete"

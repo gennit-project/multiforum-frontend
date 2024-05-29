@@ -119,6 +119,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    originalPoster: {
+      type: String,
+      required: true,
+    },
   },
   setup(props, { emit }) {
     const route = useRoute();
@@ -718,6 +722,7 @@ export default defineComponent({
             :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
             :edit-comment-error="editCommentError"
             :mod-profile-name="loggedInUserModName"
+            :original-poster="originalPoster"
             @startCommentSave="commentInProcess = true"
             @openReplyEditor="openReplyEditor"
             @hideReplyEditor="hideReplyEditor"
@@ -761,6 +766,7 @@ export default defineComponent({
               :edit-form-open-at-comment-i-d="editFormOpenAtCommentID"
               :edit-comment-error="editCommentError"
               :mod-profile-name="loggedInUserModName"
+              :original-poster="originalPoster"
               @startCommentSave="commentInProcess = true"
               @openReplyEditor="openReplyEditor"
               @hideReplyEditor="hideReplyEditor"

@@ -268,11 +268,12 @@ export default defineComponent({
 
         <div
           v-if="discussion?.body"
-          class="my-2 max-h-72 overflow-auto border-l-2 border-gray-400 dark:bg-gray-700"
+          class="my-2 border-l-2 border-gray-400 dark:bg-gray-700"
         >
           <MarkdownPreview
             :text="discussion.body"
             :disable-gallery="true"
+            :word-limit="50"
             class="-ml-4"
           />
         </div>
