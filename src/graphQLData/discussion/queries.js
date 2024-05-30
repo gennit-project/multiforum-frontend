@@ -16,41 +16,6 @@ export const AUTHOR_FIELDS = gql`
   }
 `;
 
-const DISCUSSION_FIELDS = gql`
-  ${AUTHOR_FIELDS}
-  fragment DiscussionFields on Discussion {
-    id
-    title
-    body
-    createdAt
-    updatedAt
-    Author {
-      ...AuthorFields
-    }
-    DiscussionChannels {
-      id
-      discussionId
-      channelUniqueName
-      weightedVotesCount
-      UpvotedByUsers {
-        username
-      }
-      Channel {
-        uniqueName
-      }
-      Discussion {
-        id
-      }
-      CommentsAggregate {
-        count
-      }
-    }
-    Tags {
-      text
-    }
-  }
-`;
-
 // For channel list view
 export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
   ${AUTHOR_FIELDS}
@@ -150,10 +115,45 @@ export const GET_SITE_WIDE_DISCUSSION_LIST = gql`
 `;
 
 export const GET_DISCUSSION = gql`
-  ${DISCUSSION_FIELDS}
-  query getDiscussion($id: ID!, $loggedInModName: String!) {
+  ${AUTHOR_FIELDS}
+  query getDiscussion(
+    $id: ID!
+    $loggedInModName: String!
+    $channelUniqueName: String!
+  ) {
     discussions(where: { id: $id }) {
-      ...DiscussionFields
+      id
+      title
+      body
+      createdAt
+      updatedAt
+      Author {
+        ...AuthorFields
+        ChannelRoles(where: { channelUniqueName: $channelUniqueName }) {
+          showModTag
+        }
+      }
+      DiscussionChannels {
+        id
+        discussionId
+        channelUniqueName
+        weightedVotesCount
+        UpvotedByUsers {
+          username
+        }
+        Channel {
+          uniqueName
+        }
+        Discussion {
+          id
+        }
+        CommentsAggregate {
+          count
+        }
+      }
+      Tags {
+        text
+      }
       FeedbackCommentsAggregate {
         count
       }

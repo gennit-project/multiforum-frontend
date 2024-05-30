@@ -43,6 +43,11 @@ export default defineComponent({
       required: false,
       default: false,
     },
+    isMod: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isOriginalPoster: {
       type: Boolean,
       required: false,
@@ -86,6 +91,12 @@ export default defineComponent({
               v-if="isAdmin"
               class="rounded-md border border-blue-500 px-1 py-0.5 text-xs text-blue-500"
             >Admin</span>
+            <span
+              v-else-if="isMod"
+              class="rounded-md border border-blue-500 px-1 py-0.5 text-xs text-blue-500"
+            >
+              Mod
+            </span>
             <span
               v-if="isOriginalPoster"
               class="rounded-md border border-green-500 px-1 py-0.5 text-xs text-green-500"

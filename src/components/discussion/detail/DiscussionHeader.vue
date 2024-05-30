@@ -260,8 +260,19 @@ export default defineComponent({
       return serverRole.showAdminTag || false;
     });
 
+    const authorIsMod = computed(() => {
+      const author = props.discussion?.Author;
+      const channelRoles = author?.ChannelRoles || [];
+      if (channelRoles.length === 0) {
+        return false;
+      }
+      const channelRole = channelRoles[0];
+      return channelRole.showModTag || false;
+    });
+
     return {
       authorIsAdmin,
+      authorIsMod,
       copyLink,
       createdAt,
       deleteModalIsOpen,
@@ -322,6 +333,7 @@ export default defineComponent({
           <UsernameWithTooltip
             v-if="discussion.Author.username"
             :is-admin="authorIsAdmin"
+            :is-mod="authorIsMod"
             :username="discussion.Author.username"
             :src="discussion.Author.profilePicURL ?? ''"
             :display-name="discussion.Author.displayName ?? ''"

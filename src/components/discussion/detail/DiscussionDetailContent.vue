@@ -108,7 +108,8 @@ export default defineComponent({
       refetch: refetchDiscussion,
     } = useQuery(GET_DISCUSSION, { 
       id: discussionId,
-      loggedInModName: props.loggedInUserModName
+      loggedInModName: props.loggedInUserModName,
+      channelUniqueName: channelId.value
     });
 
     const { 
