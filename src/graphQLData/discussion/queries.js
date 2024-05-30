@@ -57,7 +57,10 @@ export const GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA = gql`
           createdAt
           updatedAt
           Author {
-            ...AuthorFields
+            ...AuthorFields,
+            ChannelRoles(where: { channelUniqueName: $channelUniqueName }) {
+              showModTag
+            }
           }
           Tags {
             text
