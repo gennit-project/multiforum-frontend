@@ -56,8 +56,24 @@ export default defineComponent({
       }
       return false;
     });
+
+    const isMod = computed(() => {
+      const channelRoles = props.commentData.CommentAuthor?.ChannelRoles;
+      if (!channelRoles) {
+        return false;
+      }
+      if (channelRoles.length === 0) {
+        return false;
+      }
+      const channelRole = channelRoles[0];
+      if (channelRole.showModTag) {
+        return true;
+      }
+      return false;
+    });
     return {
       isAdmin,
+      isMod,
       relativeTime,
     };
   },
@@ -144,6 +160,7 @@ export default defineComponent({
               :discussion-karma="commentData.CommentAuthor.discussionKarma ?? 0"
               :account-created="commentData.CommentAuthor.createdAt"
               :is-admin="isAdmin"
+              :is-mod="isMod"
               :is-original-poster="commentData.CommentAuthor.username === originalPoster"
             />
           </router-link>

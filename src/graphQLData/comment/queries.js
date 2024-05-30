@@ -65,7 +65,12 @@ export const GET_DISCUSSION_COMMENTS = gql`
           id
           title
           Author {
-            ...AuthorFields
+            ...AuthorFields,
+            ... on User {
+              ChannelRoles {
+                showModTag
+              }
+            }
           }
         }
         CommentsAggregate {
@@ -79,7 +84,26 @@ export const GET_DISCUSSION_COMMENTS = gql`
         }
       }
       Comments {
-        ...CommentFields
+        id
+        text
+        emoji
+        weightedVotesCount
+        createdAt
+        updatedAt
+        CommentAuthor {
+          ...AuthorFields
+          ... on User {
+            ChannelRoles {
+              showModTag
+            }
+          }
+        }
+        ChildCommentsAggregate {
+          count
+        }
+        ParentComment {
+          id
+        }
         ChildComments {
           id
           text
@@ -87,11 +111,11 @@ export const GET_DISCUSSION_COMMENTS = gql`
         FeedbackComments {
           id
         }
+        ...CommentVoteFields
       }
     }
   }
   ${AUTHOR_FIELDS}
-  ${COMMENT_FIELDS}
   ${COMMENT_VOTE_FIELDS}
 `;
 
