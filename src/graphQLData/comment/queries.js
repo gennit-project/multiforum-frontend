@@ -23,7 +23,12 @@ export const COMMENT_FIELDS = gql`
     createdAt
     updatedAt
     CommentAuthor {
-      ...AuthorFields
+      ...AuthorFields,
+      ... on User {
+        ChannelRoles {
+          showModTag
+        }
+      }
     }
     ChildCommentsAggregate {
       count
