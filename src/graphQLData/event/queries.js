@@ -58,7 +58,7 @@ export const EVENT_FIELDS = gql`
 
 // get event by ID
 export const GET_EVENT = gql`
-  query getEvent($id: ID!) {
+  query getEvent($id: ID!, $channelUniqueName: String!) {
     events(where: { id: $id }) {
       ...EventFields
       Poster {
@@ -68,6 +68,9 @@ export const GET_EVENT = gql`
         commentKarma
         ServerRoles {
           showAdminTag
+        }
+        ChannelRoles(where: { channelUniqueName: $channelUniqueName }) {
+          showModTag
         }
       }
     }

@@ -57,8 +57,24 @@ export default defineComponent({
       return false;
     });
 
+    const posterIsMod = computed(() => {
+      const channelRoles = props.eventData.Poster?.ChannelRoles;
+      if (!channelRoles) {
+        return false;
+      }
+      if (channelRoles.length === 0) {
+        return false;
+      }
+      const channelRole = channelRoles[0];
+      if (channelRole.showModTag) {
+        return true;
+      }
+      return false;
+    });
+
     return {
       channelId,
+      posterIsMod,
       eventId,
       posterIsAdmin,
       relativeTime,
@@ -85,6 +101,7 @@ export default defineComponent({
         <UsernameWithTooltip
           v-if="eventData.Poster.username"
           :is-admin="posterIsAdmin"
+          :is-mod="posterIsMod"
           :username="eventData.Poster.username"
           :src="eventData.Poster.profilePicURL ?? ''"
           :display-name="eventData.Poster.displayName || ''"

@@ -93,7 +93,10 @@ export default defineComponent({
       result: eventResult,
       error: eventError,
       loading: eventLoading,
-    } = useQuery(GET_EVENT, { id: eventId });
+    } = useQuery(GET_EVENT, { 
+      id: eventId,
+      channelUniqueName: channelId.value
+    });
 
     const event = computed(() => {
       if (
@@ -280,6 +283,13 @@ export default defineComponent({
       return truncatedDescription.value;
     });
 
+    const originalPoster = computed(() => {
+      if (!event.value) {
+        return null;
+      }
+      return event.value.Poster?.username || "";
+    });
+
     return {
       comments,
       event,
@@ -295,6 +305,7 @@ export default defineComponent({
       loadMore,
       locationText,
       mdAndUp,
+      originalPoster,
       previousOffset,
       reachedEndOfResults,
       relativeTime,
@@ -554,6 +565,7 @@ export default defineComponent({
                   :comments="comments"
                   :reached-end-of-results="reachedEndOfResults"
                   :previous-offset="previousOffset"
+                  :original-poster="originalPoster"
                   @loadMore="loadMore"
                 />
               </div>

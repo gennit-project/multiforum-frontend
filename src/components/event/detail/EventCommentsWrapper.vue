@@ -63,6 +63,10 @@ export default defineComponent({
       type: Number,
       required: true,
     },
+    originalPoster: {
+      type: String,
+      required: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -275,6 +279,7 @@ export default defineComponent({
     :create-comment-input="createCommentInput"
     :previous-offset="previousOffset"
     :enable-feedback="false"
+    :original-poster="originalPoster"
     @decrementCommentCount="decrementCommentCount"
     @incrementCommentCount="incrementCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"
