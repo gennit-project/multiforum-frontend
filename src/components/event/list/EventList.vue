@@ -153,7 +153,7 @@ export default defineComponent({
     <ul
       v-if="events.length > 0"
       role="list"
-      class="mb-4 flex flex-col gap-2"
+      class="mb-4 flex flex-col gap-2 divide-y divide-gray-200 dark:divide-gray-600"
       data-testid="event-list"
     >
       <EventListItem

@@ -337,13 +337,9 @@ export default defineComponent({
 
 <template>
   <li
-    :ref="`#${event.id}`"
-    :class="
-      event.id === route.params.eventId
-        ? 'border border-black dark:border-blue-500'
-        : 'border-transparent'
+    :ref="`#${event.id}`
     "
-    class="relative rounded-lg bg-white p-6 dark:bg-gray-700"
+    class="relative pt-4"
     :data-testid="`event-list-item-${event.title}`"
     @click="handleClick"
   >
@@ -384,7 +380,7 @@ export default defineComponent({
               >
               <div>
                 <span
-                  class="text-lg cursor-pointer font-bold hover:underline dark:text-gray-100"
+                  class="text-md text-blue-500 cursor-pointer font-bold hover:underline"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"
