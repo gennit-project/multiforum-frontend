@@ -101,7 +101,10 @@ export default defineComponent({
         v-if="username && !user?.displayName"
         class="mb-2 mt-4 flex items-center gap-2 border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
       >
-        {{ username }}<span v-if="isAdmin" class="text-xs text-blue-500 px-2 py-1 border border-blue-500 rounded-md">ADMIN</span>
+        {{ username }}<span
+          v-if="isAdmin"
+          class="text-xs text-blue-500 px-2 py-1 border border-blue-500 rounded-md"
+        >Admin</span>
       </h1>
       <h1
         v-if="user?.displayName"

@@ -69,24 +69,26 @@ export default defineComponent({
     <template #activator="{ props }">
       <button v-bind="props">
         <slot>
-          <router-link
-            :to="`/u/${username}`"
-            class="flex flex-row items-center gap-1 hover:underline"
-          >
-            <span
-              v-if="!displayName"
-              class="font-bold"
-            >{{ username }}</span>
-            <span
-              v-if="displayName"
-              class="font-bold"
-            >{{ displayName }}</span>
-            <span
-              v-if="displayName"
-              class="text-gray-500 dark:text-gray-300"
-            >{{
-              `u/${username}`
-            }}</span>
+          <div class="flex flex-row items-center gap-1">
+            <router-link
+              :to="`/u/${username}`"
+              class="flex flex-row items-center gap-1 hover:underline"
+            >
+              <span
+                v-if="!displayName"
+                class="font-bold"
+              >{{ username }}</span>
+              <span
+                v-if="displayName"
+                class="font-bold"
+              >{{
+                displayName
+              }}</span>
+              <span
+                v-if="displayName"
+                class="text-gray-500 dark:text-gray-300"
+              >{{ `u/${username}` }}</span>
+            </router-link>
             <span
               v-if="isAdmin"
               class="rounded-md border border-blue-500 px-1 py-0.5 text-xs text-blue-500"
@@ -101,7 +103,7 @@ export default defineComponent({
               v-if="isOriginalPoster"
               class="rounded-md border border-green-500 px-1 py-0.5 text-xs text-green-500"
             >OP</span>
-          </router-link>
+          </div>
         </slot>
       </button>
     </template>
