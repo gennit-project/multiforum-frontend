@@ -39,7 +39,11 @@ export default defineComponent({
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
-    } = useQuery(GET_DISCUSSION, { id: discussionId, loggedInModName: "placeholder" });
+    } = useQuery(GET_DISCUSSION, { 
+      id: discussionId, 
+      loggedInModName: "placeholder",
+      channelUniqueName: channelId.value
+    });
 
     const discussion = computed(() => {
       if (getDiscussionLoading.value || getDiscussionError.value) {

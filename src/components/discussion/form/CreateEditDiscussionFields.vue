@@ -99,7 +99,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex w-full justify-center overflow-auto">
+  <div class="flex w-full justify-center">
     <div v-if="discussionLoading">
       Loading...
     </div>
@@ -178,6 +178,7 @@ export default defineComponent({
                   :disable-auto-focus="true"
                   :initial-value="formValues.body || ''"
                   :placeholder="'Add details'"
+                  :rows="20"
                   @update="$emit('updateFormValues', { body: $event })"
                 />
               </template>

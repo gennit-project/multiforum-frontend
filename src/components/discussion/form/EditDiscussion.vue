@@ -58,6 +58,7 @@ export default defineComponent({
     } = useQuery(GET_DISCUSSION, {
       id: discussionId,
       loggedInModName: "placeholder",
+      channelUniqueName: channelId.value
     });
 
     const discussion = computed<DiscussionData>(() => {
