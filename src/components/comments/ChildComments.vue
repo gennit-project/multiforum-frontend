@@ -112,12 +112,15 @@ export default defineComponent({
     </div>
     <div v-else>
       <slot :comments="comments" />
+      <LoadMore
+        v-if="!commentLoading && !reachedEndOfResults"
+        class="pl-8"
+        :reached-end-of-results="reachedEndOfResults"
+        @loadMore="loadMore"
+      />
     </div>
-    <LoadMore
-      v-if="!commentLoading && !reachedEndOfResults"
-      :reached-end-of-results="reachedEndOfResults"
-      @loadMore="loadMore"
-    />
-    <div v-if="commentLoading">Loading...</div>
+    <div v-if="commentLoading">
+      Loading...
+    </div>
   </div>
 </template>
