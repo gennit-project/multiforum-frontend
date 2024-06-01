@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen overflow-auto dark:bg-black bg-gray-200 dark:text-gray-200 list-disc">
+  <div class="h-screen overflow-auto dark:bg-black bg-gray-100 dark:text-gray-200 list-disc">
     <nav>
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
