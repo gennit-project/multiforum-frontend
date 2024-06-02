@@ -177,7 +177,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
-      <SortButtons class="border-b dark:border-gray-600" />
+      <SortButtons />
     </div>
   </div>
 </template>
