@@ -467,7 +467,7 @@ export default defineComponent({
             :key="activeDiscussionChannel?.id"
             :loading="getDiscussionChannelLoading"
             :discussion-channel="activeDiscussionChannel"
-            :discussion-author="discussionAuthor"
+            :discussion-author="discussionAuthor || ''"
             :comments="comments"
             :mod-name="loggedInUserModName"
             :reached-end-of-results="reachedEndOfResults"

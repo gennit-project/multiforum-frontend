@@ -6,7 +6,7 @@ import { useRoute } from "vue-router";
 import { GET_EVENT } from "@/graphQLData/event/queries";
 import { GET_EVENT_COMMENTS } from "@/graphQLData/comment/queries";
 import { GET_EVENT_ROOT_COMMENT_AGGREGATE } from "@/graphQLData/comment/queries";
-import { Event, EventChannel } from "@/__generated__/graphql";
+import { Event, Comment, EventChannel } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { DateTime } from "luxon";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
@@ -130,7 +130,7 @@ export default defineComponent({
       fetchMoreComments({ variables: { sort: commentSort.value } });
     });
 
-    const comments = computed(() => {
+    const comments = computed<Comment[]>(() => {
       if (!getEventCommentsResult.value?.getEventComments?.Comments) {
         return [];
       }
@@ -149,20 +149,10 @@ export default defineComponent({
 
     const loadedRootCommentCount = computed(() => {
       if (eventLoading.value || eventError.value) {
-        return [];
+        return 0
       }
 
-      let rootComments = comments.value.filter((comment: Comment) => {
-        return comment.isRootComment;
-      });
-      return rootComments.length;
-    });
-
-    const commentCount = computed(() => {
-      if (!event.value) {
-        return 0;
-      }
-      return event.value.CommentsAggregate?.count || 0;
+      return comments.value.length
     });
 
     const aggregateRootCommentCount = computed(() => {
@@ -222,8 +212,7 @@ export default defineComponent({
 
     const reachedEndOfResults = computed(() => {
       return (
-        loadedRootCommentCount.value >= aggregateRootCommentCount.value ||
-        loadedRootCommentCount.value >= commentCount.value
+        loadedRootCommentCount.value >= aggregateRootCommentCount.value
       );
     });
 
