@@ -209,6 +209,7 @@ export default defineComponent({
 <style>
 .custom-tooltip {
   opacity: var(--v-tooltip-opacity, 1) !important;
-  background: var(--v-tooltip-bg, rgba(97, 97, 97, 1)) !important;
+  border: 1px solid #30363e !important;
+  background-color: black !important;
 }
 </style>
