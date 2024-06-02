@@ -3,6 +3,7 @@ import { useRouter } from "vue-router";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/vue";
 import { defineComponent, PropType } from "vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
+import SortIcon from "@/components/icons/SortIcon.vue";
 
 type MenuItemType = {
   value: string;
@@ -17,6 +18,7 @@ export default defineComponent({
     MenuButton,
     MenuItem,
     MenuItems,
+    SortIcon,
   },
   props: {
     items: {
@@ -27,6 +29,11 @@ export default defineComponent({
       type: String,
       required: false,
       default: "",
+    },
+    showSortIcon: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   setup() {
@@ -43,14 +50,25 @@ export default defineComponent({
 });
 </script>
 <template>
-  <DropdownMenu as="div" class="relative inline-block text-left">
+  <DropdownMenu
+    as="div"
+    class="relative inline-block text-left"
+  >
     <div>
       <MenuButton
         :data-testid="`text-dropdown-${label}`"
-        class="font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-md bg-black px-4 text-sm text-white hover:bg-gray-800 focus:outline-none dark:bg-blue-700 dark:text-white dark:hover:bg-blue-600"
+        class="inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-full bg-white px-4 text-xs text-black hover:bg-gray-200 focus:outline-none dark:bg-black dark:text-white"
       >
+        <SortIcon
+          v-if="showSortIcon"
+          class="h-5 w-5"
+          aria-hidden="true"
+        />
         {{ label }}
-        <ChevronDownIcon class="-mr-1 ml-1 mt-0.5 h-3 w-3" aria-hidden="true" />
+        <ChevronDownIcon
+          class="-mr-1 ml-1 mt-0.5 h-3 w-3"
+          aria-hidden="true"
+        />
       </MenuButton>
     </div>
     <transition
@@ -69,13 +87,13 @@ export default defineComponent({
             v-for="(item, i) in items"
             :key="i"
             v-slot="{ active }"
-            class="cursor-pointer"
+            class="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-600"
             @click="handleClick(item)"
           >
             <span
               :class="[
                 active
-                  ? 'bg-white dark:bg-gray-800 text-gray-900 dark:hover:bg-gray-500 dark:hover:text-gray-100'
+                  ? 'bg-white text-gray-900 dark:bg-gray-800 dark:hover:bg-gray-500 dark:hover:text-gray-100'
                   : 'text-gray-700 dark:text-gray-200',
                 'block px-4 py-2 text-sm',
               ]"

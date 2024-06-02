@@ -191,6 +191,11 @@ export const router = createRouter({
           component: EditChannel,
         },
         {
+          name: "FeedbackOnCommentFeedback",
+          path: "discussions/d/:discussionId/commentFeedback/:commentId",
+          component: CommentFeedback,
+        },
+        {
           name: "CommentFeedback",
           path: "discussions/d/:discussionId/comments/:commentId/feedback",
           component: CommentFeedback,

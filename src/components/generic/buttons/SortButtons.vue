@@ -110,17 +110,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="flex items-center space-x-4">
-    <nav
-      class="flex items-center space-x-2 text-sm"
-      aria-label="Sort Buttons"
-    >
-      <TextButtonDropdown
-        :label="capitalizeCase(activeSortQuery)"
-        :items="sortOptions"
-        @clickedItem="handleSort"
-      />
-    </nav>
+  <div class="flex items-center space-x-2">
+    <TextButtonDropdown
+      :label="capitalizeCase(activeSortQuery)"
+      :items="sortOptions"
+      :show-sort-icon="true"
+      @clickedItem="handleSort"
+    />
     <TextButtonDropdown
       v-if="showTopOptions && activeSortQuery === availableSortTypes.TOP"
       :label="activeTimeFrameLabel"
