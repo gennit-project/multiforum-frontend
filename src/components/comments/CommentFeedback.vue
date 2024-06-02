@@ -12,7 +12,7 @@ import PageNotFound from "@/components/generic/PageNotFound.vue";
 import InfoBanner from "@/components/generic/InfoBanner.vue";
 import CommentHeader from "./CommentHeader.vue";
 import LoadMore from "@/components/generic/LoadMore.vue";
-import CommentOnFeedbackPage from './CommentOnFeedbackPage.vue'
+import CommentOnFeedbackPage from "./CommentOnFeedbackPage.vue";
 
 const PAGE_LIMIT = 10;
 
@@ -127,8 +127,26 @@ export default defineComponent({
       return feedbackComments.value.length === feedbackCommentsAggregate.value;
     });
 
+    console.log("route name", route.name);
+
+    const contextLink = computed(() => {
+      if (originalComment.value) {
+        if (route.name === "CommentFeedback") {
+          return {
+            name: "DiscussionCommentPermalink",
+            params: {
+              discussionId: route.params.discussionId,
+              commentId: originalComment.value.id,
+            },
+          };
+        }
+      }
+      return "";
+    });
+
     return {
       channelId,
+      contextLink,
       discussionId,
       getCommentLoading,
       getCommentError,
@@ -149,13 +167,8 @@ export default defineComponent({
     <div
       class="w-full max-w-7xl space-y-4 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="getCommentLoading">
-        Loading...
-      </div>
-      <ErrorBanner
-        v-if="getCommentError"
-        :text="getCommentError.message"
-      />
+      <div v-if="getCommentLoading">Loading...</div>
+      <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />
       <div v-else-if="originalComment">
         <router-link
           v-if="parentCommentId"
@@ -189,9 +202,7 @@ export default defineComponent({
         <PageNotFound
           v-if="!getCommentLoading && !getCommentError && !originalComment"
         />
-        <p class="px-2">
-          This page collects feedback on this comment:
-        </p>
+        <p class="px-2">This page collects feedback on this comment:</p>
         <CommentHeader
           :comment-data="originalComment"
           :is-highlighted="false"
@@ -206,6 +217,9 @@ export default defineComponent({
             :disable-gallery="true"
           />
         </div>
+        <router-link :to="contextLink" class="text-blue-500 underline">
+          View original context
+        </router-link>
         <h2 class="text-wrap text-center text-xl font-bold dark:text-gray-200">
           Feedback Comments ({{ feedbackCommentsAggregate }})
         </h2>
@@ -219,22 +233,15 @@ export default defineComponent({
         >
           No feedback yet.
         </div>
-        <div
-          v-for="comment in feedbackComments"
-          :key="comment.id"
-        >
-          <CommentOnFeedbackPage 
-            :comment="comment"
-          />
+        <div v-for="comment in feedbackComments" :key="comment.id">
+          <CommentOnFeedbackPage :comment="comment" />
         </div>
         <LoadMore
           v-if="!getCommentLoading && !reachedEndOfResults"
           :reached-end-of-results="reachedEndOfResults"
           @loadMore="loadMore"
         />
-        <div v-if="getCommentLoading">
-          Loading...
-        </div>
+        <div v-if="getCommentLoading">Loading...</div>
       </div>
     </div>
   </div>

@@ -46,7 +46,7 @@ export default defineComponent({
     :is-square="true"
     class="max-h-52 w-full"
   />
-  <div class="mb-4 bg-white dark:bg-gray-800">
+  <div class="bg-white dark:bg-gray-800">
     <v-container
       fluid
       class="relative z-0 max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"

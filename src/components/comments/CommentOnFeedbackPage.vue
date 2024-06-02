@@ -227,6 +227,7 @@ export default defineComponent({
     <MenuButton 
       v-if="commentMenuItems.length > 0"
       id="commentMenu"
+      class="flex items-center"
       :items="commentMenuItems"
       @copyLink="copyLink"
       @handleEdit="() => handleEdit(comment)"

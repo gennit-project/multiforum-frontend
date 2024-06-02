@@ -239,7 +239,7 @@ export default defineComponent({
 
 <template>
   <v-container
-    :class="[channelId ? '' : 'my-6 max-w-4xl']"
+    :class="[channelId ? '' : 'max-w-4xl']"
     class="justify-center rounded-lg dark:bg-gray-800 py-0"
   >
     <SitewideDiscussionList

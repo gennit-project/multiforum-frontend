@@ -135,7 +135,6 @@ export default defineComponent({
 
 <template>
   <div>
-    <SortButtons class="border-b dark:border-gray-600" />
     <div class="mt-4 mb-4 flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
@@ -178,6 +177,7 @@ export default defineComponent({
           />
         </template>
       </FilterChip>
+      <SortButtons class="border-b dark:border-gray-600" />
     </div>
   </div>
 </template>

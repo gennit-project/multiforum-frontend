@@ -1,6 +1,5 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import TabButton from "@/components/channel/TabButton.vue";
 import { useRoute, useRouter } from "vue-router";
 import TextButtonDropdown from "@/components/generic/buttons/TextButtonDropdown.vue";
 import {
@@ -53,7 +52,6 @@ export default defineComponent({
   name: "SortButtons",
   components: {
     TextButtonDropdown,
-    TabButton,
   },
   props: {
     showTopOptions: {
@@ -91,6 +89,14 @@ export default defineComponent({
     };
   },
   methods: {
+    handleSort(value: string) {
+      this.router.push({
+        query: {
+          ...this.route.query,
+          sort: value,
+        },
+      });
+    },
     handleTopSort(value: string) {
       this.router.push({
         query: {
@@ -102,27 +108,18 @@ export default defineComponent({
   },
 });
 </script>
+
 <template>
-  <div class="flex items-center space-x-4 border-b dark:border-b-gray-600">
+  <div class="flex items-center space-x-4">
     <nav
-      class="flex items-center space-x-2 pt-1 text-sm"
+      class="flex items-center space-x-2 text-sm"
       aria-label="Sort Buttons"
     >
-      <TabButton
-        v-for="sortOption in sortOptions"
-        :key="sortOption.value"
-        :to="
-          router.resolve({ query: { ...route.query, sort: sortOption.value } })
-            .href
-        "
-        :label="capitalizeCase(sortOption.label)"
-        :is-active="
-          sortOption.value === activeSortQuery ||
-          (!activeSortQuery && sortOption.value === availableSortTypes.HOT)
-        "
-      >
-        <i :class="`fa-solid ${sortTypeIcons[sortOption.value]}`"></i>
-      </TabButton>
+      <TextButtonDropdown
+        :label="capitalizeCase(activeSortQuery)"
+        :items="sortOptions"
+        @clickedItem="handleSort"
+      />
     </nav>
     <TextButtonDropdown
       v-if="showTopOptions && activeSortQuery === availableSortTypes.TOP"
