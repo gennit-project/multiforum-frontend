@@ -139,7 +139,7 @@ export default defineComponent({
 
     const copyLink = async () => {
       const basePath = window.location.origin;
-      const permalinkObject = getPermalinkObject(props.comment.id);
+      const permalinkObject = getPermalinkObject();
       const permalink = `${basePath}${router.resolve(permalinkObject).href}`;
       try {
         await toClipboard(permalink);
@@ -156,6 +156,7 @@ export default defineComponent({
       commentMenuItems,
       copyLink,
       loggedInModName,
+      router,
       timeAgo,
     };
   },
@@ -184,6 +185,16 @@ export default defineComponent({
     },
     handleEditFeedback(input: HandleEditFeedbackInput) {
       this.$emit("clickEditFeedback", input);
+    },
+    handleViewFeedback(feedbackId: string) {
+      this.router.push({
+        name: "FeedbackOnCommentFeedback",
+        params: {
+          channelId: this.channelId,
+          discussionId: this.discussionId,
+          commentId: feedbackId,
+        },
+      });
     },
   },
 });
@@ -250,7 +261,7 @@ export default defineComponent({
             handleUndoFeedback({ commentData: comment, parentCommentId: '' });
           }
         "
-        @handleViewFeedback="$emit('handleViewFeedback', comment.id)"
+        @handleViewFeedback="handleViewFeedback(comment.id)"
         @handleDelete="
           () => {
             const deleteCommentInput = {
