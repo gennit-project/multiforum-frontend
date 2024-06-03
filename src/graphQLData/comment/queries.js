@@ -259,6 +259,21 @@ export const GET_COMMENT_AND_REPLIES = gql`
   ${COMMENT_VOTE_FIELDS}
 `;
 
+export const GET_FEEDBACK_COMMENT = gql`
+  query getFeedbackComment($id: ID!) {
+    comments(where: { id: $id }) {
+      id
+      text
+      createdAt
+      CommentAuthor {
+        ... on ModerationProfile {
+          displayName
+        }
+      }
+    }
+  }
+`;
+
 export const GET_COMMENT = gql`
   query getComment($id: ID!) {
     comments(where: { id: $id }) {

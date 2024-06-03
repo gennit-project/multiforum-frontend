@@ -30,9 +30,14 @@ export default defineComponent({
       type: Object as PropType<Comment>,
       required: true,
     },
+    isHighlighted: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props, { emit }) {
     const { toClipboard } = useClipboard();
+
     const {
       result: localModProfileNameResult,
       loading: localModProfileNameLoading,
@@ -117,40 +122,26 @@ export default defineComponent({
     });
     const route = useRoute();
     const router = useRouter();
-    const { discussionId, channelId } = route.params;
 
-    const permalinkObject = computed(() => {
-      const discussionIdInLink =
-        discussionId || props.comment?.DiscussionChannel?.discussionId;
+    const getPermalinkObject = () => {
+      const { discussionId, channelId, commentId } = route.params;
 
-      if (discussionIdInLink) {
-        return {
-          name: "DiscussionCommentPermalink",
-          params: {
-            discussionId: discussionIdInLink,
-            commentId: props.comment.id,
-            channelId:
-              channelId || props.comment?.DiscussionChannel?.channelUniqueName,
-          },
-        };
-      }
-
-      // if discussionId is not present, assume it is an event comment
       return {
-        name: "EventCommentPermalink",
+        name: "DiscussionCommentFeedbackPermalink",
         params: {
-          eventId: props.comment.Event?.id,
-          commentId: props.comment.id,
+          discussionId,
+          commentId,
+          channelId,
+          feedbackId: props.comment.id,
         },
       };
-    });
-
-    const basePath = window.location.origin;
-    const permalink = `${basePath}${
-      router.resolve(permalinkObject.value).href
-    }`;
+    };
 
     const copyLink = async () => {
+      console.log("copying link");
+      const basePath = window.location.origin;
+      const permalinkObject = getPermalinkObject(props.comment.id);
+      const permalink = `${basePath}${router.resolve(permalinkObject).href}`;
       try {
         await toClipboard(permalink);
         emit("showCopiedLinkNotification", true);
@@ -199,102 +190,111 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex items-center gap-2 text-sm leading-8 text-gray-500 dark:text-gray-300">
-    <Avatar
-      v-if="comment.CommentAuthor?.displayName"
-      class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
-      :text="comment.CommentAuthor.displayName"
-      :is-small="true"
-      :is-square="false"
-    />
-    <span class="mr-0.5">
-      <router-link
-        v-if="comment.CommentAuthor?.displayName"
-        :to="{
-          name: 'ModProfile',
-          params: {
-            modId: comment.CommentAuthor.displayName,
-          },
-        }"
-        class="font-medium text-gray-900 hover:underline dark:text-gray-200"
-      >
-        {{ comment.CommentAuthor?.displayName }}
-      </router-link>
-    </span>
-    <span class="whitespace-nowrap">{{
-      `gave feedback ${timeAgo(new Date(comment.createdAt))}`
-    }}</span>
-    <MenuButton 
-      v-if="commentMenuItems.length > 0"
-      id="commentMenu"
-      class="flex items-center"
-      :items="commentMenuItems"
-      @copyLink="copyLink"
-      @handleEdit="() => handleEdit(comment)"
-      @clickReport="handleReport"
-      @clickFeedback="
-        () => {
-          // This event is emitted when the user clicks give feedback in the comment menu.
-          // Passing the comment in at the template instead of the setup
-          // function or methods is better because it allows us to specify that
-          // we want a nested comment to be the target. If we did it in methods
-          // or setup, feedback would end up attached to the parent
-          // instead of the child.
-          handleFeedback({
-            commentData: comment,
-            parentCommentId: '',
-          });
-        }
-      "
-      @clickUndoFeedback="
-        () => {
-          // See comment on clickFeedback. The same principle applies.
-          handleUndoFeedback({ commentData: comment, parentCommentId: '' });
-        }
-      "
-      @handleViewFeedback="$emit('handleViewFeedback', comment.id)"
-      @handleDelete="
-        () => {
-          const deleteCommentInput = {
-            commentId: comment.id,
-            parentCommentId: '',
-            replyCount: 0,
-          };
-          handleDelete(deleteCommentInput);
-        }
-      "
-      @clickEditFeedback="
-        () => {
-          // See comment on clickFeedback. The same principle applies.
-          handleEditFeedback({
-            commentData: comment,
-          });
-        }
-      "
+  <div>
+    <div
+      class="flex items-center gap-2 text-sm leading-8 text-gray-500 dark:text-gray-300"
     >
-      <EllipsisHorizontal
-        class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+      <Avatar
+        v-if="comment.CommentAuthor?.displayName"
+        class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+        :text="comment.CommentAuthor.displayName"
+        :is-small="true"
+        :is-square="false"
       />
-    </MenuButton>
-  </div>
+      <span class="mr-0.5">
+        <router-link
+          v-if="comment.CommentAuthor?.displayName"
+          :to="{
+            name: 'ModProfile',
+            params: {
+              modId: comment.CommentAuthor.displayName,
+            },
+          }"
+          class="font-medium text-gray-900 hover:underline dark:text-gray-200"
+        >
+          {{ comment.CommentAuthor?.displayName }}
+        </router-link>
+      </span>
+      <span class="whitespace-nowrap">{{
+        `gave feedback ${timeAgo(new Date(comment.createdAt))}`
+      }}</span>
+      <span
+        v-if="isHighlighted"
+        class="rounded-lg bg-blue-500 px-2 text-black"
+        >Permalinked
+      </span>
+      <MenuButton
+        v-if="commentMenuItems.length > 0"
+        id="commentMenu"
+        class="flex items-center"
+        :items="commentMenuItems"
+        @copyLink="copyLink"
+        @handleEdit="() => handleEdit(comment)"
+        @clickReport="handleReport"
+        @clickFeedback="
+          () => {
+            // This event is emitted when the user clicks give feedback in the comment menu.
+            // Passing the comment in at the template instead of the setup
+            // function or methods is better because it allows us to specify that
+            // we want a nested comment to be the target. If we did it in methods
+            // or setup, feedback would end up attached to the parent
+            // instead of the child.
+            handleFeedback({
+              commentData: comment,
+              parentCommentId: '',
+            });
+          }
+        "
+        @clickUndoFeedback="
+          () => {
+            // See comment on clickFeedback. The same principle applies.
+            handleUndoFeedback({ commentData: comment, parentCommentId: '' });
+          }
+        "
+        @handleViewFeedback="$emit('handleViewFeedback', comment.id)"
+        @handleDelete="
+          () => {
+            const deleteCommentInput = {
+              commentId: comment.id,
+              parentCommentId: '',
+              replyCount: 0,
+            };
+            handleDelete(deleteCommentInput);
+          }
+        "
+        @clickEditFeedback="
+          () => {
+            // See comment on clickFeedback. The same principle applies.
+            handleEditFeedback({
+              commentData: comment,
+            });
+          }
+        "
+      >
+        <EllipsisHorizontal
+          class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+        />
+      </MenuButton>
+    </div>
 
-  <div class="ml-12 border-l-2 border-gray-200 dark:border-gray-500">
-    <MarkdownPreview
-      v-if="comment.text"
-      class="-ml-4"
-      :text="comment.text"
-      :disable-gallery="true"
-    />
-    <VoteButtons
-      class="ml-3"
-      :comment-data="comment"
-      :show-downvote="comment.CommentAuthor?.displayName !== loggedInModName"
-      :show-upvote="false"
-      @openModProfile="$emit('openModProfile')"
-      @clickFeedback="$emit('clickFeedback')"
-      @clickUndoFeedback="$emit('clickUndoFeedback')"
-      @clickEditFeedback="$emit('clickEditFeedback')"
-      @viewFeedback="$emit('handleViewFeedback')"
-    />
+    <div class="ml-12 border-l-2 border-gray-200 dark:border-gray-500">
+      <MarkdownPreview
+        v-if="comment.text"
+        class="-ml-4"
+        :text="comment.text"
+        :disable-gallery="true"
+      />
+      <VoteButtons
+        class="ml-3"
+        :comment-data="comment"
+        :show-downvote="comment.CommentAuthor?.displayName !== loggedInModName"
+        :show-upvote="false"
+        @openModProfile="$emit('openModProfile')"
+        @clickFeedback="$emit('clickFeedback')"
+        @clickUndoFeedback="$emit('clickUndoFeedback')"
+        @clickEditFeedback="$emit('clickEditFeedback')"
+        @viewFeedback="$emit('handleViewFeedback')"
+      />
+    </div>
   </div>
 </template>

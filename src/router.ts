@@ -201,6 +201,11 @@ export const router = createRouter({
           component: CommentFeedback,
         },
         {
+          name: "DiscussionCommentFeedbackPermalink",
+          path: "discussions/d/:discussionId/comments/:commentId/feedback/:feedbackId",
+          component: CommentFeedback,
+        },
+        {
           name: "About",
           path: "about",
           component: ChannelAboutPage,

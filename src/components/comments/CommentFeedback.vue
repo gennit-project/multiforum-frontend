@@ -3,7 +3,7 @@ import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import { GET_FEEDBACK_ON_COMMENT } from "@/graphQLData/comment/queries";
 import { useQuery } from "@vue/apollo-composable";
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
 import { timeAgo } from "@/dateTimeUtils";
@@ -13,6 +13,8 @@ import InfoBanner from "@/components/generic/InfoBanner.vue";
 import CommentHeader from "./CommentHeader.vue";
 import LoadMore from "@/components/generic/LoadMore.vue";
 import CommentOnFeedbackPage from "./CommentOnFeedbackPage.vue";
+import Notification from "../generic/Notification.vue";
+import PermalinkedFeedbackComment from "@/components/comments/PermalinkedFeedbackComment.vue";
 
 const PAGE_LIMIT = 10;
 
@@ -26,7 +28,9 @@ export default defineComponent({
     InfoBanner,
     LoadMore,
     MarkdownPreview,
+    Notification,
     PageNotFound,
+    PermalinkedFeedbackComment,
   },
   setup: () => {
     const route = useRoute();
@@ -51,6 +55,16 @@ export default defineComponent({
       }
       return "";
     });
+
+    const feedbackId = computed(() => {
+      if (typeof route.params.feedbackId === "string") {
+        return route.params.feedbackId;
+      }
+      return "";
+    });
+
+    const showPermalinkedFeedback =
+      route.name === "DiscussionCommentFeedbackPermalink";
 
     const {
       result: getCommentResult,
@@ -152,11 +166,14 @@ export default defineComponent({
       getCommentError,
       feedbackComments,
       feedbackCommentsAggregate,
+      feedbackId,
       loadMore,
       originalComment,
       reachedEndOfResults,
       route,
       parentCommentId,
+      showCopiedLinkNotification: ref(false),
+      showPermalinkedFeedback,
       timeAgo,
     };
   },
@@ -233,8 +250,29 @@ export default defineComponent({
         >
           No feedback yet.
         </div>
+        <PermalinkedFeedbackComment
+          v-if="showPermalinkedFeedback && feedbackId"
+          :key="feedbackId"
+          class="mt-2"
+          :comment-id="feedbackId"
+        >
+          <template #comment="{ commentData }">
+            <CommentOnFeedbackPage
+              :comment="commentData"
+              :is-highlighted="true"
+              @showCopiedLinkNotification="showCopiedLinkNotification = true"
+            />
+          </template>
+        </PermalinkedFeedbackComment>
         <div v-for="comment in feedbackComments" :key="comment.id">
-          <CommentOnFeedbackPage :comment="comment" />
+          <CommentOnFeedbackPage
+            v-if="
+              !showPermalinkedFeedback ||
+              (showPermalinkedFeedback && comment.id !== feedbackId)
+            "
+            :comment="comment"
+            @showCopiedLinkNotification="showCopiedLinkNotification = true"
+          />
         </div>
         <LoadMore
           v-if="!getCommentLoading && !reachedEndOfResults"
@@ -243,6 +281,11 @@ export default defineComponent({
         />
         <div v-if="getCommentLoading">Loading...</div>
       </div>
+      <Notification
+        :show="showCopiedLinkNotification"
+        :title="'Copied to clipboard!'"
+        @closeNotification="showCopiedLinkNotification = false"
+      />
     </div>
   </div>
 </template>
