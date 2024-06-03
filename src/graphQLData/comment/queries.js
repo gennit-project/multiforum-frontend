@@ -327,6 +327,9 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
         ... on User {
           username
         }
+        ... on ModerationProfile {
+            displayName
+        }
       }
       createdAt
       text
