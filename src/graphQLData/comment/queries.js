@@ -344,6 +344,7 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
             displayName
           }
         }
+        createdAt
       }
     }
   }

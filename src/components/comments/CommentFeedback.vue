@@ -141,8 +141,6 @@ export default defineComponent({
       return feedbackComments.value.length === feedbackCommentsAggregate.value;
     });
 
-    console.log("route name", route.name);
-
     const contextLink = computed(() => {
       if (originalComment.value) {
         if (route.name === "CommentFeedback") {
@@ -184,8 +182,13 @@ export default defineComponent({
     <div
       class="w-full max-w-7xl space-y-4 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="getCommentLoading">Loading...</div>
-      <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />
+      <div v-if="getCommentLoading">
+        Loading...
+      </div>
+      <ErrorBanner
+        v-if="getCommentError"
+        :text="getCommentError.message"
+      />
       <div v-else-if="originalComment">
         <router-link
           v-if="parentCommentId"
@@ -219,7 +222,9 @@ export default defineComponent({
         <PageNotFound
           v-if="!getCommentLoading && !getCommentError && !originalComment"
         />
-        <p class="px-2">This page collects feedback on this comment:</p>
+        <p class="px-2">
+          This page collects feedback on this comment:
+        </p>
         <CommentHeader
           :comment-data="originalComment"
           :is-highlighted="false"
@@ -234,7 +239,10 @@ export default defineComponent({
             :disable-gallery="true"
           />
         </div>
-        <router-link :to="contextLink" class="text-blue-500 underline">
+        <router-link
+          :to="contextLink"
+          class="text-blue-500 underline"
+        >
           View original context
         </router-link>
         <h2 class="text-wrap text-center text-xl font-bold dark:text-gray-200">
@@ -264,11 +272,14 @@ export default defineComponent({
             />
           </template>
         </PermalinkedFeedbackComment>
-        <div v-for="comment in feedbackComments" :key="comment.id">
+        <div
+          v-for="comment in feedbackComments"
+          :key="comment.id"
+        >
           <CommentOnFeedbackPage
             v-if="
               !showPermalinkedFeedback ||
-              (showPermalinkedFeedback && comment.id !== feedbackId)
+                (showPermalinkedFeedback && comment.id !== feedbackId)
             "
             :comment="comment"
             @showCopiedLinkNotification="showCopiedLinkNotification = true"
@@ -279,7 +290,9 @@ export default defineComponent({
           :reached-end-of-results="reachedEndOfResults"
           @loadMore="loadMore"
         />
-        <div v-if="getCommentLoading">Loading...</div>
+        <div v-if="getCommentLoading">
+          Loading...
+        </div>
       </div>
       <Notification
         :show="showCopiedLinkNotification"

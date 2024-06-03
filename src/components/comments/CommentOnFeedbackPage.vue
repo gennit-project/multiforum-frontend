@@ -138,7 +138,6 @@ export default defineComponent({
     };
 
     const copyLink = async () => {
-      console.log("copying link");
       const basePath = window.location.origin;
       const permalinkObject = getPermalinkObject(props.comment.id);
       const permalink = `${basePath}${router.resolve(permalinkObject).href}`;
@@ -221,7 +220,7 @@ export default defineComponent({
       <span
         v-if="isHighlighted"
         class="rounded-lg bg-blue-500 px-2 text-black"
-        >Permalinked
+      >Permalinked
       </span>
       <MenuButton
         v-if="commentMenuItems.length > 0"
