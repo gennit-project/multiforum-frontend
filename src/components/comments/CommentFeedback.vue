@@ -52,13 +52,14 @@ export default defineComponent({
     const discussionId = ref("");
     const commentId = ref("");
     const feedbackId = ref("");
-    const contextLink: Ref<RouteLocationRaw> = ref("");
+   
 
     const {
       result: getCommentResult,
       error: getCommentError,
       loading: getCommentLoading,
       fetchMore,
+      onResult: onGetCommentDone,
     } = useQuery(GET_FEEDBACK_ON_COMMENT, {
       commentId: commentId,
       limit: PAGE_LIMIT,
@@ -85,6 +86,13 @@ export default defineComponent({
       if (originalComment.value) {
         console.log("route name", route.name);
         if (route.name === "CommentFeedback") {
+          console.log('context link is',{
+            name: "DiscussionCommentPermalink",
+            params: {
+              discussionId: route.params.discussionId,
+              commentId: originalComment.value.id || "",
+            }
+          })
           return {
             name: "DiscussionCommentPermalink",
             params: {
@@ -98,12 +106,16 @@ export default defineComponent({
             console.warn("No context of feedback comment found")
             return "";
           }
-          console.log("feedback obj", {
-            discussionId: route.params.discussionId,
-            commentId: contextOfFeedbackComment.value?.id || "",
-            channelId: route.params.channelId,
-            feedbackId: originalComment.value.id || "",
-          });
+    
+          console.log("context link is ", {
+            name: "DiscussionCommentFeedbackPermalink",
+            params: {
+              discussionId: route.params.discussionId,
+              commentId: contextOfFeedbackComment.value?.id || "",
+              channelId: route.params.channelId,
+              feedbackId: originalComment.value.id || "",
+            }
+          })
           return {
             name: "DiscussionCommentFeedbackPermalink",
             params: {
@@ -117,6 +129,13 @@ export default defineComponent({
       }
       return "";
     };
+
+    const contextLink: Ref<RouteLocationRaw> = ref("");
+
+    // onGetCommentDone should trigger context link to update.
+    onGetCommentDone(() => {
+      contextLink.value = updateContextLink();
+    });
 
     const updateParams = () => {
       channelId.value =
