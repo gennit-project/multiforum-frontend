@@ -48,10 +48,15 @@ export default defineComponent({
   setup: () => {
     const route = useRoute();
 
+    const updateShowPermalinkedFeedback = () => {
+      return route.name === "DiscussionCommentFeedbackPermalink";
+    };
+
     const channelId = ref("");
     const discussionId = ref("");
     const commentId = ref("");
     const feedbackId = ref("");
+    const showPermalinkedFeedback = ref(updateShowPermalinkedFeedback());
    
 
     const {
@@ -155,6 +160,7 @@ export default defineComponent({
           ? route.params.feedbackId
           : "";
       contextLink.value = updateContextLink();
+      showPermalinkedFeedback.value = updateShowPermalinkedFeedback();
     };
 
     watch(
@@ -164,9 +170,6 @@ export default defineComponent({
       },
       { immediate: true }, // This ensures the watcher runs immediately to set the initial values
     );
-
-    const showPermalinkedFeedback =
-      route.name === "DiscussionCommentFeedbackPermalink";
 
     const parentCommentId = computed(() => {
       if (originalComment.value && originalComment.value.ParentComment) {
@@ -375,7 +378,7 @@ export default defineComponent({
 <template>
   <div class="flex justify-center">
     <div
-      class="w-full max-w-7xl space-y-4 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
+      class="w-full max-w-4xl space-y-4 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
       <div v-if="getCommentLoading">Loading...</div>
       <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />

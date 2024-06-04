@@ -175,7 +175,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen flex-col justify-center dark:bg-black">
+  <div class="flex-col justify-center dark:bg-black">
     <ChannelHeaderMobile
       v-if="smAndDown && channel"
       :channel="channel"
