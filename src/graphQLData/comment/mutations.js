@@ -252,22 +252,6 @@ export const DELETE_COMMENT = gql`
   }
 `;
 
-export const GIVE_FEEDBACK_ON_COMMENT = gql`
-  mutation giveFeedbackOnComment(
-    $commentId: ID!
-    $modProfileName: String!
-    $commentText: String!
-  ) {
-    giveFeedbackOnComment(
-      commentId: $commentId
-      modProfileName: $modProfileName
-      commentText: $commentText
-    ) {
-      text
-    }
-  }
-`;
-
 export const ADD_FEEDBACK_COMMENT_TO_COMMENT = gql`
   mutation addFeedbackCommentToComment(
     $modProfileName: String!

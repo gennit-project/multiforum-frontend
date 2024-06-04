@@ -336,6 +336,9 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
       FeedbackCommentsAggregate {
         count
       }
+      GivesFeedbackOnComment {
+        id
+      }
       FeedbackComments(options: { limit: $limit, offset: $offset }) {
         id
         text
@@ -348,6 +351,12 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
           }
         }
         createdAt
+        FeedbackCommentsAggregate {
+          count
+        }
+        GivesFeedbackOnComment {
+          id
+        }
       }
     }
   }

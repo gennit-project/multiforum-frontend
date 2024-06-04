@@ -857,7 +857,7 @@ export default defineComponent({
     <EditCommentFeedbackModal
       v-if="showEditCommentFeedbackModal"
       :open="showEditCommentFeedbackModal"
-      :comment-id="commentToGiveFeedbackOn?.id"
+      :comment-id="commentToGiveFeedbackOn?.id || ''"
       :mod-name="loggedInUserModName"
       @close="showEditCommentFeedbackModal = false"
     />

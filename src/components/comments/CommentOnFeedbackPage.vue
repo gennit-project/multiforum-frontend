@@ -187,6 +187,7 @@ export default defineComponent({
       this.$emit("clickEditFeedback", input);
     },
     handleViewFeedback(feedbackId: string) {
+      console.log('clicked handle view feedback', feedbackId)
       this.router.push({
         name: "FeedbackOnCommentFeedback",
         params: {
@@ -249,6 +250,10 @@ export default defineComponent({
             // we want a nested comment to be the target. If we did it in methods
             // or setup, feedback would end up attached to the parent
             // instead of the child.
+            console.log('input passed to handle feedback ',{
+              commentData: comment,
+              parentCommentId: '',
+            })
             handleFeedback({
               commentData: comment,
               parentCommentId: '',
@@ -261,7 +266,7 @@ export default defineComponent({
             handleUndoFeedback({ commentData: comment, parentCommentId: '' });
           }
         "
-        @handleViewFeedback="handleViewFeedback(comment.id)"
+        @handleViewFeedback="() => handleViewFeedback(comment.id)"
         @handleDelete="
           () => {
             const deleteCommentInput = {
@@ -300,10 +305,19 @@ export default defineComponent({
         :show-downvote="comment.CommentAuthor?.displayName !== loggedInModName"
         :show-upvote="false"
         @openModProfile="$emit('openModProfile')"
-        @clickFeedback="$emit('clickFeedback')"
+        @clickFeedback="()=> {
+          console.log('input passed to handle feedback ',{
+            commentData: comment,
+            parentCommentId: '',
+          })
+          handleFeedback({
+            commentData: comment,
+            parentCommentId: '',
+          });
+        }"
         @clickUndoFeedback="$emit('clickUndoFeedback')"
         @clickEditFeedback="$emit('clickEditFeedback')"
-        @viewFeedback="$emit('handleViewFeedback')"
+        @viewFeedback="() => handleViewFeedback(comment.id)"
       />
     </div>
   </div>
