@@ -57,7 +57,19 @@ export default defineComponent({
     const commentId = ref("");
     const feedbackId = ref("");
     const showPermalinkedFeedback = ref(updateShowPermalinkedFeedback());
-   
+
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
 
     const {
       result: getCommentResult,
@@ -69,6 +81,7 @@ export default defineComponent({
       commentId: commentId,
       limit: PAGE_LIMIT,
       offset: 0,
+      loggedInModName: loggedInUserModName
     });
 
     const originalComment = computed<Comment>(() => {
@@ -295,18 +308,7 @@ export default defineComponent({
       //   }
       // },
     });
-    const {
-      result: localModProfileNameResult,
-      loading: localModProfileNameLoading,
-      error: localModProfileNameError,
-    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
-
-    const loggedInUserModName = computed(() => {
-      if (localModProfileNameLoading.value || localModProfileNameError.value) {
-        return "";
-      }
-      return localModProfileNameResult.value.modProfileName;
-    });
+   
 
     const showFeedbackFormModal = ref(false);
     const showFeedbackSubmittedSuccessfully = ref(false);

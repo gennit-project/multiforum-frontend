@@ -84,6 +84,9 @@ export default defineComponent({
       // has already given feedback on the comment.
       const feedbackCommentsByLoggedInUser = props.commentData.FeedbackComments;
       if (!feedbackCommentsByLoggedInUser) {
+        if (typeof props.commentData.FeedbackCommentsAggregate?.count === "number" && props.commentData.FeedbackCommentsAggregate.count > 0) {
+          return true;
+        }
         return false;
       }
       if (feedbackCommentsByLoggedInUser.length === 0) {

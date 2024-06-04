@@ -320,7 +320,12 @@ export const GET_COMMENT_REPLIES = gql`
 `;
 
 export const GET_FEEDBACK_ON_COMMENT = gql`
-  query getFeedbackOnComment($commentId: ID!, $limit: Int, $offset: Int) {
+  query getFeedbackOnComment(
+    $commentId: ID!,
+    $limit: Int, 
+    $offset: Int,
+    $loggedInModName: String
+  ) {
     comments(where: { id: $commentId }) {
       id
       CommentAuthor {
@@ -351,7 +356,13 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
           }
         }
         createdAt
-        FeedbackCommentsAggregate {
+        FeedbackCommentsAggregate(
+          where: {
+            CommentAuthorConnection: {
+              ModerationProfile: { node: { displayName: $loggedInModName } }
+            }
+          }
+        ) {
           count
         }
         GivesFeedbackOnComment {
