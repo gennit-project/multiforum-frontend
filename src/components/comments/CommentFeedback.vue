@@ -365,6 +365,12 @@ export default defineComponent({
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
       this.commentToGiveFeedbackOn = commentData;
     },
+    handleClickUndoFeedback(input: GiveFeedbackInput) {
+      const { commentData, parentCommentId } = input;
+      this.showConfirmUndoFeedbackModal = true;
+      this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
+      this.commentToRemoveFeedbackFrom = commentData;
+    },
     updateFeedback(text: string) {
       this.feedbackText = text;
     },
@@ -476,6 +482,7 @@ export default defineComponent({
               :is-highlighted="true"
               @showCopiedLinkNotification="showCopiedLinkNotification = true"
               @clickFeedback="handleClickGiveFeedback"
+              @clickUndoFeedback="handleClickUndoFeedback"
             />
           </template>
         </PermalinkedFeedbackComment>
@@ -491,6 +498,7 @@ export default defineComponent({
             :comment="comment"
             @showCopiedLinkNotification="showCopiedLinkNotification = true"
             @clickFeedback="handleClickGiveFeedback"
+            @clickUndoFeedback="handleClickUndoFeedback"
           />
         </div>
         <LoadMore
