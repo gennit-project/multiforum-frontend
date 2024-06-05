@@ -698,6 +698,7 @@ export default defineComponent({
       <SortButtons 
         v-if="showSortButtons"
         :show-top-options="false" 
+        class="float-right"
       />
       <LoadingSpinner
         v-if="loading"
