@@ -180,13 +180,13 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex gap-3 space-x-2 rounded-lg bg-white px-6 py-4 dark:bg-gray-700"
+    class="relative flex gap-3 space-x-2 rounded-lg bg-white border dark:border-gray-500 px-6 py-4 dark:bg-gray-800"
   >
     <div class="flex w-full justify-between">
       <div class="w-full">
-        <div class="flex border-b pb-2 dark:border-b-gray-600">
+        <div class="flex items-center border-b pb-2 dark:border-b-gray-600">
           <div
-            class="mr-2 flex w-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
+            class="mr-2 flex items-center w-10 h-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
           >
             💬
           </div>

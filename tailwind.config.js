@@ -4,6 +4,14 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
   darkMode: "class",
   theme: {
+    fontWeight: {
+      thin: '100',
+      light: '300',
+      normal: '400',
+      medium: '500',
+      bold: '700',
+      black: '900',
+    },
     colors: {
       gray: {
         900: "#0d1117",

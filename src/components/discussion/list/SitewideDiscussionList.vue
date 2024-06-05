@@ -180,7 +180,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full bg-gray-100 dark:bg-gray-800 px-2 rounded-lg">
+  <div class="w-full px-2 rounded-lg">
     <slot />
     <p v-if="discussionLoading">
       Loading...
@@ -207,7 +207,7 @@ export default defineComponent({
     <div v-if="discussions && discussions.length > 0">
       <ul
         role="list"
-        class="my-6 mr-2 flex flex-col gap-2"
+        class="my-6 mr-2 flex flex-col gap-1"
         data-testid="sitewide-discussion-list"
       >
         <SitewideDiscussionListItem
