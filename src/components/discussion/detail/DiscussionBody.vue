@@ -115,7 +115,7 @@ export default defineComponent({
         :word-limit="wordLimit"
       />
     </div>
-    <div class="flex -mt-2">
+    <div class="flex mt-2">
       <EmojiButtons
         :key="emojiJson"
         :discussion-channel-id="discussionChannelId"

@@ -132,7 +132,7 @@ export default defineComponent({
           @click="$emit('toggleDropdown')"
         />
         <div
-          class="flex items-center space-x-1 ml-8 text-sm text-gray-500 dark:text-white"
+          class="flex items-center space-x-1 ml-12 text-sm text-gray-500 dark:text-white"
         >
           <router-link
             to="/"
