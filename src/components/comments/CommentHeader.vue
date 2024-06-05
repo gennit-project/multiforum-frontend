@@ -42,6 +42,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    console.log('data in comment header', props.commentData)
     const isAdmin = computed(() => {
       const serverRoles = props.commentData.CommentAuthor?.ServerRoles;
       if (!serverRoles) {

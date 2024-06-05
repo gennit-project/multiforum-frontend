@@ -380,7 +380,7 @@ export default defineComponent({
 <template>
   <div class="flex justify-center">
     <div
-      class="w-full max-w-4xl space-y-4 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
+      class="w-full max-w-4xl space-y-4 rounded-lg bg-white p-4 dark:bg-gray-800 sm:px-2 md:px-5"
     >
       <div v-if="getCommentLoading">Loading...</div>
       <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />
@@ -435,7 +435,7 @@ export default defineComponent({
         <router-link :to="contextLink" class="text-blue-500 underline">
           View original context
         </router-link>
-        <h2 class="text-wrap text-center text-xl font-bold dark:text-gray-200">
+        <h2 class="text-wrap text-center text-xl mt-4 font-bold dark:text-gray-200">
           Feedback Comments ({{ feedbackCommentsAggregate }})
         </h2>
         <InfoBanner

@@ -331,9 +331,15 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
       CommentAuthor {
         ... on User {
           username
+          profilePicURL
+          displayName
+          commentKarma
+          discussionKarma
+          createdAt
         }
         ... on ModerationProfile {
             displayName
+            createdAt
         }
       }
       createdAt
