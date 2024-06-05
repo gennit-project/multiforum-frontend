@@ -28,6 +28,10 @@ type GiveFeedbackInput = {
   parentCommentId: string;
 };
 
+type EditFeedbackInput = {
+  commentData: Comment;
+};
+
 export default defineComponent({
   name: "CommentFeedback",
   components: {
@@ -371,6 +375,11 @@ export default defineComponent({
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
       this.commentToRemoveFeedbackFrom = commentData;
     },
+    handleClickEditFeedback(input: EditFeedbackInput) {
+      const { commentData } = input;
+      this.commentToGiveFeedbackOn = commentData;
+      this.showEditCommentFeedbackModal = true;
+    },
     updateFeedback(text: string) {
       this.feedbackText = text;
     },
@@ -483,6 +492,7 @@ export default defineComponent({
               @showCopiedLinkNotification="showCopiedLinkNotification = true"
               @clickFeedback="handleClickGiveFeedback"
               @clickUndoFeedback="handleClickUndoFeedback"
+              @clickEditFeedback="handleClickEditFeedback"
             />
           </template>
         </PermalinkedFeedbackComment>
@@ -499,6 +509,7 @@ export default defineComponent({
             @showCopiedLinkNotification="showCopiedLinkNotification = true"
             @clickFeedback="handleClickGiveFeedback"
             @clickUndoFeedback="handleClickUndoFeedback"
+            @clickEditFeedback="handleClickEditFeedback"
           />
         </div>
         <LoadMore
