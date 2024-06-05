@@ -376,6 +376,7 @@ export default defineComponent({
               <img
                 v-if="smAndDown && event.coverImageURL"
                 :src="event.coverImageURL"
+                alt="Event cover image"
                 class="mb-4 max-h-48 rounded-lg"
               >
               <div>
@@ -443,7 +444,7 @@ export default defineComponent({
               </div>
 
               <router-link
-                v-if="showDetailLink && event && !submittedToMultipleChannels"
+                v-if="showDetailLink && event && (isWithinChannel || !submittedToMultipleChannels)"
                 :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
                 class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
               >
