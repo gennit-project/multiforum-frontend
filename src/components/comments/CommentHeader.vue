@@ -42,7 +42,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    console.log('data in comment header', props.commentData)
     const isAdmin = computed(() => {
       const serverRoles = props.commentData.CommentAuthor?.ServerRoles;
       if (!serverRoles) {
@@ -143,7 +142,7 @@ export default defineComponent({
           View Context
         </router-link>
       </div>
-      <div class="mt-2 flex items-center">
+      <div class="mt-2 flex flex-wrap items-center">
         <div
           class="ml-1 flex flex-wrap items-center space-x-2 text-xs dark:text-gray-300"
         >

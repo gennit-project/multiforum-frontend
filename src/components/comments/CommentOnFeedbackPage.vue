@@ -187,7 +187,6 @@ export default defineComponent({
       this.$emit("clickEditFeedback", input);
     },
     handleViewFeedback(feedbackId: string) {
-      console.log('clicked handle view feedback', feedbackId)
       this.router.push({
         name: "FeedbackOnCommentFeedback",
         params: {
@@ -203,7 +202,7 @@ export default defineComponent({
 <template>
   <div>
     <div
-      class="flex items-center gap-2 text-sm leading-8 text-gray-500 dark:text-gray-300"
+      class="flex flex-wrap items-center gap-x-2 text-sm leading-8 text-gray-500 dark:text-gray-300"
     >
       <Avatar
         v-if="comment.CommentAuthor?.displayName"
@@ -250,10 +249,6 @@ export default defineComponent({
             // we want a nested comment to be the target. If we did it in methods
             // or setup, feedback would end up attached to the parent
             // instead of the child.
-            console.log('input passed to handle feedback ',{
-              commentData: comment,
-              parentCommentId: '',
-            })
             handleFeedback({
               commentData: comment,
               parentCommentId: '',
@@ -306,10 +301,6 @@ export default defineComponent({
         :show-upvote="false"
         @openModProfile="$emit('openModProfile')"
         @clickFeedback="()=> {
-          console.log('input passed to handle feedback ',{
-            commentData: comment,
-            parentCommentId: '',
-          })
           handleFeedback({
             commentData: comment,
             parentCommentId: '',

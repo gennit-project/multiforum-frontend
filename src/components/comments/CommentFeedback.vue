@@ -94,7 +94,6 @@ export default defineComponent({
     const contextOfFeedbackComment = computed(() => {
       if (originalComment.value) {
         const context = originalComment.value.GivesFeedbackOnComment;
-        console.log("context", context);
         return context;
       }
       return null;
@@ -102,15 +101,7 @@ export default defineComponent({
 
     const updateContextLink = () => {
       if (originalComment.value) {
-        console.log("route name", route.name);
         if (route.name === "CommentFeedback") {
-          console.log('context link is',{
-            name: "DiscussionCommentPermalink",
-            params: {
-              discussionId: route.params.discussionId,
-              commentId: originalComment.value.id || "",
-            }
-          })
           return {
             name: "DiscussionCommentPermalink",
             params: {
@@ -124,16 +115,6 @@ export default defineComponent({
             console.warn("No context of feedback comment found")
             return "";
           }
-    
-          console.log("context link is ", {
-            name: "DiscussionCommentFeedbackPermalink",
-            params: {
-              discussionId: route.params.discussionId,
-              commentId: contextOfFeedbackComment.value?.id || "",
-              channelId: route.params.channelId,
-              feedbackId: originalComment.value.id || "",
-            }
-          })
           return {
             name: "DiscussionCommentFeedbackPermalink",
             params: {
@@ -143,6 +124,32 @@ export default defineComponent({
               feedbackId: originalComment.value.id || "",
             },
           };
+        }
+        if (route.name === "DiscussionCommentFeedbackPermalink") {
+          // In this case we are already on the permalinked feedback comment page.
+          // If the original comment has a populated GivesFeedbackOnComment field,
+          // link to that feedback comment's permalink page.
+          // Otherwise link to the normal discussion comment permalink page.
+          if (!contextOfFeedbackComment.value) {
+            return {
+              name: "DiscussionCommentPermalink",
+              params: {
+                discussionId: route.params.discussionId,
+                commentId: route.params.commentId
+              },
+            };
+          } 
+          else {
+            return {
+              name: "DiscussionCommentFeedbackPermalink",
+              params: {
+                discussionId: route.params.discussionId,
+                commentId: contextOfFeedbackComment.value?.id || "",
+                channelId: route.params.channelId,
+                feedbackId: originalComment.value.id || "",
+              },
+            };
+          }
         }
       }
       return "";
@@ -186,7 +193,6 @@ export default defineComponent({
 
     const parentCommentId = computed(() => {
       if (originalComment.value && originalComment.value.ParentComment) {
-        console.log("parent comment id", originalComment.value);
         return originalComment.value.ParentComment.id;
       }
       return "";
@@ -382,8 +388,13 @@ export default defineComponent({
     <div
       class="w-full max-w-4xl space-y-4 rounded-lg bg-white p-4 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="getCommentLoading">Loading...</div>
-      <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />
+      <div v-if="getCommentLoading">
+        Loading...
+      </div>
+      <ErrorBanner
+        v-if="getCommentError"
+        :text="getCommentError.message"
+      />
       <div v-else-if="originalComment">
         <router-link
           v-if="parentCommentId"
@@ -417,7 +428,9 @@ export default defineComponent({
         <PageNotFound
           v-if="!getCommentLoading && !getCommentError && !originalComment"
         />
-        <p class="px-2">This page collects feedback on this comment:</p>
+        <p class="px-2">
+          This page collects feedback on this comment:
+        </p>
         <CommentHeader
           :comment-data="originalComment"
           :is-highlighted="false"
@@ -432,7 +445,10 @@ export default defineComponent({
             :disable-gallery="true"
           />
         </div>
-        <router-link :to="contextLink" class="text-blue-500 underline">
+        <router-link
+          :to="contextLink"
+          class="text-blue-500 underline"
+        >
           View original context
         </router-link>
         <h2 class="text-wrap text-center text-xl mt-4 font-bold dark:text-gray-200">
@@ -463,11 +479,14 @@ export default defineComponent({
             />
           </template>
         </PermalinkedFeedbackComment>
-        <div v-for="comment in feedbackComments" :key="comment.id">
+        <div
+          v-for="comment in feedbackComments"
+          :key="comment.id"
+        >
           <CommentOnFeedbackPage
             v-if="
               !showPermalinkedFeedback ||
-              (showPermalinkedFeedback && comment.id !== feedbackId)
+                (showPermalinkedFeedback && comment.id !== feedbackId)
             "
             :comment="comment"
             @showCopiedLinkNotification="showCopiedLinkNotification = true"
@@ -479,7 +498,9 @@ export default defineComponent({
           :reached-end-of-results="reachedEndOfResults"
           @loadMore="loadMore"
         />
-        <div v-if="getCommentLoading">Loading...</div>
+        <div v-if="getCommentLoading">
+          Loading...
+        </div>
       </div>
       <Notification
         :show="showCopiedLinkNotification"
