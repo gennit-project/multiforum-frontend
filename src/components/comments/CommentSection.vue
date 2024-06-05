@@ -1,11 +1,5 @@
 <script lang="ts">
-import {
-  defineComponent,
-  ref,
-  computed,
-  PropType,
-  watchEffect,
-} from "vue";
+import { defineComponent, ref, computed, PropType, watchEffect } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import Comment from "./Comment.vue";
 import LoadMore from "../generic/LoadMore.vue";
@@ -58,7 +52,7 @@ type GiveFeedbackInput = {
 
 type EditFeedbackInput = {
   commentData: CommentType;
-}
+};
 
 export default defineComponent({
   components: {
@@ -683,23 +677,25 @@ export default defineComponent({
 <template>
   <div class="bg-white dark:bg-gray-800">
     <div>
-      <h2
-        id="comments"
-        ref="commentSectionHeader"
-        class="px-1 text-lg"
-      >
-        {{ `Comments (${aggregateCommentCount})` }}
-      </h2>
+      <div class="align-items flex justify-between">
+        <h2
+          id="comments"
+          ref="commentSectionHeader"
+          class="px-1 text-lg"
+        >
+          {{ `Comments (${aggregateCommentCount})` }}
+        </h2>
+        <SortButtons
+          v-if="showSortButtons"
+          :show-top-options="false"
+        />
+      </div>
       <ErrorBanner
         v-if="locked"
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-      <SortButtons 
-        v-if="showSortButtons"
-        :show-top-options="false" 
-        class="float-right"
-      />
+
       <LoadingSpinner
         v-if="loading"
         class="ml-2"
