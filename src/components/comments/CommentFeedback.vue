@@ -258,7 +258,7 @@ export default defineComponent({
       error: addFeedbackCommentToCommentError,
       onDone: onAddFeedbackCommentToCommentDone,
     } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT, {
-      // update: (cache: any, result: any) => {
+      update: (cache: any, result: any) => {
       //   const parentId = JSON.parse(
       //     JSON.stringify(parentIdOfCommentToGiveFeedbackOn.value),
       //   );
@@ -316,7 +316,7 @@ export default defineComponent({
       //       newFeedbackComment,
       //     });
       //   }
-      // },
+      },
     });
    
 

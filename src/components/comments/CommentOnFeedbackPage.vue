@@ -62,23 +62,27 @@ export default defineComponent({
           icon: ALLOWED_ICONS.VIEW_FEEDBACK,
         },
       ]);
+      const loggedInUserAuthoredComment = props.comment?.CommentAuthor?.displayName === loggedInModName.value
 
-      if (props.comment?.CommentAuthor?.username === loggedInModName.value) {
-        out = out.concat([
-          {
-            label: "Edit",
-            value: "",
-            event: "handleEdit",
-            icon: ALLOWED_ICONS.EDIT,
-          },
-          {
-            label: "Delete",
-            value: "",
-            event: "handleDelete",
-            icon: ALLOWED_ICONS.DELETE,
-          },
-        ]);
-      } else {
+      // May add these in future. The user can already edit/delete feedback by
+      // navigating back to the page where they originally gave feedback.
+      // if (loggedInUserAuthoredComment) {
+      //   out = out.concat([
+      //     {
+      //       label: "Edit",
+      //       value: "",
+      //       event: "handleEdit",
+      //       icon: ALLOWED_ICONS.EDIT,
+      //     },
+      //     {
+      //       label: "Delete",
+      //       value: "",
+      //       event: "handleDelete",
+      //       icon: ALLOWED_ICONS.DELETE,
+      //     },
+      //   ]);
+      // } else 
+      if (loggedInModName.value) {
         out = out.concat([
           {
             label: "Report",
@@ -88,7 +92,8 @@ export default defineComponent({
           },
         ]);
 
-        if (props.comment.FeedbackComments?.length === 0) {
+        if (props.comment.FeedbackCommentsAggregate?.count === 0) {
+          if (!loggedInUserAuthoredComment)
           out.push({
             label: "Give Feedback",
             value: "",
