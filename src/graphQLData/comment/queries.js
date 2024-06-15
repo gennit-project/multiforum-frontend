@@ -358,6 +358,7 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
         }
         CommentAuthor {
           ... on ModerationProfile {
+            createdAt
             displayName
           }
         }
@@ -370,6 +371,15 @@ export const GET_FEEDBACK_ON_COMMENT = gql`
           }
         ) {
           count
+        }
+        FeedbackComments(
+          where: {
+            CommentAuthorConnection: {
+              ModerationProfile: { node: { displayName: $loggedInModName } }
+            }
+          }
+        ) {
+          id
         }
         GivesFeedbackOnComment {
           id

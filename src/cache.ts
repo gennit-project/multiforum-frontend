@@ -42,8 +42,8 @@ const cache = new InMemoryCache({
           merge: false,
         },
         Author: {
-          merge: true
-        }
+          merge: true,
+        },
       },
     },
     Comment: {
@@ -53,14 +53,36 @@ const cache = new InMemoryCache({
           merge: false,
         },
         UpvotedByUsers: {
-          merge(existing, incoming) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          merge(existing = [], incoming) {
             return incoming;
           },
         },
         FeedbackComments: {
-          merge(existing, incoming) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          merge(existing = [], incoming) {
             return incoming;
-          }
+          },
+        },
+        createdAt: {
+          read(existing) {
+            return existing || null;
+          },
+        },
+        FeedbackCommentsAggregate: {
+          read(existing) {
+            return existing || { count: 0, __typename: "FeedbackCommentsAggregate" };
+          },
+        },
+        GivesFeedbackOnComment: {
+          read(existing) {
+            return existing || null;
+          },
+        },
+        Channel: {
+          read(existing) {
+            return existing || null;
+          },
         },
       },
     },
@@ -74,14 +96,15 @@ const cache = new InMemoryCache({
           merge: false,
         },
         Poster: {
-          merge: true
-        }
+          merge: true,
+        },
       },
     },
     DiscussionChannel: {
       fields: {
         UpvotedByUsers: {
-          merge(existing, incoming) {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          merge(existing = [], incoming) {
             return incoming;
           },
         },

@@ -281,10 +281,14 @@ export const ADD_FEEDBACK_COMMENT_TO_COMMENT = gql`
         CommentAuthor {
           ... on ModerationProfile {
             displayName
+            createdAt
           }
         }
         createdAt
         text
+        FeedbackComments {
+          id
+        }
       }
     }
   }

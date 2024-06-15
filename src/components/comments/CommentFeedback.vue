@@ -20,7 +20,6 @@ import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedback
 import ConfirmUndoCommentFeedbackModal from "@/components/discussion/detail/ConfirmUndoCommentFeedbackModal.vue";
 import EditCommentFeedbackModal from "@/components/comments/EditCommentFeedbackModal.vue";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
-import gql from "graphql-tag";
 
 const PAGE_LIMIT = 10;
 
@@ -268,70 +267,58 @@ export default defineComponent({
     } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT, {
       update: (cache: any, result: any) => {
         const newFeedbackComment = result.data.createComments.comments[0];
-        console.log("new feedback comment", newFeedbackComment);
 
         if (commentToGiveFeedbackOn.value) {
-        
-          const updatedComment = {
-            ...commentToGiveFeedbackOn.value,
-            FeedbackComments: [
-              ...(commentToGiveFeedbackOn.value.FeedbackComments || []),
-              newFeedbackComment,
-            ],
-          };
           const prevQueryResult = cache.readQuery({
             query: GET_FEEDBACK_ON_COMMENT,
             variables: {
               commentId: commentId.value,
               limit: PAGE_LIMIT,
               offset: 0,
-              loggedInModName: loggedInUserModName.value
+              loggedInModName: loggedInUserModName.value,
             },
           });
-          console.log('read query result', prevQueryResult)
-          // The prevQueryResult is structured like this: 
-          // {
-          // comments: [
-          //    {
-          //       ... original comment data,
-          //      FeedbackComments: [
-          //        ... Other feedback comments,
-          //        The feedback we are giving on:
-          //        {
-          //          // other fields
-          //          FeedbackCommentsAggregate {
-          //           // This count is what we want to update!
-          //           count
-          //         }
-          //      ]
-          //    } 
-          //  ]
-          // }
+
+          const prevOriginalFeedbackList =
+            originalComment.value.FeedbackComments;
+
+          const prevFeedbackComments =
+            commentToGiveFeedbackOn.value.FeedbackComments || [];
+
+          const updatedComment = {
+            ...originalComment.value,
+            FeedbackComments: [
+              ...prevOriginalFeedbackList.filter(
+                (comment) => comment.id !== commentToGiveFeedbackOn.value?.id,
+              ),
+              {
+                ...commentToGiveFeedbackOn.value,
+                FeedbackComments: [...prevFeedbackComments, newFeedbackComment],
+                FeedbackCommentsAggregate: {
+                  count:
+                    prevQueryResult.comments[0].FeedbackCommentsAggregate
+                      .count + 1,
+                  __typename: "FeedbackCommentsAggregate",
+                },
+              },
+            ],
+          };
+
           cache.writeQuery({
             query: GET_FEEDBACK_ON_COMMENT,
             variables: {
               commentId: commentId.value,
               limit: PAGE_LIMIT,
               offset: 0,
-              loggedInModName: loggedInUserModName.value
+              loggedInModName: loggedInUserModName.value,
             },
             data: {
-              comments: [
-                ...prevQueryResult.comments,
-                {
-                  ...updatedComment,
-                  FeedbackCommentsAggregate: {
-                    count: prevQueryResult.comments[0].FeedbackCommentsAggregate.count + 1,
-                    __typename: "FeedbackCommentsAggregate",
-                  },
-                },
-              ],
+              comments: [updatedComment],
             },
           });
         }
-      }
+      },
     });
-
 
     onAddFeedbackCommentToCommentDone(() => {
       showFeedbackFormModal.value = false;
@@ -371,14 +358,12 @@ export default defineComponent({
   },
   methods: {
     handleClickGiveFeedback(input: GiveFeedbackInput) {
-      console.log("input to handle click give feedback", input);
       const { commentData, parentCommentId } = input;
       this.showFeedbackFormModal = true;
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
       this.commentToGiveFeedbackOn = commentData;
     },
     handleClickUndoFeedback(input: GiveFeedbackInput) {
-      console.log("input to handle click undo feedback", input);
       const { commentData, parentCommentId } = input;
       this.showConfirmUndoFeedbackModal = true;
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
@@ -397,12 +382,6 @@ export default defineComponent({
         console.error("commentId is required to submit feedback");
         return;
       }
-      console.log("variables in feedback comment creation", {
-        commentId: this.commentToGiveFeedbackOn?.id,
-        text: this.feedbackText,
-        modProfileName: this.loggedInUserModName,
-        channelId: this.channelId,
-      });
       this.addFeedbackCommentToComment({
         commentId: this.commentToGiveFeedbackOn?.id,
         text: this.feedbackText,
@@ -418,8 +397,13 @@ export default defineComponent({
     <div
       class="w-full max-w-4xl space-y-4 rounded-lg bg-white p-4 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="getCommentLoading">Loading...</div>
-      <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />
+      <div v-if="getCommentLoading">
+        Loading...
+      </div>
+      <ErrorBanner
+        v-if="getCommentError"
+        :text="getCommentError.message"
+      />
       <div v-else-if="originalComment">
         <router-link
           v-if="parentCommentId"
@@ -453,7 +437,9 @@ export default defineComponent({
         <PageNotFound
           v-if="!getCommentLoading && !getCommentError && !originalComment"
         />
-        <p class="px-2">This page collects feedback on this comment:</p>
+        <p class="px-2">
+          This page collects feedback on this comment:
+        </p>
         <CommentHeader
           :comment-data="originalComment"
           :is-highlighted="false"
@@ -468,7 +454,10 @@ export default defineComponent({
             :disable-gallery="true"
           />
         </div>
-        <router-link :to="contextLink" class="text-blue-500 underline">
+        <router-link
+          :to="contextLink"
+          class="text-blue-500 underline"
+        >
           View original context
         </router-link>
         <h2
@@ -503,11 +492,14 @@ export default defineComponent({
             />
           </template>
         </PermalinkedFeedbackComment>
-        <div v-for="comment in feedbackComments" :key="comment.id">
+        <div
+          v-for="comment in feedbackComments"
+          :key="comment.id"
+        >
           <CommentOnFeedbackPage
             v-if="
               !showPermalinkedFeedback ||
-              (showPermalinkedFeedback && comment.id !== feedbackId)
+                (showPermalinkedFeedback && comment.id !== feedbackId)
             "
             :comment="comment"
             @showCopiedLinkNotification="showCopiedLinkNotification = true"
@@ -521,7 +513,9 @@ export default defineComponent({
           :reached-end-of-results="reachedEndOfResults"
           @loadMore="loadMore"
         />
-        <div v-if="getCommentLoading">Loading...</div>
+        <div v-if="getCommentLoading">
+          Loading...
+        </div>
       </div>
       <Notification
         :show="showCopiedLinkNotification"
