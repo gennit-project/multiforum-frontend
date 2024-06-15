@@ -535,7 +535,6 @@ export default defineComponent({
       showFeedbackFormModal,
       showEditCommentFeedbackModal,
       showOpenIssueModal: ref(false),
-      showSortButtons: route.name !== "DiscussionCommentPermalink",
       showSuccessfullyReported: ref(false),
       showFeedbackSubmittedSuccessfully,
       route,
@@ -686,7 +685,6 @@ export default defineComponent({
           {{ `Comments (${aggregateCommentCount})` }}
         </h2>
         <SortButtons
-          v-if="showSortButtons"
           :show-top-options="false"
         />
       </div>
@@ -695,7 +693,6 @@ export default defineComponent({
         class="mr-10 mt-2"
         :text="'This comment section is locked because the post was removed from the channel.'"
       />
-
       <LoadingSpinner
         v-if="loading"
         class="ml-2"

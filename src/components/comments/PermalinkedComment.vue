@@ -16,15 +16,17 @@ export default defineComponent({
       result: commentResult,
       error: commentError,
       loading: commentLoading,
-      //   fetchMore,
     } = useQuery(GET_COMMENT_AND_REPLIES, {
       id: route.params.commentId,
     });
 
+    const comment = computed(() => {
+      return commentResult.value?.comments[0];
+    });
+
     const parentCommentId = computed(() => {
-      const comment = commentResult.value?.comments[0]
-      if (comment && comment.ParentComment) {
-        return comment.ParentComment.id
+      if (comment.value) {
+        return comment.value.ParentComment?.id
       }
       return "";
     });
@@ -60,6 +62,7 @@ export default defineComponent({
         :to="{
           name: 'DiscussionCommentPermalink',
           params: {
+            channelId: route.params.channelId,
             discussionId: route.params.discussionId,
             commentId: parentCommentId,
           },
