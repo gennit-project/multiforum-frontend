@@ -20,6 +20,7 @@ import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedback
 import ConfirmUndoCommentFeedbackModal from "@/components/discussion/detail/ConfirmUndoCommentFeedbackModal.vue";
 import EditCommentFeedbackModal from "@/components/comments/EditCommentFeedbackModal.vue";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import gql from "graphql-tag";
 
 const PAGE_LIMIT = 10;
 
@@ -59,6 +60,7 @@ export default defineComponent({
     const channelId = ref("");
     const discussionId = ref("");
     const commentId = ref("");
+    const offset = ref(0);
     const feedbackId = ref("");
     const showPermalinkedFeedback = ref(updateShowPermalinkedFeedback());
 
@@ -84,8 +86,8 @@ export default defineComponent({
     } = useQuery(GET_FEEDBACK_ON_COMMENT, {
       commentId: commentId,
       limit: PAGE_LIMIT,
-      offset: 0,
-      loggedInModName: loggedInUserModName
+      offset: offset,
+      loggedInModName: loggedInUserModName,
     });
 
     const originalComment = computed<Comment>(() => {
@@ -116,7 +118,7 @@ export default defineComponent({
         }
         if (route.name === "FeedbackOnCommentFeedback") {
           if (!contextOfFeedbackComment.value) {
-            console.warn("No context of feedback comment found")
+            console.warn("No context of feedback comment found");
             return "";
           }
           return {
@@ -139,11 +141,10 @@ export default defineComponent({
               name: "DiscussionCommentPermalink",
               params: {
                 discussionId: route.params.discussionId,
-                commentId: route.params.commentId
+                commentId: route.params.commentId,
               },
             };
-          } 
-          else {
+          } else {
             return {
               name: "DiscussionCommentFeedbackPermalink",
               params: {
@@ -252,6 +253,13 @@ export default defineComponent({
       return feedbackComments.value.length === feedbackCommentsAggregate.value;
     });
 
+    const showFeedbackFormModal = ref(false);
+    const showFeedbackSubmittedSuccessfully = ref(false);
+    const showConfirmUndoFeedbackModal = ref(false);
+    const commentToRemoveFeedbackFrom = ref<Comment | null>(null);
+    const commentToGiveFeedbackOn = ref<Comment | null>(null);
+    const showEditCommentFeedbackModal = ref(false);
+
     const {
       mutate: addFeedbackCommentToComment,
       loading: addFeedbackCommentToCommentLoading,
@@ -259,72 +267,71 @@ export default defineComponent({
       onDone: onAddFeedbackCommentToCommentDone,
     } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT, {
       update: (cache: any, result: any) => {
-      //   const parentId = JSON.parse(
-      //     JSON.stringify(parentIdOfCommentToGiveFeedbackOn.value),
-      //   );
-      //   const newFeedbackComment = result.data.createComments.comments[0];
-      //   // if it was a child comment, update GET_COMMENT_REPLIES
-      //   if (parentId) {
-      //     const readQueryResult = cache.readQuery({
-      //       query: GET_COMMENT_REPLIES,
-      //       variables: {
-      //         ...getCommentRepliesVariables,
-      //         commentId: parentId,
-      //       },
-      //     });
-      //     if (readQueryResult) {
-      //       const existingReplies =
-      //         readQueryResult?.getCommentReplies?.ChildComments;
-      //       const newChildComments = existingReplies.map(
-      //         (comment: CommentType) => {
-      //           const commentWeGaveFeedbackOn = commentToGiveFeedbackOn.value;
-      //           if (comment.id === commentWeGaveFeedbackOn?.id) {
-      //             const updatedComment = {
-      //               ...commentWeGaveFeedbackOn,
-      //               FeedbackComments: [
-      //                 ...comment.FeedbackComments,
-      //                 newFeedbackComment,
-      //               ],
-      //             };
-      //             return updatedComment;
-      //           }
-      //           return comment;
-      //         },
-      //       );
-      //       const writeQueryData = {
-      //         ...readQueryResult,
-      //         getCommentReplies: {
-      //           ...readQueryResult.getCommentReplies,
-      //           ChildComments: newChildComments,
-      //         },
-      //       };
-      //       // Write the updated replies back to the cache.
-      //       cache.writeQuery({
-      //         query: GET_COMMENT_REPLIES,
-      //         data: writeQueryData,
-      //         variables: {
-      //           ...getCommentRepliesVariables,
-      //           commentId: parentId,
-      //         },
-      //       });
-      //     }
-      //   } else {
-      //     // If it was a root comment, update the comment section query result
-      //     emit("updateCommentSectionQueryResult", {
-      //       cache,
-      //       commentToAddFeedbackTo: commentToGiveFeedbackOn.value,
-      //       newFeedbackComment,
-      //     });
-      //   }
-      },
-    });
-   
+        const newFeedbackComment = result.data.createComments.comments[0];
+        console.log("new feedback comment", newFeedbackComment);
 
-    const showFeedbackFormModal = ref(false);
-    const showFeedbackSubmittedSuccessfully = ref(false);
-    const showConfirmUndoFeedbackModal = ref(false);
-    const commentToRemoveFeedbackFrom = ref<Comment | null>(null);
-    const showEditCommentFeedbackModal = ref(false);
+        if (commentToGiveFeedbackOn.value) {
+        
+          const updatedComment = {
+            ...commentToGiveFeedbackOn.value,
+            FeedbackComments: [
+              ...(commentToGiveFeedbackOn.value.FeedbackComments || []),
+              newFeedbackComment,
+            ],
+          };
+          const prevQueryResult = cache.readQuery({
+            query: GET_FEEDBACK_ON_COMMENT,
+            variables: {
+              commentId: commentId.value,
+              limit: PAGE_LIMIT,
+              offset: 0,
+              loggedInModName: loggedInUserModName.value
+            },
+          });
+          console.log('read query result', prevQueryResult)
+          // The prevQueryResult is structured like this: 
+          // {
+          // comments: [
+          //    {
+          //       ... original comment data,
+          //      FeedbackComments: [
+          //        ... Other feedback comments,
+          //        The feedback we are giving on:
+          //        {
+          //          // other fields
+          //          FeedbackCommentsAggregate {
+          //           // This count is what we want to update!
+          //           count
+          //         }
+          //      ]
+          //    } 
+          //  ]
+          // }
+          cache.writeQuery({
+            query: GET_FEEDBACK_ON_COMMENT,
+            variables: {
+              commentId: commentId.value,
+              limit: PAGE_LIMIT,
+              offset: 0,
+              loggedInModName: loggedInUserModName.value
+            },
+            data: {
+              comments: [
+                ...prevQueryResult.comments,
+                {
+                  ...updatedComment,
+                  FeedbackCommentsAggregate: {
+                    count: prevQueryResult.comments[0].FeedbackCommentsAggregate.count + 1,
+                    __typename: "FeedbackCommentsAggregate",
+                  },
+                },
+              ],
+            },
+          });
+        }
+      }
+    });
+
 
     onAddFeedbackCommentToCommentDone(() => {
       showFeedbackFormModal.value = false;
@@ -337,7 +344,7 @@ export default defineComponent({
       addFeedbackCommentToCommentLoading,
       channelId,
       contextLink,
-      commentToGiveFeedbackOn: ref<Comment | null>(null),
+      commentToGiveFeedbackOn,
       commentToRemoveFeedbackFrom,
       discussionId,
       getCommentLoading,
@@ -364,12 +371,14 @@ export default defineComponent({
   },
   methods: {
     handleClickGiveFeedback(input: GiveFeedbackInput) {
+      console.log("input to handle click give feedback", input);
       const { commentData, parentCommentId } = input;
       this.showFeedbackFormModal = true;
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
       this.commentToGiveFeedbackOn = commentData;
     },
     handleClickUndoFeedback(input: GiveFeedbackInput) {
+      console.log("input to handle click undo feedback", input);
       const { commentData, parentCommentId } = input;
       this.showConfirmUndoFeedbackModal = true;
       this.parentIdOfCommentToGiveFeedbackOn = parentCommentId;
@@ -388,6 +397,12 @@ export default defineComponent({
         console.error("commentId is required to submit feedback");
         return;
       }
+      console.log("variables in feedback comment creation", {
+        commentId: this.commentToGiveFeedbackOn?.id,
+        text: this.feedbackText,
+        modProfileName: this.loggedInUserModName,
+        channelId: this.channelId,
+      });
       this.addFeedbackCommentToComment({
         commentId: this.commentToGiveFeedbackOn?.id,
         text: this.feedbackText,
@@ -403,13 +418,8 @@ export default defineComponent({
     <div
       class="w-full max-w-4xl space-y-4 rounded-lg bg-white p-4 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="getCommentLoading">
-        Loading...
-      </div>
-      <ErrorBanner
-        v-if="getCommentError"
-        :text="getCommentError.message"
-      />
+      <div v-if="getCommentLoading">Loading...</div>
+      <ErrorBanner v-if="getCommentError" :text="getCommentError.message" />
       <div v-else-if="originalComment">
         <router-link
           v-if="parentCommentId"
@@ -443,9 +453,7 @@ export default defineComponent({
         <PageNotFound
           v-if="!getCommentLoading && !getCommentError && !originalComment"
         />
-        <p class="px-2">
-          This page collects feedback on this comment:
-        </p>
+        <p class="px-2">This page collects feedback on this comment:</p>
         <CommentHeader
           :comment-data="originalComment"
           :is-highlighted="false"
@@ -460,13 +468,12 @@ export default defineComponent({
             :disable-gallery="true"
           />
         </div>
-        <router-link
-          :to="contextLink"
-          class="text-blue-500 underline"
-        >
+        <router-link :to="contextLink" class="text-blue-500 underline">
           View original context
         </router-link>
-        <h2 class="text-wrap text-center text-xl mt-4 font-bold dark:text-gray-200">
+        <h2
+          class="mt-4 text-wrap text-center text-xl font-bold dark:text-gray-200"
+        >
           Feedback Comments ({{ feedbackCommentsAggregate }})
         </h2>
         <InfoBanner
@@ -496,14 +503,11 @@ export default defineComponent({
             />
           </template>
         </PermalinkedFeedbackComment>
-        <div
-          v-for="comment in feedbackComments"
-          :key="comment.id"
-        >
+        <div v-for="comment in feedbackComments" :key="comment.id">
           <CommentOnFeedbackPage
             v-if="
               !showPermalinkedFeedback ||
-                (showPermalinkedFeedback && comment.id !== feedbackId)
+              (showPermalinkedFeedback && comment.id !== feedbackId)
             "
             :comment="comment"
             @showCopiedLinkNotification="showCopiedLinkNotification = true"
@@ -517,9 +521,7 @@ export default defineComponent({
           :reached-end-of-results="reachedEndOfResults"
           @loadMore="loadMore"
         />
-        <div v-if="getCommentLoading">
-          Loading...
-        </div>
+        <div v-if="getCommentLoading">Loading...</div>
       </div>
       <Notification
         :show="showCopiedLinkNotification"

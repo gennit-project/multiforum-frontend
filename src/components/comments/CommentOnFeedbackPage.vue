@@ -311,7 +311,10 @@ export default defineComponent({
             parentCommentId: '',
           });
         }"
-        @clickUndoFeedback="$emit('clickUndoFeedback')"
+        @clickUndoFeedback=" () => {
+          // See comment on clickFeedback. The same principle applies.
+          handleUndoFeedback({ commentData: comment, parentCommentId: '' });
+        }"
         @clickEditFeedback="$emit('clickEditFeedback')"
         @viewFeedback="() => handleViewFeedback(comment.id)"
       />

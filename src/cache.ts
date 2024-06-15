@@ -60,7 +60,7 @@ const cache = new InMemoryCache({
         FeedbackComments: {
           merge(existing, incoming) {
             return incoming;
-          },
+          }
         },
       },
     },
@@ -114,6 +114,10 @@ const cache = new InMemoryCache({
         },
         channels: {
           keyArgs: ["where", "limit"],
+          merge: standardMerge,
+        },
+        comments: {
+          keyArgs: ["where", "resultsOrder"],
           merge: standardMerge,
         },
         username: {
