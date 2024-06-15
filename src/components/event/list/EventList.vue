@@ -129,7 +129,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div>
+  <div class="bg-white dark:bg-black">
     <div v-if="events.length === 0">
       <p
         v-if="!showMap"
@@ -198,3 +198,9 @@ export default defineComponent({
     />
   </div>
 </template>
+<style>
+/* Hide the X on the info window */
+.gm-ui-hover-effect {
+  display: none !important;
+}
+</style>
