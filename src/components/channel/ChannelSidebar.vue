@@ -188,7 +188,7 @@ export default defineComponent({
             </li>
           </ul>
           <p v-else class="mx-6 my-3 mb-6 text-sm dark:text-gray-400">
-            This channel does not have any admins.
+            This forum does not have any admins.
           </p>
         </div>
       </div>

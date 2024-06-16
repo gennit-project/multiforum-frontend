@@ -158,7 +158,7 @@ export default defineComponent({
             v-else
             class="text-xs"
           >
-            {{ "This channel has no description." }}
+            {{ "This forum has no description." }}
           </p>
         </div>
         <slot />
@@ -220,7 +220,7 @@ export default defineComponent({
             v-else
             class="mx-6 my-3 mb-6 text-sm"
           >
-            This channel does not have any admins.
+            This forum does not have any admins.
           </p>
         </div>
       </div>

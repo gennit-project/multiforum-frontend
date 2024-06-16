@@ -57,9 +57,7 @@ export default defineComponent({
     class="relative z-0 max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last"
   >
     <v-row class="flex divide-x dark:divide-gray-600">
-      <v-col
-        :cols="mdAndDown ? 12 : 8" class="p-0"
-      >
+      <v-col :cols="mdAndDown ? 12 : 8" class="p-0">
         <slot />
       </v-col>
       <v-col
@@ -73,20 +71,14 @@ export default defineComponent({
           class="sticky top-0 overflow-auto"
         >
           <div>
-            <h2 class="mt-2 px-6 text-xl font-bold">
-              Forum Intro
-            </h2>
+            <h2 class="mt-2 px-6 text-xl font-bold">Forum Intro</h2>
             <MarkdownPreview
+              class="-ml-2"
               v-if="channel?.description"
               :text="channel?.description"
               :word-limit="1000"
             />
-            <p
-              v-else
-              class="p-6 text-xs"
-            >
-              Welcome to {{ channelId }}!
-            </p>
+            <p v-else class="p-6 text-xs">Welcome to {{ channelId }}!</p>
           </div>
         </ChannelSidebar>
       </v-col>

@@ -227,7 +227,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div>
+  <div class="pr-6">
     <slot />
     <p v-if="!discussionChannelResult && discussionLoading">
       Loading...
