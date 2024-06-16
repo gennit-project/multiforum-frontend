@@ -29,11 +29,30 @@ function linkifyChannelNames(markdownString: string) {
 
 function linkifyUrls(text: string) {
   const urlRegex = /(?:https?:\/\/|www\.)[^\s/$.?#].[^\s]*/g;
+
+  // A regex to find markdown links
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/|www\.)[^\s/$.?#].[^\s]*\)/g;
+
+  // An array to store matches that are already markdown links
+  const markdownLinks: string[] = [];
+  let match;
+
+  // Store all markdown link matches
+  while ((match = markdownLinkRegex.exec(text)) !== null) {
+    markdownLinks.push(match[0]);
+  }
+
   return text.replace(urlRegex, (url) => {
     let href = url;
-    if (!url.startsWith("http")) {
-      href = "http://" + url;
+    if (!url.startsWith('http')) {
+      href = 'http://' + url;
     }
+
+    // Check if the URL is part of an existing markdown link
+    if (markdownLinks.some(link => link.includes(url))) {
+      return url; // Return the original URL if it is already part of a markdown link
+    }
+
     return `[${url}](${href})`;
   });
 }
