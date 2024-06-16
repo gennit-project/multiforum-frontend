@@ -477,7 +477,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="my-2 w-full space-y-1">
+  <div class="w-full space-y-1">
     <div class="flex items-center justify-end">
       <button v-if="allowHidingMainFilters" @click="() => toggleShowMainFilters()" class="text-blue-500 mr-4">
         {{ showMainFilters ? "Hide filters" : "Show filters" }}

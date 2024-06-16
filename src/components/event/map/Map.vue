@@ -120,7 +120,7 @@ export default defineComponent({
             },
             map: map.value,
             clickable: true,
-            draggable: true,
+            draggable: false,
             icon: {
               // eslint-disable-next-line @typescript-eslint/no-var-requires
               url: require("@/assets/images/place-icon.svg").default,

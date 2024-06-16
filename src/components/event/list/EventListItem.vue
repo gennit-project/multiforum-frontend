@@ -398,19 +398,22 @@ export default defineComponent({
                   >Canceled</span
                 >
               </div>
-              <p
-                class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
-              >
-                {{ `${event.locationName || ""}` }}
-              </p>
-              <p
-                class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
-              >
-                {{
-                  // start time and end time
-                  `${timeOfDay}`
-                }}
-              </p>
+
+              <div class="flex gap-1">
+                <span
+                  class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
+                >
+                  {{ `${event.locationName || ""}` }}
+                </span>
+                <span
+                  class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
+                >
+                  {{
+                    // start time and end time
+                    `${event.locationName ? "at " : ""}${timeOfDay}`
+                  }}
+                </span>
+              </div>
               <p v-if="event.virtualEventUrl">Online event</p>
               <p v-if="event.free" class="text-sm font-medium text-gray-600">
                 Free
@@ -423,7 +426,7 @@ export default defineComponent({
                 <MarkdownPreview
                   :text="truncatedDescription || ''"
                   :disable-gallery="true"
-                  :word-limit="50"
+                  :word-limit="20"
                   class="-ml-4"
                 />
               </div>

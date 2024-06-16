@@ -82,7 +82,7 @@ export default defineComponent({
         !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
         showCount && count ? '' : 'pr-4',
       ]"
-      class="md:my-2 sm:my-1 flex h-8 items-center space-x-2 rounded-lg py-2"
+      class="md:my-2 sm:my-1 flex h-8 items-center space-x-2 rounded-lg"
     >
       <div class="text-black dark:text-blue-500">
         <slot />
