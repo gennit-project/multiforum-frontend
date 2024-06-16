@@ -325,7 +325,11 @@ export default defineComponent({
       });
     },
     handleClick() {
-      if (this.smAndDown || this.currentChannelId || this.$route.name === 'SearchEventsList') {
+      if (
+        this.smAndDown ||
+        this.currentChannelId ||
+        this.$route.name === "SearchEventsList"
+      ) {
         this.$router.push(this.detailLink);
       } else {
         this.$emit("openPreview");
@@ -337,8 +341,7 @@ export default defineComponent({
 
 <template>
   <li
-    :ref="`#${event.id}`
-    "
+    :ref="`#${event.id}`"
     class="relative pt-4"
     :data-testid="`event-list-item-${event.title}`"
     @click="handleClick"
@@ -378,10 +381,10 @@ export default defineComponent({
                 :src="event.coverImageURL"
                 alt="Event cover image"
                 class="mb-4 max-h-48 rounded-lg"
-              >
+              />
               <div>
                 <span
-                  class="text-md text-blue-500 cursor-pointer font-bold hover:underline"
+                  class="text-md cursor-pointer font-bold text-blue-500 hover:underline"
                 >
                   <HighlightedSearchTerms
                     :text="event.title"
@@ -392,7 +395,8 @@ export default defineComponent({
                 <span
                   v-if="event.canceled"
                   class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
-                >Canceled</span>
+                  >Canceled</span
+                >
               </div>
               <p
                 class="mt-2 flex flex-wrap space-x-2 text-sm text-gray-500 dark:text-gray-200 sm:mr-6 sm:mt-1"
@@ -407,17 +411,24 @@ export default defineComponent({
                   `${timeOfDay}`
                 }}
               </p>
-              <p v-if="event.virtualEventUrl">
-                Online event
-              </p>
-              <p
-                v-if="event.free"
-                class="font-medium text-sm text-gray-600"
-              >
+              <p v-if="event.virtualEventUrl">Online event</p>
+              <p v-if="event.free" class="text-sm font-medium text-gray-600">
                 Free
               </p>
+
+              <div
+                v-if="truncatedDescription"
+                class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
+              >
+                <MarkdownPreview
+                  :text="truncatedDescription || ''"
+                  :disable-gallery="true"
+                  :word-limit="50"
+                  class="-ml-4"
+                />
+              </div>
               <p
-                class="font-medium mt-1 flex space-x-1 text-sm text-gray-600 hover:no-underline"
+                class="mt-1 flex space-x-1 text-sm font-medium text-gray-600 hover:no-underline"
               >
                 <Tag
                   v-for="tag in event.Tags"
@@ -432,19 +443,13 @@ export default defineComponent({
                   "
                 />
               </p>
-              <div
-                v-if="truncatedDescription"
-                class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
-              >
-                <MarkdownPreview
-                  :text="truncatedDescription || ''"
-                  :disable-gallery="true"
-                  class="-ml-4"
-                />
-              </div>
 
               <router-link
-                v-if="showDetailLink && event && (isWithinChannel || !submittedToMultipleChannels)"
+                v-if="
+                  showDetailLink &&
+                  event &&
+                  (isWithinChannel || !submittedToMultipleChannels)
+                "
                 :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
                 class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
               >
@@ -493,7 +498,7 @@ export default defineComponent({
                 v-if="event.coverImageURL"
                 :src="event.coverImageURL"
                 class="h-36 w-36 rounded-lg"
-              >
+              />
             </div>
           </div>
         </div>

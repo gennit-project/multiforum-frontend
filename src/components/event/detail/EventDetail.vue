@@ -462,7 +462,6 @@ export default defineComponent({
               v-if="event.coverImageURL"
               :src="event.coverImageURL"
               :alt="event.title"
-              class="rounded-t-lg"
             />
             <div
               class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"

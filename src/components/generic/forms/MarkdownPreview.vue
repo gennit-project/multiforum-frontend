@@ -12,11 +12,10 @@ function linkifyUsernames(markdownString: string) {
   // Replace each match with "[u/username](${config.baseUrl}u/username)" or "[@username](${config.baseUrl}u/username)"
   return markdownString.replace(regex, (match, username) => {
     // Determine the prefix to use in the link text
-    const prefix = match.startsWith('u/') ? 'u/' : '@';
+    const prefix = match.startsWith("u/") ? "u/" : "@";
     return `[${prefix}${username}](${config.baseUrl}u/${username})`;
   });
 }
-
 
 function linkifyChannelNames(markdownString: string) {
   // Use a regular expression to find "c/[channelName]" patterns
@@ -32,8 +31,8 @@ function linkifyUrls(text: string) {
   const urlRegex = /(?:https?:\/\/|www\.)[^\s/$.?#].[^\s]*/g;
   return text.replace(urlRegex, (url) => {
     let href = url;
-    if (!url.startsWith('http')) {
-      href = 'http://' + url;
+    if (!url.startsWith("http")) {
+      href = "http://" + url;
     }
     return `[${url}](${href})`;
   });
@@ -106,11 +105,13 @@ export default defineComponent({
       return str.trim().split(/\s+/).length;
     };
 
-    const showFullText = ref(!props.showShowMore || countWords(props.text) < props.wordLimit);
+    const showFullText = ref(
+      !props.showShowMore || countWords(props.text) < props.wordLimit,
+    );
 
     const shouldShowMoreButton = computed(() => {
       if (!props.showShowMore) {
-        return false
+        return false;
       }
       if (!props.text) {
         return false;
@@ -218,13 +219,8 @@ export default defineComponent({
 </script>
 
 <template>
-  <div
-    class="w-full"
-  >
-    <v-md-preview 
-      :text="shownText" 
-      @click="handleImageClick($event)"
-    />
+  <div class="w-full">
+    <v-md-preview :text="`${shownText}${!showFullText  ? '...' : ''}`" @click="handleImageClick($event)" />
     <button
       v-if="shouldShowMoreButton"
       class="ml-8 text-sm font-bold text-blue-600 hover:underline dark:text-gray-300"
@@ -235,16 +231,13 @@ export default defineComponent({
   </div>
 </template>
 <style>
-
 .github-markdown-body img {
   max-height: 500px !important;
 }
 p,
 ul,
-li
-{
+li {
   font-size: 0.9rem !important;
- 
 }
 
 p {
@@ -262,7 +255,4 @@ li {
 }
 
 /* p within nested list should have no margin */
-
-
-
 </style>

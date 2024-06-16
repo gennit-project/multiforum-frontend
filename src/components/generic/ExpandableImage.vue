@@ -99,7 +99,7 @@ export default defineComponent({
     :src="src"
     :alt="alt"
     class="cursor-pointer"
-    :class="{ 'rounded-full': !isSquare }"
+    :class="{ 'rounded-full': rounded }"
     @click="handleImageClick()"
   >
 </template>

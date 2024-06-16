@@ -127,7 +127,7 @@ export default defineComponent({
 
     <div class="w-full px-6">
       <div v-if="channel">
-        <div class="mt-6 w-full flex flex-col gap-6">
+        <div class="mt-6 flex w-full flex-col gap-6">
           <div :key="channelRules" v-if="channelRules !== '[]'">
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
@@ -136,6 +136,7 @@ export default defineComponent({
             </span>
             <ChannelRules :key="channelRules" :rules="channelRules" />
           </div>
+          <SidebarEventList />
           <div v-if="channel.Tags.length > 0">
             <div class="flex justify-between border-gray-300">
               <span
@@ -155,7 +156,6 @@ export default defineComponent({
               />
             </div>
           </div>
-          <SidebarEventList />
           <div class="flex justify-between">
             <span
               class="my-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
