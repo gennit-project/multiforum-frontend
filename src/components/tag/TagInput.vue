@@ -154,7 +154,7 @@ export default defineComponent({
           class="focus:ring-indigo-500 focus:border-indigo-500 block w-full min-w-0 flex-1 rounded border-gray-300 pb-2.5 pl-4 pt-2.5 placeholder-gray-400 dark:border-none dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200 sm:text-sm"
           :placeholder="
             channelMode
-              ? 'Add channels to select your intended audience'
+              ? 'Add forums to select your intended audience'
               : 'Add tags'
           "
           @keydown.enter="

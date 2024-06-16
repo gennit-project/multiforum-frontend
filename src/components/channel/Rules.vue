@@ -34,6 +34,7 @@ export default defineComponent({
       }
       return rules;
     });
+    console.log('rules', channelRules.value)
     return {
       openRules: ref<Rule[]>(channelRules.value),
     };
@@ -73,7 +74,7 @@ export default defineComponent({
     >
       <div
         v-if="rule.summary"
-        class="flex items-center font-bold"
+        class="flex items-center"
       >
         <span class="mr-2 dark:text-gray-400">{{ `${i + 1}.` }}</span>{{ rule.summary }}
         <i

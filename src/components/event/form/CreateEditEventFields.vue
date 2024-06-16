@@ -441,7 +441,7 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="mx-auto max-w-7xl pt-0"
+    class="mx-auto max-w-3xl pt-0"
   >
     <div v-if="eventLoading">
       Loading...
@@ -482,7 +482,7 @@ export default defineComponent({
           </template>
         </FormRow>
         <FormRow
-          section-title="Channels"
+          section-title="Forum(s)"
           :required="true"
         >
           <template #content>

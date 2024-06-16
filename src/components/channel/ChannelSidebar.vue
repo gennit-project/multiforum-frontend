@@ -122,25 +122,19 @@ export default defineComponent({
   <div
     class="max-h-screen overflow-auto rounded-lg bg-white pb-8 pt-4 dark:bg-gray-800 lg:px-6 lg:pt-8"
   >
-    <div
-      v-if="channelId"
-      class="items-center gap-2"
-    />
+    <div v-if="channelId" class="items-center gap-2" />
     <slot />
 
     <div class="w-full px-6">
       <div v-if="channel">
-        <div class="mt-6 w-full">
-          <div v-if="channelRules">
+        <div class="mt-6 w-full flex flex-col gap-6">
+          <div :key="channelRules" v-if="channelRules !== '[]'">
             <span
               class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
             >
               Rules
             </span>
-            <ChannelRules
-              :key="channelRules"
-              :rules="channelRules"
-            />
+            <ChannelRules :key="channelRules" :rules="channelRules" />
           </div>
           <div v-if="channel.Tags.length > 0">
             <div class="flex justify-between border-gray-300">
@@ -151,7 +145,7 @@ export default defineComponent({
               </span>
             </div>
 
-            <div class="mb-6 mt-2 flex flex-wrap">
+            <div class="mb-6 mt-2 flex flex-wrap gap-2">
               <Tag
                 v-for="tag in channel.Tags"
                 :key="tag.text"
@@ -164,19 +158,13 @@ export default defineComponent({
           <SidebarEventList />
           <div class="flex justify-between">
             <span
-              class="my-2 mt-6 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
+              class="my-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-400"
             >
               Admins
             </span>
           </div>
-          <ul
-            v-if="channel.Admins.length > 0"
-            class="text-sm font-bold"
-          >
-            <li
-              v-for="admin in channel.Admins"
-              :key="admin.username"
-            >
+          <ul v-if="channel.Admins.length > 0" class="text-sm font-bold">
+            <li v-for="admin in channel.Admins" :key="admin.username">
               <router-link
                 :key="admin.username"
                 :to="`/u/${admin.username}`"
@@ -199,10 +187,7 @@ export default defineComponent({
               </router-link>
             </li>
           </ul>
-          <p
-            v-else
-            class="mx-6 my-3 mb-6 text-sm dark:text-gray-400"
-          >
+          <p v-else class="mx-6 my-3 mb-6 text-sm dark:text-gray-400">
             This channel does not have any admins.
           </p>
         </div>

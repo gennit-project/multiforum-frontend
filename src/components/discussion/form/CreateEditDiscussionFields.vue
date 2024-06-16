@@ -155,7 +155,7 @@ export default defineComponent({
             </FormRow>
 
             <FormRow
-              section-title="Channels"
+              section-title="Forums"
               :required="true"
             >
               <template #content>

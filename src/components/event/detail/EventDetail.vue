@@ -95,7 +95,7 @@ export default defineComponent({
       loading: eventLoading,
     } = useQuery(GET_EVENT, { 
       id: eventId,
-      channelUniqueName: channelId.value
+      channelUniqueName: channelId
     });
 
     const event = computed(() => {

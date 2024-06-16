@@ -60,9 +60,9 @@ export default defineComponent({
     tagClasses() {
       return [
         // large is for time shortcut buttons
-        this.large ? "text-sm py-1 shadow rounded-full" : "",
+        this.large ? "text-md py-1 shadow rounded-full" : "",
         this.titleMode ? "text-xl py-1.5" : "",
-        !this.large && !this.titleMode ? "text-xs py-1" : "",
+        !this.large && !this.titleMode ? "text-sm py-1" : "",
         this.clearable ? "pr-1" : "cursor-pointer pr-2",
         this.getButtonStyles(),
         "pl-1 font-medium tag rounded flex items-center gap-1",
@@ -86,7 +86,7 @@ export default defineComponent({
           return "bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-gray-600 dark:text-gray-100 dark:hover:bg-gray-500 dark:hover:text-white";
         }
         // for the tag buttons in the filter components
-        return `bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
+        return `bg-gray-200 text-gray-600 dark:bg-gray-600 hover:bg-gray-200 dark:hover:bg-gray-500 pl-2 dark:hover:bg-gray-400 dark:text-gray-100 hover:bg-gray-300 dark:hover:bg-gray-200'`;
       }
     },
   },

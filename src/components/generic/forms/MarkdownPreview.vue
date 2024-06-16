@@ -28,6 +28,17 @@ function linkifyChannelNames(markdownString: string) {
   });
 }
 
+function linkifyUrls(text: string) {
+  const urlRegex = /(?:https?:\/\/|www\.)[^\s/$.?#].[^\s]*/g;
+  return text.replace(urlRegex, (url) => {
+    let href = url;
+    if (!url.startsWith('http')) {
+      href = 'http://' + url;
+    }
+    return `[${url}](${href})`;
+  });
+}
+
 type GalleryItem = {
   href: string;
   src: string;
@@ -154,7 +165,8 @@ export default defineComponent({
 
     const linkifiedMarkdown = computed(() => {
       const usernamesLinkified = linkifyUsernames(props.text);
-      return linkifyChannelNames(usernamesLinkified);
+      const channelNamesLinkified = linkifyChannelNames(usernamesLinkified);
+      return linkifyUrls(channelNamesLinkified);
     });
 
     const shownText = computed(() => {
