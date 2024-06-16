@@ -231,7 +231,7 @@ export default defineComponent({
   <v-container
     class="flex flex-col justify-center gap-2 rounded-lg bg-white dark:bg-gray-800 md:p-8"
   >
-    <EventFilterBar :show-distance-filters="false">
+    <EventFilterBar :show-distance-filters="false" :allow-hiding-main-filters="true">
       <TimeShortcuts :is-list-view="true" />
       <OnlineInPersonShortcuts v-if="channelId" />
     </EventFilterBar>

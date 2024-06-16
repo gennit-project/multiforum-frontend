@@ -59,7 +59,7 @@ export default defineComponent({
           <ExpandableImage
             v-if="channel?.channelIconURL"
             class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
-            :is-square="false"
+            :rounded="true"
             :is-medium="true"
             :alt="channelId"
             :src="channel?.channelIconURL ?? ''"
