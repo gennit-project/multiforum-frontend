@@ -43,7 +43,6 @@ export default defineComponent({
     />
     <Avatar
       class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
-      :class="channel?.channelIconURL ? '-mt-20' : ''"
       :text="channelId"
       :src="channel?.channelIconURL ?? ''"
       :is-medium="true"
