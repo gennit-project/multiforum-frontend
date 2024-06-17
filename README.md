@@ -4,11 +4,229 @@ This is a work in progress that intended to be an open-source, self-hosted platf
 
 Each forum has two sections, a discussion section and a calendar. In the discussion section, content
 can be upvoted so that the best content rises to the top. In the event section, anyone can post
-an event that participants in the community may be interested in. Screenshots are below.
+an event that participants in the community may be interested in.
+
+Events can be submitted to multiple forums to increase visibility of them and
+help promote them. The same can be done with text-based discussion posts.
 
 To solve the problem where you're bored on the weekend but you don't know what to do in your area, events can be searched across multiple forums based on location, tags and keyword. Screenshots are below.
 
 When the project is finished, I will add documentation so that anyone can deploy their own Multiforum with custom branding.
+
+## Screenshots - Desktop width
+
+The below screenshots capture the state of the project as of January 2024. The layout is responsive with both desktop and mobile views.
+
+### Sitewide event search - filtering by time
+
+Here's how it looks if you filter all in-person events by 'next weekend.' If today is during the week of
+Monday, June 17, then the events are filtered to show events on Saturday the 22nd and Sunday the 23rd:
+
+![All in person events filtered by next weekend](./screenshots/all-in-person-events-filtered-by-next-weekend.png)
+
+### Highlighting events on the map
+
+If you mouse over an event list item or map marker, an info window pops up on the map
+and the list item is also highlighted. This is supposed to make it easier to draw a connection
+between the two:
+
+![Highlighting an item on the map filtered by forums](./screenshots/highlighting-item-on-map-filtered-by-forums.png)
+
+Here's another example showing what happens if you hover over an event in the map view:
+
+![Map view hover on list item](./screenshots/map-view-hover-on-list-item.png)
+
+### Filtering the map by forums
+
+If I'm only interested in events from a few specific forums, I filter the 
+map by those forums:
+
+![Filtering map by multiple forums](./screenshots/filtering-map-by-multiple-forums.png)
+
+Note: The above component for selecting forums is unwieldy and I'll be replacing it
+with something more compact.
+
+The resulting event list is now filtered by the two forums I selected - the writers group
+and the birdwatching one. All of the concerts are no longer in the list and their map
+markers are no longer on the map:
+
+![Highlighting item on map filtered by forums](./screenshots/highlighting-item-on-map-filtered-by-forums.png)
+
+### Clicking forum name in event drawer
+
+If you're looking at events from the map view, and you click on one, the details
+will show up in a drawer:
+
+![Clicking an event list item](./screenshots/clicking-an-event-list-item.png)
+
+In that drawer you can see what forums that event was
+submitted to. If you click the forum name it will take you to the event page in
+the context of that forum:
+
+![Clicking forum name in event drawer](./screenshots/clicking-the-forum-that-the-event-was-submitted-to.png)
+
+Screenshots of event detail pages within a forum are below.
+
+### Multiple events at the same location
+
+Some map markers indicate that there are multiple events at the same location. If
+you click that, you can see the list of events that are taking place there at different times:
+
+![Clicking different map marker with multiple events](./screenshots/clicking-different-map-marker-with-multiple-events.png)
+
+Here's another example of how it looks when you click on a location with multiple events. In 
+this case, the events are both at the same concert venue, Crescent Ballroom:
+
+![Clicking map marker with multiple events](./screenshots/clicking-map-marker-with-multiple-events.png)
+
+
+### Clicking a single event
+
+If you click on an event list item or map marker for a single event, the details of that event show
+in a drawer (the drawer also contains permanent links to the event's detail page, useful for sharing event details):
+
+![Map view when you click on a list item](./screenshots/map-view-click-on-list-item.png)
+
+### Event list within a forum
+
+Each forum can have its own list of upcoming events. In this example, a forum about
+rock music in Phoenix is promoting events at multiple venues. Meanwhile, the
+forum sidebar shows the handful of events which are coming up the soonest, so that
+they are visible even when the Discussions tab is active:
+
+![Phoenix rock event list](./screenshots/phx-rock-event-list.png)
+
+In this particular example, hypothetically, the venues may host a variety of events
+in multiple musical genres but these particular ones would be of interest to people
+who like rock music. So in that way, the forum can be used as a way to organize
+public information about events and promote them to the people who find them most relevant. 
+
+(The screenshots may not show the best examples. Morphia Slow categorizes 
+herself as "Folk-Murder-Pop", but you get the idea.)
+
+Events can be filtered within a forum. This screenshot shows how it looks when
+events in "Phoenix Bird Lovers" are filtered to show only events next weekend:
+
+![Phoenix bird lovers filtered by next weekend](./screenshots/phx-bird-lovers-filtered-by-next-weekend.png)
+
+Here are the events filtered by location. In this case they are filtered to show
+events within 10 miles of Tempe:
+
+![Phoenix bird lovers events filtered by location](./screenshots/phx-bird-lovers-events-filtered-by-location.png)
+
+
+### Discussion list within a forum
+
+A birdwatching forum is an example of a forum that could make use of both in-person events
+and online discussions with people who may never attend any events. For example, someone
+who takes a picture of an unfamiliar bird in Phoenix might ask the Phoenix birdwatchers what it is.
+That's when the Discussions tab within a forum would come in handy:
+
+![Discussion list within a forum](./screenshots/phx-bird-lovers-discussion-list.png)
+
+### Discussion detail
+
+If you click an item in the discussion list, it goes to the discussion detail view, which contains
+the comments. In the case of a birdwatching group, maybe there's a comment identifying the bird:
+
+![Phoenix bird lovers discussion detail](./screenshots/phx-bird-lovers-discussion-detail.png)
+
+
+
+### Forum without any events
+
+Events are optional for forums. I intend to make it possible for a forum to turn
+off the events tab. The Discussions tab is the main landing page, especially for forums
+that could be focused on technical questions and answers, which would
+have no need for events:
+
+![Forum without any events](./screenshots/forum-without-any-events.png)
+
+### Submitting an event to forums
+
+You can share an event to one or more forums. In a typical use case, you would link to an official
+event page with the full details and information about how to buy tickets, if applicable.
+
+
+
+Submitting an event to multiple forums is a good way to increase the visibility of the event. This one will now be visible in the context of both of the selected forums:
+
+![Submitting an event to multiple forums](./screenshots/submitting-event-to-multiple-forums.png)
+
+If you add an address, the event will be discoverable from the sitewide event search page (the map view):
+
+![Adding an address for so that the event shows up on the map](./screenshots/adding-an-address-makes-the-event-discoverable-from-sitewide-search.png)
+
+
+### Recently visited forums
+
+If you click the menu button on the top left of any page, it shows recently visited forums
+to support easy context switching.
+
+
+![Recently visited forums](./screenshots/recently-visited-forums.png)
+
+
+## Screenshots - Mobile width
+
+
+### Discussion list views within a forum
+
+Here's the discussion list within a single forum, at mobile width:
+
+![Discussion list view at mobile width](./screenshots/discussion-list-within-channel-at-mobile-width.png)
+
+Here's another example of a discussion list view at mobile width:
+
+![Another discussion list view at mobile width](/screenshots/another-forum-discussion-list-at-mobile-width.png)
+
+
+### Event list view within a forum
+
+Here's the list of events within a specific forum:
+
+![Forum event list at mobile width](./screenshots/forum-event-list-at-mobile-width.png)
+
+### Event detail page
+
+This screenshot shows how an event detail page looks at mobile width, if you
+come to it from within the context of an individual forum:
+
+![Event detail page at mobile width](./screenshots/event-detail-within-forum-at-mobile-width.png)
+
+### Discussion detail page
+
+This screenshot shows how a discussion detail page looks at mobile width, if
+you come to it from within the context of an individual forum:
+
+![Discussion detail page at mobile width](./screenshots/discussion-detail-at-mobile-width.png)
+
+
+### Sitewide event list
+
+Here's the sitewide in-person event list with an active filter,
+shown here at mobile width. All the same filtering features work at mobile width
+as well. Here, the events are filtered by two forums,
+so not all of the map markers are displayed.
+
+![Sitewide filtered event list at mobile width](./screenshots/sitewide-filtered-event-list-at-mobile-width.png)
+
+
+
+### List of all forums
+
+Here is the list of forums at mobile width:
+
+![Forum list at mobile width](./screenshots/forum-list-at-mobile-width.png)
+
+The list of forums can be filtered by tag:
+
+![The forum list can be filtered by tag](./screenshots/forum-list-filtered-by-tag.png)
+
+The forum list can be filtered by search terms as well:
+
+![Forum list filtered by search terms](./screenshots/forum-list-filtered-by-search-terms.png)
+
 
 ## Technology Stack
 
@@ -24,99 +242,22 @@ I will fill out this section when the project is finished, or if someone express
 
 Integration tests are in the `cypress` directory and cover all the create, read, update and delete operations on forums, events, discussions and comments, as well as the filtering in the list views.
 
-## Screenshots
+## Project status
 
-The below screenshots capture the state of the project as of January 2024. The layout is responsive with both desktop and mobile views.
+I'm currently working on what I feel is the boring part of the project - permissions,
+roles, access and content moderation features.
 
-### In-person sitewide event search - desktop
+After that, some of the next-up features are:
 
-This view lets you search events across multiple forums. By default they are filtered to show events that are happening soon.
-
-Note: All screenshots are using fake test data.
-
-![In-person event list - desktop](./screenshots/in-person-event-list-desktop.png)
-
-If you hover over a location, you see what is happening there:
-
-![Hovering over event location](./screenshots/hovering-over-event-location.png)
-
-If you click the map marker, you see event details:
-
-![Details after clicking map marker](./screenshots/details-after-clicking-map-marker.png)
-
-If you click the event marker for multiple events at the same location, you see a list of what's happening there:
-
-![Multiple events at same location on desktop](./screenshots/multiple-events-at-same-location-desktop.png)
-
-From that list, if you click a list item, you see details of that one event (the same thing you would see if there was only one event at that location).
-
-### Forum detail view - desktop
-
-If you upvote an item, the vote counter becomes blue to show that your vote has been recorded.
-
-![Forum detail view on desktop](./screenshots/forum-detail-view-desktop.png)
-
-### Forum with banner and avatar - desktop
-
-Optionally, a decorative banner can be added to the top of a forum, just for fun:
-
-![Decorative banner forum on desktop](./screenshots/decorative-banner-desktop.png)
-
-### Event list page within a forum - desktop
-
-The sidebar shows links to events that are coming in the very near future (within 2 weeks). The calendar page shows a full list of events that have been submitted to the channel and allows them to be filtered by time, tag, keywords in the name or description, or location.
-
-![Forum event list on desktop](./screenshots/forum-event-list-desktop.png)
-
-### Discussion detail page with placeholder text - desktop
-
-I intend to let you both upvote and downvote something at the same time. It allows capturing the nuance of something that you think more people should see, but also needs some changes (downvoting is planned to allow the user to submit feedback on the post.)
-
-![Discussion detail page on desktop](./screenshots/discussion-detail-page-desktop.png)
-
-### Forums page on desktop
-
-You can see a list of all the forums hosted on the platform, the number of discussions and the number of upcoming events in each one
-
-![Forum list](./screenshots/forum-list.png)
-
-### In-person event search - mobile
-
-This is how it looks if you search in-person events across multiple forums when the screen is at mobile width:
-
-![In-person event list on mobile](./screenshots/in-person-event-list-mobile.png)
-
-### List of events within channel - mobile
-
-![List of events within a channel on mobile](./screenshots/list-of-events-within-channel-mobile.png)
-
-Here is how it looks if you filter by past events:
-
-![Events filtered by past](./screenshots/events-filtered-by-past.png)
-
-### Event detail page - mobile
-
-![Event detail page on mobile](./screenshots/event-detail-page-mobile.png)
-
-### List of discussions within a forum - mobile
-
-![List of discussions within a forum](./screenshots/list-of-discussions-within-a-forum.png)
-
-
-### Discussion detail page - mobile
-
-![Discussion detail page](./screenshots/discussion-detail-page-mobile.png)
-
-### List of forums - mobile
-
-!![List of forums on mobile](./screenshots/list-of-forums-mobile.png)
-
-### Online event link in forum sidebar
-
-If one of the events in the forum's calendar is actively happening now, the forum sidebar has a big blue link to it:
-
-![Online event link in sidebar](./screenshots/online-event-link-in-sidebar.png)
-
-### Forum with a decorative banner at mobile width
-
-![Decorative banner mobile](./screenshots/decorative-banner-mobile.png)
+- Clean up the component for forum filtering and make it work more like autocomplete.
+- Add the multiforum feature (which is what the app is named after), which is a group of forums. Filtering by a multiforum will show content from all forums in that group.
+- The ability for OP to mark a comment as the best answer to their question.
+- The ability to manage recurring events and easily clone a past event to make a new one.
+- Search in the top nav.
+- The ability to 'super upvote' a post or comment if you write something nice on the author's 
+  public scratchpad... or tip them.
+- Bundled notifications.
+- The ability to put downloadable files in a discussion post - useful for sharing video game
+  mods and the like.
+- The ability to gate some of the above downloadable files behind a paywall and other 
+  monetization features.
