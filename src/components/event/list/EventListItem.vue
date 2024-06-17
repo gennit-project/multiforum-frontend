@@ -397,7 +397,7 @@ export default defineComponent({
           >
         </div>
 
-        <!-- <div class="flex gap-1 flex-wrap">
+        <div class="flex gap-1 flex-wrap">
           <span
             class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
           >
@@ -405,7 +405,7 @@ export default defineComponent({
               `${event.locationName || ""}${event.locationName ? " at " : ""}${timeOfDay}`
             }}
           </span>
-        </div> -->
+        </div>
         <p v-if="event.virtualEventUrl">Online event</p>
         <p v-if="event.free" class="text-sm font-medium text-gray-600">Free</p>
 
