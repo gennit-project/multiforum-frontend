@@ -239,7 +239,10 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <v-md-preview :text="`${shownText}${!showFullText  ? '...' : ''}`" @click="handleImageClick($event)" />
+    <v-md-preview
+      :text="`${shownText}${!showFullText ? '...' : ''}`"
+      @click="handleImageClick($event)"
+    />
     <button
       v-if="shouldShowMoreButton"
       class="ml-8 text-sm font-bold text-blue-600 hover:underline dark:text-gray-300"
@@ -251,7 +254,7 @@ export default defineComponent({
 </template>
 <style>
 .github-markdown-body img {
-  max-height: 500px !important;
+  max-height: 400px !important;
 }
 p,
 ul,
