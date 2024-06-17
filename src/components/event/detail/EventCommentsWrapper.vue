@@ -280,6 +280,7 @@ export default defineComponent({
     :previous-offset="previousOffset"
     :enable-feedback="false"
     :original-poster="originalPoster"
+    :show-comment-sort-buttons="false"
     @decrementCommentCount="decrementCommentCount"
     @incrementCommentCount="incrementCommentCount"
     @updateCommentSectionQueryResult="updateCommentSectionQueryResult"

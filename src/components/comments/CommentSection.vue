@@ -117,6 +117,11 @@ export default defineComponent({
       type: String,
       required: true,
     },
+    showCommentSortButtons: {
+      type: Boolean,
+      required: false,
+      default: true
+    }
   },
   setup(props, { emit }) {
     const route = useRoute();
@@ -524,7 +529,7 @@ export default defineComponent({
       // This 'parentIdOfCommentToGiveFeedbackOn' is not used in the template.
       // We only return it from setup because that is needed to keep the variable
       // reactive when it is used in the cache update function that runs
-      // after a feedback comment is added.
+      // after a feedback comment is added. Without it, the cache does not update properly.
       parentIdOfCommentToGiveFeedbackOn,
       permalinkedCommentId,
       replyFormOpenAtCommentID,
@@ -685,6 +690,7 @@ export default defineComponent({
           {{ `Comments (${aggregateCommentCount})` }}
         </h2>
         <SortButtons
+          v-if="showCommentSortButtons"
           :show-top-options="false"
         />
       </div>
