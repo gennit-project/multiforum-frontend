@@ -140,7 +140,7 @@ export default defineComponent({
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
         :initial-value="filterValues.searchInput"
-        :search-placeholder="'Search to see if something has already been posted'"
+        :search-placeholder="'Search...'"
         :small="true"
         @updateSearchInput="updateSearchInput"
       />
