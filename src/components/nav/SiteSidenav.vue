@@ -65,7 +65,6 @@ export default defineComponent({
   },
   setup() {
     const showAllForums = ref(false);
-    const showAllSubreddits = ref(false);
     const { isAuthenticated, logout, loginWithRedirect } = useAuth0();
 
     const recentForums = computed(() => {
@@ -82,20 +81,6 @@ export default defineComponent({
     });
 
     JSON.parse(localStorage.getItem("recentForums") || '""') || [];
-
-    const recentSubreddits = computed(() => {
-      const subreddits = (
-        JSON.parse(localStorage.getItem("recentSubreddits") || '""') || []
-      ).sort((a: any, b: any) => b.timestamp - a.timestamp);
-
-      return subreddits;
-    });
-
-    const visibleRecentSubreddits = computed(() => {
-      if (showAllSubreddits.value) return recentSubreddits.value;
-
-      return recentSubreddits.value.slice(0, DEFAULT_LIMIT);
-    });
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -142,12 +127,9 @@ export default defineComponent({
       username,
       profilePicURL,
       recentForums,
-      recentSubreddits,
       smAndDown,
       showAllForums,
-      showAllSubreddits,
       visibleRecentForums,
-      visibleRecentSubreddits,
     };
   },
   methods: {
@@ -191,7 +173,7 @@ export default defineComponent({
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
-                class="group flex gap-x-3 rounded-md py-1 pl-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+                class="font-semibold group flex gap-x-3 rounded-md py-1 pl-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
                 @click="$emit('close')"
               >
                 <component
@@ -222,7 +204,7 @@ export default defineComponent({
                   name: 'SearchDiscussionsInChannel',
                   params: { channelId: forum.uniqueName },
                 }"
-                class="group flex items-center gap-x-3 rounded-md py-1 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+                class="font-semibold group flex items-center gap-x-3 rounded-md py-1 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
                 @click="$emit('close')"
               >
                 <ExpandableImage
@@ -254,63 +236,12 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div
-        v-if="recentSubreddits.length > 0"
-        class="border-t border-gray-200 dark:border-gray-600"
-      >
-        <div
-          class="text-bold mt-3 px-6 uppercase leading-6 text-gray-400 dark:text-gray-100"
-        >
-          Recent Subreddits
-        </div>
-        <div class="px-6">
-          <ul class="mb-6">
-            <li
-              v-for="subreddit in visibleRecentSubreddits"
-              :key="subreddit.name"
-            >
-              <router-link
-                :to="{
-                  name: 'Subreddit',
-                  params: { subredditName: subreddit.name },
-                }"
-                class="group flex items-center gap-x-3 rounded-md py-1 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
-                @click="$emit('close')"
-              >
-                <ExpandableImage
-                  v-if="subreddit?.iconURL"
-                  class="list-item-icon border-1 h-8 w-8 shrink-0 border-gray-200 shadow-sm dark:border-gray-800"
-                  aria-hidden="true"
-                  :is-square="false"
-                  :is-medium="true"
-                  :alt="subreddit.name"
-                  :src="subreddit?.iconURL ?? ''"
-                />
-                <Avatar
-                  v-if="!subreddit?.iconURL"
-                  class="list-item-icon border-1 h-8 w-8 shrink-0 border-gray-200 shadow-sm dark:border-gray-800"
-                  :text="subreddit.name || ''"
-                  :src="subreddit?.iconURL ?? ''"
-                  :is-medium="true"
-                  :is-square="false"
-                />
-                {{ subreddit.name }}
-              </router-link>
-            </li>
-          </ul>
-          <div v-if="recentSubreddits.length > defaultLimit">
-            <button v-if="!showAllSubreddits" @click="showAllSubreddits = true">
-              Show All
-            </button>
-            <button v-else @click="showAllSubreddits = false">Show Less</button>
-          </div>
-        </div>
-      </div>
+
       <ul class="mb-6 border-t">
         <router-link
           v-if="isAuthenticated && username"
           :to="`/u/${username}`"
-          class="group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="$emit('close')"
         >
           <Avatar
@@ -324,14 +255,14 @@ export default defineComponent({
         <router-link
           v-if="isAuthenticated"
           :to="`/u/${username}/settings`"
-          class="group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+          class="font-semibold group flex items-center gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="$emit('close')"
         >
           Account Settings
         </router-link>
         <button
           v-if="!isAuthenticated"
-          class="group flex gap-x-3 rounded-md px-6 py-2 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+          class="font-semibold group flex gap-x-3 rounded-md px-6 py-2 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="login"
         >
           Log In
@@ -340,7 +271,7 @@ export default defineComponent({
           v-if="isAuthenticated"
           data-testid="sign-out-link"
           to="/logout"
-          class="group flex gap-x-3 rounded-md py-2 pl-6 text-sm font-semibold leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
+          class="font-semibold group flex gap-x-3 rounded-md py-2 pl-6 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
           @click="logout"
         >
           Sign Out
