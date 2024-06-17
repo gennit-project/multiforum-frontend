@@ -80,15 +80,15 @@ export default defineComponent({
       }
       return "";
     });
-    const showOnlineOnly = route.name === "SearchEventsList"
-    const showInPersonOnly = route.name === "MapEventPreview"
+    const showOnlineOnly = route.name === "SearchEventsList";
+    const showInPersonOnly = route.name === "MapEventPreview";
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams({
         route: route,
         channelId: channelId.value,
         showOnlineOnly,
-        showInPersonOnly
+        showInPersonOnly,
       }),
     );
 
@@ -104,7 +104,7 @@ export default defineComponent({
         filterValues: filterValues.value,
         showMap: false,
         channelId: channelId.value,
-        onlineOnly: false
+        onlineOnly: false,
       });
     });
 
@@ -243,7 +243,7 @@ export default defineComponent({
         route: this.route,
         channelId: this.channelId,
         showOnlineOnly: this.showOnlineOnly,
-        showInPersonOnly: this.showInPersonOnly
+        showInPersonOnly: this.showInPersonOnly,
       });
     });
   },
@@ -529,26 +529,23 @@ export default defineComponent({
 </script>
 <template>
   <div class="h-full bg-gray-100 dark:bg-gray-900">
-    <div
-      v-if="mdAndUp"
-      id="mapViewFullScreen"
-    >
+    <div v-if="mdAndUp" id="mapViewFullScreen">
       <TwoSeparatelyScrollingPanes
         class="mt-3"
         :show-right-pane-at-medium-screen-width="true"
       >
         <template #leftpane>
-          <div
-            class="rounded-lg flex justify-center"
-          >
-            <div class=" h-screen overflow-auto p-4">
+          <div class="flex justify-center rounded-lg">
+            <div class="h-screen overflow-auto p-4">
               <EventFilterBar
                 :show-map="true"
-              />
-              <TimeShortcuts />
-              <div v-if="eventLoading">
-                Loading...
-              </div>
+                :allow-hiding-main-filters="true"
+                :show-main-filters-by-default="true"
+              >
+                <TimeShortcuts />
+              </EventFilterBar>
+
+              <div v-if="eventLoading">Loading...</div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -579,9 +576,7 @@ export default defineComponent({
         <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
-              <div v-if="eventLoading">
-                Loading...
-              </div>
+              <div v-if="eventLoading">Loading...</div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -590,8 +585,8 @@ export default defineComponent({
               <EventMap
                 v-else-if="
                   eventResult &&
-                    eventResult.events &&
-                    eventResult.events.length > 0
+                  eventResult.events &&
+                  eventResult.events.length > 0
                 "
                 :key="eventResult.events.length"
                 class="fixed"
@@ -641,6 +636,8 @@ export default defineComponent({
           <EventFilterBar
             class="mt-6 w-full"
             :show-map="true"
+            :allow-hiding-main-filters="true"
+            :show-main-filters-by-default="true"
           />
           <EventList
             key="highlightedEventId"

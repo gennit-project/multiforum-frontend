@@ -350,8 +350,9 @@ export default defineComponent({
       <div class="block">
         <div>
           <div class="flex">
+
             <div
-              class="mr-4 flex h-16 w-16 flex-col items-center justify-center rounded-lg"
+              class="mr-4 flex flex-shrink-0 h-16 w-16 flex-col items-center justify-center rounded-lg"
             >
               <div
                 class="font-semibold text-xs uppercase text-gray-500 dark:text-gray-200"
@@ -375,6 +376,7 @@ export default defineComponent({
                 }}
               </div>
             </div>
+
             <div class="flex-1">
               <img
                 v-if="smAndDown && event.coverImageURL"
@@ -403,16 +405,9 @@ export default defineComponent({
                 <span
                   class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
                 >
-                  {{ `${event.locationName || ""}` }}
+                  {{ `${event.locationName || ""}${event.locationName ? " at " : ""}${timeOfDay}` }}
                 </span>
-                <span
-                  class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
-                >
-                  {{
-                    // start time and end time
-                    `${event.locationName ? "at " : ""}${timeOfDay}`
-                  }}
-                </span>
+     
               </div>
               <p v-if="event.virtualEventUrl">Online event</p>
               <p v-if="event.free" class="text-sm font-medium text-gray-600">
@@ -493,9 +488,10 @@ export default defineComponent({
                 </button>
               </MenuButton>
             </div>
+
             <div
               v-if="!smAndDown"
-              class="mx-4 items-center justify-center rounded-lg"
+              class="mx-4 flex-shrink-0 items-center justify-center rounded-lg"
             >
               <img
                 v-if="event.coverImageURL"

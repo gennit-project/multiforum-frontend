@@ -63,9 +63,13 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
+    showMainFiltersByDefault: {
+      type: Boolean,
+      default: false,
+    },
   },
 
-  setup() {
+  setup(props) {
     const defaultFilterLabels = {
       channels: "Forums",
       tags: "Tags",
@@ -219,7 +223,7 @@ export default defineComponent({
       showLocationSearchBarAndDistanceButtons,
       showOnlineOnly,
       showInPersonOnly,
-      showMainFilters: ref(false),
+      showMainFilters: ref(props.showMainFiltersByDefault),
       showTimeSlotPicker: ref(false),
       tagLabel,
       timeSlotFiltersActive: ref(false),
@@ -478,7 +482,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-1">
-    <div class="flex items-center justify-end">
+    <div class="flex items-center justify-end mb-2">
       <button v-if="allowHidingMainFilters" @click="() => toggleShowMainFilters()" class="text-blue-500 mr-4">
         {{ showMainFilters ? "Hide filters" : "Show filters" }}
       </button>
@@ -517,8 +521,8 @@ export default defineComponent({
         </template>
       </FilterChip>
     </div>
-    <div v-if="allowHidingMainFilters && showMainFilters" class="flex flex-col gap-2">
-      <div v-if="route.name !== 'EventDetail'" class="w-full">
+    <div v-if="showMainFilters" class="flex flex-col gap-2">
+      <div v-if="route.name !== 'EventDetail'" class="w-full mb-2">
         <div class="flex space-x-1 align-middle">
           <SearchBar
             class="flex-1"

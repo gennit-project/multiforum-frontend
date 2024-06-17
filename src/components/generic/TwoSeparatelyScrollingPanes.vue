@@ -35,7 +35,7 @@ export default defineComponent({
   >
     <v-row class="w-full">
       <v-col
-        :cols="5"
+        :cols="6"
         :class="[
           lgAndUp ? 'constrain-height' : '',
         ]"
@@ -45,7 +45,7 @@ export default defineComponent({
       </v-col>
       <v-col
         v-if="mdAndUp"
-        :cols="7"
+        :cols="6"
         :class="[
           'p-0',
           lgAndUp ? 'constrain-height' : '',
