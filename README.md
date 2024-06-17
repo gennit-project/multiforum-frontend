@@ -206,7 +206,7 @@ you come to it from within the context of an individual forum:
 
 Here's the sitewide in-person event list with an active filter,
 shown here at mobile width. All the same filtering features work at mobile width
-as well. Here, the events are filtered by two forums,
+as well. Here, the events are filtered by the birdwatching forum,
 so not all of the map markers are displayed.
 
 ![Sitewide filtered event list at mobile width](./screenshots/sitewide-filtered-event-list-at-mobile-width.png)
@@ -245,7 +245,7 @@ Integration tests are in the `cypress` directory and cover all the create, read,
 ## Project status
 
 I'm currently working on what I feel is the boring part of the project - permissions,
-roles, access and content moderation features.
+roles and content moderation features.
 
 After that, some of the next-up features are:
 
