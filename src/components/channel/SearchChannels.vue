@@ -213,7 +213,7 @@ export default defineComponent({
   <div class="bg-gray-200 dark:bg-black">
     <div class="py-6">
       <div
-        class="mx-auto flex max-w-5xl items-center justify-between px-4 py-2"
+        class="mx-auto flex max-w-3xl items-center justify-between px-4 py-2"
       >
         <SearchBar
           class="mr-2 w-full align-middle"
@@ -242,7 +242,7 @@ export default defineComponent({
       />
       <ChannelList
         v-if="channelResult && channelResult.channels"
-        class="mx-auto max-w-5xl flex-1 rounded-lg bg-gray-100 p-6 text-xl font-bold dark:bg-gray-900"
+        class="mx-auto max-w-3xl flex-1 rounded-lg bg-gray-100 p-6 text-xl font-bold dark:bg-gray-900"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate?.count || 0"
         :search-input="searchInput"

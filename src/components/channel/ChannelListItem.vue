@@ -46,31 +46,31 @@ export default defineComponent({
 <template>
   <div>
     <div
-      class="border border-gray-500 dark:border-gray-600 shadow rounded-t-lg bg-white p-3 dark:bg-gray-800 dark:text-gray-200"
+      class="border py-4 px-6 border-gray-500 dark:border-gray-600 shadow rounded-t-lg bg-white p-3 dark:bg-gray-800 dark:text-gray-200"
     >
-      <div class="flex flex-row items-center gap-6">
+      <div class="flex flex-row gap-6">
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
-          class="flex cursor-pointer items-center"
+          class="flex cursor-pointer"
         >
-          <div class="rounded-lg border">
+          <div class="h-24 w-24">
             <Avatar
               :text="channel.uniqueName"
               :src="channel?.channelIconURL"
               :is-medium="true"
-              :is-square="true"
+              :square="true"
             />
           </div>
         </router-link>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col px-4">
           <router-link
             :to="`/channels/c/${channel.uniqueName}/discussions`"
             class="mt-1 flex cursor-pointer items-center gap-4"
           >
             <h3
               v-if="channel.uniqueName && !channel?.displayName"
-              class="mb-2 mt-4 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+              class="mb-2 mt-4 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
             >
               <HighlightedSearchTerms
                 :text="channel.uniqueName"
@@ -79,7 +79,7 @@ export default defineComponent({
             </h3>
             <div v-if="channel?.displayName">
               <h3
-                class="mb-2 flex border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-200"
+                class="mb-2 flex border-gray-700 text-2xl font-bold leading-6 text-gray-500 dark:text-gray-200"
               >
                 <HighlightedSearchTerms
                   :text="channel.displayName"
@@ -87,7 +87,7 @@ export default defineComponent({
                 />
               </h3>
               <span
-                class="text-sm font-bold leading-6 text-gray-500 dark:text-gray-300"
+                class="text-sm font-bold font-mono leading-6 text-gray-500 dark:text-gray-300"
               >
                 <HighlightedSearchTerms
                   :text="channel.uniqueName"
@@ -96,18 +96,18 @@ export default defineComponent({
               </span>
             </div>
           </router-link>
-          <div class="mt-1">
-            <p
+          <div>
+            <div
               v-if="channel.description"
-              class="my-1 truncate text-sm font-normal text-gray-600 dark:text-gray-200"
+              class="my-1 text-sm flex-wrap font-normal text-gray-600 dark:text-gray-200"
             >
               <HighlightedSearchTerms
                 :text="channel.description"
                 :search-input="searchInput"
               />
-            </p>
+            </div>
     
-            <div class="flex">
+            <div class="flex gap-2">
               <Tag
                 v-for="tag in tags"
                 :key="tag"
@@ -120,7 +120,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="rounded-b-lg bg-black text-white">
+    <div class="rounded-b-lg bg-gray-500 text-white">
       <div class="flex w-full py-2 px-2">
         <div class="truncate text-xs font-normal">
           <router-link
