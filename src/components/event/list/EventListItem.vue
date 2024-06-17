@@ -342,165 +342,154 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    class="relative pt-4"
+    class="relative pt-4 pr-4"
     :data-testid="`event-list-item-${event.title}`"
     @click="handleClick"
   >
-    <div>
-      <div class="block">
-        <div>
-          <div class="flex">
-
-            <div
-              class="mr-4 flex flex-shrink-0 h-16 w-16 flex-col items-center justify-center rounded-lg"
-            >
-              <div
-                class="font-semibold text-xs uppercase text-gray-500 dark:text-gray-200"
-              >
-                {{
-                  new Date(event.startTime).toLocaleString("en-US", {
-                    weekday: "short",
-                  })
-                }}
-              </div>
-              <div class="text-2xl font-bold">
-                {{ new Date(event.startTime).getDate() }}
-              </div>
-              <div
-                class="font-semibold text-xs lowercase text-gray-500 dark:text-gray-200"
-              >
-                {{
-                  new Date(event.startTime).toLocaleString("en-US", {
-                    month: "short",
-                  })
-                }}
-              </div>
-            </div>
-
-            <div class="flex-1">
-              <img
-                v-if="smAndDown && event.coverImageURL"
-                :src="event.coverImageURL"
-                alt="Event cover image"
-                class="mb-4 max-h-48 rounded-lg"
-              />
-              <div>
-                <span
-                  class="text-md cursor-pointer font-bold text-blue-500 hover:underline"
-                >
-                  <HighlightedSearchTerms
-                    :text="event.title"
-                    :search-input="searchInput"
-                  />
-                </span>
-
-                <span
-                  v-if="event.canceled"
-                  class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
-                  >Canceled</span
-                >
-              </div>
-
-              <div class="flex gap-1">
-                <span
-                  class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
-                >
-                  {{ `${event.locationName || ""}${event.locationName ? " at " : ""}${timeOfDay}` }}
-                </span>
-     
-              </div>
-              <p v-if="event.virtualEventUrl">Online event</p>
-              <p v-if="event.free" class="text-sm font-medium text-gray-600">
-                Free
-              </p>
-
-              <div
-                v-if="truncatedDescription"
-                class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
-              >
-                <MarkdownPreview
-                  :text="truncatedDescription || ''"
-                  :disable-gallery="true"
-                  :word-limit="20"
-                  class="-ml-4"
-                />
-              </div>
-              <p
-                class="mt-1 flex space-x-1 text-sm font-medium text-gray-600 hover:no-underline"
-              >
-                <Tag
-                  v-for="tag in event.Tags"
-                  :key="tag"
-                  class="my-1"
-                  :active="selectedTags.includes(tag.text)"
-                  :tag="tag.text"
-                  @click="
-                    () => {
-                      handleClickTag(tag.text);
-                    }
-                  "
-                />
-              </p>
-
-              <router-link
-                v-if="
-                  showDetailLink &&
-                  event &&
-                  (isWithinChannel || !submittedToMultipleChannels)
-                "
-                :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
-                class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
-              >
-                <button
-                  class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
-                >
-                  <i class="fa-regular fa-comment mt-1 h-6 w-6" />
-                  <span>{{
-                    `View ${commentCount} ${
-                      commentCount === 1 ? "comment" : "comments"
-                    }`
-                  }}</span>
-                  <span v-if="!isWithinChannel">{{
-                    ` in c/${event.EventChannels[0].channelUniqueName}`
-                  }}</span>
-                </button>
-              </router-link>
-
-              <MenuButton
-                v-else-if="showDetailLink && event"
-                :items="eventDetailOptions"
-              >
-                <button
-                  class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
-                >
-                  <i class="fa-regular fa-comment mr-2 h-4 w-4" />
-                  {{
-                    `${commentCount} ${
-                      commentCount === 1 ? "comment" : "comments"
-                    } in ${channelCount} ${
-                      channelCount === 1 ? "channel" : "channels"
-                    }`
-                  }}
-                  <ChevronDownIcon
-                    class="-mr-1 ml-2 h-4 w-4"
-                    aria-hidden="true"
-                  />
-                </button>
-              </MenuButton>
-            </div>
-
-            <div
-              v-if="!smAndDown"
-              class="mx-4 flex-shrink-0 items-center justify-center rounded-lg"
-            >
-              <img
-                v-if="event.coverImageURL"
-                :src="event.coverImageURL"
-                class="h-36 w-36 rounded-lg"
-              />
-            </div>
+    <div class="flex w-full">
+      <div class="flex-shrink-0 rounded-lg">
+        <div class="flex h-16 w-16 flex-col items-center justify-center">
+          <div
+            class="font-semibold text-xs uppercase text-gray-500 dark:text-gray-200"
+          >
+            {{
+              new Date(event.startTime).toLocaleString("en-US", {
+                weekday: "short",
+              })
+            }}
+          </div>
+          <div class="text-2xl font-bold">
+            {{ new Date(event.startTime).getDate() }}
+          </div>
+          <div
+            class="font-semibold text-xs lowercase text-gray-500 dark:text-gray-200"
+          >
+            {{
+              new Date(event.startTime).toLocaleString("en-US", {
+                month: "short",
+              })
+            }}
           </div>
         </div>
+      </div>
+
+      <div class="flex-1 min-w-0">
+        <img
+          v-if="smAndDown && event.coverImageURL"
+          :src="event.coverImageURL"
+          alt="Event cover image"
+          class="mb-4 max-h-48 rounded-lg"
+        />
+        <div>
+          <span
+            class="text-md flex-wrap cursor-pointer font-bold text-blue-500 hover:underline"
+          >
+            <HighlightedSearchTerms
+              :text="event.title"
+              :search-input="searchInput"
+            />
+          </span>
+
+          <span
+            v-if="event.canceled"
+            class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
+            >Canceled</span
+          >
+        </div>
+
+        <!-- <div class="flex gap-1 flex-wrap">
+          <span
+            class="mt-2 flex flex-wrap text-sm text-gray-500 dark:text-gray-200"
+          >
+            {{
+              `${event.locationName || ""}${event.locationName ? " at " : ""}${timeOfDay}`
+            }}
+          </span>
+        </div> -->
+        <p v-if="event.virtualEventUrl">Online event</p>
+        <p v-if="event.free" class="text-sm font-medium text-gray-600">Free</p>
+
+        <div
+          v-if="truncatedDescription"
+          class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
+        >
+          <MarkdownPreview
+            :text="truncatedDescription || ''"
+            :disable-gallery="true"
+            :word-limit="20"
+            class="-ml-4"
+          />
+        </div>
+        <p
+          class="mt-1 flex space-x-1 text-sm font-medium text-gray-600 hover:no-underline"
+        >
+          <Tag
+            v-for="tag in event.Tags"
+            :key="tag"
+            class="my-1"
+            :active="selectedTags.includes(tag.text)"
+            :tag="tag.text"
+            @click="
+              () => {
+                handleClickTag(tag.text);
+              }
+            "
+          />
+        </p>
+
+        <router-link
+          v-if="
+            showDetailLink &&
+            event &&
+            (isWithinChannel || !submittedToMultipleChannels)
+          "
+          :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
+          class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
+        >
+          <button
+            class="rounded-md bg-gray-100 px-4 pt-1 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+          >
+            <i class="fa-regular fa-comment mt-1 h-6 w-6" />
+            <span>{{
+              `View ${commentCount} ${
+                commentCount === 1 ? "comment" : "comments"
+              }`
+            }}</span>
+            <span v-if="!isWithinChannel">{{
+              ` in c/${event.EventChannels[0].channelUniqueName}`
+            }}</span>
+          </button>
+        </router-link>
+
+        <MenuButton
+          v-else-if="showDetailLink && event"
+          :items="eventDetailOptions"
+        >
+          <button
+            class="-ml-1 flex items-center rounded-md bg-gray-100 px-4 pb-2 pt-2 hover:bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-500"
+          >
+            <i class="fa-regular fa-comment mr-2 h-4 w-4" />
+            {{
+              `${commentCount} ${
+                commentCount === 1 ? "comment" : "comments"
+              } in ${channelCount} ${
+                channelCount === 1 ? "channel" : "channels"
+              }`
+            }}
+            <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
+          </button>
+        </MenuButton>
+      </div>
+
+      <div
+        v-if="!smAndDown"
+        class="flex-shrink-0 items-center justify-center rounded-lg"
+      >
+        <img
+          v-if="event.coverImageURL"
+          :src="event.coverImageURL"
+          class="h-32 w-32 rounded-lg"
+        />
       </div>
     </div>
   </li>
