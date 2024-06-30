@@ -15,7 +15,7 @@ import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
 import DiscussionCommentsWrapper from "@/components/discussion/detail/DiscussionCommentsWrapper.vue";
 import DiscussionChannelLinks from "./DiscussionChannelLinks.vue";
-import DiscussionRootCommentFormWrapper from "@/components/discussion/form/DiscussionRootCommentFormWrapper.vue"
+import DiscussionRootCommentFormWrapper from "@/components/discussion/form/DiscussionRootCommentFormWrapper.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
@@ -26,12 +26,10 @@ import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { Comment } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
-import GenericFeedbackFormModal from '@/components/generic/forms/GenericFeedbackFormModal.vue'
-import ConfirmUndoDiscussionFeedbackModal from '@/components/discussion/detail/ConfirmUndoDiscussionFeedbackModal.vue'
+import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
+import ConfirmUndoDiscussionFeedbackModal from "@/components/discussion/detail/ConfirmUndoDiscussionFeedbackModal.vue";
 import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mutations";
-import {
-  GET_LOCAL_USERNAME,
-} from "@/graphQLData/user/queries";
+import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
 import EditFeedbackModal from "@/components/discussion/detail/EditFeedbackModal.vue";
 
@@ -106,20 +104,18 @@ export default defineComponent({
       error: getDiscussionError,
       loading: getDiscussionLoading,
       refetch: refetchDiscussion,
-    } = useQuery(GET_DISCUSSION, { 
+    } = useQuery(GET_DISCUSSION, {
       id: discussionId,
       loggedInModName: props.loggedInUserModName,
-      channelUniqueName: channelId.value
+      channelUniqueName: channelId.value,
     });
 
-    const { 
+    const {
       mutate: addFeedbackCommentToDiscussion,
       loading: addFeedbackCommentToDiscussionLoading,
       error: addFeedbackCommentToDiscussionError,
       onDone: onAddFeedbackCommentToDiscussionDone,
-    } = useMutation(
-      ADD_FEEDBACK_COMMENT_TO_DISCUSSION
-    );
+    } = useMutation(ADD_FEEDBACK_COMMENT_TO_DISCUSSION);
 
     const showFeedbackFormModal = ref(false);
     const showEditFeedbackModal = ref(false);
@@ -355,22 +351,19 @@ export default defineComponent({
       // that it's active, meaning the user has given feedback.
       this.refetchDiscussion();
     },
-  }
+  },
 });
 </script>
 
 <template>
   <div class="w-full">
-    <div class="align-center mb-2 md:px-6 flex justify-between">
+    <div class="align-center mb-2 flex justify-between md:px-6">
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
         :text="`Back to Discussions in ${channelId}`"
       />
-      <RequireAuth
-        :full-width="false"
-        class="flex max-w-sm justify-end"
-      >
+      <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
         <template #has-auth>
           <CreateButton
             class="ml-2"
@@ -379,10 +372,7 @@ export default defineComponent({
           />
         </template>
         <template #does-not-have-auth>
-          <PrimaryButton
-            class="ml-2"
-            :label="'New Discussion'"
-          />
+          <PrimaryButton class="ml-2" :label="'New Discussion'" />
         </template>
       </RequireAuth>
     </div>
@@ -390,101 +380,104 @@ export default defineComponent({
     <PageNotFound
       v-if="
         !getDiscussionLoading &&
-          !getDiscussionChannelLoading &&
-          !activeDiscussionChannel
+        !getDiscussionChannelLoading &&
+        !activeDiscussionChannel
       "
     />
     <div
       v-else
-      class="w-full max-w-7xl space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
+      class="flex w-full max-w-7xl justify-center space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="!getDiscussionLoading">
-        <div class="mt-3 w-full px-2">
-          <div ref="discussionDetail">
-            <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-              {{
-                discussion && discussion.title ? discussion.title : "[Deleted]"
-              }}
-            </h2>
-          </div>
-        </div>
-      </div>
-
-      <ErrorBanner
-        v-if="getDiscussionError"
-        class="mt-2 px-4"
-        :text="getDiscussionError.message"
-      />
-
-      <v-row
-        v-if="discussion"
-        class="flex justify-center"
-      >
-        <v-col>
-          <div class="space-y-3 px-2">
-            <div
-              class="dark:bg-gray-950 rounded-lg md:border md:px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
-            >
-              <DiscussionHeader
-                :discussion="discussion"
-                :channel-id="channelId"
-                :compact-mode="compactMode"
-                @handleClickGiveFeedback="handleClickGiveFeedback"
-              />
-              <DiscussionBody
-                :discussion="discussion"
-                :channel-id="channelId"
-                :discussion-channel-id="activeDiscussionChannel?.id"
-                :emoji-json="activeDiscussionChannel?.emoji"
+      <div class="max-w-3xl">
+        <div v-if="!getDiscussionLoading">
+          <div class="mt-3 w-full px-2">
+            <div ref="discussionDetail">
+              <h2
+                class="mb-2 mt-4 text-wrap px-1 text-2xl font-medium sm:tracking-tight"
               >
-                <div class="flex h-12 items-center">
-                  <DiscussionVotes
-                    v-if="activeDiscussionChannel"
-                    :discussion="discussion"
-                    :discussion-channel="activeDiscussionChannel"
-                    :show-downvote="!loggedInUserIsAuthor"
-                    @handleClickGiveFeedback="handleClickGiveFeedback"
-                    @handleClickUndoFeedback="handleClickUndoFeedback"
-                    @handleClickEditFeedback="handleClickEditFeedback"
-                  />
-                </div>
-              </DiscussionBody>
+                {{
+                  discussion && discussion.title
+                    ? discussion.title
+                    : "[Deleted]"
+                }}
+              </h2>
             </div>
           </div>
-        </v-col>
-      </v-row>
-      <div>
-        <DiscussionRootCommentFormWrapper
-          :key="`${channelId}${discussionId}`"
-          class="pr-3"
-          :channel-id="channelId"
-          :discussion-channel="activeDiscussionChannel"
-          :previous-offset="previousOffset"
-          :mod-name="loggedInUserModName"
+        </div>
+
+        <ErrorBanner
+          v-if="getDiscussionError"
+          class="mt-2 px-4"
+          :text="getDiscussionError.message"
         />
-        <div class="mx-2 my-6 rounded-lg">
-          <DiscussionCommentsWrapper
-            :key="activeDiscussionChannel?.id"
-            :loading="getDiscussionChannelLoading"
+
+        <v-row v-if="discussion" class="flex justify-center">
+          <v-col>
+            <div class="space-y-3 px-2">
+              <div
+                class="dark:bg-gray-950 rounded-lg pb-2 dark:border-gray-700 dark:bg-gray-700 md:border md:px-4"
+              >
+                <DiscussionHeader
+                  :discussion="discussion"
+                  :channel-id="channelId"
+                  :compact-mode="compactMode"
+                  @handleClickGiveFeedback="handleClickGiveFeedback"
+                />
+                <DiscussionBody
+                  :discussion="discussion"
+                  :channel-id="channelId"
+                  :discussion-channel-id="activeDiscussionChannel?.id"
+                  :emoji-json="activeDiscussionChannel?.emoji"
+                >
+                  <div class="flex h-12 items-center">
+                    <DiscussionVotes
+                      v-if="activeDiscussionChannel"
+                      :discussion="discussion"
+                      :discussion-channel="activeDiscussionChannel"
+                      :show-downvote="!loggedInUserIsAuthor"
+                      @handleClickGiveFeedback="handleClickGiveFeedback"
+                      @handleClickUndoFeedback="handleClickUndoFeedback"
+                      @handleClickEditFeedback="handleClickEditFeedback"
+                    />
+                  </div>
+                </DiscussionBody>
+              </div>
+            </div>
+          </v-col>
+        </v-row>
+        <div>
+          <DiscussionRootCommentFormWrapper
+            :key="`${channelId}${discussionId}`"
+            class="pr-3"
+            :channel-id="channelId"
             :discussion-channel="activeDiscussionChannel"
-            :discussion-author="discussionAuthor || ''"
-            :comments="comments"
-            :mod-name="loggedInUserModName"
-            :reached-end-of-results="reachedEndOfResults"
             :previous-offset="previousOffset"
-            @loadMore="loadMore"
+            :mod-name="loggedInUserModName"
+          />
+          <div class="mx-2 my-6 rounded-lg">
+            <DiscussionCommentsWrapper
+              :key="activeDiscussionChannel?.id"
+              :loading="getDiscussionChannelLoading"
+              :discussion-channel="activeDiscussionChannel"
+              :discussion-author="discussionAuthor || ''"
+              :comments="comments"
+              :mod-name="loggedInUserModName"
+              :reached-end-of-results="reachedEndOfResults"
+              :previous-offset="previousOffset"
+              @loadMore="loadMore"
+            />
+          </div>
+          <DiscussionChannelLinks
+            v-if="discussion && discussion.DiscussionChannels"
+            class="my-4"
+            :discussion-channels="discussion.DiscussionChannels"
+            :channel-id="
+              activeDiscussionChannel
+                ? activeDiscussionChannel.channelUniqueName
+                : ''
+            "
           />
         </div>
-        <DiscussionChannelLinks
-          v-if="discussion && discussion.DiscussionChannels"
-          class="my-4"
-          :discussion-channels="discussion.DiscussionChannels"
-          :channel-id="
-            activeDiscussionChannel
-              ? activeDiscussionChannel.channelUniqueName
-              : ''
-          "
-        />
       </div>
     </div>
     <GenericFeedbackFormModal
