@@ -39,14 +39,20 @@ import CommentFeedback from "./components/comments/CommentFeedback.vue";
 export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: "active",
-  scrollBehavior(to) {
-    if (to.hash) {
-      return {
-        el: to.hash,
-        behavior: "smooth",
-      };
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else if (to.hash) {
+      const unescapedHash = to.hash.replace(/^#/, ''); // Remove the leading '#'
+      const element = document.querySelector(`#${CSS.escape(unescapedHash)}`);
+      if (element) {
+        return {
+          selector: `#${CSS.escape(unescapedHash)}`,
+          behavior: 'smooth',
+        };
+      }
     } else {
-      return { top: 0 };
+      return { x: 0, y: 0 };
     }
   },
   routes: [

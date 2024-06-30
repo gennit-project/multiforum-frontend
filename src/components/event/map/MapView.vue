@@ -25,7 +25,6 @@ import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrol
 import gql from "graphql-tag";
 import { Event as EventData } from "@/__generated__/graphql";
 
-
 export default defineComponent({
   name: "MapView",
   components: {
