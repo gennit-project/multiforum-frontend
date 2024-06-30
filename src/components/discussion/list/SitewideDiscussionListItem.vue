@@ -184,9 +184,9 @@ export default defineComponent({
   >
     <div class="flex w-full justify-between">
       <div class="w-full">
-        <div class="flex items-center border-b pb-2 dark:border-b-gray-600">
+        <div class="flex border-b pb-2 dark:border-b-gray-600">
           <div
-            class="mr-2 flex items-center w-10 h-10 justify-center rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
+            class="mr-2 flex items-center justify-center flex-start w-10 h-10 rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
           >
             💬
           </div>
@@ -208,7 +208,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-bold text-lg'"
+                  :classes="'font-medium text-lg'"
                 />
               </span>
             </router-link>
