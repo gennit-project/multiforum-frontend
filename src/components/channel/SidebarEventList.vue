@@ -18,6 +18,12 @@ const getDateSectionFormat = (date: string) => {
 
 export default defineComponent({
   name: "SidebarEventList",
+  props: {
+    eventChannelsAggregate: {
+      type: Number,
+      required: true,
+    },
+  },
   setup() {
     const route = useRoute();
 
