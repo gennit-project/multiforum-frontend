@@ -92,7 +92,7 @@ export default defineComponent({
       }}</span>
       <span
         v-if="showCount && count !== null"
-        class="rounded-full bg-gray-200 px-3 py-1 text-xs font-bold text-gray-700 dark:bg-gray-600 dark:text-white"
+        class="rounded-lg bg-gray-200 px-3 py-1 text-xs font-bold text-gray-700 dark:bg-gray-600 dark:text-white"
       >{{ count }}
       </span>
     </div>

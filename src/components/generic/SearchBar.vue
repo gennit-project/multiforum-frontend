@@ -70,7 +70,7 @@ export default defineComponent({
         v-model="input"
         name="search"
         data-testid="search-bar"
-        :class="[rightSideIsRounded ? 'rounded-full' : 'rounded-l-full', small ? 'h-10' : 'h-12']"
+        :class="[rightSideIsRounded ? 'rounded-lg' : 'rounded-l-full', small ? 'h-10' : 'h-12']"
         class="w-full flex-1 border-gray-200  pl-10 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         :placeholder="searchPlaceholder"
         type="text"
