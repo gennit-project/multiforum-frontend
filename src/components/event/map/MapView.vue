@@ -25,6 +25,7 @@ import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrol
 import gql from "graphql-tag";
 import { Event as EventData } from "@/__generated__/graphql";
 
+
 export default defineComponent({
   name: "MapView",
   components: {
@@ -138,13 +139,15 @@ export default defineComponent({
     const previewIsOpen = ref(false);
     const sendToPreview = (eventId: string, eventLocationId: string) => {
       if (eventId) {
+        const escapedEventLocationId = eventLocationId ? CSS.escape(eventLocationId) : "";
+
         if (!channelId.value) {
           router.push({
             name: "MapEventPreview",
             params: {
               eventId,
             },
-            hash: `#${eventLocationId ? eventLocationId : ""}`,
+            hash: `#${escapedEventLocationId}`,
             query: route.query,
           });
         } else {
@@ -153,7 +156,7 @@ export default defineComponent({
             params: {
               eventId,
             },
-            hash: `#${eventLocationId ? eventLocationId : ""}`,
+            hash: `#${escapedEventLocationId}`,
             query: route.query,
           });
         }
