@@ -8,7 +8,7 @@ import { createApolloProvider } from "@vue/apollo-option";
 import { onError } from "@apollo/client/link/error";
 import { setContext } from "@apollo/client/link/context";
 import { logErrorMessages } from "@vue/apollo-util";
-import VueGoogleMaps from "@fawmi/vue-google-maps";
+import VueGoogleMaps from "vue-google-maps-community-fork";
 import config from "./config";
 import "@github/markdown-toolbar-element";
 import { MdEditor } from "md-editor-v3";
@@ -177,6 +177,7 @@ app
   .use(VueGoogleMaps, {
     load: {
       key: config.googleMapsApiKey,
+      loading: 'async',
       libraries: "places",
     },
   })

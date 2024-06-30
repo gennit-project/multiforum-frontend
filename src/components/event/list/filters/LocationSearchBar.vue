@@ -46,7 +46,6 @@ export default defineComponent({
     return {
       config,
       route,
-      value: ref(''),
     };
   },
   methods: {
@@ -76,20 +75,11 @@ export default defineComponent({
           aria-hidden="true"
         />
       </div>
-      <!-- <GMapAutocomplete
+      <GMapAutocomplete
         :class="[leftSideIsRounded ? 'rounded-full' : 'rounded-r-full']"
         class="w-full border-gray-200 py-3 pl-10 h-12 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-        :placeholder=""
-        @place_changed="updateLocationInput"
-      /> -->
-      <GoogleAutocomplete
-      :class="[leftSideIsRounded ? 'rounded-full' : 'rounded-r-full']"
-        class="w-full flex items-center border-gray-200 py-3 pl-10 h-12 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
-        :value="value"
         :placeholder="searchPlaceholder"
-        :api-key="config.googleMapsApiKey"
-        :is-full-payload="true"
-        @set="updateLocationInput"
+        @place_changed="updateLocationInput"
       />
       <slot />
     </div>
