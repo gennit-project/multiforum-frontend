@@ -388,7 +388,7 @@ export default defineComponent({
       v-else
       class="flex w-full max-w-7xl justify-center space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div class="max-w-3xl">
+      <div class="max-w-3xl flex-col space-y-2">
         <div v-if="!getDiscussionLoading">
           <div class="mt-3 w-full px-2">
             <div ref="discussionDetail">
