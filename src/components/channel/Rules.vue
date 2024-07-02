@@ -34,7 +34,6 @@ export default defineComponent({
       }
       return rules;
     });
-    console.log('rules', channelRules.value)
     return {
       openRules: ref<Rule[]>(channelRules.value),
     };

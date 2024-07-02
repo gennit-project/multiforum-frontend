@@ -50,7 +50,6 @@ export default defineComponent({
   },
   methods: {
     updateLocationInput(placeData: any) {
-      console.log('place data', placeData)
       this.$emit("updateLocationInput", placeData);
       this.value = placeData.formatted_address;
     },

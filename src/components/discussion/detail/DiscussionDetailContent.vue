@@ -357,7 +357,7 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <div class="align-center mb-2 flex justify-between md:px-6">
+    <div class="align-center mb-2 flex justify-between">
       <BackLink
         :link="`/channels/c/${channelId}/discussions`"
         :data-testid="'discussion-detail-back-link'"
@@ -386,10 +386,10 @@ export default defineComponent({
     />
     <div
       v-else
-      class="flex w-full max-w-7xl justify-center space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
+      class="flex max-w-7xl justify-center space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div class="max-w-3xl flex-col space-y-2">
-        <div v-if="!getDiscussionLoading">
+      <div class="w-full flex-col space-y-2">
+        <div v-if="!getDiscussionLoading" class="flex w-full">
           <div class="mt-3 w-full px-2">
             <div ref="discussionDetail">
               <h2
