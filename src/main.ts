@@ -22,6 +22,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
+import VueEasyLightbox from 'vue-easy-lightbox'
 
 import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
 import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
@@ -172,6 +173,7 @@ app
   .use(vuetify)
   .use(MdEditor)
   .use(VMdEditor)
+  .use(VueEasyLightbox)
   .use(VMdPreview)
   .component("font-awesome-icon", FontAwesomeIcon)
   .use(VueGoogleMaps, {

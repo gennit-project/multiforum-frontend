@@ -68,6 +68,7 @@
     "vue-class-component": "^8.0.0-0",
     "vue-click-outside": "^1.1.0",
     "vue-clipboard3": "^2.0.0",
+    "vue-easy-lightbox": "^1.19.0",
     "vue-google-maps-community-fork": "^0.3.1",
     "vue-loader": "^17.0.0",
     "vue-material-design-icons": "^5.2.0",

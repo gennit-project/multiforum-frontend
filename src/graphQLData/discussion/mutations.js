@@ -83,7 +83,7 @@ export const UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
   ) {
     updateDiscussionWithChannelConnections(
       discussionUpdateInput: $updateDiscussionInput
-      discussionWhere: $discussionWhere
+      where: $discussionWhere
       channelConnections: $channelConnections
       channelDisconnections: $channelDisconnections
     ) {
