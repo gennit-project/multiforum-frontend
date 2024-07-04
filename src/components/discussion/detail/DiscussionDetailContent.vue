@@ -17,14 +17,10 @@ import DiscussionCommentsWrapper from "@/components/discussion/detail/Discussion
 import DiscussionChannelLinks from "./DiscussionChannelLinks.vue";
 import DiscussionRootCommentFormWrapper from "@/components/discussion/form/DiscussionRootCommentFormWrapper.vue";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import CreateButton from "@/components/generic/buttons/CreateButton.vue";
-import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import "md-editor-v3/lib/style.css";
 import { DiscussionChannel } from "@/__generated__/graphql";
 import { getSortFromQuery } from "@/components/comments/getSortFromQuery";
 import { Comment } from "@/__generated__/graphql";
-import BackLink from "@/components/generic/buttons/BackLink.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import GenericFeedbackFormModal from "@/components/generic/forms/GenericFeedbackFormModal.vue";
 import ConfirmUndoDiscussionFeedbackModal from "@/components/discussion/detail/ConfirmUndoDiscussionFeedbackModal.vue";
@@ -32,16 +28,15 @@ import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mut
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
 import EditFeedbackModal from "@/components/discussion/detail/EditFeedbackModal.vue";
-
+import DiscussionTitleEditForm from '@/components/discussion/detail/DiscussionTitleEditForm.vue'
 export const COMMENT_LIMIT = 50;
 
 export default defineComponent({
   components: {
-    BackLink,
     ConfirmUndoDiscussionFeedbackModal,
-    CreateButton,
     DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
+    DiscussionTitleEditForm,
     DiscussionCommentsWrapper,
     DiscussionBody,
     DiscussionHeader,
@@ -51,8 +46,6 @@ export default defineComponent({
     GenericFeedbackFormModal,
     Notification,
     PageNotFound,
-    PrimaryButton,
-    RequireAuth,
   },
   props: {
     discussionId: {
@@ -370,36 +363,11 @@ export default defineComponent({
     >
       <div class="w-full flex-col space-y-2">
         <div v-if="!getDiscussionLoading" class="flex w-full">
-          <div
-            class="mt-1 flex w-full px-2"
-            :class="!smAndDown ? 'space-between items-center' : 'flex-col'"
-          >
-            <div ref="discussionDetail">
-              <h2
-                class="mb-2 mt-4 text-wrap px-1 text-2xl font-medium sm:tracking-tight"
-              >
-                {{
-                  discussion && discussion.title
-                    ? discussion.title
-                    : "[Deleted]"
-                }}
-              </h2>
-            </div>
-            <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
-              <template #has-auth>
-                <CreateButton
-                  class="ml-2"
-                  :to="`/channels/c/${channelId}/discussions/create`"
-                  :label="'New Discussion'"
-                />
-              </template>
-              <template #does-not-have-auth>
-                <PrimaryButton class="ml-2" :label="'New Discussion'" />
-              </template>
-            </RequireAuth>
-          </div>
+          <DiscussionTitleEditForm
+            :channel-id="channelId"
+            :discussion="discussion"
+          />
         </div>
-
         <ErrorBanner
           v-if="getDiscussionError"
           class="mt-2 px-4"
