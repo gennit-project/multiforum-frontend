@@ -203,7 +203,6 @@ export default defineComponent({
 
     <article v-if="!smAndDown && channel" class="w-full">
       <ChannelHeaderDesktop
-        v-if="showChannelHeader"
         :channel="channel"
         :channel-id="channelId"
         :admin-list="adminList"

@@ -6,14 +6,12 @@ import { useDisplay } from "vuetify";
 import LoadingSpinner from "@/components/generic/LoadingSpinner.vue";
 import { useQuery } from "@vue/apollo-composable";
 import DiscussionDetailContent from "./DiscussionDetailContent.vue";
-import ChannelContent from "@/components/channel/ChannelContent.vue";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import "md-editor-v3/lib/style.css";
 
 export default defineComponent({
   components: {
-    ChannelContent,
     DiscussionDetailContent,
     ErrorBanner,
     LoadingSpinner,
@@ -84,7 +82,10 @@ export default defineComponent({
 </script>
 
 <template>
-  <ChannelContent>
+  <v-container
+    fluid
+    class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
+  >
     <div
       :class="[smAndDown ? '' : '']"
       class="flex w-full justify-center space-y-4"
@@ -94,19 +95,20 @@ export default defineComponent({
         v-else-if="localModProfileNameError"
         :text="localModProfileNameError.message"
       />
-      <ErrorBanner 
-        v-else-if="!discussionId"
-        text="Discussion not found"
-      />
+      <ErrorBanner v-else-if="!discussionId" text="Discussion not found" />
       <DiscussionDetailContent
-        v-else-if="discussionId && !localModProfileNameError && !localModProfileNameLoading"
+        v-else-if="
+          discussionId &&
+          !localModProfileNameError &&
+          !localModProfileNameLoading
+        "
         :key="discussionId"
         :discussion-id="discussionId"
         :compact-mode="compactMode"
         :logged-in-user-mod-name="loggedInUserModName"
       />
     </div>
-  </ChannelContent>
+  </v-container>
 </template>
 <style>
 .large-width {

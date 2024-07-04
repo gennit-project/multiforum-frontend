@@ -33,16 +33,16 @@ export default defineComponent({
 
 <template>
   <div class="flex flex-col items-center justify-center gap-4 bg-black">
-    <ExpandableImage
+    <!-- <ExpandableImage
       v-if="channel?.channelBannerURL"
       :src="channel?.channelBannerURL"
       :alt="'channel banner'"
       :is-medium="true"
       :is-square="true"
       class="w-full min-h-20"
-    />
+    /> -->
     <Avatar
-      class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+      class="h-24 w-24 border-2 shadow-sm dark:border-gray-800"
       :text="channelId"
       :src="channel?.channelIconURL ?? ''"
       :is-medium="true"

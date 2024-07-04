@@ -43,12 +43,12 @@ export const router = createRouter({
     if (savedPosition) {
       return savedPosition;
     } else if (to.hash) {
-      const unescapedHash = to.hash.replace(/^#/, ''); // Remove the leading '#'
+      const unescapedHash = to.hash.replace(/^#/, ""); // Remove the leading '#'
       const element = document.querySelector(`#${CSS.escape(unescapedHash)}`);
       if (element) {
         return {
           selector: `#${CSS.escape(unescapedHash)}`,
-          behavior: 'smooth',
+          behavior: "smooth",
         };
       }
     } else {
@@ -133,13 +133,6 @@ export const router = createRouter({
       name: "SearchDiscussions",
       path: "/discussions",
       component: SearchDiscussions,
-      children: [
-        {
-          name: "SitewideSearchDiscussionPreview",
-          path: "search/:discussionId",
-          component: DiscussionDetail,
-        },
-      ],
     },
     {
       name: "FilterDiscussionsByTag",
@@ -171,18 +164,7 @@ export const router = createRouter({
       name: "Subreddit",
       component: Subreddit,
     },
-    {
-      name: "DiscussionDetail",
-      path: "/channels/c/:channelId/discussions/d/:discussionId",
-      component: DiscussionDetail,
-      children: [
-        {
-          name: "DiscussionCommentPermalink",
-          path: "comments/:commentId",
-          component: PermalinkedComment,
-        },
-      ],
-    },
+
     {
       path: "/channels/c/:channelId",
       name: "Channel",
@@ -195,6 +177,18 @@ export const router = createRouter({
           name: "EditChannel",
           path: "edit",
           component: EditChannel,
+        },
+        {
+          name: "DiscussionDetail",
+          path: "/channels/c/:channelId/discussions/d/:discussionId",
+          component: DiscussionDetail,
+          children: [
+            {
+              name: "DiscussionCommentPermalink",
+              path: "comments/:commentId",
+              component: PermalinkedComment,
+            },
+          ],
         },
         {
           name: "FeedbackOnCommentFeedback",

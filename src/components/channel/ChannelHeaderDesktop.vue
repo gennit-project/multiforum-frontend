@@ -44,7 +44,7 @@ export default defineComponent({
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
     :is-square="true"
-    class="max-h-52 w-full"
+    class="max-h-24 w-full"
   />
   <div class="bg-white dark:bg-gray-800">
     <v-container
@@ -53,12 +53,12 @@ export default defineComponent({
     >
       <div
         class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
-        :class="[channel?.channelBannerURL ? '-mt-16' : 'pt-4']"
+        :class="[channel?.channelBannerURL ? '-mt-4' : 'pt-4']"
       >
         <div class="align-items flex w-full gap-4">
           <ExpandableImage
             v-if="channel?.channelIconURL"
-            class="ml-6 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+            class="ml-6 h-24 w-24 border-2 shadow-sm dark:border-gray-800"
             :rounded="true"
             :is-medium="true"
             :alt="channelId"
@@ -66,7 +66,7 @@ export default defineComponent({
           />
           <Avatar
             v-if="!channel?.channelIconURL"
-            class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+            class="h-24 w-24 border-2 shadow-sm dark:border-gray-800"
             :text="channelId"
             :src="channel?.channelIconURL ?? ''"
             :is-medium="true"
@@ -75,11 +75,11 @@ export default defineComponent({
           <div>
             <div>
               <div
-                :class="[channel?.channelBannerURL ? 'mt-20' : 'mt-12']"
+                class="mt-8"
               >
                 <h1
                   v-if="channelId"
-                  class="rounded-full px-4 py-2 flex mb-2 bg-white dark:bg-gray-900 border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
+                  class="rounded-full px-4 pt-1 flex mb-2 bg-white dark:bg-gray-900 border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
                 >
                   {{ channel?.displayName ? channel.displayName : channelId }}
                 </h1>
@@ -95,7 +95,7 @@ export default defineComponent({
         </div>
         <CreateAnythingButton
           v-if="showCreateButton"
-          :class="channel?.channelBannerURL ? 'mt-20' : 'mt-12'"
+          class="mt-8 mr-6"
           :use-primary-button="true"
         />
       </div>

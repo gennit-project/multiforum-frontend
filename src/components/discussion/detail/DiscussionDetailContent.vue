@@ -357,26 +357,6 @@ export default defineComponent({
 
 <template>
   <div class="w-full">
-    <div class="align-center mb-2 flex justify-between">
-      <BackLink
-        :link="`/channels/c/${channelId}/discussions`"
-        :data-testid="'discussion-detail-back-link'"
-        :text="`Back to Discussions in ${channelId}`"
-      />
-      <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
-        <template #has-auth>
-          <CreateButton
-            class="ml-2"
-            :to="`/channels/c/${channelId}/discussions/create`"
-            :label="'New Discussion'"
-          />
-        </template>
-        <template #does-not-have-auth>
-          <PrimaryButton class="ml-2" :label="'New Discussion'" />
-        </template>
-      </RequireAuth>
-    </div>
-
     <PageNotFound
       v-if="
         !getDiscussionLoading &&
@@ -390,7 +370,10 @@ export default defineComponent({
     >
       <div class="w-full flex-col space-y-2">
         <div v-if="!getDiscussionLoading" class="flex w-full">
-          <div class="mt-3 w-full px-2">
+          <div
+            class="mt-1 flex w-full px-2"
+            :class="!smAndDown ? 'space-between items-center' : 'flex-col'"
+          >
             <div ref="discussionDetail">
               <h2
                 class="mb-2 mt-4 text-wrap px-1 text-2xl font-medium sm:tracking-tight"
@@ -402,6 +385,18 @@ export default defineComponent({
                 }}
               </h2>
             </div>
+            <RequireAuth :full-width="false" class="flex max-w-sm justify-end">
+              <template #has-auth>
+                <CreateButton
+                  class="ml-2"
+                  :to="`/channels/c/${channelId}/discussions/create`"
+                  :label="'New Discussion'"
+                />
+              </template>
+              <template #does-not-have-auth>
+                <PrimaryButton class="ml-2" :label="'New Discussion'" />
+              </template>
+            </RequireAuth>
           </div>
         </div>
 
