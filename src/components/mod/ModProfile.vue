@@ -39,14 +39,14 @@ export default defineComponent({
     return {
       error,
       loading,
-      displayName: result ? result.value.displayName : "",
+      displayName: result.value ? result.value.displayName : "",
       mod,
       modId,
       relativeTime,
       route,
       tabs: [
-        { name: "Downvoted Comments", href: "comments", current: true },
-        { name: "Downvoted Discussions", href: "discussions", current: false },
+        { name: "Authored Comments", href: "comments", current: true },
+        { name: "Authored Issues", href: "discussions", current: false },
         // { name: "Authored Reports", href: "reports", current: false },
       ],
     };
@@ -80,11 +80,12 @@ export default defineComponent({
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div class="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
             <div class="flex">
-              <Profile
+              <h2
                 v-if="displayName"
-                :text="displayName"
                 class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32"
-              />
+              >
+                {displayName}
+              </h2>
             </div>
             <div
               class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
@@ -105,21 +106,18 @@ export default defineComponent({
           </div>
           <ul class="m-4 list-disc">
             <li>
-              {{ `${mod.DownvotedCommentsAggregate.count} downvoted comments` }}
+              {{ `${mod.AuthoredCommentsAggregate.count} authored comments` }}
             </li>
             <li>
               {{
-                `${mod.DownvotedDiscussionsAggregate.count} downvoted discussions`
+                `${mod.AuthoredIssuesAggregate.count} authored issues`
               }}
             </li>
-            <!-- <li>
-              {{ `${mod.AuthoredReportsAggregate.count} authored reports` }}
-            </li> -->
           </ul>
         </div>
       </div>
 
-      <div class="mt-6 sm:mt-2 2xl:mt-5  ">
+      <!-- <div class="mt-6 sm:mt-2 2xl:mt-5  ">
         <div class="border-b border-gray-200 bg-gray-100">
           <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <nav
@@ -144,7 +142,7 @@ export default defineComponent({
         <div class="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 pb-12">
           <router-view />
         </div>
-      </div>
+      </div> -->
     </article>
   </div>
 </template>

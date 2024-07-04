@@ -37,18 +37,14 @@ export const GET_MOD = gql`
     }) {
       displayName
       createdAt
-      DownvotedCommentsAggregate {
+      AuthoredCommentsAggregate {
         count
         __typename
       }
-      DownvotedDiscussionsAggregate {
+      AuthoredIssuesAggregate {
         count
         __typename
       }
-      AuthoredReportsAggregate {
-        count
-        __typename
-      } 
     }
   }`
 
