@@ -284,7 +284,7 @@ export default defineComponent({
         >
           <MarkdownPreview
             :text="discussion.body"
-            :disable-gallery="true"
+            :disable-gallery="false"
             :word-limit="50"
             class="-ml-4"
           />
