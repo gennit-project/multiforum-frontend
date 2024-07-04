@@ -84,23 +84,29 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="relative z-0 max-w-7xl flex-1 focus:outline-none xl:order-last"
+    class="relative max-w-7xl flex-1 focus:outline-none xl:order-last"
   >
     <div
       :class="[smAndDown ? '' : '']"
       class="flex w-full justify-center space-y-4"
     >
-      <LoadingSpinner v-if="localModProfileNameLoading" class="h-12 w-12" />
+      <LoadingSpinner
+        v-if="localModProfileNameLoading"
+        class="h-12 w-12"
+      />
       <ErrorBanner
         v-else-if="localModProfileNameError"
         :text="localModProfileNameError.message"
       />
-      <ErrorBanner v-else-if="!discussionId" text="Discussion not found" />
+      <ErrorBanner
+        v-else-if="!discussionId"
+        text="Discussion not found"
+      />
       <DiscussionDetailContent
         v-else-if="
           discussionId &&
-          !localModProfileNameError &&
-          !localModProfileNameLoading
+            !localModProfileNameError &&
+            !localModProfileNameLoading
         "
         :key="discussionId"
         :discussion-id="discussionId"

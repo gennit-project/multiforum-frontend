@@ -49,7 +49,7 @@ export default defineComponent({
   <div class="bg-white dark:bg-gray-800">
     <v-container
       fluid
-      class="relative z-0 max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
+      class="relative max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
     >
       <div
         class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"

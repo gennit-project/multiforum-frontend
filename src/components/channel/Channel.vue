@@ -182,9 +182,12 @@ export default defineComponent({
       :channel-id="channelId"
       :show-create-button="true"
     />
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <article
-        class="relative z-0 h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
+        class="relative  h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
           v-if="channel && smAndDown"
@@ -201,7 +204,10 @@ export default defineComponent({
       </article>
     </div>
 
-    <article v-if="!smAndDown && channel" class="w-full">
+    <article
+      v-if="!smAndDown && channel"
+      class="w-full"
+    >
       <ChannelHeaderDesktop
         :channel="channel"
         :channel-id="channelId"

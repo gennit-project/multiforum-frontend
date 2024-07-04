@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import ExclamationTriangleIcon from "@/components/icons/ExclamationIcon.vue";
 
 export default defineComponent({
@@ -36,19 +36,29 @@ export default defineComponent({
       default: "",
     },
   },
-  setup() {},
-  data(props) {
+  setup(props, { expose }) {
+    const inputRef = ref<HTMLInputElement | HTMLTextAreaElement | null>(null);
+    
+    const focus = () => {
+      inputRef.value?.focus();
+    };
+
+    expose({ focus });
+
     return {
-      text: props.value,
+      inputRef,
+      text: ref(props.value),
     };
   },
 });
 </script>
+
 <template>
   <div>
     <div class="relative mt-1 flex rounded-lg shadow-sm">
       <input
         v-if="rows === 1"
+        ref="inputRef"
         v-model="text"
         :data-testid="testId"
         :placeholder="placeholder"
@@ -65,6 +75,7 @@ export default defineComponent({
       >
       <textarea
         v-else-if="rows > 1"
+        ref="inputRef"
         v-model="text"
         :data-testid="testId"
         :placeholder="placeholder"
