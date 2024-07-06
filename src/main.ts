@@ -76,6 +76,10 @@ import 'codemirror/addon/scroll/simplescrollbars.css';
 // style
 import 'codemirror/lib/codemirror.css';
 
+import * as Sentry from "@sentry/vue";
+
+
+
 VMdEditor.Codemirror = Codemirror;
 VMdEditor.lang.use('en-US', enUS);
 
@@ -168,6 +172,25 @@ const app = createApp({
   render: () => h(App),
 });
 
+Sentry.init({
+  app,
+  dsn: config.sentryDsn,
+  integrations: [
+    new Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration(),
+  ],
+
+  // Set tracesSampleRate to 1.0 to capture 100%
+  // of transactions for performance monitoring.
+  tracesSampleRate: 1.0,
+
+  // Capture Replay for 10% of all sessions,
+  // plus for 100% of sessions with an error
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
+});
+
+
 app
   .use(router)
   .use(vuetify)
@@ -190,3 +213,5 @@ app
   }))
   .use(apolloProvider)
   .mount("#app");
+
+

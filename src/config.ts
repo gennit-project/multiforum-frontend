@@ -7,6 +7,8 @@ const config = {
     "environment": import.meta.env.VITE_ENVIRONMENT,
     "openGraphApiKey": import.meta.env.VITE_OPEN_GRAPH_API_KEY,
     "baseUrl": import.meta.env.VITE_BASE_URL,
+    "sentryDsn": import.meta.env.VITE_SENTRY_DSN,
+    "sentryAuthToken": import.meta.env.VITE_SENTRY_AUTH_TOKEN,
     "googleCloudStorageBucket": import.meta.env.VITE_GOOGLE_CLOUD_STORAGE_BUCKET,
  }
 

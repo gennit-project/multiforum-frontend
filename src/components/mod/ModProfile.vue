@@ -83,9 +83,7 @@ export default defineComponent({
               <h2
                 v-if="displayName"
                 class="h-24 w-24 ring-4 ring-white sm:h-32 sm:w-32"
-              >
-                {displayName}
-              </h2>
+              >{displayName}</h2>
             </div>
             <div
               class="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1"
