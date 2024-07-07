@@ -143,7 +143,7 @@ export default defineComponent({
               class="text-black dark:text-blue-500"
             />
             <span class="font-bold text-black dark:text-white">Topical</span>
-            <span class="text-blue-500 text-xs py-0.5 px-1 border rounded-md border-blue-500 dark:text-blue-500">BETA</span>
+            <span class="text-blue-500 text-xs py-0.5 px-1 border rounded-md border-blue-500 dark:text-blue-500">ALPHA</span>
           </router-link>
           <div
             v-if="shouldShowChannelId && !smAndDown"

@@ -9,11 +9,10 @@ import {
 import { apolloClient } from "@/main";
 import { CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/discussion/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import { DiscussionData } from "@/types/discussionTypes";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 import RequireAuth from "../../auth/RequireAuth.vue";
-import { DiscussionCreateInput } from "@/__generated__/graphql";
+import { DiscussionCreateInput, Discussion } from "@/__generated__/graphql";
 import "md-editor-v3/lib/style.css";
 import gql from "graphql-tag";
 
@@ -109,7 +108,7 @@ export default defineComponent({
         channelConnections: channelConnections.value,
       },
       update: (cache: any, result: any) => {
-        const newDiscussion: DiscussionData =
+        const newDiscussion: Discussion =
           result.data?.createDiscussionWithChannelConnections;
 
         cache.modify({

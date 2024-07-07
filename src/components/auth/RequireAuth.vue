@@ -36,6 +36,7 @@ export default defineComponent({
       idTokenClaims,
     } = useAuth0();
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
     const login = async () => {
       if (window.parent.Cypress) {
         await loginWithRedirect();
@@ -94,10 +95,17 @@ export default defineComponent({
     class="flex align-middle"
     :class="[!justifyLeft ? 'justify-center' : '', fullWidth ? 'w-full' : '']"
   >
-    <div v-if="username && (!requireOwnership || isOwner)" class="w-full">
+    <div
+      v-if="username && (!requireOwnership || isOwner)"
+      class="w-full"
+    >
       <slot name="has-auth" />
     </div>
-    <div v-else :class="[fullWidth ? 'w-full' : '']" @click="login">
+    <div
+      v-else
+      :class="[fullWidth ? 'w-full' : '']"
+      @click="login"
+    >
       <slot name="does-not-have-auth" />
     </div>
   </div>
