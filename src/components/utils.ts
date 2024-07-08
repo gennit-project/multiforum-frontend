@@ -17,7 +17,9 @@ type GetEmbeddedLinkInput = {
 
 export function getUploadFileName(input: UploadFileInput) {
   const { file, username } = input;
-  return `${Date.now()}-${username}-${file.name}`;
+  const filenameWithSpaces = `${Date.now()}-${username}-${file.name}`;
+  const withoutSpaces = filenameWithSpaces.replace(/\s/g, '_');
+  return withoutSpaces;
 }
 
 export function encodeSpacesInURL(url: string) {
