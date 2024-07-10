@@ -34,8 +34,10 @@ export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
   } = input;
   const { googleCloudStorageBucket } = config;
 
+  const encodedFilename = encodeURIComponent(filename);
+
   const embeddedLink = encodeSpacesInURL(
-    `https://storage.googleapis.com/${googleCloudStorageBucket}/${filename}`,
+    `https://storage.googleapis.com/${googleCloudStorageBucket}/${encodedFilename}`,
   );
 
   const response = await fetch(signedStorageURL, {
