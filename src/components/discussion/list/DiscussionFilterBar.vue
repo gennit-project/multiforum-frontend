@@ -135,7 +135,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="mt-8 mb-4 flex items-center justify-between px-1">
+    <div class="mt-3 mb-4 flex items-center justify-between px-1">
       <SearchBar
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"

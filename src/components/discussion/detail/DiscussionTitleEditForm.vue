@@ -13,6 +13,7 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import LoadingSpinner from "@/components/generic/LoadingSpinner.vue";
 
 export default defineComponent({
   name: "DiscussionTitleEditForm",
@@ -20,6 +21,7 @@ export default defineComponent({
     CreateButton,
     ErrorBanner,
     GenericButton,
+    LoadingSpinner,
     PrimaryButton,
     RequireAuth,
     TextInput,
@@ -101,6 +103,7 @@ export default defineComponent({
       discussion,
       formValues,
       getDiscussionError,
+      getDiscussionLoading,
       smAndDown,
       titleEditMode,
       titleInputRef,
@@ -122,16 +125,23 @@ export default defineComponent({
 <template>
   <div class="w-full">
     <div
-      class="mt-1 flex w-full space-x-2"
+      class="flex w-full mb-2 space-x-2"
       :class="!smAndDown ? 'items-center justify-between' : 'flex-col'"
     >
       <div
+        v-if="getDiscussionLoading"
+        class="flex-1"
+      >
+        <LoadingSpinner />
+      </div>
+      <div
+        v-else
         ref="discussionDetail"
         class="flex-1"
       >
         <h2
           v-if="!titleEditMode"
-          class="mb-2 mt-4 text-wrap px-1 text-2xl font-medium sm:tracking-tight"
+          class="text-wrap px-1 text-2xl font-medium sm:tracking-tight"
         >
           {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
         </h2>

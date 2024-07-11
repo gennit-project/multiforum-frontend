@@ -247,7 +247,7 @@ ul,
 li {
   font-size: 0.9rem !important;
   font-weight: 400 !important;
-  line-height: 1.4 !important;
+  line-height: 1.3 !important;
   margin-bottom: 0.5rem !important;
 }
 

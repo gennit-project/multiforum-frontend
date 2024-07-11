@@ -352,8 +352,8 @@ export default defineComponent({
     <PageNotFound
       v-if="
         !getDiscussionLoading &&
-        !getDiscussionChannelLoading &&
-        !activeDiscussionChannel
+          !getDiscussionChannelLoading &&
+          !activeDiscussionChannel
       "
     />
     <div
@@ -367,11 +367,14 @@ export default defineComponent({
           :text="getDiscussionError.message"
         />
 
-        <v-row v-if="discussion" class="flex justify-center">
+        <v-row
+          v-if="discussion"
+          class="flex justify-center"
+        >
           <v-col>
             <div class="space-y-3 px-2">
               <div
-                class="dark:bg-gray-950 rounded-lg pb-2 dark:border-gray-700 dark:bg-gray-700 md:border md:px-4"
+                class="dark:bg-gray-950 rounded-lg pb-2 dark:border-gray-700 dark:bg-gray-700"
               >
                 <DiscussionHeader
                   :discussion="discussion"
