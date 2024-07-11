@@ -1,6 +1,5 @@
 <script>
 import { defineComponent } from "vue";
-import ExpandableImage from "../generic/ExpandableImage.vue";
 import CreateAnythingButton from "../nav/CreateAnythingButton.vue";
 import Avatar from "../user/Avatar.vue";
 
@@ -8,7 +7,6 @@ export default defineComponent({
   name: "ChannelHeaderMobile",
   components: {
     Avatar,
-    ExpandableImage,
     CreateAnythingButton,
   },
   props: {
@@ -33,16 +31,8 @@ export default defineComponent({
 
 <template>
   <div class="flex flex-col items-center justify-center gap-4 bg-black">
-    <!-- <ExpandableImage
-      v-if="channel?.channelBannerURL"
-      :src="channel?.channelBannerURL"
-      :alt="'channel banner'"
-      :is-medium="true"
-      :is-square="true"
-      class="w-full min-h-20"
-    /> -->
     <Avatar
-      class="h-24 w-24 border-2 shadow-sm dark:border-gray-800"
+      class="h-24 w-24 border-2 shadow-sm dark:border-gray-800 mt-2"
       :text="channelId"
       :src="channel?.channelIconURL ?? ''"
       :is-medium="true"

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
+import { computed, defineComponent, nextTick, ref } from "vue";
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/vue";
@@ -54,12 +54,10 @@ export default defineComponent({
         theme @client
       }
     `;
-    const { 
+    const {
       mutate: createSignedStorageUrl,
       error: createSignedStorageUrlError,
-    } = useMutation(
-      CREATE_SIGNED_STORAGE_URL,
-    );
+    } = useMutation(CREATE_SIGNED_STORAGE_URL);
 
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
@@ -76,12 +74,21 @@ export default defineComponent({
     const theme = computed(() => {
       return result.value?.theme || "light";
     });
+    const editorRef = ref<HTMLTextAreaElement | null>(null);
 
+    const focusEditor = () => {
+      nextTick(() => {
+        if (editorRef.value) {
+          editorRef.value.focus();
+        }
+      });
+    };
     return {
       createSignedStorageUrl,
       createSignedStorageUrlError,
       editorId: "texteditor",
       embeddedImageLink: ref(""),
+      focusEditor,
       uploadAndGetEmbeddedLink,
       showFormatted: ref(false),
       text: ref(props.initialValue),
@@ -93,11 +100,7 @@ export default defineComponent({
   },
   created() {
     if (!this.disableAutoFocus) {
-      this.$nextTick(() => {
-        if (this.$refs.editor) {
-          this.$refs.editor.focus();
-        }
-      });
+      this.focusEditor();
     }
     this.$nextTick(() => {
       const tables = this.$el.querySelectorAll(".github-markdown-body table");
@@ -205,7 +208,7 @@ export default defineComponent({
               selected
                 ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
                 : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
-              'font-medium border-transparent mr-2 rounded-md border px-3 py-1.5 text-sm dark:border-gray-700 dark:hover:text-gray-400',
+              'border-transparent mr-2 rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
             ]"
           >
             Write
@@ -220,17 +223,15 @@ export default defineComponent({
               selected
                 ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
                 : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
-              'font-medium border-transparent rounded-md border px-3 py-1.5 text-sm dark:border-gray-700 dark:hover:text-gray-400',
+              'border-transparent rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
             ]"
           >
             Preview
           </button>
         </Tab>
       </TabList>
-      <TabPanels class=" mt-2">
-        <TabPanel
-          class="-m-0.5 rounded-md px-0.5 py-1" 
-        >
+      <TabPanels class="mt-2">
+        <TabPanel class="-m-0.5 rounded-md px-0.5 py-1">
           <label
             for="comment"
             class="sr-only"
@@ -252,7 +253,7 @@ export default defineComponent({
             @change="handleFileChange"
           />
         </TabPanel>
-        <TabPanel class="-m-0.5 rounded-md p-0.5 overflow-auto">
+        <TabPanel class="-m-0.5 overflow-auto rounded-md p-0.5">
           <v-md-preview
             :text="text"
             class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"

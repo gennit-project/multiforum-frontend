@@ -78,7 +78,7 @@ export default defineComponent({
   >
     <div
       :class="[
-        'px-2 mt-1',
+        'px-2 my-1',
         !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
         showCount && count ? '' : 'pr-4',
       ]"
@@ -92,7 +92,7 @@ export default defineComponent({
       }}</span>
       <span
         v-if="showCount && count !== null"
-        class="rounded-lg bg-gray-200 px-3 py-1 text-xs text-gray-700 dark:bg-gray-600 dark:text-white"
+        class="rounded-lg bg-gray-200 px-2 py-1 text-xs text-gray-700 dark:bg-gray-600 dark:text-white"
       >{{ count }}
       </span>
     </div>

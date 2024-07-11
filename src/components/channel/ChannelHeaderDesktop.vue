@@ -95,7 +95,7 @@ export default defineComponent({
         </div>
         <CreateAnythingButton
           v-if="showCreateButton"
-          class="mt-8 mr-6"
+          class="mt-8 mr-6 lg:mr-0"
           :use-primary-button="true"
         />
       </div>

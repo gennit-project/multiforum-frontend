@@ -189,7 +189,10 @@ export default defineComponent({
       :channel-id="channelId"
       :show-create-button="true"
     />
-    <div v-if="smAndDown" class="w-full">
+    <div
+      v-if="smAndDown"
+      class="w-full"
+    >
       <article
         class="relative h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
       >
@@ -208,7 +211,10 @@ export default defineComponent({
       </article>
     </div>
 
-    <article v-if="!smAndDown && channel" class="w-full">
+    <article
+      v-if="!smAndDown && channel"
+      class="w-full"
+    >
       <ChannelHeaderDesktop
         :channel="channel"
         :channel-id="channelId"
@@ -218,7 +224,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel"
-          class="block w-full border-b border-gray-200 bg-white px-3 dark:border-gray-600 dark:bg-gray-800 md:px-6"
+          class="block w-full border-b border-gray-200 bg-white px-3 mb-6 dark:border-gray-600 dark:bg-gray-800 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
@@ -226,7 +232,10 @@ export default defineComponent({
           :channel="channel"
         />
       </ChannelHeaderDesktop>
-      <div v-if="isDiscussionDetailPage" class="flex w-full justify-center">
+      <div
+        v-if="isDiscussionDetailPage"
+        class="flex w-full justify-center"
+      >
         <div class="max-w-7xl px-6 flex-1">
           <DiscussionTitleEditForm />
         </div>

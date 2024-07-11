@@ -73,16 +73,16 @@ export default defineComponent({
         username = user.username;
         modProfile = user.ModerationProfile;
 
+        if (username) {
+          // Add user to application state to make the authenticated user's
+          // username available throughout the app.
+          usernameVar(username);
+        }
+
         if (modProfile) {
           modProfileName = modProfile.displayName;
           modProfileNameVar(modProfileName);
         }
-      }
-
-      if (username) {
-        // Add user to application state to make the authenticated user's
-        // username available throughout the app.
-        usernameVar(username);
       }
     });
 

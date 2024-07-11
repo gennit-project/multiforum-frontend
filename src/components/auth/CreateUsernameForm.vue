@@ -45,6 +45,7 @@ export default defineComponent({
       mutate: createEmailAndUser,
       error: createEmailAndUserError,
       loading: createEmailAndUserLoading,
+      onDone: onEmailAndUserCreated,
     } = useMutation(CREATE_EMAIL_AND_USER, () => ({
       variables: {
         emailAddress: user.value.email,
@@ -68,6 +69,25 @@ export default defineComponent({
 
     const usernameIsEmpty = computed(() => {
       return newUsername.value.length === 0;
+    });
+
+    onEmailAndUserCreated(() => {
+
+      // if (user) {
+      //   username = user.username;
+      //   modProfile = user.ModerationProfile;
+
+      //   if (username) {
+      //     // Add user to application state to make the authenticated user's
+      //     // username available throughout the app.
+      //     usernameVar(username);
+      //   }
+
+      //   if (modProfile) {
+      //     modProfileName = modProfile.displayName;
+      //     modProfileNameVar(modProfileName);
+      //   }
+      // }
     });
 
     return {
