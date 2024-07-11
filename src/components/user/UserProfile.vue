@@ -82,7 +82,7 @@ export default defineComponent({
     const isAdmin = computed(() => {
       if (user.value) {
         const serverRole = user.value.ServerRoles?.[0];
-        return serverRole.showAdminTag;
+        return serverRole?.showAdminTag;
       }
       return false;
     });

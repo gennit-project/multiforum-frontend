@@ -31,7 +31,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const { isAuthenticated, user } = useAuth0();
     const newUsername = ref(props.email?.split("@")[0]);
 
@@ -77,7 +77,6 @@ export default defineComponent({
     });
 
     onEmailAndUserCreated((result) => {
-      console.log("data", result);
       const user = result.data.createEmailAndUser;
 
       if (user) {
@@ -101,6 +100,8 @@ export default defineComponent({
         if (modProfileName) {
           modProfileNameVar(modProfileName);
         }
+
+        emit("emailAndUserCreated")
       }
     });
 
@@ -133,10 +134,13 @@ export default defineComponent({
 <template>
   <div>
     <div class="my-4 h-72 px-10 py-6">
-      <h1 class="my-8 flex justify-center text-xl">Create Username</h1>
-      <label for="username" class="block text-sm font-medium text-gray-700"
-        >Username</label
-      >
+      <h1 class="my-8 flex justify-center text-xl">
+        Create Username
+      </h1>
+      <label
+        for="username"
+        class="block text-sm font-medium text-gray-700"
+      >Username</label>
       <div class="relative mt-1 flex rounded-full shadow-sm">
         <input
           ref="usernameInput"
@@ -154,7 +158,10 @@ export default defineComponent({
           v-if="usernameIsTaken"
           class="pointer-posts-none absolute inset-y-0 right-0 flex items-center pr-3"
         >
-          <ExclamationIcon class="h-5 w-5 text-red-500" aria-hidden="true" />
+          <ExclamationIcon
+            class="h-5 w-5 text-red-500"
+            aria-hidden="true"
+          />
         </div>
       </div>
 
@@ -162,7 +169,10 @@ export default defineComponent({
         <p class="my-1 text-xs">
           {{ usernameIsTaken ? "The username is already taken." : "" }}
         </p>
-        <div v-if="confirmedAvailable" class="flex items-start">
+        <div
+          v-if="confirmedAvailable"
+          class="flex items-start"
+        >
           <div class="flex-shrink-0">
             <CheckCircleIcon
               class="mr-2 h-6 w-6 text-green-400"
@@ -182,7 +192,9 @@ export default defineComponent({
         :loading="createEmailAndUserLoading"
         @click="createEmailAndUser"
       />
-      <p v-if="createEmailAndUserLoading">Loading...</p>
+      <p v-if="createEmailAndUserLoading">
+        Loading...
+      </p>
     </div>
     <ErrorBanner
       v-if="createEmailAndUserError"

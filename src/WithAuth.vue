@@ -1,9 +1,8 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
+import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { useAuth0 } from "@auth0/auth0-vue";
 import { GET_EMAIL } from "@/graphQLData/email/queries";
-import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import ErrorBanner from "./components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
 import { usernameVar, modProfileNameVar } from "./cache";
@@ -21,38 +20,24 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     const { isAuthenticated, isLoading, user, error } = useAuth0();
     const route = useRoute();
-    const channelId = computed(() => {
-      return route.params.channelId;
-    });
-
-    const showTopNav = computed(() => {
-      return route.name !== "MapView" && route.name !== "MapEventPreview";
-    });
+    const channelId = computed(() => route.params.channelId);
+    const showTopNav = computed(
+      () => route.name !== "MapView" && route.name !== "MapEventPreview",
+    );
 
     const {
       result: emailResult,
       error: emailError,
       loading: emailLoading,
       onResult: onEmailResult,
-      refetch: refetchEmail,
-    } = useQuery(GET_EMAIL, {
-      emailAddress: user?.value?.email,
-    });
-    console.log("is authenticated", isAuthenticated.value);
-    console.log("email from auth0", user?.value?.email);
-    console.log("topical email result", emailResult.value);
+    } = useQuery(GET_EMAIL, { emailAddress: user?.value?.email });
 
-    const { result: localUsernameResult, loading: localUsernameLoading } =
-      useQuery(GET_LOCAL_USERNAME);
+    const emailNotInSystem = ref(false);
 
-    const emailNotInSystem = computed(() => {
-      console.log("email result", emailResult.value);
-      return emailResult.value?.emails.length === 0;
-    });
-
+    // Handle the result from the email query
     onEmailResult(() => {
       let user = null;
       let modProfile = null;
@@ -61,6 +46,10 @@ export default defineComponent({
       const emailData = emailResult.value?.emails[0];
 
       user = emailData?.User;
+
+      if (!user) {
+        emailNotInSystem.value = true;
+      }
 
       if (user) {
         username = user.username;
@@ -76,9 +65,9 @@ export default defineComponent({
           modProfileName = modProfile.displayName;
           modProfileNameVar(modProfileName);
         }
-        refetchEmail()
+
+        emailNotInSystem.value = false;
       }
-      
     });
 
     return {
@@ -89,7 +78,6 @@ export default defineComponent({
       emailNotInSystem,
       isAuthenticated,
       isLoading,
-      localUsernameLoading,
       showTopNav,
     };
   },
@@ -115,12 +103,16 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="isLoading || emailLoading">Loading...</div>
-    <ErrorBanner v-else-if="emailError" :text="emailError?.message" />
-    <div v-else-if="emailNotInSystem">
-      <CreateUsernamePage />
+    <div v-if="isLoading || emailLoading">
+      Loading...
     </div>
-
+    <ErrorBanner
+      v-else-if="emailError"
+      :text="emailError?.message"
+    />
+    <div v-else-if="emailNotInSystem">
+      <CreateUsernamePage @emailAndUserCreated="emailNotInSystem = false" />
+    </div>
     <div v-else>
       <slot />
     </div>
