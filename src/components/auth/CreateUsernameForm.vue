@@ -8,6 +8,7 @@ import { useAuth0 } from "@auth0/auth0-vue";
 import ExclamationIcon from "../icons/ExclamationIcon.vue";
 import PrimaryButton from "../generic/buttons/PrimaryButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
+import { usernameVar, modProfileNameVar } from "@/cache";
 
 // This is a separate component for two reasons:
 // - The useQuery hook cannot be rendered conditionally
@@ -71,26 +72,40 @@ export default defineComponent({
       return newUsername.value.length === 0;
     });
 
-    onEmailAndUserCreated(() => {
+    const confirmedAvailable = computed(() => {
+      return !usernameIsTaken.value && !usernameIsEmpty.value;
+    });
 
-      // if (user) {
-      //   username = user.username;
-      //   modProfile = user.ModerationProfile;
+    onEmailAndUserCreated((result) => {
+      console.log("data", result);
+      const user = result.data.createEmailAndUser;
 
-      //   if (username) {
-      //     // Add user to application state to make the authenticated user's
-      //     // username available throughout the app.
-      //     usernameVar(username);
-      //   }
+      if (user) {
+        const username = user?.username;
+        if (!username) {
+          console.error("No username returned from createEmailAndUser");
+          return;
+        }
+        const modProfileName = user.ModerationProfile?.displayName;
+        if (!modProfileName) {
+          console.error("No mod profile returned from createEmailAndUser");
+          return;
+        }
 
-      //   if (modProfile) {
-      //     modProfileName = modProfile.displayName;
-      //     modProfileNameVar(modProfileName);
-      //   }
-      // }
+        if (username) {
+          // Add user to application state to make the authenticated user's
+          // username available throughout the app.
+          usernameVar(username);
+        }
+
+        if (modProfileName) {
+          modProfileNameVar(modProfileName);
+        }
+      }
     });
 
     return {
+      confirmedAvailable,
       createEmailAndUser,
       createEmailAndUserError,
       createEmailAndUserLoading,
@@ -117,67 +132,40 @@ export default defineComponent({
 </script>
 <template>
   <div>
-    <div class="  px-10 py-6 my-4 h-72">
-      <h1 class="text-xl flex justify-center my-8">
-        Create Username
-      </h1>
-      <label
-        for="username"
-        class="block text-sm font-medium text-gray-700"
-      >Username</label>
-      <div class="mt-1 flex relative rounded-full shadow-sm">
+    <div class="my-4 h-72 px-10 py-6">
+      <h1 class="my-8 flex justify-center text-xl">Create Username</h1>
+      <label for="username" class="block text-sm font-medium text-gray-700"
+        >Username</label
+      >
+      <div class="relative mt-1 flex rounded-full shadow-sm">
         <input
           ref="usernameInput"
           v-model="newUsername"
           type="text"
           :class="[
             usernameIsTaken
-              ? 'border-red-300 text-red-500 focus:outline-none focus:ring-red-500 focus:border-red-500'
-              : 'focus:ring-blue-500 focus:border-blue-500',
+              ? 'border-red-300 text-red-500 focus:border-red-500 focus:outline-none focus:ring-red-500'
+              : 'focus:border-blue-500 focus:ring-blue-500',
           ]"
-          class="
-            pt-2.5
-            pb-2.5
-            flex-1
-            block
-            w-full
-            rounded
-            sm:text-sm
-            dark:bg-gray-800
-            border-gray-300
-          "
+          class="block w-full flex-1 rounded border-gray-300 pb-2.5 pt-2.5 dark:bg-gray-800 sm:text-sm"
           @update:model-value="updateUsername"
         >
         <div
           v-if="usernameIsTaken"
-          class="
-            absolute
-            inset-y-0
-            right-0
-            pr-3
-            flex
-            items-center
-            pointer-posts-none
-          "
+          class="pointer-posts-none absolute inset-y-0 right-0 flex items-center pr-3"
         >
-          <ExclamationIcon
-            class="h-5 w-5 text-red-500"
-            aria-hidden="true"
-          />
+          <ExclamationIcon class="h-5 w-5 text-red-500" aria-hidden="true" />
         </div>
       </div>
 
       <div class="h-6">
-        <p class="text-xs my-1">
+        <p class="my-1 text-xs">
           {{ usernameIsTaken ? "The username is already taken." : "" }}
         </p>
-        <div
-          v-if="confirmedAvailable"
-          class="flex items-start"
-        >
+        <div v-if="confirmedAvailable" class="flex items-start">
           <div class="flex-shrink-0">
             <CheckCircleIcon
-              class="h-6 w-6 mr-2 text-green-400"
+              class="mr-2 h-6 w-6 text-green-400"
               aria-hidden="true"
             />
           </div>
@@ -188,25 +176,18 @@ export default defineComponent({
       </div>
 
       <PrimaryButton
-        class="mb-3 float-right"
+        class="float-right mb-3"
         :label="'Save'"
         :disabled="!confirmedAvailable"
+        :loading="createEmailAndUserLoading"
         @click="createEmailAndUser"
       />
-      <p v-if="createEmailAndUserLoading">
-        Loading...
-      </p>
+      <p v-if="createEmailAndUserLoading">Loading...</p>
     </div>
     <ErrorBanner
       v-if="createEmailAndUserError"
-      class="my-3 mx-auto max-w-5xl"
+      class="mx-auto my-3 max-w-5xl"
       :text="createEmailAndUserError.message"
-    />
-    <ErrorBanner
-      v-if="linkUserToEmailError"
-      class="my-3 mx-auto max-w-5xl"
-      :text="linkUserToEmailError.message"
     />
   </div>
 </template>
-      

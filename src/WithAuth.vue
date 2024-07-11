@@ -37,28 +37,20 @@ export default defineComponent({
       error: emailError,
       loading: emailLoading,
       onResult: onEmailResult,
+      refetch: refetchEmail,
     } = useQuery(GET_EMAIL, {
-      emailAddress: props.emailFromAuth0,
+      emailAddress: user?.value?.email,
     });
+    console.log("is authenticated", isAuthenticated.value);
+    console.log("email from auth0", user?.value?.email);
+    console.log("topical email result", emailResult.value);
 
     const { result: localUsernameResult, loading: localUsernameLoading } =
       useQuery(GET_LOCAL_USERNAME);
 
-    const hasEmailButNotUsername = computed(() => {
-      if (isLoading) {
-        return false;
-      }
-      if (!isAuthenticated) {
-        return false;
-      }
-      if (
-        isAuthenticated &&
-        user.value?.email &&
-        !localUsernameResult.value?.username
-      ) {
-        return true;
-      }
-      return false;
+    const emailNotInSystem = computed(() => {
+      console.log("email result", emailResult.value);
+      return emailResult.value?.emails.length === 0;
     });
 
     onEmailResult(() => {
@@ -66,8 +58,9 @@ export default defineComponent({
       let modProfile = null;
       let username = "";
       let modProfileName = "";
+      const emailData = emailResult.value?.emails[0];
 
-      user = emailResult.value?.emails[0]?.User;
+      user = emailData?.User;
 
       if (user) {
         username = user.username;
@@ -83,7 +76,9 @@ export default defineComponent({
           modProfileName = modProfile.displayName;
           modProfileNameVar(modProfileName);
         }
+        refetchEmail()
       }
+      
     });
 
     return {
@@ -91,7 +86,7 @@ export default defineComponent({
       emailError,
       emailLoading,
       error,
-      hasEmailButNotUsername,
+      emailNotInSystem,
       isAuthenticated,
       isLoading,
       localUsernameLoading,
@@ -120,14 +115,9 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="isLoading || emailLoading">
-      Loading...
-    </div>
-    <ErrorBanner
-      v-else-if="emailError"
-      :text="emailError?.message"
-    />
-    <div v-else-if="isAuthenticated && hasEmailButNotUsername">
+    <div v-if="isLoading || emailLoading">Loading...</div>
+    <ErrorBanner v-else-if="emailError" :text="emailError?.message" />
+    <div v-else-if="emailNotInSystem">
       <CreateUsernamePage />
     </div>
 
