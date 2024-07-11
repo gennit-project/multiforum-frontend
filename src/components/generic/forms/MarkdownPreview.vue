@@ -248,21 +248,7 @@ li {
   font-size: 0.9rem !important;
   font-weight: 400 !important;
   line-height: 1.4 !important;
-}
-
-p {
-  margin-bottom: 0.5rem !important;
-  margin-top: 0.7rem !important;
-}
-
-ul {
-  margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
 }
 
-li {
-  margin-bottom: 0.5rem !important;
-}
-
-/* p within nested list should have no margin */
 </style>

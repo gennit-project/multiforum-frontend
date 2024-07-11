@@ -28,7 +28,7 @@ import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mut
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
 import EditFeedbackModal from "@/components/discussion/detail/EditFeedbackModal.vue";
-import DiscussionTitleEditForm from '@/components/discussion/detail/DiscussionTitleEditForm.vue'
+
 export const COMMENT_LIMIT = 50;
 
 export default defineComponent({
@@ -36,7 +36,6 @@ export default defineComponent({
     ConfirmUndoDiscussionFeedbackModal,
     DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
-    DiscussionTitleEditForm,
     DiscussionCommentsWrapper,
     DiscussionBody,
     DiscussionHeader,
@@ -362,12 +361,6 @@ export default defineComponent({
       class="flex max-w-7xl justify-center space-y-2 rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
       <div class="w-full flex-col space-y-2">
-        <div v-if="!getDiscussionLoading" class="flex w-full">
-          <DiscussionTitleEditForm
-            :channel-id="channelId"
-            :discussion="discussion"
-          />
-        </div>
         <ErrorBanner
           v-if="getDiscussionError"
           class="mt-2 px-4"

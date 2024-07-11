@@ -12,6 +12,7 @@ import ChannelContent from "./ChannelContent.vue";
 import ChannelHeaderMobile from "./ChannelHeaderMobile.vue";
 import ChannelHeaderDesktop from "./ChannelHeaderDesktop.vue";
 import { Channel } from "@/__generated__/graphql";
+import DiscussionTitleEditForm from "@/components/discussion/detail/DiscussionTitleEditForm.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -20,6 +21,7 @@ export default defineComponent({
     ChannelHeaderMobile,
     ChannelTabs,
     ChannelHeaderDesktop,
+    DiscussionTitleEditForm,
   },
   setup() {
     const route = ref(useRoute());
@@ -28,6 +30,10 @@ export default defineComponent({
         theme @client
       }
     `;
+
+    const isDiscussionDetailPage = computed(() => {
+      return route.value.name === "DiscussionDetail";
+    });
 
     const {
       result: themeResult,
@@ -153,6 +159,7 @@ export default defineComponent({
       channelId,
       discussionId,
       eventId,
+      isDiscussionDetailPage,
       route,
       lgAndDown,
       leftColumnIsExpanded: ref(true),
@@ -182,12 +189,9 @@ export default defineComponent({
       :channel-id="channelId"
       :show-create-button="true"
     />
-    <div
-      v-if="smAndDown"
-      class="w-full"
-    >
+    <div v-if="smAndDown" class="w-full">
       <article
-        class="relative  h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
+        class="relative h-full max-w-7xl rounded-lg bg-gray-100 focus:outline-none dark:bg-black xl:order-last"
       >
         <ChannelTabs
           v-if="channel && smAndDown"
@@ -204,10 +208,7 @@ export default defineComponent({
       </article>
     </div>
 
-    <article
-      v-if="!smAndDown && channel"
-      class="w-full"
-    >
+    <article v-if="!smAndDown && channel" class="w-full">
       <ChannelHeaderDesktop
         :channel="channel"
         :channel-id="channelId"
@@ -225,6 +226,11 @@ export default defineComponent({
           :channel="channel"
         />
       </ChannelHeaderDesktop>
+      <div v-if="isDiscussionDetailPage" class="flex w-full justify-center">
+        <div class="max-w-7xl px-6 flex-1">
+          <DiscussionTitleEditForm />
+        </div>
+      </div>
       <ChannelContent>
         <router-view />
       </ChannelContent>

@@ -1,5 +1,6 @@
 <script lang="ts">
-import { defineComponent, ref, nextTick } from "vue";
+import { defineComponent, ref, nextTick, computed } from "vue";
+import { Discussion } from "@/__generated__/graphql";
 import { useDisplay } from "vuetify";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 import CreateButton from "@/components/generic/buttons/CreateButton.vue";
@@ -7,8 +8,11 @@ import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import { UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/discussion/mutations";
-import { useMutation } from "@vue/apollo-composable";
+import { useMutation, useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import { useRoute } from "vue-router";
+import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 
 export default defineComponent({
   name: "DiscussionTitleEditForm",
@@ -20,24 +24,60 @@ export default defineComponent({
     RequireAuth,
     TextInput,
   },
-  props: {
-    channelId: {
-      type: String,
-      required: true,
-    },
-    discussion: {
-      type: Object,
-      required: true,
-    },
-  },
-  setup(props) {
+  setup() {
+    const route = useRoute();
     const { smAndDown } = useDisplay();
     const titleEditMode = ref(false);
-    const formValues = ref({
-      title: props.discussion.title,
+
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
+
+    const discussionId = computed(() => {
+      if (typeof route.params.discussionId === "string") {
+        return route.params.discussionId;
+      }
+      return "";
+    });
+
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
+
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
+      }
+      return localModProfileNameResult.value.modProfileName;
+    });
+
+    const {
+      result: getDiscussionResult,
+      error: getDiscussionError,
+      loading: getDiscussionLoading,
+    } = useQuery(GET_DISCUSSION, {
+      id: discussionId,
+      loggedInModName: loggedInUserModName.value,
+      channelUniqueName: channelId.value,
+    });
+
+    const discussion = computed<Discussion>(() => {
+      if (getDiscussionLoading.value || getDiscussionError.value) {
+        return null;
+      }
+      return getDiscussionResult.value.discussions[0];
     });
 
     const titleInputRef = ref(null);
+
+    const formValues = ref({
+      title: getDiscussionResult.value?.discussion?.title,
+    });
 
     const {
       mutate: updateDiscussion,
@@ -46,7 +86,7 @@ export default defineComponent({
     } = useMutation(UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS, () => ({
       variables: {
         discussionWhere: {
-          id: props.discussion.id,
+          id: discussionId.value,
         },
         updateDiscussionInput: formValues.value,
       },
@@ -57,12 +97,15 @@ export default defineComponent({
     });
 
     return {
+      channelId,
+      discussion,
       formValues,
+      getDiscussionError,
       smAndDown,
       titleEditMode,
+      titleInputRef,
       updateDiscussion,
       updateDiscussionError,
-      titleInputRef,
     };
   },
   methods: {
@@ -137,6 +180,11 @@ export default defineComponent({
         </template>
       </RequireAuth>
     </div>
+    <ErrorBanner
+      v-if="getDiscussionError"
+      class="mx-auto my-3 max-w-5xl"
+      :text="getDiscussionError.message"
+    />
     <ErrorBanner
       v-if="updateDiscussionError"
       class="mx-auto my-3 max-w-5xl"
