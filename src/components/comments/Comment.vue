@@ -2,12 +2,10 @@
 import { defineComponent, PropType, ref, computed } from "vue";
 import { CreateReplyInputData } from "@/types/commentTypes";
 import "md-editor-v3/lib/style.css";
-import { useQuery, useMutation } from "@vue/apollo-composable";
+import { useQuery } from "@vue/apollo-composable";
 import TextEditor from "../generic/forms/TextEditor.vue";
 import ChildComments from "./ChildComments.vue";
 import CommentButtons from "./CommentButtons.vue";
-import { generateSlug } from "random-word-slugs";
-import { CREATE_MOD_PROFILE } from "@/graphQLData/user/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { getLinksInText } from "../utils";
 import { ApolloError, gql } from "@apollo/client/core";
@@ -18,7 +16,6 @@ import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import RightArrowIcon from "../icons/RightArrowIcon.vue";
 import useClipboard from "vue-clipboard3";
-import { modProfileNameVar } from "@/cache";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { ALLOWED_ICONS } from "@/components/generic/buttons/MenuButton.vue";
 import CommentHeader from "./CommentHeader.vue";
@@ -235,24 +232,7 @@ export default defineComponent({
         return "";
       }
       return localUsernameResult.value;
-    });
-
-    const randomWords = generateSlug(4, { format: "camel" });
-
-    const { mutate: createModProfile, onDone: onDoneCreateModProfile } =
-      useMutation(CREATE_MOD_PROFILE, () => ({
-        variables: {
-          displayName: randomWords,
-          username: username.value?.username,
-        },
-      }));
-
-    onDoneCreateModProfile((data: any) => {
-      const updatedUser = data.data.updateUsers.users[0];
-
-      const newModProfileName = updatedUser.ModerationProfile.displayName;
-      modProfileNameVar(newModProfileName);
-    });
+    });    
 
     const linksInText = computed(() => {
       if (!props.commentData || !props.commentData.text) {
@@ -341,7 +321,6 @@ export default defineComponent({
       channelId,
       commentMenuItems,
       copyLink,
-      createModProfile,
       discussionId,
       editorId: "texteditor",
       highlight: ref(false),

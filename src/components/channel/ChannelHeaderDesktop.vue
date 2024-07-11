@@ -53,7 +53,7 @@ export default defineComponent({
     >
       <div
         class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
-        :class="[channel?.channelBannerURL ? '-mt-4' : 'pt-4']"
+        :class="[channel?.channelBannerURL ? '-mt-4' : 'pt-2']"
       >
         <div class="align-items flex w-full gap-4">
           <ExpandableImage
@@ -79,7 +79,7 @@ export default defineComponent({
               >
                 <h1
                   v-if="channelId"
-                  class="rounded-full px-4 pt-1 flex mb-2 bg-white dark:bg-gray-900 border-gray-700 text-3xl font-bold leading-6 text-black dark:text-gray-200"
+                  class="rounded-full px-4 pt-1 flex mb-2 bg-white dark:bg-gray-900 border-gray-700 text-2xl font-bold leading-6 text-black dark:text-gray-200"
                 >
                   {{ channel?.displayName ? channel.displayName : channelId }}
                 </h1>

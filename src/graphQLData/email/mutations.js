@@ -13,38 +13,15 @@ export const GET_EMAIL = gql`
 
 export const CREATE_EMAIL_AND_USER = gql`
   mutation createEmailAndUser($emailAddress: String!, $username: String!) {
-    createEmails(
-      input: [
-        {
-          address: $emailAddress
-          User: { create: { node: { username: $username } } }
-        }
-      ]
-    ) {
-      emails {
+    createEmailAndUser(emailAddress: $emailAddress, username: $username) {
+      username
+      Email {
         address
-        User {
-          username
-        }
+      }
+      ModerationProfile {
+        displayName
       }
     }
   }
 `;
 
-export const LINK_USER_TO_EMAIL = gql`
-  mutation linkUser($emailAddress: String!, $username: String!) {
-    updateUsers(
-      where: { username: $username }
-      connect: { Email: { where: { node: { address: $emailAddress } } } }
-    ) {
-      users {
-        Email {
-          address
-          User {
-            username
-          }
-        }
-      }
-    }
-  }
-`;

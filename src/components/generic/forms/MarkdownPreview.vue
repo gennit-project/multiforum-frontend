@@ -246,6 +246,8 @@ p,
 ul,
 li {
   font-size: 0.9rem !important;
+  font-weight: 400 !important;
+  line-height: 1.4 !important;
 }
 
 p {

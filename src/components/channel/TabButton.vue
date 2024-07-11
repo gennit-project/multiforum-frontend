@@ -82,17 +82,17 @@ export default defineComponent({
         !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
         showCount && count ? '' : 'pr-4',
       ]"
-      class="md:my-2 sm:my-1 flex h-8 items-center space-x-2 rounded-lg"
+      class="md:my-2 sm:my-1 flex h-6 items-center space-x-2 rounded-lg"
     >
       <div class="text-black dark:text-blue-500">
         <slot />
       </div>
-      <span class="text-sm font-bold text-gray-700 dark:text-white">{{
+      <span class="text-xs text-gray-700 dark:text-white">{{
         label
       }}</span>
       <span
         v-if="showCount && count !== null"
-        class="rounded-lg bg-gray-200 px-3 py-1 text-xs font-bold text-gray-700 dark:bg-gray-600 dark:text-white"
+        class="rounded-lg bg-gray-200 px-3 py-1 text-xs text-gray-700 dark:bg-gray-600 dark:text-white"
       >{{ count }}
       </span>
     </div>

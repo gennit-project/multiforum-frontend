@@ -2,16 +2,12 @@
 import { defineComponent, ref, nextTick, computed } from "vue";
 import CheckCircleIcon from "../icons/CheckCircleIcon.vue";
 import { DOES_USER_EXIST } from "@/graphQLData/user/queries";
-import { GET_EMAIL } from "@/graphQLData/email/queries";
 import { CREATE_EMAIL_AND_USER } from "@/graphQLData/email/mutations";
-import { LINK_USER_TO_EMAIL } from "@/graphQLData/email/mutations";
 import { useQuery, useMutation } from "@vue/apollo-composable";
-import { useRouter } from "vue-router";
 import { useAuth0 } from "@auth0/auth0-vue";
 import ExclamationIcon from "../icons/ExclamationIcon.vue";
 import PrimaryButton from "../generic/buttons/PrimaryButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
-import { usernameVar, modProfileNameVar } from "@/cache";
 
 // This is a separate component for two reasons:
 // - The useQuery hook cannot be rendered conditionally
@@ -36,7 +32,6 @@ export default defineComponent({
   },
   setup(props) {
     const { isAuthenticated, user } = useAuth0();
-    const router = useRouter();
     const newUsername = ref(props.email?.split("@")[0]);
 
     const {
@@ -46,66 +41,16 @@ export default defineComponent({
     } = useQuery(DOES_USER_EXIST, {
       username: newUsername,
     });
-
-    const { result: getEmailResult, refetch: refetchEmail } = useQuery(
-      GET_EMAIL,
-      { emailAddress: props.email }
-    );
-
     const {
       mutate: createEmailAndUser,
       error: createEmailAndUserError,
       loading: createEmailAndUserLoading,
-      onDone: onDoneCreatingEmailAndUser,
     } = useMutation(CREATE_EMAIL_AND_USER, () => ({
       variables: {
         emailAddress: user.value.email,
         username: newUsername.value,
       },
     }));
-
-    const {
-      mutate: linkUserToEmail,
-      error: linkUserToEmailError,
-      onDone: onDoneLinkingUserToEmail,
-    } = useMutation(LINK_USER_TO_EMAIL, () => ({
-      variables: {
-        emailAddress: user.value.email,
-        username: newUsername.value,
-      },
-    }));
-
-    onDoneCreatingEmailAndUser(() => {
-      linkUserToEmail();
-    });
-
-    onDoneLinkingUserToEmail(async (result: any) => {
-      // Test if email is linked to user
-      let userInDatabase;
-      await refetchEmail();
-      if (getEmailResult && getEmailResult.value.emails) {
-        userInDatabase = getEmailResult.value.emails[0]?.User?.username;
-
-        if (!userInDatabase) {
-          throw new Error("Could not link the user to the email. ");
-        }
-      }
-
-      // Test if user is linked to email
-      if (getUserResult && getUserResult.value.users) {
-        const email = result.data.updateUsers.users[0]?.Email?.address
-
-        if (!email) {
-          throw new Error("Could not link the email to the user.");
-        }
-
-      }
-      usernameVar(userInDatabase);
-      modProfileNameVar()
-      router.push({
-        name: "SearchDiscussions"
-      });
-    });
 
     const usernameIsTaken = computed(() => {
       if (getUserError.value || getUserLoading.value) {
@@ -125,27 +70,11 @@ export default defineComponent({
       return newUsername.value.length === 0;
     });
 
-    const confirmedAvailable = computed(() => {
-      if (
-        getUserResult &&
-        getUserResult.value?.users &&
-        getUserResult.value.users.length === 0
-      ) {
-        return true;
-      }
-      return false;
-    });
-
     return {
       createEmailAndUser,
       createEmailAndUserError,
       createEmailAndUserLoading,
-      confirmedAvailable,
-      getUserError,
-      getUserLoading,
-      getUserResult,
       isAuthenticated,
-      linkUserToEmailError,
       newUsername,
       user,
       usernameInput: ref(null),
