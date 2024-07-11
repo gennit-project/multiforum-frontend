@@ -104,23 +104,26 @@ export default defineComponent({
       Loading...
     </div>
     <div v-if="getDiscussionError">
-      <div
+      <ErrorBanner
         v-for="(error, i) of getDiscussionError?.graphQLErrors"
         :key="i"
-      >
-        {{ error.message }}
-      </div>
+        :text="error.message"
+      />
     </div>
+    <ErrorBanner
+      v-else-if="createDiscussionError"
+      :text="createDiscussionError.message"
+    />
+    <ErrorBanner
+      v-else-if="updateDiscussionError"
+      :text="updateDiscussionError.message"
+    />
     <div class="w-full max-w-3xl">
       <TailwindForm
         v-if="formValues"
         :form-title="formTitle"
         :needs-changes="needsChanges"
-        :loading="
-          (createDiscussionLoading || updateDiscussionLoading) &&
-            !createDiscussionError &&
-            !updateDiscussionError
-        "
+        :loading="createDiscussionLoading || updateDiscussionLoading"
         @input="touched = true"
         @submit="$emit('submit')"
       >
