@@ -83,18 +83,15 @@ export default defineComponent({
       variables: {
         id: props.discussion?.id,
       },
-      update: (cache: any) => {
-        cache.modify({
-          fields: {
-            discussions(existingDiscussionRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField;
-
-              return existingDiscussionRefs.filter((ref) => {
-                return readField("id", ref) !== props.discussion?.id;
-              });
-            },
-          },
-        });
+      update: (cache, { data }) => {
+        if (data?.deleteDiscussions?.nodesDeleted > 0) {
+          cache.evict({
+            id: cache.identify({
+              __typename: "Discussion",
+              id: props.discussion?.id,
+            }),
+          });
+        }
       },
     });
 
