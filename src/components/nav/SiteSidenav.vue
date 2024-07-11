@@ -70,7 +70,9 @@ export default defineComponent({
     const recentForums = computed(() => {
       const forums = (
         JSON.parse(localStorage.getItem("recentForums") || '""') || []
-      ).sort((a: any, b: any) => b.timestamp - a.timestamp);
+      )
+        .sort((a: any, b: any) => a.timestamp - b.timestamp)
+        .reverse();
       return forums;
     });
 
@@ -160,16 +162,26 @@ export default defineComponent({
               @click="$emit('close')"
             >
               <span class="sr-only">Close panel</span>
-              <XIcon class="h-6 w-6" aria-hidden="true" />
+              <XIcon
+                class="h-6 w-6"
+                aria-hidden="true"
+              />
             </button>
           </div>
         </div>
         <div class="flex justify-end">
-          <CreateAnythingButton v-if="smAndDown" class="mb-4 px-6" />
+          <CreateAnythingButton
+            v-if="smAndDown"
+            class="mb-4 px-6"
+          />
         </div>
         <nav class="mt-4">
           <ul role="list">
-            <li v-for="item in navigation" :key="item.name" class="px-6">
+            <li
+              v-for="item in navigation"
+              :key="item.name"
+              class="px-6"
+            >
               <router-link
                 :to="item.href"
                 :data-testid="`nav-link-${item.name}`"
@@ -198,7 +210,10 @@ export default defineComponent({
         </div>
         <div class="px-6">
           <ul class="mb-6">
-            <li v-for="forum in visibleRecentForums" :key="forum.uniqueName">
+            <li
+              v-for="forum in visibleRecentForums"
+              :key="forum.uniqueName"
+            >
               <router-link
                 :to="{
                   name: 'SearchDiscussionsInChannel',
@@ -229,10 +244,18 @@ export default defineComponent({
             </li>
           </ul>
           <div v-if="recentForums.length > defaultLimit">
-            <button v-if="!showAllForums" @click="showAllForums = true">
+            <button
+              v-if="!showAllForums"
+              @click="showAllForums = true"
+            >
               Show All
             </button>
-            <button v-else @click="showAllForums = false">Show Less</button>
+            <button
+              v-else
+              @click="showAllForums = false"
+            >
+              Show Less
+            </button>
           </div>
         </div>
       </div>
