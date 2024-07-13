@@ -14,16 +14,13 @@ import "@github/markdown-toolbar-element";
 import { MdEditor } from "md-editor-v3";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import cache from "./cache";
-import { createVuetify } from "vuetify";
-import * as components from 'vuetify/components'
-import * as directives from 'vuetify/directives'
 import { createAuth0 } from "@auth0/auth0-vue";
 import '@fortawesome/fontawesome-free/css/all.css';
 import enUS from '@kangc/v-md-editor/lib/lang/en-US';
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
 import VueEasyLightbox from 'vue-easy-lightbox'
-
+import vuetify from './vuetify';
 import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
 import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
@@ -90,13 +87,6 @@ VMdEditor.use(githubTheme, {
 VMdPreview.use(githubTheme, {
   Hljs: hljs,
 });
-
-
-
-const vuetify = createVuetify({
-  components,
-  directives,
-})
 
 library.add(faArrowsRotate);
 library.add(faCircleCheck);

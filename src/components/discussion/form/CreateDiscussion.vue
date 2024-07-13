@@ -14,9 +14,8 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
 import RequireAuth from "../../auth/RequireAuth.vue";
-import { DiscussionCreateInput, Discussion } from "@/__generated__/graphql";
+import { DiscussionCreateInput } from "@/__generated__/graphql";
 import "md-editor-v3/lib/style.css";
-import gql from "graphql-tag";
 import { DISCUSSION_PAGE_LIMIT } from "@/components/discussion/list/ChannelDiscussionList.vue";
 import {
   getSortFromQuery,

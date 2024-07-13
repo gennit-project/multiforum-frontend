@@ -13,7 +13,7 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
-import LoadingSpinner from "@/components/generic/LoadingSpinner.vue";
+
 
 export default defineComponent({
   name: "DiscussionTitleEditForm",
@@ -21,7 +21,6 @@ export default defineComponent({
     CreateButton,
     ErrorBanner,
     GenericButton,
-    LoadingSpinner,
     PrimaryButton,
     RequireAuth,
     TextInput,
@@ -62,6 +61,7 @@ export default defineComponent({
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
+      onResult: onGetDiscussionResult,
     } = useQuery(GET_DISCUSSION, {
       id: discussionId,
       loggedInModName: loggedInUserModName.value,
@@ -81,9 +81,14 @@ export default defineComponent({
       title: getDiscussionResult.value?.discussion?.title,
     });
 
+    onGetDiscussionResult((result) => {
+      formValues.value.title = result?.data?.discussions[0]?.title ||''
+    });
+
     const {
       mutate: updateDiscussion,
       error: updateDiscussionError,
+      loading: updateDiscussionLoading,
       onDone,
     } = useMutation(UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS, () => ({
       variables: {
@@ -109,6 +114,7 @@ export default defineComponent({
       titleInputRef,
       updateDiscussion,
       updateDiscussionError,
+      updateDiscussionLoading,
     };
   },
   methods: {
@@ -125,15 +131,15 @@ export default defineComponent({
 <template>
   <div class="w-full">
     <div
-      class="flex w-full mb-2 space-x-2"
+      class="mb-2 flex w-full space-x-2"
       :class="!smAndDown ? 'items-center justify-between' : 'flex-col'"
     >
-      <div
+      <v-skeleton-loader
         v-if="getDiscussionLoading"
         class="flex-1"
-      >
-        <LoadingSpinner />
-      </div>
+        type="text"
+      />
+
       <div
         v-else
         ref="discussionDetail"
@@ -173,6 +179,7 @@ export default defineComponent({
           <PrimaryButton
             v-if="titleEditMode"
             :label="'Save'"
+            :loading="updateDiscussionLoading"
             @click="updateDiscussion"
           />
           <GenericButton

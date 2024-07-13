@@ -86,7 +86,7 @@
     "vue3-popper": "^1.5.0",
     "vuejs-heatmap": "^1.1.7",
     "vuemoji-picker": "^0.2.1",
-    "vuetify": "npm:@vuetify/nightly@next",
+    "vuetify": "3.6.12",
     "webfontloader": "^1.0.0",
     "webpack": "^5.89.0"
   },
