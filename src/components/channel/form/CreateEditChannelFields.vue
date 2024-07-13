@@ -75,7 +75,7 @@ export default defineComponent({
       default: false,
     },
   },
-  setup() {
+  setup(props) {
     const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
 
     const username = computed(() => {
@@ -88,6 +88,16 @@ export default defineComponent({
     const { mutate: createSignedStorageUrl } = useMutation(
       CREATE_SIGNED_STORAGE_URL,
     );
+
+    const isValidTitle = (title: string) => {
+      const validTitlePattern = /^[a-zA-Z0-9_]+$/;
+      return validTitlePattern.test(title);
+    };
+
+    const titleIsInvalid = computed(() => {
+      return !isValidTitle(props.formValues?.uniqueName || '');
+    });
+
     return {
       createSignedStorageUrl,
       touched: false,
@@ -95,13 +105,12 @@ export default defineComponent({
       username,
       getUploadFileName,
       uploadAndGetEmbeddedLink,
+      titleIsInvalid,
     };
   },
   computed: {
     needsChanges() {
-      // We do these checks:
-      // - UniqueName is included
-      const needsChanges = !this.formValues.uniqueName;
+      const needsChanges = this.titleIsInvalid;
       return needsChanges;
     },
   },
@@ -124,7 +133,6 @@ export default defineComponent({
           file,
         });
 
-        // Call the uploadFile mutation with the selected file
         const signedUrlResult = await this.createSignedStorageUrl({
           filename,
           contentType: file.type,
@@ -226,6 +234,12 @@ export default defineComponent({
                 :full-width="true"
                 @update="$emit('updateFormValues', { uniqueName: $event })"
               />
+              <p
+                v-if="titleIsInvalid && touched"
+                class="text-red-500 text-sm mt-2"
+              >
+                Title can only contain letters, numbers, and underscores.
+              </p>
             </template>
           </FormRow>
           <FormRow
