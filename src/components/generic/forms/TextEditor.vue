@@ -264,13 +264,13 @@ export default defineComponent({
 </script>
 
 <template>
-  <form>
+  <form class="border p-2 rounded-md">
     <ErrorBanner
       v-if="createSignedStorageUrlError"
       :text="createSignedStorageUrlError && createSignedStorageUrlError.message"
     />
     <TabGroup>
-      <TabList class="flex items-center">
+      <TabList class="flex items-center border-b pb-2">
         <Tab
           v-slot="{ selected }"
           as="template"
@@ -332,7 +332,7 @@ export default defineComponent({
             name="comment"
             :rows="rows"
             :placeholder="placeholder"
-            class="block w-full rounded-md border-gray-200 text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200"
+            class="border block w-full rounded-md border-gray-200 text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
             @input="updateText($event?.target?.value)"
             @dragover="handleDragOver"
@@ -346,7 +346,7 @@ export default defineComponent({
         <TabPanel class="-m-0.5 overflow-auto rounded-md p-0.5">
           <v-md-preview
             :text="text"
-            class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"
+            class="block w-full -ml-6 max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"
           />
         </TabPanel>
       </TabPanels>
