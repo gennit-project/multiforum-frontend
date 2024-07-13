@@ -242,7 +242,7 @@ export default defineComponent({
             name="comment"
             :rows="rows"
             :placeholder="placeholder"
-            class="block w-full rounded-md border-gray-200 font-mono text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200"
+            class="block w-full rounded-md border-gray-200 text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
             @input="updateText($event?.target?.value)"
             @dragover="handleDragOver"
