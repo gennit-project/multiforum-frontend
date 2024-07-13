@@ -48,7 +48,7 @@ export default defineComponent({
       default: 4,
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const GET_THEME = gql`
       query GetTheme {
         theme @client
@@ -75,6 +75,7 @@ export default defineComponent({
       return result.value?.theme || "light";
     });
     const editorRef = ref<HTMLTextAreaElement | null>(null);
+    const text = ref(props.initialValue);
 
     const focusEditor = () => {
       nextTick(() => {
@@ -83,19 +84,89 @@ export default defineComponent({
         }
       });
     };
+
+    const updateText = (newText: string) => {
+      text.value = newText;
+      emit("update", text);
+    };
+
+    const formatText = (format: string) => {
+      const textarea = editorRef.value;
+      if (!textarea) return;
+
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+
+      let formattedText = "";
+      switch (format) {
+        case "bold":
+          formattedText = `**${selectedText}**`;
+          break;
+        case "italic":
+          formattedText = `*${selectedText}*`;
+          break;
+        case "underline":
+          formattedText = `<u>${selectedText}</u>`;
+          break;
+        case "header1":
+          formattedText = `# ${selectedText}`;
+          break;
+        case "header2":
+          formattedText = `## ${selectedText}`;
+          break;
+        case "header3":
+          formattedText = `### ${selectedText}`;
+          break;
+        default:
+          formattedText = selectedText;
+      }
+
+      textarea.setRangeText(formattedText, start, end, "end");
+      updateText(textarea.value);
+    };
     return {
       createSignedStorageUrl,
       createSignedStorageUrlError,
       editorId: "texteditor",
+      editorRef,
       embeddedImageLink: ref(""),
       focusEditor,
+      formatText,
       uploadAndGetEmbeddedLink,
       showFormatted: ref(false),
-      text: ref(props.initialValue),
+      text,
       theme,
+      updateText,
       username,
       scrollElement: document.documentElement,
       id: "text-editor",
+      formatButtons: [
+        {
+          label: "B",
+          format: "bold",
+        },
+        {
+          label: "I",
+          format: "italic",
+        },
+        {
+          label: "U",
+          format: "underline",
+        },
+        {
+          label: "H1",
+          format: "header1",
+        },
+        {
+          label: "H2",
+          format: "header2",
+        },
+        {
+          label: "H3",
+          format: "header3",
+        }
+      ],
     };
   },
   created() {
@@ -109,6 +180,9 @@ export default defineComponent({
       });
     });
   },
+  mounted() {
+    this.editorRef = this.$refs.editorRef;
+  },
   methods: {
     handleDragOver(event: any) {
       event.preventDefault();
@@ -119,10 +193,7 @@ export default defineComponent({
     toggleShowFormatted() {
       this.showFormatted = !this.showFormatted;
     },
-    updateText(text: string) {
-      this.text = text;
-      this.$emit("update", text);
-    },
+
     async upload(file: any) {
       // Call the uploadFile mutation with the selected file
       if (!this.username) {
@@ -191,6 +262,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <template>
   <form>
     <ErrorBanner
@@ -232,12 +304,30 @@ export default defineComponent({
       </TabList>
       <TabPanels class="mt-2">
         <TabPanel class="-m-0.5 rounded-md px-0.5 py-1">
+          <div class="mb-2 flex space-x-1 items-center justify-end">
+            <button
+              v-for="button in formatButtons" 
+              :key="button.label"
+              :class="[
+                button.format === 'bold' ? 'font-bold' : '',
+                button.format === 'italic' ? 'italic' : '',
+                button.format === 'underline' ? 'underline' : '',
+              ]"
+              class="border-transparent rounded-md border px-2 py-1 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 hover:text-gray-500 dark:hover:text-gray-200" 
+              @click="(event) => {
+                event.preventDefault();
+                formatText(button.format)
+              }" 
+            >
+              {{ button.label }}
+            </button>
+          </div>
           <label
             for="comment"
             class="sr-only"
           >Comment</label>
           <textarea
-            ref="editor"
+            ref="editorRef"
             :data-testid="testId"
             name="comment"
             :rows="rows"
@@ -263,6 +353,7 @@ export default defineComponent({
     </TabGroup>
   </form>
 </template>
+
 <style lang="scss">
 @media (prefers-color-scheme: dark) {
   .v-md-editor--preview,

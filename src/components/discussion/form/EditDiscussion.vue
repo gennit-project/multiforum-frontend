@@ -207,6 +207,7 @@ export default defineComponent({
     const {
       mutate: updateDiscussion,
       error: updateDiscussionError,
+      loading: updateDiscussionLoading,
       onDone,
     } = useMutation(UPDATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS, () => ({
       variables: {
@@ -247,6 +248,7 @@ export default defineComponent({
       updateDiscussion,
       updateDiscussionError,
       updateDiscussionInput,
+      updateDiscussionLoading,
       router,
     };
   },
@@ -279,6 +281,7 @@ export default defineComponent({
         :get-discussion-error="getDiscussionError"
         :update-discussion-error="updateDiscussionError"
         :form-values="formValues"
+        :update-discussion-loading="updateDiscussionLoading"
         @submit="submit"
         @updateFormValues="updateFormValues"
       />
