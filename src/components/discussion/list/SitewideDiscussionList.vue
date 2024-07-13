@@ -207,7 +207,7 @@ export default defineComponent({
     <div v-if="discussions && discussions.length > 0">
       <ul
         role="list"
-        class="my-6 mr-2 flex flex-col gap-1"
+        class="my-6 flex flex-col gap-1"
         data-testid="sitewide-discussion-list"
       >
         <SitewideDiscussionListItem

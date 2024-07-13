@@ -318,6 +318,7 @@ export default defineComponent({
   <RequireAuth
     :require-ownership="true"
     :owners="ownerList"
+    :loading="getEventLoading"
   >
     <template #has-auth>
       <CreateEditEventFields

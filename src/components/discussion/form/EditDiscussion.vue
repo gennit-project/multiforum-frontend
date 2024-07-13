@@ -268,6 +268,7 @@ export default defineComponent({
   <RequireAuth
     :require-ownership="true"
     :owners="ownerList"
+    :loading="getDiscussionLoading"
   >
     {{ formValues }}
     <template #has-auth>

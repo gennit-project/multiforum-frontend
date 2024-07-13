@@ -26,12 +26,20 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    // This is not whether auth0 is loading. It's whether
+    // or not some data is loading in the parent component, for example,
+    // an edit form. We don't want to show "you don't have permission" if the
+    // data is loading. Therefore use this prop to block that message while loading.
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {
     const {
       loginWithPopup,
       loginWithRedirect,
-      isLoading,
+      isLoading: authLoading,
       isAuthenticated,
       idTokenClaims,
     } = useAuth0();
@@ -58,7 +66,7 @@ export default defineComponent({
     });
 
     return {
-      isLoading,
+      authLoading,
       localUsernameResult,
       login,
     };
@@ -89,7 +97,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <LoadingSpinner v-if="isLoading" />
+  <LoadingSpinner v-if="loading || authLoading" />
   <div
     v-else
     class="flex align-middle"
