@@ -10,14 +10,6 @@ import PrimaryButton from "../generic/buttons/PrimaryButton.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import { usernameVar, modProfileNameVar } from "@/cache";
 
-// This is a separate component for two reasons:
-// - The useQuery hook cannot be rendered conditionally
-// - We need this useQuery hook to check if the email
-//   exists, but the email we check for starts out as
-//   an empty string. So we conditionally render this
-//   so that it only loads if some user data is loaded
-//   so we can use that as a starting point for the new username.
-
 export default defineComponent({
   components: {
     CheckCircleIcon,
@@ -72,8 +64,17 @@ export default defineComponent({
       return newUsername.value.length === 0;
     });
 
+    const isValidUsername = (username: string) => {
+      const validUsernamePattern = /^[a-zA-Z0-9_]+$/;
+      return validUsernamePattern.test(username);
+    };
+
+    const usernameIsInvalid = computed(() => {
+      return !isValidUsername(newUsername.value);
+    });
+
     const confirmedAvailable = computed(() => {
-      return !usernameIsTaken.value && !usernameIsEmpty.value;
+      return !usernameIsTaken.value && !usernameIsEmpty.value && !usernameIsInvalid.value;
     });
 
     onEmailAndUserCreated((result) => {
@@ -92,8 +93,6 @@ export default defineComponent({
         }
 
         if (username) {
-          // Add user to application state to make the authenticated user's
-          // username available throughout the app.
           usernameVar(username);
         }
 
@@ -116,6 +115,7 @@ export default defineComponent({
       usernameInput: ref(null),
       usernameIsEmpty,
       usernameIsTaken,
+      usernameIsInvalid,
     };
   },
   created() {
@@ -147,7 +147,7 @@ export default defineComponent({
           v-model="newUsername"
           type="text"
           :class="[
-            usernameIsTaken
+            usernameIsTaken || usernameIsInvalid
               ? 'border-red-300 text-red-500 focus:border-red-500 focus:outline-none focus:ring-red-500'
               : 'focus:border-blue-500 focus:ring-blue-500',
           ]"
@@ -155,8 +155,8 @@ export default defineComponent({
           @update:model-value="updateUsername"
         >
         <div
-          v-if="usernameIsTaken"
-          class="pointer-posts-none absolute inset-y-0 right-0 flex items-center pr-3"
+          v-if="usernameIsTaken || usernameIsInvalid"
+          class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3"
         >
           <ExclamationIcon
             class="h-5 w-5 text-red-500"
@@ -168,6 +168,7 @@ export default defineComponent({
       <div class="h-6">
         <p class="my-1 text-xs">
           {{ usernameIsTaken ? "The username is already taken." : "" }}
+          {{ usernameIsInvalid ? "Username can only contain letters, numbers, and underscores." : "" }}
         </p>
         <div
           v-if="confirmedAvailable"
@@ -186,7 +187,7 @@ export default defineComponent({
       </div>
 
       <PrimaryButton
-        class="float-right mb-3"
+        class="float-right my-4"
         :label="'Save'"
         :disabled="!confirmedAvailable"
         :loading="createEmailAndUserLoading"
