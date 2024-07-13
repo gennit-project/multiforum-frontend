@@ -95,7 +95,7 @@ export default defineComponent({
             <DialogPanel
               class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
             >
-              <div class="flex items-center mb-2">
+              <div class="flex-col items-center ">
                 <div
                   :class="[highlightColor === 'red' ? `bg-red-100 dark:bg-red-transparent`: `bg-yellow-100 dark:bg-yellow-transparent`]"
                   class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full  sm:mx-0 sm:h-10 sm:w-10"
@@ -121,10 +121,11 @@ export default defineComponent({
                 </div>
               </div>
               <slot name="content" />
-              <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+              <div class="mt-5 sm:mt-4 sm:flex items-center sm:flex-row-reverse">
                 <button
                   type="button"
                   :disabled="primaryButtonDisabled"
+                  class="max-h-10"
                   :class="[
                     !primaryButtonDisabled ? `hover:bg-blue-500 bg-blue-600 border border-transparent text-white` : 'bg-gray-300 text-black dark:bg-gray-700 dark:text-gray-200',
                     `inline-flex w-full justify-center rounded-full  px-4 py-2 text-base font-medium shadow-sm  focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm`]"
@@ -139,7 +140,7 @@ export default defineComponent({
                 <button
                   ref="cancelButtonRef"
                   type="button"
-                  class="mt-3 inline-flex w-full justify-center rounded-full border border-gray-300 dark:text-gray-200 px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
+                  class="inline-flex w-full justify-center rounded-full border border-gray-300 dark:text-gray-200 px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:mt-0 sm:w-auto sm:text-sm"
                   @click="$emit('close')"
                 >
                   {{ secondaryButtonText }}
