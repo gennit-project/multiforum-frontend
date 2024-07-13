@@ -3,7 +3,7 @@ import { defineComponent, PropType, computed, ref, Ref } from "vue";
 import ChannelDiscussionListItem from "./ChannelDiscussionListItem.vue";
 import LoadMore from "../../generic/LoadMore.vue";
 import ErrorBanner from "../../generic/ErrorBanner.vue";
-import { DiscussionData } from "../../../types/discussionTypes";
+import { Discussion as DiscussionData } from "@/__generated__/graphql";
 import { useRoute } from "vue-router";
 import WarningModal from "../../generic/WarningModal.vue";
 import { useQuery, useMutation } from "@vue/apollo-composable";
@@ -21,7 +21,7 @@ import {
 } from "@/components/comments/getSortFromQuery";
 import RequireAuth from "@/components/auth/RequireAuth.vue";
 
-const DISCUSSION_PAGE_LIMIT = 25;
+export const DISCUSSION_PAGE_LIMIT = 25;
 
 export default defineComponent({
   components: {

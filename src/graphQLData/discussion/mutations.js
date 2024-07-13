@@ -58,8 +58,25 @@ export const CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS = gql`
       body
       DiscussionChannels {
         id
+        id
+        discussionId
+        channelUniqueName
+        CommentsAggregate {
+          count
+        }
+        weightedVotesCount
+        createdAt
         Channel {
           uniqueName
+        }
+        Discussion {
+          id
+        }
+        UpvotedByUsers {
+          username
+        }
+        UpvotedByUsersAggregate {
+          count
         }
       }
       Author {

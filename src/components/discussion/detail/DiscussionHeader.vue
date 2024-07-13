@@ -78,6 +78,7 @@ export default defineComponent({
     const {
       mutate: deleteDiscussion,
       error: deleteDiscussionError,
+      loading: deleteDiscussionLoading,
       onDone: onDoneDeleting,
     } = useMutation(DELETE_DISCUSSION, {
       variables: {
@@ -275,6 +276,7 @@ export default defineComponent({
       deleteModalIsOpen,
       deleteDiscussion,
       deleteDiscussionError,
+      deleteDiscussionLoading,
       editedAt,
       menuItems,
       route,
@@ -385,6 +387,7 @@ export default defineComponent({
       :body="'Are you sure you want to delete this discussion?'"
       :open="deleteModalIsOpen"
       :icon="'trash'"
+      :loading="deleteDiscussionLoading"
       @close="deleteModalIsOpen = false"
       @primary-button-click="deleteDiscussion"
     />

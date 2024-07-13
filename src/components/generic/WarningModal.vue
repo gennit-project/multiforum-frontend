@@ -35,6 +35,10 @@ export default defineComponent({
       type: String,
       default: "ExclamationIcon",
     },
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup() {},
 });
@@ -47,6 +51,7 @@ export default defineComponent({
     :open="open"
     :primary-button-text="primaryButtonText"
     :secondary-button-text="secondaryButtonText"
+    :loading="loading"
   >
     <template #icon>
       <i v-if="icon === 'trash'" class="fas fa-trash-alt" />

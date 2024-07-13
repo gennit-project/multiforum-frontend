@@ -6,7 +6,9 @@ import {
   useQuery,
   provideApolloClient,
 } from "@vue/apollo-composable";
+import { DiscussionChannel } from "@/__generated__/graphql";
 import { apolloClient } from "@/main";
+import { GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA } from "@/graphQLData/discussion/queries";
 import { CREATE_DISCUSSION_WITH_CHANNEL_CONNECTIONS } from "@/graphQLData/discussion/mutations";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import CreateEditDiscussionFields from "./CreateEditDiscussionFields.vue";
@@ -15,6 +17,11 @@ import RequireAuth from "../../auth/RequireAuth.vue";
 import { DiscussionCreateInput, Discussion } from "@/__generated__/graphql";
 import "md-editor-v3/lib/style.css";
 import gql from "graphql-tag";
+import { DISCUSSION_PAGE_LIMIT } from "@/components/discussion/list/ChannelDiscussionList.vue";
+import {
+  getSortFromQuery,
+  getTimeFrameFromQuery,
+} from "@/components/comments/getSortFromQuery";
 
 export default defineComponent({
   name: "CreateDiscussion",
@@ -95,7 +102,7 @@ export default defineComponent({
       return formValues.value.selectedChannels;
     });
 
-    const createDiscussionLoading = ref(false)
+    const createDiscussionLoading = ref(false);
 
     const {
       mutate: createDiscussion,
@@ -108,32 +115,64 @@ export default defineComponent({
         channelConnections: channelConnections.value,
       },
       update: (cache: any, result: any) => {
-        const newDiscussion: Discussion =
-          result.data?.createDiscussionWithChannelConnections;
+        // May need to use this data to fix consol errors about missing fields
+        // while writing result:
+        // const newDiscussion: Discussion =
+        //   result.data?.createDiscussionWithChannelConnections;
+        // console.log("result", result);
 
-        cache.modify({
-          fields: {
-            discussions(existingDiscussionRefs = [], fieldInfo: any) {
-              const readField = fieldInfo.readField;
-              const newDiscussionRef = cache.writeFragment({
-                data: newDiscussion,
-                fragment: gql`
-                  fragment NewDiscussion on Discussions {
-                    id
-                  }
-                `,
-              });
+        // const newDiscussionData = result?.data?.createDiscussionWithChannelConnections;
 
-              // Quick safety check - if the new discussion is already
-              // present in the cache, we don't need to add it again.
-              if (
-                existingDiscussionRefs.some(
-                  (ref: any) => readField("id", ref) === newDiscussion.id,
-                )
-              ) {
-                return existingDiscussionRefs;
-              }
-              return [newDiscussionRef, ...existingDiscussionRefs];
+        const discussionChannels =
+          result.data?.createDiscussionWithChannelConnections
+            ?.DiscussionChannels || [];
+
+        const discussionChannelInCurrentChannel = discussionChannels.filter(
+          (dc: DiscussionChannel) => {
+            return dc?.Channel?.uniqueName === channelId;
+          },
+        );
+
+        const existingData = cache.readQuery({
+          query: GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA,
+          variables: {
+            channelUniqueName: channelId,
+            searchInput: "",
+            selectedTags: [],
+            options: {
+              limit: DISCUSSION_PAGE_LIMIT,
+              offset: 0,
+              sort: getSortFromQuery(route.query),
+              timeFrame: getTimeFrameFromQuery(route.query),
+            },
+          },
+        });
+
+        const existingNumberOfDiscussionChannels =
+          existingData?.getDiscussionsInChannel
+            .aggregateDiscussionChannelsCount;
+
+        cache.writeQuery({
+          query: GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA,
+          variables: {
+            channelUniqueName: channelId,
+            searchInput: "",
+            selectedTags: [],
+            options: {
+              limit: DISCUSSION_PAGE_LIMIT,
+              offset: 0,
+              sort: getSortFromQuery(route.query),
+              timeFrame: getTimeFrameFromQuery(route.query),
+            },
+          },
+          data: {
+            getDiscussionsInChannel: {
+              aggregateDiscussionChannelsCount:
+                existingNumberOfDiscussionChannels + 1,
+              discussionChannels: [
+                ...discussionChannelInCurrentChannel,
+                ...existingData.getDiscussionsInChannel.discussionChannels,
+              ],
             },
           },
         });
@@ -149,7 +188,7 @@ export default defineComponent({
         of a channel, redirect to the discussion detail page in
         the channel.
       */
-     createDiscussionLoading.value = false
+      createDiscussionLoading.value = false;
 
       if (channelId) {
         router.push({
