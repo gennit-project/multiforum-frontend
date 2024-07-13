@@ -87,7 +87,7 @@ export default defineComponent({
 
     const updateText = (newText: string) => {
       text.value = newText;
-      emit("update", text);
+      emit("update", newText);
     };
 
     const formatText = (format: string) => {
