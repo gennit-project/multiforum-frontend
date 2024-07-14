@@ -176,7 +176,7 @@ export default defineComponent({
         <button
           v-if="!isAuthenticated"
           data-testid="login-button"
-          class="font-medium mr-2 inline-flex items-center rounded-full px-3 py-1 text-xs text-gray-300 hover:dark:text-white hover:text-black"
+          class="font-medium mr-2 inline-flex items-center rounded-full px-3 py-1 text-xs text-gray-400 hover:dark:text-white hover:text-black"
           @click="login"
         >
           Log In

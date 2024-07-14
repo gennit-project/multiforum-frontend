@@ -7,7 +7,7 @@ export default defineComponent({
 </script>
 <template>
   <div
-    class="text-wrap h-16 w-full items-center justify-center bg-gray-800 text-white p-4"
+    class="text-wrap w-full items-center justify-center bg-gray-800 text-white p-4"
   >
     This project is in alpha. I have hosted it publicly so that others can help me test the app. If you have feedback or technical problems, please open an issue in the
     <a
