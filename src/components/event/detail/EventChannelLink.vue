@@ -29,7 +29,7 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
+  setup() {
     return {};
   },
 });
@@ -55,7 +55,10 @@ export default defineComponent({
         :is-square="false"
       />
       <div class="flex-col space-y-1 text-xs">
-        <div v-if="channelDisplayName" class="font-bold">
+        <div
+          v-if="channelDisplayName"
+          class="font-bold"
+        >
           {{ channelDisplayName }}
         </div>
         <div

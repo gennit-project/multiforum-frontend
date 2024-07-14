@@ -1,14 +1,12 @@
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import { useRoute } from "vue-router";
-import { GoogleAutocomplete } from 'vue3-google-autocomplete'
 import config from '@/config'
 
 export default defineComponent({
   name: "LocationSearchBar",
   components: {
-    GoogleAutocomplete,
     LocationIcon,
   },
   props: {

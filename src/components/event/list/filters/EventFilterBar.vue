@@ -483,7 +483,11 @@ export default defineComponent({
 <template>
   <div class="w-full space-y-1">
     <div class="flex items-center justify-end mb-2">
-      <button v-if="allowHidingMainFilters" @click="() => toggleShowMainFilters()" class="text-blue-500 mr-4">
+      <button
+        v-if="allowHidingMainFilters"
+        class="text-blue-500 mr-4"
+        @click="() => toggleShowMainFilters()"
+      >
         {{ showMainFilters ? "Hide filters" : "Show filters" }}
       </button>
       <FilterChip
@@ -521,8 +525,14 @@ export default defineComponent({
         </template>
       </FilterChip>
     </div>
-    <div v-if="showMainFilters" class="flex flex-col gap-2">
-      <div v-if="route.name !== 'EventDetail'" class="w-full mb-2">
+    <div
+      v-if="showMainFilters"
+      class="flex flex-col gap-2"
+    >
+      <div
+        v-if="route.name !== 'EventDetail'"
+        class="w-full mb-2"
+      >
         <div class="flex space-x-1 align-middle">
           <SearchBar
             class="flex-1"
@@ -536,7 +546,7 @@ export default defineComponent({
             <Popper v-if="!showLocationSearchBarAndDistanceButtons">
               <button
                 data-testid="more-filters-button"
-                class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+                class="absolute bg-white border inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                 @click="handleClickMoreFilters"
               >
                 <FilterIcon class="h-4 w-4" />
@@ -562,7 +572,10 @@ export default defineComponent({
                         @click="updateSelectedDistance(distance)"
                       />
                     </div>
-                    <div v-else class="flex flex-wrap gap-x-1 gap-y-3">
+                    <div
+                      v-else
+                      class="flex flex-wrap gap-x-1 gap-y-3"
+                    >
                       <GenericButton
                         v-for="distance in distanceOptionsForMiles"
                         :key="distance.value"
@@ -601,7 +614,7 @@ export default defineComponent({
             <Popper v-if="showLocationSearchBarAndDistanceButtons">
               <button
                 data-testid="more-filters-button"
-                class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+                class="absolute inset-y-0 right-0 flex cursor-pointer bg-white dark:bg-gray-700 items-center pr-3"
                 @click="handleClickMoreFilters"
               >
                 <FilterIcon class="h-4 w-4" />
@@ -627,7 +640,10 @@ export default defineComponent({
                         @click="updateSelectedDistance(distance)"
                       />
                     </div>
-                    <div v-else class="flex flex-wrap gap-x-1 gap-y-3">
+                    <div
+                      v-else
+                      class="flex flex-wrap gap-x-1 gap-y-3"
+                    >
                       <GenericButton
                         v-for="distance in distanceOptionsForMiles"
                         :key="distance.value"
@@ -662,8 +678,6 @@ export default defineComponent({
       </div>
       <slot />
     </div>
-   
-    
   </div>
 </template>
 <style>
