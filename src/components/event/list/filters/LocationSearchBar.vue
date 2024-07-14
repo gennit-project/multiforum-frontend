@@ -76,7 +76,7 @@ export default defineComponent({
       </div>
       <GMapAutocomplete
         :class="[leftSideIsRounded ? 'rounded-full' : 'rounded-r-full']"
-        class="w-full border-gray-200 py-3 pl-10 h-12 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+        class="border w-full border-gray-200 py-3 pl-10 h-12 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         :placeholder="searchPlaceholder"
         @place_changed="updateLocationInput"
       />

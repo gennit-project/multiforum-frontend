@@ -51,6 +51,8 @@ export const EVENT_FIELDS = gql`
       channelUniqueName
       Channel {
         uniqueName
+        displayName
+        channelIconURL
       }
     }
   }

@@ -514,26 +514,6 @@ export default defineComponent({
                   :event-id="eventId"
                 />
               </div>
-
-              <div
-                v-if="channelId && channelsExceptCurrent.length > 0"
-                class="mt-2"
-              >
-                Crossposted To Channels
-              </div>
-              <div class="flex space-x-1">
-                <router-link
-                  v-for="ec in channelsExceptCurrent"
-                  :key="ec.channelUniqueName"
-                  :to="`/channels/c/${ec.channelUniqueName}/events/e/${eventId}`"
-                >
-                  <Tag
-                    class="mt-2"
-                    :tag="ec.channelUniqueName"
-                    :channel-mode="true"
-                  />
-                </router-link>
-              </div>
             </div>
             <EventFooter
               :event-data="event"

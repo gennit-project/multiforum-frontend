@@ -76,6 +76,8 @@ export default defineComponent({
           v-for="eventChannel in eventChannels"
           :key="eventChannel.id"
           :channel-id="eventChannel.channelUniqueName"
+          :channel-icon="eventChannel.Channel?.channelIconURL || ''"
+          :channel-display-name="eventChannel.Channel?.displayName || ''"
           :comment-count="eventChannel.CommentsAggregate?.count || 0"
           :event-id="eventChannel.eventId"
         />
@@ -93,6 +95,8 @@ export default defineComponent({
             v-for="dc in channelsExceptActive"
             :key="dc.id"
             :channel-id="dc.channelUniqueName"
+            :channel-icon="dc.Channel?.channelIconURL || ''"
+            :channel-display-name="dc.Channel?.displayName || ''"
             :comment-count="dc.CommentsAggregate?.count || 0"
             :event-id="dc.eventId"
           />
