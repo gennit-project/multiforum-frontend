@@ -1,6 +1,5 @@
 import loginWithButtonClick from "./commandFunctions/loginWithButtonClick";
 import seedEvents from "./commandFunctions/seed/seedEvents";
-import seedEmails from "./commandFunctions/seed/seedEmails";
 import seedUsers from "./commandFunctions/seed/seedUsers";
 import seedChannels from "./commandFunctions/seed/seedChannels";
 import seedDiscussions from "./commandFunctions/seed/seedDiscussions";
@@ -20,7 +19,6 @@ Cypress.Commands.add("loginWithCreateEventButton", loginWithButtonClick);
 // ADDING SEED DATA
 Cypress.Commands.add("seedDiscussions", seedDiscussions);
 Cypress.Commands.add("seedEvents", seedEvents);
-Cypress.Commands.add("seedEmails", seedEmails);
 Cypress.Commands.add("seedUsers", seedUsers);
 Cypress.Commands.add("seedChannels", seedChannels);
 Cypress.Commands.add("seedTags", seedTags);

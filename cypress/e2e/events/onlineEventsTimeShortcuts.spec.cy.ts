@@ -122,7 +122,6 @@ const mapTestDataToGraphQLInput = (
 describe("Filter events by text", () => {
   beforeEach(function () {
     deleteAll();
-    cy.seedEmails();
     cy.seedUsers();
     cy.seedChannels();
 

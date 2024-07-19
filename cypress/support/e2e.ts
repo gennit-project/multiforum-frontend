@@ -10,7 +10,6 @@ declare global {
         loginWithCreateEventButton(input?: LoginInput): Chainable<Element>;
         seedDiscussions(): Chainable<Element>;
         seedEvents(): Chainable<Element>;
-        seedEmails(): Chainable<Element>;
         seedUsers(): Chainable<Element>;
         seedChannels(): Chainable<Element>;
         seedTags(): Chainable<Element>;

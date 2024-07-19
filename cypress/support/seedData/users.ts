@@ -1,41 +1,20 @@
-import { UserCreateInput } from "../../../src/__generated__/graphql";
+type User = {
+  emailAddress: string;
+  username: string;
+};
 
-const users: UserCreateInput[] = [
+const users: User[] = [
   {
     username: "cluse",
-    Email: {
-      connect: {
-        where: {
-          node: {
-            address: "catherine.luse@gmail.com",
-          },
-        },
-      },
-    },
+    emailAddress: "catherine.luse@gmail.com",
   },
   {
     username: "alice",
-    Email: {
-      connect: {
-        where: {
-          node: {
-            address: "the.rinnovator@gmail.com",
-          },
-        },
-      },
-    },
+    emailAddress: "the.rinnovator@gmail.com",
   },
   {
     username: "eleanorperaltamontoya",
-    Email: {
-      connect: {
-        where: {
-          node: {
-            address: "eleanorperaltamontoya@gmail.com",
-          },
-        },
-      },
-    },
-  }
+    emailAddress: "eleanorperaltamontoya@gmail.com",
+  },
 ];
 export default users;

@@ -5,7 +5,6 @@ import { discussionsForFilteringTests } from "../../support/seedData/discussions
 describe("Filter discussions by tag", () => {
   beforeEach(function () {
     deleteAll();
-    cy.seedEmails();
     cy.seedUsers();
     cy.seedChannels();
     cy.seedTags();
