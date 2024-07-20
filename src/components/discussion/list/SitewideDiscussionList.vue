@@ -12,6 +12,7 @@ import {
   getSortFromQuery,
   getTimeFrameFromQuery,
 } from "@/components/comments/getSortFromQuery";
+import RequireAuth from '@/components/auth/RequireAuth.vue'
 
 const DISCUSSION_PAGE_LIMIT = 15;
 
@@ -19,6 +20,7 @@ export default defineComponent({
   components: {
     ErrorBanner,
     LoadMore,
+    RequireAuth,
     SitewideDiscussionListItem,
   },
   inheritAttrs: false,
@@ -117,8 +119,6 @@ export default defineComponent({
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
 
-    
-
           return {
             getSiteWideDiscussionList: {
               ...previousResult.getSiteWideDiscussionList,
@@ -180,7 +180,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full px-2 rounded-lg">
+  <div class="w-full rounded-lg px-2">
     <slot />
     <p v-if="discussionLoading">
       Loading...
@@ -192,17 +192,25 @@ export default defineComponent({
     />
     <p
       v-else-if="discussions && discussions.length === 0"
-      class="my-6 px-4"
+      class="my-6 flex gap-2 px-4"
     >
-      There are no discussions to show.
-      <router-link
-        :to="{
-          name: 'CreateDiscussion',
-        }"
-        class="text-blue-500 underline"
-      >
-        Create one?
-      </router-link>
+      <span>There are no discussions to show.</span>
+
+      <RequireAuth :full-width="false">
+        <template #has-auth>
+          <router-link
+            :to="{
+              name: 'CreateDiscussion',
+            }"
+            class="text-blue-500 underline"
+          >
+            Create one?
+          </router-link>
+        </template>
+        <template #does-not-have-auth>
+          <span class="cursor-pointer text-blue-500 underline">Create one?</span>
+        </template>
+      </RequireAuth>
     </p>
     <div v-if="discussions && discussions.length > 0">
       <ul
