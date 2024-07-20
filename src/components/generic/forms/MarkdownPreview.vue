@@ -5,23 +5,23 @@ import MarkdownIt from "markdown-it";
 import config from "@/config";
 
 function linkifyUsernames(markdownString: string) {
-  const regex = /(?:u\/|@)([a-zA-Z0-9_-]+)/g;
-  return markdownString.replace(regex, (match, username) => {
-    const prefix = match.startsWith("u/") ? "u/" : "@";
+  const regex = /(?<!https?:\/\/(?:[\w.-]+))\b(u\/|@)([a-zA-Z0-9_-]+)/g;
+  return markdownString.replace(regex, (match, prefix, username) => {
     return `[${prefix}${username}](${config.baseUrl}u/${username})`;
   });
 }
 
 function linkifyChannelNames(markdownString: string) {
-  const regex = /c\/([a-zA-Z0-9_-]+)/g;
+  const regex = /(?<!https?:\/\/(?:[\w.-]+))\bc\/([a-zA-Z0-9_-]+)/g;
   return markdownString.replace(regex, (match, channelName) => {
     return `[${match}](${config.baseUrl}channels/c/${channelName}/discussions)`;
   });
 }
 
 function linkifyUrls(text: string) {
-  const urlRegex = /(?:https?:\/\/|www\.)[^\s/$.?#].[^\s]*/g;
-  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/|www\.)[^\s/$.?#].[^\s]*\)/g;
+  const urlRegex = /(?:https?:\/\/|www\.)[^\s/$.?#].[^\s)]+[^\s)]+/g;
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/|www\.)[^\s/$.?#].[^\s)]*\)/g;
+  const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
   const markdownLinks: string[] = [];
   let match;
   while ((match = markdownLinkRegex.exec(text)) !== null) {
@@ -32,7 +32,7 @@ function linkifyUrls(text: string) {
     if (!url.startsWith('http')) {
       href = 'http://' + url;
     }
-    if (markdownLinks.some(link => link.includes(url))) {
+    if (markdownLinks.some(link => link.includes(url)) || emailRegex.test(url)) {
       return url;
     }
     return `[${url}](${href})`;

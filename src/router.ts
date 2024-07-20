@@ -35,6 +35,8 @@ import IssueDetailPage from "./components/mod/IssueDetailPage.vue";
 import OpenIssues from "./components/mod/OpenIssues.vue";
 import ClosedIssues from "./components/mod/ClosedIssues.vue";
 import CommentFeedback from "./components/comments/CommentFeedback.vue";
+import PrivacyPolicy from "./components/legal/PrivacyPolicy.vue";
+import TermsOfUse from "./components/legal/TermsOfUse.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -304,6 +306,16 @@ export const router = createRouter({
     {
       path: "/:catchAll(.*)",
       component: PageNotFound,
+    },
+    {
+      name: "PrivacyPolicy",
+      path: "/privacy-policy",
+      component: PrivacyPolicy
+    },
+    {
+      name: "TermsOfUse",
+      path: "/terms-of-use",
+      component: TermsOfUse
     },
   ],
 });
