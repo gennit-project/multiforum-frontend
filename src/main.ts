@@ -110,10 +110,10 @@ library.add(faUserPlus);
 library.add(faXmark);
 
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-const { environment, graphqlUrlDev, graphqlUrlProd, clientId } = config;
+const { graphqlUrl, clientId } = config;
 
 const httpLink = createHttpLink({
-  uri: environment === "development" ? graphqlUrlDev : graphqlUrlProd,
+  uri: graphqlUrl,
 });
 
 const authLink = setContext((_, { headers }) => {

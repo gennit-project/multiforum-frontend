@@ -10,8 +10,7 @@ dotenv.config({ path: `.env` })
 const config = {
   domain: process.env.VITE_DOMAIN,
   clientId: process.env.VITE_AUTH0_CLIENT_ID,
-  graphqlUrlDev: process.env.VITE_GRAPHQL_URL_DEV,
-  graphqlUrlProd: process.env.VITE_GRAPHQL_URL_PROD,
+  graphqlUrl: process.env.VITE_GRAPHQL_URL,
   googleMapsApiKey: process.env.VITE_GOOGLE_MAPS_API_KEY,
   environment: process.env.VITE_ENVIRONMENT,
   openGraphApiKey: process.env.VITE_OPEN_GRAPH_API_KEY,

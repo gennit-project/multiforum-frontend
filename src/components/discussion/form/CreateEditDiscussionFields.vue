@@ -99,108 +99,110 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex w-full justify-center">
-    <div v-if="discussionLoading">
-      Loading...
-    </div>
-    <div v-if="getDiscussionError">
+  <div class="flex flex-col justify-center align-items w-full">
+    <div class="max-w-5xl">
+      <div v-if="discussionLoading">
+        Loading...
+      </div>
+      <div v-if="getDiscussionError">
+        <ErrorBanner
+          v-for="(error, i) of getDiscussionError?.graphQLErrors"
+          :key="i"
+          :text="error.message"
+        />
+      </div>
       <ErrorBanner
-        v-for="(error, i) of getDiscussionError?.graphQLErrors"
-        :key="i"
-        :text="error.message"
+        v-else-if="createDiscussionError"
+        :text="createDiscussionError.message"
       />
-    </div>
-    <ErrorBanner
-      v-else-if="createDiscussionError"
-      :text="createDiscussionError.message"
-    />
-    <ErrorBanner
-      v-else-if="updateDiscussionError"
-      :text="updateDiscussionError.message"
-    />
-    <div class="w-full max-w-3xl">
-      <TailwindForm
-        v-if="formValues"
-        :form-title="formTitle"
-        :needs-changes="needsChanges"
-        :loading="createDiscussionLoading || updateDiscussionLoading"
-        @input="touched = true"
-        @submit="$emit('submit')"
-      >
-        <ErrorBanner
-          v-if="needsChanges && touched"
-          :text="changesRequiredMessage"
-        />
-        <ErrorBanner
-          v-if="createDiscussionError"
-          :text="createDiscussionError.message"
-        />
-        <ErrorBanner
-          v-if="updateDiscussionError"
-          :text="updateDiscussionError.message"
-        />
-        <div class="divide-y divide-gray-200">
-          <div class="mt-6 space-y-4">
-            <FormRow
-              section-title="Title"
-              :required="true"
-            >
-              <template #content>
-                <TextInput
-                  ref="titleInputRef"
-                  :test-id="'title-input'"
-                  :value="formValues.title"
-                  :placeholder="'Ask a question or share something new'"
-                  :full-width="true"
-                  @update="$emit('updateFormValues', { title: $event })"
-                />
-              </template>
-            </FormRow>
+      <ErrorBanner
+        v-else-if="updateDiscussionError"
+        :text="updateDiscussionError.message"
+      />
+      <div class="w-full max-w-3xl">
+        <TailwindForm
+          v-if="formValues"
+          :form-title="formTitle"
+          :needs-changes="needsChanges"
+          :loading="createDiscussionLoading || updateDiscussionLoading"
+          @input="touched = true"
+          @submit="$emit('submit')"
+        >
+          <ErrorBanner
+            v-if="needsChanges && touched"
+            :text="changesRequiredMessage"
+          />
+          <ErrorBanner
+            v-if="createDiscussionError"
+            :text="createDiscussionError.message"
+          />
+          <ErrorBanner
+            v-if="updateDiscussionError"
+            :text="updateDiscussionError.message"
+          />
+          <div class="divide-y divide-gray-200">
+            <div class="mt-6 space-y-4">
+              <FormRow
+                section-title="Title"
+                :required="true"
+              >
+                <template #content>
+                  <TextInput
+                    ref="titleInputRef"
+                    :test-id="'title-input'"
+                    :value="formValues.title"
+                    :placeholder="'Ask a question or share something new'"
+                    :full-width="true"
+                    @update="$emit('updateFormValues', { title: $event })"
+                  />
+                </template>
+              </FormRow>
 
-            <FormRow
-              section-title="Forums"
-              :required="true"
-            >
-              <template #content>
-                <TagInput
-                  :test-id="'channel-input'"
-                  :selected-channels="formValues.selectedChannels"
-                  :channel-mode="true"
-                  @setSelectedTags="
-                    $emit('updateFormValues', { selectedChannels: $event })
-                  "
-                />
-              </template>
-            </FormRow>
+              <FormRow
+                section-title="Forums"
+                :required="true"
+              >
+                <template #content>
+                  <TagInput
+                    :test-id="'channel-input'"
+                    :selected-channels="formValues.selectedChannels"
+                    :channel-mode="true"
+                    @setSelectedTags="
+                      $emit('updateFormValues', { selectedChannels: $event })
+                    "
+                  />
+                </template>
+              </FormRow>
 
-            <FormRow section-title="Details">
-              <template #content>
-                <TextEditor
-                  class="mb-3"
-                  :test-id="'body-input'"
-                  :disable-auto-focus="true"
-                  :initial-value="formValues.body || ''"
-                  :placeholder="'Add details'"
-                  :rows="20"
-                  @update="$emit('updateFormValues', { body: $event })"
-                />
-              </template>
-            </FormRow>
+              <FormRow section-title="Details">
+                <template #content>
+                  <TextEditor
+                    class="mb-3"
+                    :test-id="'body-input'"
+                    :disable-auto-focus="true"
+                    :initial-value="formValues.body || ''"
+                    :placeholder="'Add details'"
+                    :rows="20"
+                    @update="$emit('updateFormValues', { body: $event })"
+                  />
+                </template>
+              </FormRow>
 
-            <FormRow section-title="Tags">
-              <template #content>
-                <TagInput
-                  :test-id="'tags-input'"
-                  :selected-tags="formValues?.selectedTags"
-                  @setSelectedTags="
-                    $emit('updateFormValues', { selectedTags: $event })
-                  "
-                />
-              </template>
-            </FormRow>
+              <FormRow section-title="Tags">
+                <template #content>
+                  <TagInput
+                    :test-id="'tags-input'"
+                    :selected-tags="formValues?.selectedTags"
+                    @setSelectedTags="
+                      $emit('updateFormValues', { selectedTags: $event })
+                    "
+                  />
+                </template>
+              </FormRow>
+            </div>
           </div>
-        </div>
-      </TailwindForm>
+        </TailwindForm>
+      </div>
     </div>
   </div>
 </template>
