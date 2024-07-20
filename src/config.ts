@@ -10,6 +10,7 @@ const config = {
     "sentryDsn": import.meta.env.VITE_SENTRY_DSN,
     "sentryAuthToken": import.meta.env.VITE_SENTRY_AUTH_TOKEN,
     "googleCloudStorageBucket": import.meta.env.VITE_GOOGLE_CLOUD_STORAGE_BUCKET,
+    "logoutUrl": import.meta.env.VITE_LOGOUT_URL,
  }
 
  export default config;

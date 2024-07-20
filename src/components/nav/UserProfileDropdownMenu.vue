@@ -5,6 +5,7 @@ import Avatar from "../user/Avatar.vue";
 import IconButtonDropdown from "../generic/buttons/IconButtonDropdown.vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_USER } from "@/graphQLData/user/queries";
+import config from '@/config'
 
 export default defineComponent({
   name: "UserProfileDropdownMenu",
@@ -62,7 +63,7 @@ export default defineComponent({
     return {
       isAuthenticated,
       logout: () => {
-        logout({ returnTo: "http://localhost:5173/" });
+        logout({ returnTo: config.logoutUrl });
       },
       menuItems,
       profilePicURL,
