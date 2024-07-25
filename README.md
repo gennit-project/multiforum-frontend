@@ -2,6 +2,12 @@
 
 This is a work in progress that intended to be an open-source, self-hosted platform that lets you host multiple forums.
 
+## Video Demo
+
+[![Video demo of Multiforum](./screenshots/video-demo-thumbnail.png)](https://www.loom.com/share/c94dcfcad181448abf6501584e01f9d2?sid=5d53630c-813f-4cfe-bb22-1d7289effc2e)
+
+## Overview
+
 Each forum has two sections, a discussion section and a calendar. In the discussion section, content
 can be upvoted so that the best content rises to the top. In the event section, anyone can post
 an event that participants in the community may be interested in.
