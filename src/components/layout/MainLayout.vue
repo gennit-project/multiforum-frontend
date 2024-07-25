@@ -26,7 +26,7 @@ export default defineComponent({
     <div class="flex-grow">
       <router-view />
     </div>
-    <SiteFooter />
+    <!-- <SiteFooter /> -->
   </div>
 </template>
 
