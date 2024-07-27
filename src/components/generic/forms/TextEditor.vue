@@ -165,7 +165,7 @@ export default defineComponent({
         {
           label: "H3",
           format: "header3",
-        }
+        },
       ],
     };
   },
@@ -264,64 +264,70 @@ export default defineComponent({
 </script>
 
 <template>
-  <form class="border p-2 rounded-md">
+  <form class="rounded-md border p-2 dark:border-gray-600">
     <ErrorBanner
       v-if="createSignedStorageUrlError"
       :text="createSignedStorageUrlError && createSignedStorageUrlError.message"
     />
     <TabGroup>
-      <TabList class="flex items-center border-b pb-2">
-        <Tab
-          v-slot="{ selected }"
-          as="template"
-        >
-          <button
-            :class="[
-              selected
-                ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
-                : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
-              'border-transparent mr-2 rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
-            ]"
+      <TabList
+        class="flex items-center justify-between border-b pb-2 dark:border-gray-600"
+      >
+        <div class="flex items-center">
+          <Tab
+            v-slot="{ selected }"
+            as="template"
           >
-            Write
-          </button>
-        </Tab>
-        <Tab
-          v-slot="{ selected }"
-          as="template"
-        >
-          <button
-            :class="[
-              selected
-                ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
-                : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
-              'border-transparent rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
-            ]"
+            <button
+              :class="[
+                selected
+                  ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
+                  : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
+                'border-transparent mr-2 rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
+              ]"
+            >
+              Write
+            </button>
+          </Tab>
+          <Tab
+            v-slot="{ selected }"
+            as="template"
           >
-            Preview
+            <button
+              :class="[
+                selected
+                  ? 'bg-gray-200 text-gray-900 hover:bg-gray-200 dark:bg-gray-600 dark:text-gray-100 hover:dark:bg-gray-700 dark:hover:text-gray-200'
+                  : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
+                'border-transparent rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
+              ]"
+            >
+              Preview
+            </button>
+          </Tab>
+        </div>
+        <div class="flex items-center justify-end space-x-1">
+          <button
+            v-for="button in formatButtons"
+            :key="button.label"
+            :class="[
+              button.format === 'bold' ? 'font-bold' : '',
+              button.format === 'italic' ? 'italic' : '',
+              button.format === 'underline' ? 'underline' : '',
+            ]"
+            class="border-transparent rounded-md border px-2 py-1 text-sm font-medium hover:bg-gray-100 hover:text-gray-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200 dark:hover:text-gray-200 dark:hover:text-gray-400"
+            @click="
+              (event) => {
+                event.preventDefault();
+                formatText(button.format);
+              }
+            "
+          >
+            {{ button.label }}
           </button>
-        </Tab>
+        </div>
       </TabList>
       <TabPanels class="mt-2">
         <TabPanel class="-m-0.5 rounded-md px-0.5 py-1">
-          <div class="mb-2 flex space-x-1 items-center justify-end">
-            <button
-              v-for="button in formatButtons" 
-              :key="button.label"
-              :class="[
-                button.format === 'bold' ? 'font-bold' : '',
-                button.format === 'italic' ? 'italic' : '',
-                button.format === 'underline' ? 'underline' : '',
-              ]"
-              class="border-transparent rounded-md border px-2 py-1 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 hover:text-gray-500 dark:hover:text-gray-200" 
-              @click="(event) => {
-                event.preventDefault();
-                formatText(button.format)
-              }" 
-            >
-              {{ button.label }}
-            </button>
-          </div>
           <label
             for="comment"
             class="sr-only"
@@ -332,7 +338,7 @@ export default defineComponent({
             name="comment"
             :rows="rows"
             :placeholder="placeholder"
-            class="border block w-full rounded-md border-gray-200 text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200"
+            class="block w-full rounded-md border border-gray-200 text-sm placeholder-gray-400 focus:border-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-200"
             :value="text"
             @input="updateText($event?.target?.value)"
             @dragover="handleDragOver"
@@ -346,7 +352,7 @@ export default defineComponent({
         <TabPanel class="-m-0.5 overflow-auto rounded-md p-0.5">
           <v-md-preview
             :text="text"
-            class="block w-full -ml-6 max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"
+            class="-ml-6 block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"
           />
         </TabPanel>
       </TabPanels>
