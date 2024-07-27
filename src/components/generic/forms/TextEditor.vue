@@ -285,6 +285,7 @@ export default defineComponent({
                   : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
                 'border-transparent mr-2 rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
               ]"
+              @click="showFormatted = false"
             >
               Write
             </button>
@@ -300,12 +301,16 @@ export default defineComponent({
                   : 'bg-white text-gray-500 hover:bg-gray-100  dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:text-gray-200',
                 'border-transparent rounded-md border px-3 py-1.5 text-sm font-medium dark:border-gray-700 dark:hover:text-gray-400',
               ]"
+              @click="showFormatted = true"
             >
               Preview
             </button>
           </Tab>
         </div>
-        <div class="flex items-center justify-end space-x-1">
+        <div
+          v-if="!showFormatted"
+          class="flex items-center justify-end space-x-1"
+        >
           <button
             v-for="button in formatButtons"
             :key="button.label"
@@ -359,6 +364,7 @@ export default defineComponent({
     </TabGroup>
   </form>
 </template>
+
 
 <style lang="scss">
 @media (prefers-color-scheme: dark) {
