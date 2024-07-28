@@ -6,7 +6,7 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { Issue } from "@/__generated__/graphql";
 import LoadingSpinner from "../generic/LoadingSpinner.vue";
 import { DateTime } from "luxon";
-import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "../generic/MarkdownPreview.vue";
 import { useRoute } from "vue-router";
 
 export default defineComponent({

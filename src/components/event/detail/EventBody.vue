@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from "vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import { Event } from "@/__generated__/graphql";
 
 export default defineComponent({
@@ -22,5 +22,9 @@ export default defineComponent({
 });
 </script>
 <template>
-  <MarkdownPreview :text="description || ''" :disable-gallery="false" class="-ml-4" />
+  <MarkdownPreview
+    :text="description || ''"
+    :disable-gallery="false"
+    class="-ml-4"
+  />
 </template>

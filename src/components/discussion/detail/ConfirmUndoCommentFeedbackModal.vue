@@ -7,7 +7,7 @@ import { DELETE_COMMENT } from "@/graphQLData/comment/mutations";
 import { GET_SPECIFIC_COMMENT_FEEDBACK as GET_FEEDBACK } from "@/graphQLData/comment/queries";
 import { Comment } from "@/__generated__/graphql";
 import CommentHeader from "@/components/comments/CommentHeader.vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 
 export default defineComponent({
   name: "ConfirmUndoCommentFeedbackModal",

@@ -8,7 +8,7 @@ import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
 import { GET_USER } from "@/graphQLData/user/queries";
 import { relativeTime } from "@/utils/dateTimeUtils";
-import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "../generic/MarkdownPreview.vue";
 
 export default defineComponent({
   name: "AboutPage",

@@ -4,7 +4,7 @@ import { RedditSubmission } from "@/__generated__/graphql";
 import { relativeTime } from "@/dateTimeUtils";
 import { useRoute } from "vue-router";
 import { useDisplay } from "vuetify";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import MediaViewer from "./MediaViewer.vue";
 
 const TRUNCATED_LENGTH = 500;

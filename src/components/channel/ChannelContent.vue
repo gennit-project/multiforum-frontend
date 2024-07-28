@@ -1,6 +1,6 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import { useRoute } from "vue-router";
 import { useQuery } from "@vue/apollo-composable";

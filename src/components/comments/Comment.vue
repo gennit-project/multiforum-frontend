@@ -9,7 +9,7 @@ import CommentButtons from "./CommentButtons.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { getLinksInText } from "../utils";
 import { ApolloError, gql } from "@apollo/client/core";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";

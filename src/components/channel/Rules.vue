@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import MarkdownPreview from "./../generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "./../generic/MarkdownPreview.vue";
 
 type Rule = {
   detail: string;

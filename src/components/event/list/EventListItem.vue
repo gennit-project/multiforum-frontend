@@ -10,7 +10,7 @@ import { SearchEventValues } from "@/types/eventTypes";
 import { router } from "@/router";
 import MenuButton from "@/components/generic/buttons/MenuButton.vue";
 import ChevronDownIcon from "@/components/icons/ChevronDownIcon.vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import { useDisplay } from "vuetify";
 
 export default defineComponent({

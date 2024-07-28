@@ -4,7 +4,7 @@ import { ModerationAction } from "@/__generated__/graphql";
 import Avatar from "../user/Avatar.vue";
 import DiscussionIcon from "../icons/DiscussionIcon.vue";
 import { timeAgo } from "@/dateTimeUtils";
-import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "../generic/MarkdownPreview.vue";
 
 // Enum for the allowed action types
 enum ActionType {

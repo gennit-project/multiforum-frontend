@@ -7,7 +7,7 @@ import { computed, defineComponent } from "vue";
 import { useRoute } from "vue-router";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import { timeAgo } from "@/dateTimeUtils";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";

@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import MarkdownPreview from '@/components/generic/forms/MarkdownPreview.vue'
+import MarkdownPreview from '@/components/generic/MarkdownPreview.vue'
 import axios from "axios";
 
 export default defineComponent({

@@ -6,7 +6,7 @@ import { ADD_FEEDBACK_COMMENT_TO_COMMENT } from "@/graphQLData/comment/mutations
 import { useMutation, useQuery } from "@vue/apollo-composable";
 import { computed, defineComponent, watch, ref, Ref } from "vue";
 import { RouteLocationRaw, useRoute } from "vue-router";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import { timeAgo } from "@/dateTimeUtils";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";

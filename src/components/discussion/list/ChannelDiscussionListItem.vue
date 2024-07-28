@@ -12,7 +12,7 @@ import { useDisplay } from "vuetify";
 import DiscussionVotes from "../vote/DiscussionVotes.vue";
 import UsernameWithTooltip from "@/components/generic/UsernameWithTooltip.vue";
 import { timeAgo } from "@/dateTimeUtils";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 
 export default defineComponent({
   components: {

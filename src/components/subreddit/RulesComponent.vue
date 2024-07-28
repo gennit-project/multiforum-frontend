@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 
 type Rule = {
   short_name: string;

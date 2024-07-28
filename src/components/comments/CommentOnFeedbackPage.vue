@@ -14,7 +14,7 @@ import { useRoute, useRouter } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
 import { timeAgo } from "@/dateTimeUtils";
 import { PropType } from "vue";
-import MarkdownPreview from "../generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "../generic/MarkdownPreview.vue";
 
 export default defineComponent({
   name: "CommentOnFeedbackPage",

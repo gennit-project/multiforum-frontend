@@ -7,7 +7,7 @@ import Tag from "../../tag/Tag.vue";
 import "md-editor-v3/lib/preview.css";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";
-import MarkdownPreview from "@/components/generic/forms/MarkdownPreview.vue";
+import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import EmojiButtons from "@/components/comments/EmojiButtons.vue";
 import NewEmojiButton from "@/components/comments/NewEmojiButton.vue";
 
