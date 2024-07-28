@@ -24,7 +24,7 @@ function getDefaultEventFormValues(channelId: string): CreateEditEventFormValues
     endTime: defaultStartTimeISO ? (DateTime.fromISO(defaultStartTimeISO).plus({ hours: 2 }).toISO() || '') : "",
     canceled: false,
     deleted: false,
-    free: true,
+    free: false,
     cost: "",
   }
 }
