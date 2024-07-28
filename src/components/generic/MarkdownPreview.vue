@@ -1,8 +1,9 @@
 <script lang="ts">
 import { computed, defineComponent, ref, watchEffect } from "vue";
-import VueEasyLightbox from 'vue-easy-lightbox';
+import VueEasyLightbox from "vue-easy-lightbox";
 import MarkdownIt from "markdown-it";
 import config from "@/config";
+import MarkdownRenderer from '@/components/generic/MarkdownRenderer.vue'
 
 function linkifyUsernames(markdownString: string) {
   const regex = /(?<!https?:\/\/(?:[\w.-]+))\b(u\/|@)([a-zA-Z0-9_-]+)/g;
@@ -20,7 +21,8 @@ function linkifyChannelNames(markdownString: string) {
 
 function linkifyUrls(text: string) {
   const urlRegex = /(?:https?:\/\/|www\.)[^\s/$.?#].[^\s)]+[^\s)]+/g;
-  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/|www\.)[^\s/$.?#].[^\s)]*\)/g;
+  const markdownLinkRegex =
+    /\[([^\]]+)\]\((https?:\/\/|www\.)[^\s/$.?#].[^\s)]*\)/g;
   const emailRegex = /([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
   const markdownLinks: string[] = [];
   let match;
@@ -29,10 +31,13 @@ function linkifyUrls(text: string) {
   }
   return text.replace(urlRegex, (url) => {
     let href = url;
-    if (!url.startsWith('http')) {
-      href = 'http://' + url;
+    if (!url.startsWith("http")) {
+      href = "http://" + url;
     }
-    if (markdownLinks.some(link => link.includes(url)) || emailRegex.test(url)) {
+    if (
+      markdownLinks.some((link) => link.includes(url)) ||
+      emailRegex.test(url)
+    ) {
       return url;
     }
     return `[${url}](${href})`;
@@ -79,7 +84,8 @@ function parseMarkdownForImages(text: string) {
 
 export default defineComponent({
   components: {
-    VueEasyLightbox
+    MarkdownRenderer,
+    VueEasyLightbox,
   },
   props: {
     disableGallery: {
@@ -210,15 +216,15 @@ export default defineComponent({
       handleImageClick,
       visibleRef,
       indexRef,
-      onHide
+      onHide,
     };
-  }
+  },
 });
 </script>
 
 <template>
   <div class="w-full">
-    <v-md-preview
+    <MarkdownRenderer
       :text="`${shownText}${!showFullText ? '...' : ''}`"
       @click="handleImageClick"
     />
@@ -231,7 +237,7 @@ export default defineComponent({
     </button>
     <vue-easy-lightbox
       :visible="visibleRef"
-      :imgs="embeddedImages.map(image => image.src)"
+      :imgs="embeddedImages.map((image) => image.src)"
       :index="indexRef"
       @hide="onHide"
     />
@@ -253,5 +259,4 @@ li {
 a {
   color: #3182ce !important;
 }
-
 </style>

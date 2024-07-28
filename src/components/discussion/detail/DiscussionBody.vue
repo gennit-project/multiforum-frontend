@@ -107,7 +107,7 @@ export default defineComponent({
   <div class="md:px-2">
     <div
       v-if="discussion?.body"
-      class="-ml-8 -mt-4 max-w-none"
+      class="-ml-2 md:-ml-4 -mt-4 max-w-none"
     >
       <MarkdownPreview
         :text="bodyText"

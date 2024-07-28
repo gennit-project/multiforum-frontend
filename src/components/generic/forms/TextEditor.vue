@@ -361,7 +361,7 @@ export default defineComponent({
         <TabPanel class="-m-0.5 overflow-auto rounded-md p-0.5">
           <v-md-preview
             :text="text"
-            class="-ml-6 block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"
+            class="block w-full max-w-2xl rounded-md border-gray-300 text-xs shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-800 dark:bg-gray-700 dark:text-gray-100"
           />
         </TabPanel>
       </TabPanels>
@@ -388,23 +388,9 @@ export default defineComponent({
     td {
       background-color: black !important;
     }
-    pre {
-      background-color: white !important;
-    }
   }
 
-  div.github-markdown-body {
-    background-color: transparent !important;
-    table,
-    tbody,
-    thead,
-    th,
-    td {
-      background-color: transparent;
-    }
-    padding-top: 0.5rem;
-    padding-bottom: 0;
-  }
+
 }
 
 @media (prefers-color-scheme: light) {

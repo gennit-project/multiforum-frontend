@@ -91,7 +91,7 @@ export default defineComponent({
         </h3>
         <MarkdownPreview
           v-if="discussion?.body"
-          class="-ml-8 max-w-none"
+          class="-ml-6 max-w-none"
           :text="discussion.body"
           :disable-gallery="true"
           :word-limit="1000"

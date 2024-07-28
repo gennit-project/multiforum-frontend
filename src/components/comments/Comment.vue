@@ -424,7 +424,7 @@ export default defineComponent({
                       commentData.text &&
                         editFormOpenAtCommentID !== commentData.id
                     "
-                    class="-ml-6"
+                    class="-ml-2"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
                   >
                     <MarkdownPreview
