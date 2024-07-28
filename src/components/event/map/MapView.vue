@@ -24,6 +24,8 @@ import TimeShortcuts from "../list/filters/TimeShortcuts.vue";
 import TwoSeparatelyScrollingPanes from "@/components/generic/TwoSeparatelyScrollingPanes.vue";
 import gql from "graphql-tag";
 import { Event as EventData } from "@/__generated__/graphql";
+import placeIcon from "@/assets/images/place-icon.svg"
+import highlightedPlaceIcon from "@/assets/images/highlighted-place-icon.svg"
 
 export default defineComponent({
   name: "MapView",
@@ -328,8 +330,7 @@ export default defineComponent({
 
       if (markerMap[eventLocationId]) {
         markerMap[eventLocationId].marker.setIcon({
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          url: require("@/assets/images/highlighted-place-icon.svg").default,
+          url: highlightedPlaceIcon,
           scaledSize: { width: 20, height: 20 },
         });
 
@@ -478,7 +479,7 @@ export default defineComponent({
         if (markerMap[this.highlightedEventLocationId]) {
           markerMap[this.highlightedEventLocationId].marker.setIcon({
             // eslint-disable-next-line @typescript-eslint/no-var-requires
-            url: require("@/assets/images/place-icon.svg").default,
+            url: placeIcon,
             scaledSize: { width: 20, height: 20 },
           });
         }
