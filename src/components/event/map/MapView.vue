@@ -138,7 +138,9 @@ export default defineComponent({
     const previewIsOpen = ref(false);
     const sendToPreview = (eventId: string, eventLocationId: string) => {
       if (eventId) {
-        const escapedEventLocationId = eventLocationId ? CSS.escape(eventLocationId) : "";
+        const escapedEventLocationId = eventLocationId
+          ? CSS.escape(eventLocationId)
+          : "";
 
         if (!channelId.value) {
           router.push({
@@ -531,7 +533,10 @@ export default defineComponent({
 </script>
 <template>
   <div class="h-full bg-gray-100 dark:bg-gray-900">
-    <div v-if="mdAndUp" id="mapViewFullScreen">
+    <div
+      v-if="mdAndUp"
+      id="mapViewFullScreen"
+    >
       <TwoSeparatelyScrollingPanes
         class="mt-3"
         :show-right-pane-at-medium-screen-width="true"
@@ -547,7 +552,9 @@ export default defineComponent({
                 <TimeShortcuts />
               </EventFilterBar>
 
-              <div v-if="eventLoading">Loading...</div>
+              <div v-if="eventLoading">
+                Loading...
+              </div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -578,7 +585,9 @@ export default defineComponent({
         <template #rightpane>
           <div style="right: 0; width: 50vw">
             <div class="event-map-container">
-              <div v-if="eventLoading">Loading...</div>
+              <div v-if="eventLoading">
+                Loading...
+              </div>
               <ErrorBanner
                 v-else-if="eventError"
                 class="block"
@@ -587,8 +596,8 @@ export default defineComponent({
               <EventMap
                 v-else-if="
                   eventResult &&
-                  eventResult.events &&
-                  eventResult.events.length > 0
+                    eventResult.events &&
+                    eventResult.events.length > 0
                 "
                 :key="eventResult.events.length"
                 class="fixed"

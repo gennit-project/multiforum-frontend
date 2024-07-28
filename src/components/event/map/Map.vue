@@ -1,6 +1,13 @@
 <!-- eslint-disable no-undef -->
 <script lang="ts">
-import { defineComponent, onMounted, ref, SetupContext, watch, computed } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  ref,
+  SetupContext,
+  watch,
+  computed,
+} from "vue";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useRouter } from "vue-router";
 import config from "@/config";
@@ -78,19 +85,17 @@ export default defineComponent({
         const markerData = markerMap[key];
         const marker = markerData.marker;
 
-        if (marker && marker.getMap() !== null){
+        if (marker && marker.getMap() !== null) {
           marker.setMap(null);
           google.maps.event.clearInstanceListeners(marker);
         }
-        
       }
       markerMap = {};
     };
 
-
     const renderMap = async () => {
       await loader.load();
-      clearMarkers() // prevent duplicate markers when changing themes
+      clearMarkers(); // prevent duplicate markers when changing themes
       const mapConfig = {
         center: { lat: 33.4255, lng: -111.94 },
         zoom: 7,
@@ -192,27 +197,31 @@ export default defineComponent({
       map.value.fitBounds(bounds);
       // Check if the zoom level is too high after fitting bounds
       if (map.value.getZoom() > 15) {
-          map.value.setZoom(15);
+        map.value.setZoom(15);
       }
 
       emit("setMarkerData", {
         markerMap,
         map: map.value,
       });
-    }
+    };
 
     onMounted(async () => {
-      renderMap()
+      renderMap();
     });
 
     const theme = computed(() => {
-      return props.theme
-    })
+      return props.theme;
+    });
 
-    watch(theme, () => {
-      // This allows the map to be re-rendered when the theme changes.
-      renderMap();
-    }, { immediate: true });
+    watch(
+      theme,
+      () => {
+        // This allows the map to be re-rendered when the theme changes.
+        renderMap();
+      },
+      { immediate: true },
+    );
 
     const center = ref(props.referencePoint);
 
@@ -247,7 +256,7 @@ export default defineComponent({
     <div
       v-else-if="!useMobileStyles"
       ref="desktopMapDiv"
-      style="position: fixed; width: 50vw; height: 100vh"
+      style="position: fixed; width: 50vw; height: 94vh"
     />
   </div>
 </template>
@@ -258,4 +267,5 @@ export default defineComponent({
 .gmnoprint {
   display: none !important;
 }
+
 </style>
