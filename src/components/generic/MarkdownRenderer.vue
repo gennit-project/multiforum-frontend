@@ -67,6 +67,7 @@ export default defineComponent({
 
 .markdown-body {
   padding: 16px;
+  overflow-x: auto;
  
   .dark {
     background-color: transparent;
@@ -80,6 +81,7 @@ export default defineComponent({
 
   img {
     max-width: 100%;
+    max-height: 400px;
     height: auto;
   }
 }
