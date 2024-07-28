@@ -12,6 +12,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 import { useRouter } from "vue-router";
 import config from "@/config";
 import nightModeMapStyles from "@/components/event/map/nightModeMapStyles";
+import placeIcon from "@/assets/images/place-icon.svg"
 
 interface Event {
   location: {
@@ -127,8 +128,7 @@ export default defineComponent({
             clickable: true,
             draggable: false,
             icon: {
-              // eslint-disable-next-line @typescript-eslint/no-var-requires
-              url: require("@/assets/images/place-icon.svg").default,
+              url: placeIcon,
               scaledSize: { width: 20, height: 20, equals: () => false },
             },
           });
@@ -151,7 +151,7 @@ export default defineComponent({
           });
 
           marker.addListener("mouseout", () => {
-            const unhighlight = (marker) => {
+            const unhighlight = () => {
               if (!props.colorLocked) {
                 if (
                   router.currentRoute.value.fullPath.includes(eventLocationId)
@@ -160,8 +160,7 @@ export default defineComponent({
                 }
 
                 marker.setIcon({
-                  // eslint-disable-next-line @typescript-eslint/no-var-requires
-                  url: require("@/assets/images/place-icon.svg").default,
+                  url: placeIcon,
                   scaledSize: { width: 20, height: 20 },
                 });
                 infowindow.close();
