@@ -379,7 +379,7 @@ export default defineComponent({
           :src="event.coverImageURL"
           alt="Event cover image"
           class="mb-4 max-h-48 rounded-lg"
-        />
+        >
         <div>
           <span
             class="text-md flex-wrap cursor-pointer font-bold text-blue-500 hover:underline"
@@ -393,8 +393,7 @@ export default defineComponent({
           <span
             v-if="event.canceled"
             class="rounded-lg bg-red-100 px-3 py-1 text-sm text-red-500 dark:bg-red-500 dark:text-white"
-            >Canceled</span
-          >
+          >Canceled</span>
         </div>
 
         <div class="flex gap-1 flex-wrap">
@@ -406,12 +405,19 @@ export default defineComponent({
             }}
           </span>
         </div>
-        <p v-if="event.virtualEventUrl">Online event</p>
-        <p v-if="event.free" class="text-sm font-medium text-gray-600">Free</p>
+        <p v-if="event.virtualEventUrl">
+          Online event
+        </p>
+        <p
+          v-if="event.free"
+          class="text-sm font-medium text-gray-600"
+        >
+          Free
+        </p>
 
         <div
           v-if="truncatedDescription"
-          class="my-2 max-w-lg border-l-2 border-gray-400 dark:bg-gray-700"
+          class="my-2 max-w-lg border-l-2 border-gray-400"
         >
           <MarkdownPreview
             :text="truncatedDescription || ''"
@@ -440,8 +446,8 @@ export default defineComponent({
         <router-link
           v-if="
             showDetailLink &&
-            event &&
-            (isWithinChannel || !submittedToMultipleChannels)
+              event &&
+              (isWithinChannel || !submittedToMultipleChannels)
           "
           :to="getDetailLink(event.EventChannels[0].channelUniqueName)"
           class="flex cursor-pointer items-center justify-start gap-1 text-gray-500 dark:text-gray-100"
@@ -476,7 +482,10 @@ export default defineComponent({
                 channelCount === 1 ? "channel" : "channels"
               }`
             }}
-            <ChevronDownIcon class="-mr-1 ml-2 h-4 w-4" aria-hidden="true" />
+            <ChevronDownIcon
+              class="-mr-1 ml-2 h-4 w-4"
+              aria-hidden="true"
+            />
           </button>
         </MenuButton>
       </div>
@@ -489,7 +498,7 @@ export default defineComponent({
           v-if="event.coverImageURL"
           :src="event.coverImageURL"
           class="h-32 w-32 rounded-lg"
-        />
+        >
       </div>
     </div>
   </li>

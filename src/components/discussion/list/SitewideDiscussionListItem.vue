@@ -232,7 +232,7 @@ export default defineComponent({
         </div>
         <div
           v-if="discussion && discussion.body"
-          class="border-l-2 border-gray-300 dark:bg-gray-700"
+          class="border-l-2 border-gray-300"
         >
           <MarkdownPreview
             :text="discussion.body"
