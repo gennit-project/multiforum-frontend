@@ -614,7 +614,7 @@ export default defineComponent({
             <Popper v-if="showLocationSearchBarAndDistanceButtons">
               <button
                 data-testid="more-filters-button"
-                class="absolute inset-y-0 right-0 flex cursor-pointer bg-white dark:bg-gray-700 items-center pr-3"
+                class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                 @click="handleClickMoreFilters"
               >
                 <FilterIcon class="h-4 w-4" />
