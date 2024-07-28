@@ -28,10 +28,15 @@ export function encodeSpacesInURL(url: string) {
 
 export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
   const { 
-    signedStorageURL, 
+    signedStorageURL,
     filename, 
     file,
   } = input;
+
+  if (!signedStorageURL) {
+    console.error("No signedStorageURL provided");
+    return
+  }
   const { googleCloudStorageBucket } = config;
 
   const encodedFilename = encodeURIComponent(filename);
@@ -39,7 +44,7 @@ export async function uploadAndGetEmbeddedLink(input: GetEmbeddedLinkInput) {
   const embeddedLink = encodeSpacesInURL(
     `https://storage.googleapis.com/${googleCloudStorageBucket}/${encodedFilename}`,
   );
-
+  
   const response = await fetch(signedStorageURL, {
     method: "PUT",
     body: file,

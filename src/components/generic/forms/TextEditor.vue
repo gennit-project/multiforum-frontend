@@ -206,10 +206,14 @@ export default defineComponent({
           file,
         });
 
-        const signedUrlResult = await this.createSignedStorageUrl({
+        const signedStorageURLInput = {
           filename,
           contentType: file.type,
-        });
+        };
+
+        const signedUrlResult = await this.createSignedStorageUrl(
+          signedStorageURLInput,
+        );
 
         const signedStorageURL =
           signedUrlResult.data?.createSignedStorageURL?.url;
@@ -364,7 +368,6 @@ export default defineComponent({
     </TabGroup>
   </form>
 </template>
-
 
 <style lang="scss">
 @media (prefers-color-scheme: dark) {
