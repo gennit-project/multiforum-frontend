@@ -1,4 +1,6 @@
-const ONLINE_EVENT_LIST = "http://localhost:5173/events/list/search"
+import config from "../../../src/config";
+
+const ONLINE_EVENT_LIST = `${config.baseUrl}/events/list/search`
 
 export type LoginInput = {
   username: string;

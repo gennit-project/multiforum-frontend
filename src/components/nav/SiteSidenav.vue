@@ -14,6 +14,7 @@ import Avatar from "@/components/user/Avatar.vue";
 import { useDisplay } from "vuetify";
 import CreateAnythingButton from "./CreateAnythingButton.vue";
 import ExpandableImage from "../generic/ExpandableImage.vue";
+import config from '@/config'
 
 const DEFAULT_LIMIT = 5;
 
@@ -123,7 +124,7 @@ export default defineComponent({
         loginWithRedirect();
       },
       logout: () => {
-        logout({ returnTo: "http://localhost:5173/" });
+        logout({ returnTo: config.baseUrl });
       },
       navigation,
       username,

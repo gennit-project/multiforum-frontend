@@ -1,6 +1,7 @@
 import { ONLINE_EVENT_LIST } from "../constants";
 import { deleteAll, seedAll } from "../utils";
 import eventsForFilteringTests from "../../support/seedData/eventsForFilteringTests";
+import config from "../../../src/config";
 
 describe("Filter events by text", () => {
   beforeEach(function () {
@@ -27,7 +28,7 @@ describe("Filter events by text", () => {
 
   it("in a channel view, filters events by text", () => {
     const CHANNEL_VIEW =
-      "http://localhost:5173/channels/c/phx_music/events/search/";
+      `${config.baseUrl}/channels/c/phx_music/events/search/`;
     const searchTerm = "trivia";
 
     cy.visit(CHANNEL_VIEW);

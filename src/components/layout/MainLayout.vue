@@ -13,7 +13,6 @@ export default defineComponent({
     const channelId = computed(() => {
       return route.params.channelId;
     });
-    console.log('route name', route.name)
 
     return {
       route,
@@ -28,7 +27,7 @@ export default defineComponent({
     <div class="flex-grow">
       <router-view />
     </div>
-    <SiteFooter v-if="route.name !== 'MapEventPreview'"/>
+    <SiteFooter v-if="route.name !== 'MapEventPreview'" />
   </div>
 </template>
 

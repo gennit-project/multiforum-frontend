@@ -1,6 +1,7 @@
 import { DISCUSSION_LIST } from "../constants";
 import { deleteAll } from "../utils";
 import { discussionsForFilteringTests } from "../../support/seedData/discussionsForFilteringTests";
+import config from "../../../src/config";
 
 describe("Filter discussions by tag", () => {
   beforeEach(function () {
@@ -70,7 +71,7 @@ describe("Filter discussions by tag", () => {
   });
 
   const CHANNEL_VIEW =
-    "http://localhost:5173/channels/c/phx_music/discussions/";
+    `${config.baseUrl}/channels/c/phx_music/discussions/`;
 
   it("in a channel view, filters discussions by tag", () => {
     const searchTerm = "trivia";
