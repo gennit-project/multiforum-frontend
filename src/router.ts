@@ -172,7 +172,7 @@ export const router = createRouter({
       name: "Channel",
       component: Channel,
       redirect: {
-        name: "Discussions",
+        name: "SearchDiscussionsInChannel",
       },
       children: [
         {
