@@ -238,7 +238,7 @@ export default defineComponent({
             :text="discussion.body"
             :word-limit="50"
             :disable-gallery="false"
-            class="-ml-4"
+            class="-ml-2"
           />
         </div>
         <div
