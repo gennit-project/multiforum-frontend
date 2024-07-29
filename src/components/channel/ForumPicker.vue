@@ -5,11 +5,15 @@ import { useQuery } from "@vue/apollo-composable";
 import ResetButton from "../generic/buttons/ResetButton.vue";
 import { Channel } from "@/__generated__/graphql";
 import Avatar from "@/components/user/Avatar.vue";
+import clickOutside from "vue-click-outside";
 
 export default defineComponent({
   components: {
     Avatar,
     ResetButton,
+  },
+  directives: {
+    clickOutside,
   },
   props: {
     hideSelected: {
@@ -78,6 +82,9 @@ export default defineComponent({
     },
   },
   methods: {
+    outside() {
+      this.isDropdownOpen = false;
+    },
     resetChannels() {
       this.selected = [];
       this.$emit("update:selectedChannels", []);
@@ -143,6 +150,7 @@ export default defineComponent({
         </div>
         <div
           v-if="isDropdownOpen"
+          v-click-outside="outside"
           class="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
         >
           <div
@@ -178,9 +186,7 @@ export default defineComponent({
                   <span
                     v-if="!channel.displayName"
                     class="font-mono font-bold"
-                  >{{
-                    channel.uniqueName
-                  }}</span>
+                  >{{ channel.uniqueName }}</span>
                   <div v-else>
                     <span class="font-bold">{{ channel.displayName }}</span>
                     &#8226;
