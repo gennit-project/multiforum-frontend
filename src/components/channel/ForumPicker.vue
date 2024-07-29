@@ -104,7 +104,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="p-3">
+  <div>
     <div v-if="channelsLoading">
       Loading...
     </div>
@@ -135,14 +135,23 @@ export default defineComponent({
             Select Channels
           </div>
           <div
-            v-for="(channel, index) in selected"
+            v-for="(channelName, index) in selected"
             :key="index"
-            class="mr-2 mt-1 flex items-center rounded-full bg-blue-100 px-2 py-1 font-mono text-blue-700"
+            class="mr-2 mt-1 flex items-center rounded-full bg-blue-100 pr-2 text-blue-700"
           >
-            {{ channel }}
+            <Avatar
+              :src="
+                channelOptions.find(
+                  (channel: Channel) => channel.uniqueName === channelName,
+                )?.icon || ''
+              "
+              :text="channelName"
+              class="mr-1 h-8 w-8"
+            />
+            <span>{{ channelName }}</span>
             <span
-              class="ml-1 cursor-pointer text-red-500"
-              @click.stop="removeSelection(channel)"
+              class="ml-1 cursor-pointer"
+              @click.stop="removeSelection(channelName)"
             >
               &times;
             </span>
@@ -155,7 +164,7 @@ export default defineComponent({
         >
           <div
             v-for="channel in channelOptions"
-            :key="channel.label"
+            :key="channel.uniqueName"
             class="border-b"
           >
             <label
