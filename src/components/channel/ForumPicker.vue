@@ -1,15 +1,17 @@
 <script lang="ts">
-import { defineComponent, PropType, computed, ref } from "vue";
+import { defineComponent, PropType, computed, ref, Ref } from "vue";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
 import ResetButton from "../generic/buttons/ResetButton.vue";
 import { Channel } from "@/__generated__/graphql";
 import Avatar from "@/components/user/Avatar.vue";
 import clickOutside from "vue-click-outside";
+import SearchBar from "@/components/generic/SearchBar.vue";
 
 export default defineComponent({
   components: {
     Avatar,
+    SearchBar,
     ResetButton,
   },
   directives: {
@@ -65,7 +67,11 @@ export default defineComponent({
       }
       emit("update:selectedChannels", selected.value);
     };
+    const searchInput: Ref<string> = ref("");
 
+    const setSearchInput = (input: string) => {
+      searchInput.value = input;
+    };
     return {
       channelsError,
       channelsLoading,
@@ -73,6 +79,7 @@ export default defineComponent({
       isDropdownOpen,
       toggleDropdown,
       selected,
+      setSearchInput,
       toggleSelection,
     };
   },
@@ -82,6 +89,9 @@ export default defineComponent({
     },
   },
   methods: {
+    updateSearchResult(input: string) {
+      this.setSearchInput(input);
+    },
     outside() {
       this.isDropdownOpen = false;
     },
@@ -162,6 +172,12 @@ export default defineComponent({
           v-click-outside="outside"
           class="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
         >
+          <SearchBar
+            class="mr-2 w-full align-middle"
+            :auto-focus="true"
+            :search-placeholder="'Search forums'"
+            @updateSearchInput="updateSearchResult"
+          />
           <div
             v-for="channel in channelOptions"
             :key="channel.uniqueName"
