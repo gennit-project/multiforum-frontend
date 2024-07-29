@@ -24,6 +24,7 @@ import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import Avatar from "@/components/user/Avatar.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
+import ForumPicker from '@/components/channel/ForumPicker.vue'
 
 export default defineComponent({
   components: {
@@ -34,6 +35,7 @@ export default defineComponent({
     ErrorMessage,
     TailwindForm: Form,
     FormRow,
+    ForumPicker,
     LocationIcon,
     LocationSearchBar,
     TagInput,
@@ -494,6 +496,7 @@ export default defineComponent({
                 $emit('updateFormValues', { selectedChannels: $event })
               "
             />
+            <ForumPicker />
           </template>
         </FormRow>
         <FormRow section-title="Time">
