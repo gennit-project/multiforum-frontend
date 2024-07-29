@@ -8,7 +8,7 @@ import { TagData } from "@/types/tagTypes.d";
 import { Channel } from "@/__generated__/graphql";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
-import TagPicker from "@/components/tag/TagPicker.vue";
+// import TagPicker from "@/components/tag/TagPicker.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";
@@ -24,7 +24,7 @@ export default defineComponent({
     ErrorBanner,
     FilterChip,
     SearchBar,
-    TagPicker,
+    // TagPicker,
     TagIcon,
   },
   setup() {
@@ -228,10 +228,10 @@ export default defineComponent({
             <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
           </template>
           <template #content>
-            <TagPicker
+            <!-- <TagPicker
               :selected-tags="selectedTags"
               @setSelectedTags="setSelectedTags"
-            />
+            /> -->
           </template>
         </FilterChip>
       </div>

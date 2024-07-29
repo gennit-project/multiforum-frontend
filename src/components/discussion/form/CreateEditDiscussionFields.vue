@@ -4,7 +4,7 @@ import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
-import TagInput from "@/components/tag/TagInput.vue";
+// import TagInput from "@/components/tag/TagInput.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
@@ -16,7 +16,7 @@ export default defineComponent({
     FormRow,
     TextEditor,
     TextInput,
-    TagInput,
+    // TagInput,
     ErrorBanner,
   },
   props: {
@@ -162,14 +162,14 @@ export default defineComponent({
               :required="true"
             >
               <template #content>
-                <TagInput
+                <!-- <TagInput
                   :test-id="'channel-input'"
                   :selected-channels="formValues.selectedChannels"
                   :channel-mode="true"
                   @setSelectedTags="
                     $emit('updateFormValues', { selectedChannels: $event })
                   "
-                />
+                /> -->
               </template>
             </FormRow>
 
@@ -189,13 +189,13 @@ export default defineComponent({
 
             <FormRow section-title="Tags">
               <template #content>
-                <TagInput
+                <!-- <TagInput
                   :test-id="'tags-input'"
                   :selected-tags="formValues?.selectedTags"
                   @setSelectedTags="
                     $emit('updateFormValues', { selectedTags: $event })
                   "
-                />
+                /> -->
               </template>
             </FormRow>
           </div>

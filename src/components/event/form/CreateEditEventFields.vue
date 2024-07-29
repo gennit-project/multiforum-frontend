@@ -6,7 +6,7 @@ import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
-import TagInput from "@/components/tag/TagInput.vue";
+// import TagInput from "@/components/tag/TagInput.vue";
 import ErrorMessage from "@/components/generic/ErrorMessage.vue";
 import CheckBox from "@/components/generic/forms/CheckBox.vue";
 import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
@@ -38,7 +38,7 @@ export default defineComponent({
     ForumPicker,
     LocationIcon,
     LocationSearchBar,
-    TagInput,
+    // TagInput,
     TextEditor,
     TextInput,
   },
@@ -488,22 +488,22 @@ export default defineComponent({
           :required="true"
         >
           <template #content>
-            <TagInput
+            <!-- <TagInput
               :test-id="'channel-input'"
               :selected-channels="formValues.selectedChannels"
               :channel-mode="true"
               @setSelectedTags="
                 $emit('updateFormValues', { selectedChannels: $event })
               "
-            />
+            /> -->
             <ForumPicker />
           </template>
         </FormRow>
         <FormRow section-title="Time">
           <template #content>
             <div class="flex flex-col gap-1">
-              <div class="flex-wrap items-center xl:flex">
-                <div class="flex flex-wrap items-center gap-2 xl:flex">
+              <div class="flex flex-wrap items-center">
+                <div class="flex flex-wrap items-center gap-2">
                   <input
                     data-testid="start-time-date-input"
                     class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
@@ -660,13 +660,13 @@ export default defineComponent({
         </FormRow>
         <FormRow section-title="Tags">
           <template #content>
-            <TagInput
+            <!-- <TagInput
               data-testid="tag-input"
               :selected-tags="formValues.selectedTags"
               @setSelectedTags="
                 $emit('updateFormValues', { selectedTags: $event })
               "
-            />
+            /> -->
           </template>
         </FormRow>
         <FormRow section-title="Cost">

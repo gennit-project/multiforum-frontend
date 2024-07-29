@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
-import TagPicker from "@/components/tag/TagPicker.vue";
+// import TagPicker from "@/components/tag/TagPicker.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
@@ -48,7 +48,7 @@ export default defineComponent({
     SelectCanceled,
     SelectFree,
     TagIcon,
-    TagPicker,
+    // TagPicker,
   },
   props: {
     allowHidingMainFilters: {
@@ -518,10 +518,10 @@ export default defineComponent({
           <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <TagPicker
+          <!-- <TagPicker
             :selected-tags="filterValues.tags"
             @setSelectedTags="setSelectedTags"
-          />
+          /> -->
         </template>
       </FilterChip>
     </div>

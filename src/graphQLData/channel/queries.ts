@@ -2,7 +2,7 @@ import { gql } from "@apollo/client/core";
 
 export const GET_CHANNEL_NAMES = gql`
   query getChannelNames($channelWhere: ChannelWhere) {
-    channels(where: $channelWhere, options: { limit: 50 }) {
+    channels(where: $channelWhere, options: { limit: 10 }) {
       uniqueName
       displayName
       channelIconURL

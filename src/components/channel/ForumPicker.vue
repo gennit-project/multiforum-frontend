@@ -132,7 +132,7 @@ export default defineComponent({
             v-if="selected.length === 0"
             class="text-gray-500"
           >
-            Select Channels
+            Select your intended audience
           </div>
           <div
             v-for="(channelName, index) in selected"
@@ -165,11 +165,9 @@ export default defineComponent({
           <div
             v-for="channel in channelOptions"
             :key="channel.uniqueName"
-            class="border-b"
+            class="border-b p-1 hover:bg-gray-100 dark:border-gray-600 dark:hover:bg-gray-700"
           >
-            <label
-              class="flex cursor-pointer items-center space-x-3 p-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-            >
+            <label class="flex cursor-pointer items-center space-x-3 p-2">
               <input
                 type="checkbox"
                 :value="channel.uniqueName"
