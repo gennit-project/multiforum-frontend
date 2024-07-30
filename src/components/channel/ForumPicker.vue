@@ -32,11 +32,21 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const searchInput: Ref<string> = ref("");
+
+    const searchInputComputed = computed(() => {
+      return searchInput.value;
+    });
+
     const {
       loading: channelsLoading,
       error: channelsError,
       result: channelsResult,
-    } = useQuery(GET_CHANNEL_NAMES);
+    } = useQuery(GET_CHANNEL_NAMES, {
+        channelWhere: {
+          uniqueName_CONTAINS: searchInputComputed
+        },
+    });
 
     const isDropdownOpen = ref(false);
 
@@ -65,21 +75,17 @@ export default defineComponent({
       } else {
         selected.value.splice(index, 1);
       }
-      emit("update:selectedChannels", selected.value);
+      emit("setSelectedChannels", selected.value);
     };
-    const searchInput: Ref<string> = ref("");
 
-    const setSearchInput = (input: string) => {
-      searchInput.value = input;
-    };
     return {
       channelsError,
       channelsLoading,
       channelOptions,
       isDropdownOpen,
       toggleDropdown,
+      searchInput,
       selected,
-      setSearchInput,
       toggleSelection,
     };
   },
@@ -90,7 +96,7 @@ export default defineComponent({
   },
   methods: {
     updateSearchResult(input: string) {
-      this.setSearchInput(input);
+      this.searchInput = input;
     },
     outside() {
       this.isDropdownOpen = false;
@@ -115,18 +121,7 @@ export default defineComponent({
 
 <template>
   <div>
-    <div v-if="channelsLoading">
-      Loading...
-    </div>
-    <div v-else-if="channelsError">
-      <div
-        v-for="(error, i) of channelsError?.graphQLErrors"
-        :key="i"
-      >
-        {{ error.message }}
-      </div>
-    </div>
-    <div v-else>
+    <div>
       <div
         v-if="description"
         class="px-2 py-1 text-sm dark:text-gray-300"
@@ -176,8 +171,20 @@ export default defineComponent({
             class="mr-2 w-full align-middle"
             :auto-focus="true"
             :search-placeholder="'Search forums'"
+            @keydown.enter.prevent
             @updateSearchInput="updateSearchResult"
           />
+          <div v-if="channelsLoading">
+            Loading...
+          </div>
+          <div v-else-if="channelsError">
+            <div
+              v-for="(error, i) of channelsError?.graphQLErrors"
+              :key="i"
+            >
+              {{ error.message }}
+            </div>
+          </div>
           <div
             v-for="channel in channelOptions"
             :key="channel.uniqueName"

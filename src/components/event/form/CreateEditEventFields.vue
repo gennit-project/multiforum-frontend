@@ -24,7 +24,7 @@ import { useMutation, useQuery } from "@vue/apollo-composable";
 import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import Avatar from "@/components/user/Avatar.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
-import ForumPicker from '@/components/channel/ForumPicker.vue'
+import ForumPicker from "@/components/channel/ForumPicker.vue";
 
 export default defineComponent({
   components: {
@@ -488,15 +488,13 @@ export default defineComponent({
           :required="true"
         >
           <template #content>
-            <!-- <TagInput
+            <ForumPicker
               :test-id="'channel-input'"
               :selected-channels="formValues.selectedChannels"
-              :channel-mode="true"
-              @setSelectedTags="
+              @setSelectedChannels="
                 $emit('updateFormValues', { selectedChannels: $event })
               "
-            /> -->
-            <ForumPicker />
+            />
           </template>
         </FormRow>
         <FormRow section-title="Time">
@@ -506,7 +504,7 @@ export default defineComponent({
                 <div class="flex flex-wrap items-center gap-2">
                   <input
                     data-testid="start-time-date-input"
-                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    class="mt-2 cursor-pointer rounded border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                     type="date"
                     placeholder="Date"
                     label="Start"
@@ -516,7 +514,7 @@ export default defineComponent({
                   <input
                     v-if="!formValues.isAllDay"
                     data-testid="start-time-time-input"
-                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    class="mt-2 cursor-pointer rounded border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                     type="time"
                     placeholder="Time"
                     label="Start Time"
@@ -528,7 +526,7 @@ export default defineComponent({
                 <div class="flex flex-wrap items-center gap-2 xl:flex">
                   <input
                     data-testid="end-time-date-input"
-                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    class="mt-2 cursor-pointer rounded border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                     type="date"
                     placeholder="Date and Time"
                     label="Start"
@@ -538,7 +536,7 @@ export default defineComponent({
                   <input
                     v-if="!formValues.isAllDay"
                     data-testid="end-time-time-input"
-                    class="cursor-pointer rounded border-gray-200 focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600 mt-2 text-sm"
+                    class="mt-2 cursor-pointer rounded border-gray-200 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-none dark:bg-gray-600"
                     type="time"
                     placeholder="Time"
                     label="Start Time"
