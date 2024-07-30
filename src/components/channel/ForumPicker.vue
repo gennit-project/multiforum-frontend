@@ -230,9 +230,6 @@ export default defineComponent({
           </div>
         </div>
       </div>
-      <div class="mt-4">
-        <ResetButton @reset="resetChannels" />
-      </div>
     </div>
   </div>
 </template>
