@@ -26,7 +26,7 @@ export default defineComponent({
     },
     description: {
       type: String,
-      default: "",
+      default: "Select your intended audience",
     },
   },
   setup(props, { emit }) {
@@ -118,21 +118,15 @@ export default defineComponent({
     <div>
       <div
         v-if="description"
-        class="px-2 py-1 text-sm dark:text-gray-300"
+        class="py-1 text-sm dark:text-gray-300"
       >
         {{ description }}
       </div>
       <div class="relative">
         <div
-          class="flex w-full cursor-pointer flex-wrap items-center rounded-md bg-gray-200 px-4 py-2 text-left dark:bg-gray-700"
+          class="flex w-full cursor-pointer flex-wrap items-center rounded-lg border px-4 py-2 text-left dark:border-gray-700 dark:bg-gray-700"
           @click="toggleDropdown"
         >
-          <div
-            v-if="selected.length === 0"
-            class="text-gray-500"
-          >
-            Select your intended audience
-          </div>
           <div
             v-for="(channelName, index) in selected"
             :key="index"
