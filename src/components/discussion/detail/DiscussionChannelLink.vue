@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import Tag from "../../generic/Tag.vue";
 import Avatar from "@/components/user/Avatar.vue";
 
 export default defineComponent({
@@ -11,11 +10,11 @@ export default defineComponent({
   props: {
     channelDisplayName: {
       type: String,
-      required: false,
+      default: "",
     },
     channelIcon: {
       type: String,
-      required: false,
+      default: "",
     },
     discussionId: {
       type: String,
@@ -79,7 +78,10 @@ export default defineComponent({
             :is-square="false"
           />
           <div class="flex-col space-y-1 text-xs">
-            <div v-if="channelDisplayName" class="font-bold">
+            <div
+              v-if="channelDisplayName"
+              class="font-bold"
+            >
               {{ channelDisplayName }}
             </div>
             <div

@@ -226,6 +226,7 @@ export default defineComponent({
   <div class="w-full">
     <MarkdownRenderer
       :text="`${shownText}${!showFullText ? '...' : ''}`"
+      :class="[ { clickable: !disableGallery }]"
       @click="handleImageClick"
     />
     <button
@@ -244,10 +245,12 @@ export default defineComponent({
   </div>
 </template>
 
-<style>
-.github-markdown-body img {
-  max-height: 400px !important;
+<style lang="scss">
+.markdown-body img {
+  max-height: 500px !important;
+  cursor: pointer !important;
 }
+
 p,
 ul,
 li {
