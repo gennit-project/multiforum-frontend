@@ -25,16 +25,15 @@ export default defineComponent({
   },
   setup() {
     const route = ref(useRoute());
+
+    const isDiscussionDetailPage = computed(() => {
+      return route.value.name === "DiscussionDetail";
+    });
     const GET_THEME = gql`
       query getTheme {
         theme @client
       }
     `;
-
-    const isDiscussionDetailPage = computed(() => {
-      return route.value.name === "DiscussionDetail";
-    });
-
     const {
       result: themeResult,
       loading: themeLoading,

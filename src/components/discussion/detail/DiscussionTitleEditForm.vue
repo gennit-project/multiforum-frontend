@@ -13,7 +13,7 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
-
+import gql from "graphql-tag";
 
 export default defineComponent({
   name: "DiscussionTitleEditForm",
@@ -82,7 +82,7 @@ export default defineComponent({
     });
 
     onGetDiscussionResult((result) => {
-      formValues.value.title = result?.data?.discussions[0]?.title ||''
+      formValues.value.title = result?.data?.discussions[0]?.title || "";
     });
 
     const {
@@ -103,6 +103,25 @@ export default defineComponent({
       titleEditMode.value = false;
     });
 
+    const GET_THEME = gql`
+      query getTheme {
+        theme @client
+      }
+    `;
+    
+    const {
+      result: themeResult,
+      loading: themeLoading,
+      error: themeError,
+    } = useQuery(GET_THEME);
+
+    const theme = computed(() => {
+      if (themeLoading.value || themeError.value) {
+        return "";
+      }
+      return themeResult.value.theme;
+    });
+    
     return {
       channelId,
       discussion,
@@ -110,6 +129,7 @@ export default defineComponent({
       getDiscussionError,
       getDiscussionLoading,
       smAndDown,
+      theme,
       titleEditMode,
       titleInputRef,
       updateDiscussion,
@@ -138,6 +158,7 @@ export default defineComponent({
         v-if="getDiscussionLoading"
         class="flex-1"
         type="text"
+        :theme="theme"
       />
 
       <div
