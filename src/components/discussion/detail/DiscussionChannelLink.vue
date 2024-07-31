@@ -1,13 +1,22 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import Tag from "../../generic/Tag.vue";
+import Avatar from "@/components/user/Avatar.vue";
 
 export default defineComponent({
   name: "ChannelLink",
   components: {
-    TagComponent: Tag,
+    AvatarComponent: Avatar,
   },
   props: {
+    channelDisplayName: {
+      type: String,
+      required: false,
+    },
+    channelIcon: {
+      type: String,
+      required: false,
+    },
     discussionId: {
       type: String,
       required: true,
@@ -23,17 +32,17 @@ export default defineComponent({
     upvoteCount: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
   },
   setup() {
-    return {}
-  }
+    return {};
+  },
 });
 </script>
 <template>
   <li>
-    <div class="flex items-center">
+    <div class="flex items-center space-x-1">
       <router-link
         :data-testid="`comments-in-${channelId}`"
         class="mr-1 underline"
@@ -47,9 +56,10 @@ export default defineComponent({
       >
         {{ `${commentCount} comments` }}
       </router-link>
-      and {{ upvoteCount || 0 }} {{ upvoteCount === 1 ? 'upvote' : 'upvotes' }} in
+      and {{ upvoteCount || 0 }}
+      {{ upvoteCount === 1 ? "upvote" : "upvotes" }} in
+
       <router-link
-        class="flex items-center gap-1"
         :to="{
           name: 'DiscussionDetail',
           params: {
@@ -58,11 +68,29 @@ export default defineComponent({
           },
         }"
       >
-        <TagComponent
-          class="m-2"
-          :tag="channelId"
-          :channel-mode="true"
-        />
+        <div
+          class="flex items-center gap-3 rounded-md bg-gray-100 px-4 py-2 dark:bg-gray-700"
+        >
+          <AvatarComponent
+            class="h-24 w-24 border-2 shadow-sm dark:border-gray-800"
+            :text="channelId"
+            :src="channelIcon ?? ''"
+            :is-small="true"
+            :is-square="false"
+          />
+          <div class="flex-col space-y-1 text-xs">
+            <div v-if="channelDisplayName" class="font-bold">
+              {{ channelDisplayName }}
+            </div>
+            <div
+              :class="[
+                channelDisplayName ? 'font-mono' : 'font-mono font-bold',
+              ]"
+            >
+              {{ channelId }}
+            </div>
+          </div>
+        </div>
       </router-link>
     </div>
   </li>

@@ -146,6 +146,8 @@ export const GET_DISCUSSION = gql`
         }
         Channel {
           uniqueName
+          channelIconURL
+          displayName
         }
         Discussion {
           id

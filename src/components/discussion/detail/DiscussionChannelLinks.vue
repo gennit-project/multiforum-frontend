@@ -92,8 +92,10 @@ export default defineComponent({
           v-for="discussionChannel in discussionChannels"
           :key="discussionChannel.id"
           :channel-id="discussionChannel.channelUniqueName"
+          :channel-icon="discussionChannel.Channel?.channelIconURL || ''"
+          :channel-display-name="discussionChannel.Channel?.displayName || ''"
           :comment-count="discussionChannel.CommentsAggregate?.count || 0"
-          :upvote-count="discussionChannel.upvoteCount || 0"
+          :upvote-count="discussionChannel.UpvotedByUsersAggregate?.count || 0"
           :discussion-id="discussionChannel.discussionId"
         />
       </ul>
@@ -110,6 +112,8 @@ export default defineComponent({
             v-for="dc in channelsExceptActive"
             :key="dc.id"
             :channel-id="dc.channelUniqueName"
+            :channel-icon="dc.Channel?.channelIconURL || ''"
+            :channel-display-name="dc.Channel?.displayName || ''"
             :comment-count="dc.CommentsAggregate?.count || 0"
             :upvote-count="dc.UpvotedByUsersAggregate?.count || 0"
             :discussion-id="dc.discussionId"
