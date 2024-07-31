@@ -2,7 +2,7 @@
 import { computed, defineComponent, nextTick, PropType, ref } from "vue";
 import { ApolloError } from "@apollo/client/errors";
 import Form from "@/components/generic/forms/Form.vue";
-// import TagInput from "@/components/generic/TagInput.vue";
+import TagPicker from '@/components/generic/forms/TagPicker.vue'
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
@@ -29,7 +29,7 @@ export default defineComponent({
     TextInput,
     TailwindForm: Form,
     TextEditor,
-    // TagInput,
+    TagPicker,
     XmarkIcon,
   },
   props: {
@@ -261,13 +261,13 @@ export default defineComponent({
           </FormRow>
           <FormRow section-title="Tags">
             <template #content>
-              <!-- <TagInput
-                :test-id="'tags-input'"
-                :selected-tags="formValues?.selectedTags"
+              <TagPicker 
+                data-testid="tag-input"
+                :selected-tags="formValues.selectedTags"
                 @setSelectedTags="
                   $emit('updateFormValues', { selectedTags: $event })
                 "
-              /> -->
+              />
             </template>
           </FormRow>
           <FormRow section-title="Description">

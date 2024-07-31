@@ -4,7 +4,7 @@ import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
-// import TagInput from "@/components/generic/TagInput.vue";
+import TagPicker from "@/components/generic/forms/TagPicker.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
@@ -18,7 +18,7 @@ export default defineComponent({
     ForumPicker,
     TextEditor,
     TextInput,
-    // TagInput,
+    TagPicker,
     ErrorBanner,
   },
   props: {
@@ -101,8 +101,8 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="flex flex-col justify-center items-center w-full">
-    <div class="w-full max-w-3xl mx-auto">
+  <div class="flex w-full flex-col items-center justify-center">
+    <div class="mx-auto w-full max-w-3xl">
       <div v-if="discussionLoading">
         Loading...
       </div>
@@ -190,13 +190,13 @@ export default defineComponent({
 
             <FormRow section-title="Tags">
               <template #content>
-                <!-- <TagInput
-                  :test-id="'tags-input'"
-                  :selected-tags="formValues?.selectedTags"
+                <TagPicker
+                  data-testid="tag-input"
+                  :selected-tags="formValues.selectedTags"
                   @setSelectedTags="
                     $emit('updateFormValues', { selectedTags: $event })
                   "
-                /> -->
+                />
               </template>
             </FormRow>
           </div>
