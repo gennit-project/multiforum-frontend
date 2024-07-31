@@ -259,7 +259,5 @@ li {
   line-height: 1.5 !important;
   margin-bottom: 0.5rem !important;
 }
-a {
-  color: #3182ce !important;
-}
+
 </style>

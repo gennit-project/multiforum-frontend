@@ -84,5 +84,8 @@ export default defineComponent({
     max-height: 400px;
     height: auto;
   }
+  a {
+    color: #3182ce !important;
+  }
 }
 </style>
