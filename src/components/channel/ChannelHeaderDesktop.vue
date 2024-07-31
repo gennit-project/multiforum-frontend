@@ -39,13 +39,11 @@ export default defineComponent({
 });
 </script>
 <template>
-  <ExpandableImage
-    v-if="channel?.channelBannerURL"
+  <img
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
-    :is-square="true"
     class="max-h-24 w-full"
-  />
+  >
   <div class="bg-white dark:bg-gray-800">
     <v-container
       fluid
@@ -74,18 +72,16 @@ export default defineComponent({
           />
           <div>
             <div>
-              <div
-                class="mt-8"
-              >
+              <div class="mt-8">
                 <h1
                   v-if="channelId"
-                  class="rounded-full px-4 pt-1 flex mb-2 bg-white dark:bg-gray-900 border-gray-700 text-2xl font-bold leading-6 text-black dark:text-gray-200"
+                  class="mb-2 flex rounded-full border-gray-700 bg-white px-4 pt-1 text-2xl font-bold leading-6 text-black dark:bg-gray-900 dark:text-gray-200"
                 >
                   {{ channel?.displayName ? channel.displayName : channelId }}
                 </h1>
                 <h2
                   v-if="channel?.uniqueName && channel?.displayName"
-                  class="rounded-full px-4  bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-300 font-mono"
+                  class="rounded-full bg-white px-4 font-mono text-gray-500 dark:bg-gray-900 dark:text-gray-300"
                 >
                   {{ `${channel.uniqueName}` }}
                 </h2>
@@ -95,7 +91,7 @@ export default defineComponent({
         </div>
         <CreateAnythingButton
           v-if="showCreateButton"
-          class="mt-8 mr-6 lg:mr-0"
+          class="mr-6 mt-8 lg:mr-0"
           :use-primary-button="true"
         />
       </div>
