@@ -90,7 +90,7 @@ export default defineComponent({
       </div>
       <div
         v-if="isOpen(rule.summary)"
-        class="-ml-8 mt-2 text-sm text-gray-600 dark:text-gray-300"
+        class="mt-2 text-sm text-gray-600 dark:text-gray-300"
       >
         <MarkdownPreview :text="rule.detail" />
       </div>

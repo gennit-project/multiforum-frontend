@@ -78,9 +78,9 @@ export default defineComponent({
             </h2>
             <MarkdownPreview
               v-if="channel?.description"
-              class="-ml-2"
               :text="channel?.description"
               :word-limit="1000"
+              class="ml-2"
             />
             <p
               v-else
