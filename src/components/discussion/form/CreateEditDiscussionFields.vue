@@ -8,12 +8,14 @@ import Form from "@/components/generic/forms/Form.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";
+import ForumPicker from "@/components/channel/ForumPicker.vue";
 
 export default defineComponent({
   name: "CreateEditDiscussionFields",
   components: {
     TailwindForm: Form,
     FormRow,
+    ForumPicker,
     TextEditor,
     TextInput,
     // TagInput,
@@ -162,14 +164,13 @@ export default defineComponent({
               :required="true"
             >
               <template #content>
-                <!-- <TagInput
+                <ForumPicker
                   :test-id="'channel-input'"
                   :selected-channels="formValues.selectedChannels"
-                  :channel-mode="true"
-                  @setSelectedTags="
+                  @setSelectedChannels="
                     $emit('updateFormValues', { selectedChannels: $event })
                   "
-                /> -->
+                />
               </template>
             </FormRow>
 
