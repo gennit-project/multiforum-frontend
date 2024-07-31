@@ -618,6 +618,9 @@ export default defineComponent({
               data-testid="location-input"
               :search-placeholder="'Add an address'"
               :full-width="true"
+              :left-side-is-rounded="false"
+              :right-side-is-rounded="false"
+              :use-medium-rounded-corners="true"
               :reference-point-address-name="`${
                 formValues.locationName ? `${formValues.locationName}, ` : ''
               }${formValues.address ? formValues.address : ''}`"
