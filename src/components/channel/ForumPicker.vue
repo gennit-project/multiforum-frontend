@@ -223,7 +223,3 @@ export default defineComponent({
     </div>
   </div>
 </template>
-
-<style scoped>
-/* Custom styles can go here */
-</style>

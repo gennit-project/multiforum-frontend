@@ -6,7 +6,6 @@ import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
-// import TagInput from "@/components/generic/TagInput.vue";
 import ErrorMessage from "@/components/generic/ErrorMessage.vue";
 import CheckBox from "@/components/generic/forms/CheckBox.vue";
 import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";
@@ -25,6 +24,7 @@ import { CREATE_SIGNED_STORAGE_URL } from "@/graphQLData/discussion/mutations";
 import Avatar from "@/components/user/Avatar.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import ForumPicker from "@/components/channel/ForumPicker.vue";
+import TagPicker from "@/components/generic/forms/TagPicker.vue";
 
 export default defineComponent({
   components: {
@@ -38,7 +38,7 @@ export default defineComponent({
     ForumPicker,
     LocationIcon,
     LocationSearchBar,
-    // TagInput,
+    TagPicker,
     TextEditor,
     TextInput,
   },
@@ -662,13 +662,13 @@ export default defineComponent({
         </FormRow>
         <FormRow section-title="Tags">
           <template #content>
-            <!-- <TagInput
+            <TagPicker 
               data-testid="tag-input"
               :selected-tags="formValues.selectedTags"
               @setSelectedTags="
                 $emit('updateFormValues', { selectedTags: $event })
               "
-            /> -->
+            />
           </template>
         </FormRow>
         <FormRow section-title="Cost">
