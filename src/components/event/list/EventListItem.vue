@@ -423,7 +423,7 @@ export default defineComponent({
             :text="truncatedDescription || ''"
             :disable-gallery="true"
             :word-limit="20"
-            class="-ml-4"
+            class="ml-2"
           />
         </div>
         <p
