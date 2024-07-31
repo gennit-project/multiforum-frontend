@@ -85,7 +85,7 @@ export default defineComponent({
       if (
         getEventError.value ||
         getEventLoading.value ||
-        !event.value.Channels
+        !event.value.EventChannels
       ) {
         return [];
       }
@@ -251,6 +251,7 @@ export default defineComponent({
     const {
       mutate: updateEvent,
       error: updateEventError,
+      loading: updateEventLoading,
       onDone,
     } = useMutation(UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS, () => {
       return {
@@ -287,6 +288,7 @@ export default defineComponent({
       updateEvent,
       updateEventError,
       updateEventInput,
+      updateEventLoading,
     };
   },
   methods: {
@@ -295,7 +297,7 @@ export default defineComponent({
         updateEventInput: this.updateEventInput,
         channelConnections: this.channelConnections,
         channelDisconnections: this.channelDisconnections,
-        eventWhere: {
+        where: {
           id: this.eventId,
         },
       }
@@ -325,6 +327,7 @@ export default defineComponent({
         :key="dataLoaded.toString()"
         :edit-mode="true"
         :event-loading="getEventLoading"
+        :update-event-loading="updateEventLoading"
         :get-event-error="getEventError"
         :update-post-error="updateEventError"
         :form-values="formValues"

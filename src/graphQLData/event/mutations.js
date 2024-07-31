@@ -31,13 +31,13 @@ export const CREATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
 export const UPDATE_EVENT_WITH_CHANNEL_CONNECTIONS = gql`
   mutation updateEvents(
     $updateEventInput: EventUpdateInput!
-    $eventWhere: EventWhere!
+    $where: EventWhere!
     $channelConnections: [String!]!
     $channelDisconnections: [String!]!
   ) {
     updateEventWithChannelConnections(
       eventUpdateInput: $updateEventInput
-      eventWhere: $eventWhere
+      where: $where
       channelConnections: $channelConnections
       channelDisconnections: $channelDisconnections
     ) {

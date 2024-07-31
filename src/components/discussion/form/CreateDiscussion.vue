@@ -114,7 +114,7 @@ export default defineComponent({
         channelConnections: channelConnections.value,
       },
       update: (cache: any, result: any) => {
-        // May need to use this data to fix consol errors about missing fields
+        // May need to use this data to fix console errors about missing fields
         // while writing result:
         // const newDiscussion: Discussion =
         //   result.data?.createDiscussionWithChannelConnections;

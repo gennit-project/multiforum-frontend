@@ -2,7 +2,6 @@
 import { defineComponent, PropType, computed, ref, Ref } from "vue";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
-import ResetButton from "../generic/buttons/ResetButton.vue";
 import { Channel } from "@/__generated__/graphql";
 import Avatar from "@/components/user/Avatar.vue";
 import clickOutside from "vue-click-outside";
@@ -12,7 +11,6 @@ export default defineComponent({
   components: {
     Avatar,
     SearchBar,
-    ResetButton,
   },
   directives: {
     clickOutside,
@@ -101,13 +99,9 @@ export default defineComponent({
     outside() {
       this.isDropdownOpen = false;
     },
-    resetChannels() {
-      this.selected = [];
-      this.$emit("update:selectedChannels", []);
-    },
     removeSelection(channel: string) {
-      this.selected = this.selected.filter((c) => c !== channel);
-      this.$emit("update:selectedChannels", this.selected);
+      this.selected = this.selected.filter((c: string) => c !== channel);
+      this.$emit("setSelectedChannels", this.selected);
     },
     truncate(description: string) {
       // limit to 100 characters
@@ -143,6 +137,7 @@ export default defineComponent({
             v-for="(channelName, index) in selected"
             :key="index"
             class="mr-2 mt-1 flex items-center rounded-full bg-blue-100 pr-2 text-blue-700"
+            @click="removeSelection(channelName)"
           >
             <Avatar
               :src="
@@ -171,6 +166,7 @@ export default defineComponent({
             class="mr-2 w-full align-middle"
             :auto-focus="true"
             :search-placeholder="'Search forums'"
+            :initial-value="searchInput"
             @keydown.enter.prevent
             @updateSearchInput="updateSearchResult"
           />

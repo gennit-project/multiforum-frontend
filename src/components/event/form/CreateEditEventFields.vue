@@ -77,6 +77,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    updateEventLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
   setup(props) {
     // Time format options are in the Luxon documentation https://github.com/moment/luxon/blob/master/docs/formatting.md
@@ -462,7 +466,7 @@ export default defineComponent({
       data-testid="event-form"
       :form-title="formTitle"
       :needs-changes="needsChanges"
-      :loading="createEventLoading"
+      :loading="createEventLoading || updateEventLoading"
       @input="touched = true"
       @submit="$emit('submit')"
     >
