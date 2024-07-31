@@ -3,7 +3,7 @@ import { defineComponent, PropType, computed } from "vue";
 import { useRoute } from "vue-router";
 import { Event } from "@/__generated__/graphql";
 import { getDatePieces } from "@/utils/dateTimeUtils";
-import Tag from "@/components/tag/Tag.vue";
+import Tag from "@/components/generic/Tag.vue";
 import HighlightedSearchTerms from "../../generic/HighlightedSearchTerms.vue";
 import { DateTime } from "luxon";
 import { SearchEventValues } from "@/types/eventTypes";

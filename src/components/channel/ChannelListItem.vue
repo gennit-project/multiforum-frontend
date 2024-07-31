@@ -3,7 +3,7 @@ import { defineComponent, PropType } from "vue";
 import { Channel } from "@/__generated__/graphql";
 import { TagData } from "@/types/tagTypes";
 import HighlightedSearchTerms from "../generic/HighlightedSearchTerms.vue";
-import Tag from "@/components/tag/Tag.vue";
+import Tag from "@/components/generic/Tag.vue";
 import Avatar from "@/components/user/Avatar.vue";
 import CalendarIcon from "@/components/icons/CalendarIcon.vue";
 import DiscussionIcon from "@/components/icons/DiscussionIcon.vue";

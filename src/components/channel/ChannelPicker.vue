@@ -3,7 +3,7 @@
 import { defineComponent, PropType, computed } from "vue";
 import { GET_CHANNEL_NAMES } from "@/graphQLData/channel/queries";
 import { useQuery } from "@vue/apollo-composable";
-import Tag from "@/components/tag/Tag.vue";
+import Tag from "@/components/generic/Tag.vue";
 import ResetButton from "../generic/buttons/ResetButton.vue";
 import { Channel } from "@/__generated__/graphql";
 

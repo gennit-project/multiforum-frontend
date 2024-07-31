@@ -3,7 +3,7 @@ import { defineComponent, computed, PropType, ref } from "vue";
 import { getLinksInText } from "@/components/utils";
 import { Discussion } from "@/__generated__/graphql";
 import { useRoute } from "vue-router";
-import Tag from "../../tag/Tag.vue";
+import Tag from "../../generic/Tag.vue";
 import "md-editor-v3/lib/preview.css";
 import { useQuery } from "@vue/apollo-composable";
 import gql from "graphql-tag";

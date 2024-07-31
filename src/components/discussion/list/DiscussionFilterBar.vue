@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
-// import TagPicker from "@/components/tag/TagPicker.vue";
+// import TagPicker from "@/components/generic/TagPicker.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";

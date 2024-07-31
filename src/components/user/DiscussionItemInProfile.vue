@@ -3,7 +3,7 @@ import { defineComponent, PropType, computed } from "vue";
 import { DiscussionData } from "../../types/discussionTypes";
 import { relativeTime } from "../../dateTimeUtils";
 import { useRoute, useRouter } from "vue-router";
-import Tag from "@/components/tag/Tag.vue";
+import Tag from "@/components/generic/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 
 export default defineComponent({

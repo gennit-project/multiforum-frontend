@@ -8,7 +8,7 @@ import { TagData } from "@/types/tagTypes.d";
 import { Channel } from "@/__generated__/graphql";
 import TagIcon from "@/components/icons/TagIcon.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
-// import TagPicker from "@/components/tag/TagPicker.vue";
+// import TagPicker from "@/components/generic/TagPicker.vue";
 import ErrorBanner from "../generic/ErrorBanner.vue";
 import { getTagLabel } from "@/components/utils";
 import { useRoute } from "vue-router";

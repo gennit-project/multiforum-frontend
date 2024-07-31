@@ -4,7 +4,7 @@ import { ApolloError } from "@apollo/client/errors";
 import TextEditor from "@/components/generic/forms/TextEditor.vue";
 import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
-// import TagInput from "@/components/tag/TagInput.vue";
+// import TagInput from "@/components/generic/TagInput.vue";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
 import { CreateEditDiscussionFormValues } from "@/types/discussionTypes";

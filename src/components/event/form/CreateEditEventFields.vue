@@ -6,7 +6,7 @@ import FormRow from "@/components/generic/forms/FormRow.vue";
 import Form from "@/components/generic/forms/Form.vue";
 import LocationIcon from "@/components/icons/LocationIcon.vue";
 import TextInput from "@/components/generic/forms/TextInput.vue";
-// import TagInput from "@/components/tag/TagInput.vue";
+// import TagInput from "@/components/generic/TagInput.vue";
 import ErrorMessage from "@/components/generic/ErrorMessage.vue";
 import CheckBox from "@/components/generic/forms/CheckBox.vue";
 import LocationSearchBar from "@/components/event/list/filters/LocationSearchBar.vue";

@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
-import Tag from "../../tag/Tag.vue";
+import Tag from "../../generic/Tag.vue";
 
 export default defineComponent({
   name: "ChannelLink",

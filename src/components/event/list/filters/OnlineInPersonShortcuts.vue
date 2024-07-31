@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import LocationFilterTypes from "./locationFilterTypes";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import { SearchEventValues } from "@/types/eventTypes";
-import Tag from "@/components/tag/Tag.vue";
+import Tag from "@/components/generic/Tag.vue";
 import { capitalizeCase } from "@/components/comments/getSortFromQuery";
 
 export default defineComponent({

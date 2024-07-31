@@ -3,7 +3,7 @@ import { defineComponent, PropType, computed, ref } from "vue";
 import { Discussion, DiscussionChannel } from "@/__generated__/graphql";
 import { relativeTime } from "../../../dateTimeUtils";
 import { useRoute } from "vue-router";
-import Tag from "@/components/tag/Tag.vue";
+import Tag from "@/components/generic/Tag.vue";
 import HighlightedSearchTerms from "@/components/generic/HighlightedSearchTerms.vue";
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import { useQuery } from "@vue/apollo-composable";
