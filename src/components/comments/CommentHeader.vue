@@ -39,7 +39,7 @@ export default defineComponent({
     originalPoster: {
       type: String,
       default: "",
-    }
+    },
   },
   setup(props) {
     const isAdmin = computed(() => {
@@ -121,7 +121,10 @@ export default defineComponent({
     />
 
     <div
-      class="-ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
+      :class="
+        !commentData.CommentAuthor?.username ? '-ml-5' : '-ml-4 border-l '
+      "
+      class="flex-grow border-gray-300 pl-4 dark:border-gray-600"
     >
       <div
         v-if="
@@ -161,7 +164,9 @@ export default defineComponent({
               :account-created="commentData.CommentAuthor.createdAt"
               :is-admin="isAdmin"
               :is-mod="isMod"
-              :is-original-poster="commentData.CommentAuthor.username === originalPoster"
+              :is-original-poster="
+                commentData.CommentAuthor.username === originalPoster
+              "
             />
           </router-link>
           <router-link
@@ -173,8 +178,13 @@ export default defineComponent({
           </router-link>
           <span
             v-else
-            class="font-bold"
-          >[Deleted]</span>
+            class="flex items-center font-bold"
+          >
+            <div
+              class="mr-2 h-8 w-8 rounded-full border dark:border-gray-500"
+            />
+            [Deleted]
+          </span>
           <span class="mx-2">&middot;</span>
           <span>{{ createdAtFormatted }}</span>
           <span
