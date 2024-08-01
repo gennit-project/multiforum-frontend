@@ -62,7 +62,8 @@ export default defineComponent({
           icon: ALLOWED_ICONS.VIEW_FEEDBACK,
         },
       ]);
-      const loggedInUserAuthoredComment = props.comment?.CommentAuthor?.displayName === loggedInModName.value
+      const loggedInUserAuthoredComment =
+        props.comment?.CommentAuthor?.displayName === loggedInModName.value;
 
       // May add these in future. The user can already edit/delete feedback by
       // navigating back to the page where they originally gave feedback.
@@ -81,7 +82,7 @@ export default defineComponent({
       //       icon: ALLOWED_ICONS.DELETE,
       //     },
       //   ]);
-      // } else 
+      // } else
       if (loggedInModName.value) {
         out = out.concat([
           {
@@ -94,12 +95,12 @@ export default defineComponent({
 
         if (props.comment.FeedbackCommentsAggregate?.count === 0) {
           if (!loggedInUserAuthoredComment)
-          out.push({
-            label: "Give Feedback",
-            value: "",
-            event: "clickFeedback",
-            icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-          });
+            out.push({
+              label: "Give Feedback",
+              value: "",
+              event: "clickFeedback",
+              icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+            });
         } else {
           out.push({
             label: "Undo Feedback",
@@ -207,11 +208,11 @@ export default defineComponent({
 <template>
   <div>
     <div
-      class="flex flex-wrap items-center gap-x-2 text-sm leading-8 text-gray-500 dark:text-gray-300"
+      class="flex flex-wrap items-center gap-x-1 text-sm leading-8 text-gray-500 dark:text-gray-300"
     >
       <Avatar
         v-if="comment.CommentAuthor?.displayName"
-        class="h-36 w-36 border-2 shadow-sm dark:border-gray-800"
+        class="mr-1 h-36 w-36 border-2 shadow-sm dark:border-gray-800"
         :text="comment.CommentAuthor.displayName"
         :is-small="true"
         :is-square="false"
@@ -230,6 +231,9 @@ export default defineComponent({
           {{ comment.CommentAuthor?.displayName }}
         </router-link>
         <span v-else>[Deleted User]</span>
+      </span>
+      <span v-if="loggedInModName === comment?.CommentAuthor?.displayName">
+        (You)
       </span>
       <span class="whitespace-nowrap">{{
         `gave feedback ${timeAgo(new Date(comment.createdAt))}`
@@ -306,16 +310,20 @@ export default defineComponent({
         :show-downvote="comment.CommentAuthor?.displayName !== loggedInModName"
         :show-upvote="false"
         @openModProfile="$emit('openModProfile')"
-        @clickFeedback="()=> {
-          handleFeedback({
-            commentData: comment,
-            parentCommentId: '',
-          });
-        }"
-        @clickUndoFeedback=" () => {
-          // See comment on clickFeedback. The same principle applies.
-          handleUndoFeedback({ commentData: comment, parentCommentId: '' });
-        }"
+        @clickFeedback="
+          () => {
+            handleFeedback({
+              commentData: comment,
+              parentCommentId: '',
+            });
+          }
+        "
+        @clickUndoFeedback="
+          () => {
+            // See comment on clickFeedback. The same principle applies.
+            handleUndoFeedback({ commentData: comment, parentCommentId: '' });
+          }
+        "
         @clickEditFeedback="$emit('clickEditFeedback')"
         @viewFeedback="() => handleViewFeedback(comment.id)"
       />
