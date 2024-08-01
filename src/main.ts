@@ -75,8 +75,6 @@ import 'codemirror/lib/codemirror.css';
 
 import * as Sentry from "@sentry/vue";
 
-
-
 VMdEditor.Codemirror = Codemirror;
 VMdEditor.lang.use('en-US', enUS);
 

@@ -41,22 +41,6 @@ import TermsOfUse from "./components/legal/TermsOfUse.vue";
 export const router = createRouter({
   history: createWebHistory(),
   linkActiveClass: "active",
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else if (to.hash) {
-      const unescapedHash = to.hash.replace(/^#/, ""); // Remove the leading '#'
-      const element = document.querySelector(`#${CSS.escape(unescapedHash)}`);
-      if (element) {
-        return {
-          selector: `#${CSS.escape(unescapedHash)}`,
-          behavior: "smooth",
-        };
-      }
-    } else {
-      return { x: 0, y: 0 };
-    }
-  },
   routes: [
     {
       path: "/",
@@ -310,12 +294,12 @@ export const router = createRouter({
     {
       name: "PrivacyPolicy",
       path: "/privacy-policy",
-      component: PrivacyPolicy
+      component: PrivacyPolicy,
     },
     {
       name: "TermsOfUse",
       path: "/terms-of-use",
-      component: TermsOfUse
+      component: TermsOfUse,
     },
   ],
 });

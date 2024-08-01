@@ -139,7 +139,6 @@ export default defineComponent({
       theme,
       updateText,
       username,
-      scrollElement: document.documentElement,
       id: "text-editor",
       formatButtons: [
         {
