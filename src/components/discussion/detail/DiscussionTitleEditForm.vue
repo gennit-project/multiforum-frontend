@@ -12,7 +12,7 @@ import { useMutation, useQuery } from "@vue/apollo-composable";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import { useRoute } from "vue-router";
 import { GET_DISCUSSION } from "@/graphQLData/discussion/queries";
-import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import { GET_LOCAL_MOD_PROFILE_NAME, GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import gql from "graphql-tag";
 
 export default defineComponent({
@@ -29,6 +29,16 @@ export default defineComponent({
     const route = useRoute();
     const { smAndDown } = useDisplay();
     const titleEditMode = ref(false);
+
+    const { result: localUsernameResult } = useQuery(GET_LOCAL_USERNAME);
+
+    const username = computed(() => {
+      let username = localUsernameResult.value?.username;
+      if (username) {
+        return username;
+      }
+      return "";
+    });
 
     const channelId = computed(() => {
       if (typeof route.params.channelId === "string") {
@@ -73,6 +83,13 @@ export default defineComponent({
         return null;
       }
       return getDiscussionResult.value.discussions[0];
+    });
+
+    const authorIsLoggedInUser = computed(() => {
+      if (discussion.value?.Author?.username === username.value) {
+        return true;
+      }
+      return false;
     });
 
     const titleInputRef = ref(null);
@@ -123,6 +140,7 @@ export default defineComponent({
     });
     
     return {
+      authorIsLoggedInUser,
       channelId,
       discussion,
       formValues,
@@ -187,7 +205,7 @@ export default defineComponent({
       >
         <template #has-auth>
           <GenericButton
-            v-if="!titleEditMode"
+            v-if="!titleEditMode && authorIsLoggedInUser"
             :text="'Edit'"
             @click="onClickEdit"
           />
