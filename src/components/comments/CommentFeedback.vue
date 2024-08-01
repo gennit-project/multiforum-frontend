@@ -382,12 +382,17 @@ export default defineComponent({
         console.error("commentId is required to submit feedback");
         return;
       }
-      this.addFeedbackCommentToComment({
+      if (!this.loggedInUserModName) {
+        console.error("modName is required to submit feedback");
+        return;
+      }
+      const feedbackInput = {
         commentId: this.commentToGiveFeedbackOn?.id,
         text: this.feedbackText,
         modProfileName: this.loggedInUserModName,
         channelId: this.channelId,
-      });
+      }
+      this.addFeedbackCommentToComment(feedbackInput);
     },
   },
 });

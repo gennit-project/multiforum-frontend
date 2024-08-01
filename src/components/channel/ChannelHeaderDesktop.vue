@@ -40,6 +40,7 @@ export default defineComponent({
 </script>
 <template>
   <img
+    v-if="channel?.channelBannerURL"
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
     class="max-h-24 w-full"

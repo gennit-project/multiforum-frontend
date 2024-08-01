@@ -229,6 +229,7 @@ export default defineComponent({
         >
           {{ comment.CommentAuthor?.displayName }}
         </router-link>
+        <span v-else>[Deleted User]</span>
       </span>
       <span class="whitespace-nowrap">{{
         `gave feedback ${timeAgo(new Date(comment.createdAt))}`
@@ -295,7 +296,7 @@ export default defineComponent({
     <div class="ml-12 border-l-2 border-gray-200 dark:border-gray-500">
       <MarkdownPreview
         v-if="comment.text"
-        class="-ml-4"
+        class="ml-1"
         :text="comment.text"
         :disable-gallery="true"
       />

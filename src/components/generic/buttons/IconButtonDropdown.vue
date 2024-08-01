@@ -38,17 +38,24 @@ export default defineComponent({
 });
 </script>
 <template>
-  <DropdownMenu as="div" class="relative inline-block text-left">
-    <div>
-      <MenuButton
-        class="font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-full px-2 text-sm text-black focus:outline-none dark:text-white"
+  <DropdownMenu
+    as="div"
+    class="relative text-left flex items-center"
+  >
+    <MenuButton
+      class="font-semibold inline-flex h-10 w-full items-center justify-center gap-x-1.5 rounded-full px-2 text-sm text-black focus:outline-none dark:text-white"
+    >
+      <i
+        v-if="menuButtonIcon"
+        :class="` ${menuButtonIcon} `"
+      />
+      <div
+        v-else
+        class="flex items-center"
       >
-        <i v-if="menuButtonIcon" :class="` ${menuButtonIcon} `" />
-        <div v-else>
-          <slot />
-        </div>
-      </MenuButton>
-    </div>
+        <slot />
+      </div>
+    </MenuButton>
     <transition
       enter-active-class="transition ease-out duration-100"
       enter-from-class="transform opacity-0 scale-95"
@@ -81,7 +88,10 @@ export default defineComponent({
                 'block px-4 py-2 text-sm',
               ]"
             >
-              <i v-if="item.icon" :class="item.icon" /> {{ item.label }}
+              <i
+                v-if="item.icon"
+                :class="item.icon"
+              /> {{ item.label }}
             </span>
           </MenuItem>
         </div>
