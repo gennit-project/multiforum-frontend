@@ -15,11 +15,7 @@ import EventFooter from "./EventFooter.vue";
 import { useDisplay } from "vuetify";
 import EventHeader from "./EventHeader.vue";
 import GenericButton from "@/components/generic/buttons/GenericButton.vue";
-import RequireAuth from "@/components/auth/RequireAuth.vue";
-import CreateButton from "@/components/generic/buttons/CreateButton.vue";
-import PrimaryButton from "@/components/generic/buttons/PrimaryButton.vue";
 import EventBody from "./EventBody.vue";
-import BackLink from "@/components/generic/buttons/BackLink.vue";
 import ExpandableImage from "@/components/generic/ExpandableImage.vue";
 import EventCommentsWrapper from "./EventCommentsWrapper.vue";
 import EventRootCommentFormWrapper, {
@@ -30,7 +26,6 @@ import EventChannelLinks from "./EventChannelLinks.vue";
 
 export default defineComponent({
   components: {
-    BackLink,
     EventChannelLinks,
     ErrorBanner,
     EventBody,
@@ -39,10 +34,7 @@ export default defineComponent({
     EventHeader,
     EventRootCommentFormWrapper,
     ExpandableImage,
-    CreateButton,
     GenericButton,
-    RequireAuth,
-    PrimaryButton,
     Tag,
   },
   props: {
@@ -93,9 +85,9 @@ export default defineComponent({
       result: eventResult,
       error: eventError,
       loading: eventLoading,
-    } = useQuery(GET_EVENT, { 
+    } = useQuery(GET_EVENT, {
       id: eventId,
-      channelUniqueName: channelId
+      channelUniqueName: channelId,
     });
 
     const event = computed(() => {
@@ -149,10 +141,10 @@ export default defineComponent({
 
     const loadedRootCommentCount = computed(() => {
       if (eventLoading.value || eventError.value) {
-        return 0
+        return 0;
       }
 
-      return comments.value.length
+      return comments.value.length;
     });
 
     const aggregateRootCommentCount = computed(() => {
@@ -211,9 +203,7 @@ export default defineComponent({
     };
 
     const reachedEndOfResults = computed(() => {
-      return (
-        loadedRootCommentCount.value >= aggregateRootCommentCount.value
-      );
+      return loadedRootCommentCount.value >= aggregateRootCommentCount.value;
     });
 
     const truncatedDescription = computed(() => {
@@ -367,7 +357,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="w-full space-y-4 overflow-auto rounded-lg bg-white dark:bg-gray-800 md:px-6"
+    class="mt-4 w-full space-y-4 overflow-auto rounded-lg bg-white dark:bg-gray-800 md:px-6"
   >
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
@@ -403,61 +393,6 @@ export default defineComponent({
               class="my-2"
               :text="'This event is canceled.'"
             />
-            <div
-              v-if="route.name === 'EventDetail' || route.name === 'EventCommentPermalink'"
-              :class="'align-center mt-2 flex justify-between gap-4'"
-            >
-              <BackLink :link="`/channels/c/${channelId}/events/search`" />
-              <div
-                v-if="channelId && event"
-                class="mt-4 flex flex-shrink-0 items-center md:ml-4 md:mt-0"
-              >
-                <RequireAuth
-                  v-if="event.Poster"
-                  class="flex inline-flex"
-                  :require-ownership="true"
-                  :owners="[event.Poster.username]"
-                >
-                  <template #has-auth>
-                    <router-link
-                      :to="`/channels/c/${channelId}/events/e/${eventId}/edit`"
-                    >
-                      <GenericButton
-                        :text="'Edit'"
-                        data-testid="edit-event-button"
-                      />
-                    </router-link>
-                  </template>
-                </RequireAuth>
-                <RequireAuth class="flex inline-flex">
-                  <template #has-auth>
-                    <CreateButton
-                      class="ml-2"
-                      data-testid="real-create-event-button"
-                      :to="`/channels/c/${channelId}/events/create`"
-                      :label="'Create Event'"
-                    />
-                  </template>
-                  <template #does-not-have-auth>
-                    <PrimaryButton
-                      data-testid="fake-create-event-button"
-                      class="ml-2"
-                      :label="'Create Event'"
-                    />
-                  </template>
-                </RequireAuth>
-              </div>
-            </div>
-            <div
-              v-if="!eventLoading && event"
-              class="dark:text-gray-100 md:flex md:items-center md:justify-between"
-            >
-              <div class="min-w-0 flex-1">
-                <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
-                  {{ event.title }}
-                </h2>
-              </div>
-            </div>
             <ExpandableImage
               v-if="event.coverImageURL"
               :src="event.coverImageURL"

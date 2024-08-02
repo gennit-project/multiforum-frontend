@@ -13,6 +13,7 @@ import ChannelHeaderMobile from "./ChannelHeaderMobile.vue";
 import ChannelHeaderDesktop from "./ChannelHeaderDesktop.vue";
 import { Channel } from "@/__generated__/graphql";
 import DiscussionTitleEditForm from "@/components/discussion/detail/DiscussionTitleEditForm.vue";
+import EventTitleEditForm from "@/components/event/detail/EventTitleEditForm.vue";
 
 export default defineComponent({
   name: "ChannelComponent",
@@ -22,12 +23,16 @@ export default defineComponent({
     ChannelTabs,
     ChannelHeaderDesktop,
     DiscussionTitleEditForm,
+    EventTitleEditForm,
   },
   setup() {
     const route = ref(useRoute());
 
     const isDiscussionDetailPage = computed(() => {
       return route.value.name === "DiscussionDetail";
+    });
+    const isEventDetailPage = computed(() => {
+      return route.value.name === "EventDetail";
     });
     const GET_THEME = gql`
       query getTheme {
@@ -159,6 +164,7 @@ export default defineComponent({
       discussionId,
       eventId,
       isDiscussionDetailPage,
+      isEventDetailPage,
       route,
       lgAndDown,
       leftColumnIsExpanded: ref(true),
@@ -223,7 +229,7 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel"
-          class="block w-full border-b border-gray-200 bg-white px-3 mb-6 dark:border-gray-600 dark:bg-gray-800 md:px-6"
+          class="mb-6 block w-full border-b border-gray-200 bg-white px-3 dark:border-gray-600 dark:bg-gray-800 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
@@ -235,8 +241,16 @@ export default defineComponent({
         v-if="isDiscussionDetailPage"
         class="flex w-full justify-center"
       >
-        <div class="max-w-7xl px-6 flex-1">
+        <div class="max-w-7xl flex-1 px-6">
           <DiscussionTitleEditForm />
+        </div>
+      </div>
+      <div
+        v-else-if="isEventDetailPage"
+        class="flex w-full justify-center"
+      >
+        <div class="max-w-7xl flex-1 px-6">
+          <EventTitleEditForm />
         </div>
       </div>
       <ChannelContent>
