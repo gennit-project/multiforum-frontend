@@ -393,6 +393,16 @@ export default defineComponent({
               class="my-2"
               :text="'This event is canceled.'"
             />
+            <div
+              v-if="route.name === 'MapEventPreview' && !eventLoading && event"
+              class="dark:text-gray-100 md:flex md:items-center md:justify-between"
+            >
+              <div class="min-w-0 flex-1">
+                <h2 class="text-wrap px-1 text-2xl font-bold sm:tracking-tight">
+                  {{ event.title }}
+                </h2>
+              </div>
+            </div>
             <ExpandableImage
               v-if="event.coverImageURL"
               :src="event.coverImageURL"
