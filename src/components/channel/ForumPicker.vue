@@ -130,7 +130,7 @@ export default defineComponent({
           <div
             v-for="(channelName, index) in selected"
             :key="index"
-            class="mr-2 flex items-center rounded-full bg-blue-100 pr-2 text-blue-700"
+            class="mr-2 flex items-center rounded-full bg-blue-100 dark:bg-gray-600 dark:text-white pr-2 text-blue-700"
             @click="removeSelection(channelName)"
           >
             <Avatar

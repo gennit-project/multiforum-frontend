@@ -37,7 +37,7 @@ export default defineComponent({
             :checked="copyOfShowCanceled"
             @input="() => toggleCanceled()"
           >
-          <span class="ml-2 text-sm font-medium whitespace-nowrap">Show canceled events</span>
+          <span class="ml-2 text-sm font-medium whitespace-nowrap">Include canceled events</span>
         </label>
       </div>
     </div>

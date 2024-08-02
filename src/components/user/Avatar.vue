@@ -95,6 +95,7 @@ export default defineComponent({
   >
   <img 
     v-else
+    class="border dark:border-gray-600"
     :class="[
       isLarge ? 'h-72 w-72' : '',
       isMedium ? 'h-20 w-20' : '',
