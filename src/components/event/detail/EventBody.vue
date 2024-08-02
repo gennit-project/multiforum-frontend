@@ -25,6 +25,5 @@ export default defineComponent({
   <MarkdownPreview
     :text="description || ''"
     :disable-gallery="false"
-    class="-ml-4"
   />
 </template>
