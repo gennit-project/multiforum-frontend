@@ -479,24 +479,26 @@ export default defineComponent({
         </router-link>
       </li>
     </ul>
-    <MenuButton
-      v-if="showMenuButtons && eventData && menuItems.length > 0"
-      data-testid="event-menu-button"
-      :items="menuItems"
-      @copyLink="copyLink"
-      @handleEdit="
-        router.push(`/channels/c/${channelId}/events/e/${eventId}/edit`)
-      "
-      @handleDelete="confirmDeleteIsOpen = true"
-      @handleCancel="confirmCancelIsOpen = true"
-      @handleReport="handleClickReport"
-      @handleFeedback="handleClickGiveFeedback"
-      @handleViewFeedback="handleViewFeedback"
-    >
-      <EllipsisHorizontal
-        class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
-      />
-    </MenuButton>
+    <div>
+      <MenuButton
+        v-if="showMenuButtons && eventData && menuItems.length > 0"
+        data-testid="event-menu-button"
+        :items="menuItems"
+        @copyLink="copyLink"
+        @handleEdit="
+          router.push(`/channels/c/${channelId}/events/e/${eventId}/edit`)
+        "
+        @handleDelete="confirmDeleteIsOpen = true"
+        @handleCancel="confirmCancelIsOpen = true"
+        @handleReport="handleClickReport"
+        @handleFeedback="handleClickGiveFeedback"
+        @handleViewFeedback="handleViewFeedback"
+      >
+        <EllipsisHorizontal
+          class="h-6 w-6 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
+        />
+      </MenuButton>
+    </div>
     <Notification
       :show="showAddressCopiedNotification"
       :title="'Copied to clipboard!'"

@@ -130,11 +130,12 @@ export default defineComponent({
     >
       <MenuItems
         :id="`menu-items-${uniqueID}`"
-        class="menu-items absolute z-50 mt-2 w-56 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-600 dark:text-gray-200"
+        class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700 dark:text-gray-200"
         :style="{
           top: shouldOpenUpwards ? 'auto' : '100%',
           right: shouldOpenLeftwards ? 0 : 'auto',
           bottom: shouldOpenUpwards ? '100%' : 'auto',
+          zIndex: 10000,
         }"
       >
         <div class="py-1">
