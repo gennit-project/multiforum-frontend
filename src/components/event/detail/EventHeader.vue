@@ -283,6 +283,7 @@ export default defineComponent({
       mutate: cancelEvent,
       error: cancelEventError,
       loading: cancelEventLoading,
+      onDone: onDoneCanceling,
     } = useMutation(CANCEL_EVENT, {
       variables: {
         id: eventId.value,
@@ -310,6 +311,14 @@ export default defineComponent({
       return false;
     });
 
+    const confirmDeleteIsOpen = ref(false);
+    const confirmCancelIsOpen = ref(false);
+
+    onDoneCanceling(() => {
+      // Close cancel event modal when finished.
+      confirmCancelIsOpen.value = false;
+    });
+
     return {
       addFeedbackCommentToEvent,
       addFeedbackCommentToEventLoading,
@@ -317,9 +326,9 @@ export default defineComponent({
       cancelEvent,
       cancelEventError,
       cancelEventLoading,
+      confirmCancelIsOpen,
+      confirmDeleteIsOpen,
       channelId,
-      confirmCancelIsOpen: ref(false),
-      confirmDeleteIsOpen: ref(false),
       copyAddress,
       copyLink,
       deleteEvent,
