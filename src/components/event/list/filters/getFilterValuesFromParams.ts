@@ -72,11 +72,6 @@ const getFilterValuesFromParams = function (
           cleanedValues.placeAddress = val;
         }
         break;
-      case "placeId":
-        if (typeof val === "string") {
-          cleanedValues.placeId = val;
-        }
-        break;
       case "latitude":
         if (typeof val === "string") {
           // Cast string to number for filtering by distance
@@ -218,7 +213,6 @@ const getFilterValuesFromParams = function (
     radius,
     placeName,
     placeAddress,
-    placeId,
     latitude,
     longitude,
     tags,
@@ -268,7 +262,6 @@ const getFilterValuesFromParams = function (
     radius: selectedRadius,
     placeName: placeName || defaultPlace.name,
     placeAddress: placeAddress || defaultPlace.address,
-    placeId: placeId || "",
     latitude: latitude || defaultPlace.latitude,
     longitude: longitude || defaultPlace.longitude,
   };

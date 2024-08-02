@@ -10,6 +10,7 @@ const config = {
     "sentryAuthToken": import.meta.env.VITE_SENTRY_AUTH_TOKEN,
     "googleCloudStorageBucket": import.meta.env.VITE_GOOGLE_CLOUD_STORAGE_BUCKET,
     "logoutUrl": import.meta.env.VITE_LOGOUT_URL,
+    "openCageApiKey": import.meta.env.VITE_OPEN_CAGE_API_KEY,
  }
 
  export default config;

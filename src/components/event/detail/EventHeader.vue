@@ -420,15 +420,7 @@ export default defineComponent({
         </div>
         <div class="flex">
           <span>
-            {{ `${eventData.locationName}, ` }}
-            <a
-              class="underline"
-              target="_blank"
-              rel="noreferrer"
-              :href="`https://www.google.com/maps/place/?q=place_id:${eventData.placeId}`"
-            >
-              {{ eventData.address }}
-            </a>
+            {{ eventData.address }}
           </span>
           <span>
             <ClipboardIcon

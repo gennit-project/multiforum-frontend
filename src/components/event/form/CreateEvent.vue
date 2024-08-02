@@ -104,7 +104,6 @@ export default defineComponent({
             longitude: formValues.value.longitude,
           },
           address: formValues.value.address,
-          placeId: formValues.value.placeId,
         };
         input = { ...input, ...locationValues };
       }

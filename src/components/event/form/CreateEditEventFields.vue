@@ -26,6 +26,13 @@ import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import ForumPicker from "@/components/channel/ForumPicker.vue";
 import TagPicker from "@/components/generic/forms/TagPicker.vue";
 
+export type UpdateLocationInput = {
+  name: string;
+  formatted_address: string;
+  lat: number;
+  lng: number;
+};
+
 export default defineComponent({
   components: {
     AddImage,
@@ -330,17 +337,6 @@ export default defineComponent({
     setSelectedChannels(event: any) {
       this.$emit("setSelectedChannels", event);
     },
-    updateLocationInput(placeData: any) {
-      try {
-        this.placeId = placeData.place_id;
-        this.latitude = placeData.geometry.location.lat();
-        this.longitude = placeData.geometry.location.lat();
-        this.address = placeData.formatted_address;
-        this.locationName = placeData.name;
-      } catch (e: any) {
-        throw new Error(e);
-      }
-    },
     handleStartDateChange(event: any) {
       const startTimeISO = this.startTime.toISOString();
       const existingStartTimeObject = DateTime.fromISO(startTimeISO);
@@ -374,26 +370,16 @@ export default defineComponent({
       this.$emit("updateFormValues", { endTime: newEndTime });
       this.touched = true;
     },
-    handleUpdateLocation(event: any) {
-      if (!event.place_id) {
-        throw new Error(
-          "Could not find a Google place ID based on the form input.",
-        );
+    handleUpdateLocation(event: UpdateLocationInput) {
+      if (!event.formatted_address) {
+        console.error("No address found"); 
       }
-      const {
-        place_id,
-        name,
-        formatted_address,
-        geometry: {
-          location: { lat, lng },
-        },
-      } = event;
+
       this.$emit("updateFormValues", {
-        placeId: place_id,
-        locationName: name,
-        address: formatted_address,
-        latitude: lat(),
-        longitude: lng(),
+        locationName: event.name,
+        address: event.formatted_address,
+        latitude: event.lat,
+        longitude: event.lng,
       });
     },
     async upload(file: any) {

@@ -124,13 +124,13 @@ export default defineComponent({
       </div>
       <div class="relative">
         <div
-          class="flex w-full cursor-pointer flex-wrap items-center rounded-lg border px-4 py-2 text-left dark:border-gray-700 dark:bg-gray-700"
+          class="flex w-full h-12 cursor-pointer flex-wrap items-center rounded-lg border px-4 text-left dark:border-gray-700 dark:bg-gray-700"
           @click="toggleDropdown"
         >
           <div
             v-for="(channelName, index) in selected"
             :key="index"
-            class="mr-2 mt-1 flex items-center rounded-full bg-blue-100 pr-2 text-blue-700"
+            class="mr-2 flex items-center rounded-full bg-blue-100 pr-2 text-blue-700"
             @click="removeSelection(channelName)"
           >
             <Avatar

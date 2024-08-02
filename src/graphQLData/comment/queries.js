@@ -154,7 +154,6 @@ export const GET_EVENT_COMMENTS = gql`
         coverImageURL
         createdAt
         updatedAt
-        placeId
         isInPrivateResidence
         location {
           latitude

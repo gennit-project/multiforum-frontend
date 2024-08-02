@@ -10,7 +10,6 @@ export interface CreateEditEventFormValues {
   address?: string;
   latitude?: number;
   longitude?: number;
-  placeId: string;
   locationName?: string;
   isInPrivateResidence: boolean;
   virtualEventUrl?: string;
@@ -80,7 +79,6 @@ export type SearchEventValues = {
   radius?: number;
   placeName?: string;
   placeAddress?: string;
-  placeId?: string;
   latitude?: number;
   longitude?: number;
   tags?: Array[string];

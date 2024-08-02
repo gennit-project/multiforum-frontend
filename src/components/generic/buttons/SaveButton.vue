@@ -29,7 +29,7 @@ export default defineComponent({
     :label="text"
     :disabled="disabled"
     :loading="loading"
-    class="border-transparent font-medium ml-3 inline-flex justify-center rounded-full border px-4 py-2 text-sm shadow-sm"
+    class="border-transparent font-medium ml-3 inline-flex justify-center rounded-full border dark:border-gray-700 px-4 py-2 text-sm shadow-sm"
     @keydown.enter.prevent
   />
 </template>

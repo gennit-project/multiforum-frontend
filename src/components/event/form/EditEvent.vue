@@ -108,7 +108,6 @@ export default defineComponent({
           return ec.channelUniqueName;
         }),
         address: event.address || "",
-        placeId: event.placeId || "",
         locationName: event.locationName || "",
         isInPrivateResidence: event.isInPrivateResidence || false,
         virtualEventUrl: event.virtualEventUrl || "",
@@ -240,7 +239,6 @@ export default defineComponent({
             longitude: formValues.value.longitude,
           },
           address: formValues.value.address,
-          placeId: formValues.value.placeId,
         };
         input = { ...input, ...locationValues };
       }

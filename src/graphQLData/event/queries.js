@@ -20,7 +20,6 @@ export const EVENT_FIELDS = gql`
     coverImageURL
     createdAt
     updatedAt
-    placeId
     isInPrivateResidence
     RecurringEvent {
       id

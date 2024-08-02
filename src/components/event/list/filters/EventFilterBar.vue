@@ -29,6 +29,7 @@ import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
 import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 import Popper from "vue3-popper";
+import { UpdateLocationInput } from "@/components/event/form/CreateEditEventFields.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -170,10 +171,6 @@ export default defineComponent({
       return filterValues.value.placeAddress;
     });
 
-    const referencePointPlaceId = computed(() => {
-      return filterValues.value.placeId;
-    });
-
     const createEventPath = channelId.value
       ? `/channels/c/${channelId.value}/events/create`
       : "/events/create";
@@ -216,7 +213,6 @@ export default defineComponent({
       radiusLabel,
       referencePointName,
       referencePointAddress,
-      referencePointPlaceId,
       route,
       router,
       selectedDistanceUnit,
@@ -317,19 +313,17 @@ export default defineComponent({
       this.updateLocalState({ searchInput });
       this.updateFilters({ searchInput });
     },
-    updateLocationInput(placeData: any) {
+    updateLocationInput(placeData: UpdateLocationInput) {
       try {
         this.updateFilters({
-          latitude: placeData.geometry.location.lat(),
-          longitude: placeData.geometry.location.lng(),
-          placeId: placeData.place_id,
+          latitude: placeData.lat,
+          longitude: placeData.lng,
           placeName: placeData.name,
           placeAddress: placeData.formatted_address,
         });
         this.updateLocalState({
-          latitude: placeData.geometry.location.lat(),
-          longitude: placeData.geometry.location.lng(),
-          placeId: placeData.place_id,
+          latitude: placeData.lat,
+          longitude: placeData.lng,
           placeName: placeData.name,
           placeAddress: placeData.formatted_address,
         });
@@ -482,17 +476,17 @@ export default defineComponent({
 
 <template>
   <div class="w-full space-y-1">
-    <div class="flex items-center justify-end mb-2">
+    <div class="mb-2 flex items-center justify-end">
       <button
         v-if="allowHidingMainFilters"
-        class="text-blue-500 mr-4"
+        class="mr-4 text-blue-500"
         @click="() => toggleShowMainFilters()"
       >
         {{ showMainFilters ? "Hide filters" : "Show filters" }}
       </button>
       <FilterChip
         v-if="!channelId"
-        class="items-center align-middle ml-4"
+        class="ml-4 items-center align-middle"
         data-testid="channel-filter-button"
         :label="channelLabel"
         :highlighted="channelLabel !== defaultFilterLabels.channels"
@@ -531,7 +525,7 @@ export default defineComponent({
     >
       <div
         v-if="route.name !== 'EventDetail'"
-        class="w-full mb-2"
+        class="mb-2 w-full"
       >
         <div class="flex space-x-1 align-middle">
           <SearchBar
@@ -546,7 +540,7 @@ export default defineComponent({
             <Popper v-if="!showLocationSearchBarAndDistanceButtons">
               <button
                 data-testid="more-filters-button"
-                class="absolute bg-white border inset-y-0 right-0 flex cursor-pointer items-center pr-3"
+                class="absolute inset-y-0 right-0 flex cursor-pointer items-center border bg-white pr-3"
                 @click="handleClickMoreFilters"
               >
                 <FilterIcon class="h-4 w-4" />
@@ -617,7 +611,7 @@ export default defineComponent({
                 class="absolute inset-y-0 right-0 flex cursor-pointer items-center pr-3"
                 @click="handleClickMoreFilters"
               >
-                <FilterIcon class="h-4 w-4" />
+                <FilterIcon class="h-4 w-4 bg-white dark:bg-gray-700" />
               </button>
 
               <template #content>

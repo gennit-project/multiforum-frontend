@@ -59,7 +59,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="h-screen dark:bg-black bg-gray-100 dark:text-gray-200 list-disc">
+  <div class="h-screen dark:text-gray-200 list-disc">
     <nav>
       <TopNav
         :show-user-profile-dropdown="showUserProfileDropdown"
@@ -97,26 +97,23 @@ export default defineComponent({
 <style lang="scss">
 body {
   @media (prefers-color-scheme: dark) {
-    @apply bg-gray-900;
+    @apply bg-black;
     color-scheme: dark;
   }
 
   @media (prefers-color-scheme: light) {
-    @apply bg-white;
+    @apply bg-gray-100;
     color-scheme: light;
   }
 
   &.dark {
-    @apply bg-gray-900;
+    @apply bg-black;
     color-scheme: dark;
   }
 
   &.light {
-    @apply bg-white;
+    @apply bg-gray-100;
     color-scheme: light;
-  }
-
-
-  
+  }  
 }
 </style>
