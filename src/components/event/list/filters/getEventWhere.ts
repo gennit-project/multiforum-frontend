@@ -94,7 +94,7 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
    
     case LocationFilterTypes.NONE:
       if (showMap) {
-        conditions.push({ NOT: { locationName: null } });
+        conditions.push({ NOT: { location: null } });
       }
       break;
     case LocationFilterTypes.ONLY_WITH_ADDRESS:
