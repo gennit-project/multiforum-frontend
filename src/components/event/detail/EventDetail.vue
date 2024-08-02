@@ -483,22 +483,25 @@ export default defineComponent({
                 <div class="mt-4 flex">
                   <div class="flex flex-row gap-2 text-sm">
                     <div class="flex justify-start">
-                      <span
-                        class="cursor-pointer underline"
+                      <GenericButton
+                        :text="'Google Calendar'"
+                        data-testid="add-to-google-calendar-button"
                         @click="addToGoogleCalendar"
-                      >Google Calendar</span>
+                      />
                     </div>
                     <div class="flex justify-center">
-                      <span
-                        class="cursor-pointer underline"
+                      <GenericButton
+                        :text="'iCal'"
+                        data-testid="add-to-ical-button"
                         @click="addToiCal"
-                      >iCal</span>
+                      />
                     </div>
                     <div class="flex justify-end">
-                      <span
-                        class="cursor-pointer underline"
+                      <GenericButton
+                        :text="'Outlook'"
+                        data-testid="add-to-outlook-button"
                         @click="addToOutlook"
-                      >Outlook</span>
+                      />
                     </div>
                   </div>
                 </div>

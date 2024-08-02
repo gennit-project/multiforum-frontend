@@ -342,7 +342,7 @@ export default defineComponent({
 <template>
   <li
     :ref="`#${event.id}`"
-    class="relative pt-4 pr-4"
+    class="relative pt-4 pr-4 dark:bg-gray-800"
     :data-testid="`event-list-item-${event.title}`"
     @click="handleClick"
   >
