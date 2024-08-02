@@ -279,20 +279,21 @@ export default defineComponent({
       return out;
     });
 
-    const { mutate: cancelEvent, error: cancelEventError } = useMutation(
-      CANCEL_EVENT,
-      {
-        variables: {
+    const {
+      mutate: cancelEvent,
+      error: cancelEventError,
+      loading: cancelEventLoading,
+    } = useMutation(CANCEL_EVENT, {
+      variables: {
+        id: eventId.value,
+        updateEventInput: {
+          canceled: true,
+        },
+        eventWhere: {
           id: eventId.value,
-          updateEventInput: {
-            canceled: true,
-          },
-          eventWhere: {
-            id: eventId.value,
-          },
         },
       },
-    );
+    });
 
     const isAdmin = computed(() => {
       const serverRoles = props.eventData.Poster?.ServerRoles;
@@ -315,6 +316,7 @@ export default defineComponent({
       addFeedbackCommentToEventError,
       cancelEvent,
       cancelEventError,
+      cancelEventLoading,
       channelId,
       confirmCancelIsOpen: ref(false),
       confirmDeleteIsOpen: ref(false),
@@ -379,6 +381,18 @@ export default defineComponent({
 </script>
 
 <template>
+  <div>
+    <ErrorBanner
+      v-if="deleteEventError"
+      class="mb-2"
+      :text="deleteEventError.message"
+    />
+    <ErrorBanner
+      v-if="cancelEventError"
+      class="mb-2"
+      :text="cancelEventError.message"
+    />
+  </div>
   <div
     class="flex justify-between px-4 text-sm text-gray-700 dark:text-gray-200"
   >
@@ -500,16 +514,7 @@ export default defineComponent({
       @close="confirmDeleteIsOpen = false"
       @primaryButtonClick="deleteEvent"
     />
-    <ErrorBanner
-      v-if="deleteEventError"
-      class="mb-2 mt-2"
-      :text="deleteEventError.message"
-    />
-    <ErrorBanner
-      v-if="cancelEventError"
-      class="mb-2 mt-2"
-      :text="cancelEventError.message"
-    />
+
     <WarningModal
       v-if="confirmCancelIsOpen"
       :title="'Cancel Event'"
@@ -517,6 +522,8 @@ export default defineComponent({
       :open="confirmCancelIsOpen"
       :primary-button-text="'Yes, cancel the event'"
       :secondary-button-text="'No'"
+      :loading="cancelEventLoading"
+      :error="cancelEventError"
       @close="confirmCancelIsOpen = false"
       @primaryButtonClick="cancelEvent"
     />

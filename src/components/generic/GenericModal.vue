@@ -7,9 +7,11 @@ import {
   TransitionChild,
   TransitionRoot,
 } from "@headlessui/vue";
+import ErrorBanner from '@/components/generic/ErrorBanner.vue'
 
 export default defineComponent({
   components: {
+    ErrorBanner,
     DialogComponent: Dialog,
     DialogPanel,
     DialogTitle,
@@ -47,6 +49,10 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+    error: {
+      type: Boolean,
+      default: false,
+    },
     primaryButtonDisabled: {
       type: Boolean,
       default: false,
@@ -62,7 +68,8 @@ export default defineComponent({
   >
     <DialogComponent
       as="div"
-      class="relative z-10"
+      class="relative"
+      style="z-index: 1000"
       @close="$emit('close')"
     >
       <TransitionChild
@@ -127,6 +134,11 @@ export default defineComponent({
                 </div>
               </div>
               <slot name="content" />
+              <ErrorBanner
+                v-if="error" 
+                class="mt-5"
+                :text="error"
+              />
               <div
                 class="mt-5 items-center sm:mt-4 sm:flex sm:flex-row-reverse"
               >
