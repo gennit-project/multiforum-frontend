@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from "vue";
-import { Channel } from "@/__generated__/graphql";
 import Avatar from "@/components/user/Avatar.vue";
 import clickOutside from "vue-click-outside";
 import SearchableForumList from '@/components/channel/SearchableForumList.vue'
@@ -69,12 +68,6 @@ export default defineComponent({
       this.selected = this.selected.filter((c: string) => c !== channel);
       this.$emit("setSelectedChannels", this.selected);
     },
-    truncate(description: string) {
-      // limit to 100 characters
-      return description.length > 100
-        ? description.substring(0, 100) + "..."
-        : description;
-    },
   },
 });
 </script>
@@ -82,7 +75,10 @@ export default defineComponent({
 <template>
   <div>
     <div>
-      <div v-if="description" class="py-1 text-sm dark:text-gray-300">
+      <div
+        v-if="description"
+        class="py-1 text-sm dark:text-gray-300"
+      >
         {{ description }}
       </div>
       <div class="relative">
@@ -99,7 +95,7 @@ export default defineComponent({
             <Avatar
               :src="
                 channelOptions.find(
-                  (channel: Channel) => channel.uniqueName === channelName,
+                  (channel) => channel?.uniqueName === channelName,
                 )?.icon || ''
               "
               :text="channelName"

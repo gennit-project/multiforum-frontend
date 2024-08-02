@@ -13,7 +13,7 @@ export default defineComponent({
   props: {
     autoFocus: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     initialValue: {
       type: String,
@@ -26,6 +26,10 @@ export default defineComponent({
     small: {
       type: Boolean,
       default: false,
+    },
+    leftSideIsRounded: {
+      type: Boolean,
+      default: true,
     },
     rightSideIsRounded: {
       type: Boolean,
@@ -83,7 +87,8 @@ export default defineComponent({
         name="search"
         data-testid="search-bar"
         :class="[
-          rightSideIsRounded ? 'rounded-lg' : 'rounded-l-full',
+          leftSideIsRounded ? 'rounded-l-full' : '',
+          rightSideIsRounded ? 'rounded-r-full' : '',
           small ? 'h-10' : 'h-12',
         ]"
         class="w-full flex-1 border border-gray-200 pl-10 pr-3 text-sm leading-5 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"

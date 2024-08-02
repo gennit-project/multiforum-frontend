@@ -27,9 +27,9 @@ import GenericButton from "@/components/generic/buttons/GenericButton.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import SelectCanceled from "./SelectCanceled.vue";
 import SelectFree from "./SelectFree.vue";
-import ChannelPicker from "@/components/channel/ChannelPicker.vue";
 import Popper from "vue3-popper";
 import { UpdateLocationInput } from "@/components/event/form/CreateEditEventFields.vue";
+import SearchableForumList from "@/components/channel/SearchableForumList.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -39,17 +39,16 @@ export default defineComponent({
   // for filtering.
   components: {
     ChannelIcon,
-    ChannelPicker,
     FilterChip,
     FilterIcon,
     GenericButton,
     LocationSearchBar,
     Popper,
+    SearchableForumList,
     SearchBar,
     SelectCanceled,
     SelectFree,
     TagIcon,
-    // TagPicker,
   },
   props: {
     allowHidingMainFilters: {
@@ -470,6 +469,15 @@ export default defineComponent({
     toggleShowMainFilters() {
       this.showMainFilters = !this.showMainFilters;
     },
+    toggleSelectedChannel(channel: string) {
+      const index = this.filterValues.channels.indexOf(channel);
+      if (index === -1) {
+        this.filterValues.channels.push(channel);
+      } else {
+        this.filterValues.channels.splice(index, 1);
+      }
+      this.setSelectedChannels(this.filterValues.channels);
+    },
   },
 });
 </script>
@@ -495,11 +503,12 @@ export default defineComponent({
           <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <ChannelPicker
-            :description="'Show events from the following forums:'"
-            :selected-channels="filterValues.channels"
-            @setSelectedChannels="setSelectedChannels"
-          />
+          <div class="relative bg-white dark:bg-gray-700 w-96">
+            <SearchableForumList
+              :selected-channels="filterValues.channels"
+              @toggleSelection="toggleSelectedChannel"
+            />
+          </div>
         </template>
       </FilterChip>
       <FilterChip

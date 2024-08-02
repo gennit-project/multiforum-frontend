@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent, computed, ref, Ref } from "vue";
 // import TagPicker from "@/components/generic/TagPicker.vue";
-import ChannelPicker from "@/components/channel/ChannelPicker.vue";
+import SearchableForumList from "@/components/channel/SearchableForumList.vue";
 import FilterChip from "@/components/generic/buttons/FilterChip.vue";
 import ChannelIcon from "@/components/icons/ChannelIcon.vue";
 import TagIcon from "@/components/icons/TagIcon.vue";
@@ -19,12 +19,12 @@ export default defineComponent({
   // components consume the query params.
   components: {
     ChannelIcon,
-    ChannelPicker,
+    // ChannelPicker,
     SortButtons,
     FilterChip,
+    SearchableForumList,
     SearchBar,
     TagIcon,
-    // TagPicker,
   },
   props: {
     showMap: {
@@ -129,6 +129,15 @@ export default defineComponent({
       this.updateLocalState({ searchInput });
       this.updateFilters({ searchInput });
     },
+    toggleSelectedChannel(channel: string) {
+      const index = this.filterValues.channels.indexOf(channel);
+      if (index === -1) {
+        this.filterValues.channels.push(channel);
+      } else {
+        this.filterValues.channels.splice(index, 1);
+      }
+      this.setSelectedChannels(this.filterValues.channels);
+    },
   },
 });
 </script>
@@ -155,10 +164,12 @@ export default defineComponent({
           <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <ChannelPicker
-            :selected-channels="filterValues.channels"
-            @setSelectedChannels="setSelectedChannels"
-          />
+          <div class="relative bg-white dark:bg-gray-700 w-96">
+            <SearchableForumList
+              :selected-channels="filterValues.channels"
+              @toggleSelection="toggleSelectedChannel"
+            />
+          </div>
         </template>
       </FilterChip>
       <FilterChip

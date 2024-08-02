@@ -97,9 +97,6 @@ export default defineComponent({
     updateSearchResult(input: string) {
       this.searchInput = input;
     },
-    outside() {
-      this.isDropdownOpen = false;
-    },
     truncate(description: string) {
       // limit to 100 characters
       return description.length > 100
@@ -111,19 +108,26 @@ export default defineComponent({
 </script>
 <template>
   <div
-    class="absolute z-10 mt-1 w-full rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
+    class="absolute z-10 w-full rounded-md max-h-96 overflow-y-auto border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
   >
     <SearchBar
-      class="mr-2 w-full align-middle"
+      class="w-full align-middle"
       :auto-focus="true"
       :search-placeholder="'Search forums'"
       :initial-value="searchInput"
+      :right-side-is-rounded="false"
+      :left-side-is-rounded="false"
       @keydown.enter.prevent
       @updateSearchInput="updateSearchResult"
     />
-    <div v-if="channelsLoading">Loading...</div>
+    <div v-if="channelsLoading">
+      Loading...
+    </div>
     <div v-else-if="channelsError">
-      <div v-for="(error, i) of channelsError?.graphQLErrors" :key="i">
+      <div
+        v-for="(error, i) of channelsError?.graphQLErrors"
+        :key="i"
+      >
         {{ error.message }}
       </div>
     </div>
@@ -138,8 +142,10 @@ export default defineComponent({
           :value="channel.uniqueName"
           :checked="selected.includes(channel.uniqueName)"
           class="form-checkbox"
-          @change="$emit('toggleSelection', channel.uniqueName)"
-        />
+          @change="() => {
+            $emit('toggleSelection', channel.uniqueName)
+          }"
+        >
         <div class="flex items-center space-x-2">
           <Avatar
             v-if="channel.icon"
@@ -155,7 +161,10 @@ export default defineComponent({
             :text="channel.uniqueName"
           />
           <div class="flex-col">
-            <span v-if="!channel.displayName" class="font-mono font-bold">{{
+            <span
+              v-if="!channel.displayName"
+              class="font-mono font-bold"
+            >{{
               channel.uniqueName
             }}</span>
             <div v-else>
