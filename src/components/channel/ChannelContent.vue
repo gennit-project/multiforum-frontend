@@ -54,7 +54,7 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="relative max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last pt-0"
+    class="relative max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last pt-4"
   >
     <v-row class="flex divide-x dark:divide-gray-600">
       <v-col

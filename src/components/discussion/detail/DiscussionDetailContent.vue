@@ -358,7 +358,7 @@ export default defineComponent({
     />
     <div
       v-else
-      class="flex max-w-7xl justify-center space-y-2 md:rounded-lg bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
+      class="flex max-w-7xl justify-center space-y-2 bg-white py-2 dark:bg-gray-800 sm:px-2 md:px-5"
     >
       <div class="w-full flex-col space-y-2">
         <ErrorBanner

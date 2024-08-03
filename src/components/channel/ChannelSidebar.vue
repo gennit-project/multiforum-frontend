@@ -120,7 +120,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="max-h-screen overflow-auto rounded-lg bg-white pb-8 pt-4 dark:bg-gray-800 lg:px-6 lg:pt-8"
+    class="max-h-screen overflow-auto bg-white pb-8 pt-4 dark:bg-gray-800 lg:px-6 lg:pt-8"
   >
     <div
       v-if="channelId"

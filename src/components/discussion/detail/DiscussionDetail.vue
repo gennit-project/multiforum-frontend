@@ -84,7 +84,7 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="relative max-w-7xl px-0 flex-1 focus:outline-none xl:order-last"
+    class="relative max-w-7xl p-0 flex-1 focus:outline-none xl:order-last"
   >
     <div
       :class="[smAndDown ? '' : '']"
