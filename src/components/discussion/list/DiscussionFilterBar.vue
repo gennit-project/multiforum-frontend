@@ -11,6 +11,7 @@ import { SearchDiscussionValues } from "@/types/discussionTypes";
 import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   name: "DiscussionFilterBar",
@@ -68,6 +69,7 @@ export default defineComponent({
     const tagLabel = computed(() => {
       return getTagLabel(filterValues.value.tags);
     });
+    const { smAndDown } = useDisplay();
 
     return {
       channelId,
@@ -76,6 +78,7 @@ export default defineComponent({
       drawerIsOpen: ref(false),
       filterValues,
       route,
+      smAndDown,
       tagLabel,
     };
   },
@@ -144,8 +147,20 @@ export default defineComponent({
 
 <template>
   <div>
-    <div class="mt-3 mb-4 flex items-center justify-between">
+    <div class="mb-4 mt-3 flex items-center justify-between">
       <SearchBar
+        v-if="smAndDown"
+        class="flex flex-grow"
+        data-testid="discussion-filter-search-bar"
+        :initial-value="filterValues.searchInput"
+        :search-placeholder="'Search...'"
+        :small="true"
+        @updateSearchInput="updateSearchInput"
+      />
+    </div>
+    <div class="mb-4 mt-3 flex items-center justify-end">
+      <SearchBar
+        v-if="!smAndDown"
         class="mr-2 flex flex-grow"
         data-testid="discussion-filter-search-bar"
         :initial-value="filterValues.searchInput"
@@ -164,7 +179,7 @@ export default defineComponent({
           <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <div class="relative bg-white dark:bg-gray-700 w-96">
+          <div class="relative w-96 bg-white dark:bg-gray-700">
             <SearchableForumList
               :selected-channels="filterValues.channels"
               @toggleSelection="toggleSelectedChannel"
