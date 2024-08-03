@@ -120,7 +120,7 @@ export default defineComponent({
       </span>
 
       <div v-if="user">
-        <div class="-ml-8 w-full">
+        <div class="-ml-4 w-full">
           <MarkdownPreview
             v-if="user.bio"
             :key="user.bio || ''"
