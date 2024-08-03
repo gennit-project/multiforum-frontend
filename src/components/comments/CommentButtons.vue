@@ -124,6 +124,7 @@ export default defineComponent({
     <EmojiButtons
       v-if="!locked"
       :key="commentData.emoji"
+      class="mb-1"
       :comment-id="commentData.id"
       :emoji-json="commentData.emoji"
       @toggleEmojiPicker="toggleEmojiPicker"
