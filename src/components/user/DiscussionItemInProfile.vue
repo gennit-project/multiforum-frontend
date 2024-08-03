@@ -91,7 +91,7 @@ export default defineComponent({
       />
     </p>
 
-    <p class="font-medium mt-1 flex text-sm text-gray-600 hover:no-underline">
+    <p class="font-medium mt-1 space-x-1 flex text-sm text-gray-600 hover:no-underline">
       <Tag
         v-for="tag in tags"
         :key="tag"
