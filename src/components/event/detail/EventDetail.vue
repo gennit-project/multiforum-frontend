@@ -361,7 +361,7 @@ export default defineComponent({
   >
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
-        <div class="mt-1 w-full space-y-2 px-3">
+        <div class="mt-1 w-full space-y-2 ">
           <p
             v-if="eventLoading"
             class="px-4 lg:px-10"
@@ -380,7 +380,7 @@ export default defineComponent({
 
           <div
             v-else-if="eventResult && eventResult.events && event"
-            class="dark:bg-dark-700 mx-auto flex max-w-2xl flex-col gap-4 pt-4"
+            class="dark:bg-dark-700 mx-auto flex flex-col gap-4 pt-8"
           >
             <ErrorBanner
               v-if="eventIsInThePast"
@@ -408,9 +408,7 @@ export default defineComponent({
               :src="event.coverImageURL"
               :alt="event.title"
             />
-            <div
-              class="rounded-md border bg-white p-8 dark:border-gray-800 dark:bg-gray-700"
-            >
+            <div>
               <EventHeader
                 :event-data="event"
                 :show-menu-buttons="showMenuButtons"
