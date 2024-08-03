@@ -43,7 +43,7 @@ export default defineComponent({
     v-if="channel?.channelBannerURL"
     :src="channel?.channelBannerURL"
     :alt="'channel banner'"
-    class="max-h-24 w-full"
+    class="max-h-36 w-full"
   >
   <div class="bg-white dark:bg-gray-800">
     <v-container
@@ -51,8 +51,8 @@ export default defineComponent({
       class="relative max-w-7xl flex-1 p-0 focus:outline-none xl:order-last"
     >
       <div
-        class="flex justify-between border-b border-gray-200 pb-4 dark:border-gray-600 lg:px-6"
-        :class="[channel?.channelBannerURL ? '-mt-4' : 'pt-2']"
+        class="flex justify-between border-b border-gray-200 dark:border-gray-600 lg:px-6"
+        :class="[channel?.channelBannerURL ? '-mt-8' : 'pt-2']"
       >
         <div class="align-items flex w-full gap-4">
           <ExpandableImage
@@ -73,10 +73,10 @@ export default defineComponent({
           />
           <div>
             <div>
-              <div class="mt-8">
+              <div class="mt-10 mb-2 ">
                 <h1
                   v-if="channelId"
-                  class="mb-2 flex rounded-full border-gray-700 bg-white px-4 pt-1 text-2xl font-bold leading-6 text-black dark:bg-gray-900 dark:text-gray-200"
+                  class="flex rounded-full border-gray-700 bg-white px-4 pt-1 text-2xl font-bold leading-6 text-black dark:bg-gray-900 dark:text-gray-200"
                 >
                   {{ channel?.displayName ? channel.displayName : channelId }}
                 </h1>
@@ -92,7 +92,7 @@ export default defineComponent({
         </div>
         <CreateAnythingButton
           v-if="showCreateButton"
-          class="mr-6 mt-8 lg:mr-0"
+          class="mr-6 mt-14 lg:mr-0"
           :use-primary-button="true"
         />
       </div>
