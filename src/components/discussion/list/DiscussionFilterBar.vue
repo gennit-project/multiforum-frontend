@@ -150,7 +150,7 @@ export default defineComponent({
     <div class="mb-4 mt-3 flex items-center justify-between">
       <SearchBar
         v-if="smAndDown"
-        class="flex flex-grow"
+        class="flex flex-grow px-1"
         data-testid="discussion-filter-search-bar"
         :initial-value="filterValues.searchInput"
         :search-placeholder="'Search...'"

@@ -148,8 +148,7 @@ export default defineComponent({
         });
 
         const existingNumberOfDiscussionChannels =
-          existingData?.getDiscussionsInChannel
-            .aggregateDiscussionChannelsCount;
+          existingData?.getDiscussionsInChannel?.aggregateDiscussionChannelsCount || 0;
 
         cache.writeQuery({
           query: GET_DISCUSSIONS_WITH_DISCUSSION_CHANNEL_DATA,
@@ -170,7 +169,7 @@ export default defineComponent({
                 existingNumberOfDiscussionChannels + 1,
               discussionChannels: [
                 ...discussionChannelInCurrentChannel,
-                ...existingData.getDiscussionsInChannel.discussionChannels,
+                ...existingData?.getDiscussionsInChannel?.discussionChannels || [],
               ],
             },
           },
