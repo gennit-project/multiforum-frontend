@@ -146,13 +146,13 @@ export default defineComponent({
   <div v-if="showDropdown">
     <!-- Overlay (shadow) for the rest of the UI -->
     <div
-      class="fixed inset-0 z-40 bg-gray-100 opacity-50 dark:bg-gray-900 dark:text-gray-200"
+      class="fixed inset-0 top bg-gray-100 opacity-50 dark:bg-gray-900 dark:text-gray-200"
       @click="$emit('close')"
     />
 
     <div
       v-click-outside="outside"
-      class="fixed left-0 top-0 z-50 flex h-full w-[275px] flex-col justify-between overflow-y-auto border-gray-300 bg-white py-2 dark:border-gray-200 dark:bg-gray-900"
+      class="fixed left-0 top-0 overlay-shade flex h-full w-[275px] flex-col justify-between overflow-y-auto border-gray-300 bg-white py-2 dark:border-gray-200 dark:bg-gray-900"
     >
       <div>
         <div class="mt-2 block px-6">
@@ -309,5 +309,11 @@ export default defineComponent({
 nav li:hover,
 .list-item-icon {
   color: #9ca3af;
+}
+.top {
+  z-index: 1000;
+}
+.overlay-shade {
+  z-index: 1001;
 }
 </style>

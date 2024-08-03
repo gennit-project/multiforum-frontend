@@ -463,7 +463,7 @@ export default defineComponent({
                 <div class="flex items-center">
                   <CommentButtons
                     v-if="channelId && showCommentButtons"
-                    class="mb-1 ml-1 -mt-2"
+                    class="mb-1 ml-1"
                     :class="[
                       editFormOpenAtCommentID === commentData.id ? 'ml-1' : '',
                     ]"

@@ -247,7 +247,7 @@ export default defineComponent({
 
 <style lang="scss">
 .markdown-body img {
-  max-height: 500px !important;
+  max-height: 350px !important;
   cursor: pointer !important;
 }
 

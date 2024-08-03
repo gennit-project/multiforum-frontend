@@ -208,7 +208,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-medium text-sm md:text-md'"
+                  :classes="'font-medium text-sm md:text-md lg:text-lg'"
                 />
               </span>
             </router-link>
