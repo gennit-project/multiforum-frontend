@@ -385,7 +385,7 @@ export default defineComponent({
   <div>
     <div
       :class="[
-        depth > 1 ? 'border-l border-gray-300 pl-4 dark:border-gray-500' : '',
+        depth > 1 ? 'border-l border-gray-300 pl-4 pt-2 dark:border-gray-500' : '',
       ]"
       class="flex w-full"
     >
@@ -412,7 +412,7 @@ export default defineComponent({
               :original-poster="originalPoster"
             />
             <div
-              class="ml-4 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
+              class="ml-3 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
               <div
                 v-if="!themeLoading"
@@ -463,7 +463,7 @@ export default defineComponent({
                 <div class="flex items-center">
                   <CommentButtons
                     v-if="channelId && showCommentButtons"
-                    class="mb-1 ml-1 py-1"
+                    class="mb-1 ml-1 -mt-2"
                     :class="[
                       editFormOpenAtCommentID === commentData.id ? 'ml-1' : '',
                     ]"
@@ -601,7 +601,7 @@ export default defineComponent({
         <div
           v-else-if="replyCount > 0 && showReplies"
           id="childComments"
-          class="ml-4 w-full border-gray-300 dark:border-gray-600"
+          class="ml-3 w-full border-gray-300 dark:border-gray-600"
         >
           <ChildComments
             v-slot="slotProps"

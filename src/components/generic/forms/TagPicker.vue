@@ -27,7 +27,7 @@ export default defineComponent({
       default: "",
     },
   },
-  setup(props) {
+  setup(props, { emit }) {
     const searchInput: Ref<string> = ref("");
 
     const searchInputComputed = computed(() => {
@@ -61,6 +61,16 @@ export default defineComponent({
       isDropdownOpen.value = !isDropdownOpen.value;
     };
 
+    const toggleSelectedTag = (tag: string) => {
+      const index = selected.value.indexOf(tag);
+      if (index === -1) {
+        selected.value.push(tag);
+      } else {
+        selected.value.splice(index, 1);
+      }
+      emit("setSelectedTags", selected.value);
+    };
+
     return {
       tagsError,
       tagsLoading,
@@ -69,6 +79,7 @@ export default defineComponent({
       toggleDropdown,
       searchInput,
       selected,
+      toggleSelectedTag,
     };
   },
   watch: {
@@ -124,7 +135,7 @@ export default defineComponent({
           v-if="isDropdownOpen"
           v-click-outside="outside"
           :selected-tags="selected"
-          @setSelectedTags="$emit('setSelectedTags', $event)"
+          @toggleSelectedTag="toggleSelectedTag"
         />
       </div>
     </div>

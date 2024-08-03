@@ -129,7 +129,7 @@ export default defineComponent({
       @toggleEmojiPicker="toggleEmojiPicker"
     />
     <div
-      class="my-1 flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-300"
+      class="flex flex-wrap items-center gap-1 text-xs text-gray-400 dark:text-gray-300"
     >
       <VoteButtons
         v-if="!locked"

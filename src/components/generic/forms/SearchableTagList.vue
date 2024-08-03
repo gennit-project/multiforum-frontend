@@ -23,7 +23,7 @@ export default defineComponent({
       default: "",
     },
   },
-  setup(props, { emit }) {
+  setup(props) {
     const searchInput: Ref<string> = ref("");
 
     const searchInputComputed = computed(() => {
@@ -56,17 +56,6 @@ export default defineComponent({
     const toggleDropdown = () => {
       isDropdownOpen.value = !isDropdownOpen.value;
     };
-
-    const toggleSelection = (tag: string) => {
-      const index = selected.value.indexOf(tag);
-      if (index === -1) {
-        selected.value.push(tag);
-      } else {
-        selected.value.splice(index, 1);
-      }
-      emit("setSelectedTags", selected.value);
-    };
-
     return {
       tagsError,
       tagsLoading,
@@ -75,7 +64,6 @@ export default defineComponent({
       toggleDropdown,
       searchInput,
       selected,
-      toggleSelection,
     };
   },
   watch: {
@@ -89,10 +77,6 @@ export default defineComponent({
     },
     outside() {
       this.isDropdownOpen = false;
-    },
-    removeSelection(tag: string) {
-      this.selected = this.selected.filter((c: string) => c !== tag);
-      this.$emit("setSelectedTags", this.selected);
     },
   },
 });
@@ -131,7 +115,7 @@ export default defineComponent({
           :value="tag.text"
           :checked="selected.includes(tag.text)"
           class="form-checkbox"
-          @change="toggleSelection(tag.text)"
+          @change="$emit('toggleSelectedTag',tag.text)"
         >
         <div class="flex items-center space-x-2">
           <div class="flex-col">

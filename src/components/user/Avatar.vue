@@ -90,7 +90,7 @@ export default defineComponent({
     :class="[
       isLarge ? 'h-48 w-48' : '',
       isMedium ? 'h-20 w-20' : '',
-      isSmall ? 'h-8 w-8' : '', 
+      isSmall ? 'h-7 w-7' : '', 
       isSquare ? 'rounded-lg' : 'rounded-full']"
   >
   <img 
@@ -99,7 +99,7 @@ export default defineComponent({
     :class="[
       isLarge ? 'h-72 w-72' : '',
       isMedium ? 'h-20 w-20' : '',
-      isSmall ? 'h-8 w-8' : '', 
+      isSmall ? 'h-7 w-7' : '', 
       isSquare ? 'rounded-lg' : 'rounded-full']"
     :src="identiconData" 
     :alt="text"
