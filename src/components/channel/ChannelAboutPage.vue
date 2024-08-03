@@ -118,6 +118,7 @@ export default defineComponent({
       <ChannelSidebar
         v-if="channel"
         :channel="channel"
+        :use-scrollbar="false"
       />
       <RequireAuth
         :require-ownership="true"

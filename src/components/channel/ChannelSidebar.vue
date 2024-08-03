@@ -26,6 +26,10 @@ export default defineComponent({
       type: Object as PropType<Channel>,
       required: true,
     },
+    useScrollbar: {
+      type: Boolean,
+      default: true,
+    },
   },
   setup(props) {
     const route = useRoute();
@@ -120,7 +124,8 @@ export default defineComponent({
 
 <template>
   <div
-    class="max-h-screen overflow-auto bg-white pb-8 pt-4 dark:bg-gray-800"
+    :class="[useScrollbar ? 'max-h-screen overflow-auto' : '']"
+    class="bg-white pb-8 pt-4 dark:bg-gray-800"
   >
     <div
       v-if="channelId && channel"
