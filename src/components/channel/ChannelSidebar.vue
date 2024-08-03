@@ -11,6 +11,7 @@ import UsernameWithTooltip from "../generic/UsernameWithTooltip.vue";
 import { Channel } from "@/__generated__/graphql";
 import ChannelRules from "./Rules.vue";
 import SidebarEventList from "./SidebarEventList.vue";
+import MarkdownPreview from '@/components/generic/MarkdownPreview.vue'
 
 export default defineComponent({
   name: "ChannelSidebar",
@@ -18,6 +19,7 @@ export default defineComponent({
     Tag,
     Avatar,
     ChannelRules,
+    MarkdownPreview,
     SidebarEventList,
     UsernameWithTooltip,
   },
