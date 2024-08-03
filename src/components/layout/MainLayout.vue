@@ -27,7 +27,13 @@ export default defineComponent({
     <div class="flex-grow">
       <router-view />
     </div>
-    <SiteFooter v-if="route.name && route.name !== 'MapEventPreview'" />
+    <SiteFooter
+      v-if="
+        route.name &&
+          route.name !== 'MapView' &&
+          route.name !== 'MapEventPreview'
+      "
+    />
   </div>
 </template>
 
