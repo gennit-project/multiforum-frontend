@@ -66,6 +66,7 @@ export default defineComponent({
       <v-col
         v-if="channelId"
         :cols="mdAndDown ? 12 : 4"
+        class="p-0"
       >
         <ChannelSidebar
           v-if="channel"
