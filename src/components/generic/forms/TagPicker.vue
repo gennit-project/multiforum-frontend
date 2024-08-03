@@ -119,7 +119,7 @@ export default defineComponent({
           <div
             v-for="(tag, index) in selected"
             :key="index"
-            class="mr-2 mt-1 flex items-center rounded-full bg-blue-100 px-2 text-blue-700"
+            class="mr-2 mt-1 flex items-center rounded-full bg-blue-100 px-2 text-blue-700 dark:bg-blue-700 dark:text-blue-100"
             @click="removeSelection(tag)"
           >
             <span>{{ tag }}</span>
