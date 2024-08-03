@@ -111,7 +111,7 @@ export default defineComponent({
     class="absolute z-10 w-full rounded-md max-h-96 overflow-y-auto border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
   >
     <SearchBar
-      class="w-full align-middle"
+      class="w-full p-1 align-middle"
       :auto-focus="true"
       :search-placeholder="'Search forums'"
       :initial-value="searchInput"
