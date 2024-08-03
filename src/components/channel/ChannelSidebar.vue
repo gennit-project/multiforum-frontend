@@ -13,7 +13,7 @@ import ChannelRules from "./Rules.vue";
 import SidebarEventList from "./SidebarEventList.vue";
 
 export default defineComponent({
-  name: "AboutPage",
+  name: "ChannelSidebar",
   components: {
     Tag,
     Avatar,
@@ -120,12 +120,29 @@ export default defineComponent({
 
 <template>
   <div
-    class="max-h-screen overflow-auto bg-white pb-8 pt-4 dark:bg-gray-800 lg:px-6 lg:pt-8"
+    class="max-h-screen overflow-auto bg-white pb-8 pt-4 dark:bg-gray-800"
   >
     <div
-      v-if="channelId"
+      v-if="channelId && channel"
       class="items-center gap-2"
     />
+    <div>
+      <h2 class="mt-2 px-6 text-xl font-bold">
+        Forum Intro
+      </h2>
+      <MarkdownPreview
+        v-if="channel?.description"
+        :text="channel?.description"
+        :word-limit="1000"
+        class="ml-2"
+      />
+      <p
+        v-else
+        class="p-6 text-xs"
+      >
+        Welcome to {{ channelId }}!
+      </p>
+    </div>
     <slot />
 
     <div class="w-full px-6">
@@ -206,7 +223,7 @@ export default defineComponent({
           </ul>
           <p
             v-else
-            class="mx-6 my-3 mb-6 text-sm dark:text-gray-400"
+            class="my-3 mb-6 text-sm dark:text-gray-400"
           >
             This forum does not have any admins.
           </p>

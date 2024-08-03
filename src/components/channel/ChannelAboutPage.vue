@@ -3,19 +3,17 @@ import { defineComponent, computed, ref } from "vue";
 import { useQuery } from "@vue/apollo-composable";
 import { GET_CHANNEL } from "@/graphQLData/channel/queries";
 import { useRoute, useRouter } from "vue-router";
-import Tag from "@/components/generic/Tag.vue";
 import RequireAuth from "../auth/RequireAuth.vue";
 import "md-editor-v3/lib/style.css";
 import { useDisplay } from "vuetify";
-import Avatar from "../user/Avatar.vue";
 import gql from "graphql-tag";
+import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 
 export default defineComponent({
   name: "AboutPage",
   components: {
+    ChannelSidebar,
     RequireAuth,
-    Tag,
-    Avatar,
   },
   setup() {
     const route = useRoute();
@@ -115,115 +113,12 @@ export default defineComponent({
 </script>
 
 <template>
-  <v-container class="p-8 max-w-4xl justify-center dark:bg-gray-900">
-    <div
-      v-if="channelId"
-      class="my-4 py-1 space-x-2 flex items-center border-b"
-    >
-      <Avatar
-        :text="channelId"
-        :is-square="true"
-        :is-small="true"
-        :src="channel?.profilePicURL"
-      />
-      <h1
-        v-if="channelId"
-        class="my-2 mb-2 flex justify-center border-gray-700 text-xl font-bold leading-6 text-gray-500 dark:text-gray-300"
-      >
-        {{ channelId }}
-      </h1>
-    </div>
-
+  <v-container class="max-w-4xl justify-center p-8 dark:bg-gray-900">
     <div class="w-full py-3">
-      <p v-if="getChannelLoading">
-        Loading...
-      </p>
-      <div v-else-if="getChannelError">
-        <div
-          v-for="(error, i) of getChannelError?.graphQLErrors"
-          :key="i"
-        >
-          {{ error.message }}
-        </div>
-      </div>
-      <div v-else-if="channel">
-        <div v-if="!mdAndDown">
-          <div
-            v-if="channel.description"
-            class="-ml-6"
-          >
-            <v-md-preview :text="channel.description" />
-          </div>
-          <p
-            v-else
-            class="text-xs"
-          >
-            {{ "This forum has no description." }}
-          </p>
-        </div>
-        <slot />
-
-        <div
-          v-if="mdAndDown"
-          class="mt-6"
-        >
-          <div v-if="channel.Tags.length > 0">
-            <div class="flex justify-between border-b border-gray-800 dark:border-gray-300">
-              <span
-                class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-100"
-              >
-                Tags
-              </span>
-            </div>
-
-            <div class="mb-6 mt-2 flex flex-wrap">
-              <Tag
-                v-for="tag in channel.Tags"
-                :key="tag.text"
-                class="mb-1"
-                :tag="tag.text"
-                @click="filterChannelsByTag(tag.text)"
-              />
-            </div>
-          </div>
-          <div class="flex justify-between border-b border-gray-800 dark:border-gray-300">
-            <span
-              class="my-2 mb-2 text-sm font-bold leading-6 text-gray-500 dark:text-gray-100"
-            >
-              Admins
-            </span>
-          </div>
-          <ul
-            v-if="channel.Admins.length > 0"
-            class="my-3 text-sm font-bold underline text-gray-200"
-          >
-            <li
-              v-for="admin in channel.Admins"
-              :key="admin.username"
-            >
-              <router-link
-                :key="admin.username"
-                :to="`/u/${admin.username}`"
-                class="flex items-center"
-              >
-                <Avatar
-                  :text="admin.username"
-                  :src="admin.profilePicURL"
-                  :is-small="true"
-                  class="mr-2"
-                />
-                {{ admin.username }}
-              </router-link>
-            </li>
-          </ul>
-          <p
-            v-else
-            class="mx-6 my-3 mb-6 text-sm"
-          >
-            This forum does not have any admins.
-          </p>
-        </div>
-      </div>
+      <ChannelSidebar
+        v-if="channel"
+        :channel="channel"
+      />
       <RequireAuth
         :require-ownership="true"
         :owners="ownerList"

@@ -1,6 +1,5 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
-import MarkdownPreview from "@/components/generic/MarkdownPreview.vue";
 import ChannelSidebar from "@/components/channel/ChannelSidebar.vue";
 import { useRoute } from "vue-router";
 import { useQuery } from "@vue/apollo-composable";
@@ -11,7 +10,6 @@ export default defineComponent({
   name: "ChannelContent",
   components: {
     ChannelSidebar,
-    MarkdownPreview,
   },
 
   setup() {
@@ -54,7 +52,7 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="relative max-w-7xl flex-1 focus:outline-none lg:px-6 xl:order-last pt-4"
+    class="relative max-w-7xl flex-1 pt-4 focus:outline-none lg:px-6 xl:order-last"
   >
     <v-row class="flex divide-x dark:divide-gray-600">
       <v-col
@@ -71,26 +69,8 @@ export default defineComponent({
         <ChannelSidebar
           v-if="channel"
           :channel="channel"
-          class="sticky top-0 overflow-auto"
-        >
-          <div>
-            <h2 class="mt-2 px-6 text-xl font-bold">
-              Forum Intro
-            </h2>
-            <MarkdownPreview
-              v-if="channel?.description"
-              :text="channel?.description"
-              :word-limit="1000"
-              class="ml-2"
-            />
-            <p
-              v-else
-              class="p-6 text-xs"
-            >
-              Welcome to {{ channelId }}!
-            </p>
-          </div>
-        </ChannelSidebar>
+          class="sticky top-0 overflow-auto p-6 pt-8"
+        />
       </v-col>
     </v-row>
   </v-container>
