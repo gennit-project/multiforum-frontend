@@ -203,13 +203,29 @@ export default defineComponent({
       >
         <ChannelTabs
           v-if="channel && smAndDown"
-          class="block w-full border-b border-gray-200 bg-white px-3 dark:border-gray-600 dark:bg-gray-800 md:px-6"
+          class="mb-2 block w-full border-b border-gray-200 bg-white px-3 dark:border-gray-600 dark:bg-gray-800 md:px-6"
           :vertical="false"
           :show-counts="true"
           :admin-list="adminList"
           :route="route"
           :channel="channel"
         />
+        <div
+          v-if="isDiscussionDetailPage"
+          class="flex w-full justify-center"
+        >
+          <div class="max-w-7xl flex-1 px-3 md:px-6">
+            <DiscussionTitleEditForm />
+          </div>
+        </div>
+        <div
+          v-else-if="isEventDetailPage"
+          class="flex w-full justify-center"
+        >
+          <div class="max-w-7xl flex-1 px-3 md:px-6">
+            <EventTitleEditForm />
+          </div>
+        </div>
         <div>
           <router-view />
         </div>

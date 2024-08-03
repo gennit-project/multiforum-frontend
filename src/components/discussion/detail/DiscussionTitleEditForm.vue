@@ -169,7 +169,7 @@ export default defineComponent({
 <template>
   <div class="w-full">
     <div
-      class="mb-2 flex w-full space-x-2"
+      class="mb-2 flex-wrap w-full space-x-2 space-y-1"
       :class="!smAndDown ? 'items-center justify-between' : 'flex-col'"
     >
       <v-skeleton-loader
@@ -186,7 +186,7 @@ export default defineComponent({
       >
         <h2
           v-if="!titleEditMode"
-          class="text-wrap px-1 text-2xl font-medium sm:tracking-tight"
+          class="text-wrap px-1 text-xl md:text-2xl font-medium sm:tracking-tight"
         >
           {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
         </h2>
