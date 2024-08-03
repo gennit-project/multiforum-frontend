@@ -46,9 +46,9 @@ export default defineComponent({
 <template>
   <div>
     <div
-      class="border py-4 px-6 border-gray-500 dark:border-gray-600 shadow rounded-t-lg bg-white p-3 dark:bg-gray-800 dark:text-gray-200"
+      class="border py-4 md:px-6 border-gray-500 dark:border-gray-600 shadow md:rounded-t-lg bg-white p-3 dark:bg-gray-800 dark:text-gray-200"
     >
-      <div class="flex flex-row gap-6">
+      <div class="flex flex-row">
         <router-link
           :to="`/channels/c/${channel.uniqueName}/discussions`"
           class="flex cursor-pointer"
@@ -120,7 +120,7 @@ export default defineComponent({
         </div>
       </div>
     </div>
-    <div class="rounded-b-lg bg-gray-500 text-white">
+    <div class="md:rounded-b-lg bg-gray-500 text-white">
       <div class="flex w-full py-2 px-2">
         <div class="truncate text-xs font-normal">
           <router-link

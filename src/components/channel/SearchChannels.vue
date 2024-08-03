@@ -242,7 +242,7 @@ export default defineComponent({
       />
       <ChannelList
         v-if="channelResult && channelResult.channels"
-        class="mx-auto max-w-3xl flex-1 rounded-lg bg-gray-100 p-6 text-xl font-bold dark:bg-gray-900"
+        class="mx-auto max-w-3xl flex-1 rounded-lg bg-gray-100 md:p-6 text-xl font-bold dark:bg-gray-900"
         :channels="channelResult.channels"
         :result-count="channelResult.channelsAggregate?.count || 0"
         :search-input="searchInput"

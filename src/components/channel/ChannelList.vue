@@ -41,7 +41,7 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="mx-auto">
+  <div>
     <p
       v-if="channels.length === 0"
       class="mt-2 text-sm font-normal dark:text-white"
