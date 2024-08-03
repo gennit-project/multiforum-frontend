@@ -78,11 +78,11 @@ export default defineComponent({
   >
     <div
       :class="[
-        'px-2 my-1',
+        'px-2 py-4',
         !vertical && isHovered ? 'bg-gray-100 dark:bg-gray-700' : '',
         showCount && count ? '' : 'pr-4',
       ]"
-      class="md:my-2 sm:my-1 flex h-6 items-center space-x-2 rounded-lg"
+      class="md:my-1 sm:my-1 flex h-6 items-center space-x-2 rounded-lg"
     >
       <div class="text-black dark:text-blue-500">
         <slot />
