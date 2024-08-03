@@ -180,13 +180,13 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative flex gap-3 space-x-2 rounded-lg bg-white border dark:border-gray-700 px-6 py-4 dark:bg-gray-800"
+    class="relative flex gap-3 space-x-2 md:rounded-lg bg-white border dark:border-gray-700 px-2 md:px-6 py-2 md:py-4 dark:bg-gray-800"
   >
     <div class="flex w-full justify-between">
       <div class="w-full">
         <div class="flex border-b pb-2 dark:border-b-gray-600">
           <div
-            class="mr-2 flex items-center justify-center flex-start w-10 h-10 rounded-md bg-gray-100 p-1 text-xl dark:bg-gray-600"
+            class="mr-2 flex items-center justify-center flex-start w-6 md:w-10 h-6 md:h-10 rounded-md bg-gray-100 p-1 text-sm md:text-xl dark:bg-gray-600"
           >
             💬
           </div>
@@ -208,7 +208,7 @@ export default defineComponent({
                 <HighlightedSearchTerms
                   :text="title"
                   :search-input="searchInput"
-                  :classes="'font-medium text-lg'"
+                  :classes="'font-medium text-sm md:text-md'"
                 />
               </span>
             </router-link>

@@ -255,7 +255,7 @@ p,
 ul,
 li {
   font-size: 0.85rem !important;
-  font-weight: 400 !important;
+  font-weight: 300 !important;
   line-height: 1.5 !important;
   margin-bottom: 0.5rem !important;
 }

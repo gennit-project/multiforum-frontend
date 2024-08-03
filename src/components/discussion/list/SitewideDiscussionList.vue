@@ -180,7 +180,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="w-full rounded-lg px-2">
+  <div class="w-full md:rounded-lg md:px-2">
     <slot />
     <p v-if="discussionLoading">
       Loading...

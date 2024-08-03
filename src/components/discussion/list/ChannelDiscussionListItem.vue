@@ -228,7 +228,7 @@ export default defineComponent({
 
 <template>
   <li
-    class="relative my-1 flex rounded-lg border dark:border-gray-800 bg-white p-4 dark:bg-gray-800"
+    class="relative my-1 flex md:rounded-lg border dark:border-gray-800 bg-white p-2 md:p-4 dark:bg-gray-800"
   >
     <div class="flex w-full flex-row justify-start gap-4 rounded-lg p-1">
       <div

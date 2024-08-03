@@ -385,7 +385,7 @@ export default defineComponent({
   <div>
     <div
       :class="[
-        depth > 1 ? 'border-l border-gray-300 pl-4 pt-2 dark:border-gray-500' : '',
+        depth > 1 ? 'border-l border-gray-300 pl-4 pt-2 dark:border-gray-600' : '',
       ]"
       class="flex w-full"
     >
