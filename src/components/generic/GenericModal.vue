@@ -103,14 +103,14 @@ export default defineComponent({
               class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all dark:bg-gray-800 sm:my-8 sm:w-full sm:max-w-lg sm:p-6"
             >
               <div class="flex-col items-center">
-                <div class="flex items-center">
+                <div class="flex space-x-2 items-center">
                   <div
                     :class="[
                       highlightColor === 'red'
                         ? `bg-red-100 dark:bg-red-transparent`
                         : `bg-yellow-100 dark:bg-yellow-transparent`,
                     ]"
-                    class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"
+                    class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10"
                   >
                     <slot name="icon" />
                   </div>

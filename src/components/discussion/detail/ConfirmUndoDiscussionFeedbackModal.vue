@@ -41,13 +41,16 @@ export default defineComponent({
       error: getError,
       result: feedbackResult,
       onResult,
-    } = useQuery(GET_FEEDBACK, {
-      discussionId: props.discussionId,
-      modName: props.modName,
-    }, {
-      fetchPolicy: "network-only",
-    
-    });
+    } = useQuery(
+      GET_FEEDBACK,
+      {
+        discussionId: props.discussionId,
+        modName: props.modName,
+      },
+      {
+        fetchPolicy: "network-only",
+      },
+    );
 
     onResult((result) => {
       const comment = result?.data?.comments?.[0];
@@ -125,7 +128,10 @@ export default defineComponent({
         :show-context-link="true"
         :show-channel="false"
       />
-      <div class="ml-2 flex flex-col gap-2 border-l pl-4">
+      <div
+        v-if="commentData"
+        class="ml-2 flex flex-col gap-2 border-l pl-4"
+      >
         <MarkdownPreview
           class="-ml-4 dark:text-white"
           :text="commentData?.text || '[Deleted]'"
