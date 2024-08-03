@@ -357,7 +357,7 @@ export default defineComponent({
 
 <template>
   <div
-    class="w-full space-y-4 overflow-auto bg-white dark:bg-gray-800 md:px-6"
+    class="w-full space-y-4 bg-white dark:bg-gray-800 md:px-6"
   >
     <div class="mb-10 flex w-full justify-center rounded-lg">
       <div class="w-full">
