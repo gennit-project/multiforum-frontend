@@ -182,7 +182,7 @@ export default defineComponent({
                   :disable-auto-focus="true"
                   :initial-value="formValues.body || ''"
                   :placeholder="'Add details'"
-                  :rows="20"
+                  :rows="10"
                   @update="$emit('updateFormValues', { body: $event })"
                 />
               </template>
