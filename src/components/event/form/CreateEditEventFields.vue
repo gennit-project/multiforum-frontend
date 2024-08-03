@@ -372,7 +372,7 @@ export default defineComponent({
     },
     handleUpdateLocation(event: UpdateLocationInput) {
       if (!event.formatted_address) {
-        console.error("No address found"); 
+        console.error("No address found");
       }
 
       this.$emit("updateFormValues", {
@@ -651,11 +651,13 @@ export default defineComponent({
         </FormRow>
         <FormRow section-title="Tags">
           <template #content>
-            <TagPicker 
+            <TagPicker
               data-testid="tag-input"
               :selected-tags="formValues.selectedTags"
               @setSelectedTags="
-                $emit('updateFormValues', { selectedTags: $event })
+                (event) => {
+                  $emit('updateFormValues', { selectedTags: event });
+                }
               "
             />
           </template>

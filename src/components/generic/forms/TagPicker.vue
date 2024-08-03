@@ -135,7 +135,7 @@ export default defineComponent({
           v-if="isDropdownOpen"
           v-click-outside="outside"
           :selected-tags="selected"
-          @toggleSelectedTag="toggleSelectedTag"
+          @toggleSelection="toggleSelectedTag"
         />
       </div>
     </div>

@@ -61,7 +61,7 @@ export default defineComponent({
       >
         <SortIcon
           v-if="showSortIcon"
-          class="h-5 w-5"
+          class="h-4 w-4"
           aria-hidden="true"
         />
         {{ label }}

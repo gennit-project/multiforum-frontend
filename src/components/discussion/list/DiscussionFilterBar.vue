@@ -12,6 +12,7 @@ import { useRoute } from "vue-router";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
 import SortButtons from "@/components/generic/buttons/SortButtons.vue";
 import { useDisplay } from "vuetify";
+import SearchableTagList from '@/components/generic/forms/SearchableTagList.vue'
 
 export default defineComponent({
   name: "DiscussionFilterBar",
@@ -20,10 +21,10 @@ export default defineComponent({
   // components consume the query params.
   components: {
     ChannelIcon,
-    // ChannelPicker,
     SortButtons,
     FilterChip,
     SearchableForumList,
+    SearchableTagList,
     SearchBar,
     TagIcon,
   },
@@ -141,6 +142,15 @@ export default defineComponent({
       }
       this.setSelectedChannels(this.filterValues.channels);
     },
+    toggleSelectedTag(tag: string) {
+      const index = this.filterValues.tags.indexOf(tag);
+      if (index === -1) {
+        this.filterValues.tags.push(tag);
+      } else {
+        this.filterValues.tags.splice(index, 1);
+      }
+      this.setSelectedTags(this.filterValues.tags);
+    },
   },
 });
 </script>
@@ -179,7 +189,7 @@ export default defineComponent({
           <ChannelIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <div class="relative w-96 bg-white dark:bg-gray-700">
+          <div class="relative w-96">
             <SearchableForumList
               :selected-channels="filterValues.channels"
               @toggleSelection="toggleSelectedChannel"
@@ -197,10 +207,12 @@ export default defineComponent({
           <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <!-- <TagPicker
-            :selected-tags="filterValues.tags"
-            @setSelectedTags="setSelectedTags"
-          /> -->
+          <div class="relative w-96">
+            <SearchableTagList
+              :selected-tags="filterValues.tags"
+              @toggleSelection="toggleSelectedTag"
+            />
+          </div>
         </template>
       </FilterChip>
       <SortButtons />

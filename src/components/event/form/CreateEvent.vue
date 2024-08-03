@@ -60,7 +60,21 @@ export default defineComponent({
 
     const eventCreateInput = computed(() => {
       const tagConnections: EventTagsConnectOrCreateFieldInput[] =
-        formValues.value.selectedTags;
+        formValues.value.selectedTags.map((tag: string) => {
+          return {
+            onCreate: {
+              node: {
+                text: tag,
+              },
+            },
+            where: {
+              node: {
+                text: tag,
+              },
+            
+            },
+          };
+        });
 
       let input: EventCreateInput = {
         /*

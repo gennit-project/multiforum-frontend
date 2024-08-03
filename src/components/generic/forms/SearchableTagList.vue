@@ -83,13 +83,15 @@ export default defineComponent({
 </script>
 <template>
   <div
-    class="absolute z-10 mt-1 max-h-96 w-full overflow-y-auto rounded-md border border-gray-200 bg-white shadow-lg dark:border-gray-600 dark:bg-gray-800"
+    class="absolute z-10 mt-1 max-h-96 w-full overflow-y-auto rounded-md border border-gray-200 dark:border-gray-700 bg-white shadow-lg dark:bg-gray-800"
   >
     <SearchBar
-      class="mr-2 w-full align-middle"
+      class="w-full align-middle"
       :auto-focus="true"
       :search-placeholder="'Search tags'"
       :initial-value="searchInput"
+      :right-side-is-rounded="false"
+      :left-side-is-rounded="false"
       @keydown.enter.prevent
       @updateSearchInput="updateSearchResult"
     />
@@ -115,7 +117,9 @@ export default defineComponent({
           :value="tag.text"
           :checked="selected.includes(tag.text)"
           class="form-checkbox"
-          @change="$emit('toggleSelectedTag',tag.text)"
+          @change="() => {
+            $emit('toggleSelection',tag.text)
+          }"
         >
         <div class="flex items-center space-x-2">
           <div class="flex-col">

@@ -30,6 +30,7 @@ import SelectFree from "./SelectFree.vue";
 import Popper from "vue3-popper";
 import { UpdateLocationInput } from "@/components/event/form/CreateEditEventFields.vue";
 import SearchableForumList from "@/components/channel/SearchableForumList.vue";
+import SearchableTagList from "@/components/generic/forms/SearchableTagList.vue";
 
 export default defineComponent({
   name: "EventFilterBar",
@@ -45,6 +46,7 @@ export default defineComponent({
     LocationSearchBar,
     Popper,
     SearchableForumList,
+    SearchableTagList,
     SearchBar,
     SelectCanceled,
     SelectFree,
@@ -478,6 +480,15 @@ export default defineComponent({
       }
       this.setSelectedChannels(this.filterValues.channels);
     },
+    toggleSelectedTag(tag: string) {
+      const index = this.filterValues.tags.indexOf(tag);
+      if (index === -1) {
+        this.filterValues.tags.push(tag);
+      } else {
+        this.filterValues.tags.splice(index, 1);
+      }
+      this.setSelectedTags(this.filterValues.tags);
+    },
   },
 });
 </script>
@@ -521,10 +532,12 @@ export default defineComponent({
           <TagIcon class="-ml-0.5 mr-2 h-4 w-4" />
         </template>
         <template #content>
-          <!-- <TagPicker
-            :selected-tags="filterValues.tags"
-            @setSelectedTags="setSelectedTags"
-          /> -->
+          <div class="relative w-96">
+            <SearchableTagList
+              :selected-tags="filterValues.tags"
+              @toggleSelection="toggleSelectedTag"
+            />
+          </div>
         </template>
       </FilterChip>
     </div>
@@ -549,7 +562,7 @@ export default defineComponent({
             <Popper v-if="!showLocationSearchBarAndDistanceButtons">
               <button
                 data-testid="more-filters-button"
-                class="absolute inset-y-0 right-0 flex cursor-pointer items-center border bg-white pr-3"
+                class="absolute inset-y-0 right-2 flex rounded-full cursor-pointer items-center bg-white dark:bg-gray-700 pr-3"
                 @click="handleClickMoreFilters"
               >
                 <FilterIcon class="h-4 w-4" />
