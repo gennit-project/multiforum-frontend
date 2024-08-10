@@ -191,7 +191,7 @@ export default defineComponent({
 <template>
   <v-container
     fluid
-    class="mt-4 max-w-3xl pt-0"
+    class="mt-4 max-w-3xl pt-0 px-0"
   >
     <div v-if="channelLoading">
       Loading...
