@@ -223,14 +223,13 @@ export default defineComponent({
                 class="font-semibold group flex items-center gap-x-3 rounded-md py-1 text-sm leading-6 text-gray-700 hover:bg-gray-100 dark:text-gray-100 dark:hover:bg-gray-700"
                 @click="$emit('close')"
               >
-                <ExpandableImage
+                <Avatar
                   v-if="forum?.channelIconURL"
                   class="list-item-icon border-1 h-8 w-8 shrink-0 border-gray-200 shadow-sm dark:border-gray-800"
-                  aria-hidden="true"
-                  :is-square="false"
-                  :is-medium="true"
-                  :alt="forum.uniqueName"
+                  :text="forum.uniqueName || ''"
                   :src="forum?.channelIconURL ?? ''"
+                  :is-medium="true"
+                  :is-square="false"
                 />
                 <Avatar
                   v-if="!forum?.channelIconURL"
