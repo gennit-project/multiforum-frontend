@@ -83,7 +83,7 @@ export default defineComponent({
       return "";
     });
     const showOnlineOnly = route.name === "SearchEventsList";
-    const showInPersonOnly = route.name === "MapEventPreview";
+    const showInPersonOnly = route.name === "MapEventPreview" || route.name === "MapView";
 
     const filterValues: Ref<SearchEventValues> = ref(
       getFilterValuesFromParams({
