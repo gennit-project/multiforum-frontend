@@ -11,6 +11,7 @@ import {
   getUploadFileName,
 } from "@/components/utils";
 import ErrorBanner from "../ErrorBanner.vue";
+import { useDisplay } from 'vuetify'
 
 export default defineComponent({
   components: {
@@ -125,6 +126,9 @@ export default defineComponent({
       textarea.setRangeText(formattedText, start, end, "end");
       updateText(textarea.value);
     };
+
+    const { smAndDown } = useDisplay()
+
     return {
       createSignedStorageUrl,
       createSignedStorageUrlError,
@@ -135,6 +139,7 @@ export default defineComponent({
       formatText,
       uploadAndGetEmbeddedLink,
       showFormatted: ref(false),
+      smAndDown,
       text,
       theme,
       updateText,
@@ -274,7 +279,8 @@ export default defineComponent({
     />
     <TabGroup>
       <TabList
-        class="flex items-center justify-between border-b pb-2 dark:border-gray-600"
+        :class="[smAndDown ? 'flex-wrap' : 'flex justify-between']"
+        class=" border-b pb-2 dark:border-gray-600"
       >
         <div class="flex items-center">
           <Tab
@@ -312,7 +318,7 @@ export default defineComponent({
         </div>
         <div
           v-if="!showFormatted"
-          class="flex items-center justify-end space-x-1"
+          class="flex items-center space-x-1"
         >
           <button
             v-for="button in formatButtons"

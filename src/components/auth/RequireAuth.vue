@@ -105,7 +105,7 @@ export default defineComponent({
   >
     <div
       v-if="username && (!requireOwnership || isOwner)"
-      class="w-full"
+      class="w-full flex justify-center"
     >
       <slot name="has-auth" />
     </div>

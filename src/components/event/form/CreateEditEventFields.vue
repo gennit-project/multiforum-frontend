@@ -432,8 +432,7 @@ export default defineComponent({
 
 <template>
   <v-container
-    fluid
-    class="mx-auto max-w-3xl pt-0"
+    class="max-w-3xl pt-0 px-0"
   >
     <div v-if="eventLoading">
       Loading...
