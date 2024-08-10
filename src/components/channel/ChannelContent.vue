@@ -54,17 +54,17 @@ export default defineComponent({
     fluid
     class="relative max-w-7xl flex-1 pt-4 focus:outline-none lg:px-6 xl:order-last"
   >
-    <v-row class="flex">
+    <v-row class="flex divide-x dark:divide-gray-500">
       <v-col
         :cols="mdAndDown ? 12 : 8"
-        class="p-0"
+        class="p-0 bg-white dark:bg-gray-800"
       >
         <slot />
       </v-col>
       <v-col
         v-if="channelId"
         :cols="mdAndDown ? 12 : 4"
-        class="p-0"
+        class="p-0 bg-white dark:bg-gray-800"
       >
         <ChannelSidebar
           v-if="channel"
