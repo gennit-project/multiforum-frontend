@@ -227,7 +227,7 @@ export default defineComponent({
 });
 </script>
 <template>
-  <div class="md:pr-6">
+  <div class="md:px-6">
     <slot />
     <p v-if="!discussionChannelResult && discussionLoading">
       Loading...
@@ -295,7 +295,7 @@ export default defineComponent({
           "
         >
           <LoadMore
-            class="justify-self-center"
+            class="justify-self-center mb-6"
             :reached-end-of-results="
               discussionChannelResult.getDiscussionsInChannel
                 .aggregateDiscussionChannelsCount ===
