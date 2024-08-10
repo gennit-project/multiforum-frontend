@@ -15,19 +15,15 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-    inTopNav: {
+    fullWidth: {
       type: Boolean,
       default: false,
     },
-    searchPlaceholder: {
-      type: String,
-      default: "Anywhere",
-    },
-    referencePointAddressName: {
+    initialValue: {
       type: String,
       default: "",
     },
-    fullWidth: {
+    inTopNav: {
       type: Boolean,
       default: false,
     },
@@ -35,22 +31,30 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
+    radius: {
+      type: String,
+      default: "",
+    },
+    referencePointAddressName: {
+      type: String,
+      default: "",
+    },
     rightSideIsRounded: {
       type: Boolean,
       default: true,
     },
-    radius: {
+    searchPlaceholder: {
       type: String,
-      default: "",
+      default: "Anywhere",
     },
     useMediumRoundedCorners: {
       type: Boolean,
       default: false,
     },
   },
-  setup(_, { emit }) {
+  setup(props, { emit }) {
     const route = useRoute();
-    const searchQuery = ref("");
+    const searchQuery = ref(props.initialValue);
     const searchResults = ref([]);
     const apiKey = config.openCageApiKey;
 

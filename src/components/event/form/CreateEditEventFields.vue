@@ -601,6 +601,7 @@ export default defineComponent({
           <template #content>
             <LocationSearchBar
               data-testid="location-input"
+              :initial-value="formValues.address"
               :search-placeholder="'Add an address'"
               :full-width="true"
               :left-side-is-rounded="false"
