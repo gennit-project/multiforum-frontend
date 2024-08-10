@@ -87,7 +87,7 @@ export default defineComponent({
               <span
                 v-if="displayName"
                 class="text-gray-500 dark:text-gray-300"
-              >{{ `u/${username}` }}</span>
+              >{{ `(u/${username})` }}</span>
             </router-link>
             <span
               v-if="isAdmin"
