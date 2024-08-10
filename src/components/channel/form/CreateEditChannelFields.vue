@@ -253,7 +253,7 @@ export default defineComponent({
                 ref="displayNameInputRef"
                 :test-id="'display-name-input'"
                 :value="formValues.displayName"
-                :placeholder="'Add a more human readable display name'"
+                :placeholder="'A more human readable display name'"
                 :full-width="true"
                 @update="$emit('updateFormValues', { displayName: $event })"
               />
