@@ -33,7 +33,15 @@ export const GET_CHANNEL = gql`
       Moderators {
         displayName
       }
-      DiscussionChannelsAggregate {
+      DiscussionChannelsAggregate (
+        where: {
+          Discussion: {
+            NOT: {
+              title: null
+            }
+          }
+        }
+      ) {
         count
       }
       IssuesAggregate {
