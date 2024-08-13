@@ -80,10 +80,10 @@ const getEventWhere = (input: GetEventWhereInput): EventWhere => {
     conditions.push({
       OR: [
         {
-          title_CONTAINS: searchInput,
+          title_MATCHES: `(?i).*${searchInput}.*`,
         },
         {
-          description_CONTAINS: searchInput,
+          description_MATCHES: `(?i).*${searchInput}.*`,
         },
       ],
     });

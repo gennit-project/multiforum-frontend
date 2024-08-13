@@ -70,10 +70,10 @@ export default defineComponent({
       const textSearch = {
         OR: [
           {
-            uniqueName_CONTAINS: searchInput.value,
+            uniqueName_MATCHES: `(?i).*${searchInput.value}.*`,
           },
           {
-            description_CONTAINS: searchInput.value,
+            description_MATCHES: `(?i).*${searchInput.value}.*`,
           },
         ],
       };

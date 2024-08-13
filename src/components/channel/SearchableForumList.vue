@@ -30,7 +30,7 @@ export default defineComponent({
     const searchInput: Ref<string> = ref("");
 
     const searchInputComputed = computed(() => {
-      return searchInput.value;
+      return `(?i).*${searchInput.value}.*`;
     });
 
     const {
@@ -40,7 +40,7 @@ export default defineComponent({
       onResult: onGetChannelNames,
     } = useQuery(GET_CHANNEL_NAMES, {
       channelWhere: {
-        uniqueName_CONTAINS: searchInputComputed,
+        uniqueName_MATCHES: searchInputComputed,
       },
     });
 

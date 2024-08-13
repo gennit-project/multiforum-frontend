@@ -6,7 +6,6 @@ import { useRoute, useRouter } from "vue-router";
 import { getTagLabel, getChannelLabel } from "@/components/utils";
 import { compareDate } from "@/dateTimeUtils";
 import { useDisplay } from "vuetify";
-import getDiscussionWhere from "@/components/discussion/list/getDiscussionWhere";
 import { SearchDiscussionValues } from "@/types/discussionTypes";
 import DiscussionFilterBar from "@/components/discussion/list/DiscussionFilterBar.vue";
 import { getFilterValuesFromParams } from "@/components/event/list/filters/getFilterValuesFromParams";
@@ -56,10 +55,6 @@ export default defineComponent({
       selectedTags.value = tag;
     };
 
-    const discussionWhere = computed(() => {
-      return getDiscussionWhere(filterValues.value, channelId.value);
-    });
-
     const defaultLabels = {
       channels: "Channels",
       tags: "Tags",
@@ -85,7 +80,6 @@ export default defineComponent({
       createDiscussionPath,
       defaultLabels,
       discussionId,
-      discussionWhere,
       filterValues,
       lgAndDown,
       lgAndUp,
