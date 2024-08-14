@@ -26,7 +26,7 @@ export default defineComponent({
   <div>
     <label
       :for="`file-input-${fieldName}`"
-      class="mt-2 text-sm flex cursor-pointer items-center text-blue-500 hover:underline"
+      class="text-sm flex cursor-pointer items-center text-blue-500 hover:underline"
     >
       <i class="fa fa-image mr-2" /> Add Image
       <input

@@ -11,7 +11,7 @@ import {
   getUploadFileName,
 } from "@/components/utils";
 import ErrorBanner from "../ErrorBanner.vue";
-import { useDisplay } from 'vuetify'
+import { useDisplay } from "vuetify";
 
 export default defineComponent({
   components: {
@@ -127,7 +127,7 @@ export default defineComponent({
       updateText(textarea.value);
     };
 
-    const { smAndDown } = useDisplay()
+    const { smAndDown } = useDisplay();
 
     return {
       createSignedStorageUrl,
@@ -137,6 +137,7 @@ export default defineComponent({
       embeddedImageLink: ref(""),
       focusEditor,
       formatText,
+      markdownDocsLink: "https://www.markdownguide.org/basic-syntax/",
       uploadAndGetEmbeddedLink,
       showFormatted: ref(false),
       smAndDown,
@@ -280,7 +281,7 @@ export default defineComponent({
     <TabGroup>
       <TabList
         :class="[smAndDown ? 'flex-wrap' : 'flex justify-between']"
-        class=" border-b pb-2 dark:border-gray-600"
+        class="border-b pb-2 dark:border-gray-600"
       >
         <div class="flex items-center">
           <Tab
@@ -358,10 +359,21 @@ export default defineComponent({
             @dragover="handleDragOver"
             @drop="handleDrop"
           />
-          <AddImage
-            v-if="allowImageUpload"
-            @change="handleFileChange"
-          />
+          <div
+            class="align-items mt-2 flex space-x-2 divide-x divide-gray-400 dark:divide-gray-300"
+          >
+            <a
+              target="_blank"
+              :href="markdownDocsLink"
+              class="text-gray-400 hover:underline dark:text-gray-300"
+            >
+              Markdown is supported</a>
+            <AddImage
+              v-if="allowImageUpload"
+              class="pl-2"
+              @change="handleFileChange"
+            />
+          </div>
         </TabPanel>
         <TabPanel class="-m-0.5 overflow-auto rounded-md p-0.5">
           <v-md-preview
@@ -394,8 +406,6 @@ export default defineComponent({
       background-color: black !important;
     }
   }
-
-
 }
 
 @media (prefers-color-scheme: light) {
