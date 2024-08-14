@@ -296,6 +296,7 @@ export default defineComponent({
         >
           <LoadMore
             class="justify-self-center mb-6"
+            :loading="discussionLoading"
             :reached-end-of-results="
               discussionChannelResult.getDiscussionsInChannel
                 .aggregateDiscussionChannelsCount ===

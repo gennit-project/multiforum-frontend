@@ -236,6 +236,7 @@ export default defineComponent({
       >
         <LoadMore
           class="ml-4 justify-self-center"
+          :loading="discussionLoading"
           :reached-end-of-results="
             aggregateDiscussionCount ===
               discussionResult.getSiteWideDiscussionList.discussions.length
