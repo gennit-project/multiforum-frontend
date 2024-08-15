@@ -198,11 +198,11 @@ export default defineComponent({
               Admins
             </span>
           </div>
-          <ul
+          <div
             v-if="channel.Admins.length > 0"
-            class="text-sm font-bold"
+            class="flex-col text-sm font-bold"
           >
-            <li
+            <div
               v-for="admin in channel.Admins"
               :key="admin.username"
             >
@@ -226,8 +226,8 @@ export default defineComponent({
                   :account-created="admin.createdAt ?? ''"
                 />
               </router-link>
-            </li>
-          </ul>
+            </div>
+          </div>
           <p
             v-else
             class="my-3 mb-6 text-sm dark:text-gray-400"
