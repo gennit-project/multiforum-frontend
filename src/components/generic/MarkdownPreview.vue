@@ -260,4 +260,14 @@ li {
   margin-bottom: 0.5rem !important;
 }
 
+ul {
+  list-style-type: disc !important;
+  margin-left: 1rem !important;
+}
+
+ol {
+  list-style-type: decimal !important;
+  margin-left: 1rem !important;
+}
+
 </style>
