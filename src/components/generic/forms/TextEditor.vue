@@ -129,9 +129,6 @@ export default defineComponent({
 
     const { smAndDown } = useDisplay();
 
-
-
-
     return {
       createSignedStorageUrl,
       createSignedStorageUrlError,
@@ -261,12 +258,53 @@ export default defineComponent({
       }
     },
     async handleFormStateDuringUpload(file: any) {
-      this.text = this.text + `![${file.name}](Uploading image...)`;
+      const textarea = this.editorRef as HTMLTextAreaElement;
+      if (!textarea) return;
+
+      const cursorPositionStart = textarea.selectionStart;
+      const cursorPositionEnd = textarea.selectionEnd;
+
+      const placeholderText = `Uploading image...`;
+      const markdownLink = `![${file.name}](${placeholderText})`;
+
+      // Insert the markdown link with placeholder text at the current cursor position
+      textarea.setRangeText(
+        markdownLink,
+        cursorPositionStart,
+        cursorPositionEnd,
+        "end",
+      );
+
+      // Get the updated text and update the component's text state
+      this.text = textarea.value;
+
+      // Store the current cursor position after the placeholder text
+      const placeholderStart = cursorPositionStart;
+      const placeholderEnd = placeholderStart + markdownLink.length;
+
       const embeddedLink = await this.upload(file);
       if (!embeddedLink) {
         return;
       }
-      this.text = this.text.replace("Uploading image...", embeddedLink);
+
+      // Replace the placeholder with the embedded link, ensuring no extra filename is added after the link
+      const newMarkdownLink = `![${file.name}](${embeddedLink})`;
+
+      // Create the new text with the embedded link replacing the placeholder
+      const newText =
+        textarea.value.slice(0, placeholderStart) +
+        newMarkdownLink +
+        textarea.value.slice(placeholderEnd);
+
+      // Update the component's text state with the new text
+      this.text = newText;
+
+      // Set the cursor position to immediately after the inserted link
+      textarea.setSelectionRange(
+        placeholderStart + newMarkdownLink.length,
+        placeholderStart + newMarkdownLink.length,
+      );
+
       this.$emit("update", this.text);
     },
     async handleFileChange(event: any) {
