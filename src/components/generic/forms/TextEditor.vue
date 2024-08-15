@@ -129,6 +129,9 @@ export default defineComponent({
 
     const { smAndDown } = useDisplay();
 
+
+
+
     return {
       createSignedStorageUrl,
       createSignedStorageUrlError,
@@ -187,6 +190,14 @@ export default defineComponent({
   },
   mounted() {
     this.editorRef = this.$refs.editorRef;
+    if (this.editorRef) {
+      this.editorRef.addEventListener("paste", this.handlePaste);
+    }
+  },
+  beforeUnmount() {
+    if (this.editorRef) {
+      this.editorRef.removeEventListener("paste", this.handlePaste);
+    }
   },
   methods: {
     handleDragOver(event: any) {
@@ -232,6 +243,21 @@ export default defineComponent({
         return embeddedLink;
       } catch (error) {
         console.error("Error uploading file:", error);
+      }
+    },
+    async handlePaste(event: ClipboardEvent) {
+      if (!this.allowImageUpload) return;
+
+      const items = event.clipboardData?.items;
+      if (!items) return;
+
+      for (const item of items) {
+        if (item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            await this.handleFormStateDuringUpload(file);
+          }
+        }
       }
     },
     async handleFormStateDuringUpload(file: any) {
@@ -371,6 +397,7 @@ export default defineComponent({
             <AddImage
               v-if="allowImageUpload"
               class="pl-2"
+              :label="'Paste, drop, or click to add files'"
               @change="handleFileChange"
             />
           </div>

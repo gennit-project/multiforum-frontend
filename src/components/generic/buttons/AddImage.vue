@@ -8,6 +8,11 @@ export default defineComponent({
       required: false,
       default: "",
     },
+    label: {
+      type: String,
+      required: false,
+      default: "Add Image",
+    },
   },
   setup() {
     return {};
@@ -26,9 +31,9 @@ export default defineComponent({
   <div>
     <label
       :for="`file-input-${fieldName}`"
-      class="text-sm flex cursor-pointer items-center text-blue-500 hover:underline"
+      class="text-sm flex cursor-pointer items-center text-gray-500 dark:text-gray-300 hover:underline"
     >
-      <i class="fa fa-image mr-2" /> Add Image
+      <i class="fa fa-image mr-2" /> {{ label }}
       <input
         :id="`file-input-${fieldName}`"
         ref="fileInput"
