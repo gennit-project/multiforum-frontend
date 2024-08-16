@@ -181,7 +181,7 @@ export default defineComponent({
             <li
               v-for="item in navigation"
               :key="item.name"
-              class="px-6"
+              class="px-6 list-none"
             >
               <router-link
                 :to="item.href"
@@ -214,6 +214,7 @@ export default defineComponent({
             <li
               v-for="forum in visibleRecentForums"
               :key="forum.uniqueName"
+              class="list-none"
             >
               <router-link
                 :to="{

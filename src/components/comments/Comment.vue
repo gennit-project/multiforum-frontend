@@ -232,7 +232,7 @@ export default defineComponent({
         return "";
       }
       return localUsernameResult.value;
-    });    
+    });
 
     const linksInText = computed(() => {
       if (!props.commentData || !props.commentData.text) {
@@ -273,7 +273,8 @@ export default defineComponent({
           },
         ]);
       } else {
-        out = out.concat([
+        if (props.modProfileName) {
+          out = out.concat([
           {
             label: "Report",
             value: "",
@@ -281,14 +282,18 @@ export default defineComponent({
             icon: ALLOWED_ICONS.REPORT,
           },
         ]);
+        }
+       
         if (props.enableFeedback) {
           if (props.commentData.FeedbackComments?.length === 0) {
-            out.push({
-              label: "Give Feedback",
-              value: "",
-              event: "clickFeedback",
-              icon: ALLOWED_ICONS.GIVE_FEEDBACK,
-            });
+            if (props.modProfileName) {
+              out.push({
+                label: "Give Feedback",
+                value: "",
+                event: "clickFeedback",
+                icon: ALLOWED_ICONS.GIVE_FEEDBACK,
+              });
+            }
           } else {
             out.push({
               label: "Undo Feedback",
@@ -385,14 +390,13 @@ export default defineComponent({
   <div>
     <div
       :class="[
-        depth > 1 ? 'border-l border-gray-300 pl-4 pt-2 dark:border-gray-600' : '',
+        depth > 1
+          ? 'border-l border-gray-300 pl-4 pt-2 dark:border-gray-600'
+          : '',
       ]"
       class="flex w-full"
     >
-      <div
-        :class="'text-sm'"
-        class="w-full"
-      >
+      <div :class="'text-sm'" class="w-full">
         <div
           :class="[
             isHighlighted
@@ -414,15 +418,12 @@ export default defineComponent({
             <div
               class="ml-3 flex-grow border-l border-gray-300 pl-4 dark:border-gray-500"
             >
-              <div
-                v-if="!themeLoading"
-                class="w-full dark:text-gray-200"
-              >
+              <div v-if="!themeLoading" class="w-full dark:text-gray-200">
                 <div class="w-full overflow-auto">
                   <div
                     v-if="
                       commentData.text &&
-                        editFormOpenAtCommentID !== commentData.id
+                      editFormOpenAtCommentID !== commentData.id
                     "
                     class="-ml-2"
                     :class="[goToPermalinkOnClick ? 'cursor-pointer' : '']"
@@ -454,8 +455,8 @@ export default defineComponent({
                   <ErrorBanner
                     v-if="
                       editCommentError &&
-                        !readonly &&
-                        editFormOpenAtCommentID === commentData.id
+                      !readonly &&
+                      editFormOpenAtCommentID === commentData.id
                     "
                     :text="editCommentError && editCommentError.message"
                   />

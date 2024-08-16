@@ -65,25 +65,25 @@ export default defineComponent({
       const loggedInUserAuthoredComment =
         props.comment?.CommentAuthor?.displayName === loggedInModName.value;
 
-      // May add these in future. The user can already edit/delete feedback by
-      // navigating back to the page where they originally gave feedback.
-      // if (loggedInUserAuthoredComment) {
-      //   out = out.concat([
-      //     {
-      //       label: "Edit",
-      //       value: "",
-      //       event: "handleEdit",
-      //       icon: ALLOWED_ICONS.EDIT,
-      //     },
-      //     {
-      //       label: "Delete",
-      //       value: "",
-      //       event: "handleDelete",
-      //       icon: ALLOWED_ICONS.DELETE,
-      //     },
-      //   ]);
-      // } else
+      
+      if (loggedInUserAuthoredComment) {
+        out = out.concat([
+          {
+            label: "Edit",
+            value: "",
+            event: "handleEdit",
+            icon: ALLOWED_ICONS.EDIT,
+          },
+          {
+            label: "Delete",
+            value: "",
+            event: "handleDelete",
+            icon: ALLOWED_ICONS.DELETE,
+          },
+        ]);
+      } else
       if (loggedInModName.value) {
+        console.log('mod name', loggedInModName.value);
         out = out.concat([
           {
             label: "Report",
@@ -168,9 +168,11 @@ export default defineComponent({
   },
   methods: {
     handleDelete(input: DeleteCommentInputData) {
+      console.log("clicked handle delete", input);
       this.$emit("deleteComment", input);
     },
     handleEdit(comment: Comment) {
+      console.log("clicked handle edit", comment);
       this.$emit("clickEditComment", comment);
       this.$emit("openEditCommentEditor", comment.id);
     },
