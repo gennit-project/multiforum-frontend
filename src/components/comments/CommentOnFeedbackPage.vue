@@ -8,7 +8,7 @@ import Avatar from "@/components/user/Avatar.vue";
 import VoteButtons from "./VoteButtons.vue";
 import EllipsisHorizontal from "../icons/EllipsisHorizontal.vue";
 import MenuButton from "../generic/buttons/MenuButton.vue";
-import { DeleteCommentInputData } from "@/types/commentTypes";
+import { DELETE_COMMENT } from "@/graphQLData/comment/mutations";
 import { HandleEditFeedbackInput, HandleFeedbackInput } from "./Comment.vue";
 import { useRoute, useRouter } from "vue-router";
 import { Comment } from "@/__generated__/graphql";
@@ -20,6 +20,7 @@ import CancelButton from "@/components/generic/buttons/CancelButton.vue";
 import SaveButton from "@/components/generic/buttons/SaveButton.vue";
 import { UPDATE_COMMENT } from "@/graphQLData/comment/mutations";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
+import WarningModal from "@/components/generic/WarningModal.vue";
 
 export default defineComponent({
   name: "CommentOnFeedbackPage",
@@ -33,6 +34,7 @@ export default defineComponent({
     SaveButton,
     TextEditor,
     VoteButtons,
+    WarningModal,
   },
   props: {
     comment: {
@@ -70,6 +72,20 @@ export default defineComponent({
         updateCommentInput: updateCommentInput.value,
       },
     }));
+
+    const {
+      loading: deleteCommentLoading,
+      error: deleteCommentError,
+      mutate: deleteComment,
+      onDone: onDoneDeletingComment,
+    } = useMutation(DELETE_COMMENT, {
+      update: (cache: any) => {
+        // Evict the comment from the cache.
+        cache.evict({
+          id: cache.identify({ __typename: "Comment", id: props.comment.id }),
+        });
+      },
+    });
 
     const loggedInModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
@@ -183,8 +199,13 @@ export default defineComponent({
       }, 2000);
     };
 
+    const showDeleteCommentModal = ref(false);
+    onDoneDeletingComment(() => {
+      showDeleteCommentModal.value = false;
+    });
+
     const editCommentMode = ref(false);
-    onDoneUpdatingComment((res) => {
+    onDoneUpdatingComment(() => {
       editCommentMode.value = false;
     });
 
@@ -195,15 +216,21 @@ export default defineComponent({
       editCommentError,
       editCommentLoading,
       editCommentMode,
+      deleteComment,
+      deleteCommentError,
+      deleteCommentLoading,
       loggedInModName,
       router,
       timeAgo,
       updateCommentInput,
+      showDeleteCommentModal,
     };
   },
   methods: {
-    handleDelete(input: DeleteCommentInputData) {
-      this.$emit("deleteComment", input);
+    handleDeleteComment() {
+      // Hard delete the comment if there are no replies
+      // to avoid cluttering the screen
+      this.deleteComment({ id: this.comment.id });
     },
     handleEdit() {
       this.editCommentMode = true;
@@ -275,8 +302,10 @@ export default defineComponent({
       <span class="whitespace-nowrap">{{
         `gave feedback ${timeAgo(new Date(comment.createdAt))}`
       }}</span>
-      <span v-if="isHighlighted" class="rounded-lg bg-blue-500 px-2 text-black"
-        >Permalinked
+      <span
+        v-if="isHighlighted"
+        class="rounded-lg bg-blue-500 px-2 text-black"
+      >Permalinked
       </span>
       <MenuButton
         v-if="commentMenuItems.length > 0"
@@ -309,12 +338,7 @@ export default defineComponent({
         @handleViewFeedback="() => handleViewFeedback(comment.id)"
         @handleDelete="
           () => {
-            const deleteCommentInput = {
-              commentId: comment.id,
-              parentCommentId: '',
-              replyCount: 0,
-            };
-            handleDelete(deleteCommentInput);
+            showDeleteCommentModal = true;
           }
         "
         @clickEditFeedback="
@@ -385,5 +409,14 @@ export default defineComponent({
         @viewFeedback="() => handleViewFeedback(comment.id)"
       />
     </div>
+    <WarningModal
+      :title="'Delete Comment'"
+      :body="'Are you sure you want to delete this comment?'"
+      :open="showDeleteCommentModal"
+      :loading="deleteCommentLoading"
+      :error="deleteCommentError"
+      @close="showDeleteCommentModal = false"
+      @primaryButtonClick="handleDeleteComment"
+    />
   </div>
 </template>

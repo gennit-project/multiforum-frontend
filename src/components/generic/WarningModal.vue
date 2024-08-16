@@ -36,8 +36,8 @@ export default defineComponent({
       default: "ExclamationIcon",
     },
     error: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "",
     },
     loading: {
       type: Boolean,

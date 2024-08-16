@@ -50,8 +50,8 @@ export default defineComponent({
       default: false,
     },
     error: {
-      type: Boolean,
-      default: false,
+      type: String,
+      default: "",
     },
     primaryButtonDisabled: {
       type: Boolean,
