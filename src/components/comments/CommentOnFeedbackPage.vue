@@ -1,6 +1,6 @@
 <script lang="ts">
-import { defineComponent, computed } from "vue";
-import { useQuery } from "@vue/apollo-composable";
+import { defineComponent, computed, ref } from "vue";
+import { useQuery, useMutation } from "@vue/apollo-composable";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
 import { ALLOWED_ICONS } from "../generic/buttons/MenuButton.vue";
 import useClipboard from "vue-clipboard3";
@@ -15,14 +15,23 @@ import { Comment } from "@/__generated__/graphql";
 import { timeAgo } from "@/dateTimeUtils";
 import { PropType } from "vue";
 import MarkdownPreview from "../generic/MarkdownPreview.vue";
+import TextEditor from "../generic/forms/TextEditor.vue";
+import CancelButton from "@/components/generic/buttons/CancelButton.vue";
+import SaveButton from "@/components/generic/buttons/SaveButton.vue";
+import { UPDATE_COMMENT } from "@/graphQLData/comment/mutations";
+import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 
 export default defineComponent({
   name: "CommentOnFeedbackPage",
   components: {
     Avatar,
+    CancelButton,
     EllipsisHorizontal,
+    ErrorBanner,
     MarkdownPreview,
     MenuButton,
+    SaveButton,
+    TextEditor,
     VoteButtons,
   },
   props: {
@@ -44,8 +53,27 @@ export default defineComponent({
       error: localModProfileNameError,
     } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
+    const updateCommentInput = ref({
+      text: props.comment.text,
+    });
+
+    const {
+      loading: editCommentLoading,
+      mutate: editComment,
+      error: editCommentError,
+      onDone: onDoneUpdatingComment,
+    } = useMutation(UPDATE_COMMENT, () => ({
+      variables: {
+        commentWhere: {
+          id: props.comment.id,
+        },
+        updateCommentInput: updateCommentInput.value,
+      },
+    }));
+
     const loggedInModName = computed(() => {
       if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        console.error("Error fetching mod profile name");
         return "";
       }
       return localModProfileNameResult.value.modProfileName;
@@ -65,7 +93,6 @@ export default defineComponent({
       const loggedInUserAuthoredComment =
         props.comment?.CommentAuthor?.displayName === loggedInModName.value;
 
-      
       if (loggedInUserAuthoredComment) {
         out = out.concat([
           {
@@ -81,9 +108,7 @@ export default defineComponent({
             icon: ALLOWED_ICONS.DELETE,
           },
         ]);
-      } else
-      if (loggedInModName.value) {
-        console.log('mod name', loggedInModName.value);
+      } else if (loggedInModName.value) {
         out = out.concat([
           {
             label: "Report",
@@ -158,29 +183,39 @@ export default defineComponent({
       }, 2000);
     };
 
+    const editCommentMode = ref(false);
+    onDoneUpdatingComment((res) => {
+      editCommentMode.value = false;
+    });
+
     return {
       commentMenuItems,
       copyLink,
+      editComment,
+      editCommentError,
+      editCommentLoading,
+      editCommentMode,
       loggedInModName,
       router,
       timeAgo,
+      updateCommentInput,
     };
   },
   methods: {
     handleDelete(input: DeleteCommentInputData) {
-      console.log("clicked handle delete", input);
       this.$emit("deleteComment", input);
     },
-    handleEdit(comment: Comment) {
-      console.log("clicked handle edit", comment);
-      this.$emit("clickEditComment", comment);
-      this.$emit("openEditCommentEditor", comment.id);
+    handleEdit() {
+      this.editCommentMode = true;
+    },
+    handleSaveEditComment() {
+      this.editComment(this.updateCommentInput);
     },
     updateExistingComment(text: string, depth: number) {
       this.$emit("updateEditCommentInput", text, depth === 1);
     },
     updateText(text: string) {
-      this.textCopy = text;
+      this.updateCommentInput.text = text;
     },
     handleReport() {
       this.$emit("clickReport", this.comment);
@@ -240,10 +275,8 @@ export default defineComponent({
       <span class="whitespace-nowrap">{{
         `gave feedback ${timeAgo(new Date(comment.createdAt))}`
       }}</span>
-      <span
-        v-if="isHighlighted"
-        class="rounded-lg bg-blue-500 px-2 text-black"
-      >Permalinked
+      <span v-if="isHighlighted" class="rounded-lg bg-blue-500 px-2 text-black"
+        >Permalinked
       </span>
       <MenuButton
         v-if="commentMenuItems.length > 0"
@@ -299,13 +332,35 @@ export default defineComponent({
       </MenuButton>
     </div>
 
-    <div class="ml-12 border-l-2 border-gray-200 dark:border-gray-500">
+    <div class="ml-12 border-l-2 border-gray-200 pl-2 dark:border-gray-500">
       <MarkdownPreview
-        v-if="comment.text"
-        class="ml-1"
+        v-if="comment.text && !editCommentMode"
+        class=""
         :text="comment.text"
         :disable-gallery="true"
       />
+      <div v-else-if="editCommentMode">
+        <TextEditor
+          :initial-value="comment.text"
+          :depth="1"
+          :allow-image-upload="false"
+          @update="updateText"
+        />
+        <ErrorBanner
+          v-if="editCommentError"
+          class="mt-2 px-4"
+          :text="editCommentError.message"
+        />
+        <div class="ml-1 mt-3 flex justify-start">
+          <CancelButton @click="editCommentMode = false" />
+          <SaveButton
+            data-testid="saveCommentButton"
+            :disabled="comment.text.length === 0"
+            :loading="editCommentLoading && !editCommentError"
+            @click.prevent="handleSaveEditComment"
+          />
+        </div>
+      </div>
       <VoteButtons
         class="ml-3"
         :comment-data="comment"
