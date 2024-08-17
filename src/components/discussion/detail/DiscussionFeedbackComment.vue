@@ -49,7 +49,7 @@ export default defineComponent({
       <span class="whitespace-nowrap">{{
         `gave feedback in ${comment.Channel?.uniqueName} ${timeAgo(new Date(comment.createdAt))}`
       }}</span>
-      <MenuButton
+      <!-- <MenuButton
         v-if="commentMenuItems.length > 0"
         id="commentMenu"
         class="flex items-center"
@@ -95,7 +95,7 @@ export default defineComponent({
         <EllipsisHorizontal
           class="h-5 w-5 cursor-pointer hover:text-black dark:text-gray-300 dark:hover:text-white"
         />
-      </MenuButton>
+      </MenuButton> -->
     </div>
 
     <div class="ml-12 border-l-2 border-gray-200 dark:border-gray-500">
