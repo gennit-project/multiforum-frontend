@@ -28,12 +28,14 @@ import { ADD_FEEDBACK_COMMENT_TO_DISCUSSION } from "@/graphQLData/discussion/mut
 import { GET_LOCAL_USERNAME } from "@/graphQLData/user/queries";
 import Notification from "@/components/generic/Notification.vue";
 import EditFeedbackModal from "@/components/discussion/detail/EditFeedbackModal.vue";
+import DiscussionAlbum from "./DiscussionAlbum.vue";
 
 export const COMMENT_LIMIT = 50;
 
 export default defineComponent({
   components: {
     ConfirmUndoDiscussionFeedbackModal,
+    DiscussionAlbum,
     DiscussionChannelLinks,
     DiscussionRootCommentFormWrapper,
     DiscussionCommentsWrapper,
@@ -400,6 +402,10 @@ export default defineComponent({
                     />
                   </div>
                 </DiscussionBody>
+                <DiscussionAlbum 
+                  v-if="discussion.Album && discussion.Album.Images?.length > 0"
+                  :album="discussion.Album"
+                />
               </div>
             </div>
           </v-col>

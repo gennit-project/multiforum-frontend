@@ -136,6 +136,14 @@ export const GET_DISCUSSION = gql`
           showModTag
         }
       }
+      Album {
+        id 
+        Images {
+          id
+          url 
+          alt
+        }
+      }
       DiscussionChannels {
         id
         discussionId
