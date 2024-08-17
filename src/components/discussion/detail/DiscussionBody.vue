@@ -135,8 +135,9 @@ export default defineComponent({
         "
       />
     </div>
+    <slot name="album-slot" />
     <div class="flex items-center gap-2">
-      <slot />
+      <slot name="button-slot" />
       <NewEmojiButton
         v-if="showEmojiButton" 
         :discussion-channel-id="discussionChannelId" 

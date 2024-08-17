@@ -375,9 +375,7 @@ export default defineComponent({
         >
           <v-col>
             <div class="space-y-3 px-2">
-              <div
-                class="rounded-lg pb-2 dark:border-gray-700"
-              >
+              <div class="rounded-lg pb-2 dark:border-gray-700">
                 <DiscussionHeader
                   :discussion="discussion"
                   :channel-id="channelId"
@@ -390,22 +388,29 @@ export default defineComponent({
                   :discussion-channel-id="activeDiscussionChannel?.id"
                   :emoji-json="activeDiscussionChannel?.emoji"
                 >
-                  <div class="flex h-12 items-center">
-                    <DiscussionVotes
-                      v-if="activeDiscussionChannel"
-                      :discussion="discussion"
-                      :discussion-channel="activeDiscussionChannel"
-                      :show-downvote="!loggedInUserIsAuthor"
-                      @handleClickGiveFeedback="handleClickGiveFeedback"
-                      @handleClickUndoFeedback="handleClickUndoFeedback"
-                      @handleClickEditFeedback="handleClickEditFeedback"
+                  <template #album-slot>
+                    <DiscussionAlbum
+                      v-if="
+                        discussion.Album && discussion.Album.Images?.length > 0
+                      "
+                      class=""
+                      :album="discussion.Album"
                     />
-                  </div>
+                  </template>
+                  <template #button-slot>
+                    <div class="flex h-12 items-center">
+                      <DiscussionVotes
+                        v-if="activeDiscussionChannel"
+                        :discussion="discussion"
+                        :discussion-channel="activeDiscussionChannel"
+                        :show-downvote="!loggedInUserIsAuthor"
+                        @handleClickGiveFeedback="handleClickGiveFeedback"
+                        @handleClickUndoFeedback="handleClickUndoFeedback"
+                        @handleClickEditFeedback="handleClickEditFeedback"
+                      />
+                    </div>
+                  </template>
                 </DiscussionBody>
-                <DiscussionAlbum 
-                  v-if="discussion.Album && discussion.Album.Images?.length > 0"
-                  :album="discussion.Album"
-                />
               </div>
             </div>
           </v-col>
