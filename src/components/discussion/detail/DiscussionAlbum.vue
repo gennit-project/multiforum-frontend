@@ -1,12 +1,20 @@
 <script lang="ts">
 import { defineComponent, ref, PropType } from "vue";
-import VueEasyLightbox from "vue-easy-lightbox";
+import Lightgallery from "lightgallery/vue";
+import lgThumbnail from "lightgallery/plugins/thumbnail";
+import lgZoom from "lightgallery/plugins/zoom";
+
+// If you are using SCSS, you can skip the CSS imports below and use SCSS instead
+import "lightgallery/css/lightgallery.css";
+import "lightgallery/css/lg-thumbnail.css";
+import "lightgallery/css/lg-zoom.css";
+
 import { Album } from "@/__generated__/graphql";
 
 export default defineComponent({
   name: "DiscussionAlbum",
   components: {
-    VueEasyLightbox,
+    Lightgallery,
   },
   props: {
     album: {
@@ -14,57 +22,36 @@ export default defineComponent({
       required: true,
     },
   },
-  setup(props) {
-    const visibleRef = ref(false);
-    const indexRef = ref(0);
-    const embeddedImages = ref(
-      props.album.Images.map((image) => image.url)
-    );
-
-    const handleImageClick = (index: number) => {
-      indexRef.value = index;
-      visibleRef.value = true;
-    };
-
-    const onHide = () => {
-      visibleRef.value = false;
-    };
+  setup() {
+    const plugins = ref([lgThumbnail, lgZoom]);
 
     return {
-      visibleRef,
-      indexRef,
-      embeddedImages,
-      handleImageClick,
-      onHide,
+      plugins,
     };
   },
 });
 </script>
 
 <template>
-  <div class="grid grid-cols-12 gap-1">
-    <div
-      v-for="(image, index) in album.Images"
+  <lightgallery
+    :settings="{ speed: 500, plugins: plugins }"
+    class="grid grid-cols-2 gap-2"
+  >
+    <a
+      v-for="image in album.Images"
       :key="image.id"
-      :class="'col-span-6'"
-      @click="handleImageClick(index)"
+      :href="image.url"
     >
       <img
         :src="image.url"
         :alt="image.alt"
-        class="w-full object-cover shadow-sm cursor-pointer"
+        class="shadow-sm"
       >
       <figcaption class="text-center">
         {{ image.alt }}
       </figcaption>
-    </div>
-    <vue-easy-lightbox
-      :visible="visibleRef"
-      :imgs="embeddedImages"
-      :index="indexRef"
-      @hide="onHide"
-    />
-  </div>
+    </a>
+  </lightgallery>
 </template>
 
 <style scoped>
