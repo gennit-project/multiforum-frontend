@@ -11,6 +11,7 @@ const config = {
     "googleCloudStorageBucket": import.meta.env.VITE_GOOGLE_CLOUD_STORAGE_BUCKET,
     "logoutUrl": import.meta.env.VITE_LOGOUT_URL,
     "openCageApiKey": import.meta.env.VITE_OPEN_CAGE_API_KEY,
+    "lightgalleryLicenseKey": import.meta.env.VITE_LIGHTGALLERY_LICENSE_KEY,
  }
 
  export default config;

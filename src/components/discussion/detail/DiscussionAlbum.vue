@@ -3,6 +3,7 @@ import { defineComponent, ref, PropType } from "vue";
 import Lightgallery from "lightgallery/vue";
 import lgThumbnail from "lightgallery/plugins/thumbnail";
 import lgZoom from "lightgallery/plugins/zoom";
+import config from "@/config";
 
 // If you are using SCSS, you can skip the CSS imports below and use SCSS instead
 import "lightgallery/css/lightgallery.css";
@@ -27,6 +28,7 @@ export default defineComponent({
 
     return {
       plugins,
+      lightGalleryLicenseKey: config.lightgalleryLicenseKey,
     };
   },
 });
@@ -34,7 +36,11 @@ export default defineComponent({
 
 <template>
   <lightgallery
-    :settings="{ speed: 500, plugins: plugins }"
+    :settings="{ 
+      speed: 500, 
+      plugins: plugins,
+      licenseKey: lightGalleryLicenseKey,
+    }"
     class="grid grid-cols-2 gap-2"
   >
     <a
