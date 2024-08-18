@@ -379,7 +379,7 @@ export default defineComponent({
           <CancelButton @click="editCommentMode = false" />
           <SaveButton
             data-testid="saveCommentButton"
-            :disabled="!!comment.text?.length"
+            :disabled="comment.text === updateCommentInput.text"
             :loading="editCommentLoading && !editCommentError"
             @click.prevent="handleSaveEditComment"
           />
