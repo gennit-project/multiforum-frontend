@@ -313,7 +313,7 @@ export default defineComponent({
         class="flex items-center"
         :items="commentMenuItems"
         @copyLink="copyLink"
-        @handleEdit="() => handleEdit(comment)"
+        @handleEdit="() => handleEdit()"
         @clickReport="handleReport"
         @clickFeedback="
           () => {
@@ -365,7 +365,7 @@ export default defineComponent({
       />
       <div v-else-if="editCommentMode">
         <TextEditor
-          :initial-value="comment.text"
+          :initial-value="comment.text || ''"
           :depth="1"
           :allow-image-upload="false"
           @update="updateText"
@@ -379,7 +379,7 @@ export default defineComponent({
           <CancelButton @click="editCommentMode = false" />
           <SaveButton
             data-testid="saveCommentButton"
-            :disabled="comment.text.length === 0"
+            :disabled="!!comment.text?.length"
             :loading="editCommentLoading && !editCommentError"
             @click.prevent="handleSaveEditComment"
           />

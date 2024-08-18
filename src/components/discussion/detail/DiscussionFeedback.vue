@@ -2,17 +2,18 @@
 import { Discussion } from "@/__generated__/graphql";
 import BackLink from "@/components/generic/buttons/BackLink.vue";
 import { GET_DISCUSSION_FEEDBACK } from "@/graphQLData/discussion/queries";
-import { useQuery } from "@vue/apollo-composable";
-import { computed, defineComponent } from "vue";
-import { useRoute } from "vue-router";
+import { useQuery, useMutation } from "@vue/apollo-composable";
+import { computed, defineComponent, ref, watch, Ref } from "vue";
+import { RouteLocationRaw, useRoute } from "vue-router";
 import DiscussionBody from "./DiscussionBody.vue";
 import DiscussionHeader from "./DiscussionHeader.vue";
 import { timeAgo } from "@/dateTimeUtils";
 import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
-import InfoBanner from "@/components/generic/InfoBanner.vue";
-import LoadMore from "@/components/generic/LoadMore.vue";
-import DiscussionFeedbackComment from "./DiscussionFeedbackComment.vue";
+import FeedbackSection from "@/components/comments/FeedbackSection.vue";
+import { ADD_FEEDBACK_COMMENT_TO_COMMENT } from "@/graphQLData/comment/mutations";
+import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import { GET_FEEDBACK_ON_COMMENT } from "@/graphQLData/comment/queries";
 
 const PAGE_LIMIT = 10;
 
@@ -21,39 +22,49 @@ export default defineComponent({
     BackLink,
     DiscussionBody,
     DiscussionHeader,
-    DiscussionFeedbackComment,
     ErrorBanner,
-    InfoBanner,
-    LoadMore,
+    FeedbackSection,
     PageNotFound,
   },
   setup: () => {
     const route = useRoute();
 
-    const channelId = computed(() => {
-      if (typeof route.params.channelId === "string") {
-        return route.params.channelId;
-      }
-      return "";
-    });
+    const updateShowPermalinkedFeedback = () => {
+      return route.name === "DiscussionFeedbackPermalink";
+    };
+    const contextLink: Ref<RouteLocationRaw> = ref("");
+    const channelId = ref("");
+    const discussionId = ref("");
+    const commentId = ref("");
+    const offset = ref(0);
+    const feedbackId = ref("");
+    const showPermalinkedFeedback = ref(updateShowPermalinkedFeedback());
+    const {
+      result: localModProfileNameResult,
+      loading: localModProfileNameLoading,
+      error: localModProfileNameError,
+    } = useQuery(GET_LOCAL_MOD_PROFILE_NAME);
 
-    const discussionId = computed(() => {
-      if (typeof route.params.discussionId === "string") {
-        return route.params.discussionId;
+    const loggedInUserModName = computed(() => {
+      if (localModProfileNameLoading.value || localModProfileNameError.value) {
+        return "";
       }
-      return "";
+      return localModProfileNameResult.value.modProfileName;
     });
-
     const {
       result: getDiscussionResult,
       error: getDiscussionError,
       loading: getDiscussionLoading,
       fetchMore,
-    } = useQuery(GET_DISCUSSION_FEEDBACK, { 
+    } = useQuery(GET_DISCUSSION_FEEDBACK, {
       id: discussionId,
       limit: PAGE_LIMIT,
-      offset: 0
+      offset: offset,
+      loggedInModName: loggedInUserModName,
     });
+
+    const commentToRemoveFeedbackFrom = ref<Comment | null>(null);
+    const commentToGiveFeedbackOn = ref<Comment | null>(null);
 
     const discussion = computed<Discussion>(() => {
       if (getDiscussionError.value) {
@@ -77,22 +88,104 @@ export default defineComponent({
         },
         updateQuery: (previousResult, { fetchMoreResult }) => {
           if (!fetchMoreResult) return previousResult;
-          
 
-          const prevFeedbackComments = previousResult.discussions[0].FeedbackComments;
-          const newFeedbackComments = fetchMoreResult.discussions[0].FeedbackComments;
+          const prevFeedbackComments =
+            previousResult.discussions[0].FeedbackComments;
+          const newFeedbackComments =
+            fetchMoreResult.discussions[0].FeedbackComments;
 
           return {
             ...previousResult,
             discussions: [
               {
                 ...previousResult.discussions[0],
-                FeedbackComments: [...prevFeedbackComments, ...newFeedbackComments],
+                FeedbackComments: [
+                  ...prevFeedbackComments,
+                  ...newFeedbackComments,
+                ],
               },
             ],
           };
         },
       });
+    };
+
+    const { result: getCommentResult, error: getCommentError } = useQuery(
+      GET_FEEDBACK_ON_COMMENT,
+      {
+        commentId: commentId,
+        limit: PAGE_LIMIT,
+        offset: offset,
+        loggedInModName: loggedInUserModName,
+      },
+    );
+
+    const originalComment = computed<Comment>(() => {
+      if (getCommentError.value) {
+        return null;
+      }
+      return getCommentResult.value?.comments[0] || null;
+    });
+
+    const contextOfFeedbackComment = computed(() => {
+      if (originalComment.value) {
+        const context = originalComment.value.GivesFeedbackOnComment;
+        return context;
+      }
+      return null;
+    });
+
+    const updateContextLink = () => {
+      if (discussion.value) {
+        if (route.name === "DiscussionFeedback") {
+          return {
+            name: "DiscussionPermalink",
+            params: {
+              discussionId: route.params.discussionId,
+            },
+          };
+        }
+        if (route.name === "FeedbackOnDiscussionFeedback") {
+          if (!contextOfFeedbackComment.value) {
+            console.warn("No context of feedback comment found");
+            return "";
+          }
+          return {
+            name: "DiscussionCommentFeedbackPermalink",
+            params: {
+              discussionId: route.params.discussionId,
+              channelId: route.params.channelId,
+              feedbackId: contextOfFeedbackComment.value.id,
+            },
+          };
+        }
+        if (route.name === "DiscussionFeedbackPermalink") {
+          // In this case we are already on the permalinked feedback comment page.
+          // If the original comment has a populated GivesFeedbackOnComment field,
+          // link to that feedback comment's permalink page.
+          // Otherwise link to the normal discussion comment permalink page.
+          if (!contextOfFeedbackComment.value) {
+            return {
+              name: "DiscussionCommentPermalink",
+              params: {
+                discussionId: route.params.discussionId,
+                commentId: route.params.commentId,
+              },
+            };
+          } else {
+            return {
+              name: "DiscussionCommentFeedbackPermalink",
+              params: {
+                discussionId: route.params.discussionId,
+                commentId: contextOfFeedbackComment.value?.id || "",
+                channelId: route.params.channelId,
+                feedbackId: originalComment.value.id || "",
+              },
+            };
+          }
+        }
+      }
+      return "";
     };
 
     const reachedEndOfResults = computed(() => {
@@ -102,16 +195,121 @@ export default defineComponent({
       return feedbackComments.value.length === feedbackCommentsAggregate.value;
     });
 
+    const {
+      mutate: addFeedbackCommentToComment,
+      loading: addFeedbackCommentToCommentLoading,
+      error: addFeedbackCommentToCommentError,
+      onDone: onAddFeedbackCommentToCommentDone,
+    } = useMutation(ADD_FEEDBACK_COMMENT_TO_COMMENT, {
+      update: (cache: any, result: any) => {
+        const newFeedbackComment = result.data.createComments.comments[0];
+
+        if (commentToGiveFeedbackOn.value) {
+          const prevQueryResult = cache.readQuery({
+            query: GET_DISCUSSION_FEEDBACK,
+            variables: {
+              commentId: commentId.value,
+              limit: PAGE_LIMIT,
+              offset: offset,
+              loggedInModName: loggedInUserModName.value,
+            },
+          });
+
+          const prevOriginalFeedbackList = discussion.value.FeedbackComments;
+
+          const prevFeedbackComments =
+            commentToGiveFeedbackOn.value.FeedbackComments || [];
+
+          const updatedDiscussion = {
+            ...discussion.value,
+            FeedbackComments: [
+              ...prevOriginalFeedbackList.filter(
+                (comment) => comment.id !== commentToGiveFeedbackOn.value?.id,
+              ),
+              {
+                ...commentToGiveFeedbackOn.value,
+                FeedbackComments: [...prevFeedbackComments, newFeedbackComment],
+                FeedbackCommentsAggregate: {
+                  count:
+                    prevQueryResult.comments[0].FeedbackCommentsAggregate
+                      .count + 1,
+                  __typename: "FeedbackCommentsAggregate",
+                },
+              },
+            ],
+          };
+
+          cache.writeQuery({
+            query: GET_DISCUSSION_FEEDBACK,
+            variables: {
+              commentId: commentId.value,
+              limit: PAGE_LIMIT,
+              offset: 0,
+              loggedInModName: loggedInUserModName.value,
+            },
+            data: {
+              discussions: [updatedDiscussion],
+            },
+          });
+        }
+      },
+    });
+
+    const showFeedbackFormModal = ref(false);
+    const showFeedbackSubmittedSuccessfully = ref(false);
+
+    onAddFeedbackCommentToCommentDone(() => {
+      showFeedbackFormModal.value = false;
+      showFeedbackSubmittedSuccessfully.value = true;
+    });
+    const updateParams = () => {
+      channelId.value =
+        typeof route.params.channelId === "string"
+          ? route.params.channelId
+          : "";
+      discussionId.value =
+        typeof route.params.discussionId === "string"
+          ? route.params.discussionId
+          : "";
+      commentId.value =
+        typeof route.params.commentId === "string"
+          ? route.params.commentId
+          : "";
+      feedbackId.value =
+        typeof route.params.feedbackId === "string"
+          ? route.params.feedbackId
+          : "";
+      contextLink.value = updateContextLink();
+      showPermalinkedFeedback.value = updateShowPermalinkedFeedback();
+    };
+
+    watch(
+      () => route.params,
+      () => {
+        updateParams();
+      },
+      { immediate: true }, // This ensures the watcher runs immediately to set the initial values
+    );
+
     return {
+      addFeedbackCommentToComment,
+      addFeedbackCommentToCommentError,
+      addFeedbackCommentToCommentLoading,
       channelId,
+      commentToRemoveFeedbackFrom,
+      commentToGiveFeedbackOn,
       discussion,
       getDiscussionLoading,
       getDiscussionError,
       feedbackComments,
       feedbackCommentsAggregate,
       loadMore,
+      loggedInUserModName,
       reachedEndOfResults,
       route,
+      showFeedbackFormModal,
+      showFeedbackSubmittedSuccessfully,
+      showPermalinkedFeedback,
       timeAgo,
     };
   },
@@ -130,63 +328,71 @@ export default defineComponent({
     <h1 class="text-wrap text-center text-2xl font-bold dark:text-gray-200">
       Feedback
     </h1>
+    <div v-if="getDiscussionLoading">
+      Loading...
+    </div>
     <ErrorBanner
-      v-if="getDiscussionError"
+      v-else-if="getDiscussionError"
       class="mt-2 px-4"
       :text="getDiscussionError.message"
     />
     <PageNotFound
-      v-if="!getDiscussionLoading && !getDiscussionError && !discussion"
+      v-else-if="!getDiscussionLoading && !getDiscussionError && !discussion"
     />
-    <p class="px-2">
-      This page collects feedback on this discussion:
-    </p>
-    <div class="ml-2 flex flex-col gap-2 border-l pl-4">
-      <h3 class="text-wrap px-1 px-2 text-xl font-bold sm:tracking-tight">
-        {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
-      </h3>
+    <div>
+      <p class="px-2">
+        This page collects feedback on this discussion:
+      </p>
+      <div class="ml-2 flex flex-col gap-2 border-l pl-4">
+        <h3 class="text-wrap px-1 px-2 text-xl font-bold sm:tracking-tight">
+          {{ discussion && discussion.title ? discussion.title : "[Deleted]" }}
+        </h3>
 
-      <div class="space-y-3 px-2">
-        <div
-          class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
-        >
-          <DiscussionHeader
-            :discussion="discussion"
-            :channel-id="channelId"
-          />
-          <DiscussionBody
-            :discussion="discussion"
-            :channel-id="channelId"
-            :show-emoji-button="false"
-            :word-limit="100"
-          />
+        <div class="space-y-3 px-2">
+          <div
+            class="dark:bg-gray-950 rounded-lg border px-4 pb-2 dark:border-gray-700 dark:bg-gray-700"
+          >
+            <DiscussionHeader
+              :discussion="discussion"
+              :channel-id="channelId"
+            />
+            <DiscussionBody
+              :discussion="discussion"
+              :channel-id="channelId"
+              :show-emoji-button="false"
+              :word-limit="100"
+            />
+          </div>
         </div>
       </div>
-    </div>
-    <h2 class="text-wrap text-center text-xl font-bold dark:text-gray-200">
-      Feedback Comments ({{ feedbackCommentsAggregate }})
-    </h2>
-    <InfoBanner
-      v-if="feedbackCommentsAggregate > 0"
-      :text="'Feedback should focus on the writing, not the writer. If the feedback is rude or non-actionable, please report it.'"
-    />
-    <div
-      v-if="feedbackCommentsAggregate === 0"
-      class="text-center text-gray-500 dark:text-gray-300"
-    >
-      No feedback yet.
-    </div>
-    <DiscussionFeedbackComment
-      v-for="comment in feedbackComments"
-      :key="comment.id"
-    />
-    <LoadMore
-      v-if="!getDiscussionLoading && !reachedEndOfResults"
-      :reached-end-of-results="reachedEndOfResults"
-      @loadMore="loadMore"
-    />
-    <div v-if="getDiscussionLoading">
-      Loading...
+      <FeedbackSection
+        v-if="feedbackCommentsAggregate > 0"
+        :add-feedback-comment-to-comment-error="
+          addFeedbackCommentToCommentError?.message || ''
+        "
+        :add-feedback-comment-to-comment-loading="
+          addFeedbackCommentToCommentLoading
+        "
+        :comment-to-give-feedback-on="commentToGiveFeedbackOn"
+        :comment-to-remove-feedback-from="commentToRemoveFeedbackFrom"
+        :feedback-comments="feedbackComments"
+        :feedback-comments-aggregate="feedbackCommentsAggregate"
+        :show-permalinked-feedback="showPermalinkedFeedback"
+        :loading="getDiscussionLoading"
+        :logged-in-user-mod-name="loggedInUserModName"
+        :reached-end-of-results="reachedEndOfResults"
+        :load-more="loadMore"
+        :show-feedback-form-modal="showFeedbackFormModal"
+        :show-feedback-submitted-successfully="
+          showFeedbackSubmittedSuccessfully
+        "
+        @open-feedback-form-modal="showFeedbackFormModal = true"
+        @close-feedback-form-modal="showFeedbackFormModal = false"
+        @update-comment-to-give-feedback-on="commentToGiveFeedbackOn = $event"
+        @update-comment-to-remove-feedback-from="
+          commentToRemoveFeedbackFrom = $event
+        "
+      />
     </div>
   </div>
 </template>

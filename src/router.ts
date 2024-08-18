@@ -182,13 +182,18 @@ export const router = createRouter({
           component: CommentFeedback,
         },
         {
+          name: "FeedbackOnDiscussionFeedback",
+          path: "discussions/d/:discussionId/feedback/:feedbackId",
+          component: DiscussionFeedback,
+        },
+        {
           name: "CommentFeedback",
           path: "discussions/d/:discussionId/comments/:commentId/feedback",
           component: CommentFeedback,
         },
         {
           name: "DiscussionCommentFeedbackPermalink",
-          path: "discussions/d/:discussionId/comments/:commentId/feedback/:feedbackId",
+          path: "discussions/d/:discussionId/feedback/:feedbackId",
           component: CommentFeedback,
         },
         {
@@ -222,6 +227,13 @@ export const router = createRouter({
           name: "DiscussionFeedback",
           path: "discussions/d/:discussionId/feedback",
           component: DiscussionFeedback,
+          children: [
+            {
+              name: "DiscussionFeedbackPermalink",
+              path: "feedback/:feedbackId",
+              component: PermalinkedComment,
+            }
+          ],
         },
         {
           name: "EventFeedback",
