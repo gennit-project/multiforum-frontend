@@ -184,7 +184,7 @@ export const GET_DISCUSSION = gql`
 `;
 
 export const GET_DISCUSSION_FEEDBACK = gql`
-  query getDiscussionFeedback($id: ID!, $limit: Int, $offset: Int) {
+  query getDiscussionFeedback($id: ID!, $limit: Int, $offset: Int, $loggedInModName: String!) {
     discussions(where: { id: $id }) {
       id
       title
@@ -198,14 +198,36 @@ export const GET_DISCUSSION_FEEDBACK = gql`
       FeedbackComments(options: { limit: $limit, offset: $offset }) {
         id
         text
-        createdAt
         Channel {
           uniqueName
         }
         CommentAuthor {
           ... on ModerationProfile {
+            createdAt
             displayName
           }
+        }
+        createdAt
+        FeedbackCommentsAggregate(
+          where: {
+            CommentAuthorConnection: {
+              ModerationProfile: { node: { displayName: $loggedInModName } }
+            }
+          }
+        ) {
+          count
+        }
+        FeedbackComments(
+          where: {
+            CommentAuthorConnection: {
+              ModerationProfile: { node: { displayName: $loggedInModName } }
+            }
+          }
+        ) {
+          id
+        }
+        GivesFeedbackOnComment {
+          id
         }
       }
     }

@@ -88,6 +88,12 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const channelId = computed(() => {
+      if (typeof route.params.channelId === "string") {
+        return route.params.channelId;
+      }
+      return "";
+    });
     const feedbackId = computed(() => {
       if (typeof route.params.feedbackId === "string") {
         return route.params.feedbackId;
@@ -98,6 +104,7 @@ export default defineComponent({
     const showEditCommentFeedbackModal = ref(false);
 
     return {
+      channelId,
       feedbackId,
       showCopiedLinkNotification: ref(false),
       showConfirmUndoFeedbackModal,
@@ -138,7 +145,7 @@ export default defineComponent({
         modProfileName: this.loggedInUserModName,
         channelId: this.channelId,
       };
-      this.addFeedbackCommentToComment(feedbackInput);
+      this.$emit('addFeedbackCommentToComment', feedbackInput);
     },
   },
 });
@@ -175,11 +182,14 @@ export default defineComponent({
         />
       </template>
     </PermalinkedFeedbackComment>
-    <div v-for="comment in feedbackComments" :key="comment.id">
+    <div
+      v-for="comment in feedbackComments"
+      :key="comment.id"
+    >
       <CommentOnFeedbackPage
         v-if="
           !showPermalinkedFeedback ||
-          (showPermalinkedFeedback && comment.id !== feedbackId)
+            (showPermalinkedFeedback && comment.id !== feedbackId)
         "
         :comment="comment"
         @showCopiedLinkNotification="showCopiedLinkNotification = true"
@@ -193,7 +203,9 @@ export default defineComponent({
       :reached-end-of-results="reachedEndOfResults"
       @loadMore="() => loadMore()"
     />
-    <div v-if="loading">Loading...</div>
+    <div v-if="loading">
+      Loading...
+    </div>
     <Notification
       :show="showCopiedLinkNotification"
       :title="'Copied to clipboard!'"

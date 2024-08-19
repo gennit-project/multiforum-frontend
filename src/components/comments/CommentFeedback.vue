@@ -12,6 +12,7 @@ import ErrorBanner from "@/components/generic/ErrorBanner.vue";
 import PageNotFound from "@/components/generic/PageNotFound.vue";
 import CommentHeader from "./CommentHeader.vue";
 import { GET_LOCAL_MOD_PROFILE_NAME } from "@/graphQLData/user/queries";
+import FeedbackSection from '@/components/comments/FeedbackSection.vue'
 
 const PAGE_LIMIT = 10;
 
@@ -21,6 +22,7 @@ export default defineComponent({
     BackLink,
     CommentHeader,
     ErrorBanner,
+    FeedbackSection,
     MarkdownPreview,
     PageNotFound,
   },
@@ -65,7 +67,7 @@ export default defineComponent({
     });
 
     const originalComment = computed<Comment>(() => {
-      if (getCommentError.value) {
+      if (!getCommentResult.value || getCommentError.value) {
         return null;
       }
       return getCommentResult.value?.comments[0] || null;
@@ -73,7 +75,12 @@ export default defineComponent({
 
     const contextOfFeedbackComment = computed(() => {
       if (originalComment.value) {
-        const context = originalComment.value.GivesFeedbackOnComment;
+        let context = null;
+        if (originalComment.value.GivesFeedbackOnComment) {
+          context = originalComment.value.GivesFeedbackOnComment;
+        } else if (originalComment.value.GivesFeedbackOnDiscussion) {
+          context = originalComment.value.GivesFeedbackOnDiscussion;
+        }
         return context;
       }
       return null;
@@ -267,8 +274,8 @@ export default defineComponent({
                 FeedbackComments: [...prevFeedbackComments, newFeedbackComment],
                 FeedbackCommentsAggregate: {
                   count:
-                    prevQueryResult.comments[0].FeedbackCommentsAggregate
-                      .count + 1,
+                    (prevQueryResult.comments ? prevQueryResult.comments[0].FeedbackCommentsAggregate
+                      .count : 0) + 1,
                   __typename: "FeedbackCommentsAggregate",
                 },
               },
@@ -309,6 +316,7 @@ export default defineComponent({
       discussionId,
       getCommentLoading,
       getCommentError,
+      getCommentResult,
       feedbackComments,
       feedbackCommentsAggregate,
       feedbackId,
@@ -332,7 +340,7 @@ export default defineComponent({
     <div
       class="w-full max-w-4xl space-y-4 rounded-lg bg-white p-4 dark:bg-gray-800 sm:px-2 md:px-5"
     >
-      <div v-if="getCommentLoading">
+      <div v-if="getCommentLoading && !getCommentResult">
         Loading...
       </div>
       <ErrorBanner
@@ -400,7 +408,6 @@ export default defineComponent({
           </router-link>
         </div>
         <FeedbackSection
-          v-if="feedbackCommentsAggregate > 0"
           :add-feedback-comment-to-comment-error="
             addFeedbackCommentToCommentError?.message || ''
           "
@@ -426,6 +433,9 @@ export default defineComponent({
           @update-comment-to-remove-feedback-from="
             commentToRemoveFeedbackFrom = $event
           "
+          @add-feedback-comment-to-comment="($event) => {
+            addFeedbackCommentToComment($event);
+          }"
         />
       </div>
     </div>

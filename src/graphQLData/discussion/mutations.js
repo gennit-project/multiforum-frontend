@@ -218,6 +218,9 @@ export const ADD_FEEDBACK_COMMENT_TO_DISCUSSION = gql`
         }
         createdAt
         text
+        GivesFeedbackOnDiscussion {
+          id
+        }
       }
     }
   }

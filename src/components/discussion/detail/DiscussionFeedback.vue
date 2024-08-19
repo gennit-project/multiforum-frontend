@@ -18,6 +18,7 @@ import { GET_FEEDBACK_ON_COMMENT } from "@/graphQLData/comment/queries";
 const PAGE_LIMIT = 10;
 
 export default defineComponent({
+  name: "DiscussionFeedback",
   components: {
     BackLink,
     DiscussionBody,
@@ -28,7 +29,6 @@ export default defineComponent({
   },
   setup: () => {
     const route = useRoute();
-
     const updateShowPermalinkedFeedback = () => {
       return route.name === "DiscussionFeedbackPermalink";
     };
@@ -110,7 +110,7 @@ export default defineComponent({
       });
     };
 
-    const { result: getCommentResult, error: getCommentError } = useQuery(
+    const { result: getCommentResult, error: getCommentError, loading: getCommentLoading } = useQuery(
       GET_FEEDBACK_ON_COMMENT,
       {
         commentId: commentId,
@@ -128,8 +128,20 @@ export default defineComponent({
     });
 
     const contextOfFeedbackComment = computed(() => {
+      if (getCommentError.value) {
+        return null;
+      }
+      if (getCommentLoading.value) {
+        return null;
+      }
       if (originalComment.value) {
-        const context = originalComment.value.GivesFeedbackOnComment;
+       let context = null;
+         if (originalComment.value.GivesFeedbackOnComment) {
+          context = originalComment.value.GivesFeedbackOnComment;
+         }
+         if (originalComment.value.GivesFeedbackOnDiscussion) {
+          context = originalComment.value.GivesFeedbackOnDiscussion;
+         }
         return context;
       }
       return null;
@@ -208,9 +220,9 @@ export default defineComponent({
           const prevQueryResult = cache.readQuery({
             query: GET_DISCUSSION_FEEDBACK,
             variables: {
-              commentId: commentId.value,
+              id: discussionId.value,
               limit: PAGE_LIMIT,
-              offset: offset,
+              offset: offset.value,
               loggedInModName: loggedInUserModName.value,
             },
           });
@@ -231,8 +243,8 @@ export default defineComponent({
                 FeedbackComments: [...prevFeedbackComments, newFeedbackComment],
                 FeedbackCommentsAggregate: {
                   count:
-                    prevQueryResult.comments[0].FeedbackCommentsAggregate
-                      .count + 1,
+                    (prevQueryResult.discussions ? prevQueryResult.discussions[0].FeedbackCommentsAggregate
+                  .count : 0) + 1,
                   __typename: "FeedbackCommentsAggregate",
                 },
               },
@@ -298,6 +310,7 @@ export default defineComponent({
       channelId,
       commentToRemoveFeedbackFrom,
       commentToGiveFeedbackOn,
+      contextOfFeedbackComment,
       discussion,
       getDiscussionLoading,
       getDiscussionError,
@@ -339,7 +352,7 @@ export default defineComponent({
     <PageNotFound
       v-else-if="!getDiscussionLoading && !getDiscussionError && !discussion"
     />
-    <div>
+    <div v-else>
       <p class="px-2">
         This page collects feedback on this discussion:
       </p>
@@ -386,6 +399,9 @@ export default defineComponent({
         :show-feedback-submitted-successfully="
           showFeedbackSubmittedSuccessfully
         "
+        @add-feedback-comment-to-comment="($event) => {
+          addFeedbackCommentToComment($event);
+        }"
         @open-feedback-form-modal="showFeedbackFormModal = true"
         @close-feedback-form-modal="showFeedbackFormModal = false"
         @update-comment-to-give-feedback-on="commentToGiveFeedbackOn = $event"
