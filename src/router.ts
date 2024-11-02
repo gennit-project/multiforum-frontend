@@ -44,7 +44,7 @@ export const router = createRouter({
   routes: [
     {
       path: "/",
-      component: SearchDiscussions,
+      component: MapView,
     },
     {
       path: "/u/:username",
