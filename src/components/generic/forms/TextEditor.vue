@@ -475,7 +475,7 @@ export default defineComponent({
 
 @media (prefers-color-scheme: light) {
 }
-/* In your CSS file or style block */
+
 img {
   object-fit: cover;
   width: fit-content;

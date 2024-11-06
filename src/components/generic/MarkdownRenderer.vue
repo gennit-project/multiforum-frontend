@@ -83,6 +83,7 @@ export default defineComponent({
     max-width: 100%;
     max-height: 400px;
     height: auto;
+    width: auto;
   }
   a {
     color: #3182ce !important;
