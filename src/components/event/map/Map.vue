@@ -102,6 +102,11 @@ export default defineComponent({
         zoom: 7,
         mapTypeId: "terrain",
         styles: props.theme === "dark" ? nightModeMapStyles : [],
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_TOP
+        },
+        fullScreenControl: false
       };
 
       if (props.useMobileStyles) {
@@ -263,8 +268,6 @@ export default defineComponent({
 .gm-style-iw > button {
   display: none !important;
 }
-.gmnoprint {
-  display: none !important;
-}
+
 
 </style>
